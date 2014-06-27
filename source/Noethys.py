@@ -620,7 +620,7 @@ class MainFrame(wx.Frame):
         self.toolBar1.AddSimpleTool(ID_TB_LISTE_CONSO, u"Liste des conso.", wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG), u"Imprimer une liste de consommations")
         self.toolBar1.AddSimpleTool(ID_TB_BADGEAGE, u"Badgeage", wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG), u"Lancer une procédure de badgeage")
         self.toolBar1.AddSeparator()
-        self.toolBar1.AddSimpleTool(ID_TB_REGLER_FACTURE, u"Régler une facture", wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG), "Régler une facture à partir de son numéro")
+        self.toolBar1.AddSimpleTool(ID_TB_REGLER_FACTURE, u"Régler une facture", wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG), u"Régler une facture à partir de son numéro")
         self.ctrl_numfacture = CTRL_Numfacture.CTRL(self.toolBar1, size=(100, -1))
         self.toolBar1.AddControl(self.ctrl_numfacture)
         self.toolBar1.AddSeparator()

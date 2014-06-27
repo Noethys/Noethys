@@ -55,7 +55,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(u"Mémorisation") )
         
         # Mémorisation des paramètres
-        propriete = wxpg.BoolProperty(label="Mémoriser les paramètres", name="memoriser_parametres", value=True)
+        propriete = wxpg.BoolProperty(label=u"Mémoriser les paramètres", name="memoriser_parametres", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -69,31 +69,31 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(u"Eléments à afficher") )
         
         # Afficher les coupons-réponse
-        propriete = wxpg.BoolProperty(label="Afficher le coupon-réponse", name="afficher_coupon_reponse", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher le coupon-réponse", name="afficher_coupon_reponse", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher un coupon-réponse dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
         # Afficher les messages
-        propriete = wxpg.BoolProperty(label="Afficher les messages", name="afficher_messages", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher les messages", name="afficher_messages", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les messages dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Afficher le rappel des impayés
-        propriete = wxpg.BoolProperty(label="Afficher le rappel des impayés", name="afficher_impayes", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher le rappel des impayés", name="afficher_impayes", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher le rappel des impayés dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Afficher les codes-barres
-        propriete = wxpg.BoolProperty(label="Afficher les codes-barres", name="afficher_codes_barres", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher les codes-barres", name="afficher_codes_barres", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les codes-barres dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
         # Afficher les avis de prélèvements
-        propriete = wxpg.BoolProperty(label="Afficher les avis de prélèvements", name="afficher_avis_prelevements", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher les avis de prélèvements", name="afficher_avis_prelevements", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les avis de prélèvements dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -102,7 +102,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(u"Titre") )
 
         # Afficher le titre
-        propriete = wxpg.BoolProperty(label="Afficher le titre", name="afficher_titre", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher le titre", name="afficher_titre", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher le titre du le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -118,7 +118,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_titre", "SpinCtrl")
         
-        propriete = wxpg.BoolProperty(label="Afficher la période de facturation", name="afficher_periode", value=True)
+        propriete = wxpg.BoolProperty(label=u"Afficher la période de facturation", name="afficher_periode", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher la période de facturation dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
