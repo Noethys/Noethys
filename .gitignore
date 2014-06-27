@@ -1,5 +1,8 @@
 # Noethys
 Config.dat
+Aide/
+Temp/
+Updates/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -4153,7 +4153,13 @@ class MyApp(wx.App):
             wx.InitAllImageHandlers() 
         
         heure_debut = time.time()
-                
+        
+        # Vérifie l'existence des répertoires
+        for rep in ("Aide", "Temp", "Updates") :
+            if os.path.isdir(rep) == False :
+                os.makedirs(rep)
+                print "Creation du repertoire : ", rep
+        
         # Réinitialisation du fichier des parametres en conservant la touche ALT
         if wx.GetKeyState(307) == True :
             dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment réinitialiser Noethys ?", u"Réinitialisation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
