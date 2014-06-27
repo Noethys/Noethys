@@ -117,6 +117,7 @@ class Notebook(wx.Notebook):
 
     def OnPageChanged(self, event):
         """ Quand une page du notebook est sélectionnée """
+        if event.GetOldSelection()==-1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
         page.MAJ() 
