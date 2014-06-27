@@ -263,8 +263,6 @@ class Dialog(wx.Dialog):
         else :
             DB.ReqMAJ("comptes_bancaires", listeDonnees, "IDcompte", self.IDcompte)
             
-        # Fermeture
-        self.EndModal(wx.ID_OK)
 
     def Importation(self):
         """ Importation des valeurs """
