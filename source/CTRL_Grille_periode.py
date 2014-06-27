@@ -19,7 +19,11 @@ class DatePickerCtrl(wx.DatePickerCtrl):
         wx.DatePickerCtrl.__init__(self, parent, -1, style=wx.DP_DROPDOWN) 
         self.parent = parent
         self.Bind(wx.EVT_DATE_CHANGED, self.OnDateChanged)
-        
+        self.Bind(wx.EVT_CHILD_FOCUS, self.OnFocus)
+            
+    def OnFocus(self,event):
+        event.Skip(False)       #évite la propagation vers le 'PySwigObject' object    
+
     def SetDate(self, dateDD=None):
         jour = dateDD.day
         mois = dateDD.month-1
