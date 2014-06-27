@@ -281,20 +281,21 @@ class ListView(FastObjectListView):
     
     def SetDefaut(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_bancaires", "modifier") == False : return
-        IDcompteDefaut = self.Selection()[0].IDcompte
-        DB = GestionDB.DB()
-        req = """SELECT IDcompte, defaut
-        FROM comptes_bancaires
-        ; """
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        for IDcompte, defaut in listeDonnees :
-            if IDcompte == IDcompteDefaut :
-                DB.ReqMAJ("comptes_bancaires", [("defaut", 1 ),], "IDcompte", IDcompte)
-            else:
-                DB.ReqMAJ("comptes_bancaires", [("defaut", 0 ),], "IDcompte", IDcompte)
-        DB.Close()
-        self.MAJ()
+        if self.Selection():
+            IDcompteDefaut = self.Selection()[0].IDcompte
+            DB = GestionDB.DB()
+            req = """SELECT IDcompte, defaut
+            FROM comptes_bancaires
+            ; """
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            for IDcompte, defaut in listeDonnees :
+                if IDcompte == IDcompteDefaut :
+                    DB.ReqMAJ("comptes_bancaires", [("defaut", 1 ),], "IDcompte", IDcompte)
+                else:
+                    DB.ReqMAJ("comptes_bancaires", [("defaut", 0 ),], "IDcompte", IDcompte)
+            DB.Close()
+            self.MAJ()
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
