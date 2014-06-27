@@ -643,6 +643,7 @@ class MainFrame(wx.Frame):
         self.toolBar2.Realize()
         self._mgr.AddPane(self.toolBar2, aui.AuiPaneInfo().Name("barre_utilisateur").Caption(u"Barre Utilisateur").
                           ToolbarPane().Top())
+        self._mgr.Update()
         
     def CreationBarreMenus(self):
         """ Construit la barre de menus """
