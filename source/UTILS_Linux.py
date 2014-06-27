@@ -28,7 +28,6 @@ def AdaptationsDemarrage():
     # Vérifie que les répertoires vides sont bien là
     for rep in ("Temp", "Updates", "Aide") :
         if os.path.isdir(rep) == False :
-            os.remove(rep)
             try :
                 os.mkdir(rep)
             except Exception, err:
