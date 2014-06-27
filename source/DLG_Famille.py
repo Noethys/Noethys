@@ -103,10 +103,11 @@ class Notebook(wx.Notebook):
         indexAnciennePage = event.GetOldSelection()
         codePage = self.listePages[indexAnciennePage][0]
         # Sauvegarde ancienne page si besoin
-        if codePage in ("caisse", "divers") :
-            page = self.GetPage(indexAnciennePage)
-            page.Sauvegarde()
-        anciennePage = self.GetPage(indexAnciennePage)
+        if indexAnciennePage!=wx.NOT_FOUND:
+            if codePage in ("caisse", "divers") :
+                page = self.GetPage(indexAnciennePage)
+                page.Sauvegarde()
+            anciennePage = self.GetPage(indexAnciennePage)
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
         if page.IsLectureAutorisee() == False :
