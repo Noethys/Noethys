@@ -82,9 +82,9 @@ class ListView(FastObjectListView):
         return listeListeView
       
     def InitObjectListView(self):
-        # Création du imageList avec une taille 22x22
+        # Création du imageList avec une taille 24x24
         dictImagesDrapeau = {}
-        imageList = wx.ImageList(22, 22)
+        imageList = wx.ImageList(24, 24)
         for track in self.donnees :
             indexImg = imageList.Add(wx.Bitmap("Images/Drapeaux/%s.png" % track.code_drapeau, wx.BITMAP_TYPE_PNG))            
             dictImagesDrapeau[track.code_drapeau] = indexImg
