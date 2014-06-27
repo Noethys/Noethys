@@ -1,0 +1,325 @@
+#!/usr/bin/env python
+# -*- coding: iso-8859-15 -*-
+#------------------------------------------------------------------------
+# Application :    Noethys, gestion multi-activités
+# Site internet :  www.noethys.com
+# Auteur:           Ivan LUCAS
+# Copyright:       (c) 2010-11 Ivan LUCAS
+# Licence:         Licence GNU GPL
+#------------------------------------------------------------------------
+
+import wx
+import datetime
+import GestionDB
+
+import DLG_Saisie_quotient
+
+from ObjectListView import FastObjectListView, ColumnDefn, Filter
+
+import UTILS_Utilisateurs
+
+
+def DateEngFr(textDate):
+    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
+    return text
+
+def DateComplete(dateDD):
+    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
+    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
+    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
+    return dateComplete
+
+def DateEngEnDateDD(dateEng):
+    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
+
+
+class Track(object):
+    def __init__(self, donnees):
+        self.IDquotient = donnees[0]
+        self.IDfamille = donnees[1]
+        self.date_debut = DateEngEnDateDD(donnees[2])
+        self.date_fin = DateEngEnDateDD(donnees[3])
+        self.quotient = donnees[4]
+        self.observations = donnees[5]
+        
+        date_jour = datetime.date.today()
+        self.nbreJoursRestants = (self.date_fin - date_jour).days
+        if self.nbreJoursRestants > 0 :
+            self.valide = True
+        else:
+            self.valide = False
+        
+        self.estActuel = False
+        if date_jour >= self.date_debut and date_jour <= self.date_fin :
+            self.estActuel = True
+            
+
+    
+class ListView(FastObjectListView):
+    def __init__(self, *args, **kwds):
+        # Récupération des paramètres perso
+        self.IDfamille = kwds.pop("IDfamille", None)
+        self.selectionID = None
+        self.selectionTrack = None
+        self.criteres = ""
+        self.itemSelected = False
+        self.popupIndex = -1
+        self.listeFiltres = []
+        # Initialisation du listCtrl
+        FastObjectListView.__init__(self, *args, **kwds)
+        # Binds perso
+        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
+        self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+        
+    def OnItemActivated(self,event):
+        self.Modifier(None)
+                
+    def InitModel(self):
+        self.donnees = self.GetTracks()
+
+    def GetTracks(self):
+        """ Récupération des données """
+        listeID = None
+        db = GestionDB.DB()
+        req = """
+        SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations
+        FROM quotients
+        WHERE IDfamille=%d
+        ORDER BY date_debut
+        """ % self.IDfamille
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+
+        listeListeView = []
+        for item in listeDonnees :
+            valide = True
+            if listeID != None :
+                if item[0] not in listeID :
+                    valide = False
+            if valide == True :
+                track = Track(item)
+                listeListeView.append(track)
+                if self.selectionID == item[0] :
+                    self.selectionTrack = track
+        return listeListeView
+            
+    def InitObjectListView(self):            
+        # Couleur en alternance des lignes
+        self.oddRowsBackColor = "#F0FBED" 
+        self.evenRowsBackColor = wx.Colour(255, 255, 255)
+        self.useExpansionColumn = True
+        
+        self.AddNamedImages("actuel", wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG))
+
+        def GetImage(track):
+            if track.estActuel == True :
+                return "actuel"
+            else:
+                return None
+
+        def FormateDate(dateDD):
+            return DateComplete(dateDD)
+
+        def rowFormatter(listItem, track):
+            if track.valide == False :
+                listItem.SetTextColour((180, 180, 180))
+            
+        liste_Colonnes = [
+            ColumnDefn(u"", "left", 22, "IDquotient", imageGetter=GetImage),
+            ColumnDefn(u"Date de début", 'left', 165, "date_debut", stringConverter=FormateDate),
+            ColumnDefn(u"Date de fin", 'left', 165, "date_fin", stringConverter=FormateDate),
+            ColumnDefn(u"Quotient familial", 'center', 100, "quotient"),
+            ColumnDefn(u"Observations", 'left', 340, "observations"),
+            ]
+        
+        self.rowFormatter = rowFormatter
+        self.SetColumns(liste_Colonnes)
+        self.SetEmptyListMsg(u"Aucun quotient familial")
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetSortColumn(self.columns[1])
+        self.SetObjects(self.donnees)
+       
+    def MAJ(self, ID=None):
+        if ID != None :
+            self.selectionID = ID
+            self.selectionTrack = None
+        else:
+            self.selectionID = None
+            self.selectionTrack = None
+        self.InitModel()
+        self.InitObjectListView()
+        # Sélection d'un item
+        if self.selectionTrack != None :
+            self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)
+        self.selectionID = None
+        self.selectionTrack = None
+    
+    def Selection(self):
+        return self.GetSelectedObjects()
+
+    def OnContextMenu(self, event):
+        """Ouverture du menu contextuel """
+        if len(self.Selection()) == 0:
+            noSelection = True
+        else:
+            noSelection = False
+            ID = self.Selection()[0].IDquotient
+                
+        # Création du menu contextuel
+        menuPop = wx.Menu()
+
+        # Item Modifier
+        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
+        
+        menuPop.AppendSeparator()
+
+        # Item Ajouter
+        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Modifier, id=20)
+        if noSelection == True : item.Enable(False)
+        
+        # Item Supprimer
+        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
+        if noSelection == True : item.Enable(False)
+                
+        menuPop.AppendSeparator()
+    
+        # Item Apercu avant impression
+        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Apercu, id=40)
+        
+        # Item Imprimer
+        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
+        
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def Apercu(self, event):
+        import UTILS_Printer
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des quotients familiaux", format="A", orientation=wx.PORTRAIT)
+        prt.Preview()
+
+    def Imprimer(self, event):
+        import UTILS_Printer
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des quotients familiaux", format="A", orientation=wx.PORTRAIT)
+        prt.Print()
+
+
+    def Ajouter(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "creer") == False : return
+        dlg = DLG_Saisie_quotient.Dialog(self)
+        dlg.SetTitle(u"Saisie d'un quotient familial")
+        if dlg.ShowModal() == wx.ID_OK:
+            date_debut = dlg.GetDateDebut()
+            date_fin = dlg.GetDateFin()
+            quotient = dlg.GetQuotient() 
+            observations = dlg.GetObservations()
+            DB = GestionDB.DB()
+            listeDonnees = [
+                ("IDfamille", self.IDfamille ),
+                ("date_debut", date_debut ),
+                ("date_fin", date_fin ),
+                ("quotient", quotient),
+                ("observations", observations),
+                ]
+            IDquotient = DB.ReqInsert("quotients", listeDonnees)
+            DB.Close()
+            self.MAJ(IDquotient)
+        dlg.Destroy()
+
+    def Modifier(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "modifier") == False : return
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun quotient à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        IDquotient = self.Selection()[0].IDquotient
+        dlg = DLG_Saisie_quotient.Dialog(self)
+        date_debut = self.Selection()[0].date_debut
+        date_fin = self.Selection()[0].date_fin
+        quotient = self.Selection()[0].quotient
+        observations = self.Selection()[0].observations
+        dlg.SetDateDebut(date_debut)
+        dlg.SetDateFin(date_fin)
+        dlg.SetQuotient(quotient)
+        dlg.SetObservations(observations)
+        dlg.SetTitle(u"Modification d'un quotient familial")
+        if dlg.ShowModal() == wx.ID_OK:
+            date_debut = dlg.GetDateDebut()
+            date_fin = dlg.GetDateFin() 
+            quotient = dlg.GetQuotient() 
+            observations = dlg.GetObservations()
+            DB = GestionDB.DB()
+            listeDonnees = [
+                ("date_debut", date_debut ),
+                ("date_fin", date_fin ),
+                ("quotient", quotient),
+                ("observations", observations),
+                ]
+            DB.ReqMAJ("quotients", listeDonnees, "IDquotient", IDquotient)
+            DB.Close()
+            self.MAJ(IDquotient)
+        dlg.Destroy()
+
+    def Supprimer(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "supprimer") == False : return
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun quotient familial à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce quotient familial ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        if dlg.ShowModal() == wx.ID_YES :
+            IDquotient = self.Selection()[0].IDquotient
+            DB = GestionDB.DB()
+            DB.ReqDEL("quotients", "IDquotient", IDquotient)
+            DB.Close() 
+            self.MAJ()
+        dlg.Destroy()
+
+
+
+
+
+class MyFrame(wx.Frame):
+    def __init__(self, *args, **kwds):
+        wx.Frame.__init__(self, *args, **kwds)
+        panel = wx.Panel(self, -1, name="test1")
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+        sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
+        self.SetSizer(sizer_1)
+        self.myOlv = ListView(panel, IDfamille=3, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv.MAJ() 
+        sizer_2 = wx.BoxSizer(wx.VERTICAL)
+        sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
+        panel.SetSizer(sizer_2)
+        self.Layout()
+
+if __name__ == '__main__':
+    app = wx.App(0)
+    #wx.InitAllImageHandlers()
+    frame_1 = MyFrame(None, -1, "OL TEST")
+    app.SetTopWindow(frame_1)
+    frame_1.Show()
+    app.MainLoop()

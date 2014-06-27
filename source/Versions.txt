@@ -1,0 +1,905 @@
+Version 1.1.2.6 (23/06/2014) :
+
+- Ajout de la personnalisation des numéros de facture
+- Correction d'un bug sur l'édition des reçus de règlements
+- Mise à jour de la librairie graphique (wxPython 3.0.1)
+
+Version 1.1.2.5 (17/06/2014) :
+
+- Ajout de la liste personnalisée dans les utilitaires administrateur
+- Ajout de l'analyse par quotients familiaux dans les stats
+- Ajout des filtres dans la liste des règlements du menu Règlements
+- Amélioration de la recherche d'individus avec la détection nom+prénom
+- Correction d'un bug sur le cadre principal des modèles de documents
+- Correction d'un bug sur l'analyse par âge dans les stats
+
+Version 1.1.2.4 (05/05/2014) :
+
+- Correction d'un bug sur la modification de l'état des conso
+
+Version 1.1.2.3 (04/05/2014) :
+
+- Ajout des options d'impression avancées dans les factures et attestations
+- Ajout des images de signatures dans les factures et attestations
+- Ajout de la détection des liens et rattachements erronés dans le correcteur d'anomalies
+- Correction d'un bug sur le verrouillage des prestations déjà facturées
+- Correction d'un bug sur l'édition des bordereaux PESORMC sur les fichiers réseau
+- Correction de divers bugs
+
+Version 1.1.2.2 (15/04/2014) :
+
+- Ajout de la génération d'attestations fiscales depuis le menu Facturation
+- Ajout de l'impression des cotisations et attestations de cotisations
+- Ajout de l'envoi par Email des cotisations
+- Amélioration de la liste des cotisations du menu Cotisations
+- Ajout de la proposition de mise jour internet dans les préférences
+- Ajout de l'option Cocher activités dans le menu Outils du gestionnaire des conso
+- Correction d'un bug sur la validité des vaccins
+- Correction d'un bug sur la ventilation avec décimales dans la liste des prestations
+
+Version 1.1.2.1 (17/03/2014) :
+
+- Ajout de l'importation de photos individuelles depuis le menu Individus
+- Ajout de l'affichage du nom de lot dans les impressions de factures et rappels
+- Ajout du système de détection des visages dans l'outil de capture vidéo
+- Changement du moteur de capture vidéo des photos individuelles
+- Correction d'un bug dans le paramétrage des tarifs
+
+Version 1.1.2.0 (01/03/2014) :
+
+- Ajout dans la fiche famille du signalement des renseignements manquants suivants : Quotient familial, caisse d'allocations, numéro d'allocation, titulaire allocataire, titulaire Hélios, code comptable
+- Ajout de la Liste des absences dans le menu Consommations
+- Ajout des prélèvements manuels
+- Ajout de l'importation des familles depuis un autre fichier Noethys
+- Ajout du paramètre Objet de la pièce dans l'export PES v2
+- Ajout de l'affichage du RUM + ICS dans les PDF des factures prélèvées
+- Ajout de la colonne Secteur géographique dans la liste des familles du menu Individus
+- Ajout du filtre QF dans l'état global des consommations
+- Mise à jour de la librairie graphique (wxPython 2.9.5)
+- Correction de divers bugs
+
+Version 1.1.1.5 (25/01/2014) :
+
+- Finalisation de l'export PES v2 ORMC
+- Ajout de la création de fichier de données spécial serveur internet
+- Ajout de l'auto-détection d'anomalies dans le fichier de données
+- Correction de divers bugs
+
+Version 1.1.1.4 (09/01/2014) :
+
+- Ajout de la gestion des bordereaux PES v2 ORMC
+- Ajout de la procédure de création automatique des titulaires Hélios
+- Correction de divers bugs
+
+Version 1.1.1.3 (29/12/2013) :
+
+- Ajout du rapport de bugs
+- Ajout des droits utilisateurs avancés
+- Ajout de la gestion des modèles de droits dans le menu Paramétrage
+- Ajout des avatars pour les utilisateurs
+- Ajout de la gestion avancée des mandats SEPA
+- Ajout d'un modèle de mandat SEPA à imprimer
+- Ajout de la liste des mandats SEPA dans le menu Individus
+- Ajout du convertisseur RIB -> SEPA dans le menu Outils > Utilitaires
+- Ajout de l'activation du rapport de bugs dans les Préférences
+- Optimisation de la vitesse d'affichage de la fiche familiale
+- Correction d'un bug sur le fichier xml SEPA
+
+Version 1.1.1.2 (02/11/2013) :
+
+- Correction d'un bug sur la météo de l'éphéméride
+
+Version 1.1.1.1 (17/10/2013) :
+
+- Ajout de la prise en charge des prélèvements SEPA
+- Ajout de la liste des pièces fournies dans le menu Individus
+- Ajout de l'édition de confirmations d'inscription
+- Ajout de l'affichage des prestations ventilées sur les reçus de règlements
+- Ajout de l'affichage du nom de l'organisateur sur les impressions de listes
+- Correction d'un bug sur les sauvegardes réseau avec MySQL 5.6
+- Correction d'un bug sur les champs Date des questionnaires
+- Correction d'un bug sur les images intégrées dans l'éditeur d'Emails
+- Correction d'un bug dans la sélection des abonnés dans l'éditeur d'Emails
+- Correction d'un bug sur la saisie d'une conso horaire
+- Correction d'un bug sur les arrondis dans la liste des soldes
+- Correction d'un bug sur les totaux du gestionnaire des conso
+- Correction d'un bug sur la saisie de plusieurs forfaits datés
+
+Version 1.1.1.0 (13/09/2013) :
+
+- Ajout du manuel de référence
+
+Version 1.1.0.9 (01/09/2013) :
+
+- Ajout de la ventilation automatique
+- Ajout du système d'extensions dans les outils administrateur
+- Correction d'un bug sur la fonction Solder les impayés
+- Correction d'un bug sur le traitement par lot des ouvertures
+- Correction d'un bug sur la saisie des codes postaux
+- Correction d'un bug sur le tarif durée + QF
+- Correction d'un bug sur la recherche de zone scolaire
+- Correction d'un bug sur la liste des individus du menu Individus
+
+Version 1.1.0.8 (13/08/2013) :
+
+- Ajout de la recherche par internet de la zone scolaire de l'organisateur
+- Optimisation de la sauvegarde et de la restauration de fichiers
+- Correction d'un bug sur les éditeurs HTML
+- Correction d'un bug sur les polices dans les lettres de rappel
+- Correction d'un bug d'unicode sur les prénoms en majuscules
+- Réparation de l'autoincrement sqlite de la table tarifs_lignes
+
+Version 1.1.0.7 (30/07/2013) :
+
+- Correction de bugs sur les sauvegardes automatiques
+- Correction d'un bug avec un thème graphique Windows obsolète
+
+Version 1.1.0.6 (29/07/2013) :
+
+- Ajout des sauvegardes automatiques dans le menu Fichier
+- Ajout de la mémorisation des éléments à sauver dans l'utilitaire de sauvegarde
+- Ajout de la condition 'partis' dans la liste des inscriptions du menu Individus
+- Correction d'un bug sur l'export Excel
+
+Version 1.1.0.5 (21/07/2013) :
+
+- Correction de quelques bugs
+
+Version 1.1.0.4 (14/07/2013) :
+
+- Mise à jour de la librairie graphique (2.9.4.0.)
+- Ajout des unités de consommation multi-horaires
+- Ajout du redimensionnement des lignes et colonnes de la grille des conso
+- Ajout de l'affichage optionnel des mémos journaliers dans la grille des conso
+- Ajout de la fonction 'Solder les impayés' dans le menu Facturation
+- Ajout du changement d'état par lot dans la grille des conso
+- Ajout de l'option blocage de la saisie des conso si complet dans le menu Options
+- Ajout du bouton Outils dans le gestionnaire des conso
+- Ajout du choix du format dans l'importation csv des badgeages
+- Ajout du choix de l'imprimante dans les modèles de tickets
+- Ajout du changement de catégorie de rattachement dans la composition familiale
+- Ajout de la suppression et du changement de nom des fichiers Noethys
+- Ajout de l'outil 'Transfert de tables' dans le menu utilitaires administrateur
+- Ajout de la saisie automatisée des jours fériés variables
+- Ajout d'une fenêtre de bienvenue lors de la première ouverture
+- Ajout de nouveaux fichiers exemples
+- Ajout de l'option 'Affichage' dans la saisie d'une unité de remplissage
+- Ajout du choix de la date de facturation pour les forfaits
+- Ajout de la suppression de transports par lot
+- Ajout de 'La liste détaillée des transports' dans le menu Individus
+- Ajout de la limitation du nombre d'inscrits dans le paramétrage des activités
+- Ajout de l'envoi automatique par Email des reçus de règlements
+- Ajout de l'envoi automatique par Email des avis de dépôts de règlements
+- Ajout de la mémorisation dans l'historique des Emails envoyés
+- Amélioration de la fenêtre 'Ouvrir un fichier' du menu Fichier
+- Correction d'un bug sur l'état 'Absence justifiée' des conso
+- Correction d'un bug sur l'éditeur d'images
+- Correction d'un bug dans le convertisseur de fichier local>réseau
+- Correction d'un bug sur l'affichage du remplissage dans la grille des conso
+- Correction d'un bug sur la saisie manuelle de forfaits datés
+- Réécriture partielle du code de la grille des conso
+
+Version 1.0.9.4 (28/05/2013) :
+
+- Ajout des options d'impression de tickets
+- Correction d'un bug dans le gestionnaire des conso
+
+Version 1.0.9.3 (25/05/2013) :
+
+- Ajout de la fin de validité à date fixe pour les pièces
+- Ajout de l'impression de tickets pour le badgeage
+- Ajout de la saisie de forfaits crédit depuis le menu contextuel de la grille des conso
+- Ajout de l'export Excel et texte de la grille de remplissage de la page d'accueil
+- Ajout du choix du type d'intitulés de prestations dans les factures et attestations
+- Ajout de la gestion des modèles de tickets dans le menu Paramétrage
+- Correction d'un bug sur la saisie des forfaits crédit de type familial
+- Correction d'un bug sur la validité des vaccins
+
+Version 1.0.9.2 (07/04/2013) :
+
+- Ajout de la prise en charge des numéros de sécu pour la Corse
+- Correction d'un bug sur les déductions
+- Correction d'un bug sur le badgeage
+
+Version 1.0.9.1 (03/04/2013) :
+
+- Ajout des badges RFID dans les questionnaires
+- Ajout de la détection des badges RFID dans le badgeage
+- Ajout d'un calendrier pour la saisie des forfaits datés dans le paramétrage des tarifs
+- Ajout de la liste des messages dans le menu Outils
+- Ajout du déverrouillage des conso de forfaits dans les outils admin
+- Correction d'un bug dans la barre d'affichage des présents en temps réél
+- Correction d'un bug sur la liste de choix dans les questionnaires
+- Correction d'un bug dans la création d'un document Noedoc
+- Correction d'un bug dans le générateur d'attestations de présence
+- Correction d'un bug sur les déductions dans la saisie manuelle de prestations
+- Remplacement du récapitulatif des ouvertures par un hypertreelist
+
+Version 1.0.9.0 (06/03/2013) :
+
+- Ajout de la prise en charge de la TVA
+- Ajout de la barre d'affichage des présents en temps réél sur la page d'accueil
+- Ajout du téléchargement du guide de démarrage depuis le menu Aide
+- Ajout du correcteur d'anomalies dans le menu Outils administrateur
+- Ajout de l'affichage des déductions dans les factures et attestations
+- Ajout de l'application de TVA et du code comptable dans les outils admin
+- Ajout de nouvelles variables dans les labels personnalisés de tarifs
+- Amélioration de la fenêtre de paramétrage des tarifs
+- Amélioration de la saisie des forfaits crédits depuis la grille des conso
+- Amélioration du contrôle Informations des fiches individuelles et familiales
+- Correction d'un bug sur les transports dans le gestionnaire des conso
+- Correction d'un bug sur la suppression des fiches individuelles
+
+Version 1.0.8.9 (04/02/2013) :
+
+- Ajout de l'export vers HELIOS
+- Ajout de la gestion des prélèvements automatiques
+- Ajout des paramètres de prélèvements auto dans les comptes bancaires
+- Ajout de l'export Excel des listes de consommations périodiques
+- Ajout de la procédure de correction des arrondis (A5200)
+- Correction d'un bug sur les exports Texte et Excel des listes avec cases à cocher
+- Correction d'un bug dans la liste des déductions
+- Correction du bug sur les arrondis
+
+Version 1.0.8.8 (26/01/2013) :
+
+- Ajout du nouveau générateur de factures
+- Ajout du nouveau générateur de lettres de rappels
+- Ajout du mode Liste pour la composition familiale dans la fiche Famille
+- Ajout de l'envoi de lots de factures et des rappels par Email
+- Ajout de la génération d'une facture et d'un rappel depuis la fiche Famille
+- Ajout de la liste des rappels dans la fiche Famille
+- Ajout de l'option Accusé de réception dans l'envoi d'Emails
+- Ajout de l'activation du prélèvement automatique dans l'onglet Règlements de la fiche Famille
+- Ajout de l'activation de l'envoi des factures par Email dans l'onglet Règlements de la fiche Famille
+- Ajout de la gestion des établissements bancaires dans le menu Paramétrage
+- Ajout de la gestion des lots de factures dans le menu Paramétrage
+- Ajout de la gestion des lots de lettres de rappel dans le menu Paramétrage
+- Correction d'un bug sur l'export Excel des factures
+
+Version 1.0.8.7 (07/01/2013) :
+
+- Ajout du Relevé des prestations dans le menu Outils de la Fiche Famille
+- Ajout de la prise en charge des frais de gestion pour les règlements
+- Ajout de la Gestion des modèles d'Emails dans le menu Paramétrage
+- Ajout d'améliorations dans l'éditeur d'Emails
+- Ajout de l'envoi d'Emails depuis l'éditeur intégré depuis les fiches familiales et individuelles
+- Ajout de l'envoi par Email des reçus de règlements
+- Ajout de l'envoi par Email des reçus de dons aux oeuvres
+- Ajout de l'envoi par Email des factures depuis la fiche famille
+- Ajout de l'envoi par Email des attestations de présence depuis la fiche famille
+- Ajout de l'envoi par Email de la liste des réservations depuis la grille des conso
+- Correction d'un bug dans la vérification de la ventilation
+- Correction d'un bug dans la synthèse des impayés
+- Correction de bugs dans l'éditeur d'Emails
+
+Version 1.0.8.6 (23/12/2012) :
+
+- Ajout d'améliorations dans le gestionnaire des dépôts de règlements
+- Ajout des messages des fiches familles dans les factures
+- Ajout de la liste des prestations dans le menu Facturation
+- Ajout de la suppression multiple de factures et de prestations
+- Ajout de 60 nouvelles citations
+- Réduction du temps de génération des factures, rappels et attestations
+- Réduction du temps d'affichage des listes de factures et de prestations
+- Correction d'un bug dans l'éditeur d'attestations de présence
+- Correction d'un bug dans l'état nominatif
+- Correction d'un bug dans la saisie de conso par lot
+- Correction d'un bug dans la sauvegarde des lettres de rappel
+- Correction d'un bug sur les décimales dans les calculs monétaires
+
+Version 1.0.8.5 (10/12/2012) :
+
+- Ajout de l'export vers Excel des listes de consommations
+- Ajout de l'affichage du numéro de quittancier dans les dépôts de règlements
+- Correction d'un bug sur la condition Période des actions de badgeage
+- Correction d'un bug sur l'importation des badgeages
+- Correction d'un bug sur l'édition des attestations annuelles
+
+Version 1.0.8.4 (22/11/2012) :
+
+- Ajout de l'importation d'individus depuis un fichier MS Excel ou CSV
+- Ajout de l'importation de badgeages depuis un scanner à mémoire ou des fichiers Excel ou CSV
+- Ajout de l'outil de purge des archives de badgeages importés
+- Ajout de l'outil de purge du répertoire Updates
+- Correction d'un bug sur la détection des cotisations manquantes
+- Correction d'un bug sur les forfaits datés comportant une seule date
+- Correction d'un bug sur la condition Cotisations dans les tarifs
+
+Version 1.0.8.3 (11/11/2012) :
+
+- Ajout du menu contextuel sur les contrôles de saisie de dates
+- Ajout du changement automatique de date de badgeage
+- Correction d'un bug sur les adresses rattachées
+- Correction d'un bug sur les renseignements à fournir dans les fiches
+- Correction d'un bug dans la mémorisation des lettres de rappel
+- Correction d'un bug sur les quantités dans la liste des prestations par famille
+- Correction d'un bug dans l'outil de saisie par lot des conso
+
+Version 1.0.8.2 (14/10/2012) :
+
+- Ajout de l'importation des périodes de vacances depuis le site de l'Education Nationale
+- Ajout du traitement par lot dans la grille des conso
+- Ajout du forfait daté basé sur le calendrier des ouvertures
+- Ajout de la prise en compte des fériés dans la saisie par lot des ouvertures
+- Ajout des totaux dans le récapitulatif des ouvertures
+- Optimisation du temps de sauvegarde de la grille des conso
+- Optimisation du temps de sauvegarde des ouvertures (200 fois plus rapide !)
+- Correction d'un bug dans l'état global
+
+Version 1.0.8.1 (27/09/2012) :
+
+- Ajout de la saisie par lot dans le calendrier des ouvertures
+- Correction d'un bug dans les annonces HTML
+
+Version 1.0.8.0 (26/09/2012) :
+
+- Ajout de l'importation/exportation des activités
+- Ajout de la duplication des activités
+- Ajout de la duplication des procédures de badgeage
+- Ajout du paramétrage des villes et codes postaux dans le menu Paramétrage>Renseignements
+- Amélioration du système d'annonces HTML
+- Correction d'un bug dans l'envoi des emails par SSL
+- Correction d'un bug sur les unités de conso de type quantité
+
+Version 1.0.7.9 (17/09/2012) :
+
+- Ajout de l'importation/exportation des modèles de documents
+- Ajout de l'affichage de tous les inscrits dans l'impression des conso
+- Ajout du téléchargement de nouveaux fichiers de données exemples
+- Correction d'un bug sur les dates de validité dans le paramétrage des activités
+- Correction d'un bug avec les images dans la conversion réseau>local
+- Correction d'un bug sur les combinaisons d'unités de type quantité
+
+Version 1.0.7.8 (08/09/2012) :
+
+- Ajout des unités de consommation de type Quantité
+- Ajout des codes-barres dans les questionnaires
+- Ajout de la prise en charge des normes de codes-barres : Codabar, Code11, Code128, EAN13, EAN8, Extended39, Extended93, I2of5, MSI, POSTNET, Standard39, Standard93
+- Ajout des réponses de questionnaires dans les factures, rappels, attestations, reçus, étiquettes et badges
+- Ajout de la sauvegarde au format PDF des factures, lettres de rappel et attestations
+- Ajout du filtre Etats dans l'état global des conso
+- Préparation de l'intégration du système d'aide
+- Correction d'un bug dans le badgeage des conso de type Horaire
+- Correction de bugs dans la gestion des adresses emails d'expédition
+- Correction d'un bug sur les décimales de certaines lettres de rappel
+
+Version 1.0.7.7 (22/07/2012) :
+
+- Ajout de la Synthèse des conso dans le menu Consommations
+- Ajout d'introductions sur de nombreuses impressions
+- Correction d'un bug sur la synthèse vocale sous Windows XP
+
+Version 1.0.7.6 (15/07/2012) :
+
+- Ajout du badgeage dans le menu Consommations
+- Ajout du paramétrage des procédures de badgeage
+- Ajout du paramétrage de la synthèse vocale
+- Ajout de la colonne Plafond et du détail dans l'état global des conso
+- Amélioration de la Liste des soldes du menu Facturation
+
+Version 1.0.7.5 (15/07/2012) :
+
+- Ajout de la condition 'Periodes' dans la tarification
+- Correction d'un bug sur l'application de forfaits à l'inscription
+
+Version 1.0.7.4 (07/06/2012) :
+
+- Ajout de la liste des déductions dans le menu Facturation
+- Ajout du nom des bénéficiaires dans la liste des cotisations
+- Ajout de la colonne Genre dans la liste des individus
+- Amélioration de la synthèse des modes de règlements
+- Ajout de la répétition des noms de colonnes dans la liste des conso
+- Optimisation importante de la vitesse d'affichage de la liste des individus de la page d'accueil
+- Correction d'un bug dans l'état nominatif (résolution formules perso)
+- Ajout de l'outil Réinitialisation de la configuration
+- Correction d'un bug dans l'application manuelle de forfaits datés
+
+Version 1.0.7.3 (28/05/2012) :
+
+- Ajout de la Synthèse des modes de règlements dans le menu Règlements
+- Ajout des plafonds de montant et de quantité dans les aides journalières
+- Correction d'un bug dans la grille des conso (combinaisons d'unités>2)
+- Correction d'un bug dans le gestionnaire des conso (statut erroné)
+
+Version 1.0.7.2 (23/05/2012) :
+
+- Ajout de la liste des transports dans le menu Individus
+- Ajout de la condition 'Caisses' dans la tarification
+- Ajout du champ 'Description' dans la tarification
+- Correction d'un bug sur l'éditeur de factures
+- Correction d'un bug sur les ages de l'état nominatif des conso
+
+Version 1.0.7.1 (20/05/2012) :
+
+- Ajout de la conversion automatique des entiers, décimaux, montants et dates dans les exports Excel
+- Correction d'un bug dans l'état nominatif des conso
+
+Version 1.0.7.0 (18/05/2012) :
+
+- Ajout de l'état nominatif des conso dans le menu Consommations
+- Ajout de la liste des soldes individuels dans le menu Facturation
+- Ajout de la liste des quotients familiaux dans le menu Individus
+- Ajout du champ 'Allocataire titulaire' dans la fiche famille
+- Ajout du type de réponse 'Montant' dans les questionnaires
+
+Version 1.0.6.9 (06/05/2012) :
+
+- Ajout de l'éphéméride sur la page d'accueil avec les composants Fêtes, Célébrations, Anniversaires, Citations, Horaires du soleil et Météo.
+- Ajout de l'outil Géolocalisation GPS
+- Ajout de l'outil Horaires du soleil
+
+Version 1.0.6.8 (27/04/2012) :
+
+- Ajout de la condition Filtres de questionnaire dans la tarification
+- Correction d'un bug sur la sélection de périodes dans la grille des conso
+- Correction d'un bug sur l'édition d'étiquettes pour les familles
+
+Version 1.0.6.7 (23/04/2012) :
+
+- Ajout d'un ordre aux groupes
+- Ajout des abrégés de noms de groupes
+- Ajout de sécurités sur la gestion des types et unités de cotisations
+- Correction d'un bug sur l'unité de cotisation par défaut
+
+Version 1.0.6.6 (18/04/2012) :
+
+- Ajout de la gestion des transports
+- Ajout de la colonne Transports dans la grille des conso
+- Amélioration de l'infobulle de la grille des conso
+- Ajout de la commande d'affichage de tous les inscrits dans le gestionnaire des conso
+- Ajout des consoles Python et SQL dans les outils admin
+- Ajout de la condition Cotisations à jour dans les tarifs
+
+Version 1.0.6.5 (22/03/2012) :
+
+- Correction d'un bug sur le gestionnaire des consommations
+- Correction d'un bug dans le calcul de la durée d'une consommation
+
+Version 1.0.6.4 (04/03/2012) :
+
+- Ajout de la synthèse des impayés accessible depuis le menu Facturation
+- Correction d'un bug sur le calcul des aides journalières
+- Correction d'un bug sur les attestations de présences annuelles
+- Correction du bug 'truncated double' avec MySQL
+- Correction d'un bug sur la suppression d'une inscription associée à un forfait daté
+- Correction de plusieurs petits bugs...
+
+Version 1.0.6.3 (19/02/2012) :
+
+- Ajout de l'édition des attestations de présence par lot
+- Amélioration de la 'Liste des cotisations' accessible depuis le menu Cotisations
+- Ajout de l'outil administrateur 'Liste des prestations sans conso'
+- Correction d'un bug dans Noedoc l'outil de mise en page
+
+Version 1.0.6.2 (07/02/2012) :
+
+- Ajout des modes d'affichage condensés et détaillés dans les factures et les attestations
+- Correction d'un bug sur l'application de forfaits-crédit
+
+Version 1.0.6.1 (02/02/2012) :
+
+- Correction d'un bug sur la sauvegarde des forfaits
+- Correction d'un bug d'affichage sur la grille des conso
+
+Version 1.0.6.0 (30/01/2012) :
+
+- Amélioration de petits détails dans l'édition des factures
+- Correction d'un bug dans la liste des conso
+- Correction d'un bug dans la saisie des pièces
+
+Version 1.0.5.9 (29/01/2012) :
+
+- Ajout des forfaits au crédit
+- Amélioration du design de la fenêtre de saisie d'un tarif
+- Ajout des touches raccourcis de saisie des consommations horaires
+- Ajout de la légende des touches raccourcis dans la grille des conso et le gestionnaire des conso
+- Ajout de la sécurité contre la suppression d'un groupe rattaché à un tarif
+- Correction d'un bug sur l'affichage du logo de l'organisateur
+
+Version 1.0.5.8 (15/01/2012) :
+
+- Ajout du module Statistiques accessible depuis le menu Outils
+- Correction d'un bug sur les annonces
+
+Version 1.0.5.7 (11/01/2012) :
+
+- Correction d'un bug sur l'édition de la liste des consommations
+
+Version 1.0.5.6 (09/01/2012) :
+
+- Ajout du regroupement par école et par classe dans l'édition des conso
+- Ajout des annonces dans la page d'accueil
+- Modification du design de la page d'accueil
+- Correction d'un bug sur la sauvegarde des fichiers réseau
+- Correction d'un bug sur l'affichage de la commande Ajouter un individu dans le gestionnaire des consommations
+- [TECHN] Migration vers Python 2.7
+- [TECHN] Mise à jour de toutes les bibliothèques
+
+Version 1.0.5.5 (29/12/2011) :
+
+- Ajout du suivi de la scolarité dans la fiche individuelle
+- Ajout de la gestion des inscriptions scolaires accessible depuis le menu Individus
+- Ajout du paramétrage des niveaux scolaires
+- Ajout du paramétrage des écoles
+- Ajout du paramétrage des classes
+- Ajout des plages horaires conditionnelles dans les unités de remplissage
+- Correction d'un bug dans la liste des inscriptions du menu Individus
+
+Version 1.0.5.4 (21/12/2011) :
+
+- Ajout du champ 'Majoration/Déduction' dans plusieurs tarifs
+- Correction d'un bug sur le recalcul des prestations
+- Correction d'un bug sur le tarif basé sur le taux d'effort
+
+Version 1.0.5.3 (08/12/2011) :
+
+- Ajout du tarif 'Montant au prorata d'une durée'
+- Ajout du tarif 'Montant au prorata d'une durée et selon le quotient familial'
+- Ajout du tarif 'Par taux d'effort'
+- Ajout du tarif 'Par taux d'effort et par tranches de QF'
+- Ajout du tarif 'Par taux d'effort et en fonction d'une durée'
+- Ajout du tarif 'Par taux d'effort et par tranches de QF en fonction d'une durée'
+- Correction d'un bug dans le gestionnaire des conso sur la tarification selon le nombre d'individus
+- Correction d'un bug sur la période de validité dans la saisie d'une unité de consommation
+- Correction d'un bug d'affichage dans le calendrier des ouvertures
+
+Version 1.0.5.2 (18/11/2011) :
+
+- Ajout de la liste des inscriptions accessible depuis le menu Individus
+- Ajout de la liste des prestations par famille accessible depuis le menu Facturation
+- Ajout de la recherche d'individus par lecture de codes-barres
+
+Version 1.0.5.1 (06/11/2011) :
+
+- Ajout des questionnaires dans les fiches individuelles et familiales
+- Ajout de la possibilité d'associer des documents aux pièces
+- Ajout du mémo dans la fiche famille
+- Ajout de la procédure de suppression des prestations sans conso
+- Ajout de la fonction de recalcul des prestations dans la grille des conso
+- Ajout de la liste des conso sans prestations associées
+- Correction d'un bug sur le calcul du temps facturé
+
+Version 1.0.5.0 (22/10/2011) :
+
+- Correction d'un bug sur la saisie de consommations
+
+Version 1.0.4.9 (18/10/2011) :
+
+- Activation des fonctions de duplication des tarifs
+- Activation de l'attribution automatique de la catégorie en fonction la ville de résidence à l'inscription
+- Optimisation de la saisie des catégories de tarifs dans le paramétrage de la tarification
+- Ajout du critère Groupes dans la saisie des tarifs
+- Ajout du paramétrage manuel du temps facturé
+- Ajout de la fenêtre d'attente lors de l'upgrade de la base de données
+- Correction d'un bug sur l'impression des réservations
+
+Version 1.0.4.8 (15/10/2011) :
+
+- Ajout du calcul du temps facturé pour l'état CAF global
+- Ajout des informations complètes sur le fichier accessibles depuis le menu Fichier
+- Correction d'un bug sur l'accès à MySQL pour la sauvegarde réseau
+- Correction d'un bug sur l'acquisition vidéo des photos individuelles
+
+Version 1.0.4.7 (12/10/2011) :
+
+- Ajout de la sauvegarde et du cryptage des fichiers de données
+- Ajout de la restauration des sauvegardes
+- Ajout de l'arrondi dans l'état CAF global
+- Correction d'un bug sur la suppression des unités de remplissage
+- Ajout du paramétrage du format des numéros de téléphone et adresses
+
+Version 1.0.4.6 (01/10/2011) :
+
+- Ajout de l'éditeur d'étiquettes et de badges
+- Ajout de l'utilitaire de mise en page des documents
+- Ajout du paramétrage des modèles de documents
+- Correction d'un bug sur le calcul de la date de fin de validité des vaccins
+
+Version 1.0.4.5 (08/09/2011) :
+
+- Ajout de la capture des photos individuelles à partir d'une webcam
+- Correction d'un bug sur la facturation avec le tarif Horaires+QF
+- Correction du bug de sqlite avec last_row_id sur la table tarifs_lignes
+
+Version 1.0.4.4 (22/08/2011) :
+
+- Ajout de l'impression des listes de consommations périodiques
+
+Version 1.0.4.3 (18/08/2011) :
+
+- Ajout de la possibilité de choisir la monnaie par défaut
+- Ajout de la fenêtre Préférences accessible depuis le menu Paramétrage
+- Ajout de la possibilité de modifier la date de facturation d'une cotisation
+- Correction d'un bug sur l'infobulle du cadre Composition de la fiche famille avec Windows 7 
+- Ajout du type de lien 'Tuteur/tutrice'
+
+Version 1.0.4.2 (14/08/2011) :
+
+- Ajout d'une nouvelle infobulle dans le cadre Composition de la fiche famille
+- Ajout de la fenêtre Synthèse des liens accessible depuis la fiche famille
+- Ajout de la fenêtre Chronologie accessible depuis le bouton Outils des fiches familles et individus
+- Ajout du tarif 'En fonction de la date'
+- Ajout du tarif 'En fonction de la date et du quotient familial'
+- Ajout du tarif 'Tarif à la demande (saisi par l'utilisateur)'
+- Ajout du tarif 'Montant unique en fonction du nbre d'individus de la famille présents'
+- Ajout du tarif 'En fonction du QF et du nbre d'individus de la famille présents'
+- Ajout du tarif 'Dégressif en fonction du nbre d'individus de la famille présents'
+- Ajout du tarif 'Dégressif en fonction du QF et du nbre d'individus de la famille présents'
+- Correction d'un bug avec les villes portant le même nom
+
+Version 1.0.4.1 (03/08/2011) :
+
+- Ajout de la fonction Tableau d'analyse croisée ventilation/dépôts accessible depuis le menu Règlements
+- Amélioration des exports sous Excel
+- Correction d'un bug sur les noms de titulaires de dossier
+
+Version 1.0.4.0 (02/08/2011) :
+
+- Ajout de la fonction Calendrier accessible depuis le menu Outils
+- Remplacement des calendriers Windows standards par un calendrier maison
+- Sécurisation de la suppression des unités de consommation
+- Sécurisation de la suppression des unités de remplissage
+
+Version 1.0.3.9 (15/07/2011) :
+
+- Ajout de la prise en charge des activités facturées au temps (garderies, crèches...)
+
+Version 1.0.3.8 (05/07/2011) :
+
+- Ajout de la fonction de suppression d'une activité
+- Ajout du paramétrage de l'organisateur obligatoire après une création de fichier
+- Correction du bug des codes postaux commençant par zéro
+
+Version 1.0.3.7 (20/06/2011) :
+
+- Ajout de la compatibilité Linux
+- Ajout de la touche raccourci Echap sur la barre de recherche rapide des individus
+- Ajout de la fonction de suppression d'une fiche individuelle
+- Ajout de la fonction de suppression d'une fiche famille
+- Ajout du verrouillage des conso lors d'un rattachement familial multiple
+- Correction du bug de la multiplication des prestations dans la grille des conso
+- Correction du bug occasionnel d'impression de la grille des conso
+
+Version 1.0.3.6 (03/06/2011) :
+
+- Ajout de la fonction Liste des anniversaires accessible depuis le menu Individus
+- Ajout de la fonction Liste des individus accessible depuis le menu Individus
+- Ajout de la fonction Liste des familles accessible depuis le menu Individus
+
+Version 1.0.3.5 (31/05/2011) :
+
+- Ajout de l'outil Météo accessible depuis le menu Outils de la page d'accueil
+- Ajout de la gestion des erreurs dans l'outil d'envoi de mails
+- Ajout de la sauvegarde et l'ouverture dans l'outil d'envoi de mails
+
+Version 1.0.3.4 (25/05/2011) :
+
+- Correction d'un bug lié aux listes de diffusion sur la création d'une fiche individuelle
+- Correction d'un bug sur la sélection d'adresses internet dans l'envoi des mails
+
+Version 1.0.3.3 (23/05/2011) :
+
+- Ajout de la fonction d'envoi de mails par lot accessible depuis le menu Outils
+- Ajout de la fonction Copier-Coller dans le calendrier des ouvertures
+- Ajout des listes de diffusion dans le menu paramétrage et la fiche individuelle
+- Correction d'un bug sur l'édition des lettres de rappel
+- Correction d'un bug d'affichage dans la fenêtre de saisie d'une unité de conso
+
+Version 1.0.3.2 (21/04/2011) :
+
+- Adaptation à la licence GNU GPL
+
+Version 1.0.3.1 (18/04/2011) :
+
+- Ajout des procédures de deboggage
+- Ajout de la confirmation d'annulation dans la grille des conso
+- Correction du bug d'application de forfait à l'inscription d'une activité
+
+Version 1.0.3.0 (14/04/2011) :
+
+- Correction d'un bug dans la Synthèse des prestations
+- Correction d'un bug dans le Calendrier des ouvertures
+- Correction d'un bug dans la saisie de la tranche 1 d'un tarif QF
+- Correction du bug du numéro de pièce dans la saisie d'un règlement déposé
+- Optimisation de l'affichage multi-activités des effectifs dans la page d'accueil
+
+Version 1.0.2.9 (07/04/2011) :
+
+- Ajout de la Synthèse des prestations accessible depuis le menu Facturation
+
+Version 1.0.2.8 (28/03/2011) :
+
+- Ajout des fonctions d'impression sur la liste des effectifs de la page d'accueil
+- Correction d'un bug sur les titulaires des attestations de présence
+- Correction d'un bug sur l'historique de la barre de recherche rapide d'individus
+
+Version 1.0.2.7 (24/03/2011) :
+
+- Ajout de la version finale du fichier Exemple
+- Ajout de l'invitation à charger le fichier Exemple après une installation
+- Ajout de l'historique des fiches ouvertes dans la barre de recherche rapide d'individus
+- Correction d'un bug avec les catégories de tarifs sur l'application de forfaits
+- Adaptation pour version Beta publique
+
+Version 1.0.2.6 (27/02/2011) :
+
+- Ajout de la liste des régimes et caisses des familles accessible depuis le menu Individus
+- Correction d'un bug sur les totaux des prestations dans la liste des factures éditées et dans la liste des rappels
+
+Version 1.0.2.5 (21/02/2011) :
+
+- Ajout de la possibilité d'associer un logo à l'organisateur
+- Ajout de la possibilité d'associer un logo à chaque activité
+- Ajout de l'interdiction de créer des utilisateurs ayant le même code d'accès
+- Ajout des fonctions de tri pour la gestion des dépôts de règlements
+- Ajout des fonctions de tri pour la gestion des dépôts de cotisations
+- Ajout des totaux et introductions dans les impressions de liste
+- Ajout du total sur l'impression des consommations
+- Ajout des logos Activité/Organisateur dans la liste des inscriptions de la fiche individu
+- Ajout de l'option Afficher les activités ouvertes dans la fenêtre d'inscription
+- Ajout du nom des titulaires de la famille dans la fenêtre de saisie d'un règlement
+
+Version 1.0.2.4 (14/02/2011) :
+
+- Ajout de la Liste des connexions réseau accessible depuis le menu Outils
+- Mémorise l'historique des saisies, modifications et suppressions de consommations
+- Correction d'un bug de sélection de la période dans la grille des conso
+- Correction d'un bug sur la gestion des utilisateurs réseau
+- Correction d'un bug sur les reports dans l'édition des factures
+- Correction d'un bug sur l'édition des lettres de rappel
+
+Version 1.0.2.3 (07/02/2011) :
+
+- Ajout de la base Documents
+- Ajout de la fonction Importation d'images dans la fenêtre de saisie d'une pièce
+- Ajout de la fonction de conversion de fichier local vers réseau
+- Ajout de la fonction de conversion de fichier réseau vers local 
+- Finalisation du fichier de données par défaut
+- Correction d'un bug sur la liste des cotisations dans la fiche individuelle
+
+Version 1.0.2.2 (18/01/2011) :
+
+- Ajout de la fonction Imprimer dans le menu Outils de la grille des consommations
+
+Version 1.0.2.1 (16/01/2011) :
+
+- Ajout de la fenêtre de configuration des adresses d'expédition d'Emails dans le menu Configuration
+
+Version 1.0.2.0 (09/01/2011) :
+
+- Ajout de la fonction Editer la liste des cotisations manquantes dans le menu Cotisations
+- Ajout de la fonction Accès réseau dans le menu Paramétrage
+- Correction d'un bug sur la fonction Ajouter un individu du gestionnaire de conso
+
+Version 1.0.1.9 (06/01/2011) :
+
+- Correction d'un bug d'affichage dans la liste des déductions de la fiche famille
+- Ajout de la sélection de groupes dans le gestionnaire des consommations
+
+Version 1.0.1.8 (04/01/2011) :
+
+- Ajout de nouvelles options dans la fonction Editer la liste des pièces manquantes
+- Ajout de la fonction Liste des reçus de règlements dans le menu Règlements et dans la fiche famille
+- Suppression de la sécurité qui obligeait la saisie d'une caisse dans une aide
+
+Version 1.0.1.7 (03/01/2011) :
+
+- Correction de 2 bugs d'affichage dans la gestion des jours fériés variables
+- Correction d'un bug qui empêchait la modification des effectifs max dans le calendrier des ouvertures
+- Correction d'un bug d'affichage des périodes de vacances dans le calendrier des ouvertures
+- Ajout de l'affichage des jours fériés dans le calendrier des ouvertures
+- Ajout d'une légende dans le calendrier des ouvertures
+- Activation de la numérotation des reçus de règlements
+- Mémorise l'historique de l'édition des reçus de règlements
+
+Version 1.0.1.6 (02/01/2011) :
+
+- Ajout des fonctions d'export aux formats Texte et Excel dans la plupart des listes
+- Relookage de la fenêtre A Propos
+- Ajout de la fonction Etat CAF Global dans le menu Consommations de la page d'accueil
+
+Version 1.0.1.5 (30/12/2010) :
+
+- Ajout des boutons d'envoi d'emails dans la fiche individuelle
+- Ajout de la fonction Envoi d'un Email dans le menu Outils de la fiche famille
+- Correction d'un bug sur la fonction historique lors de la création d'une nouvelle famille
+- Correction d'un bug sur la liste des pièces manquantes avec les pièces indépendantes
+- Correction d'un bug sur les calculs comportant des décimales au centième
+
+Version 1.0.1.4 (29/12/2010) :
+
+- Ajout de la commande Rechercher une attestation de présence éditée dans la fiche famille
+- Ajout de la commande Régler une facture dans la fiche famille
+- Ajout de la commande Editer la liste des pièces manquantes dans le menu Individus de la page d'accueil
+
+Version 1.0.1.3 (27/12/2010) :
+
+- Correction d'un bug sur la suppression d'un règlement
+- Mémorise l'historique des éditions d'attestation de présence
+- Ajout de la commande Rechercher une attestation de présence dans le menu Facturation de la page d'accueil
+
+Version 1.0.1.2 (27/12/2010) :
+
+- Ajout d'une colonne Titulaires Famille dans les différentes listes de cotisations
+- Ajout de la commande Utilitaires Administrateur dans le menu Outils de la page d'accueil
+- Ajout de la commande Purger l'historique dans le menu Outils de la page d'accueil
+- Ajout de la commande Historique dans la fiche familiale
+- Ajout de la commande Historique dans la fiche individuelle
+- Ajout de la commande Historique dans le menu Outils de la page d'accueil
+- Ajout du bouton Historique dans la fenêtre de gestion des utilisateurs
+- Mémorise l'historique des création, modifications et suppressions de messages
+
+Version 1.0.1.1 (26/12/2010) :
+
+- Modification du comportement du bouton Consommations de la fiche famille
+- Ajout de la commande Actualiser dans le menu Affichage de la page d'accueil
+- Ajout de la table Historique
+- Mémorise l'historique des ouvertures et fermetures de fichiers
+- Mémorise l'historique des créations de familles et d'individus
+- Mémorise l'historique des saisies, modifications et suppressions de règlements
+- Mémorise l'historique des saisies, modifications et suppressions de pièces
+- Mémorise l'historique des saisies, modifications et suppressions de cotisations
+- Mémorise l'historique des saisies, modifications et suppressions d'inscriptions
+
+Version 1.0.1.0 (25/12/2010) :
+
+- Correction d'un bug sur la grille des consommations
+
+Version 1.0.0.9 (23/12/2010) :
+
+- Correction d'un bug sur la grille de remplissage de la page d'accueil en cas d'affichage d'activités multiples
+
+Version 1.0.0.8 (22/12/2010) :
+
+- Ajout des options d'affichage dans la grille des consommations
+- Ajout des options d'affichage dans le gestionnaire des consommations
+
+Version 1.0.0.7 (20/12/2010) :
+
+- Correction d'un bug sur la saisie d'un règlement
+- Correction d'un bug sur l'application des aides journalières
+
+Version 1.0.0.6 (19/12/2010) :
+
+- Sécurisation de la suppression des groupes
+
+Version 1.0.0.5 (19/12/2010) :
+
+- Correction d'un bug de mise à jour du logiciel par internet
+
+Version 1.0.0.4 (19/12/2010) :
+
+- Correction du bug d'édition d'un reçu avec MySQL uniquement
+- Correction du bug de saisie des tarifs avec décimale causé par wx.LANGUAGE_FRENCH
+- Correction d'un bug sur le règlement rapide d'une facture
+- Affichage du nombre de consommations dans le calendrier des ouvertures
+- Sécurisation de la suppression d'utilisateurs
+- Sécurisation de la suppression des comptes bancaires
+- Sécurisation de la suppression des modes de règlements
+- Sécurisation de la suppression des émetteurs de règlements
+- Sécurisation de la suppression des régimes sociaux
+- Sécurisation de la suppression des caisses
+- Sécurisation de la suppression des types de pièces
+- Sécurisation de la suppression des types de maladies
+- Sécurisation de la suppression des types de vaccins
+- Sécurisation de la suppression des médecins
+- Sécurisation de la suppression des restaurateurs
+
+Version 1.0.0.3 (16/12/2010) :
+
+- Optimisation du démarrage
+- Modification de l'arborescence des fichiers
+- Ajout de l'annonce d'accueil
+
+Version 1.0.0.2 (13/12/2010) :
+
+- Ajout du module de mise à jour par internet
+
+Version 1.0.0.1 (12/12/2010) :
+
+- Lancement du versioning
+
+Version 0.0.0.1 (15/02/2010) :
+
+- Version alpha
