@@ -382,7 +382,6 @@ class ListView(FastObjectListView):
         dlg = DLG_Famille.Dialog(self, IDfamille=None)
         if dlg.ShowModal() == wx.ID_OK:
             pass
-        dlg.Destroy()
         # MAJ du listView
 ##        self.MAJ()
         # MAJ du remplissage
