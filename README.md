@@ -7,7 +7,7 @@ clubs sportifs et culturels...
 Plus d'infos sur www.noethys.com
 
 
-PROCEDURE D'INSTALLATION
+Procédure d'installation
 ------------------
 
 Si vous souhaitez installer manuellement Noethys sur
@@ -16,7 +16,7 @@ l'intégralité du répertoire sur votre disque dur et
 d'installer toutes les dépendances listées ci-dessous.
 
 
-DEPENDANCES pour WINDOWS :
+Dépendances pour Windows
 ------------------
 Sur Windows, vous devez aller sur les sites des auteurs pour 
 rechercher et installer les bibliothèques suivantes.
@@ -37,7 +37,7 @@ rechercher et installer les bibliothèques suivantes.
 - Pyttsx (http://pypi.python.org/pypi/pyttsx)
 
 
-DEPENDANCES pour LINUX :
+Dépendances pour Linux
 ------------------
 Pour installer les dépendances sur Ubuntu, il vous suffit d'utiliser 
 le gestionnaire de paquets Synaptic. S'il n'est pas installé par défaut 
