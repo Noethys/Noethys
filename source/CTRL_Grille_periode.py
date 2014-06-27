@@ -330,6 +330,9 @@ class CTRL(wx.Panel):
     
     def OnPageChanged(self, event):
         """ Quand une page du notebook est sélectionnée """
+        old = event.GetOldSelection()
+        if old==-1:
+            return
         if self.nomParent == "grille" and self.evtActif == True :
             indexPage = event.GetSelection()
             page = self.notebook.GetPage(indexPage)
