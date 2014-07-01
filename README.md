@@ -22,7 +22,7 @@ Sur Windows, vous devez aller sur les sites des auteurs pour
 rechercher et installer les bibliothèques suivantes.
 
 - Python 2.7 (http://www.python.org/)
-- wxPython 2.9 - version unicode (http://www.wxpython.org/)
+- wxPython 3.0 - version unicode (http://www.wxpython.org/)
 - dateutil (http://pypi.python.org/pypi/python-dateutil)
 - MySQLdb (http://sourceforge.net/projects/mysql-python/)
 - NumPy (http://new.scipy.org/download.html)
@@ -46,7 +46,7 @@ Ubuntu. Ensuite, recherchez puis installez les paquets suivants depuis Synaptic.
 
 - python 2.7
 - python-dateutil
-- python-wxgtk2.9
+- python-wxgtk3.0
 - python-mysqldb
 - python-numpy
 - python-imaging
@@ -55,6 +55,8 @@ Ubuntu. Ensuite, recherchez puis installez les paquets suivants depuis Synaptic.
 - python-xlrd
 - pyttsx
 - icalendar
+
+Note : Vous pouvez télécharger la dernière version compilée de wxPython pour Linux depuis le site de Noethys (Menu Téléchargements > Ressources communautaires > Divers).
 
 Pour lancer Noethys, lancez le terminal de Linux, placez-vous 
 dans le répertoire d'installation de Noethys, puis saisissez

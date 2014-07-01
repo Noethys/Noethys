@@ -3,6 +3,12 @@ Config.dat
 Aide/
 Temp/
 Updates/
+*_DATA.dat
+*_DOCUMENTS.dat
+*_PHOTOS.dat
+SQLiteSpy.exe
+SQLiteSpy.db3
+TODO.xlsx
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
