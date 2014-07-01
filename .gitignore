@@ -3,9 +3,9 @@ Config.dat
 Aide/
 Temp/
 Updates/
-*_DATA.dat
-*_DOCUMENTS.dat
-*_PHOTOS.dat
+source/Data/*_DATA.dat
+source/Data/*_DOCUMENTS.dat
+source/Data/*_PHOTOS.dat
 SQLiteSpy.exe
 SQLiteSpy.db3
 TODO.xlsx
@@ -63,3 +63,4 @@ docs/_build/
 
 # PyBuilder
 target/
+source/Data/EXEMPLE_alsh_DATA.dat
