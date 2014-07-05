@@ -31,10 +31,11 @@ import OL_Pieces_jointes_emails
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, categorie="saisie_libre"):
+    def __init__(self, parent, categorie="saisie_libre", afficher_confirmation_envoi=True):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent   
         self.categorie = categorie
+        self.afficher_confirmation_envoi = afficher_confirmation_envoi
         self.listePiecesJointes = []
         self.listeAnomalies = []
         self.listeSucces = []
@@ -541,7 +542,7 @@ class Dialog(wx.Dialog):
         self.EcritStatusBar(u"Fin de l'envoi des Emails")
         
         # Si tous les Emails envoyés avec succès
-        if len(self.listeAnomalies) == 0 :
+        if len(self.listeAnomalies) == 0 and self.afficher_confirmation_envoi == True :
             if len(self.listeSucces) == 1 :
                 message = u"L'Email a été envoyé avec succès !"
             else :

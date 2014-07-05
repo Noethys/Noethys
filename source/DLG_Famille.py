@@ -641,7 +641,10 @@ class Dialog(wx.Dialog):
             # Sauvegarde
             self.Sauvegarde() 
             # Fermeture
-            self.Destroy() 
+            try :
+                self.Destroy() 
+            except :
+                pass
             
 ##            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment annuler la création de cette nouvelle fiche ?", u"Annulation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
 ##            if dlg.ShowModal() == wx.ID_YES :

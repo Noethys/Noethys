@@ -176,7 +176,7 @@ class DLG_Rapport(wx.Dialog):
         texteMail = u"<u>Rapport de bug %s :</u><br/><br/>%s<br/><u>Commentaires :</u><br/><br/>%s" % (IDrapport, texteRapport, commentaires)
         
         # Destinataire
-        listeDestinataires = ["noethys@gmail.com",]
+        listeDestinataires = ["noethys" + "@gmail.com",]
         
         # Expéditeur
         dictExp = self.GetAdresseExpDefaut() 

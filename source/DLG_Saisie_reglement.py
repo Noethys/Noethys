@@ -1189,7 +1189,7 @@ class Dialog(wx.Dialog):
                         
                         listeDonnees = [{"adresse" : adresse, "pieces" : [nomDoc,], "champs" : dictChamps,}]
                         import DLG_Mailer
-                        dlg2 = DLG_Mailer.Dialog(self, categorie=categorie)
+                        dlg2 = DLG_Mailer.Dialog(self, categorie=categorie, afficher_confirmation_envoi=False)
                         dlg2.SetDonnees(listeDonnees, modificationAutorisee=False)
                         dlg2.ChargerModeleDefaut()
                         dlg2.OnBoutonEnvoyer(None) 
