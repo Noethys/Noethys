@@ -2391,7 +2391,10 @@ class MainFrame(wx.Frame):
         import DLG_Organisateur
         dlg = DLG_Organisateur.Dialog(self)
         dlg.ShowModal() 
-        dlg.Destroy()
+        try :
+            dlg.Destroy()
+        except :
+            pass
         self.ctrl_ephemeride.Initialisation()
 
     def On_param_groupes_activites(self, event):

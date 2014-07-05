@@ -137,6 +137,7 @@ class CTRL(HTL.HyperTreeList):
         dictStats = {"montant":0.0, "nombre":0, "familles":0, "individus":0, "prestations":{} }
         for IDprestation, date, categorie, label, montant, IDactivite, IDfamille, IDindividu, IDcategorie_tarif, nom, prenom, date_naiss, nomActivite, IDcivilite in listeDonnees :
             date = DateEngEnDateDD(date)
+            if nomActivite == None : nomActivite = u"Nom d'activité inconnu"
             
             if self.dictTitulaires.has_key(IDfamille) :
                 
