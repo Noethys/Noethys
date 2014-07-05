@@ -629,7 +629,9 @@ class MainFrame(wx.Frame):
         self.toolBar1.Realize()
         self._mgr.AddPane(self.toolBar1, aui.AuiPaneInfo().Name("barre_raccourcis").Caption(u"Barre de raccourcis").
                           ToolbarPane().Top())
-                        
+        
+        self._mgr.Update()
+        
         # Barre Utilisateur
         self.toolBar2 = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
                              agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW |
@@ -641,8 +643,10 @@ class MainFrame(wx.Frame):
         self.toolBar2.AddSpacer(50)
         
         self.toolBar2.Realize()
+        
         self._mgr.AddPane(self.toolBar2, aui.AuiPaneInfo().Name("barre_utilisateur").Caption(u"Barre Utilisateur").
                           ToolbarPane().Top())
+                
         self._mgr.Update()
         
     def CreationBarreMenus(self):
