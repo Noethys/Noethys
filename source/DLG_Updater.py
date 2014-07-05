@@ -727,19 +727,19 @@ class Page_installation(wx.Panel):
         self._Sauvegarde()
 ##        else:
 ##            # Lance la suite de l'installation
-##            self._Installation()
+##        self._Installation()
         
     def _Sauvegarde(self):
         """ Procédure de sauvegarde globale du répertoire """
-        self.label_introduction.SetLabel(u"Sauvegarde globale des données en cours...")
+        self.label_introduction.SetLabel(u"Sauvegarde des données locales en cours...")
         if "linux" not in sys.platform :
-            self.journal.WriteText(u"> Sauvegarde globale des données :\n\n")
+            self.journal.WriteText(u"> Sauvegarde des données locales :\n\n")
         
         fichierDest = self.parent.fichierDest + "/global_save.zip"
         if "win" in sys.platform : fichierDest = fichierDest.replace("/", "\\")
         repApplication = os.getcwd()
         
-        save = zipdirectory(self, self.journal, fichierDest, repApplication)
+        save = zipdirectory(self, self.journal, fichierDest, repApplication + "/Data")
         save.start()
         
     def _Installation(self):
@@ -869,6 +869,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    DEBUG = True
     frame_1 = Dialog(None)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
