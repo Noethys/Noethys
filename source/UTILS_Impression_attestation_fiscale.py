@@ -143,6 +143,10 @@ class Impression():
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
 
+        # Mémorise le ID du modèle
+        modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
+        doc.modeleDoc = modeleDoc
+
         # Vérifie qu'un cadre principal existe bien dans le document
         if doc.modeleDoc.FindObjet("cadre_principal") == None :
             raise Exception("Votre modèle de document doit obligatoirement comporter un cadre principal. Retournez dans l'éditeur de document et utilisez pour votre modèle la commande 'Insérer un objet spécial > Insérer le cadre principal'.")
