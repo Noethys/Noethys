@@ -209,7 +209,7 @@ class DLG_Rapport(wx.Dialog):
             smtp.ehlo()
             smtp.starttls()
             smtp.ehlo()
-            smtp.login(adresseExpediteur, motdepasse)
+            smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
         
         try :
             smtp.sendmail(adresseExpediteur, listeDestinataires, msg.as_string())

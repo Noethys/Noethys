@@ -231,7 +231,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         smtp.ehlo()
         smtp.starttls()
         smtp.ehlo()
-        smtp.login(adresseExpediteur, motdepasse)
+        smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
     
     smtp.sendmail(adresseExpediteur, listeDestinataires + listeDestinatairesCCI, msg.as_string())
     smtp.close()
