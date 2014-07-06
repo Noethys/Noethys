@@ -129,17 +129,19 @@ class GridWithLabelRenderersMixin(object):
         pt = dc.GetDeviceOrigin()
         dc.SetDeviceOrigin(pt.x-x, pt.y)
         for col in cols:
-            left, right = self._getColLeftRight(col)
-            rect = wx.Rect()
-            rect.left = left
-            rect.right = right
-            rect.y = 0
-            rect.height = self.GetColLabelSize()
+            try :
+                left, right = self._getColLeftRight(col)
+                rect = wx.Rect()
+                rect.left = left
+                rect.right = right
+                rect.y = 0
+                rect.height = self.GetColLabelSize()
 
-            renderer = self._colRenderers.get(col, None) or \
-                       self._defColRenderer or GridDefaultColLabelRenderer()
-            renderer.Draw(self, dc, rect, col)
-
+                renderer = self._colRenderers.get(col, None) or \
+                           self._defColRenderer or GridDefaultColLabelRenderer()
+                renderer.Draw(self, dc, rect, col)
+            except :
+                pass
             
     def _onPaintCornerLabel(self, evt):
         window = evt.GetEventObject()
