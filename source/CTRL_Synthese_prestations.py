@@ -553,7 +553,7 @@ class CTRL(HTL.HyperTreeList):
         titre = u"Synthèse des prestations"
         
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        nomFichier = "ExportExcel.xls"
+        nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
         wildcard = "Fichier Excel (*.xls)|*.xls|" \
                         "All files (*.*)|*.*"
         sp = wx.StandardPaths.Get()

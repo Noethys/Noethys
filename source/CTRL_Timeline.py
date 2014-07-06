@@ -423,7 +423,10 @@ class EventSizer(object):
             self.sizing = False
             self.event = None
             EventSizer._initialized = True
-        self.metrics = self.drawing_area.drawing_algorithm.metrics
+        try :
+            self.metrics = self.drawing_area.drawing_algorithm.metrics
+        except :
+            pass
 
     def sizing_starts(self, m_x, m_y):
         """
@@ -1966,7 +1969,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     # Logging
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+##    logger.setLevel(logging.DEBUG)
     app = wx.App(0)
     frame_1 = MyFrame(None, -1, "TEST", size=(800, 400))
     app.SetTopWindow(frame_1)
