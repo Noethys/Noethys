@@ -78,11 +78,13 @@ class ListView(FastObjectListView):
             dictTemp["prenom"] = prenom
             dictTemp["date_naiss"] = date_naiss
             # Infos sur la civilité
-            genre = dictCivilites[dictTemp["IDcivilite"]]["sexe"]
-            categorieCivilite = dictCivilites[dictTemp["IDcivilite"]]["categorie"]
-            civiliteLong = dictCivilites[dictTemp["IDcivilite"]]["civiliteLong"]
-            civiliteAbrege = dictCivilites[dictTemp["IDcivilite"]]["civiliteAbrege"] 
-            nomImage = dictCivilites[dictTemp["IDcivilite"]]["nomImage"] 
+            IDcivilite = dictTemp["IDcivilite"]
+            if IDcivilite == None : IDcivilite = 1
+            genre = dictCivilites[IDcivilite]["sexe"]
+            categorieCivilite = dictCivilites[IDcivilite]["categorie"]
+            civiliteLong = dictCivilites[IDcivilite]["civiliteLong"]
+            civiliteAbrege = dictCivilites[IDcivilite]["civiliteAbrege"] 
+            nomImage = dictCivilites[IDcivilite]["nomImage"] 
             dictTemp["genre"] = genre
             dictTemp["categorieCivilite"] = categorieCivilite
             dictTemp["civiliteLong"] = civiliteLong 

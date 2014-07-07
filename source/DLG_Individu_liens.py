@@ -639,6 +639,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                             nom = self.donnees.dictInfosIndividus[IDindividu]["nom"]
                             prenom = self.donnees.dictInfosIndividus[IDindividu]["prenom"]
                             IDcivilite = self.donnees.dictInfosIndividus[IDindividu]["IDcivilite"]
+                            if IDcivilite == None : IDcivilite = 1
                             categorieCivilite = Civilites.GetDictCivilites()[IDcivilite]["categorie"]
                             if categorieCivilite == "ENFANT" :
                                 type = "E"
