@@ -27,6 +27,9 @@ import wx.lib.dialogs as dialogs
 import wx.lib.agw.pybusyinfo as PBI
 
 
+import XImport
+
+
 def FormateDate(dateDD=None, format="%d/%m/%Y") :
     if dateDD == None or dateDD == "" :
         return ""
@@ -123,7 +126,7 @@ class Donnees():
         listeAnomalies = []
         dictCodes = {}
         for dictFacture in listeFactures :
-            
+
             if dictFacture["total"] != FloatToDecimal(0.0) :
                 
                 if self.dictTitulaires.has_key(dictFacture["IDfamille"]) :
@@ -268,6 +271,7 @@ class Donnees():
             return False
 
         # Affichage des codes comptables
+
         dlg = Dialog_codes(None, donnees=dictCodes)
         if dlg.ShowModal() == wx.ID_OK :
             dictCodes = dlg.GetCodes() 
@@ -322,24 +326,26 @@ class Donnees():
 
     def GetDepots(self, typeComptable="banque"):
         DB = GestionDB.DB() 
-        
+
         # Dépôts de règlements
         req = """SELECT 
         depots.IDdepot, depots.date, depots.nom, reglements.IDmode, modes_reglements.label, modes_reglements.type_comptable,
-        SUM(reglements.montant), COUNT(reglements.IDreglement)
+        SUM(reglements.montant), COUNT(reglements.IDreglement), comptes_bancaires.numero, comptes_bancaires.nom 
         FROM depots
         LEFT JOIN reglements ON reglements.IDdepot = depots.IDdepot
         LEFT JOIN modes_reglements ON modes_reglements.IDmode = reglements.IDmode
+        LEFT JOIN comptes_bancaires ON comptes_bancaires.IDcompte = depots.IDcompte ###
         WHERE depots.date IS NOT NULL AND depots.date>='%s' AND depots.date<='%s' AND modes_reglements.type_comptable='%s'
         GROUP BY depots.IDdepot, reglements.IDmode
         ORDER BY depots.date;""" % (self.date_debut, self.date_fin, typeComptable)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeDepots = []
-        for IDdepot, date, nomDepot, IDmode, nomMode, type_comptable, montant, nbreReglements in listeDonnees :
+        for IDdepot, date, nomDepot, IDmode, nomMode, type_comptable, montant, nbreReglements, numeroCompte, nomCompte in listeDonnees :
             listeDepots.append({
                 "IDdepot" : IDdepot, "date_depot" : UTILS_Dates.DateEngEnDateDD(date), "nom_depot" : nomDepot, "IDmode" : IDmode, "nomMode" : nomMode, 
-                "type_comptable" : type_comptable, "montant" : FloatToDecimal(montant), "nbreReglements" : nbreReglements, 
+                "type_comptable" : type_comptable, "montant" : FloatToDecimal(montant), "nbreReglements" : nbreReglements, "numeroCompte" : numeroCompte,
+                "nomCompte" : nomCompte,
                 })
         
         # Règlements
@@ -351,12 +357,14 @@ class Donnees():
         numero_quittancier, reglements.IDcompte, date_differe, 
         encaissement_attente, 
         reglements.IDdepot, depots.date, depots.nom,  
-        date_saisie, comptes_payeurs.IDfamille
+        date_saisie, comptes_payeurs.IDfamille,
+        comptes_bancaires.numero, comptes_bancaires.nom
         FROM reglements
         LEFT JOIN modes_reglements ON reglements.IDmode=modes_reglements.IDmode
         LEFT JOIN payeurs ON reglements.IDpayeur=payeurs.IDpayeur
         LEFT JOIN depots ON reglements.IDdepot=depots.IDdepot
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
+        LEFT JOIN comptes_bancaires ON comptes_bancaires.IDcompte = reglements.IDcompte ###
         WHERE reglements.IDdepot IS NOT NULL AND depots.date IS NOT NULL AND depots.date>='%s' AND depots.date<='%s'
         GROUP BY reglements.IDreglement
         ORDER BY reglements.date;
@@ -365,13 +373,14 @@ class Donnees():
         listeDonnees = DB.ResultatReq()
         DB.Close() 
         dictReglementsDepots = {}
-        for IDreglement, IDcompte_payeur, dateReglement, IDmode, labelMode, numero_piece, montant, IDpayeur, nomPayeur, numero_quittancier, IDcompte, date_differe, attente, IDdepot, dateDepot, nomDepot, date_saisie, IDfamille in listeDonnees :
+        for IDreglement, IDcompte_payeur, dateReglement, IDmode, labelMode, numero_piece, montant, IDpayeur, nomPayeur, numero_quittancier, IDcompte, date_differe, attente, IDdepot, dateDepot, nomDepot, date_saisie, IDfamille, numeroCompte, nomCompte in listeDonnees :
             if dictReglementsDepots.has_key(IDdepot) == False :
                 dictReglementsDepots[IDdepot] = []
             dictReglementsDepots[IDdepot].append({
                 "IDreglement" : IDreglement, "IDcompte_payeur" : IDcompte_payeur, "dateReglement" : UTILS_Dates.DateEngEnDateDD(dateReglement), "IDmode" : IDmode, "labelMode" : labelMode, "numero_piece" : numero_piece, 
                 "montant" : FloatToDecimal(montant), "IDpayeur" : IDpayeur, "nomPayeur" : nomPayeur, "numero_quittancier" : numero_quittancier, "IDcompte" : IDcompte, "date_differe" : UTILS_Dates.DateEngEnDateDD(date_differe), 
-                "attente" : attente, "dateDepot" : UTILS_Dates.DateEngEnDateDD(dateDepot), "nomDepot" : nomDepot, "date_saisie" : date_saisie, "IDfamille" : IDfamille,
+                "attente" : attente, "dateDepot" : UTILS_Dates.DateEngEnDateDD(dateDepot), "nomDepot" : nomDepot, "date_saisie" : date_saisie, "IDfamille" : IDfamille, "numeroCompte" : numeroCompte,
+                "nomCompte" : nomCompte,
                 })
         
         # Analyse des dépôts
@@ -400,6 +409,8 @@ class Donnees():
                 "date_depot" : dictDepot["date_depot"],
                 "mode_reglement" : dictDepot["nomMode"],
                 "montant" : str(dictDepot["montant"]),
+                "numeroCompte" : dictDepot["numeroCompte"],
+                "nomCompte" : dictDepot["nomCompte"],
                 })
                         
             # Analyse des règlements
@@ -444,8 +455,9 @@ class Donnees():
                         "attente" : dictReglement["attente"],
                         "date_depot" : dictReglement["dateDepot"],
                         "nom_depot" : dictReglement["nomDepot"],
+                        "numeroCompte" : dictReglement["numeroCompte"],
+                        "nomCompte" : dictReglement["nomCompte"],
                         })
-
         return listeLignes
         
         
@@ -542,6 +554,89 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         else:
             FonctionsPerso.LanceFichierExterne(cheminFichier)
 
+
+
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Parametres_ciel(CTRL_Parametres) :
+    def __init__(self, parent):
+        self.listeDonnees = [
+            u"Codes journaux",
+            {"type":"chaine", "label":u"Ventes", "description":u"Code journal des ventes", "code":"journal_ventes", "tip":u"Saisissez le code journal des ventes", "defaut":u"VE"},
+            {"type":"chaine", "label":u"Banque", "description":u"Code journal de la banque", "code":"journal_banque", "tip":u"Saisissez le code journal de la banque", "defaut":u"BP"},
+            {"type":"chaine", "label":u"Caisse", "description":u"Code journal de la caisse", "code":"journal_caisse", "tip":u"Saisissez le code journal de la caisse", "defaut":u"CA"},
+            u"Codes comptables",
+            {"type":"chaine", "label":u"Ventes", "description":u"Code comptable des ventes", "code":"code_ventes", "tip":u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)", "defaut":u"706"},
+            {"type":"chaine", "label":u"Clients", "description":u"Code comptable des clients", "code":"code_clients", "tip":u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)", "defaut":u"411"},
+            {"type":"chaine", "label":u"Banque", "description":u"Code comptable de la banque", "code":"code_banque", "tip":u"Saisissez le code comptable de la banque", "defaut":u"512"},
+            {"type":"chaine", "label":u"Caisse", "description":u"Code comptable de la caisse", "code":"code_caisse", "tip":u"Saisissez le code comptable de la caisse", "defaut":u"531"},
+            u"Formats libellés",
+            {"type":"chaine", "label":u"Facture", "description":u"Format du libellé des factures", "code":"format_facture", "tip":u"Saisissez le format du libellé des factures. Vous pouvez utiliser les mots-clés suivants : {IDFACTURE} {NOM_FAMILLE} {NUMERO} {DATE_EDITION} {DATE_ECHEANCE} {DATE_DEBUT} {DATE_FIN} {NOM_LOT}.", "defaut":u"Facture {NOM_FAMILLE}"},
+            {"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"},
+            {"type":"chaine", "label":u"Dépôt", "description":u"Format du libellé des dépôts", "code":"format_depot", "tip":u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}.", "defaut":u"{NOM_DEPOT}"},
+            {"type":"chaine", "label":u"Règlement", "description":u"Format du libellé des règlements", "code":"format_reglement", "tip":u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}.", "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}"},
+            ]
+        CTRL_Parametres.__init__(self, parent, self.listeDonnees)
+
+    def Generation(self):
+        if self.Validation() == False : return False
+        
+        # Récupération des paramètres
+        dictParametres = self.GetParametres() 
+        donnees = Donnees(dictParametres)
+        lignesVentes = donnees.GetVentes()
+
+        
+
+        if lignesVentes == False : 
+            return False
+    
+        numLigne = 1
+        listeLignesTxt = []
+
+        
+        # Ventes
+        for ligne in lignesVentes :
+            # Facture
+            if ligne["type"] == "facture" :
+
+                listeLignesTxt.append(XImport.XImportLine(ligne,dictParametres,numLigne).getData())
+                numLigne += 1
+
+            # Prestation
+            if ligne["type"] == "prestation" :
+
+                listeLignesTxt.append(XImport.XImportLine(ligne,dictParametres,numLigne).getData())
+                numLigne += 1
+        
+        # Banque
+        for typeComptable in ("banque", "caisse") :
+            
+            lignesTemp = donnees.GetDepots(typeComptable=typeComptable)
+
+            for ligne in lignesTemp :
+                # Dépôts
+                if ligne["type"] == "depot" :
+
+                    listeLignesTxt.append(XImport.XImportLine(ligne,dictParametres,numLigne,typeComptable).getData())                
+                    numLigne += 1
+            
+                # Règlements
+                if ligne["type"] == "reglement" :
+                    
+                        
+                    listeLignesTxt.append(XImport.XImportLine(ligne,dictParametres,numLigne,typeComptable).getData())                
+                    numLigne += 1
+            
+        
+        # Finalisation du texte
+        texte = "\n".join(listeLignesTxt)+"\n"
+        self.CreationFichier(nomFichier=u"XIMPORT.txt", texte=texte)
+        
+# --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Parametres_ebp(CTRL_Parametres) :
@@ -571,6 +666,8 @@ class CTRL_Parametres_ebp(CTRL_Parametres) :
         dictParametres = self.GetParametres() 
         donnees = Donnees(dictParametres)
         lignesVentes = donnees.GetVentes() 
+        
+
         if lignesVentes == False : 
             return False
     
@@ -579,7 +676,6 @@ class CTRL_Parametres_ebp(CTRL_Parametres) :
         
         # Ventes
         for ligne in lignesVentes :
-            
             # Facture
             if ligne["type"] == "facture" :
 
@@ -626,9 +722,11 @@ class CTRL_Parametres_ebp(CTRL_Parametres) :
         # Banque
         for typeComptable in ("banque", "caisse") :
             
-            lignesTemp = donnees.GetDepots(typeComptable=typeComptable) 
+            lignesTemp = donnees.GetDepots(typeComptable=typeComptable)
+            
+
             for ligne in lignesTemp :
-                
+
                 # Dépôts
                 if ligne["type"] == "depot" :
 
@@ -750,7 +848,7 @@ class Dialog(wx.Dialog):
     def InitLabelbook(self):
         self.listePages = [
             {"index":0, "label":u"EBP Compta", "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
-            {"index":1, "label":u"CIEL Compta", "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+            {"index":1, "label":u"CIEL Compta", "ctrl":CTRL_Parametres_ciel(self), "image":wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             ]
         # Création de l'ImageList
         il = wx.ImageList(48, 48)

@@ -1564,11 +1564,11 @@ class MainFrame(wx.Frame):
         item.SetBitmap(wx.Bitmap("Images/16x16/Diagramme.png", wx.BITMAP_TYPE_PNG))
         menu_facturation.AppendItem(item)
         
-##        menu_facturation.AppendSeparator()
-##
-##        item = wx.MenuItem(menu_facturation, ID_FACTURATION_EXPORT_COMPTA, u"Export des écritures comptables", u"Exporter les écritures comptables vers des logiciels de comptabilité")
-##        item.SetBitmap(wx.Bitmap("Images/16x16/Export_comptable.png", wx.BITMAP_TYPE_PNG))
-##        menu_facturation.AppendItem(item)
+        menu_facturation.AppendSeparator()
+
+        item = wx.MenuItem(menu_facturation, ID_FACTURATION_EXPORT_COMPTA, u"Export des écritures comptables", u"Exporter les écritures comptables vers des logiciels de comptabilité")
+        item.SetBitmap(wx.Bitmap("Images/16x16/Export_comptable.png", wx.BITMAP_TYPE_PNG))
+        menu_facturation.AppendItem(item)
 
         menubar.Append(menu_facturation, u"Facturation")
         
