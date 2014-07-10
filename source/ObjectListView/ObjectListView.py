@@ -1312,6 +1312,8 @@ class ObjectListView(wx.ListCtrl):
             return (rowIndex, wx.LIST_HITTEST_ONITEM, 0)
 
         # Find which subitem is hit
+        if self.smallImageList is None:
+            self.SetImageLists()
         right = 0
         scrolledX = self.GetScrollPos(wx.HORIZONTAL) + pt.x
         for i in range(self.GetColumnCount()):
