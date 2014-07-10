@@ -906,7 +906,10 @@ class DrawingArea(wx.Panel):
             self._mouse_drag(evt.GetX(), evt.GetY(), evt.ControlDown() ) #evt.m_x, evt.m_y, evt.m_controlDown)
         else:
             if not evt.ControlDown() : #evt.m_controlDown:
-                self._mouse_move(evt.GetX(), evt.GetY()) # (evt.m_x, evt.m_y)
+                try :
+                    self._mouse_move(evt.GetX(), evt.GetY()) # (evt.m_x, evt.m_y)
+                except :
+                    pass
                 
     def _mouse_drag(self, x, y, ctrl=False):
         """
