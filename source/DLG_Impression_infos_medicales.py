@@ -657,8 +657,8 @@ class Dialog(wx.Dialog):
         for IDactivite in listeActivites :
             nomActivite = dictActivites[IDactivite]["nom"]
             # Groupes
-            nbreGroupes = len(dictOuvertures[IDactivite])
             if dictOuvertures.has_key(IDactivite) :
+                nbreGroupes = len(dictOuvertures[IDactivite])
                 indexGroupe = 1
                 for IDgroupe in dictOuvertures[IDactivite] :
                     nomGroupe = dictGroupes[IDgroupe]["nom"]
