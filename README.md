@@ -65,8 +65,8 @@ python-pyscard python-opencv
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip et les installer par:
 
-pip install pyttsx
-pip install icalendar
+- pip install pyttsx
+- pip install icalendar
 
 
 Pour lancer Noethys, lancez le terminal de Linux, placez-vous 
