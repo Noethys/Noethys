@@ -39,24 +39,33 @@ rechercher et installer les bibliothèques suivantes.
 
 Dépendances pour Linux
 ------------------
-Pour installer les dépendances sur Ubuntu, il vous suffit d'utiliser 
-le gestionnaire de paquets Synaptic. S'il n'est pas installé par défaut 
-sur votre système, il vous suffit de le télécharger depuis la logithèque 
-Ubuntu. Ensuite, recherchez puis installez les paquets suivants depuis Synaptic.
 
-- python 2.7
-- python-dateutil
-- python-wxgtk3.0
-- python-mysqldb
-- python-numpy
-- python-imaging
-- python-reportlab
-- python-matplotlib
-- python-xlrd
-- pyttsx
-- icalendar
+Bibliothèque graphique wxPython disponible sur le site de Noethys :
+Menu Téléchargements > Ressources communautaires > Divers.
 
-Note : Vous pouvez télécharger la dernière version compilée de wxPython pour Linux depuis le site de Noethys (Menu Téléchargements > Ressources communautaires > Divers).
+- python 2.7 (installé en principe par défaut sous ubuntu)
+- python-mysqldb (Pour l'utilisation en mode réseau)
+- python-dateutil (Manipulation des dates)
+- python-numpy (Calculs avancés)
+- python-imaging (Traitement des photos)
+- python-reportlab (Création des PDF)
+- python-matplotlib (Création de graphes)
+- python-xlrd (Traitement de fichiers Excel)
+- python-crypto (pour crypter les sauvegardes)
+- python-excelerator (pour les exports format excel)
+- python-pyscard (pour pouvoir configurer les procédures de badgeage)
+- python-opencv (pour la détection automatique des visages)
+- python-pip (qui permet d'installer pyttsx et icalendar)
+
+Ils s'installent depuis le terminal tout simplement avec la commande:
+apt-get install python-mysqldb python-dateutil python-numpy python-imaging 
+python-reportlab python-matplotlib python-xlrd python-excelerator python-pip 
+python-pyscard python-opencv
+
+Et pour pyttsx et icalendar il faut avoir installé python-pip et les installer par:
+pip install pyttsx
+pip install icalendar
+
 
 Pour lancer Noethys, lancez le terminal de Linux, placez-vous 
 dans le répertoire d'installation de Noethys, puis saisissez
