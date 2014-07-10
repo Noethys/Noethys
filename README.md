@@ -58,11 +58,13 @@ Menu Téléchargements > Ressources communautaires > Divers.
 - python-pip (qui permet d'installer pyttsx et icalendar)
 
 Ils s'installent depuis le terminal tout simplement avec la commande:
+
 apt-get install python-mysqldb python-dateutil python-numpy python-imaging 
 python-reportlab python-matplotlib python-xlrd python-excelerator python-pip 
 python-pyscard python-opencv
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip et les installer par:
+
 pip install pyttsx
 pip install icalendar
 
