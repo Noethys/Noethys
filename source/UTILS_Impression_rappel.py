@@ -306,7 +306,6 @@ class Impression():
                 story.append(tableau)
                 story.append(Spacer(0,30))
                 
-                    
                 couleurFond = (0.8, 0.8, 1)
                 couleurFondActivite = (0.92, 0.92, 1)
                         
@@ -324,8 +323,11 @@ class Impression():
                 texte = dictCompte["texte"]
                 listeParagraphes = texte.split("</para>")
                 for paragraphe in listeParagraphes :
-                    textePara = Paragraph(u"%s</para>" % paragraphe, paraStyle)
+                    paragraphe = u"%s</para>" % paragraphe
+                    textePara = Paragraph(paragraphe, paraStyle)
                     story.append(textePara)
+                    if "> </para" in paragraphe :
+                        story.append(Spacer(0, 13))
                 
                 # Saut de page
                 story.append(PageBreak())
