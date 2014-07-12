@@ -1449,7 +1449,14 @@ class DB:
         
         # =============================================================
 
-
+        versionFiltre = (1, 1, 2, 7)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("unites", "coeff", "VARCHAR(50)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
 
 
 
@@ -1710,7 +1717,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("pes_lots", "objet_piece", "VARCHAR(450)")
+##    db.AjoutChamp("unites", "coeff", "VARCHAR(50)")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT

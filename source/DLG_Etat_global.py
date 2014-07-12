@@ -25,8 +25,6 @@ import UTILS_Organisateur
 
 import FonctionsPerso
 
-try: import psyco; psyco.full()
-except: pass
 
 def ArrondirHeureSup(heures, minutes, pas): 
     """ Arrondi l'heure au pas supérieur """
@@ -453,13 +451,15 @@ class Dialog(wx.Dialog):
 
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.Apercu, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
+        self.Bind(wx.EVT_CLOSE, self.OnClose)
         
         # Données Test
         anneeActuelle = datetime.date.today().year
@@ -471,7 +471,7 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour créer un aperçu des résultats (PDF)")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.SetMinSize((1010, 720))
+        self.SetMinSize((1020, 720))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -524,11 +524,18 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
-
+    
+    def OnBoutonFermer(self, event):
+        self.ctrl_coeff.SauvegardeCoeff() 
+        self.EndModal(wx.ID_CANCEL)
+        
     def OnBoutonAide(self, event): 
         import UTILS_Aide
         UTILS_Aide.Aide("Etatglobal")
-
+    
+    def OnClose(self, event=None):
+        self.ctrl_coeff.SauvegardeCoeff() 
+        
     def Apercu(self, event):
         # Validation de la période
         date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate() 

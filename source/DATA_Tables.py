@@ -301,6 +301,7 @@ DB_DATA = {
                                     ("date_fin", "DATE", u"Date de fin de validité"),
                                     ("touche_raccourci", "VARCHAR(30)", u"Touche de raccourci pour la grille de saisie"), 
                                     ("largeur", "INTEGER", u"Largeur de colonne en pixels"),
+                                    ("coeff", "VARCHAR(50)", u"Coeff pour état global"),
                                     ], # Unités
 
     "unites_groupes":[      ("IDunite_groupe", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Unité_groupe"),
