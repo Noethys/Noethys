@@ -121,6 +121,7 @@ class ListView(FastObjectListView):
         self.listeFiltres = []
         self.historique = []
         self.dictTracks = {}
+        self.dictIndividus = {}
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -129,9 +130,6 @@ class ListView(FastObjectListView):
         
     def OnItemActivated(self,event):
         self.Modifier(None)
-                
-    def InitModel(self):
-        self.donnees = self.GetTracks()
     
     def GetListeRattachements(self):
         global DICT_RATTACHEMENTS_INDIVIDUS, DICT_RATTACHEMENTS_FAMILLES
@@ -205,6 +203,12 @@ class ListView(FastObjectListView):
         
             dictIndividus[IDindividu] = dictTemp
         
+        # Vérifie si le dictIndividus est différent du précédent pour empêcher l'actualisation de la liste
+        if dictIndividus == self.dictIndividus :
+            return None
+        else :
+            self.dictIndividus = dictIndividus
+        
         # Création des Tracks
         listeListeView = []
         self.dictTracks = {}
@@ -212,7 +216,7 @@ class ListView(FastObjectListView):
             track = Track(dictTemp, dictIndividus)
             listeListeView.append(track)
             self.dictTracks[IDindividu] = track
-            
+        
         return listeListeView
       
     def InitObjectListView(self):
@@ -269,8 +273,11 @@ class ListView(FastObjectListView):
                 IDindividu = selectionTrack[0].IDindividu
         
         # MAJ
-        self.InitModel()
-        self.InitObjectListView()
+        self.donnees = self.GetTracks()
+        if self.donnees != None :
+            self.GetParent().Freeze() 
+            self.InitObjectListView()
+            self.GetParent().Thaw() 
         self.Reselection(IDindividu)
     
     def Reselection(self, IDindividu=None):
@@ -478,7 +485,7 @@ class ListView(FastObjectListView):
                 self.historique.append(IDindividu)
                 if len(self.historique) > 30 :
                     self.historique.pop(0)
-
+                
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
