@@ -22,8 +22,11 @@ import DLG_calendrier_simple
 import CTRL_Coefficients_siej
 import OL_Liste_regimes
 import UTILS_Organisateur
+import UTILS_Dates
 
 import FonctionsPerso
+
+LISTE_MOIS= (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
 
 
 def ArrondirHeureSup(heures, minutes, pas): 
@@ -235,8 +238,9 @@ class Parametres(wx.Panel):
         self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, u"Affichage")
         self.radio_affichage_heure = wx.RadioButton(self, -1, u"Heure", style=wx.RB_GROUP)
         self.radio_affichage_decimal = wx.RadioButton(self, -1, u"Décimal")
-        self.check_detail = wx.CheckBox(self, -1, u"Afficher détail par activité")
-        
+        self.check_detail = wx.CheckBox(self, -1, u"Afficher le détail par activité")
+        self.check_periodes_detail = wx.CheckBox(self, -1, u"Afficher les périodes détaillées")
+
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
@@ -257,6 +261,7 @@ class Parametres(wx.Panel):
         self.ctrl_age.SetToolTipString(u"Saisissez un âge (en années)")
         self.ctrl_dateNaiss.SetToolTipString(u"Saisissez une date de naissance")
         self.check_detail.SetToolTipString(u"Cochez cette case pour afficher le détail par activité")
+        self.check_periodes_detail.SetToolTipString(u"Cochez cette case pour afficher les périodes détaillées")
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -293,11 +298,16 @@ class Parametres(wx.Panel):
         
         # Affichage Heure/Décimal
         staticbox_affichage = wx.StaticBoxSizer(self.staticbox_affichage_staticbox, wx.VERTICAL)
-        grid_sizer_affichage = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_affichage.Add(self.radio_affichage_heure, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.radio_affichage_decimal, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        staticbox_affichage.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
-        staticbox_affichage.Add(self.check_detail, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_affichage1 = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+        
+        grid_sizer_affichage2 = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_affichage2.Add(self.radio_affichage_heure, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage2.Add(self.radio_affichage_decimal, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage1.Add(grid_sizer_affichage2, 1, wx.ALL|wx.EXPAND, 0)
+
+        grid_sizer_affichage1.Add(self.check_detail, 1, wx.LEFT|wx.EXPAND, 0)
+        grid_sizer_affichage1.Add(self.check_periodes_detail, 1, wx.LEFT|wx.EXPAND, 0)
+        staticbox_affichage.Add(grid_sizer_affichage1, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_affichage, 1, wx.RIGHT|wx.EXPAND, 5)
         
         # Activités
@@ -395,7 +405,10 @@ class Parametres(wx.Panel):
     
     def GetModeDetail(self):
         return self.check_detail.GetValue()
-    
+
+    def GetModeDetailPeriodes(self):
+        return self.check_periodes_detail.GetValue()
+
     def GetLabelRegroupement(self):
         regroupement = self.GetRegroupement() 
         if regroupement == None :
@@ -588,7 +601,8 @@ class Dialog(wx.Dialog):
         # Récupération du mode d'affichage
         modeAffichage = self.ctrl_parametres.GetModeAffichage()
         modeDetail = self.ctrl_parametres.GetModeDetail()
-        
+        modePeriodesDetail = self.ctrl_parametres.GetModeDetailPeriodes()
+
         # Récupération du labelParametres
         labelParametres = self.ctrl_parametres.GetLabelParametres()
         
@@ -611,7 +625,67 @@ class Dialog(wx.Dialog):
         dictRegimes = {}
         for IDregime, nomRegime in listeDonnees :
             dictRegimes[IDregime] = nomRegime
+
+        # Récupération des périodes de vacances
+        req = """SELECT 
+        IDvacance, nom, annee, date_debut, date_fin
+        FROM vacances
+        ORDER BY date_debut
+        ;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()     
+        listeVacances = []
+        for IDvacance, nom, annee, date_debut_Tmp, date_fin_Tmp in listeDonnees :
+            date_debut_Tmp = DateEngEnDateDD(date_debut_Tmp)
+            date_fin_Tmp = DateEngEnDateDD(date_fin_Tmp)
+            if date_debut_Tmp.month in (6, 7, 8, 9) or date_fin_Tmp.month in (6, 7, 8, 9) :
+                grandesVacs = True
+            else:
+                grandesVacs = False
+            listeVacances.append( {"nom" : nom, "annee" : annee, "date_debut" : date_debut_Tmp, "date_fin" : date_fin_Tmp, "vacs" : True, "grandesVacs" : grandesVacs} )
         
+        # Calcul des périodes détaillées
+        listePeriodesDetail = []
+        index = 0
+        for dictTemp in listeVacances :
+            # Vacances
+            if dictTemp["nom"] == u"Février" : 
+                nom = "vacances_fevrier"
+            elif dictTemp["nom"] == u"Pâques" : 
+                nom = "vacances_paques"
+            elif dictTemp["nom"] == u"Eté" : 
+                nom = "vacances_ete"
+            elif dictTemp["nom"] == u"Toussaint" : 
+                nom = "vacances_toussaint"
+            elif dictTemp["nom"] == u"Noël" : 
+                nom = "vacances_noel"
+            else :
+                nom = "?"
+            dictTemp["code"] = nom + "_%d" % annee
+            dictTemp["label"] = u"Vacances %s %d" % (dictTemp["nom"], dictTemp["annee"])
+            listePeriodesDetail.append(dictTemp)
+            # Hors vacances
+            date_debut_temp = dictTemp["date_fin"] + datetime.timedelta(days=1)
+            if len(listeVacances) > index + 1 :
+                date_fin_temp = listeVacances[index+1]["date_debut"] - + datetime.timedelta(days=1)
+                annee = dictTemp["annee"]
+                if dictTemp["nom"].startswith("F") : 
+                    nom = "mercredis_mars_avril"
+                elif dictTemp["nom"].startswith("P") : 
+                    nom = "mercredis_mai_juin"
+                elif dictTemp["nom"].startswith("E") : 
+                    nom = "mercredis_sept_oct"
+                elif dictTemp["nom"].startswith("T") : 
+                    nom = "mercredis_nov_dec"
+                elif dictTemp["nom"].startswith("N") : 
+                    nom = "mercredis_janv_fev"
+                    annee += 1
+                else :
+                    nom = "?"
+                label = u"Hors vacances %s-%s %d" % (LISTE_MOIS[date_debut_temp.month-1], LISTE_MOIS[date_fin_temp.month-1], annee)
+                listePeriodesDetail.append( {"code" : nom + "_%d" % annee, "annee" : annee, "label" : label, "date_debut" : date_debut_temp, "date_fin" : date_fin_temp, "vacs" : False, "grandesVacs" : False} )
+            index += 1
+    
         # Regroupement par activité
         if modeDetail == True :
             dictActivites = {}
@@ -648,24 +722,6 @@ class Dialog(wx.Dialog):
                     0 : { "labelRegroupement" : u"Nés avant le %s" % DateEngFr(str(dateNaissReference))},
                     1 : { "labelRegroupement" : u"Nés après le %s" % DateEngFr(str(dateNaissReference))}, 
                     }
-            
-            # Récupération des périodes de vacances
-            req = """SELECT 
-            IDvacance, nom, annee, date_debut, date_fin
-            FROM vacances
-            ;"""
-            DB.ExecuterReq(req)
-            listeDonnees = DB.ResultatReq()     
-            listeVacances = []
-            for IDvacance, nom, annee, date_debut_Tmp, date_fin_Tmp in listeDonnees :
-                date_debut_Tmp = DateEngEnDateDD(date_debut_Tmp)
-                date_fin_Tmp = DateEngEnDateDD(date_fin_Tmp)
-                if date_debut_Tmp.month in (6, 7, 8, 9) or date_fin_Tmp.month in (6, 7, 8, 9) :
-                    grandesVacs = True
-                else:
-                    grandesVacs = False
-                listeVacances.append( {"date_debut" : date_debut_Tmp, "date_fin" : date_fin_Tmp, "grandesVacs" : grandesVacs} )
-
         
             # Récupère le QF de la famille
             dictQuotientsFamiliaux = {}
@@ -675,12 +731,12 @@ class Dialog(wx.Dialog):
                 ORDER BY date_debut;"""
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
-                for IDquotient, IDfamille, date_debut, date_fin, quotient in listeDonnees :
-                    date_debut = DateEngEnDateDD(date_debut)
-                    date_fin = DateEngEnDateDD(date_fin)
+                for IDquotient, IDfamille, date_debut_temp, date_fin_temp, quotient in listeDonnees :
+                    date_debut_temp = DateEngEnDateDD(date_debut_temp)
+                    date_fin_temp = DateEngEnDateDD(date_fin_temp)
                     if dictQuotientsFamiliaux.has_key(IDfamille) == False :
                         dictQuotientsFamiliaux[IDfamille] = []
-                    dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient))
+                    dictQuotientsFamiliaux[IDfamille].append((date_debut_temp, date_fin_temp, quotient))
 
             # Récupération des consommations
             listeUnitesUtilisees = listeUnites
@@ -727,27 +783,32 @@ class Dialog(wx.Dialog):
                     heure_fin = datetime.time(int(h), int(m))
 
                 # Recherche la période
-                periode = None
-                for dictVac in listeVacances :
-                    if date >= dictVac["date_debut"] and date <= dictVac["date_fin"] :
-                        if dictVac["grandesVacs"] == True :
-                            # C'est durant les grandes vacances :
-                            periode = "grandesVacs"
-                        else:
-                            # C'est durant les petites vacances :
-                            periode = "petitesVacs"
-                if periode == None :
-                    # C'est hors vacances :
-                    periode = "horsVacs"
-
+                if modePeriodesDetail == False :
+                    # Périodes non détaillées
+                    periode = None
+                    for dictVac in listeVacances :
+                        if date >= dictVac["date_debut"] and date <= dictVac["date_fin"] :
+                            if dictVac["grandesVacs"] == True :
+                                periode = "grandesVacs"
+                            else:
+                                periode = "petitesVacs"
+                    if periode == None :
+                        periode = "horsVacs"
+                else :
+                    # Périodes détaillées
+                    for dictPeriode in listePeriodesDetail :
+                        if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"] :
+                            periode = dictPeriode["code"]
+                    
+                    
                 # ------------ Application de filtres ---------------
                 valide = False
                 
                 # Période
-                if periode == "horsVacs" :
+                if periode == "horsVacs" or periode.startswith("mercredis") :
                     if date.weekday() in jours_scolaires :
                         valide = True
-                if periode != "horsVacs" :
+                if periode in ("grandesVacs", "petitesVacs") or periode.startswith("vacances") :
                     if date.weekday() in jours_vacances :
                         valide = True
                 
@@ -760,8 +821,8 @@ class Dialog(wx.Dialog):
                     qf_min, qf_max = qf
                     valide = False
                     if dictQuotientsFamiliaux.has_key(IDfamille) :
-                        for date_debut, date_fin, quotient in dictQuotientsFamiliaux[IDfamille] :
-                            if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                        for date_debut_temp, date_fin_temp, quotient in dictQuotientsFamiliaux[IDfamille] :
+                            if date >= date_debut_temp and date <= date_fin_temp and quotient >= qf_min and quotient <= qf_max :
                                 valide = True
                                 break
                 
@@ -863,7 +924,7 @@ class Dialog(wx.Dialog):
                             listeRegimesUtilises.append(IDregime)
                         dictResultats[regroup][periode][IDregime]["fact"] += valeurFact * quantite
                         dictResultats[regroup][periode][IDregime]["real"] += valeurReal * quantite
-            
+                         
             if modeDetail == True :
                 dictValeurs[IDactivite] = dictResultats
             else :
@@ -982,6 +1043,14 @@ class Dialog(wx.Dialog):
             dataTableau.append(ligne1)
     ##        dataTableau.append(ligne2)
 
+            paraStyle = ParagraphStyle(name="normal",
+                          fontName="Helvetica",
+                          fontSize=7,
+                          leading=7,
+                          spaceBefore=0,
+                          spaceAfter=0,
+                          )
+
             # Création du tableau d'entete de colonnes
             tableau = Table(dataTableau, largeursColonnes)
             tableau.setStyle(TableStyle(listeStyles))
@@ -1007,16 +1076,34 @@ class Dialog(wx.Dialog):
                 index += 1
                 
                 # Création des lignes de périodes
-                listePeriodes = [
-                    {"code" : "petitesVacs", "label" : u"Petites vacances"},
-                    {"code" : "grandesVacs", "label" : u"Vacances d'été"},
-                    {"code" : "horsVacs", "label" : u"Hors vacances"},
-                    ]
+                if modePeriodesDetail == False :
+                    listePeriodes = [
+                        {"code" : "petitesVacs", "label" : u"Petites vacances"},
+                        {"code" : "grandesVacs", "label" : u"Vacances d'été"},
+                        {"code" : "horsVacs", "label" : u"Hors vacances"},
+                        ]
+                else :
+                    listePeriodes = listePeriodesDetail
+                    
                 dictTotaux = {}
                 for dictPeriode in listePeriodes :
                     if dictRegroup.has_key(dictPeriode["code"]) :
                         ligne = []
-                        ligne.append(dictPeriode["label"])
+                        
+                        # Label ligne
+                        if modePeriodesDetail == False :
+                            ligne.append(dictPeriode["label"])
+                        else :
+                            date_debut_temp = dictPeriode["date_debut"]
+                            if date_debut_temp < date_debut : 
+                                date_debut_temp = date_debut
+                            date_fin_temp = dictPeriode["date_fin"]
+                            if date_fin_temp > date_fin : 
+                                date_fin_temp = date_fin
+                            label = u"<para align='center'>%s<br/><font size=5>Du %s au %s</font></para>" % (dictPeriode["label"], UTILS_Dates.DateEngFr(str(date_debut_temp)), UTILS_Dates.DateEngFr(str(date_fin_temp)))
+                            ligne.append(Paragraph(label, paraStyle))
+                            
+                        # Valeurs
                         totalLigneFact = datetime.timedelta(hours=0, minutes=0)
                         totalLigneReal = datetime.timedelta(hours=0, minutes=0)
                         for IDregime, labelColonne, largeurColonne in listeColonnes :
