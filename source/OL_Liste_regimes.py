@@ -93,14 +93,14 @@ def GetListe(listeActivites=None, presents=None):
     return dictFinal
 
 
-def GetNbreSansCaisse(listeActivites=None, date_debut=None, date_fin=None):
+def GetFamillesSansCaisse(listeActivites=None, date_debut=None, date_fin=None):
     """ Permet de récupérer la liste des familles n'ayant pas de caisse renseignée """
     dictDonnees = GetListe(listeActivites=listeActivites, presents=(date_debut, date_fin))
-    nbre = 0
+    listeFamillesSansCaisse = []
     for IDfamille, dictFamille in dictDonnees.iteritems() :
         if dictFamille["nomCaisse"] == None :
-            nbre += 1
-    return nbre
+            listeFamillesSansCaisse.append({"IDfamille" : IDfamille, "titulaires" : dictFamille["titulaires"]})
+    return listeFamillesSansCaisse
 
 # -----------------------------------------------------------------------------------------------------------------------------------------
 

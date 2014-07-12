@@ -25,6 +25,7 @@ import UTILS_Organisateur
 import UTILS_Dates
 
 import FonctionsPerso
+import wx.lib.dialogs as dialogs
 
 LISTE_MOIS= (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
 
@@ -550,6 +551,8 @@ class Dialog(wx.Dialog):
         self.ctrl_coeff.SauvegardeCoeff() 
         
     def Apercu(self, event):
+        listeAnomalies = []
+        
         # Validation de la période
         date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate() 
         if self.ctrl_parametres.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
@@ -607,12 +610,18 @@ class Dialog(wx.Dialog):
         labelParametres = self.ctrl_parametres.GetLabelParametres()
         
         # Vérifie que toutes les familles ont une caisse attribuées
-        nbreFamillesSansCaisses = OL_Liste_regimes.GetNbreSansCaisse(listeActivites, date_debut, date_fin)
-        if nbreFamillesSansCaisses > 0 :
-            dlg = wx.MessageDialog(self, u"Attention, le régime d'appartenance n'a pas été renseigné pour %d famille(s).\n\nVous pourrez consulter le détail des familles concernées grâce à la commande\n'Editer la liste des régimes et caisses' du menu Individus." % nbreFamillesSansCaisses, u"Attention", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-                
+        listeFamillesSansCaisses = OL_Liste_regimes.GetFamillesSansCaisse(listeActivites, date_debut, date_fin)
+        if len(listeFamillesSansCaisses) > 0 :
+            listeTemp = []
+            for dictTemp in listeFamillesSansCaisses :
+                listeTemp.append(dictTemp["titulaires"])
+            messageDetail = u"\n".join(listeTemp)
+            dlg = dialogs.MultiMessageDialog(self, u"Attention, le régime d'appartenance n'a pas été renseigné pour les %d familles suivantes :" % len(listeTemp), caption=u"Régime d'appartenance", msg2=messageDetail, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, btnLabels={wx.ID_OK : u"Continuer quand même", wx.ID_CANCEL : u"Annuler"})
+            reponse = dlg.ShowModal() 
+            dlg.Destroy() 
+            if reponse == wx.ID_CANCEL : 
+                return
+
         # Récupération des régimes
         DB = GestionDB.DB()
         req = """SELECT 
@@ -761,7 +770,7 @@ class Dialog(wx.Dialog):
             WHERE consommations.date >='%s' AND consommations.date <='%s'
             AND etat NOT IN ('attente', 'refus')
             %s
-            ;""" % (str(date_debut), str(date_fin), conditionSQL)
+            ORDER BY consommations.date;""" % (str(date_debut), str(date_fin), conditionSQL)
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()     
             
@@ -783,23 +792,27 @@ class Dialog(wx.Dialog):
                     heure_fin = datetime.time(int(h), int(m))
 
                 # Recherche la période
+                periode = ""
                 if modePeriodesDetail == False :
                     # Périodes non détaillées
-                    periode = None
                     for dictVac in listeVacances :
                         if date >= dictVac["date_debut"] and date <= dictVac["date_fin"] :
                             if dictVac["grandesVacs"] == True :
                                 periode = "grandesVacs"
                             else:
                                 periode = "petitesVacs"
-                    if periode == None :
+                    if periode == "" :
                         periode = "horsVacs"
                 else :
                     # Périodes détaillées
                     for dictPeriode in listePeriodesDetail :
                         if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"] :
                             periode = dictPeriode["code"]
-                    
+                
+                if periode == "" :
+                    texte = u"Période inconnue pour la date du %s. Vérifiez que les périodes de vacances ont bien été paramétrées." % UTILS_Dates.DateDDEnFr(date)
+                    if texte not in listeAnomalies :
+                        listeAnomalies.append(texte)
                     
                 # ------------ Application de filtres ---------------
                 valide = False
@@ -931,7 +944,16 @@ class Dialog(wx.Dialog):
                 dictValeurs[0] = dictResultats
             
         DB.Close() 
-            
+        
+        # Affichage d'anomalies
+        if len(listeAnomalies) > 0 :
+            messageDetail = u"\n".join(listeAnomalies)
+            dlg = dialogs.MultiMessageDialog(self, u"Les %d anomalies suivantes ont été trouvées :" % len(listeAnomalies), caption=u"Anomalies", msg2=messageDetail, style = wx.ICON_ERROR | wx.OK, btnLabels={wx.ID_OK : u"Ok"})
+            dlg.ShowModal() 
+            dlg.Destroy() 
+            return
+    
+
         # Création du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
