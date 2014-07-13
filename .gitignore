@@ -3,6 +3,8 @@ Config.dat
 Aide/
 Temp/
 Updates/
+Installeur/
+PaquetDebian/
 source/Data/*_DATA.dat
 source/Data/*_DOCUMENTS.dat
 source/Data/*_PHOTOS.dat
@@ -10,6 +12,18 @@ SQLiteSpy.exe
 SQLiteSpy.db3
 TODO.xlsx
 nologin.txt
+setup.py
+PackagerLinux.py
+CreateurANNONCES.py
+CreateurMAJ.py
+setup.bat
+gdiplus.dll
+libiconv-2.dll
+libzbar-0.dll
+msvcm90.dll
+msvcp90.dll
+msvcr90.dll
+Microsoft.VC90.CRT.manifest
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
