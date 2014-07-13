@@ -122,8 +122,11 @@ class ListView(FastObjectListView):
         self.historique = []
         self.dictTracks = {}
         self.dictIndividus = {}
+        self.donnees = []
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsg(u"Aucun individu")
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
@@ -260,8 +263,6 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun individu")
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
@@ -273,8 +274,9 @@ class ListView(FastObjectListView):
                 IDindividu = selectionTrack[0].IDindividu
         
         # MAJ
-        self.donnees = self.GetTracks()
-        if self.donnees != None :
+        donnees = self.GetTracks()
+        if donnees != None :
+            self.donnees = donnees
             self.GetParent().Freeze() 
             self.InitObjectListView()
             self.GetParent().Thaw() 
