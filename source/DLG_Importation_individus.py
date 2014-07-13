@@ -721,10 +721,14 @@ class Page_fichier(wx.Panel):
             return False
         
         # Lecture du fichier :
-        if nomFichier.endswith("xls") : importation = Importation_Excel(nomFichier)
-        if nomFichier.endswith("csv") : importation = Importation_CSV(nomFichier)
+        if nomFichier.endswith("xls") : 
+            importation = Importation_Excel(nomFichier)
+        elif nomFichier.endswith("csv") : 
+            importation = Importation_CSV(nomFichier)
+        else :
+            importation = None
         
-        if importation.fichierValide == False :
+        if importation == None or importation.fichierValide == False :
             dlg = wx.MessageDialog(self, u"Le fichier ne semble pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
