@@ -40,34 +40,34 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     # Conditions Présents
     if presents == None :
         conditionPresents = ""
+        jonctionPresents = ""
     else:
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        jonctionPresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Récupération des cotisations à fournir pour la famille ou l'individu
     DB = GestionDB.DB()
     req = """
     SELECT 
-    inscriptions.IDfamille, cotisations_activites.IDactivite, cotisations_activites.IDtype_cotisation, types_cotisations.nom, types_cotisations.type, individus.prenom, individus.IDindividu, COUNT(IDconso)
+    inscriptions.IDfamille, cotisations_activites.IDactivite, cotisations_activites.IDtype_cotisation, types_cotisations.nom, types_cotisations.type, individus.prenom, individus.IDindividu
     FROM cotisations_activites 
     LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations_activites.IDtype_cotisation
     LEFT JOIN inscriptions ON inscriptions.IDactivite = cotisations_activites.IDactivite
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     WHERE inscriptions.parti=0 %s %s
     GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu;
-    """ % (conditionActivites, conditionPresents)
+    """ % (jonctionPresents, conditionActivites, conditionPresents)
     DB.ExecuterReq(req)
     listeCotisationsObligatoires = DB.ResultatReq()
     
     dictCotisationObligatoires = {}
-    for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu, nbreConso in listeCotisationsObligatoires :
+    for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu in listeCotisationsObligatoires :
         if dictCotisationObligatoires.has_key(IDfamille) == False :
             dictCotisationObligatoires[IDfamille] = {}
         if dictCotisationObligatoires[IDfamille].has_key(IDactivite) == False :
             dictCotisationObligatoires[IDfamille][IDactivite] = []
         dictCotisationObligatoires[IDfamille][IDactivite].append((IDfamille, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu))
-        
-##    print "dictCotisationObligatoires[57][16] =", dictCotisationObligatoires[57][16]
     
     # Recherche des cotisations déjà fournies
     req = """
@@ -88,8 +88,6 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         date_debut = DateEngEnDateDD(date_debut)
         date_fin = DateEngEnDateDD(date_fin)
         dictCotisationsFournies[ (IDfamille, IDtype_cotisation, IDindividu) ] = (date_debut, date_fin)
-    
-    
     
     # Comparaison de la liste des cotisations à fournir et la liste des cotisations fournies
     dictDonnees = {}

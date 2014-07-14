@@ -40,22 +40,24 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     # Conditions Présents
     if presents == None :
         conditionPresents = ""
+        jonctionPresents = ""
     else:
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        jonctionPresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Récupération des pièces à fournir
     DB = GestionDB.DB()
     req = """
     SELECT 
-    inscriptions.IDfamille, pieces_activites.IDtype_piece, types_pieces.nom, types_pieces.public, types_pieces.valide_rattachement, individus.prenom, individus.IDindividu, COUNT(IDconso)
+    inscriptions.IDfamille, pieces_activites.IDtype_piece, types_pieces.nom, types_pieces.public, types_pieces.valide_rattachement, individus.prenom, individus.IDindividu
     FROM pieces_activites 
     LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces_activites.IDtype_piece
     LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     WHERE inscriptions.parti=0 %s %s
     GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu
-    ;""" % (conditionActivites, conditionPresents)
+    ;""" % (jonctionPresents, conditionActivites, conditionPresents)
     DB.ExecuterReq(req)
     listePiecesObligatoires = DB.ResultatReq()
     
@@ -81,7 +83,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     
     # Comparaison de la liste des pièces à fournir et la liste des pièces fournies
     dictDonnees = {}
-    for IDfamille, IDtype_piece, nomPiece, publicPiece, rattachementPiece, prenom, IDindividu, nbreConso in listePiecesObligatoires :
+    for IDfamille, IDtype_piece, nomPiece, publicPiece, rattachementPiece, prenom, IDindividu in listePiecesObligatoires :
         # Pour les pièces familiales :
         if publicPiece == "famille" : IDindividu = None
         # Pour les pièces qui sont indépendantes de la famille
