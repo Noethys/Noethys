@@ -13,9 +13,6 @@ import datetime
 
 import UTILS_Titulaires
 
-try: import psyco; psyco.full() 
-except: pass
-
 
 def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))

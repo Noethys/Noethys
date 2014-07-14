@@ -13,6 +13,7 @@ import time
 
 
 def DateEngFr(textDate):
+    if textDate in (None, "") : return ""
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
     return text
 
@@ -27,7 +28,6 @@ def DateComplete(dateDD):
     listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
-
 
 def DateEngEnDateDD(dateEng):
     if dateEng == None or dateEng == "" : return None

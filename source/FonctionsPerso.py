@@ -1427,11 +1427,27 @@ def PrepareFichierBIC():
     nouveauFichier.close()
     fichier.close()
 
-
+def RechercheModules(nomFichier="Noethys.py") :
+    """ Recherche les modules dépendants d'un script """
+    from modulefinder import ModuleFinder
+    finder = ModuleFinder()
+    finder.run_script(nomFichier)
+    listeModules = []
+    for nom, mod in finder.modules.iteritems():
+        cheminFichier = mod.__file__
+        if cheminFichier != None and "Noethys" in cheminFichier :
+            cheminFichier = cheminFichier.replace(os.getcwd(), "")
+            if cheminFichier.startswith("\\") :
+                cheminFichier = cheminFichier[1:]
+            listeModules.append(cheminFichier)
+    listeModules.sort() 
+    return listeModules
+    
 if __name__ == "__main__":
     
     # ------- Affiche les stats -------
-    AfficheStatsProgramme()
+    #AfficheStatsProgramme()
+
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")
@@ -1448,4 +1464,5 @@ if __name__ == "__main__":
 ##    dlg.Destroy() 
 ##    app.MainLoop()
     
-
+    listeModules = RechercheModules("UTILS_Infos_individus.py")
+    print len(listeModules), "modules trouves : ", listeModules

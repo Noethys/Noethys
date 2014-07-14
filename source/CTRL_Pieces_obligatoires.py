@@ -13,8 +13,6 @@ import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 
 

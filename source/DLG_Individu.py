@@ -120,7 +120,9 @@ class Notebook(wx.Notebook):
         if event.GetOldSelection()==-1: return
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
+        self.Freeze()
         page.MAJ() 
+        self.Thaw()
         event.Skip()
 
 
