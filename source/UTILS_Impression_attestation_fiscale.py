@@ -222,7 +222,7 @@ class Impression():
             if texte != "" :
                 listeParagraphes = texte.split("</para>")
                 for paragraphe in listeParagraphes :
-                    textePara = Paragraph(u"%s</para>" % paragraphe, paraStyle)
+                    textePara = Paragraph(u"%s" % paragraphe, paraStyle)
                     story.append(textePara)
                 
                 story.append(Spacer(0, 25))
