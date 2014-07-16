@@ -1,3 +1,11 @@
+Version 1.1.2.7 (13/07/2014) :
+
+- Ajout des périodes détaillées dans l'état global
+- Ajout de la mémorisation des coefficients dans l'état global
+- Optimisation de l'affichage de la page d'accueil
+- Adaptations pour Linux (Wolf et Claude)
+- Correction de divers bugs
+
 Version 1.1.2.6 (23/06/2014) :
 
 - Ajout de la personnalisation des numéros de facture

@@ -724,8 +724,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.modeAffichage = mode
             
     def MAJ(self):
+        self.Freeze() 
         self.MAJ_donnees()
         self.MAJ_affichage()
+        self.Thaw()
             
     def MAJ_donnees(self):
         if self.dictDonnees != None :

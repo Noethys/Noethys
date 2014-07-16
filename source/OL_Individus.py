@@ -121,17 +121,18 @@ class ListView(FastObjectListView):
         self.listeFiltres = []
         self.historique = []
         self.dictTracks = {}
+        self.dictIndividus = {}
+        self.donnees = []
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsg(u"Aucun individu")
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
     def OnItemActivated(self,event):
         self.Modifier(None)
-                
-    def InitModel(self):
-        self.donnees = self.GetTracks()
     
     def GetListeRattachements(self):
         global DICT_RATTACHEMENTS_INDIVIDUS, DICT_RATTACHEMENTS_FAMILLES
@@ -205,6 +206,12 @@ class ListView(FastObjectListView):
         
             dictIndividus[IDindividu] = dictTemp
         
+        # Vérifie si le dictIndividus est différent du précédent pour empêcher l'actualisation de la liste
+        if dictIndividus == self.dictIndividus :
+            return None
+        else :
+            self.dictIndividus = dictIndividus
+        
         # Création des Tracks
         listeListeView = []
         self.dictTracks = {}
@@ -212,7 +219,7 @@ class ListView(FastObjectListView):
             track = Track(dictTemp, dictIndividus)
             listeListeView.append(track)
             self.dictTracks[IDindividu] = track
-            
+        
         return listeListeView
       
     def InitObjectListView(self):
@@ -256,8 +263,6 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun individu")
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
@@ -269,8 +274,12 @@ class ListView(FastObjectListView):
                 IDindividu = selectionTrack[0].IDindividu
         
         # MAJ
-        self.InitModel()
-        self.InitObjectListView()
+        donnees = self.GetTracks()
+        if donnees != None :
+            self.donnees = donnees
+            self.GetParent().Freeze() 
+            self.InitObjectListView()
+            self.GetParent().Thaw() 
         self.Reselection(IDindividu)
     
     def Reselection(self, IDindividu=None):
@@ -478,7 +487,7 @@ class ListView(FastObjectListView):
                 self.historique.append(IDindividu)
                 if len(self.historique) > 30 :
                     self.historique.pop(0)
-
+                
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :

@@ -3580,7 +3580,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         temps_facture = HeureStrEnTime(temps_facture_ligne) 
                         temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
                     else :
-                        temps_facture = datetime.timedelta(hours=duree_max.hour, minutes=duree_max.minute)
+                        temps_facture = duree_max #datetime.timedelta(hours=duree_max.hour, minutes=duree_max.minute)
 
                     # Création du label personnalisé
                     label = ligneCalcul["label"]

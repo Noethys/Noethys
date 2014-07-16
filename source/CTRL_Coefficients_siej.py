@@ -14,9 +14,6 @@ import datetime
 import GestionDB
 import CTRL_Saisie_heure
 
-try: import psyco; psyco.full()
-except: pass
-
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
 
@@ -28,7 +25,8 @@ class Track(object):
         self.IDactivite = donnees[1]
         self.nomUnite = donnees[2]
         self.typeUnite = donnees[3]
-        self.nomActivite = donnees[4]
+        self.coeffUnite = donnees[4]
+        self.nomActivite = donnees[5]
         
         # Items HyperTreeList
         self.item = None
@@ -49,6 +47,12 @@ class Track(object):
     
     def GetCoeff(self):
         return self.ctrl_coeff.GetValeur() 
+
+    def GetCoeffStr(self):
+        return self.ctrl_coeff.GetValeurStr() 
+
+    def SetCoeff(self, valeur=None):
+        self.ctrl_coeff.SetValeur(valeur)
     
     def GetArrondi(self):
         return self.ctrl_arrondi.GetValeur() 
@@ -134,6 +138,9 @@ class CTRL_Coeff(wx.TextCtrl):
             return False
         return True
     
+    def GetValeurStr(self):
+        return self.GetValue() 
+        
     def GetValeur(self):
         valeur = self.GetValue() 
         if self.Validation() == True :
@@ -143,6 +150,14 @@ class CTRL_Coeff(wx.TextCtrl):
                 return float(valeur)
         else:
             return None
+    
+    def SetValeur(self, valeur=None):
+        if valeur in (None, 0, 0.0) : 
+            valeur = ""
+        try :
+            self.SetValue(str(valeur))
+        except :
+            pass
                     
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -173,6 +188,7 @@ class CTRL(HTL.HyperTreeList):
         
         self.listeTracks = []
         self.listeActivites = []
+        self.dictCoeff = {}
         self.periode = (None, None)
                 
         # Création des colonnes
@@ -206,7 +222,7 @@ class CTRL(HTL.HyperTreeList):
         else : conditionActivites = "unites.IDactivite IN %s" % str(tuple(self.listeActivites))
         DB = GestionDB.DB()
         req = """SELECT 
-        unites.IDunite, unites.IDactivite, unites.nom, unites.type,
+        unites.IDunite, unites.IDactivite, unites.nom, unites.type, unites.coeff,
         activites.nom
         FROM unites
         LEFT JOIN activites ON activites.IDactivite = unites.IDactivite
@@ -221,19 +237,26 @@ class CTRL(HTL.HyperTreeList):
         for item in listeDonnees :
             track = Track(item)
             listeTracks.append(track)
+            
+            # Mémorisation du coeff initial
+            if self.dictCoeff.has_key(track.IDunite) == False :
+                self.dictCoeff[track.IDunite] = track.coeffUnite
         
         return listeTracks
 
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
+        # Mémorise les coeff déjà saisis
+        self.GetDictCoeff() 
+        # MAJ
         self.Freeze()
         self.DeleteAllItems()
-        # Création de la racine
         self.root = self.AddRoot(u"Racine")
         self.Remplissage()
         self.Thaw() 
 
-    def Remplissage(self):
+    def Remplissage(self):        
+        # Importation des données
         listeTracks = self.Importation() 
 
         # Regroupement
@@ -279,6 +302,9 @@ class CTRL(HTL.HyperTreeList):
                     track.ctrl_coeff = ctrl_coeff      
                     if track.ctrl_type.GetSelection() == 1 :
                         ctrl_coeff.Enable(False)
+                    
+                    if self.dictCoeff.has_key(track.IDunite) :
+                        track.SetCoeff(self.dictCoeff[track.IDunite])
 
                     # CTRL de l'Arrondi
                     ctrl_arrondi = CTRL_Arrondi(self.GetMainWindow(), item=brancheUnite, track=track)
@@ -307,6 +333,15 @@ class CTRL(HTL.HyperTreeList):
             self.RemoveColumn(indexColonne)
         self.DeleteRoot() 
         self.Initialisation()
+    
+    def GetDictCoeff(self):
+        # Mémorise les coeff déjà saisis
+        for track in self.listeTracks :
+            if self.IsItemChecked(track.item) :
+                if track.GetType() == 0 :
+                    if track.ValidationCoeff() == True :
+                        self.dictCoeff[track.IDunite] = track.GetCoeffStr()
+        return self.dictCoeff
     
     def GetDonnees(self):
         """ Récupère les résultats des données saisies """
@@ -359,7 +394,13 @@ class CTRL(HTL.HyperTreeList):
         
         return dictDonnees
                 
-        
+    def SauvegardeCoeff(self):
+        """ Sauvegarde des coeff sasis dans la table unités """
+        self.GetDictCoeff() 
+        DB = GestionDB.DB() 
+        for IDunite, coeff in self.dictCoeff.iteritems() :
+            DB.ReqMAJ("unites", [("coeff", coeff),], "IDunite", IDunite)
+        DB.Close() 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
