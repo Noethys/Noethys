@@ -191,7 +191,7 @@ class Impression():
             story.append(Spacer(0,20))
 
             dataTableau = [(u"Date", u"Activité", u"Individu", u"Intitulé", u"Part utilisée"),]
-            largeursColonnes = [45, 95, 70, 140, 50]
+            largeursColonnes = [50, 95, 70, 135, 50]
 
             paraStyle = ParagraphStyle(name="detail",
                                       fontName="Helvetica",
