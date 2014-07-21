@@ -35,6 +35,7 @@ DICT_PROCEDURES = {
     "A7650" : u"Renseignement automatique du titulaire Hélios dans toutes les fiches familles",
     "A8120" : u"Renseignement automatique du type comptable du mode de règlement (banque ou caisse)",
     "A8260" : u"Modification de la table Paramètres",
+    "A8452" : u"Nettoyage des liens superflus",
     }
 
 # -------------------------------------------------------------------------------------------------------------------------
@@ -502,6 +503,40 @@ def A8260():
         DB.Commit() 
     DB.Close()
     
+def A8452():
+    """ Nettoyage des liens superflus """
+    DB = GestionDB.DB()
+    req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation
+    FROM liens
+    ORDER BY IDlien;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    # Lecture des liens
+    dictLiens = {}
+    for IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation in listeDonnees :
+        key = (IDindividu_sujet, IDindividu_objet)
+        if dictLiens.has_key(IDfamille) == False :
+            dictLiens[IDfamille] = {}
+        if dictLiens[IDfamille].has_key(key) == False :
+            dictLiens[IDfamille][key] = []
+        dictLiens[IDfamille][key].append(IDlien)
+        dictLiens[IDfamille][key].sort() 
+    # Analyse
+    listeLiensASupprimer = []
+    listeIDfamille = []
+    for IDfamille, dictKeys in dictLiens.iteritems() :
+        for key, listeIDlien in dictKeys.iteritems() :
+            if len(listeIDlien) > 1 :
+                # Suppression des liens obsolètes
+                for IDlien in listeIDlien[1:] :
+                    DB.ReqDEL("liens", "IDlien", IDlien)
+                    listeLiensASupprimer.append(IDlien)
+                if IDfamille not in listeIDfamille :
+                    listeIDfamille.append(IDfamille)
+    DB.Close() 
+    print "Nbre de liens supprimes :", len(listeLiensASupprimer)
+    print listeIDfamille
+    
     
     
 
@@ -589,5 +624,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8260()
+    A8452()
     app.MainLoop()
