@@ -546,6 +546,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         
         
     def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[]):
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.mode = "individu"
         self.listeActivites = listeActivites
         self.listeSelectionIndividus = listeSelectionIndividus
@@ -556,8 +557,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Importation_forfaits(listeComptesPayeurs=[self.dictComptesPayeurs[self.IDfamille],]) 
         self.Importation_transports()
         self.MAJ()
+        attente.Destroy() 
 
     def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None):
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.mode = "date"
         self.listeActivites = listeActivites
         self.date = date
@@ -569,6 +572,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Importation_forfaits() 
         self.Importation_transports()
         self.MAJ()
+        attente.Destroy() 
 
     def MAJ(self):
         self.MAJ_donnees()

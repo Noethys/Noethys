@@ -255,7 +255,6 @@ class PanelGrille(wx.Panel):
         self.MAJ_grille() 
         
     def MAJ_grille(self):
-##        self.grille.OnChangementParametres()
         self.listeSelectionIndividus = self.GetListeIndividus()
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
             
