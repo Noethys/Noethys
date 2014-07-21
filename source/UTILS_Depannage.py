@@ -186,6 +186,14 @@ class RattachementsTronques(Anomalie):
         DB.ReqDEL("rattachements", "IDrattachement", IDrattachement)
         self.corrige = True
 
+class LiensErrones(Anomalie):
+    def Correction(self, DB=None):
+        IDfamille = self.kwds["IDfamille"]
+        listeIDlien = self.kwds["listeIDlien"]
+        for IDlien in listeIDlien :
+            DB.ReqDEL("liens", "IDlien", IDlien)
+        self.corrige = True
+
 
 # --------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -247,6 +255,7 @@ class Depannage():
         self.ConsommationsErronees() 
         self.LiensTronques() 
         self.RattachementsTronques() 
+        self.LiensErrones() 
                 
         # Fermeture DB
         self.DB.Close()
@@ -534,7 +543,46 @@ class Depannage():
             listeTemp.append(RattachementsTronques(label=label, IDrattachement=IDrattachement, IDfamille=IDfamille, IDindividu=IDindividu))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
     
-    
+    def LiensErrones(self):
+        labelProbleme = u"Liens de parenté erronés"
+        labelCorrection = u"Supprimer les liens erronés"
+        req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation
+        FROM liens
+        ORDER BY IDlien;"""
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
+        # Lecture des liens
+        dictLiens = {}
+        for IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation in listeDonnees :
+            key = (IDindividu_sujet, IDindividu_objet)
+            if dictLiens.has_key(IDfamille) == False :
+                dictLiens[IDfamille] = {}
+            if dictLiens[IDfamille].has_key(key) == False :
+                dictLiens[IDfamille][key] = []
+            dictLiens[IDfamille][key].append(IDlien)
+            dictLiens[IDfamille][key].sort() 
+        # Analyse
+        dictLiensASupprimer = {}
+        for IDfamille, dictKeys in dictLiens.iteritems() :
+            for key, listeIDlien in dictKeys.iteritems() :
+                if len(listeIDlien) > 1 :
+                    if dictLiensASupprimer.has_key(IDfamille) == False :
+                        dictLiensASupprimer[IDfamille] = []
+                    # Suppression des liens obsolètes
+                    for IDlien in listeIDlien[1:] :
+                        dictLiensASupprimer[IDfamille].append(IDlien)
+        # Mémorisation
+        listeIDfamille = dictLiensASupprimer.keys() 
+        listeIDfamille.sort() 
+        listeTemp = []
+        for IDfamille in listeIDfamille :
+            listeIDlien = dictLiensASupprimer[IDfamille]
+            label = u"Famille ID%d : %d liens erronés" % (IDfamille, len(listeIDlien))
+            listeTemp.append(LiensErrones(label=label, IDfamille=IDfamille, listeIDlien=listeIDlien))
+        self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
+        
+        
+
 
 
 if __name__ == "__main__":
