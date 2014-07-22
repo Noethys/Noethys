@@ -400,7 +400,7 @@ class Ligne():
             couleurCase = couleurVacances
         else:
             couleurCase = None
-        self.renderer = MyRowLabelRenderer(couleurCase)
+        self.renderer = MyRowLabelRenderer(couleurCase, self.date)
         self.grid.SetRowLabelRenderer(numLigne, self.renderer)
         self.grid.dictLignes[numLigne] = self.renderer
         
@@ -522,7 +522,7 @@ class RendererCase(gridlib.PyGridCellRenderer):
         largeurTexte, hauteurTexte = dc.GetTextExtent(texte)
         if self.case.ouvert == True or self.case.estTotal == True :
             self.DrawBorder(grid, dc, rect)
-        dc.DrawText(texte, rect[0] + rect[2]/2.0 - largeurTexte/2.0, rect[1] + rect[3]/2.0 - hauteurTexte/2.0)
+        dc.DrawText(texte, rect[0] + rect[2]/2.0 - largeurTexte/2.0, rect[1] + rect[3]/2.0 - hauteurTexte/2.0)            
             
     def MAJ(self):
         self.grid.Refresh()
@@ -607,8 +607,9 @@ class RendererCaseActivite(gridlib.PyGridCellRenderer):
     
     
 class MyRowLabelRenderer(glr.GridLabelRenderer):
-    def __init__(self, bgcolor):
+    def __init__(self, bgcolor, date):
         self._bgcolor = bgcolor
+        self.date = date
         
     def Draw(self, grid, dc, rect, row):
         if self._bgcolor != None :
@@ -621,6 +622,13 @@ class MyRowLabelRenderer(glr.GridLabelRenderer):
         text = grid.GetRowLabelValue(row)
         self.DrawBorder(grid, dc, rect)
         self.DrawText(grid, dc, rect, text, hAlign, vAlign)
+
+        # Indicateur date du jour
+        if self.date == datetime.date.today() :
+            dc.SetBrush(wx.Brush(wx.Colour(255, 0, 0), wx.SOLID))
+            dc.SetPen(wx.TRANSPARENT_PEN)
+            dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect[2]-2, yoffset=rect[1]+1)
+            
     
     def MAJ(self, couleur):
         self._bgcolor = couleur

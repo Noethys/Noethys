@@ -20,6 +20,7 @@ import wx.lib.wordwrap as wordwrap
 ##import Outils.gridlabelrenderer as glr
 import wx.lib.mixins.gridlabelrenderer as glr
 import CTRL_Grille
+import datetime
 
 import UTILS_Dates
 import UTILS_Couleurs
@@ -585,8 +586,9 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
 
     
 class LabelLigneStandard(glr.GridLabelRenderer):
-    def __init__(self, bgcolor):
+    def __init__(self, bgcolor=None, date=None):
         self._bgcolor = bgcolor
+        self.date = date
         
     def Draw(self, grid, dc, rect, row):
         if self._bgcolor != None :
@@ -597,8 +599,12 @@ class LabelLigneStandard(glr.GridLabelRenderer):
         text = grid.GetRowLabelValue(row)
         DrawBorder(grid, dc, rect)
         self.DrawText(grid, dc, rect, text, hAlign, vAlign)
-        #font = dc.GetFont()
-        #print font.GetFamilyString(), font.GetStyleString(), font.GetWeightString()
+
+        # Indicateur date du jour
+        if self.date == datetime.date.today() :
+            dc.SetBrush(wx.Brush(wx.Colour(255, 0, 0), wx.SOLID))
+            dc.SetPen(wx.TRANSPARENT_PEN)
+            dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect[2]-2, yoffset=rect[1]+1)
     
     def MAJ(self, couleur):
         self._bgcolor = couleur
@@ -607,8 +613,9 @@ class LabelLigneStandard(glr.GridLabelRenderer):
 
 
 class LabelLigneSeparation(glr.GridLabelRenderer):
-    def __init__(self, bgcolor, ):
+    def __init__(self, bgcolor=None, date=None):
         self._bgcolor = bgcolor
+        self.date = date
         
     def Draw(self, grid, dc, rect, row):
         if self._bgcolor != None :
@@ -624,7 +631,13 @@ class LabelLigneSeparation(glr.GridLabelRenderer):
         text = grid.GetRowLabelValue(row)
         DrawBorder(grid, dc, rect)
         self.DrawText(grid, dc, rect, text, hAlign, vAlign)
-    
+
+        # Indicateur date du jour
+        if self.date == datetime.date.today() :
+            dc.SetBrush(wx.Brush(wx.Colour(255, 0, 0), wx.SOLID))
+            dc.SetPen(wx.TRANSPARENT_PEN)
+            dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect[2]-2, yoffset=rect[1]+1)
+
     def MAJ(self, couleur):
         self._bgcolor = couleur
 

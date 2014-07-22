@@ -236,12 +236,18 @@ class Ligne():
             couleurCase = couleurVacances
         else:
             couleurCase = None
+            
+        if modeLabel == "date" : 
+            dateTemp = self.date
+        else :
+            dateTemp = None
+
         if self.estSeparation == True :
                 couleurCase = (150, 150, 150)
         if self.estSeparation == True :
-            renderer = CTRL_Grille_renderers.LabelLigneSeparation(couleurCase)
+            renderer = CTRL_Grille_renderers.LabelLigneSeparation(couleurCase, dateTemp)
         else :
-            renderer = CTRL_Grille_renderers.LabelLigneStandard(couleurCase)
+            renderer = CTRL_Grille_renderers.LabelLigneStandard(couleurCase, dateTemp)
         self.grid.SetRowLabelRenderer(numLigne, renderer)
         self.grid.dictLignes[numLigne] = renderer
         
