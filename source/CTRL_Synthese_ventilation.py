@@ -298,7 +298,7 @@ class CTRL(HTL.HyperTreeList):
             # Colonnes périodes
             totalLigne = 0.0
             for periode in listePeriodes :
-                if dictVentilation[IDdepot].has_key(periode) :
+                if dictVentilation.has_key(IDdepot) and dictVentilation[IDdepot].has_key(periode) :
                     valeur = 0.0
                     for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].iteritems() : 
                         valeur += montantVentilation
