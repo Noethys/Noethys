@@ -164,6 +164,10 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
 
 def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, listeValeurs=None, autoriseSelections=True):
     """ Export de la liste au format Excel """
+    # Plus de sélection pour éviter les bugs !!!!
+    autoriseSelections = False 
+    
+    # Vérifie si données bien présentes
     if (listview != None and len(listview.donnees) == 0) or (grid != None and (grid.GetNumberRows() == 0 or grid.GetNumberCols() == 0)):
         dlg = wx.MessageDialog(None, u"Il n'y a aucune donnée dans la liste !", "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
