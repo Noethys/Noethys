@@ -56,6 +56,7 @@ class CTRL_activites(wx.CheckListBox):
         listeItems = []
         index = 0
         for nom, IDactivite in self.listeActivites :
+            if nom == None : nom = "?"
             self.Append(nom)
             index += 1
                             

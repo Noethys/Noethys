@@ -40,8 +40,10 @@ def GetListe(listeActivites=None, presents=None):
     # Conditions Présents
     if presents == None :
         conditionPresents = ""
+        jointurePresents = ""
     else:
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Récupération des régimes et num d'alloc pour chaque famille
     DB = GestionDB.DB()
@@ -65,13 +67,13 @@ def GetListe(listeActivites=None, presents=None):
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
     LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
     WHERE inscriptions.parti=0 %s %s
     GROUP BY familles.IDfamille
-    ;""" % (conditionActivites, conditionPresents)
+    ;""" % (jointurePresents, conditionActivites, conditionPresents)
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
@@ -171,8 +173,10 @@ class ListView(FastObjectListView):
         self.listeActivites = listeActivites
         self.presents = presents
         self.labelParametres = labelParametres
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.InitModel()
         self.InitObjectListView()
+        attente.Destroy() 
     
     def Selection(self):
         return self.GetSelectedObjects()

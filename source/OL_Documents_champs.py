@@ -59,7 +59,7 @@ class ListView(FastObjectListView):
             ColumnDefn(u"", 'left', 0, "" ),
             ColumnDefn(u"Nom du champ", 'left', 150, "nom", isSpaceFilling=True ),
             ColumnDefn(u"Valeur exemple", 'left', 150, "exemple"),
-            ColumnDefn(u"Code", 'left', 140, "code"),
+            ColumnDefn(u"Code", 'left', 230, "code"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -142,6 +142,52 @@ class ListView(FastObjectListView):
         code = self.Selection()[0].code
         # Insertion dans le texte
         self.GetParent().InsertTexte(code)
+    
+    def GetNbreChamps(self):
+        return len(self.donnees) 
+    
+
+
+
+class BarreRecherche(wx.SearchCtrl):
+    def __init__(self, parent, listview=None):
+        wx.SearchCtrl.__init__(self, parent, size=(-1,-1), style=wx.TE_PROCESS_ENTER)
+        self.parent = parent
+        self.rechercheEnCours = False
+        
+        self.SetDescriptiveText(u"Rechercher un champ...")
+        self.ShowSearchButton(True)
+        
+        self.listView = listview
+        nbreColonnes = self.listView.GetColumnCount()
+        self.listView.SetFilter(Filter.TextSearch(self.listView, self.listView.columns[0:nbreColonnes]))
+        
+        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
+        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
+        
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
+        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
+
+    def OnSearch(self, evt):
+        self.Recherche()
+            
+    def OnCancel(self, evt):
+        self.SetValue("")
+        self.Recherche()
+
+    def OnDoSearch(self, evt):
+        self.Recherche()
+        
+    def Recherche(self):
+        txtSearch = self.GetValue()
+        self.ShowCancelButton(len(txtSearch))
+        self.listView.GetFilter().SetText(txtSearch)
+        self.listView.RepopulateList()
+        self.Refresh() 
+
+
 
 
 class MyFrame(wx.Frame):

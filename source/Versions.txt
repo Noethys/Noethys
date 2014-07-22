@@ -1,3 +1,9 @@
+Version 1.1.2.8 (21/07/2014) :
+
+- Ajout de la correction des liens de parentés erronés
+- Ajout de plus de 200 champs dans l'éditeur de documents PDF
+- Ajout des champs dans les listes d'individus et de familles du menu Individus
+
 Version 1.1.2.7 (13/07/2014) :
 
 - Ajout des périodes détaillées dans l'état global

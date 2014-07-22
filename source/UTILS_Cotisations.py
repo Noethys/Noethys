@@ -35,8 +35,7 @@ import UTILS_Impression_cotisation
 import UTILS_Dates
 import DLG_Apercu_cotisation
 import UTILS_Conversion
-
-##from DLG_Saisie_texte_rappel import MOTSCLES
+import UTILS_Infos_individus
 
 
 class Cotisation():
@@ -71,6 +70,9 @@ class Cotisation():
         # Get noms Titulaires et individus
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 
         self.dictIndividus = UTILS_Titulaires.GetIndividus() 
+        
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
 
         # Récupération des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
@@ -299,6 +301,12 @@ class Cotisation():
                 "{DATE_EDITION_COURT}" : UTILS_Dates.DateDDEnFr(datetime.date.today()),
                 "{DATE_EDITION_LONG}" : UTILS_Dates.DateComplete(datetime.date.today()),
                 }
+            
+            # Ajoute les informations de base individus et familles
+            if IDindividu != None :
+                dictDonnee.update(self.infosIndividus.GetDictValeurs(mode="individu", ID=IDindividu, formatChamp=True))
+            if IDfamille != None :
+                dictDonnee.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
             
             # Ajoute les réponses des questionnaires
             for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :

@@ -31,6 +31,9 @@ import UTILS_Titulaires
 import UTILS_Utilisateurs
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
+import UTILS_Infos_individus
+
+
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
@@ -202,7 +205,9 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 return True
         return False
     
-    
+    # Récupération des infos de base individus et familles
+    infosIndividus = UTILS_Infos_individus.Informations() 
+
     dictComptes = {}
     for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestationsTemp :
         montant_initial = FloatToDecimal(montant_initial) 
@@ -270,6 +275,8 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                     "{ORGANISATEUR_SIRET}" : dictOrganisme["num_siret"],
                     "{ORGANISATEUR_APE}" : dictOrganisme["code_ape"],
                     }
+
+                dictComptes[IDcompte_payeur].update(infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
             # Insert les montants pour le compte payeur
             if dictVentilation.has_key(IDprestation) :

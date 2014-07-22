@@ -81,25 +81,42 @@ class ListView(FastObjectListView):
             conditionActivites = ""
         else:
             if len(self.listeActivites) == 1 :
-                conditionActivites = " AND consommations.IDactivite=%d" % self.listeActivites[0]
+                conditionActivites = " AND inscriptions.IDactivite=%d" % self.listeActivites[0]
             else:
-                conditionActivites = " AND consommations.IDactivite IN %s" % str(tuple(self.listeActivites))
+                conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(self.listeActivites))
                 
         # Conditions Présents
         if self.presents == None :
             conditionPresents = ""
+            jointurePresents = ""
         else:
             conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(self.presents[0]), str(self.presents[1]))
+            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
         
         # Récupération des familles
         DB = GestionDB.DB()
-        req = """SELECT familles.IDfamille
-        FROM familles 
-        LEFT JOIN rattachements ON rattachements.IDfamille = familles.IDfamille
-        LEFT JOIN consommations ON consommations.IDindividu = rattachements.IDindividu
-        WHERE familles.IDfamille>0 %s %s
+##        req = """SELECT familles.IDfamille
+##        FROM familles 
+##        LEFT JOIN rattachements ON rattachements.IDfamille = familles.IDfamille
+##        %s
+##        WHERE familles.IDfamille>0 %s %s
+##        GROUP BY familles.IDfamille
+##        ;""" % (jointurePresents, conditionActivites, conditionPresents)
+
+        req = """
+        SELECT 
+        inscriptions.IDfamille
+        FROM inscriptions 
+        LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
+        LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
+        %s
+        AND inscriptions.IDfamille = familles.IDfamille
+        LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
+        LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
+        WHERE inscriptions.parti=0 %s %s
         GROUP BY familles.IDfamille
-        ;""" % (conditionActivites, conditionPresents)
+        ;""" % (jointurePresents, conditionActivites, conditionPresents)
+
         DB.ExecuterReq(req)
         listeFamilles = DB.ResultatReq()
         
@@ -163,8 +180,10 @@ class ListView(FastObjectListView):
         self.presents = presents
         self.familles = familles
         self.labelParametres = labelParametres
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.InitModel()
         self.InitObjectListView()
+        attente.Destroy()
     
     def Selection(self):
         return self.GetSelectedObjects()

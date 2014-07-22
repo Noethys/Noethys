@@ -33,6 +33,7 @@ import UTILS_Impression_rappel
 import UTILS_Dates
 import DLG_Apercu_rappel
 import UTILS_Conversion
+import UTILS_Infos_individus
 
 from DLG_Saisie_texte_rappel import MOTSCLES
 
@@ -82,6 +83,10 @@ class Facturation():
         # Récupération des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
+        # Récupération des infos de base familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        
+        
     def Supprime_accent(self, texte):
         liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
         for a, b in liste :
@@ -210,7 +215,10 @@ class Facturation():
                     "{ORGANISATEUR_SIRET}" : self.dictOrganisme["num_siret"],
                     "{ORGANISATEUR_APE}" : self.dictOrganisme["code_ape"],
                     }
-
+                
+                # Ajout les données de base familles
+                dictComptes[IDcompte_payeur].update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
+                
                 # Ajoute les réponses des questionnaires
                 for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :
                     dictComptes[IDcompte_payeur][dictReponse["champ"]] = dictReponse["reponse"]
@@ -310,7 +318,10 @@ class Facturation():
                 }
 
             dictRappel["texte"] = self.Fusion(IDtexte, dictRappel)
-            
+
+            # Ajout les données de base familles
+            dictRappel.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
+
             # Ajoute les réponses des questionnaires
             for dictReponse in self.Questionnaires.GetDonnees(IDfamille) :
                 dictRappel[dictReponse["champ"]] = dictReponse["reponse"]

@@ -15,8 +15,7 @@ import UTILS_Titulaires
 import UTILS_Utilisateurs
 from ObjectListView import FastObjectListView, ColumnDefn, Filter
 
-try: import psyco; psyco.full()
-except: pass
+import UTILS_Infos_individus
 
 
 def DateEngEnDateDD(dateEng):
@@ -40,8 +39,10 @@ def GetListe(listeActivites=None, presents=None):
     # Conditions Présents
     if presents == None :
         conditionPresents = ""
+        jointurePresents = ""
     else:
         conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
+        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Récupération des régimes et num d'alloc pour chaque famille
     DB = GestionDB.DB()
@@ -65,13 +66,13 @@ def GetListe(listeActivites=None, presents=None):
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
     LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
     WHERE inscriptions.parti=0 %s %s
     GROUP BY familles.IDfamille
-    ;""" % (conditionActivites, conditionPresents)
+    ;""" % (jointurePresents, conditionActivites, conditionPresents)
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
@@ -140,6 +141,10 @@ class ListView(FastObjectListView):
                         
     def InitModel(self):
         self.donnees = self.GetTracks()
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        for track in self.donnees :
+            self.infosIndividus.SetAsAttributs(parent=track, mode="famille", ID=track.IDfamille)
 
     def GetTracks(self):
         """ Récupération des données """
@@ -169,7 +174,13 @@ class ListView(FastObjectListView):
             ColumnDefn(u"Caisse", "left", 130, "caisse"),
             ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc"),
             ]        
-        self.SetColumns(liste_Colonnes)
+
+        # Insertion des champs infos de base individus
+        listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="famille")
+        for nomChamp in listeChamps :
+            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, visible=False))
+
+        self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_familles")
         self.SetEmptyListMsg(u"Aucune famille")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
@@ -179,8 +190,10 @@ class ListView(FastObjectListView):
         self.listeActivites = listeActivites
         self.presents = presents
         self.labelParametres = labelParametres
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.InitModel()
         self.InitObjectListView()
+        attente.Destroy() 
     
     def Selection(self):
         return self.GetSelectedObjects()
@@ -235,6 +248,9 @@ class ListView(FastObjectListView):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+
+        # Commandes standards
+        self.AjouterCommandesMenuContext(menuPop)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()

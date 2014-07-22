@@ -14,11 +14,10 @@ import datetime
 import UTILS_Titulaires
 import UTILS_Questionnaires
 import DATA_Civilites as Civilites
+import UTILS_Infos_individus
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter
 
-try: import psyco; psyco.full()
-except: pass
 
 DICT_INFOS_INDIVIDUS = {}
 DICT_QUESTIONNAIRES = {}
@@ -94,7 +93,8 @@ def GetReponse(IDquestion=None, ID=None):
 #-----------INDIVIDUS-----------
 
 class TrackIndividu(object):
-    def __init__(self, donnees):
+    def __init__(self, donnees, infosIndividus):
+        self.infosIndividus = infosIndividus
         self.IDindividu = donnees["IDindividu"]
         self.IDcivilite = donnees["IDcivilite"]
         self.nom = donnees["nom"]
@@ -165,15 +165,19 @@ class TrackIndividu(object):
             "{INDIVIDU_EMAIL_PRO}" : FormateStr(self.travail_mail),
             "nomImage" : self.nomImage,
             }
-            
+        
+        # Questionnaires
         for dictQuestion in LISTE_QUESTIONS :
             exec(u"dictTemp['{QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
             if dictQuestion["controle"] == "codebarres" :
                 exec(u"dictTemp['{CODEBARRES_QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
         
+        # Infos de base individus
+        dictTemp.update(self.infosIndividus.GetDictValeurs(mode="individu", ID=self.IDindividu, formatChamp=True))
+        
         return dictTemp
 
-def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None):
+def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None, infosIndividus=None):
     # Conditions Activites
     if listeActivites == None or listeActivites == [] :
         conditionActivites = ""
@@ -185,8 +189,10 @@ def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None):
 
     # Conditions Présents
     conditionPresents = ""
+    jointurePresents = ""
     if presents != None :
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
     # Condition Individu donné
     conditionIndividus = ""
@@ -206,10 +212,10 @@ def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None):
     SELECT %s
     FROM individus 
     LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     WHERE (inscriptions.parti=0 OR inscriptions.parti IS NULL) %s %s %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), conditionActivites, conditionPresents, conditionIndividus)
+    ;""" % (",".join(listeChamps), jointurePresents, conditionActivites, conditionPresents, conditionIndividus)
     
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -249,7 +255,7 @@ def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None):
             dictTemp["age"] = age
                     
         # Formatage sous forme de TRACK
-        track = TrackIndividu(dictTemp)
+        track = TrackIndividu(dictTemp, infosIndividus)
         listeListeView.append(track)
         
     return listeListeView
@@ -258,7 +264,8 @@ def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None):
 #-----------FAMILLES-----------
 
 class TrackFamille(object):
-    def __init__(self, donnees):
+    def __init__(self, donnees, infosIndividus):
+        self.infosIndividus = infosIndividus
         self.IDfamille = donnees["IDfamille"]
         self.nomTitulaires = donnees["titulaires"]
         self.rue = donnees["rue"]
@@ -284,15 +291,19 @@ class TrackFamille(object):
             "{FAMILLE_CAISSE}" : FormateStr(self.caisse),
             "{FAMILLE_NUMALLOC}" : FormateStr(self.numAlloc),
             }
-            
+        
+        # Questionnaires
         for dictQuestion in LISTE_QUESTIONS :
             exec(u"dictTemp['{QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
             if dictQuestion["controle"] == "codebarres" :
                 exec(u"dictTemp['{CODEBARRES_QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
-                
+        
+        # Infos de base individus
+        dictTemp.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=self.IDfamille, formatChamp=True))
+
         return dictTemp
 
-def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None):
+def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None, infosIndividus=None):
     """ Récupération des infos familles """
     # Conditions Activites
     if listeActivites == None or listeActivites == [] :
@@ -305,8 +316,10 @@ def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None):
 
     # Conditions Présents
     conditionPresents = ""
+    jointurePresents = ""
     if presents != None :
         conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
 
     # Condition Famille donnée
     conditionFamilles = ""
@@ -321,13 +334,13 @@ def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None):
     FROM familles 
     LEFT JOIN inscriptions ON inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
     WHERE (inscriptions.parti=0 or inscriptions.parti IS NULL) %s %s %s
     GROUP BY familles.IDfamille
-    ;""" % (conditionActivites, conditionPresents, conditionFamilles)
+    ;""" % (jointurePresents, conditionActivites, conditionPresents, conditionFamilles)
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
@@ -355,7 +368,7 @@ def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None):
             }
     
         # Formatage sous forme de TRACK
-        track = TrackFamille(dictTemp)
+        track = TrackFamille(dictTemp, infosIndividus)
         listeListeView.append(track)
         
     return listeListeView
@@ -388,10 +401,14 @@ class ListView(FastObjectListView):
         global DICT_QUESTIONNAIRES
         DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type=self.categorie[:-1])
 
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        
+        # Récupération des tracks
         if self.categorie == "individus" :
-            self.donnees = GetListeIndividus(self.listeActivites, self.presents, self.IDindividu)
+            self.donnees = GetListeIndividus(self.listeActivites, self.presents, self.IDindividu, self.infosIndividus)
         else:
-            self.donnees = GetListeFamilles(self.listeActivites, self.presents, self.IDfamille)
+            self.donnees = GetListeFamilles(self.listeActivites, self.presents, self.IDfamille, self.infosIndividus)
 
     def InitObjectListView(self):
         # Création du imageList
@@ -428,13 +445,13 @@ class ListView(FastObjectListView):
                 ColumnDefn(u"Rue", "left", 150, "rue_resid"),
                 ColumnDefn(u"C.P.", "left", 50, "cp_resid"),
                 ColumnDefn(u"Ville", "left", 120, "ville_resid"),
-                ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile"),
-                ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile"),
-                ColumnDefn(u"Email", "left", 150, "mail"),
-                ColumnDefn(u"Profession", "left", 150, "profession"),
-                ColumnDefn(u"Employeur", "left", 150, "employeur"),
-                ColumnDefn(u"Tél pro.", "left", 100, "travail_tel"),
-                ColumnDefn(u"Email pro.", "left", 150, "travail_mail"),
+##                ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile"),
+##                ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile"),
+##                ColumnDefn(u"Email", "left", 150, "mail"),
+##                ColumnDefn(u"Profession", "left", 150, "profession"),
+##                ColumnDefn(u"Employeur", "left", 150, "employeur"),
+##                ColumnDefn(u"Tél pro.", "left", 100, "travail_tel"),
+##                ColumnDefn(u"Email pro.", "left", 150, "travail_mail"),
                 ]
         
         else:
@@ -647,7 +664,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ()
+        self.myOlv.MAJ(categorie="individu", listeActivites=None, presents=None)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

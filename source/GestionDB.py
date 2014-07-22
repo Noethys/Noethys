@@ -1458,6 +1458,19 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 2, 8)
+        if versionFichier < versionFiltre :   
+            try :
+                if self.isNetwork == True :
+                    self.ExecuterReq("ALTER TABLE parametres MODIFY COLUMN parametre TEXT;")
+                    self.Commit()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
+
+
+
 
 
 

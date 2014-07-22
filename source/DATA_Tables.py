@@ -687,7 +687,7 @@ DB_DATA = {
     "parametres":[           ("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID parametre"),
                                     ("categorie", "VARCHAR(200)", u"Catégorie"),
                                     ("nom", "VARCHAR(200)", u"Nom"),
-                                    ("parametre", "VARCHAR(455)", u"Parametre"),
+                                    ("parametre", "VARCHAR(30000)", u"Parametre"),
                                     ], # Paramètres
 
     "types_groupes_activites":[("IDtype_groupe_activite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID type groupe activité"),

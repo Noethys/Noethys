@@ -96,9 +96,15 @@ import locale
 import operator
 import string
 import time
+import copy
 
 import CellEditor
 import OLVEvent
+
+import sys
+sys.path.append("..")
+
+
 
 
 class ObjectListView(wx.ListCtrl):
@@ -250,6 +256,9 @@ class ObjectListView(wx.ListCtrl):
         self.whenLastTypingEvent = 0
         self.filter = None
         self.objectToIndexMap = None
+        
+        self.listeColonnes = [] 
+        self.nomListe = None
 
         self.rowFormatter = kwargs.pop("rowFormatter", None)
         self.useAlternateBackColors = kwargs.pop("useAlternateBackColors", True)
@@ -325,10 +334,11 @@ class ObjectListView(wx.ListCtrl):
         self.checkStateColumn = None
         self.columns = []
         for x in columns:
-            if isinstance(x, ColumnDefn):
-                self.AddColumnDefn(x)
-            else:
-                self.AddColumnDefn(ColumnDefn(*x))
+            if x.visible == True :
+                if isinstance(x, ColumnDefn):
+                    self.AddColumnDefn(x)
+                else:
+                    self.AddColumnDefn(ColumnDefn(*x))
         # Try to preserve the column column
         self.SetSortColumn(sortCol)
         if repopulate:
@@ -2164,6 +2174,87 @@ class ObjectListView(wx.ListCtrl):
         self.cellBeingEdited = None
         self.SetFocus()
 
+    def SetColumns2(self, colonnes=[], nomListe=None):
+        """ Pour une liste avec possibilités de configuration """
+        self.nomListe = nomListe
+        if self.listeColonnes == [] :
+            import DLG_Configuration_listes
+            self.listeColonnesDefaut = copy.deepcopy(colonnes)
+            self.listeColonnes = DLG_Configuration_listes.RestaurationConfiguration(nomListe=nomListe, listeColonnesDefaut=colonnes)
+        self.SetColumns(self.listeColonnes)
+
+    def AjouterCommandesMenuContext(self, menu=None):
+        # Séparation
+        menu.AppendSeparator()
+        
+        # Item Configurer la liste
+        item = wx.MenuItem(menu, 8601, u"Configurer la liste")
+        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.MenuConfigurerListe, id=8601)
+
+        # Séparation
+        menu.AppendSeparator()
+        
+        # Statistiques de la liste
+        nbreLignes = len(self.innerList)
+        if nbreLignes == 0 :
+            label = u"Liste vide"
+        elif nbreLignes == 1 :
+            label = u"1 ligne"
+        else :
+            label = u"%d lignes" % nbreLignes
+        label += u" et %d colonnes" % len(self.columns) 
+        item = wx.MenuItem(menu, 8602, label)
+        menu.AppendItem(item)
+        item.Enable(False)
+    
+    def MenuConfigurerListe(self, event=None):
+        # Préparation de la liste
+        listeDonnees = []
+        dictColonnes = {}
+        for col in self.listeColonnes :
+            listeDonnees.append((col.valueGetter, col.visible))
+            dictColonnes[col.valueGetter] = col
+            
+        listeDonneesDefaut = []
+        for col in self.listeColonnesDefaut :
+            listeDonneesDefaut.append((col.valueGetter, col.visible))
+            
+        # DLG de la configuration de listes
+        import DLG_Configuration_listes
+        dlg = DLG_Configuration_listes.Dialog(self, listeDonnees=listeDonnees, listeDonneesDefaut=listeDonneesDefaut)      
+        if dlg.ShowModal() == wx.ID_OK:
+            listeDonnees = dlg.GetListeDonnees()
+            dlg.Destroy() 
+        else :
+            dlg.Destroy() 
+            return
+        
+        # Analyse des résultats
+        self.listeColonnes = []
+        for nom, visible in listeDonnees :
+            col = dictColonnes[nom]
+            col.visible = visible
+            self.listeColonnes.append(col)
+            
+        # Sauvegarde
+        self.SauvegardeConfiguration()
+        
+        # Mise à jour de la liste
+        attente = wx.BusyInfo(u"Configuration de la liste en cours...", self)
+        self.InitModel()
+        self.InitObjectListView()
+        attente.Destroy()
+    
+    def SauvegardeConfiguration(self, event=None):
+        """ Sauvegarde de la configuration """
+        if self.nomListe != None :
+            import DLG_Configuration_listes
+            DLG_Configuration_listes.SauvegardeConfiguration(nomListe=self.nomListe, listeColonnes=self.listeColonnes)
+            
+        
+        
 
 ########################################################################
 
@@ -3499,7 +3590,7 @@ class ColumnDefn(object):
                  checkStateGetter=None, checkStateSetter=None,
                  isSearchable=True, useBinarySearch=None, headerImage=-1,
                  groupKeyGetter=None, groupKeyConverter=None, useInitialLetterForGroupKey=False,
-                 groupTitleSingleItem=None, groupTitlePluralItems=None):
+                 groupTitleSingleItem=None, groupTitlePluralItems=None, visible=True):
         """
         Create a new ColumnDefn using the given attributes.
 
@@ -3537,6 +3628,7 @@ class ColumnDefn(object):
         self.groupTitleSingleItem = groupTitleSingleItem or "%(title)s (%(count)d item)"
         self.groupTitlePluralItems = groupTitlePluralItems or "%(title)s (%(count)d items)"
         self.isInternal = False # was this column created internally by ObjectListView?
+        self.visible = visible
 
         self.minimumWidth = minimumWidth
         self.maximumWidth = maximumWidth

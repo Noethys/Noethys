@@ -13,6 +13,7 @@ import GestionDB
 import datetime
 import UTILS_Titulaires
 import DATA_Civilites as Civilites
+import UTILS_Infos_individus
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter
 
@@ -52,8 +53,10 @@ def GetListe(listeActivites=None, presents=None):
     # Conditions Présents
     if presents == None :
         conditionPresents = ""
+        jointurePresents = ""
     else:
         conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
+        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
 
     # Récupération des individus
     listeChamps = (
@@ -68,10 +71,10 @@ def GetListe(listeActivites=None, presents=None):
     SELECT %s
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu
+    %s
     WHERE inscriptions.parti=0 %s %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), conditionActivites, conditionPresents)
+    ;""" % (",".join(listeChamps), jointurePresents, conditionActivites, conditionPresents)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 
@@ -81,7 +84,7 @@ def GetListe(listeActivites=None, presents=None):
     
     # Récupération des adresses auto
     GetDictInfosIndividus()
-        
+
     listeListeView = []
     for valeurs in listeDonnees :
         dictTemp = {}
@@ -182,6 +185,10 @@ class ListView(FastObjectListView):
 
     def InitModel(self):
         self.donnees = self.GetTracks()
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        for track in self.donnees :
+            self.infosIndividus.SetAsAttributs(parent=track, mode="individu", ID=track.IDindividu)
 
     def GetTracks(self):
         """ Récupération des données """
@@ -233,7 +240,13 @@ class ListView(FastObjectListView):
             ColumnDefn(u"Email", "left", 150, "mail"),
             ]
         
-        self.SetColumns(liste_Colonnes)
+        # Insertion des champs infos de base individus
+        listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="individu")
+        for nomChamp in listeChamps :
+            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, visible=False))
+
+        self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_individus")
+        
         self.SetEmptyListMsg(u"Aucun individu")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
@@ -243,8 +256,10 @@ class ListView(FastObjectListView):
         self.listeActivites = listeActivites
         self.presents = presents
         self.labelParametres = labelParametres
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.InitModel()
         self.InitObjectListView()
+        attente.Destroy()
     
     def Selection(self):
         return self.GetSelectedObjects()
@@ -289,6 +304,9 @@ class ListView(FastObjectListView):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
+        
+        # Commandes standards
+        self.AjouterCommandesMenuContext(menuPop)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -375,12 +393,13 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2013, 8, 30), datetime.date(2013, 8, 30)))
+        self.myOlv.MAJ(listeActivites=(1, 2, 3))#, presents=(datetime.date(2013, 8, 30), datetime.date(2013, 8, 30)))
         print len(self.myOlv.donnees)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
         self.Layout()
+        self.SetSize((1200, 600))
 
 if __name__ == '__main__':
     app = wx.App(0)

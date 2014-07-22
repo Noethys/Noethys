@@ -29,6 +29,9 @@ from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
+import UTILS_Infos_individus
+
+
 LISTE_DONNEES = [
     { "nom" : u"Attestation", "champs" : [ 
         { "code" : "numero", "label" : u"Numéro"}, 
@@ -1093,6 +1096,9 @@ class Dialog(wx.Dialog):
         # Récupération des questionnaires
         Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+
         # ----------------------------------------------------------------------------------------------------
         # Analyse et regroupement des données
         dictValeurs = {}
@@ -1156,7 +1162,10 @@ class Dialog(wx.Dialog):
                     "{SIGNATAIRE_NOM}" : nomSignataire,
                     "{SIGNATAIRE_FONCTION}" : fonctionSignataire,
                     }
-
+                
+                # Ajoute les infos de base familles
+                dictValeurs[IDcompte_payeur].update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
+                
                 # Ajoute les réponses des questionnaires
                 for dictReponse in Questionnaires.GetDonnees(IDfamille) :
                     dictValeurs[IDcompte_payeur][dictReponse["champ"]] = dictReponse["reponse"]

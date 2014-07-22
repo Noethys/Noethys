@@ -28,11 +28,13 @@ import random
 import traceback
 import GestionDB
 import datetime
+import re
 
 import DLG_Saisie_formule
 import UTILS_Questionnaires
 import UTILS_Codesbarres
 import UTILS_Dates
+import UTILS_Infos_individus
 
 import UTILS_Impressions
 UTILS_Impressions.AjouterPolicesPDF() 
@@ -59,8 +61,6 @@ from reportlab.graphics.barcode import createBarcodeDrawing
 
 import DLG_Saisie_texte_doc
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Fond():
@@ -125,6 +125,8 @@ class Facture():
             (u"Solde dû pour la période", u"4.00 ¤", "{SOLDE_DU}"),
             (u"Total des reports des périodes précédentes", u"134.50 ¤", "{TOTAL_REPORTS}"),
             ]
+        
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
         
         self.codesbarres = [ 
             (u"Numéro de facture", u"1234567", "{CODEBARRES_NUM_FACTURE}"),
@@ -232,6 +234,8 @@ class Attestation():
             (u"Solde dû pour la période", u"4.00 ¤", "{SOLDE_DU}"),
             ]
         
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
+        
         self.codesbarres = []
             
         self.speciaux = [ 
@@ -305,6 +309,8 @@ class Rappel():
             (u"Solde", u"12.00 ¤", "{SOLDE}"),
             (u"Solde en lettres", u"Douze Euros", "{SOLDE_LETTRES}"),
             ]
+        
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
         
         self.codesbarres = [ 
             (u"Numéro de rappel", u"1234567", "{CODEBARRES_NUM_RAPPEL}"),
@@ -414,6 +420,8 @@ class Reglement():
             (u"Date de saisie du règlement", u"23/03/2011", "{DATE_SAISIE}"),
             ]
         
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
+        
         self.codesbarres = []
             
         self.speciaux = [ 
@@ -493,6 +501,8 @@ class Individu():
             (u"Code APE de l'organisateur", u"NO123", "{ORGANISATEUR_APE}"),
             ]
         
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu"))
+        
         self.codesbarres = [ 
             (u"ID de l'individu", u"1234567", "{CODEBARRES_ID_INDIVIDU}"),
             ]
@@ -534,7 +544,7 @@ class Famille():
             (u"Code APE de l'organisateur", u"NO123", "{ORGANISATEUR_APE}"),
             ]
         
-        
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
         
         self.codesbarres = [ 
             (u"ID de la famille", u"1234567", "{CODEBARRES_ID_FAMILLE}"),
@@ -614,6 +624,8 @@ class Inscription():
             (u"Numéro SIRET de l'organisateur", u"123456789123", "{ORGANISATEUR_SIRET}"),
             (u"Code APE de l'organisateur", u"NO123", "{ORGANISATEUR_APE}"),
             ]
+        
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu+famille"))
         
         self.codesbarres = [ 
             (u"ID de l'individu", u"1234567", "{CODEBARRES_ID_INDIVIDU}"),
@@ -715,6 +727,8 @@ class Cotisation():
             (u"Date d'édition (court)", u"19/09/2011", "{DATE_EDITION_COURT}"),
             ]
         
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="individu+famille"))
+        
         self.codesbarres = [ 
             (u"ID de la famille", u"1234567", "{CODEBARRES_ID_FAMILLE}"),
             ]
@@ -775,7 +789,9 @@ class Attestation_fiscale():
             (u"Détail enfant 6", u"10.00 ¤ pour Lucie DUPOND née le 01/02/2005", "{TXT_ENFANT_6}"),
             
             ]
-                    
+        
+        self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
+        
         self.speciaux = [ 
                 {
                     "nom" : u"Cadre principal",
@@ -4828,6 +4844,9 @@ class ModeleDoc():
                     if type(valeur) == datetime.date : valeur = UTILS_Dates.DateDDEnFr(valeur)
                     if nomChamp in texte :
                         texte = texte.replace(nomChamp, valeur)
+            # Remplace également les mots-clés non utilisés par des chaînes vides
+            texte = re.sub(r"\{[A-Za-z0-9_-]*?\}", "", texte)
+            
             valeur=texte
                         
         # -------- IMAGE -------

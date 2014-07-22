@@ -386,7 +386,7 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher un apercu du PDF")
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
         self.ctrl_memoriser.SetToolTipString(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")
-        self.SetMinSize((600, 650))
+        self.SetMinSize((750, 770))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

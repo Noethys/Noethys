@@ -26,6 +26,7 @@ import UTILS_Identification
 import UTILS_Titulaires
 import UTILS_Questionnaires
 import UTILS_Parametres
+import UTILS_Infos_individus
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -544,6 +545,11 @@ class Dialog(wx.Dialog):
             "{FAMILLE_NUMALLOC}" : FormateStr(self.dictInscription["FAMILLE_NUMALLOC"]),
             }
 
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        dictValeurs.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
+        dictValeurs.update(self.infosIndividus.GetDictValeurs(mode="individu", ID=self.dictInscription["IDINDIVIDU"], formatChamp=True))
+
         # Récupération des questionnaires
         Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
         for dictReponse in Questionnaires.GetDonnees(IDfamille) :
@@ -576,6 +582,7 @@ class Dialog(wx.Dialog):
             for key, valeur in dictValeurs.iteritems() :
                 if key.startswith("{") :
                     if valeur == None : valeur = ""
+                    if type(valeur) == int : valeur = str(valeur)
                     textIntro = textIntro.replace(key, valeur)
             dictValeurs["intro"] = textIntro
         else:

@@ -52,8 +52,10 @@ class Dialog(wx.Dialog):
         self.staticbox_champs_staticbox = wx.StaticBox(self, -1, u"Champs disponibles")
         self.label_intro = wx.StaticText(self, -1, u"Vous pouvez écrire votre texte et insérer des champs en double-cliquant sur un item de la liste.", style=wx.ALIGN_CENTER)
         self.ctrl_champs = OL_Documents_champs.ListView(self, listeChamps=listeChamps, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_champs.SetMinSize((-1, 180))
+        self.ctrl_recherche = OL_Documents_champs.BarreRecherche(self, self.ctrl_champs)
+        self.ctrl_champs.SetMinSize((-1, 300))
         self.ctrl_champs.MAJ() 
+        self.staticbox_champs_staticbox.SetLabel(u"%d champs disponibles" % self.ctrl_champs.GetNbreChamps())
         self.ctrl_texte = wx.TextCtrl(self, -1, self.texte, style=wx.TE_MULTILINE)
         self.hyper_formule = Hyperlien(self, label=u"Insérer une formule conditionnelle", infobulle=u"Cliquez ici pour insérer une formule conditionnelle", URL="")
         
@@ -76,7 +78,7 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
-        self.SetMinSize((550, 500))
+        self.SetMinSize((800, 680))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -85,6 +87,7 @@ class Dialog(wx.Dialog):
         staticbox_champs = wx.StaticBoxSizer(self.staticbox_champs_staticbox, wx.VERTICAL)
         grid_sizer_base.Add(self.label_intro, 0, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
         staticbox_champs.Add(self.ctrl_champs, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_champs.Add(self.ctrl_recherche, 0, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_champs, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         staticbox_texte.Add(self.ctrl_texte, 1, wx.TOP|wx.LEFT|wx.RIGHT|wx.EXPAND, 5)
         staticbox_texte.Add(self.hyper_formule, 0, wx.ALIGN_RIGHT|wx.RIGHT|wx.BOTTOM, 5)

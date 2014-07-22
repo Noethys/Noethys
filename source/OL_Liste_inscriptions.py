@@ -107,7 +107,8 @@ def GetDictInfosIndividus():
 class Track(object):
     def __init__(self, donnees):
         for dictChamp in LISTE_CHAMPS :
-            exec("""self.%s = donnees["%s"]""" % (dictChamp["code"], dictChamp["code"]))
+##            exec("""self.%s = donnees["%s"]""" % (dictChamp["code"], dictChamp["code"]))
+            setattr(self, dictChamp["code"], donnees[dictChamp["code"]])
             
         
 class ListView(GroupListView):
@@ -399,8 +400,10 @@ class ListView(GroupListView):
         else:
             self.selectionID = None
             self.selectionTrack = None
+        attente = wx.BusyInfo(u"Recherche des données...", self)
         self.InitModel()
         self.InitObjectListView()
+        attente.Destroy() 
         # Sélection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)

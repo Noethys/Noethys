@@ -35,6 +35,7 @@ import UTILS_Impression_attestation_fiscale
 import UTILS_Dates
 import DLG_Apercu_attestation_fiscale
 import UTILS_Conversion
+import UTILS_Infos_individus
 
 import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites()
@@ -76,6 +77,10 @@ class Attestations_fiscales():
 
         # Récupération des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
+
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+
 
     def Supprime_accent(self, texte):
         liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
@@ -183,6 +188,9 @@ class Attestations_fiscales():
                 
                 "individus" : listeIndividus,
                 }
+            
+            # Ajoute les infos de base familles
+            dictDonnee.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
             
             # Insertion des enfants
             index = 1

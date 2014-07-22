@@ -33,6 +33,7 @@ import UTILS_Impression_facture
 import UTILS_Dates
 import DLG_Apercu_facture
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+import UTILS_Infos_individus
 
 
 
@@ -99,6 +100,10 @@ class Facturation():
 
         # Récupération des questionnaires
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
+        
+        # Récupération des infos de base familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+
 
     def RechercheAgrement(self, IDactivite, date):
         for IDactiviteTmp, agrement, date_debut, date_fin in self.listeAgrements :
@@ -280,7 +285,7 @@ class Facturation():
             dictConsommations[IDprestation].append({"date" : UTILS_Dates.DateEngEnDateDD(date), "etat" : etat})
             
         DB.Close() 
-        
+
         # Analyse et regroupement des données
         num_facture = 0
         dictComptes = {}
@@ -362,7 +367,10 @@ class Facturation():
                     "{ORGANISATEUR_SIRET}" : self.dictOrganisme["num_siret"],
                     "{ORGANISATEUR_APE}" : self.dictOrganisme["code_ape"],
                     }
-                
+
+                # Ajoute les informations de base famille
+                dictComptes[ID].update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
+
                 # Date échéance
                 if date_echeance != None :
                     if date_echeance != None :
@@ -533,15 +541,6 @@ class Facturation():
             
             
         return dictComptes
-
-
-
-
-
-
-
-
-
 
 
 

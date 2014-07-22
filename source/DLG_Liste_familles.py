@@ -259,7 +259,8 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         self.bouton_export_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_export_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_configuration = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
 
@@ -271,6 +272,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.Imprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.ExportTexte, self.bouton_export_texte)
         self.Bind(wx.EVT_BUTTON, self.ExportExcel, self.bouton_export_excel)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.MenuConfigurerListe, self.bouton_configuration)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
         self.MAJ(None)
@@ -283,6 +285,7 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
         self.bouton_export_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
         self.bouton_export_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
+        self.bouton_configuration.SetToolTipString(u"Cliquez ici pour configurer la liste")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.SetMinSize((950, 700))
@@ -305,7 +308,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         
         # Commandes
-        grid_sizer_droit = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)
         grid_sizer_droit.Add(self.bouton_ouvrir_fiche, 0, 0, 0)
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
@@ -313,6 +316,8 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_export_texte, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_export_excel, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_configuration, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         
         grid_sizer_contenu.AddGrowableRow(0)

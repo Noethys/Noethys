@@ -25,6 +25,7 @@ import UTILS_Historique
 import UTILS_Identification
 import UTILS_Titulaires
 import UTILS_Questionnaires
+import UTILS_Infos_individus
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -652,6 +653,10 @@ class Dialog(wx.Dialog):
             "{ORGANISATEUR_SIRET}" : dictOrganisme["num_siret"],
             "{ORGANISATEUR_APE}" : dictOrganisme["code_ape"],
             }
+
+        # Récupération des infos de base individus et familles
+        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        dictValeurs.update(self.infosIndividus.GetDictValeurs(mode="famille", ID=IDfamille, formatChamp=True))
 
         # Récupération des questionnaires
         Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
