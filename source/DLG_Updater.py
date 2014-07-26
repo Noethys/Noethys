@@ -151,7 +151,7 @@ class Download(Thread):
                 texteInfo = u"Téléchargement en cours...  " + FormateTailleFichier(nb_blocs*taille_bloc)+" / "+FormateTailleFichier(taille_fichier)
                 if texteInfo != self.zoneTexte.GetLabel() :
                     self.zoneTexte.SetLabel(texteInfo)
-#            self.frameParente.SetTitle(AffichePourcentage(nb_blocs*taille_bloc, taille_fichier) + u" | Téléchargement d'une mise à jour")
+                self.frameParente.SetTitle(AffichePourcentage(nb_blocs*taille_bloc, taille_fichier) + u" | Téléchargement d'une mise à jour")
 
     def run(self): 
         #print "Telechargement de la nouvelle version : etape 5"
