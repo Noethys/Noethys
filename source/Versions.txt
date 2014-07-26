@@ -1,8 +1,12 @@
-Version 1.1.2.8 (21/07/2014) :
+Version 1.1.2.8 (26/07/2014) :
 
 - Ajout de la correction des liens de parentés erronés
 - Ajout de plus de 200 champs dans l'éditeur de documents PDF
 - Ajout des champs dans les listes d'individus et de familles du menu Individus
+- Ajout de l'indicateur date du jour dans la grille des conso
+- Optimisation du calcul des cotisations et pièces manquantes
+- Correction de petits bugs sous Linux (par Wolf)
+- Correction de divers bugs
 
 Version 1.1.2.7 (13/07/2014) :
 
