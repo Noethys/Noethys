@@ -216,7 +216,7 @@ class Impression():
         # Mémorise le ID du modèle
         modeleDoc = DLG_Noedoc.ModeleDoc(IDmodele=IDmodele)
         doc.modeleDoc = modeleDoc
-        
+
         # Vérifie qu'un cadre principal existe bien dans le document
         if doc.modeleDoc.FindObjet("cadre_principal") == None :
             raise Exception("Votre modèle de document doit obligatoirement comporter un cadre principal. Retournez dans l'éditeur de document et utilisez pour votre modèle la commande 'Insérer un objet spécial > Insérer le cadre principal'.")
@@ -349,14 +349,19 @@ class Impression():
                         largeurColonneMontantHT = dictOptions["largeur_colonne_montant_ht"]
                         largeurColonneTVA = dictOptions["largeur_colonne_montant_tva"]
                         largeurColonneMontantTTC = dictOptions["largeur_colonne_montant_ttc"]
+                        largeurColonneBaseTTC = largeurColonneMontantTTC
                         
                         if activeTVA == True and detail == True :
                             largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantHT - largeurColonneTVA - largeurColonneMontantTTC
                             largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantHT, largeurColonneTVA, largeurColonneMontantTTC]
                         else :
-                            largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantTTC
-                            largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantTTC]
-
+                            if detail == False :
+                                largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneBaseTTC - largeurColonneMontantTTC
+                                largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneBaseTTC, largeurColonneMontantTTC]
+                            else :
+                                largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantTTC
+                                largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantTTC]
+                        
                         # Insertion du nom de l'individu
                         paraStyle = ParagraphStyle(name="individu",
                                               fontName="Helvetica",
@@ -427,19 +432,21 @@ class Impression():
                                         montant = dictPrestation["montant"]
                                         deductions = dictPrestation["deductions"]
                                         tva = dictPrestation["tva"]
+                                        labelkey=label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
                                         
-                                        if dictRegroupement.has_key(label) == False :
-                                            dictRegroupement[label] = {"total" : 0, "nbre" : 0, "dates_forfait" : None}
+                                        if dictRegroupement.has_key(labelkey) == False :
+                                            dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
+                                            dictRegroupement[labelkey]["base"] = montant
                                         
-                                        dictRegroupement[label]["total"] += montant
-                                        dictRegroupement[label]["nbre"] += 1
-                                        
+                                        dictRegroupement[labelkey]["total"] += montant
+                                        dictRegroupement[labelkey]["nbre"] += 1
+ 
                                         if len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
-                                            dictRegroupement[label]["dates_forfait"] = u"<BR/><font size=5>Du %s au %s soit %d jours</font>" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
+                                            dictRegroupement[labelkey]["dates_forfait"] = u"<BR/><font size=5>Du %s au %s soit %d jours</font>" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
         
                                 # Insertion des prestations regroupées
                                 listeLabels = dictRegroupement.keys() 
@@ -447,14 +454,16 @@ class Impression():
 
                                 dataTableau = [(
                                     Paragraph(u"<para align='center'>Quantité</para>", paraLabelsColonnes), 
-                                    Paragraph(u"<para align='center'>Prestation</para>", paraLabelsColonnes), 
+                                    Paragraph(u"<para align='center'>Prestation</para>", paraLabelsColonnes),
+                                    Paragraph(u"<para align='center'>Base</para>", paraLabelsColonnes),
                                     Paragraph(u"<para align='center'>Montant</para>", paraLabelsColonnes), 
                                     ),]
 
-                                            
-                                for label in listeLabels :
-                                    nbre = dictRegroupement[label]["nbre"]
-                                    total = dictRegroupement[label]["total"]
+                                for labelkey in listeLabels :
+                                    label = dictRegroupement[labelkey]["labelpresta"]
+                                    nbre = dictRegroupement[labelkey]["nbre"]
+                                    total = dictRegroupement[labelkey]["total"]
+                                    base = dictRegroupement[labelkey]["base"]
 
                                     # recherche d'un commentaire
                                     if dictOptions.has_key("dictCommentaires") :
@@ -471,8 +480,8 @@ class Impression():
                                     #if dates_forfait != None :
                                     #    intitule = [intitule, Paragraph(dates_forfait, paraStyle)]
 
-                                    dataTableau.append([Paragraph(u"<para align='center'>%d</para>" % nbre, paraStyle), intitule, Paragraph(u"<para align='center'>%.02f %s</para>" % (total, SYMBOLE), paraStyle)])
-                            
+                                    dataTableau.append([Paragraph(u"<para align='center'>%d</para>" % nbre, paraStyle), intitule, Paragraph(u"<para align='center'>%.02f %s</para>" % (base, SYMBOLE), paraStyle), Paragraph(u"<para align='center'>%.02f %s</para>" % (total, SYMBOLE), paraStyle)])
+ 
                             else :
                                 
                                 # -------------------------------------------------------------- MODE DETAILLE ------------------------------------------------------------------
@@ -608,7 +617,10 @@ class Impression():
                         if activeTVA == True and detail == True :
                             dataTableau.append(["", "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         else :
-                            dataTableau.append(["", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            if detail == False :
+                                dataTableau.append(["", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            else :
+                                dataTableau.append(["", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         
                         listeStyles = [
                                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
