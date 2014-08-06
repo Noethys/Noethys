@@ -10,6 +10,7 @@
 
 import wx
 import os
+import sys
 import base64
 import zipfile
 import GestionDB
@@ -129,17 +130,20 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
 ##                ">",
 ##                fichierSave,
 ##                ]
-                
-            args = [
-                "%sbin/mysqldump" % repMySQL,
-                "--defaults-extra-file=%s" % nomFichierLoginTemp,
-                "--single-transaction", 
-                "--opt", 
-                "--databases",
-                nomFichier,
-                ">",
-                fichierSave,
-                ]
+
+            if "linux" in sys.platform :
+                args = "%sbin/mysqldump --defaults-extra-file=%s --single-transaction --opt --databases %s > %s" % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
+            else :
+                args = [
+                    "%sbin/mysqldump" % repMySQL,
+                    "--defaults-extra-file=%s" % nomFichierLoginTemp,
+                    "--single-transaction", 
+                    "--opt", 
+                    "--databases",
+                    nomFichier,
+                    ">",
+                    fichierSave,
+                    ]
             
             proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
@@ -375,13 +379,16 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
 ##                fichierRestore,
 ##                ]
                 
-            args = [
-                "%sbin/mysql" % repMySQL,
-                "--defaults-extra-file=%s" % nomFichierLoginTemp,
-                fichier,
-                "<",
-                fichierRestore,
-                ]
+            if "linux" in sys.platform :
+                args = "%sbin/mysql --defaults-extra-file=%s %s < %s" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
+            else :
+                args = [
+                    "%sbin/mysql" % repMySQL,
+                    "--defaults-extra-file=%s" % nomFichierLoginTemp,
+                    fichier,
+                    "<",
+                    fichierRestore,
+                    ]
             
             proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
@@ -438,29 +445,33 @@ def GetRepertoireMySQL(dictValeurs={}):
 ##    return donnees[0][0]
 
     # 1- Recherche automatique
-    try :
-        listeFichiers1 = os.listdir(u"C:/")
-        for fichier1 in listeFichiers1 :
-            
-            if "Program" in fichier1 :
-                listeFichiers2 = os.listdir(u"C:/%s" % fichier1)
-                for fichier2 in listeFichiers2 :
-                    if "MySQL" in fichier2 :
-                        listeFichiers3 = os.listdir(u"C:/%s/%s" % (fichier1, fichier2))
-                        listeFichiers3.sort(reverse=True)
-                        for fichier3 in listeFichiers3 :
-                            if "MySQL Server" in fichier3 :
-                                chemin = u"C:/%s/%s/%s/" % (fichier1, fichier2, fichier3)
-                                if os.path.isdir(chemin) :
-                                    return chemin
-    except :
-        pass
+    if "linux" in sys.platform :
+        if os.path.isfile(u"/usr/bin/mysqldump") == True and os.path.isfile(u"/usr/bin/mysql") :
+            return u"/usr/"
+    else :
+        try :
+            listeFichiers1 = os.listdir(u"C:/")
+            for fichier1 in listeFichiers1 :
+                
+                if "Program" in fichier1 :
+                    listeFichiers2 = os.listdir(u"C:/%s" % fichier1)
+                    for fichier2 in listeFichiers2 :
+                        if "MySQL" in fichier2 :
+                            listeFichiers3 = os.listdir(u"C:/%s/%s" % (fichier1, fichier2))
+                            listeFichiers3.sort(reverse=True)
+                            for fichier3 in listeFichiers3 :
+                                if "MySQL Server" in fichier3 :
+                                    chemin = u"C:/%s/%s/%s/" % (fichier1, fichier2, fichier3)
+                                    if os.path.isdir(chemin) :
+                                        return chemin
+        except :
+            pass
         
     # 2- Recherche dans le fichier Config
     try :
         chemin = UTILS_Config.GetParametre("sauvegarde_cheminmysql", defaut=None)
         if chemin != None :
-            if os.path.isdir(nomFichier) :
+            if os.path.isdir(chemin) :
                 return chemin
     except :
         pass
@@ -470,7 +481,7 @@ def GetRepertoireMySQL(dictValeurs={}):
         message = u"Pour effectuer la sauvegarde de fichiers réseau, Noethys \ndoit utiliser les outils de MySQL. Sélectionnez ici le répertoire qui se nomme 'MySQL Server...' sur votre ordinateur."
         dlg = wx.DirDialog(None, message, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
-            chemin = dlg.GetPath()
+            chemin = dlg.GetPath() + u"/"
             dlg.Destroy()    
         else:
             dlg.Destroy()    
@@ -479,7 +490,7 @@ def GetRepertoireMySQL(dictValeurs={}):
         pass
     
     try :
-        if os.path.isdir(chemin + u"/bin/") :
+        if os.path.isdir(chemin + u"bin/") :
             UTILS_Config.SetParametre("sauvegarde_cheminmysql", chemin)
             return chemin
     except :
