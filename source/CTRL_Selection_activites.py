@@ -298,7 +298,7 @@ class CTRL(wx.Panel):
         if mode == "activites" :
             self.radio_activites.SetValue(True)
             self.ctrl_activites.SetIDcoches(listeID)
-            
+        self.OnRadioActivites(None)
             
             
             

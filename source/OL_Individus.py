@@ -23,7 +23,7 @@ import UTILS_Utilisateurs
 
 class Track(object):
     def __init__(self, donnees, dictIndividus):
-        self.IDindividu = donnees["IDindividu"]
+        self.IDindividu = donnees["individus.IDindividu"]
         self.IDcivilite = donnees["IDcivilite"]
         self.nom = donnees["nom"]
         self.prenom = donnees["prenom"]
@@ -123,6 +123,9 @@ class ListView(FastObjectListView):
         self.dictTracks = {}
         self.dictIndividus = {}
         self.donnees = []
+        self.listeActivites = []
+        self.listeGroupesActivites = []
+        self.forceActualisation = False
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
@@ -155,14 +158,14 @@ class ListView(FastObjectListView):
         """ Récupération des données """        
         # Récupération des données dans la base
         listeChamps = (
-            "IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
+            "individus.IDindividu", "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
             "adresse_auto", "rue_resid", "cp_resid", "ville_resid", 
             "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
             "tel_domicile", "tel_mobile", "tel_fax", "mail"
             )
         db = GestionDB.DB()
-        req = """SELECT %s FROM individus ORDER BY nom, prenom;""" % ",".join(listeChamps)
+        req = """SELECT %s FROM individus;""" % ",".join(listeChamps)
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -207,18 +210,58 @@ class ListView(FastObjectListView):
             dictIndividus[IDindividu] = dictTemp
         
         # Vérifie si le dictIndividus est différent du précédent pour empêcher l'actualisation de la liste
-        if dictIndividus == self.dictIndividus :
+        if dictIndividus == self.dictIndividus and len(self.listeActivites) == 0 and len(self.listeGroupesActivites) == 0 and self.forceActualisation == False :
             return None
         else :
             self.dictIndividus = dictIndividus
         
+        filtre = None
+        
+        # Si filtre activités
+        if len(self.listeActivites) > 0 :
+            if len(self.listeActivites) == 0 : conditionActivites = "()"
+            elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
+            else : conditionActivites = str(tuple(self.listeActivites))
+            db = GestionDB.DB()
+            req = """SELECT individus.IDindividu, nom
+            FROM individus
+            LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
+            WHERE inscriptions.IDactivite IN %s
+            ;""" % conditionActivites
+            db.ExecuterReq(req)
+            listeDonnees = db.ResultatReq()
+            db.Close()
+            filtre = []
+            for ID, nom in listeDonnees :
+                filtre.append(ID)
+
+        # Si filtre Groupes d'activités
+        if len(self.listeGroupesActivites) > 0 :
+            if len(self.listeGroupesActivites) == 0 : conditionGroupesActivites = "()"
+            elif len(self.listeGroupesActivites) == 1 : conditionGroupesActivites = "(%d)" % self.listeGroupesActivites[0]
+            else : conditionGroupesActivites = str(tuple(self.listeGroupesActivites))
+            db = GestionDB.DB()
+            req = """SELECT individus.IDindividu, nom
+            FROM individus
+            LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
+            LEFT JOIN groupes_activites ON groupes_activites.IDactivite = inscriptions.IDactivite
+            WHERE groupes_activites.IDtype_groupe_activite IN %s
+            ;""" % conditionGroupesActivites
+            db.ExecuterReq(req)
+            listeDonnees = db.ResultatReq()
+            db.Close()
+            filtre = []
+            for ID, nom in listeDonnees :
+                filtre.append(ID)
+
         # Création des Tracks
         listeListeView = []
         self.dictTracks = {}
         for IDindividu, dictTemp in dictIndividus.iteritems() :
-            track = Track(dictTemp, dictIndividus)
-            listeListeView.append(track)
-            self.dictTracks[IDindividu] = track
+            if filtre == None or IDindividu in filtre :
+                track = Track(dictTemp, dictIndividus)
+                listeListeView.append(track)
+                self.dictTracks[IDindividu] = track
         
         return listeListeView
       
@@ -266,7 +309,7 @@ class ListView(FastObjectListView):
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, IDindividu=None):
+    def MAJ(self, IDindividu=None, forceActualisation=False):        
         # Mémorise l'individu sélectionné avant la MAJ
         if IDindividu == None :
             selectionTrack = self.Selection()
@@ -274,7 +317,9 @@ class ListView(FastObjectListView):
                 IDindividu = selectionTrack[0].IDindividu
         
         # MAJ
+        self.forceActualisation = forceActualisation
         donnees = self.GetTracks()
+        self.forceActualisation = False
         if donnees != None :
             self.donnees = donnees
             self.GetParent().Freeze() 
@@ -682,6 +727,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.listview = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+##        self.listview.listeGroupesActivites = [1, 2]
         self.listview.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.listview, 1, wx.ALL|wx.EXPAND, 4)
