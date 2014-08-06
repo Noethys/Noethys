@@ -36,7 +36,7 @@ DEBUG = False
 
 def AffichetailleFichier(fichierURL):
     try :
-        fichier = urllib.URLopener().open(fichierURL)
+        fichier = urllib2.urlopen(fichierURL)
         tailleFichier = (fichier.info().getheaders('Content-Length'))
         tailleFichier = tailleFichier[0]
     except IOError :
@@ -151,7 +151,7 @@ class Download(Thread):
                 texteInfo = u"Téléchargement en cours...  " + FormateTailleFichier(nb_blocs*taille_bloc)+" / "+FormateTailleFichier(taille_fichier)
                 if texteInfo != self.zoneTexte.GetLabel() :
                     self.zoneTexte.SetLabel(texteInfo)
-            self.frameParente.SetTitle(AffichePourcentage(nb_blocs*taille_bloc, taille_fichier) + u" | Téléchargement d'une mise à jour")
+                self.frameParente.SetTitle(AffichePourcentage(nb_blocs*taille_bloc, taille_fichier) + u" | Téléchargement d'une mise à jour")
 
     def run(self): 
         #print "Telechargement de la nouvelle version : etape 5"
@@ -283,7 +283,7 @@ class Page_recherche(wx.Panel):
         try :
             if "linux" in sys.platform :
                 # Version Debian
-                fichierVersions = urllib2.urlopen('http://www.noethys.com/fichiers/linux/Versions.txt', timeout=10)
+                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/source/Versions.txt', timeout=10)
             else:
                 # Version Windows
                 fichierVersions = urllib2.urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=10)
@@ -749,7 +749,15 @@ class Page_installation(wx.Panel):
         
         # Lancement de l'installeur
         fichierMAJ = self.parent.fichierDest + "/" + self.parent.nomFichier
-        FonctionsPerso.LanceFichierExterne(fichierMAJ)
+        if "linux" in sys.platform :
+            self.journal.WriteText(u"\n\nExtraction des fichiers. Veuillez patienter...")
+            os.system("unzip -d Temp " + fichierMAJ)
+            self.journal.WriteText(u"\n\nCopie des fichiers. Veuillez patienter...")
+            os.system("cp -a Temp/Noethys-master/source/* .")
+            self.journal.WriteText(u"\n\nEffacement fichiers temporaires. Veuillez patienter...")
+            os.system("rm -rf Temp/Noethys-master")
+        else :
+            FonctionsPerso.LanceFichierExterne(fichierMAJ)
         
         # Fermeture de Noethys
         try :
@@ -785,8 +793,8 @@ class Dialog(wx.Dialog):
         # Fichiers
         if "linux" in sys.platform :
             # Version Debian
-            self.nomFichier = "Noethys.deb"
-            self.fichierURL = "http://www.noethys.com/fichiers/linux/" + self.nomFichier
+            self.nomFichier = "master.zip"
+            self.fichierURL = "https://github.com/Noethys/Noethys/archive/" + self.nomFichier
         else:
             # Version Windows
             self.nomFichier = "Noethys.exe"
