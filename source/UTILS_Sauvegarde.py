@@ -446,7 +446,7 @@ def GetRepertoireMySQL(dictValeurs={}):
 
     # 1- Recherche automatique
     if "linux" in sys.platform :
-        if os.path.isfile(u"/usr/bin/mysqldump") == True and os.path.isfile(u"/usr/bin/mysql") :
+        if os.path.isfile(u"/usr/bin/mysqldump") and os.path.isfile(u"/usr/bin/mysql") :
             return u"/usr/"
     else :
         try :
@@ -478,10 +478,7 @@ def GetRepertoireMySQL(dictValeurs={}):
         
     # 3- Demande le chemin à l'utilisateur
     try :
-        if "linux" in sys.platform :
-            message = u"Pour effectuer la sauvegarde de fichiers réseau, mysqlclient doit être installé. Sélectionnez ici le répertoire où se trouve 'mysqldump' sur votre ordinateur."
-        else :
-            message = u"Pour effectuer la sauvegarde de fichiers réseau, Noethys \ndoit utiliser les outils de MySQL. Sélectionnez ici le répertoire qui se nomme 'MySQL Server...' sur votre ordinateur."
+        message = u"Pour effectuer la sauvegarde de fichiers réseau, Noethys \ndoit utiliser les outils de MySQL. Sélectionnez ici le répertoire qui se nomme 'MySQL Server...' sur votre ordinateur."
         dlg = wx.DirDialog(None, message, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
             chemin = dlg.GetPath() + u"/"
