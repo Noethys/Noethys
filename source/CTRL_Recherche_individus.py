@@ -10,13 +10,12 @@
 
 import wx
 import OL_Individus
-
-try: import psyco; psyco.full()
-except: pass
+import UTILS_Config
 
 ID_CREER_FAMILLE = wx.NewId()
 ID_MODIFIER_FAMILLE = wx.NewId()
 ID_SUPPRIMER_FAMILLE = wx.NewId()
+ID_PARAMETRES = wx.NewId()
 ID_OUTILS = wx.NewId()
 
 ID_ACTUALISER = wx.NewId()
@@ -38,12 +37,14 @@ class ToolBar(wx.ToolBar):
         self.AddLabelTool(ID_MODIFIER_FAMILLE, u"Modifier", wx.Bitmap("Images/32x32/Modifier_famille.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Modifier l'individu sélectionné", "")
         self.AddLabelTool(ID_SUPPRIMER_FAMILLE, u"Supprimer", wx.Bitmap("Images/32x32/Supprimer_famille.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Supprimer ou détacher l'individu sélectionné", "")
         self.AddSeparator()
+##        self.AddLabelTool(ID_PARAMETRES, u"Paramètres", wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Sélectionner les paramètres d'affichage", "")
         self.AddLabelTool(ID_OUTILS, u"Outils", wx.Bitmap("Images/32x32/Configuration.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Outils", "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.Ajouter_famille, id=ID_CREER_FAMILLE)
         self.Bind(wx.EVT_TOOL, self.Modifier_famille, id=ID_MODIFIER_FAMILLE)
         self.Bind(wx.EVT_TOOL, self.Supprimer_famille, id=ID_SUPPRIMER_FAMILLE)
+        self.Bind(wx.EVT_TOOL, self.Parametres, id=ID_PARAMETRES)
         self.Bind(wx.EVT_TOOL, self.MenuOutils, id=ID_OUTILS)
         
         self.SetToolBitmapSize((32, 32))
@@ -58,6 +59,46 @@ class ToolBar(wx.ToolBar):
     def Supprimer_famille(self, event):
         self.GetParent().ctrl_listview.Supprimer(None)
 
+    def Parametres(self, event):
+        import DLG_Selection_individus
+        dlg = DLG_Selection_individus.Dialog(self, afficherPresents=False)
+        dlg.SetTitle(u"Paramètres d'affichage de la liste d'individus")
+        parametres = UTILS_Config.GetParametre("liste_individus_parametre_activites", defaut=None)
+        if parametres != None :
+            dlg.radio_inscrits.SetValue(True)
+            dlg.OnRadio(None)
+            code, liste = parametres.split("###")
+            listeID = []
+            for ID in liste.split(";") :
+                listeID.append(int(ID))
+            if code == "liste_groupes_activites" :
+                dlg.ctrl_activites.SetValeurs("groupes", listeID) 
+            if code == "liste_activites" :
+                dlg.ctrl_activites.SetValeurs("activites", listeID) 
+            
+            
+        if dlg.ShowModal() == wx.ID_OK :
+            # Tous les individus
+            if dlg.GetMode() == "tous" :
+                parametre = None
+            # Uniquement les inscrits
+            if dlg.GetMode() == "inscrits" :
+                mode, listeIDtemp = dlg.ctrl_activites.GetValeurs() 
+                listeID = []
+                for ID in listeIDtemp :
+                    listeID.append(str(ID))
+                if mode == "groupes" : 
+                    parametre = "liste_groupes_activites###%s" % ";".join(listeID)
+                if mode == "activites" : 
+                    parametre = "liste_activites###%s" % ";".join(listeID)
+            # Mémorisation du paramètre
+            UTILS_Config.SetParametre("liste_individus_parametre_activites", parametre)
+        dlg.Destroy() 
+        
+        # Actualise la liste d'individus
+        self.GetParent().ActualiseParametresAffichage() 
+        self.GetParent().ctrl_listview.MAJ(forceActualisation=True)
+        
     def MenuOutils(self, event):
         # Création du menu Outils
         menuPop = wx.Menu()
@@ -120,19 +161,16 @@ class Panel(wx.Panel):
         
         self.toolBar = ToolBar(self)
         self.ctrl_listview = OL_Individus.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-##        self.ctrl_listview.MAJ()
         self.ctrl_recherche = OL_Individus.BarreRecherche(self, historique=True)
         
         self.__set_properties()
         self.__do_layout()
-
+        
+        # Recherche paramètres d'affichage de la liste des individus
+##        self.ActualiseParametresAffichage() 
 
     def __set_properties(self):
         pass
-##        self.ctrl_cp.SetMinSize((50, -1))
-##        self.ctrl_cp.SetToolTipString(u"Saisissez ici le code postal de la ville")
-##        self.ctrl_ville.SetToolTipString(u"Saisissez ici le nom de la ville")
-##        self.bouton_options.SetToolTipString(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non présente dans la base\nde données du logiciel")
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)
@@ -142,7 +180,6 @@ class Panel(wx.Panel):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)
-##        grid_sizer_base.Fit(self)
         self.Layout()
         
     def MAJ(self):
@@ -151,7 +188,20 @@ class Panel(wx.Panel):
     def Aide(self):
         import UTILS_Aide
         UTILS_Aide.Aide("Lalistedesindividus")
-
+    
+    def ActualiseParametresAffichage(self):
+        self.ctrl_listview.listeActivites = []
+        self.ctrl_listview.listeGroupesActivites = []
+        parametres = UTILS_Config.GetParametre("liste_individus_parametre_activites", defaut=None)
+        if parametres != None :
+            code, liste = parametres.split("###")
+            listeID = []
+            for ID in liste.split(";") :
+                listeID.append(int(ID))
+            if code == "liste_activites" : 
+                self.ctrl_listview.listeActivites = listeID
+            if code == "liste_groupes_activites" : 
+                self.ctrl_listview.listeGroupesActivites = listeID
 
 
 class MyFrame(wx.Frame):

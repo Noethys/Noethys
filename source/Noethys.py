@@ -43,6 +43,7 @@ import CTRL_Ephemeride
 ##import CTRL_Meteo
 import DLG_Remplissage
 import DLG_Message_html
+import DLG_Enregistrement
 import CTRL_Toaster
 
 import shelve
@@ -3590,7 +3591,7 @@ class MainFrame(wx.Frame):
 
     def On_aide_forum(self, event):
         """ Accéder au forum d'entraide """
-        FonctionsPerso.LanceFichierExterne("http://noethys.com/index.php?option=com_kunena&Itemid=7")
+        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_kunena&Itemid=7")
 
     def On_aide_videos(self, event):
         """ Accéder au tutoriels vidéos """
@@ -3602,7 +3603,7 @@ class MainFrame(wx.Frame):
 
     def On_aide_auteur(self, event):
         """ Envoyer un email à l'auteur """
-        FonctionsPerso.LanceFichierExterne("http://noethys.com/index.php?option=com_contact&view=contact&id=1&Itemid=13")
+        FonctionsPerso.LanceFichierExterne("http://www.noethys.com/index.php?option=com_contact&view=contact&id=1&Itemid=13")
         
     def On_propos_versions(self, event):
         """ A propos : Notes de versions """
@@ -4124,19 +4125,55 @@ Merci pour votre participation !
 
 
     def AnnonceFinancement(self):
-        # Se déclenche uniquement dans 20% des cas
-        if random.randrange(1, 100) > 20 :
+        # Vérifie si identifiant saisi et valide
+        identifiant = UTILS_Config.GetParametre("enregistrement_identifiant", defaut=None)
+        if identifiant != None :
+            # Vérifie nbre jours restants
+            code = UTILS_Config.GetParametre("enregistrement_code", defaut=None)
+            validite = DLG_Enregistrement.GetValidite(identifiant, code)
+            if validite != False :
+                date_fin_validite, nbreJoursRestants = validite
+                dateDernierRappel = UTILS_Config.GetParametre("enregistrement_dernier_rappel", defaut=None)
+                
+                if nbreJoursRestants < 0 :
+                    # Licence périmée
+                    if dateDernierRappel != None :
+                        UTILS_Config.SetParametre("enregistrement_dernier_rappel", None)
+                    
+                elif nbreJoursRestants <= 3000 :
+                    # Licence bientôt périmée
+                    UTILS_Config.SetParametre("enregistrement_dernier_rappel", datetime.date.today())
+                    if dateDernierRappel != None :
+                        nbreJoursDepuisRappel =  (dateDernierRappel - datetime.date.today()).days
+                    else :
+                        nbreJoursDepuisRappel = None
+                    if nbreJoursDepuisRappel == None or nbreJoursDepuisRappel >= 7 :
+                        import wx.lib.dialogs as dialogs
+                        image = wx.Bitmap("Images/32x32/Cle.png", wx.BITMAP_TYPE_ANY)
+                        message1 = u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium." % nbreJoursRestants
+                        dlg = dialogs.MultiMessageDialog(self, message1, caption = u"Enregistrement", msg2=None, style = wx.ICON_INFORMATION | wx.YES|wx.CANCEL|wx.CANCEL_DEFAULT, icon=image, btnLabels={wx.ID_YES : u"Renouveler mon abonnement", wx.ID_CANCEL : u"Fermer"})
+                        reponse = dlg.ShowModal() 
+                        dlg.Destroy() 
+                        if reponse == wx.ID_YES :
+                            FonctionsPerso.LanceFichierExterne("Images/Special/Bon_commande.pdf")
+                        return True
+                    return False
+                
+                else :
+                    # Licence valide
+                    if dateDernierRappel != None :
+                        UTILS_Config.SetParametre("enregistrement_dernier_rappel", None)
+                    return False
+                
+        # Pub se déclenche uniquement dans 20% des cas
+        if random.randrange(1, 100) <= 20 :
+            import UTILS_Financement
+            dlg = UTILS_Financement.DLG_Financement(self)
+            dlg.ShowModal() 
+            dlg.Destroy()
+            return True
+        else :
             return False
-        
-        # Vérifie si identifiant saisi
-        if UTILS_Config.GetParametre("enregistrement_identifiant", defaut=None) != None :
-            return False
-        
-        import UTILS_Financement
-        dlg = UTILS_Financement.DLG_Financement(self)
-        dlg.ShowModal() 
-        dlg.Destroy()
-        return True
 
     def AutodetectionAnomalies(self):
         """ Auto-détection d'anomalies """

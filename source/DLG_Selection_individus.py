@@ -17,7 +17,7 @@ import CTRL_Selection_activites
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, afficherPresents=True):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
 
@@ -30,7 +30,12 @@ class Dialog(wx.Dialog):
         self.label_au = wx.StaticText(self, -1, u"au")
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        if afficherPresents == False :
+            self.check_presents.Show(False)
+            self.ctrl_date_debut.Show(False)
+            self.label_au.Show(False)
+            self.ctrl_date_fin.Show(False)
+        
         self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
 
@@ -40,7 +45,6 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_tous)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_inscrits)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckPresents, self.check_presents)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
@@ -54,7 +58,6 @@ class Dialog(wx.Dialog):
         self.check_presents.SetToolTipString(u"Cochez cette case pour saisir une période de présence")
         self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de période")
         self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de période")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
         self.SetMinSize((430, 460))
@@ -75,11 +78,10 @@ class Dialog(wx.Dialog):
         grid_sizer_activites.AddGrowableRow(0)
         grid_sizer_activites.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_activites, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL|wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
@@ -106,10 +108,6 @@ class Dialog(wx.Dialog):
         self.ctrl_date_debut.Enable(etat)
         self.ctrl_date_fin.Enable(etat)
 
-    def OnBoutonAide(self, event): 
-        import UTILS_Aide
-        UTILS_Aide.Aide("")
-
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)
 
@@ -122,6 +120,12 @@ class Dialog(wx.Dialog):
         else :
             return self.ctrl_activites.GetActivites() 
     
+    def GetMode(self):
+        if self.radio_tous.GetValue() == True :
+            return "tous"
+        else :
+            return "inscrits"
+        
     def GetPeriodePresents(self):
         if self.check_presents.GetValue()  == True :
             date_debut = self.ctrl_date_debut.GetDate() 
@@ -169,7 +173,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None)
+    dialog_1 = Dialog(None, afficherPresents=False)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

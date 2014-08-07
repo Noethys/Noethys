@@ -61,6 +61,32 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
 
+def GetValidite(identifiant="", code=""):
+    try :
+        url = "http://www.noethys.com/aide/html/testcode.php?identifiant=%s&code=%s" % (identifiant, code)
+        h = urllib2.urlopen(url, timeout=5)
+        html = h.read()
+        h.close()
+    except :
+        return False
+    
+    # Analyse l'état
+    if html.startswith("codeok") :
+        try :
+            date = DateEngEnDateDD(html[7:])
+        except :
+            date = None
+    else :
+        date = None
+    
+    # Affiche l'état
+    if date == None :
+        return False
+    else :
+        nbreJoursRestants =  (date - datetime.date.today()).days
+        return date, nbreJoursRestants
+
+
 class MyHtml(html.HtmlWindow):
     def __init__(self, parent, texte="", hauteur=25):
         html.HtmlWindow.__init__(self, parent, -1, style=wx.SUNKEN_BORDER | wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.NO_FULL_REPAINT_ON_RESIZE)
