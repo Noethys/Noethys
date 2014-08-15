@@ -696,6 +696,10 @@ class Informations() :
         ;""" % (self.date_reference, self.date_reference)
         listeDonnees = self.ReadDB(req)
         for IDscolarite, IDindividu, date_debut, date_fin, ecole_nom, classes_nom, niveau_nom, niveau_abrege in listeDonnees :
+            if ecole_nom == None : ecole_nom = u""
+            if classes_nom == None : classes_nom = u""
+            if niveau_nom == None : niveau_nom = u""
+            if niveau_abrege == None : niveau_abrege = u""
             if self.dictIndividus.has_key(IDindividu) :
                 self.dictIndividus["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
                 self.dictIndividus["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
@@ -703,7 +707,7 @@ class Informations() :
                 self.dictIndividus["SCOLARITE_NOM_CLASSE"] = classes_nom
                 self.dictIndividus["SCOLARITE_NOM_NIVEAU"] = niveau_nom
                 self.dictIndividus["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
-        
+                
 # ---------------------------------------------------------------------------------------------------------------------------------
         
     def GetNomsChampsPresents(self, mode="individu+famille", listeID=None):
@@ -715,9 +719,10 @@ class Informations() :
             if modeTemp in mode :
                 for ID, dictValeurs in dictTemp.iteritems()  :
                     if listeID == None or ID in listeID :
-                        for key, valeur in dictValeurs.iteritems() :
-                            if key[0] == key[0].upper() and key not in listeNomsChamps :
-                                listeNomsChamps.append(key)
+                        if type(dictValeurs) == dict :
+                            for key, valeur in dictValeurs.iteritems() :
+                                if key[0] == key[0].upper() and key not in listeNomsChamps :
+                                    listeNomsChamps.append(key)
         listeNomsChamps.sort() 
         return listeNomsChamps
         
@@ -828,11 +833,11 @@ class Informations() :
     def Tests(self):
         """ Pour les tests """
         # Récupération des noms des champs
-##        print len(self.GetNomsChampsPresents(mode="famille", listeID=None))
+        print len(self.GetNomsChampsPresents(mode="individu", listeID=None))
 ##        print len(GetNomsChampsPossibles(mode="individu"))
         
-        self.EnregistreFichier(mode="famille") 
-        print len(self.LectureFichier())
+##        self.EnregistreFichier(mode="famille") 
+##        print len(self.LectureFichier())
         
 if __name__ == '__main__':
     infos = Informations()
