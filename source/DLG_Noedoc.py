@@ -4840,6 +4840,7 @@ class ModeleDoc():
                 # Remplacement des mos-clés par les valeurs
                 if type(nomChamp) in (str, unicode) and nomChamp.startswith("{") :
                     if valeur == None : valeur = ""
+                    if type(valeur) == int : valeur = str(valeur)
                     if type(valeur) == float : valeur = u"%.02f %s" % valeur
                     if type(valeur) == datetime.date : valeur = UTILS_Dates.DateDDEnFr(valeur)
                     if nomChamp in texte :
