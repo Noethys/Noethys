@@ -2056,7 +2056,16 @@ class Dialog(wx.Dialog):
                                 style.append( ('BOX', (positionG, 0), (positionD, -1), 1, colors.black) ) # Entoure toutes les colonnes Dates
                         else:
                             style.append( ('GRID', (0,0), (-1,-1), 0.25, colors.black) )
-                            
+                        
+                        # Vérifie si la largeur du tableau est inférieure à la largeur de la page
+                        largeurTableau = 0
+                        for largeur in largeursColonnes :
+                            if largeur < 0 :
+                                dlg = wx.MessageDialog(self, u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier...", u"Erreur", wx.OK | wx.ICON_ERROR)
+                                dlg.ShowModal()
+                                dlg.Destroy()
+                                return
+                        
                         # Création du tableau
                         if typeListe == "period" :
                             repeatRows = 2
@@ -2154,16 +2163,7 @@ class Dialog(wx.Dialog):
             return listeExport, largeursColonnes
         
         # Enregistrement et ouverture du PDF
-        try :
-            doc.build(story)
-        except Exception, err :
-            print "Erreur dans ouverture PDF :", err
-            if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
-
+        doc.build(story)
         FonctionsPerso.LanceFichierExterne(nomDoc)
 
     def TriClasses(self, listeClasses=[], dictEcoles={}):
