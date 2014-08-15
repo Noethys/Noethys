@@ -120,7 +120,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             str(numLigne),
             FormateDate(ligne["date_depot"], "%d%m%Y"),
             dictParametres["journal_%s" % typeComptable],
-            dictParametres["code_%s" % typeComptable],
+            ligne["code_compta"],
             "",
             u'"%s"' % ligne["libelle"],
             u'""',
@@ -486,6 +486,7 @@ class Donnees():
                     "date_depot" : dictDepot["date_depot"],
                     "mode_reglement" : dictDepot["nomMode"],
                     "montant" : str(dictDepot["montant"]),
+                    "code_compta" : dictDepot["code_compta"],
                     "numeroCompte" : dictDepot["numeroCompte"],
                     "nomCompte" : dictDepot["nomCompte"],
                     })
@@ -1418,7 +1419,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = u"Sélectionnez les dates de la période à exporter, choisissez le format d'export correspondant à votre logiciel de compatibilité puis renseignez les paramètres nécessaires avant cliquer sur OK. Vous obtiendrez un fichier qu'il vous suffira d'importer depuis votre logiciel de comptabilité."
+        intro = u"Sélectionnez les dates de la période à exporter, choisissez le format d'export correspondant à votre logiciel de compatibilité puis renseignez les paramètres nécessaires avant cliquer sur Générer. Vous obtiendrez un fichier qu'il vous suffira d'importer depuis votre logiciel de comptabilité."
         titre = u"Export des écritures comptables"
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Export_comptable.png")
@@ -1445,7 +1446,7 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fichier_generer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()

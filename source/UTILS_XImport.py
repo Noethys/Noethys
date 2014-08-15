@@ -113,19 +113,17 @@ class XImportLine(object):
         values["devise"]=u"¤"
 
         if "type" in data:                  #on récupére ce qui nous interesse selon le type de donnée
-            if data["type"] == "facture":
+            
+            if data["type"] == "total_prestations":
                 values["isDebit"]=u"D"
                 values["journal"]=dictParametres["journal_ventes"]
-                values["date_ecriture"]=data["date_edition"].strftime("%Y%m%d")
-                if data["date_echeance"]:
-                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
-                else:
-                    values["date_echeance"]=""
-                values["libelle"]=data["libelle_facture"]
-                if data["code_comptable_famille"]:
-                    values["code_analyt"]=data["code_comptable_famille"]
-                else:
-                    values["code_analyt"]=dictParametres["code_clients"]
+                values["date_ecriture"]=""
+##                if data["date_echeance"]:
+##                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
+##                else:
+##                    values["date_echeance"]=""
+                values["libelle"]=data["libelle"]
+                values["code_analyt"]=dictParametres["code_clients"]
 
                 #Valeurs fournies non utilisées :                
                 #    'numero': 1
@@ -137,12 +135,12 @@ class XImportLine(object):
             elif data["type"] == "prestation":
                 values["isDebit"]=u"C"
                 values["journal"]=dictParametres["journal_ventes"]
-                values["date_ecriture"]=data["date_facture"].strftime("%Y%m%d")
-                if data["date_echeance"]:
-                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
-                else:
-                    values["date_echeance"]=""
-                values["libelle"]=data["libelle_prestation"]
+                values["date_ecriture"]=""
+##                if data["date_echeance"]:
+##                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
+##                else:
+##                    values["date_echeance"]=""
+                values["libelle"]=data["intitule"]
                 values["code_analyt"]=data["code_compta"]
 
                 #Valeurs fournies non utilisées :                
@@ -159,21 +157,19 @@ class XImportLine(object):
                 values["date_ecriture"]=data["date_depot"].strftime("%Y%m%d")
                 values["compte"] = data["numeroCompte"]
                 values["libelle_compte"] = data["nomCompte"]
-                values["libelle"] = data["libelle_depot"]
+                values["libelle"] = data["libelle"]
+                values["code_analyt"]=data["code_compta"]
 
                 #Valeurs fournies non utilisées :                
                 #    'IDdepot': 4
                 #    'nom_depot': u'test_depot_4'
                 #    'mode_reglement': u'Ch\xe9que vacances'
-            
-            elif data["type"] == "reglement":
+
+            elif data["type"] == "total_reglements":
                 values["isDebit"]=u"C"
                 values["journal"]=dictParametres["journal_%s" % typeComptable]
-                values["date_ecriture"]=data["date_depot"].strftime("%Y%m%d")
-                values["num_piece"]=data["numero_piece"]
-                values["libelle"] = data["libelle_reglement"]
-                values["compte"] = data["numeroCompte"]
-                values["libelle_compte"] = data["nomCompte"]
+                values["code_analyt"]=dictParametres["code_clients"]
+                values["libelle"] = data["libelle"]
 
                 #Valeurs fournies non utilisées :                
                 #    'attente': 0
@@ -186,7 +182,13 @@ class XImportLine(object):
                 #    'date_differe': None
                 #    'IDmode': 3
                 #    'labelMode': u'Ch\xe9que vacances'
-        
+
+            elif data["type"] == "total_mode":
+                values["isDebit"]=u"D"
+                values["journal"]=dictParametres["journal_%s" % typeComptable]
+                values["libelle"] = data["libelle"]
+                values["code_analyt"]=data["code_compta"]
+
         else:       #Si aucun type n'est renseigné, il y a un probléme
             raise ValueError("'type' not in data")
 
