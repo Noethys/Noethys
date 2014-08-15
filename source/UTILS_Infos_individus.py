@@ -10,6 +10,8 @@
 
 import GestionDB
 import datetime
+import base64
+import cPickle
 
 import UTILS_Dates
 import UTILS_Titulaires
@@ -756,34 +758,81 @@ class Informations() :
         dictDonnees = self.GetDictValeurs(mode=mode, ID=ID, formatChamp=False)
         for code, valeur in dictDonnees.iteritems() :
             setattr(parent, code, valeur)
+    
+    def StockageTable(self, mode="famille"):
+        """ Stockage des infos dans une table SQLITE """
+        listeNomsChamps = self.GetNomsChampsPresents(mode=mode)
         
+        DB = GestionDB.DB()
+
+        nomTable = "table_test"
+
+        # Suppression de la table si elle existe
+        DB.ExecuterReq("DROP TABLE IF EXISTS %s" % nomTable)
         
+        # Création de la table de données
+        req = "CREATE TABLE IF NOT EXISTS %s (ID INTEGER PRIMARY KEY AUTOINCREMENT, " % nomTable
+        for nom in listeNomsChamps :
+            req += "%s %s, " % (nom, "VARCHAR(500)")
+        req = req[:-2] + ")"
+        DB.ExecuterReq(req)
         
+        # Insertion des données
+        dictValeurs = self.GetDictValeurs(mode=mode, formatChamp=False)
+        listeDonnees = []
+        for ID, dictTemp in dictValeurs.iteritems() :
+            listeValeurs = [ID,]
+            for champ in listeNomsChamps :
+                if dictTemp.has_key(champ) :
+                    valeur = dictTemp[champ]
+                else:
+                    valeur = ""
+                listeValeurs.append(valeur)
+            listeDonnees.append(listeValeurs)
+            
+        listeNomsChamps.insert(0, "ID")
+        req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeNomsChamps), ",".join("?" * len(listeNomsChamps) ))
+        DB.Executermany(req=req, listeDonnees=listeDonnees, commit=True)
+        
+        DB.Close() 
+    
+    def StockagePickleFichier(self, mode="famille", nomFichier="Temp/infos_individus.pickle"):
+        import pickle
+        dictValeurs = self.GetDictValeurs(mode=mode, formatChamp=False)
+        fichier = open(nomFichier, 'wb')
+        pickle.dump(dictValeurs, fichier)
+    
+    def GetPickleChaine(self, mode="famille", cryptage=False):
+        dictValeurs = self.GetDictValeurs(mode=mode, formatChamp=False)
+        chaine = cPickle.dumps(dictValeurs)
+        if cryptage == True :
+            chaine = base64.b64encode(chaine)
+        return chaine
+    
+    def EnregistreFichier(self, mode="famille", nomFichier="Temp/infos_f.dat"):
+        chaine = self.GetPickleChaine(mode=mode, cryptage=True)
+        fichier = open(nomFichier, "w")
+        fichier.write(chaine)
+        fichier.close()
+    
+    def LectureFichier(self, nomFichier="Temp/infos_f.dat"):
+        fichier = open(nomFichier, "r")
+        chaine = fichier.read()
+        fichier.close()
+        chaine = base64.b64decode(chaine)
+        dictTemp = cPickle.loads(chaine)
+        return dictTemp
+
 # ---------------------------------------------------------------------------------------------------------------------------------
     
     def Tests(self):
-        # Test des individus
-##        print "Nbre individus : ", len(self.dictIndividus)
-##        IDindividu = 613 #759
-##        keys = self.dictIndividus[IDindividu].keys()
-##        keys.sort()
-##        for code in keys :
-##            valeur = self.dictIndividus[IDindividu][code]
-##            print "INDIVIDU : ", (code, valeur)
-##        print "Nbre de champs INDIVIDU =", len(keys)
-##        print "--------------------------------------------------------------------------------------------------------------"
-##        # Test des familles
-##        print "Nbre familles : ", len(self.dictFamilles)
-##        keys = self.dictFamilles[25].keys()
-##        keys.sort()
-##        for code in keys :
-##            valeur = self.dictFamilles[25][code]
-##            print "FAMILLE : ", (code, valeur)
-##        print "Nbre de champs FAMILLE =", len(keys)
+        """ Pour les tests """
         # Récupération des noms des champs
-        print self.GetNomsChampsPresents(mode="famille", listeID=None)
-##        print len(self.GetDictValeurs(mode="individu", ID=None, formatChamp=True))
-        print len(GetNomsChampsPossibles(mode="individu"))
+##        print len(self.GetNomsChampsPresents(mode="famille", listeID=None))
+##        print len(GetNomsChampsPossibles(mode="individu"))
+        
+        self.EnregistreFichier(mode="famille") 
+        print len(self.LectureFichier())
         
 if __name__ == '__main__':
     infos = Informations()
