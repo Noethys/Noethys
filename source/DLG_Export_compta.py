@@ -195,69 +195,90 @@ class Donnees():
                 }
             listePrestations.append(dictTemp)
             
-        # -------------- Ventes crédit : Ventilation par activité ---------------
-        listeCodesManquants = []
-        dictCodes = {}
+        # -------------- Ventes crédit : Ventilation par nom de prestation  ---------------
+        dictCodesPrestations = {}
         for dictPrestation in listePrestations :
             
             if dictPrestation["montant"] != FloatToDecimal(0.0) :
-                
-                # Recherche le code compta de la prestations
-                code_compta = dictPrestation["code_compta_prestation"]
-                if code_compta == None : 
-                    code_compta = ""
-                if code_compta in (None, ""):
-                    if dictPrestation["code_compta_tarif"] not in (None, ""):
-                        code_compta = dictPrestation["code_compta_tarif"]
+                                
+                # Si mode regroupement par type de prestation
+                if self.dictParametres["option_regroupement_prestations"] == 0 :
+                    if dictPrestation["nomAbregeActivite"] in (None, ""):
+                        labelActivite = ""
                     else :
-                        if dictPrestation["code_compta_activite"] not in (None, ""):
-                            code_compta = dictPrestation["code_compta_activite"]
+                        labelActivite = u"%s - " % dictPrestation["nomAbregeActivite"]
+                    intituleTemp = "%s%s" % (labelActivite, dictPrestation["label"])
+                
+                # Si mode regroupement par activité
+                if self.dictParametres["option_regroupement_prestations"] == 1 :
+                    if dictPrestation["nomActivite"] != "" :
+                        intituleTemp = dictPrestation["nomActivite"]
+                    else :
+                        intituleTemp = dictPrestation["label"]
+                    
+                # Mémorisation de la prestation
+                if dictCodesPrestations.has_key(intituleTemp) == False :
+                    
+                    # Recherche le code compta de la prestation
+                    code_compta = dictPrestation["code_compta_prestation"]
+                    if code_compta == None : 
+                        code_compta = ""
+                    if code_compta in (None, ""):
+                        if dictPrestation["code_compta_tarif"] not in (None, ""):
+                            code_compta = dictPrestation["code_compta_tarif"]
                         else :
-                            if dictPrestation["code_compta_type_cotisation"] not in (None, ""):
-                                code_compta = dictPrestation["code_compta_type_cotisation"]
-                
-                if dictPrestation["nomAbregeActivite"] in (None, ""):
-                    labelActivite = ""
-                else :
-                    labelActivite = u"%s - " % dictPrestation["nomAbregeActivite"]
-                intituleTemp = "%s%s" % (labelActivite, dictPrestation["label"])
-                if code_compta == "" :
-                    if intituleTemp not in listeCodesManquants :
-                        listeCodesManquants.append(intituleTemp)
-                    code_compta = self.dictParametres["code_ventes"]
-                
-                if dictCodes.has_key(intituleTemp) == False :
-                    dictCodes[intituleTemp] = {"code_compta" : code_compta, "montant" : FloatToDecimal(0.0)}
-                dictCodes[intituleTemp]["montant"] += dictPrestation["montant"]
+                            if dictPrestation["code_compta_activite"] not in (None, ""):
+                                code_compta = dictPrestation["code_compta_activite"]
+                            else :
+                                if dictPrestation["code_compta_type_cotisation"] not in (None, ""):
+                                    code_compta = dictPrestation["code_compta_type_cotisation"]
+                    if code_compta == "" :
+                        code_compta = self.dictParametres["code_ventes"]
+                        
+                    # Mémorisation de la prestation
+                    dictCodesPrestations[intituleTemp] = {"code_compta" : code_compta, "montant" : FloatToDecimal(0.0)}
+                    
+                dictCodesPrestations[intituleTemp]["montant"] += dictPrestation["montant"]
 
         # Vérification des codes comptables
-        dlg = Dialog_codes(None, dictCodes=dictCodes, keyStr=True, titre=u"Vérification des codes comptables des prestations")
-        if dlg.ShowModal() == wx.ID_OK :
-            dictCodesTemp = dlg.GetCodes() 
-            dlg.Destroy() 
-        else :
-            dlg.Destroy() 
-            return False
-        for intitule, code_compta in dictCodesTemp.iteritems() :
-            dictCodes[intitule]["code_compta"] = code_compta
+        if len(dictCodesPrestations) > 0 :
+            dlg = Dialog_codes(None, dictCodes=dictCodesPrestations, keyStr=True, titre=u"Vérification des codes comptables des prestations")
+            if dlg.ShowModal() == wx.ID_OK :
+                dictCodesTemp = dlg.GetCodes() 
+                dlg.Destroy() 
+            else :
+                dlg.Destroy() 
+                return False
+            for intitule, code_compta in dictCodesTemp.iteritems() :
+                dictCodesPrestations[intitule]["code_compta"] = code_compta
             
         # Mémorisation des lignes prestations
-        listeIntitules = dictCodes.keys() 
+        listeIntitules = dictCodesPrestations.keys() 
         listeIntitules.sort() 
         
         for intitule in listeIntitules :
-            dictCode = dictCodes[intitule]
+            dictCode = dictCodesPrestations[intitule]
+
+            # Formatage libellé prestation
+            libelle = FormateLibelle(
+                texte = self.dictParametres["format_prestation"],
+                valeurs = [
+                    ("{NOM_PRESTATION}", intitule), 
+                    ("{DATE_DEBUT}", UTILS_Dates.DateDDEnFr(self.date_debut)),
+                    ("{DATE_FIN}", UTILS_Dates.DateDDEnFr(self.date_fin)),
+                    ])
+
             listeLignes.append({
                 "type" : "prestation",
-                "intitule" : intitule,
+                "intitule" : libelle,
                 "code_compta" : dictCode["code_compta"],
                 "montant" : dictCode["montant"],
                 })
-                
+
 
         # -------------- Ventes débit : Total de la facturation ---------------
         montantTotal = FloatToDecimal(0.0)
-        for labelPrestation, dictTemp in dictCodes.iteritems() :
+        for labelPrestation, dictTemp in dictCodesPrestations.iteritems() :
             if dictTemp["code_compta"] != "" :
                 montantTotal += dictTemp["montant"]
             
@@ -327,15 +348,16 @@ class Donnees():
             dictModesReglements[IDmode]["nbreReglements"] += 1
 
         # Vérification des codes comptables
-        dlg = Dialog_codes(None, dictCodes=dictModesReglements, keyStr=False, titre=u"Vérification des codes comptables des modes de règlements de type %s" % typeComptable)
-        if dlg.ShowModal() == wx.ID_OK :
-            dictCodesTemp = dlg.GetCodes() 
-            dlg.Destroy() 
-        else :
-            dlg.Destroy() 
-            return False
-        for ID, code_compta in dictCodesTemp.iteritems() :
-            dictModesReglements[int(ID)]["code_compta"] = code_compta
+        if len(dictModesReglements) > 0 :
+            dlg = Dialog_codes(None, dictCodes=dictModesReglements, keyStr=False, titre=u"Vérification des codes comptables des modes de règlements de type %s" % typeComptable)
+            if dlg.ShowModal() == wx.ID_OK :
+                dictCodesTemp = dlg.GetCodes() 
+                dlg.Destroy() 
+            else :
+                dlg.Destroy() 
+                return False
+            for ID, code_compta in dictCodesTemp.iteritems() :
+                dictModesReglements[int(ID)]["code_compta"] = code_compta
 
         # Analyse
         listeLignes = []
@@ -427,15 +449,16 @@ class Donnees():
             montantTotal += FloatToDecimal(montant)
         
         # Vérification des codes comptables
-        dlg = Dialog_codes(None, dictCodes=dictDepots, keyStr=False, titre=u"Vérification des codes comptables des dépôts de type %s" % typeComptable)
-        if dlg.ShowModal() == wx.ID_OK :
-            dictCodesTemp = dlg.GetCodes() 
-            dlg.Destroy() 
-        else :
-            dlg.Destroy() 
-            return False
-        for ID, code_compta in dictCodesTemp.iteritems() :
-            dictDepots[int(ID)]["code_compta"] = code_compta
+        if len(dictDepots) > 0 :
+            dlg = Dialog_codes(None, dictCodes=dictDepots, keyStr=False, titre=u"Vérification des codes comptables des dépôts de type %s" % typeComptable)
+            if dlg.ShowModal() == wx.ID_OK :
+                dictCodesTemp = dlg.GetCodes() 
+                dlg.Destroy() 
+            else :
+                dlg.Destroy() 
+                return False
+            for ID, code_compta in dictCodesTemp.iteritems() :
+                dictDepots[int(ID)]["code_compta"] = code_compta
 
         # Analyse
         listeLignes = []
@@ -1319,7 +1342,8 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
     def __init__(self, parent):
         self.listeDonnees = [
             u"Options générales",
-            {"type":"choix", "label":u"Regroupement des règlements", "description":u"Mode de regroupement des règlements", "code":"option_regroupement_reglements", "tip":u"Sélectionnez le mode de regroupement des règlements", "choix":[u"Par modes de règlements", u"Par dépôts de règlements"], "defaut":0, "obligatoire":True},
+            {"type":"choix", "label":u"Regroupement des prestations", "description":u"Mode de regroupement des prestations", "code":"option_regroupement_prestations", "tip":u"Sélectionnez le mode de regroupement des prestations", "choix":[u"Par nom de prestation", u"Par nom d'activité"], "defaut":0, "obligatoire":True},
+            {"type":"choix", "label":u"Regroupement des règlements", "description":u"Mode de regroupement des règlements", "code":"option_regroupement_reglements", "tip":u"Sélectionnez le mode de regroupement des règlements", "choix":[u"Par mode de règlement", u"Par dépôt de règlement"], "defaut":0, "obligatoire":True},
             {"type":"choix", "label":u"Sélection des règlements", "description":u"Sélection des règlements", "code":"option_selection_reglements", "tip":u"Sélectionnez le mode de sélection des règlements", "choix":[u"Règlements déposés sur la période", u"Règlements saisis sur la période"], "defaut":0, "obligatoire":True},
             {"type":"check", "label":u"Insérer entête noms des champs", "description":u"Insérer ligne noms des champs", "code":"ligne_noms_champs", "tip":u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs", "defaut":False, "obligatoire":True},
             {"type":"check", "label":u"Mémoriser les paramètres", "description":u"Mémoriser les paramètres", "code":"memoriser_parametres", "tip":u"Cochez cette case pour mémoriser les paramètres", "defaut":True, "obligatoire":True},
@@ -1336,6 +1360,7 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
             {"type":"chaine", "label":u"Total des prestations", "description":u"Format du libellé du total des ventes", "code":"format_total_ventes", "tip":u"Saisissez le format du libellé du total des ventes. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}.", "defaut":u"Prestations du {DATE_DEBUT} au {DATE_FIN}", "obligatoire":True},
             {"type":"chaine", "label":u"Total des règlements", "description":u"Format du libellé du total des règlements", "code":"format_total_reglements", "tip":u"Saisissez le format du libellé du total des règlements. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}.", "defaut":u"Règlements du {DATE_DEBUT} au {DATE_FIN}", "obligatoire":True},
             #{"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "obligatoire":True},
+            {"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {NOM_PRESTATION} {DATE_DEBUT} {DATE_FIN}.", "defaut":u"{NOM_PRESTATION}", "obligatoire":True},
             {"type":"chaine", "label":u"Mode de règlement", "description":u"Format du libellé des modes de règlements", "code":"format_mode", "tip":u"Saisissez le format du libellé des modes de règlements. Vous pouvez utiliser les mots-clés suivants : {IDMODE} {NOM_MODE} {CODE_COMPTABLE} {NBRE_REGLEMENTS}.", "defaut":u"{NOM_MODE}", "obligatoire":True},
             {"type":"chaine", "label":u"Dépôt", "description":u"Format du libellé des dépôts", "code":"format_depot", "tip":u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}.", "defaut":u"{NOM_DEPOT} - {DATE_DEPOT}", "obligatoire":True},
             #{"type":"chaine", "label":u"Règlement", "description":u"Format du libellé des règlements", "code":"format_reglement", "tip":u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}.", "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}", "obligatoire":True},
