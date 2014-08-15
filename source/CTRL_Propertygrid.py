@@ -53,8 +53,8 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL(wxpg.PropertyGrid) :
-    def __init__(self, parent):
-        wxpg.PropertyGrid.__init__(self, parent, -1, style=wxpg.PG_SPLITTER_AUTO_CENTER )
+    def __init__(self, parent, style=wxpg.PG_SPLITTER_AUTO_CENTER):
+        wxpg.PropertyGrid.__init__(self, parent, -1, style=style)
         self.parent = parent
         
         # Définition des éditeurs personnalisés
@@ -290,7 +290,7 @@ class Bouton_sauvegarde(wx.BitmapButton):
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
-        self.ctrl_parametres.Sauvegarde() 
+        self.ctrl_parametres.Sauvegarde(forcer=True) 
 
 
 # --------------------------------------- TESTS ----------------------------------------------------------------------------------------

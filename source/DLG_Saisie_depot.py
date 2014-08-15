@@ -172,6 +172,8 @@ class Dialog(wx.Dialog):
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.label_verrouillage = wx.StaticText(self, -1, u"Verrouillage :")
         self.ctrl_verrouillage = wx.CheckBox(self, -1, u"")
+        self.label_code_compta = wx.StaticText(self, -1, u"Code compta :")
+        self.ctrl_code_compta = wx.TextCtrl(self, -1, u"")
         self.label_compte = wx.StaticText(self, -1, u"Compte bancaire :")
         self.ctrl_compte = Choix_compte(self)
         self.label_observations = wx.StaticText(self, -1, u"Observations :")
@@ -222,7 +224,8 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste des règlements du dépôt")
         self.bouton_avis_depots.SetToolTipString(u"Cliquez ici pour envoyer par Email des avis de dépôts")
         self.ctrl_verrouillage.SetToolTipString(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des règlements qui le contient !")
-        self.ctrl_compte.SetToolTipString(u"Selectionnez le compte bancaire d'encaissement")
+        self.ctrl_code_compta.SetToolTipString(u"Saisissez le code comptable de ce dépôt. Utile uniquement pour l'export des écritures comptables vers des logiciels de compta.")
+        self.ctrl_compte.SetToolTipString(u"Sélectionnez le compte bancaire d'encaissement")
         self.ctrl_observations.SetToolTipString(u"[Optionnel] Saisissez des commentaires")
         self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter ou retirer des règlements de ce dépôt")
         self.bouton_aide.SetToolTipString(u"Cliquez ici obtenir de l'aide")
@@ -241,10 +244,20 @@ class Dialog(wx.Dialog):
         grid_sizer_haut_gauche = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_haut_gauche.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_haut_gauche.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
+
         grid_sizer_haut_gauche.Add(self.label_date, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_haut_gauche.Add(self.ctrl_date, 0, 0, 0)
-        grid_sizer_haut_gauche.Add(self.label_verrouillage, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_haut_gauche.Add(self.ctrl_verrouillage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_haut_date = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_haut_date.Add(self.ctrl_date, 0, 0, 0)
+        grid_sizer_haut_date.Add( (5, 5), 0, wx.EXPAND, 0)
+        grid_sizer_haut_date.Add(self.label_verrouillage, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_haut_date.Add(self.ctrl_verrouillage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_haut_date.AddGrowableCol(1)
+        grid_sizer_haut_gauche.Add(grid_sizer_haut_date, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_haut_gauche.Add(self.label_code_compta, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_haut_gauche.Add(self.ctrl_code_compta, 0, wx.EXPAND, 0)
+        
         grid_sizer_haut_gauche.AddGrowableCol(1)
         grid_sizer_parametres.Add(grid_sizer_haut_gauche, 1, wx.EXPAND, 0)
         grid_sizer_haut_droit.Add(self.label_compte, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -334,14 +347,14 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des données """
         DB = GestionDB.DB()
-        req = """SELECT IDdepot, date, nom, verrouillage, IDcompte, observations
+        req = """SELECT IDdepot, date, nom, verrouillage, IDcompte, observations, code_compta
         FROM depots 
         WHERE IDdepot=%d;""" % self.IDdepot
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDdepot, date, nom, verrouillage, IDcompte, observations = listeDonnees[0]
+        IDdepot, date, nom, verrouillage, IDcompte, observations, code_compta = listeDonnees[0]
         
         # Date
         self.ctrl_date.SetDate(date)
@@ -356,6 +369,9 @@ class Dialog(wx.Dialog):
         # Observations
         if observations != None :
             self.ctrl_observations.SetValue(observations)
+        # Code compta
+        if code_compta != None :
+            self.ctrl_code_compta.SetValue(code_compta)
 
     def OnBoutonAjouter(self, event): 
         # Vérifier si compte sélectionné
@@ -451,6 +467,9 @@ class Dialog(wx.Dialog):
         # Observations
         observations = self.ctrl_observations.GetValue()
         
+        # Code compta
+        code_compta = self.ctrl_code_compta.GetValue() 
+        
         DB = GestionDB.DB()
         listeDonnees = [    
                 ("nom", nom),
@@ -458,6 +477,7 @@ class Dialog(wx.Dialog):
                 ("verrouillage", verrouillage),
                 ("IDcompte", IDcompte),
                 ("observations", observations),
+                ("code_compta", code_compta),
             ]
         if self.IDdepot == None :
             self.IDdepot = DB.ReqInsert("depots", listeDonnees)

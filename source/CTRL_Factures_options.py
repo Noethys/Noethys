@@ -332,8 +332,6 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         """ Importation des valeurs dans le contrôle """
         # Récupération des noms et valeurs par défaut du contrôle
         dictValeurs = copy.deepcopy(self.GetPropertyValues())
-##        for nom, valeur in dictValeurs.iteritems() :
-##            print (nom, valeur, str(type(valeur)))
         # Recherche les paramètres mémorisés
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_facture", dictParametres=dictValeurs)
         # Envoie les paramètres dans le contrôle
@@ -342,9 +340,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
     
-    def Sauvegarde(self):
+    def Sauvegarde(self, forcer=False):
         """ Mémorisation des valeurs du contrôle """
-        if self.GetPropertyByName("memoriser_parametres").GetValue() == True :
+        if self.GetPropertyByName("memoriser_parametres").GetValue() == True or forcer == True :
             dictValeurs = copy.deepcopy(self.GetPropertyValues())
             UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_facture", dictParametres=dictValeurs)
         

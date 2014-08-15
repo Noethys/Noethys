@@ -14,10 +14,13 @@ import wx.lib.wordwrap as wordwrap
 
 
 class CTRL(wx.combo.OwnerDrawnComboBox):
-    def __init__(self, parent, donnees=[], nbreLignesDescription=1, wrap=False, style=wx.CB_READONLY) :
+    def __init__(self, parent, donnees=[], nbreLignesDescription=1, wrap=False, hauteur=None, style=wx.CB_READONLY) :
         self.donnees = donnees
         self.nbreLignesDescription = nbreLignesDescription
-        self.hauteurItem = 33 + (self.nbreLignesDescription*14)
+        if hauteur == None :
+            self.hauteurItem = 33 + (self.nbreLignesDescription*14)
+        else :
+            self.hauteurItem = hauteur
         self.wrap = wrap
         self.selection = None
             

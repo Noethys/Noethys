@@ -521,6 +521,7 @@ DB_DATA = {
                                     ("frais_arrondi", "VARCHAR(20)", u"Méthode d'arrondi"),
                                     ("frais_label", "VARCHAR(200)", u"Label de la prestation"),
                                     ("type_comptable", "VARCHAR(200)", u"Type comptable (banque ou caisse)"),
+                                    ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
                                     ], # Modes de règlements
 
     "emetteurs":[             ("IDemetteur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Emetteur"),
@@ -584,6 +585,7 @@ DB_DATA = {
                                     ("verrouillage", "INTEGER", u"(0/1) Verrouillage du dépôt"),
                                     ("IDcompte", "INTEGER", u"ID du compte d'encaissement"),
                                     ("observations", "VARCHAR(500)", u"Observations"),
+                                    ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
                                     ], # Dépôts
 
     "quotients":[              ("IDquotient", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Quotient familial"),

@@ -38,7 +38,9 @@ class Dialog(wx.Dialog):
         self.label_type_comptable = wx.StaticText(self, -1, u"Type :")
         self.ctrl_type_comptable= wx.Choice(self, -1, choices=[u"Banque", u"Caisse"])
         self.ctrl_type_comptable.SetSelection(0) 
-        
+        self.label_code_comptable = wx.StaticText(self, -1, u"Code :")
+        self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"")
+
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
         
@@ -134,6 +136,7 @@ class Dialog(wx.Dialog):
         self.ctrl_frais_arrondi.SetToolTipString(u"Selectionnez une méthode de calcul de l'arrondi")
         self.ctrl_frais_label.SetToolTipString(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion")
         self.ctrl_type_comptable.SetToolTipString(u"Sélectionnez le type comptable ('Caisse' pour les espèces et 'Banque' pour les autres)")
+        self.ctrl_code_comptable.SetToolTipString(u"Saisissez un code comptable pour ce mode de règlement. Utile uniquement pour l'export des écritures comptables.")
 ##        self.bouton_ajouter_emetteur.SetToolTipString(u"Cliquez ici pour ajouter un émetteur")
 ##        self.bouton_modifier_emetteur.SetToolTipString(u"Cliquez ici pour modifier l'émetteur selectionné dans la liste")
 ##        self.bouton_supprimer_emetteur.SetToolTipString(u"Cliquez ici pour supprimer l'émetteur selectionné dans la liste")
@@ -155,7 +158,7 @@ class Dialog(wx.Dialog):
         grid_sizer_numero = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
         grid_sizer_numero_numerique = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
-        grid_sizer_generalites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
         grid_sizer_image = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_boutons_image = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_generalites.Add(self.label_label, 0, wx.ALIGN_RIGHT, 0)
@@ -168,6 +171,8 @@ class Dialog(wx.Dialog):
         grid_sizer_generalites.Add(grid_sizer_image, 1, wx.EXPAND, 0)
         grid_sizer_generalites.Add(self.label_type_comptable, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT, 0)
         grid_sizer_generalites.Add(self.ctrl_type_comptable, 0, wx.EXPAND, 0)
+        grid_sizer_generalites.Add(self.label_code_comptable, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALIGN_RIGHT, 0)
+        grid_sizer_generalites.Add(self.ctrl_code_comptable, 0, wx.EXPAND, 0)
 
         grid_sizer_generalites.AddGrowableCol(1)
         staticbox_generalites.Add(grid_sizer_generalites, 1, wx.ALL|wx.EXPAND, 10)
@@ -374,7 +379,9 @@ class Dialog(wx.Dialog):
             type_comptable = "banque"
         else :
             type_comptable = "caisse"
-            
+        
+        code_comptable = self.ctrl_code_comptable.GetValue() 
+        
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [    
@@ -388,6 +395,7 @@ class Dialog(wx.Dialog):
                 ("frais_arrondi", frais_arrondi),
                 ("frais_label", frais_label),
                 ("type_comptable", type_comptable),
+                ("code_compta", code_comptable),
             ]
         if self.IDmode == None :
             self.IDmode = DB.ReqInsert("modes_reglements", listeDonnees)
@@ -407,7 +415,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         req = """SELECT label, image, 
         numero_piece, nbre_chiffres, 
-        frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, type_comptable
+        frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, type_comptable, code_compta
         FROM modes_reglements 
         WHERE IDmode=%d;""" % self.IDmode
         DB.ExecuterReq(req)
@@ -415,7 +423,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         mode = listeDonnees[0]
-        label, image, numero_piece, nbre_chiffres, frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, type_comptable = mode
+        label, image, numero_piece, nbre_chiffres, frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label, type_comptable, code_compta = mode
         
         # label
         self.ctrl_label.SetLabel(label)
@@ -456,6 +464,11 @@ class Dialog(wx.Dialog):
             self.ctrl_type_comptable.SetSelection(0) 
         else : 
             self.ctrl_type_comptable.SetSelection(1) 
+        
+        # Code compta
+        if code_compta == None :
+            code_compta = ""
+        self.ctrl_code_comptable.SetValue(code_compta)
         
     def GetIDmode(self):
         return self.IDmode

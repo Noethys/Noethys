@@ -333,9 +333,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
     
-    def Sauvegarde(self):
+    def Sauvegarde(self, forcer=False):
         """ Mémorisation des valeurs du contrôle """
-        if self.GetPropertyByName("memoriser_parametres").GetValue() == True :
+        if self.GetPropertyByName("memoriser_parametres").GetValue() == True or forcer == True :
             dictValeurs = copy.deepcopy(self.GetPropertyValues())
             del dictValeurs["signataire"]
             UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_attestation", dictParametres=dictValeurs)

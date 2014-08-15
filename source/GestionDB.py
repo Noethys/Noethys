@@ -1469,6 +1469,15 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 2, 9)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("modes_reglements", "code_compta", "VARCHAR(200)")
+                self.AjoutChamp("depots", "code_compta", "VARCHAR(200)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
 
 
 
@@ -1730,7 +1739,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("unites", "coeff", "VARCHAR(50)")
+##    db.AjoutChamp("depots", "code_compta", "VARCHAR(200)")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT

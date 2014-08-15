@@ -1,6 +1,13 @@
+Version 1.1.2.9 (15/08/2014) :
+
+- Ajout de l'export des écritures comptables
+- Ajout du rappel de fin de licence
+- Ajout de la mise à jour auto de la version Linux (par Claude)
+- Corrections de petits bugs pour la version Linux (par Claude)
+
 Version 1.1.2.8 (26/07/2014) :
 
-- Ajout de la correction des liens de parentés erronés
+- Ajout de la correction des liens de parenté erronés
 - Ajout de plus de 200 champs dans l'éditeur de documents PDF
 - Ajout des champs dans les listes d'individus et de familles du menu Individus
 - Ajout de l'indicateur date du jour dans la grille des conso
