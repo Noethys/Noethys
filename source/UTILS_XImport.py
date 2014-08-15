@@ -117,7 +117,7 @@ class XImportLine(object):
             if data["type"] == "total_prestations":
                 values["isDebit"]=u"D"
                 values["journal"]=dictParametres["journal_ventes"]
-                values["date_ecriture"]=""
+                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
 ##                if data["date_echeance"]:
 ##                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
 ##                else:
@@ -135,7 +135,7 @@ class XImportLine(object):
             elif data["type"] == "prestation":
                 values["isDebit"]=u"C"
                 values["journal"]=dictParametres["journal_ventes"]
-                values["date_ecriture"]=""
+                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
 ##                if data["date_echeance"]:
 ##                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
 ##                else:
@@ -168,6 +168,7 @@ class XImportLine(object):
             elif data["type"] == "total_reglements":
                 values["isDebit"]=u"C"
                 values["journal"]=dictParametres["journal_%s" % typeComptable]
+                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
                 values["code_analyt"]=dictParametres["code_clients"]
                 values["libelle"] = data["libelle"]
 
@@ -186,6 +187,7 @@ class XImportLine(object):
             elif data["type"] == "total_mode":
                 values["isDebit"]=u"D"
                 values["journal"]=dictParametres["journal_%s" % typeComptable]
+                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
                 values["libelle"] = data["libelle"]
                 values["code_analyt"]=data["code_compta"]
 

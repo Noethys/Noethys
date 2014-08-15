@@ -57,28 +57,6 @@ def GetKeysDictTries(dictValeurs={}, key=""):
     return listeResultats
     
     
-##class CTRL_Logiciel(CTRL_Ultrachoice.CTRL):
-##    def __init__(self, parent):
-##        self.donnees=[ 
-##            {"label" : u"EBP Compta", "description" : u"Pour saisir une conso simple par case", "image" : wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
-##            {"label" : u"CIEL Compta", "description" : u"Pour saisir un horaire dans chaque case", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
-##            ]
-##        CTRL_Ultrachoice.CTRL.__init__(self, parent, donnees=self.donnees, hauteur=65) 
-##        self.parent = parent
-##        self.SetDonnees(self.donnees)
-##        self.Select(0)
-##                                        
-##    def SetType(self, code=None):
-##        if code == "Unitaire" : self.SetSelection2(0) 
-##        if code == "Horaire" : self.SetSelection2(1) 
-##        if code == "Multihoraires" : self.SetSelection2(2) 
-##        if code == "Quantite" : self.SetSelection2(3) 
-##
-##    def GetType(self):
-##        if self.GetSelection2() == 0 : return "Unitaire"
-##        if self.GetSelection2() == 1 : return "Horaire"
-##        if self.GetSelection2() == 2 : return "Multihoraires"
-##        if self.GetSelection2() == 3 : return "Quantite"
 
 def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     """ Formate les lignes au format EBP Compta """
@@ -86,7 +64,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     if ligne["type"] == "total_prestations" :
         ligneTemp = [
             str(numLigne),
-            "",
+            FormateDate(dictParametres["date_fin"], "%d%m%y"),
             dictParametres["journal_ventes"],
             dictParametres["code_clients"],
             "",
@@ -102,7 +80,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     if ligne["type"] == "prestation" :
         ligneTemp = [
             str(numLigne),
-            "",
+            FormateDate(dictParametres["date_fin"], "%d%m%y"),
             dictParametres["journal_ventes"],
             ligne["code_compta"],
             "",
@@ -118,7 +96,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     if ligne["type"] == "depot" :
         ligneTemp = [
             str(numLigne),
-            FormateDate(ligne["date_depot"], "%d%m%Y"),
+            FormateDate(ligne["date_depot"], "%d%m%y"),
             dictParametres["journal_%s" % typeComptable],
             ligne["code_compta"],
             "",
@@ -134,7 +112,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     if ligne["type"] == "total_mode" :
         ligneTemp = [
             str(numLigne),
-            u"",
+            FormateDate(dictParametres["date_fin"], "%d%m%y"),
             dictParametres["journal_%s" % typeComptable],
             ligne["code_compta"],
             "",
@@ -150,7 +128,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     if ligne["type"] == "total_reglements" :
         ligneTemp = [
             str(numLigne),
-            u"",
+            FormateDate(dictParametres["date_fin"], "%d%m%y"),
             dictParametres["journal_%s" % typeComptable],
             dictParametres["code_clients"],
             "",
@@ -164,6 +142,7 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
 
     return ",".join(ligneTemp)
 
+# ----------------------------------------------------------------------------------------------------------------------------------
 
 class Donnees():
     def __init__(self, dictParametres={}):
@@ -341,7 +320,7 @@ class Donnees():
                 code_compta = code_compta_mode
             if dictModesReglements.has_key(IDmode) == False :
                 dictModesReglements[IDmode] = {
-                    "IDmode" : IDmode, "label" : labelMode, "code_compta" : code_compta_mode, "montant" : FloatToDecimal(0.0), 
+                    "IDmode" : IDmode, "label" : labelMode, "code_compta" : code_compta, "montant" : FloatToDecimal(0.0), 
                     "nbreReglements" : 0, "numeroCompte" : numeroCompte, "nomCompte" : nomCompte,
                     }
             dictModesReglements[IDmode]["montant"] += FloatToDecimal(montant)
@@ -1054,7 +1033,7 @@ class CTRL_Logiciel(wx.combo.BitmapComboBox):
         self.parent = parent
         self.listeFormats = [
             {"code" : "ebp_compta", "label" : u"EBP Compta", "image" : wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
-            {"code" : "ciel_compta_ebp", "label" : u"CIEL Compta (Format EBP v3)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+            {"code" : "ciel_compta_ebp", "label" : u"CIEL Compta (Format EBP)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             {"code" : "ciel_compta_ximport", "label" : u"CIEL Compta (Format XImport)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             ]
         for dictFormat in self.listeFormats :
@@ -1339,20 +1318,21 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
 class CTRL_Parametres_defaut(CTRL_Parametres) :
     def __init__(self, parent):
         self.listeDonnees = [
-            u"Options",
+            u"Options générales",
             {"type":"choix", "label":u"Regroupement des règlements", "description":u"Mode de regroupement des règlements", "code":"option_regroupement_reglements", "tip":u"Sélectionnez le mode de regroupement des règlements", "choix":[u"Par modes de règlements", u"Par dépôts de règlements"], "defaut":0, "obligatoire":True},
             {"type":"choix", "label":u"Sélection des règlements", "description":u"Sélection des règlements", "code":"option_selection_reglements", "tip":u"Sélectionnez le mode de sélection des règlements", "choix":[u"Règlements déposés sur la période", u"Règlements saisis sur la période"], "defaut":0, "obligatoire":True},
+            {"type":"check", "label":u"Insérer entête noms des champs", "description":u"Insérer ligne noms des champs", "code":"ligne_noms_champs", "tip":u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs", "defaut":False, "obligatoire":True},
             {"type":"check", "label":u"Mémoriser les paramètres", "description":u"Mémoriser les paramètres", "code":"memoriser_parametres", "tip":u"Cochez cette case pour mémoriser les paramètres", "defaut":True, "obligatoire":True},
-            u"Codes journaux",
+            u"Codes journaux par défaut",
             {"type":"chaine", "label":u"Ventes", "description":u"Code journal des ventes", "code":"journal_ventes", "tip":u"Saisissez le code journal des ventes", "defaut":u"VE", "obligatoire":True},
             {"type":"chaine", "label":u"Banque", "description":u"Code journal de la banque", "code":"journal_banque", "tip":u"Saisissez le code journal de la banque", "defaut":u"BP", "obligatoire":True},
             {"type":"chaine", "label":u"Caisse", "description":u"Code journal de la caisse", "code":"journal_caisse", "tip":u"Saisissez le code journal de la caisse", "defaut":u"CA", "obligatoire":False},
-            u"Codes comptables",
+            u"Codes comptables par défaut",
             {"type":"chaine", "label":u"Ventes", "description":u"Code comptable des ventes", "code":"code_ventes", "tip":u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)", "defaut":u"706", "obligatoire":True},
             {"type":"chaine", "label":u"Clients", "description":u"Code comptable des clients", "code":"code_clients", "tip":u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)", "defaut":u"411", "obligatoire":True},
             {"type":"chaine", "label":u"Banque", "description":u"Code comptable de la banque", "code":"code_banque", "tip":u"Saisissez le code comptable de la banque", "defaut":u"512", "obligatoire":True},
             {"type":"chaine", "label":u"Caisse", "description":u"Code comptable de la caisse", "code":"code_caisse", "tip":u"Saisissez le code comptable de la caisse", "defaut":u"531", "obligatoire":False},
-            u"Formats libellés",
+            u"Formats des libellés",
             {"type":"chaine", "label":u"Total des prestations", "description":u"Format du libellé du total des ventes", "code":"format_total_ventes", "tip":u"Saisissez le format du libellé du total des ventes. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}.", "defaut":u"Prestations du {DATE_DEBUT} au {DATE_FIN}", "obligatoire":True},
             {"type":"chaine", "label":u"Total des règlements", "description":u"Format du libellé du total des règlements", "code":"format_total_reglements", "tip":u"Saisissez le format du libellé du total des règlements. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}.", "defaut":u"Règlements du {DATE_DEBUT} au {DATE_FIN}", "obligatoire":True},
             #{"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "obligatoire":True},
@@ -1371,6 +1351,10 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
     
         numLigne = 1
         listeLignesTxt = []
+        
+        # Ligne d'entête
+        if dictParametres["ligne_noms_champs"] == True :
+            listeLignesTxt.append("numligne,date,journal,compte,libelleauto,libellemanuel,piece,montant,sens,echeance,devise")
         
         # Ventes
         lignesVentes = donnees.GetVentes() 
