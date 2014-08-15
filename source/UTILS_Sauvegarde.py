@@ -88,8 +88,15 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     for nomFichier in listeFichiersLocaux :
         dlgprogress.Update(numEtape, u"Compression du fichier %s..." % nomFichier);numEtape += 1
         fichier = u"Data/%s" % nomFichier
-        fichierZip.write(fichier, nomFichier)
-    
+        if os.path.isfile(fichier) == True :
+            fichierZip.write(fichier, nomFichier)
+        else :
+            dlgprogress.Destroy()
+            dlgErreur = wx.MessageDialog(None, u"Le fichier '%s' n'existe plus sur cet ordinateur. \n\nVeuillez ôter ce fichier de la procédure de sauvegarde automatique (Menu Fichier > Sauvegardes automatiques)" % nomFichier, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlgErreur.ShowModal() 
+            dlgErreur.Destroy()
+            return False
+        
     # Intégration des fichiers réseau
     if len(listeFichiersReseau) > 0 and dictConnexion != None :
         
