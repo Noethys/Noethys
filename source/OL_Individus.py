@@ -701,10 +701,11 @@ class BarreRecherche(wx.SearchCtrl):
         item.Enable(False)
         index = 0
         for IDindividu in self.listView.historique :
-            track = self.listView.dictTracks[IDindividu]
-            label = u"%s %s" % (track.nom, track.prenom)
-            menu.Append(index, label)
-            index += 1
+            if self.listView.dictTracks.has_key(IDindividu) :
+                track = self.listView.dictTracks[IDindividu]
+                label = u"%s %s" % (track.nom, track.prenom)
+                menu.Append(index, label)
+                index += 1
         self.Bind(wx.EVT_MENU_RANGE, self.OnItemMenu, id=0, id2=len(self.listView.historique))
         return menu
 
