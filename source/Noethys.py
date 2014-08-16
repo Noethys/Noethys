@@ -4140,7 +4140,7 @@ Merci pour votre participation !
                     if dateDernierRappel != None :
                         UTILS_Config.SetParametre("enregistrement_dernier_rappel", None)
                     
-                elif nbreJoursRestants <= 3000 :
+                elif nbreJoursRestants <= 30 :
                     # Licence bientôt périmée
                     UTILS_Config.SetParametre("enregistrement_dernier_rappel", datetime.date.today())
                     if dateDernierRappel != None :
