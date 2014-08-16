@@ -4820,7 +4820,9 @@ class ModeleDoc():
         for objet in self.listeObjets :
             valeur = self.GetValeur(objet, dictChamps)
             if valeur != False :
-                DessineObjetPDF(objet, canvas, valeur=valeur)
+                etat = DessineObjetPDF(objet, canvas, valeur=valeur)
+                if etat == False :
+                    return False
 
     def GetValeur(self, objet=None, dictChamps={}):
         valeur = None
@@ -5048,15 +5050,24 @@ def DessineObjetPDF(objet, canvas, valeur=None):
     if objet.categorie == "barcode" :
         x, y = GetXY(objet)
         largeur, hauteur = GetTaille(objet)
-        if valeur != None :        
+        if valeur != None :   
+            # Vérifie que uniquement des chiffres dans certains codes-barres
+            if objet.norme in ("EAN8", "EAN13") :
+                for caract in valeur :
+                    if caract not in "0123456789" :
+                        dlg = wx.MessageDialog(None, u"Génération du PDF impossible.\n\nErreur : Un code-barres %s doit comporter uniquement des chiffres. Cette erreur apparaît donc si une lettre se trouve dans la valeur du code-barres (Ce qui est le cas pour certains codes-barres standards de Noethys). Vous pouvez contourner le problème en créant des Codes-barres manuels avec les QUESTIONNAIRES de Noethys." % objet.norme, u"Erreur", wx.OK | wx.ICON_ERROR)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return False
+            
             if objet.norme == None : objet.norme = "Extended39"
             if objet.norme == "Codabar" : barcode = Codabar(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Code11" : barcode = Code11(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "I2of5" : barcode = I2of5(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "MSI" : barcode = MSI(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Code128" : barcode = Code128(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
-            if objet.norme == "EAN13" : barcode = createBarcodeDrawing("EAN13", value=valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
-            if objet.norme == "EAN8" : barcode = createBarcodeDrawing("EAN8", value=valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
+            if objet.norme == "EAN13" : barcode = createBarcodeDrawing("EAN13", value="{:0>12}".format(valeur), barHeight=hauteur, humanReadable=objet.afficheNumero)
+            if objet.norme == "EAN8" : barcode = createBarcodeDrawing("EAN8", value="{:0>7}".format(valeur), barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Extended39" : barcode = Extended39(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Standard39" : barcode = Standard39(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)
             if objet.norme == "Extended93" : barcode = Extended93(valeur, barHeight=hauteur, humanReadable=objet.afficheNumero)

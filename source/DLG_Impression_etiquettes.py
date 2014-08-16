@@ -581,9 +581,6 @@ class Dialog(wx.Dialog):
             return
 
         # DLG Attente
-        dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant la génération du PDF...", parent=None, title=u"Patientez", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
-
         taillePage = (self.ctrl_largeur_page.GetValue(), self.ctrl_hauteur_page.GetValue())
         margeHaut = self.ctrl_marge_haut.GetValue()
         margeGauche = self.ctrl_marge_gauche.GetValue()
@@ -618,7 +615,6 @@ class Dialog(wx.Dialog):
                     AfficherReperesDecoupe=AfficherReperesDecoupe,
                     )
         
-        del dlgAttente
         
 
 if __name__ == u"__main__":

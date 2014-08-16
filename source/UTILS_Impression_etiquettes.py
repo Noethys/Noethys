@@ -100,7 +100,9 @@ class Impression():
             
             # Dessin de l'étiquette
             modeleDoc.DessineFond(canvas, dictChamps=dictValeurs)
-            modeleDoc.DessineTousObjets(canvas, dictChamps=dictValeurs) 
+            etat = modeleDoc.DessineTousObjets(canvas, dictChamps=dictValeurs) 
+            if etat == False :
+                return
             
             # Dessin du contour de l'étiquette
             if AfficherContourEtiquette == True :
