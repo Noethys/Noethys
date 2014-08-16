@@ -923,14 +923,19 @@ class ListView(FastObjectListView):
         listeFactures = DB.ResultatReq()
         DB.Close() 
         if len(listeFactures) > 0 :
-            if len(listeSelections) == 1 :
-                message = u"Cette cotisation apparaît déjà sur une facture. Il est donc impossible de la supprimer."
-            else :
-                message = u"%d de ces cotisations apparaissent déjà sur une ou plusieurs factures. Il est donc impossible d'effectuer la suppression." % len(listeFactures)
-            dlg = wx.MessageDialog(self, message, u"Suppression impossible", wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
+            nbreCotisations = 0
+            for IDcotisation, IDfacture in listeFactures :
+                if IDfacture != None :
+                    nbreCotisations += 1
+            if nbreCotisations > 0 :
+                if nbreCotisations == 1 :
+                    message = u"Cette cotisation apparaît déjà sur une facture. Il est donc impossible de la supprimer."
+                else :
+                    message = u"%d de ces cotisations apparaissent déjà sur une ou plusieurs factures. Il est donc impossible d'effectuer la suppression." % len(listeFactures)
+                dlg = wx.MessageDialog(self, message, u"Suppression impossible", wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
         
         # Suppression
         DB = GestionDB.DB()
@@ -1025,7 +1030,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, IDfamille=3, id=-1, mode="liste", triColonne="numero", checkColonne=True, codesColonnes=["IDcotisation", "beneficiaires", "date_saisie", "numero", "nom", "type_cotisation", "unite_cotisation", "montant", "solde"], name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, IDfamille=291, id=-1, mode="famille", triColonne="numero", checkColonne=True, codesColonnes=["IDcotisation", "beneficiaires", "date_saisie", "numero", "nom", "type_cotisation", "unite_cotisation", "montant", "solde"], name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
