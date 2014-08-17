@@ -183,56 +183,59 @@ class CTRL_Activites(wx.CheckListBox):
 # -----------------------------------------------------------------------------------------------------------------------
 
 class CTRL(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, afficheToutes=False):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
+        self.afficheToutes = afficheToutes
         
         # Contrôles
-        self.radio_groupes = wx.RadioButton(self, -1, u"Sélectionner un groupe d'activités", style=wx.RB_GROUP)
+        self.radio_toutes = wx.RadioButton(self, -1, u"Toutes les activités", style=wx.RB_GROUP)
+        if self.afficheToutes == False :
+            style = wx.RB_GROUP
+        else :
+            style = 0
+        self.radio_groupes = wx.RadioButton(self, -1, u"Les groupes d'activités suivants :", style=style)
         self.ctrl_groupes = CTRL_Groupes(self)
-        self.ctrl_groupes.SetMinSize((80, 50))
-        self.radio_activites = wx.RadioButton(self, -1, u"Sélectionner une ou plusieurs activités")
+        self.ctrl_groupes.SetMinSize((200, 50))
+        self.radio_activites = wx.RadioButton(self, -1, u"Les activités suivantes :")
         self.ctrl_activites = CTRL_Activites(self)
-        self.ctrl_activites.SetMinSize((80, 50))
+        self.ctrl_activites.SetMinSize((200, 50))
         
         # Binds
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_toutes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_groupes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioActivites, self.radio_activites)
         
         # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
-        
+        grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.radio_toutes, 0, wx.BOTTOM, 5)
         grid_sizer_base.Add(self.radio_groupes, 0, 0, 0)
         grid_sizer_base.Add(self.ctrl_groupes, 0, wx.LEFT|wx.EXPAND, 18)
         grid_sizer_base.Add((1, 1), 0, wx.EXPAND, 0)
         grid_sizer_base.Add(self.radio_activites, 0, 0, 0)
         grid_sizer_base.Add(self.ctrl_activites, 0, wx.LEFT|wx.EXPAND, 18)
-        grid_sizer_base.AddGrowableRow(1)
-        grid_sizer_base.AddGrowableRow(4)
+        grid_sizer_base.AddGrowableRow(2)
+        grid_sizer_base.AddGrowableRow(5)
         grid_sizer_base.AddGrowableCol(0)
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         
         # Init Contrôles
-        if self.radio_activites.GetValue() == True :
-            self.ctrl_activites.Enable(True)
-            self.ctrl_groupes.Enable(False)
-        else:
-            self.ctrl_activites.Enable(False)
-            self.ctrl_groupes.Enable(True)
+        self.ctrl_activites.Enable(self.radio_activites.GetValue())
+        self.ctrl_groupes.Enable(self.radio_groupes.GetValue())
+        if self.afficheToutes == False :
+            self.radio_toutes.Show(False)
         
     def OnRadioActivites(self, event): 
-        if self.radio_activites.GetValue() == True :
-            self.ctrl_activites.Enable(True)
-            self.ctrl_groupes.Enable(False)
-        else:
-            self.ctrl_activites.Enable(False)
-            self.ctrl_groupes.Enable(True)
+        self.ctrl_activites.Enable(self.radio_activites.GetValue())
+        self.ctrl_groupes.Enable(self.radio_groupes.GetValue())
         self.OnCheck()
     
     def Validation(self):
         """ Vérifie que des données ont été sélectionnées """
+        if self.afficheToutes == True and self.radio_toutes.GetValue() == True :
+            return True
         if len(self.GetActivites()) == 0 :
             dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -283,7 +286,10 @@ class CTRL(wx.Panel):
 
     def GetValeurs(self):
         """ Retourne les valeurs sélectionnées """
-        if self.radio_groupes.GetValue() == True :
+        if self.afficheToutes == True and self.radio_toutes.GetValue() == True :
+            mode = "toutes"
+            listeID = []
+        elif self.radio_groupes.GetValue() == True :
             mode = "groupes"
             listeID = self.ctrl_groupes.GetIDgroupesCoches()
         else:
@@ -292,6 +298,8 @@ class CTRL(wx.Panel):
         return mode, listeID
     
     def SetValeurs(self, mode="", listeID=[]):
+        if mode == "toutes" :
+            self.radio_toutes.SetValue(True)
         if mode == "groupes" :
             self.radio_groupes.SetValue(True)
             self.ctrl_groupes.SetIDcoches(listeID)

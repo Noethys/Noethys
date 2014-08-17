@@ -41,7 +41,7 @@ import CTRL_Numfacture
 import CTRL_Recherche_individus
 import CTRL_Ephemeride
 ##import CTRL_Meteo
-import DLG_Remplissage
+import DLG_Effectifs
 import DLG_Message_html
 import DLG_Enregistrement
 import CTRL_Toaster
@@ -506,6 +506,9 @@ class MainFrame(wx.Frame):
         self.userConfig["perspectives"] = self.perspectives
         self.userConfig["perspective_active"] = self.perspective_active
         
+        self.userConfig["perspective_ctrl_effectifs"] = self.ctrl_remplissage.SavePerspective()
+        self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive() 
+
         # Sauvegarde du fichier de configuration
         self.SaveFichierConfig(nomFichier=self.nomFichierConfig)
 
@@ -583,15 +586,20 @@ class MainFrame(wx.Frame):
         self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(u"Ephéméride").
                           Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
 
-        # Panneau Remplissage
-        self.ctrl_remplissage = DLG_Remplissage.Panel(self)
+        # Panneau Effectifs
+        self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
         self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(u"Effectifs").
                           Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
         
+        if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
+            self.ctrl_remplissage.LoadPerspective(self.userConfig["perspective_ctrl_effectifs"])
+        if self.userConfig.has_key("page_ctrl_effectifs") == True :
+            self.ctrl_remplissage.SetPageActive(self.userConfig["page_ctrl_effectifs"])
+            
         # Panneau Messages
         self.ctrl_messages = CTRL_Messages.Panel(self)
         self._mgr.AddPane(self.ctrl_messages, aui.AuiPaneInfo().Name("messages").Caption(u"Messages").
-                          Left().Layer(1).Position(1).CloseButton(True).MaximizeButton(True) )
+                          Left().Layer(1).Position(2).CloseButton(True).MinSize((200, 100)).MaximizeButton(True) )
         pi = self._mgr.GetPane("messages")
         pi.dock_proportion = 50000 # Proportion
         
@@ -599,6 +607,8 @@ class MainFrame(wx.Frame):
         self.ctrl_accueil = CTRL_Accueil.Panel(self)
         self._mgr.AddPane(self.ctrl_accueil, aui.AuiPaneInfo().Name("accueil").Caption(u"Accueil").
                           Bottom().Layer(0).Position(1).Hide().CaptionVisible(False).CloseButton(False).MaximizeButton(False) )
+        
+        self._mgr.Update()
         
         # Sauvegarde de la perspective par défaut
         self.perspective_defaut = self._mgr.SavePerspective()
@@ -2002,7 +2012,6 @@ class MainFrame(wx.Frame):
         self.ctrl_individus.MAJ()
         self.ctrl_messages.MAJ() 
         wx.CallAfter(self.ctrl_individus.ctrl_recherche.SetFocus)
-##        self.ctrl_individus.ctrl_recherche.SetFocus()
 
     def On_fichier_AssistantDemarrage(self, event):
         print "ok"
@@ -2404,6 +2413,7 @@ class MainFrame(wx.Frame):
         dlg = DLG_Groupes_activites.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
+        self.ctrl_remplissage.MAJ() 
 
     def On_param_activites(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "consulter") == False : return
@@ -2850,6 +2860,8 @@ class MainFrame(wx.Frame):
         self._mgr.LoadPerspective(self.perspective_defaut)
         self.perspective_active = None
         self.MAJmenuPerspectives() 
+        self._mgr.Update()
+        self.Refresh()
 
     def On_affichage_perspective_perso(self, event):
         index = event.GetId() - ID_PREMIERE_PERSPECTIVE
@@ -2857,6 +2869,8 @@ class MainFrame(wx.Frame):
         self.perspective_active = index
         self.ForcerAffichagePanneau("ephemeride")
         self.MAJmenuPerspectives() 
+        self._mgr.Update()
+        self.Refresh()
 
     def On_affichage_perspective_save(self, event):
         newIDperspective = len(self.perspectives)
@@ -3757,7 +3771,7 @@ class MainFrame(wx.Frame):
             self.ForcerAffichagePanneau("ephemeride")
         else:
             self._mgr.LoadPerspective(self.perspective_defaut)
-        
+
         # Met à jour la liste des derniers fichiers ouverts dans le CONFIG de la page
         self.MAJlisteDerniersFichiers(nomFichier) 
         
@@ -4147,7 +4161,7 @@ Merci pour votre participation !
                         nbreJoursDepuisRappel =  (dateDernierRappel - datetime.date.today()).days
                     else :
                         nbreJoursDepuisRappel = None
-                    if nbreJoursDepuisRappel == None or nbreJoursDepuisRappel >= 7 :
+                    if nbreJoursDepuisRappel == None or nbreJoursDepuisRappel >= 10 :
                         import wx.lib.dialogs as dialogs
                         image = wx.Bitmap("Images/32x32/Cle.png", wx.BITMAP_TYPE_ANY)
                         message1 = u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium." % nbreJoursRestants

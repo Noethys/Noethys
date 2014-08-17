@@ -1495,6 +1495,12 @@ def GetChampsTable(nomTable=""):
             return listeChamps
     return []
 
+def ConvertConditionChaine(liste=[]):
+    """ Transforme une liste de valeurs en une condition chaine pour requête SQL """
+    if len(liste) == 0 : condition = "()"
+    elif len(liste) == 1 : condition = "(%d)" % liste[0]
+    else : condition = str(tuple(liste))
+    return condition
 
 def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None):
     """ Convertit une DB locale en version RESEAU MySQL """
