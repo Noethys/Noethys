@@ -24,12 +24,18 @@ class CTRL(aui.AuiNotebook):
         # CTRL Remplissage
         self.ctrl_remplissage = DLG_Remplissage.Panel(self)
         self.AddPage(self.ctrl_remplissage, u"Consommations")
-        self.SetPageTooltip(0, u"Affiche l'état des consommations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page.")
-        
+        try :
+            self.SetPageTooltip(0, u"Affiche l'état des consommations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page.")
+        except :
+            pass
+            
         # CTRL Inscriptions
         self.ctrl_nbre_inscrits = DLG_Nbre_inscrits.Panel(self)
         self.AddPage(self.ctrl_nbre_inscrits, u"Inscriptions")
-        self.SetPageTooltip(1, u"Affiche l'état des inscriptions. \nVous pouvez glisser-déposer cet onglet pour déplacer la page.")
+        try :
+            self.SetPageTooltip(1, u"Affiche l'état des inscriptions. \nVous pouvez glisser-déposer cet onglet pour déplacer la page.")
+        except :
+            pass
         
     def MAJ(self):
         self.ctrl_remplissage.MAJ() 
