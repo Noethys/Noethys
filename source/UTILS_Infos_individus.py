@@ -428,7 +428,7 @@ class Informations() :
                         texteLien = ""
                     
                     if DICT_AUTORISATIONS.has_key(IDautorisation) :
-                        if sexe == None : sexe = "M"
+                        if sexe in (None, "") : sexe = "M"
                         autorisation = DICT_AUTORISATIONS[IDautorisation][sexe]
                     else :
                         autorisation = ""
