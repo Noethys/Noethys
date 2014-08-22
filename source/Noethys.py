@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-13 Ivan LUCAS
+# Copyright:       (c) 2010-14 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -73,236 +73,9 @@ VERSION_APPLICATION = FonctionsPerso.GetVersionLogiciel()
 NOM_APPLICATION = u"Noethys"
 
 # ID pour la barre des menus
-ID_ASSISTANT_DEMARRAGE = wx.NewId()
-ID_NOUVEAU_FICHIER = wx.NewId()
-ID_OUVRIR_FICHIER = wx.NewId()
-ID_FERMER_FICHIER = wx.NewId()
-ID_FICHIER_INFORMATIONS = wx.NewId()
-ID_CREER_SAUVEGARDE = wx.NewId()
-ID_RESTAURER_SAUVEGARDE = wx.NewId()
-ID_SAUVEGARDES_AUTO = wx.NewId()
-ID_CONVERSION_RESEAU = wx.NewId()
-ID_CONVERSION_LOCAL = wx.NewId()
-ID_QUITTER = wx.NewId()
 ID_DERNIER_FICHIER = 700
-
-ID_PARAM_MENU_FACTURATION = wx.NewId()
-ID_PARAM_MENU_REGLEMENTS = wx.NewId()
-ID_PARAM_MENU_PRELEVEMENTS = wx.NewId()
-ID_PARAM_MENU_RENSEIGNEMENTS = wx.NewId()
-ID_PARAM_MENU_SCOLAIRE = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS = wx.NewId()
-
-ID_PARAM_MENU_TRANSPORTS_BUS = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_CAR = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_NAVETTE = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_TAXI = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_TRAIN = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_AVION = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_BATEAU = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_METRO = wx.NewId()
-ID_PARAM_MENU_TRANSPORTS_PEDIBUS = wx.NewId()
-
-ID_PARAM_PREFERENCES = wx.NewId()
-ID_PARAM_ENREGISTREMENT = wx.NewId()
-ID_PARAM_UTILISATEURS = wx.NewId()
-ID_PARAM_MODELES_DROITS = wx.NewId()
-ID_PARAM_UTILISATEURS_RESEAU = wx.NewId()
-ID_PARAM_ORGANISATEUR = wx.NewId()
-ID_PARAM_ACTIVITES = wx.NewId()
-ID_PARAM_DOCUMENTS = wx.NewId()
-ID_PARAM_MODELES_EMAILS = wx.NewId()
-ID_PARAM_MODELES_TICKETS = wx.NewId()
-ID_PARAM_BADGEAGE = wx.NewId()
-ID_PARAM_VOCAL = wx.NewId()
-ID_PARAM_PIECES = wx.NewId()
-ID_PARAM_CATEGORIES_TRAVAIL = wx.NewId()
-ID_PARAM_MALADIES = wx.NewId()
-ID_PARAM_VACCINS = wx.NewId()
-ID_PARAM_MEDECINS = wx.NewId()
-ID_PARAM_RESTAURATEURS = wx.NewId()
-ID_PARAM_MODES_REGLEMENTS = wx.NewId()
-ID_PARAM_EMETTEURS = wx.NewId()
-ID_PARAM_COMPTES = wx.NewId()
-ID_PARAM_BANQUES = wx.NewId()
-ID_PARAM_LOTS_FACTURES = wx.NewId()
-ID_PARAM_LOTS_RAPPELS = wx.NewId()
-ID_PARAM_REGIMES = wx.NewId()
-ID_PARAM_CAISSES = wx.NewId()
-ID_PARAM_MODELES_AIDES = wx.NewId()
-ID_PARAM_TYPES_COTISATIONS = wx.NewId()
-ID_PARAM_GROUPES_ACTIVITES = wx.NewId()
-ID_PARAM_SECTEURS = wx.NewId()
-ID_PARAM_VILLES = wx.NewId()
-ID_PARAM_TYPES_SIESTE = wx.NewId()
-ID_PARAM_CATEGORIES_MESSAGES = wx.NewId()
-ID_PARAM_EMAILS_EXP = wx.NewId()
-ID_PARAM_LISTE_DIFFUSION = wx.NewId()
-ID_PARAM_QUESTIONNAIRES = wx.NewId()
-ID_PARAM_NIVEAUX_SCOLAIRES = wx.NewId()
-ID_PARAM_ECOLES = wx.NewId()
-ID_PARAM_CLASSES = wx.NewId()
-
-ID_PARAM_COMPAGNIES_BUS = wx.NewId()
-ID_PARAM_COMPAGNIES_CAR = wx.NewId()
-ID_PARAM_COMPAGNIES_NAVETTE = wx.NewId()
-ID_PARAM_COMPAGNIES_TAXI = wx.NewId()
-ID_PARAM_COMPAGNIES_AVION = wx.NewId()
-ID_PARAM_COMPAGNIES_BATEAU = wx.NewId()
-ID_PARAM_COMPAGNIES_TRAIN = wx.NewId()
-ID_PARAM_COMPAGNIES_METRO = wx.NewId()
-
-ID_PARAM_LIEUX_GARES = wx.NewId()
-ID_PARAM_LIEUX_AEROPORTS = wx.NewId()
-ID_PARAM_LIEUX_PORTS = wx.NewId()
-ID_PARAM_LIEUX_STATIONS = wx.NewId()
-
-ID_PARAM_LIGNES_BUS = wx.NewId()
-ID_PARAM_LIGNES_CAR = wx.NewId()
-ID_PARAM_LIGNES_NAVETTE = wx.NewId()
-ID_PARAM_LIGNES_BATEAU = wx.NewId()
-ID_PARAM_LIGNES_METRO = wx.NewId()
-ID_PARAM_LIGNES_PEDIBUS = wx.NewId()
-
-ID_PARAM_ARRETS_BUS = wx.NewId()
-ID_PARAM_ARRETS_CAR = wx.NewId()
-ID_PARAM_ARRETS_NAVETTE = wx.NewId()
-ID_PARAM_ARRETS_BATEAU = wx.NewId()
-ID_PARAM_ARRETS_METRO = wx.NewId()
-ID_PARAM_ARRETS_PEDIBUS = wx.NewId()
-
-ID_PARAM_VACANCES = wx.NewId()
-ID_PARAM_FERIES = wx.NewId()
-ID_PARAM_MENU_CALENDRIER = wx.NewId()
-
-ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.NewId()
 ID_PREMIERE_PERSPECTIVE = 500
-ID_AFFICHAGE_PERSPECTIVE_SAVE = wx.NewId()
-ID_AFFICHAGE_PERSPECTIVE_SUPPR = wx.NewId()
 ID_AFFICHAGE_PANNEAUX = 600
-ID_AFFICHAGE_ACTUALISER = wx.NewId()
-
-ID_INDIVIDUS_SCOLARITE = wx.NewId()
-ID_INDIVIDUS_INSCRIPTIONS = wx.NewId()
-ID_INDIVIDUS_INDIVIDUS = wx.NewId()
-ID_INDIVIDUS_FAMILLES = wx.NewId()
-ID_INDIVIDUS_TRANSPORTS = wx.NewId()
-ID_INDIVIDUS_TRANSPORTS_RECAP = wx.NewId()
-ID_INDIVIDUS_TRANSPORTS_DETAIL = wx.NewId()
-ID_INDIVIDUS_ANNIVERSAIRES = wx.NewId()
-ID_INDIVIDUS_INFOS_MED = wx.NewId()
-ID_INDIVIDUS_PIECES_FOURNIES = wx.NewId()
-ID_INDIVIDUS_PIECES_MANQUANTES = wx.NewId()
-ID_INDIVIDUS_REGIMES_CAISSES = wx.NewId()
-ID_INDIVIDUS_QUOTIENTS = wx.NewId()
-ID_INDIVIDUS_MANDATS = wx.NewId()
-ID_INDIVIDUS_IMPORTER_PHOTOS = wx.NewId()
-ID_INDIVIDUS_IMPORTER = wx.NewId()
-ID_INDIVIDUS_IMPORTER_CSV = wx.NewId()
-ID_INDIVIDUS_IMPORTER_FICHIER = wx.NewId()
-ID_INDIVIDUS_EDITION_ETIQUETTES = wx.NewId()
-
-ID_OUTILS_STATS = wx.NewId()
-ID_OUTILS_VILLES = wx.NewId()
-ID_OUTILS_CALCULATRICE = wx.NewId()
-ID_OUTILS_CALENDRIER = wx.NewId()
-ID_OUTILS_ENVOI_EMAILS = wx.NewId()
-ID_OUTILS_METEO = wx.NewId()
-ID_OUTILS_GPS = wx.NewId()
-ID_OUTILS_HORAIRES_SOLEIL = wx.NewId()
-ID_OUTILS_CONNEXIONS = wx.NewId()
-ID_OUTILS_MESSAGES = wx.NewId()
-ID_OUTILS_HISTORIQUE = wx.NewId()
-ID_OUTILS_UTILITAIRES = wx.NewId()
-ID_OUTILS_CORRECTEUR = wx.NewId()
-ID_OUTILS_PURGER_HISTORIQUE = wx.NewId()
-ID_OUTILS_PURGER_JOURNAL_BADGEAGE = wx.NewId()
-ID_OUTILS_PURGER_ARCHIVES_BADGEAGE = wx.NewId()
-ID_OUTILS_PURGER_REP_UPDATES = wx.NewId()
-ID_OUTILS_UPDATER = wx.NewId()
-ID_OUTILS_PROCEDURES = wx.NewId()
-ID_OUTILS_PROCEDURE_E4072 = wx.NewId()
-ID_OUTILS_EXTENSIONS = wx.NewId()
-ID_OUTILS_REINITIALISATION = wx.NewId()
-ID_OUTILS_TRANSFERT_TABLES = wx.NewId()
-ID_OUTILS_CONSO_SANS_PRESTATIONS = wx.NewId()
-ID_OUTILS_PRESTATIONS_SANS_CONSO = wx.NewId()
-ID_OUTILS_DEVERROUILLAGE_FORFAITS = wx.NewId()
-ID_OUTILS_CONSOLE_PYTHON = wx.NewId()
-ID_OUTILS_CONSOLE_SQL = wx.NewId()
-ID_OUTILS_LISTE_PERSO = wx.NewId()
-ID_OUTILS_APPLIQUER_TVA = wx.NewId()
-ID_OUTILS_APPLIQUER_CODE_COMPTABLE = wx.NewId()
-ID_OUTILS_CONVERSION_RIB_SEPA = wx.NewId()
-ID_OUTILS_CREATION_TITULAIRES_HELIOS = wx.NewId()
-
-ID_REGLEMENTS_REGLER_FACTURE = wx.NewId()
-ID_REGLEMENTS_RECUS = wx.NewId()
-ID_REGLEMENTS_LISTE = wx.NewId()
-ID_REGLEMENTS_VENTILATION = wx.NewId()
-ID_REGLEMENTS_ANALYSE_VENTILATION = wx.NewId()
-ID_REGLEMENTS_SYNTHESE_MODES = wx.NewId()
-ID_REGLEMENTS_PRELEVEMENT = wx.NewId()
-ID_REGLEMENTS_DEPOTS = wx.NewId()
-
-ID_FACTURATION_VENTILATION = wx.NewId()
-ID_FACTURATION_MENU_FACTURES = wx.NewId()
-ID_FACTURATION_FACTURES_GENERATION = wx.NewId()
-ID_FACTURATION_FACTURES_LISTE = wx.NewId()
-ID_FACTURATION_FACTURES_PRELEVEMENT = wx.NewId()
-ID_FACTURATION_FACTURES_HELIOS = wx.NewId()
-ID_FACTURATION_FACTURES_EMAIL = wx.NewId()
-ID_FACTURATION_FACTURES_IMPRIMER = wx.NewId()
-ID_FACTURATION_MENU_RAPPELS= wx.NewId()
-ID_FACTURATION_RAPPELS_GENERATION = wx.NewId()
-ID_FACTURATION_RAPPELS_EMAIL = wx.NewId()
-ID_FACTURATION_RAPPELS_IMPRIMER = wx.NewId()
-ID_FACTURATION_RAPPELS_LISTE = wx.NewId()
-ID_FACTURATION_MENU_ATTESTATIONS = wx.NewId()
-ID_FACTURATION_ATTESTATIONS_GENERATION = wx.NewId()
-ID_FACTURATION_ATTESTATIONS_LISTE = wx.NewId()
-ID_FACTURATION_MENU_ATTESTATIONS_FISCALES = wx.NewId()
-ID_FACTURATION_ATTESTATIONS_FISCALES_GENERATION = wx.NewId()
-ID_FACTURATION_LISTE_DEDUCTIONS = wx.NewId()
-ID_FACTURATION_LISTE_PRESTATIONS = wx.NewId()
-ID_FACTURATION_SOLDES = wx.NewId()
-ID_FACTURATION_SOLDES_INDIVIDUELS = wx.NewId()
-ID_FACTURATION_SOLDER_IMPAYES = wx.NewId()
-ID_FACTURATION_PRESTATIONS_VILLES = wx.NewId()
-ID_FACTURATION_SYNTHESE_PRESTATIONS = wx.NewId()
-ID_FACTURATION_SYNTHESE_IMPAYES = wx.NewId()
-ID_FACTURATION_EXPORT_COMPTA = wx.NewId()
-
-ID_COTISATIONS_LISTE = wx.NewId()
-ID_COTISATIONS_MANQUANTES = wx.NewId()
-ID_COTISATIONS_DEPOTS = wx.NewId()
-ID_COTISATIONS_EMAIL = wx.NewId()
-ID_COTISATIONS_IMPRIMER = wx.NewId()
-
-ID_IMPRIM_LISTE_CONSO_JOURN = wx.NewId()
-ID_CONSO_GESTIONNAIRE = wx.NewId()
-ID_CONSO_ATTENTE = wx.NewId()
-ID_CONSO_REFUS = wx.NewId()
-ID_CONSO_ABSENCES = wx.NewId()
-ID_CONSO_SYNTHESE_CONSO = wx.NewId()
-ID_CONSO_ETAT_GLOBAL = wx.NewId()
-ID_CONSO_ETAT_NOMINATIF = wx.NewId()
-ID_CONSO_BADGEAGE = wx.NewId()
-
-ID_AIDE_AIDE = wx.NewId()
-ID_AIDE_ACHETER_LICENCE = wx.NewId()
-ID_AIDE_GUIDE_DEMARRAGE = wx.NewId()
-ID_AIDE_FORUM = wx.NewId()
-ID_AIDE_VIDEOS = wx.NewId()
-ID_AIDE_TELECHARGEMENTS = wx.NewId()
-ID_AIDE_AUTEUR = wx.NewId()
-
-ID_PROPOS_VERSIONS = wx.NewId()
-ID_PROPOS_LICENCE = wx.NewId()
-ID_PROPOS_SOUTENIR = wx.NewId()
-ID_PROPOS_PROPOS = wx.NewId()
-
-ID_OUTILS_UPDATER_2 = wx.NewId()
 
 # ID pour la barre d'outils
 ID_TB_GESTIONNAIRE = wx.NewId()
@@ -404,13 +177,13 @@ class MainFrame(wx.Frame):
             self.perspective_active = self.userConfig["perspective_active"]
         else:
             self.perspective_active = None
-
+        
         # Affiche le titre du fichier en haut de la frame
         self.SetTitleFrame(nomFichier="")
         
         # Création du AUI de la fenêtre 
         self._mgr = aui.AuiManager()
-##        self._mgr.SetArtProvider(aui.ModernDockArt(self))
+        self._mgr.SetArtProvider(aui.ModernDockArt(self))
         self._mgr.SetManagedWindow(self)
 
         # Barre des tâches
@@ -421,7 +194,7 @@ class MainFrame(wx.Frame):
         self.CreationBarreMenus()
         
         # Création de la barre d'outils
-        self.CreationBarreOutils() 
+        self.CreationBarresOutils() 
         
         # Création des panneaux
         self.CreationPanneaux()
@@ -621,95 +394,531 @@ class MainFrame(wx.Frame):
         
         self._mgr.Update()
         
-    def CreationBarreOutils(self):
-        # Barre raccourcis
-        self.toolBar1 = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                             agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW |
-                             aui.AUI_TB_TEXT | aui.AUI_TB_HORZ_TEXT)
-        self.toolBar1.SetToolBitmapSize(wx.Size(16, 16))
-        self.toolBar1.AddSimpleTool(ID_TB_GESTIONNAIRE, u"Gestionnaire des conso.", wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG), u"Accéder au gestionnaire des consommations")
-        self.toolBar1.AddSimpleTool(ID_TB_LISTE_CONSO, u"Liste des conso.", wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG), u"Imprimer une liste de consommations")
-        self.toolBar1.AddSimpleTool(ID_TB_BADGEAGE, u"Badgeage", wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG), u"Lancer une procédure de badgeage")
-        self.toolBar1.AddSeparator()
-        self.toolBar1.AddSimpleTool(ID_TB_REGLER_FACTURE, u"Régler une facture", wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG), u"Régler une facture à partir de son numéro")
-        self.ctrl_numfacture = CTRL_Numfacture.CTRL(self.toolBar1, size=(100, -1))
-        self.toolBar1.AddControl(self.ctrl_numfacture)
-        self.toolBar1.AddSeparator()
-        self.toolBar1.AddSimpleTool(ID_TB_CALCULATRICE, u"Calculatrice", wx.Bitmap("Images/16x16/Calculatrice.png", wx.BITMAP_TYPE_PNG), u"Ouvrir la calculatrice")
+    def CreationBarresOutils(self):
+        self.listeBarresOutils = []
+        self.dictBarresOutils = {}
+        
+        # Barre raccourcis --------------------------------------------------
+        tb = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW | aui.AUI_TB_TEXT | aui.AUI_TB_HORZ_TEXT)
+        tb.SetToolBitmapSize(wx.Size(16, 16))
+        tb.AddSimpleTool(ID_TB_GESTIONNAIRE, u"Gestionnaire des conso.", wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG), u"Accéder au gestionnaire des consommations")
+        tb.AddSimpleTool(ID_TB_LISTE_CONSO, u"Liste des conso.", wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG), u"Imprimer une liste de consommations")
+        tb.AddSimpleTool(ID_TB_BADGEAGE, u"Badgeage", wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG), u"Lancer une procédure de badgeage")
+        tb.AddSeparator()
+        tb.AddSimpleTool(ID_TB_REGLER_FACTURE, u"Régler une facture", wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG), u"Régler une facture à partir de son numéro")
+        self.ctrl_numfacture = CTRL_Numfacture.CTRL(tb, size=(100, -1))
+        tb.AddControl(self.ctrl_numfacture)
+        tb.AddSeparator()
+        tb.AddSimpleTool(ID_TB_CALCULATRICE, u"Calculatrice", wx.Bitmap("Images/16x16/Calculatrice.png", wx.BITMAP_TYPE_PNG), u"Ouvrir la calculatrice")
 
-        self.toolBar1.Realize()
-        self._mgr.AddPane(self.toolBar1, aui.AuiPaneInfo().Name("barre_raccourcis").Caption(u"Barre de raccourcis").
-                          ToolbarPane().Top())
-        
+        tb.Realize()
+        code = "barre_raccourcis"
+        label = u"Barre de raccourcis"
+        self.listeBarresOutils.append(code)
+        self.dictBarresOutils[code] = {"label" : label, "ctrl" : tb}
+        self._mgr.AddPane(tb, aui.AuiPaneInfo().Name(code).Caption(label).ToolbarPane().Top())
         self._mgr.Update()
         
-        # Barre Utilisateur
-        self.toolBar2 = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize,
-                             agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW |
-                             aui.AUI_TB_TEXT | aui.AUI_TB_HORZ_TEXT)
-        self.toolBar2.SetToolBitmapSize(wx.Size(16, 16))
-        self.ctrl_identification = CTRL_Identification.CTRL(self.toolBar2, listeUtilisateurs=self.listeUtilisateurs, size=(80, -1))
-        self.toolBar2.AddControl(self.ctrl_identification)
-        self.toolBar2.AddSimpleTool(ID_TB_UTILISATEUR, u"xxxxxxxxxxxxxxxxxxxxxxxxxxxx", wx.Bitmap("Images/16x16/Homme.png", wx.BITMAP_TYPE_PNG), u"Utilisateur en cours")
-        self.toolBar2.AddSpacer(50)
+        # Barre Utilisateur --------------------------------------------------
+        tb = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW | aui.AUI_TB_TEXT | aui.AUI_TB_HORZ_TEXT)
+        tb.SetToolBitmapSize(wx.Size(16, 16))
+        self.ctrl_identification = CTRL_Identification.CTRL(tb, listeUtilisateurs=self.listeUtilisateurs, size=(80, -1))
+        tb.AddControl(self.ctrl_identification)
+        tb.AddSimpleTool(ID_TB_UTILISATEUR, u"xxxxxxxxxxxxxxxxxxxxxxxxxxxx", wx.Bitmap("Images/16x16/Homme.png", wx.BITMAP_TYPE_PNG), u"Utilisateur en cours")
+        tb.AddSpacer(50)
         
-        self.toolBar2.Realize()
-        
-        self._mgr.AddPane(self.toolBar2, aui.AuiPaneInfo().Name("barre_utilisateur").Caption(u"Barre Utilisateur").
-                          ToolbarPane().Top())
+        tb.Realize()
+        code = "barre_utilisateur"
+        label = u"Barre Utilisateur"
+        self.listeBarresOutils.append(code)
+        self.dictBarresOutils[code] = {"label" : label, "ctrl" : tb}
+        self._mgr.AddPane(tb, aui.AuiPaneInfo().Name(code).Caption(label).ToolbarPane().Top())
+        self._mgr.Update()
+
+        # Barres personnalisées --------------------------------------------
+        if self.userConfig.has_key("barres_outils_perso") == True :
+            texteBarresOutils = self.userConfig["barres_outils_perso"]
+        else :
+            self.userConfig["barres_outils_perso"] = ""
+            texteBarresOutils = ""
+        if len(texteBarresOutils) > 0 :
+            listeBarresOutils = texteBarresOutils.split("@@@@")
+        else :
+            listeBarresOutils = []
                 
-        self._mgr.Update()
+        index = 0
+        for texte in listeBarresOutils :
+            self.CreerBarreOutils(texte, index)
+            index += 1
+            
+    def CreerBarreOutils(self, texte="", index=0, ctrl=None):
+        # Analyse du texte (Nom, style, contenu)
+        codeBarre, label, observations, style, contenu = texte.split("###")
+        listeContenu = contenu.split(";")
         
+        # Recherche des infos du menu
+        dictItems = self.GetDictItemsMenu() 
+        
+        # Analyse du style
+        if style == "textedroite" :
+            agwStyle = aui.AUI_TB_OVERFLOW | aui.AUI_TB_HORZ_TEXT
+        elif style == "textedessous" :
+            agwStyle = aui.AUI_TB_OVERFLOW | aui.AUI_TB_TEXT
+        elif style == "texteseul" :
+            agwStyle = aui.AUI_TB_OVERFLOW | aui.AUI_TB_TEXT
+        elif style == "imageseule" :
+            agwStyle = aui.AUI_TB_OVERFLOW
+        else :
+            agwStyle = aui.AUI_TB_OVERFLOW | aui.AUI_TB_TEXT
+        
+        # Init ToolBar
+        if ctrl == None :
+            tb = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=agwStyle)
+            tb.SetToolBitmapSize(wx.Size(16, 16))
+        else :
+            tb = ctrl
+            tb.Clear() 
+
+        for code in listeContenu :
+            if code == "|" :
+                tb.AddSeparator()
+            elif code == "-" :
+                tb.AddStretchSpacer()
+            elif code.startswith("label:"):
+                # Ne fonctionne pas : Il y a un bug sur agw.aui avec la largeur du label
+                label = code.replace("label:", "")
+                tb.AddSimpleTool(wx.NewId(), label, wx.NullBitmap, kind=aui.ITEM_LABEL)
+            else :
+                item = dictItems[code]
+                if item.has_key("image") and style != "texteseul" :
+                    image = wx.Bitmap(item["image"], wx.BITMAP_TYPE_PNG)
+                else :
+                    image = wx.NullBitmap
+                id = wx.NewId() 
+                tb.AddSimpleTool(id, item["infobulle"], image, item["infobulle"])
+                self.Bind(wx.EVT_TOOL, item["action"], id=id)
+        
+        # Finalisation ToolBar
+        tb.Realize()
+        self.SendSizeEvent() 
+
+        if ctrl == None :
+            self.listeBarresOutils.append(codeBarre)
+            self.dictBarresOutils[codeBarre] = {"label" : label, "ctrl" : tb, "texte" : texte}
+            self._mgr.AddPane(tb, aui.AuiPaneInfo().Layer(index+1).Name(codeBarre).Caption(label).ToolbarPane().Top())
+        self._mgr.Update()
+    
+
     def CreationBarreMenus(self):
         """ Construit la barre de menus """
-        menubar = wx.MenuBar()
+        self.listeItemsMenu = [
         
-        # Menu Fichier -------------------------------------
-        menu_fichier = wx.Menu()
+            # Fichier
+            {"code" : "menu_fichier", "label" : u"Fichier", "items" : [
+                    {"code" : "nouveau_fichier", "label" : u"Créer un nouveau fichier\tCtrl+N", "infobulle" : u"Créer un nouveau fichier", "image" : "Images/16x16/Fichier_nouveau.png", "action" : self.On_fichier_Nouveau},
+                    {"code" : "ouvrir_fichier", "label" : u"Ouvrir un fichier\tCtrl+O", "infobulle" : u"Ouvrir un fichier existant", "image" : "Images/16x16/Fichier_ouvrir.png", "action" : self.On_fichier_Ouvrir},
+                    {"code" : "fermer_fichier", "label" : u"Fermer le fichier\tCtrl+F", "infobulle" : u"Fermer le fichier ouvert", "image" : "Images/16x16/Fichier_fermer.png", "action" : self.On_fichier_Fermer, "actif" : False},
+                    "-",
+                    {"code" : "fichier_informations", "label" : u"Informations sur le fichier", "infobulle" : u"Informations sur le fichier", "image" : "Images/16x16/Information.png", "action" : self.On_fichier_Informations, "actif" : False},
+                    "-",
+                    {"code" : "creer_sauvegarde", "label" : u"Créer une sauvegarde\tCtrl+S", "infobulle" : u"Créer une sauvegarde", "image" : "Images/16x16/Sauvegarder.png", "action" : self.On_fichier_Sauvegarder},
+                    {"code" : "restaurer_sauvegarde", "label" : u"Restaurer une sauvegarde\tCtrl+R", "infobulle" : u"Restaurer une sauvegarde", "image" : "Images/16x16/Restaurer.png", "action" : self.On_fichier_Restaurer},
+                    {"code" : "sauvegardes_auto", "label" : u"Sauvegardes automatiques", "infobulle" : u"Paramétrage des sauvegardes automatiques", "image" : "Images/16x16/Sauvegarder_param.png", "action" : self.On_fichier_Sauvegardes_auto},
+                    "-",
+                    {"code" : "convertir_fichier_reseau", "label" : u"Convertir en fichier réseau", "infobulle" : u"Convertir le fichier en mode réseau", "image" : "Images/16x16/Conversion_reseau.png", "action" : self.On_fichier_Convertir_reseau, "actif" : False},
+                    {"code" : "convertir_fichier_local", "label" : u"Convertir en fichier local", "infobulle" : u"Convertir le fichier en mode local", "image" : "Images/16x16/Conversion_local.png", "action" : self.On_fichier_Convertir_local, "actif" : False},
+                    "-",
+                    {"code" : "quitter", "label" : u"Quitter\tCtrl+Q", "infobulle" : u"Quitter Noethys", "image" : "Images/16x16/Quitter.png", "action" : self.On_fichier_Quitter},
+                    ],
+            },
+
+            # Paramétrage
+            {"code" : "menu_parametrage", "label" : u"Paramétrage", "items" : [
+                    {"code" : "preferences", "label" : u"Préférences", "infobulle" : u"Préférences", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_preferences},
+                    {"code" : "enregistrement", "label" : u"Enregistrement", "infobulle" : u"Enregistrement", "image" : "Images/16x16/Cle.png", "action" : self.On_param_enregistrement},
+                    "-",
+                    {"code" : "utilisateurs", "label" : u"Utilisateurs", "infobulle" : u"Paramétrage des utilisateurs", "image" : "Images/16x16/Personnes.png", "action" : self.On_param_utilisateurs},
+                    {"code" : "modeles_droits", "label" : u"Modèles de droits", "infobulle" : u"Paramétrage des modèles de droits", "image" : "Images/16x16/Droits.png", "action" : self.On_param_modeles_droits},
+                    {"code" : "acces_reseau", "label" : u"Accès réseau", "infobulle" : u"Paramétrage des accès réseau", "image" : "Images/16x16/Utilisateur_reseau.png", "action" : self.On_param_utilisateurs_reseau},
+                    "-",
+                    {"code" : "organisateur", "label" : u"Organisateur", "infobulle" : u"Paramétrage des données sur l'organisateur", "image" : "Images/16x16/Organisateur.png", "action" : self.On_param_organisateur},
+                    {"code" : "groupes_activites", "label" : u"Groupes d'activités", "infobulle" : u"Paramétrage des groupes d'activités", "image" : "Images/16x16/Groupe_activite.png", "action" : self.On_param_groupes_activites},
+                    {"code" : "activites", "label" : u"Activités", "infobulle" : u"Paramétrage des activités", "image" : "Images/16x16/Activite.png", "action" : self.On_param_activites},
+                    {"code" : "types_cotisations", "label" : u"Cotisations", "infobulle" : u"Paramétrage des types de cotisations", "image" : "Images/16x16/Identite.png", "action" : self.On_param_types_cotisations},
+                    "-",
+                    {"code" : "modeles_documents", "label" : u"Modèles de documents", "infobulle" : u"Paramétrage des modèles de documents", "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
+                    {"code" : "modeles_emails", "label" : u"Modèles d'Emails", "infobulle" : u"Paramétrage des modèles d'Emails", "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
+                    {"code" : "modeles_tickets", "label" : u"Modèles de tickets", "infobulle" : u"Paramétrage des modèles de tickets", "image" : "Images/16x16/Ticket.png", "action" : self.On_param_modeles_tickets},
+                    "-",
+                    {"code" : "procedures_badgeage", "label" : u"Procédures de badgeage", "infobulle" : u"Paramétrage des procédures de badgeage", "image" : "Images/16x16/Badgeage.png", "action" : self.On_param_badgeage},
+                    {"code" : "synthese_vocale", "label" : u"Synthèse vocale", "infobulle" : u"Paramétrage de la synthèse vocale", "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
+                    "-",
+                    {"code" : "menu_parametrage_factures", "label" : u"Facturation", "items" : [
+                            {"code" : "lots_factures", "label" : u"Lots de factures", "infobulle" : u"Paramétrage des lots de factures", "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_factures},
+                            {"code" : "lots_rappels", "label" : u"Lots de rappels", "infobulle" : u"Paramétrage des lots de rappels", "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_rappels},
+                            ],
+                    },
+                    {"code" : "menu_parametrage_reglements", "label" : u"Règlements", "items" : [
+                            {"code" : "comptes_bancaires", "label" : u"Comptes bancaires", "infobulle" : u"Paramétrage des comptes bancaires", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes},
+                            {"code" : "modes_reglements", "label" : u"Modes de règlements", "infobulle" : u"Paramétrage des modes de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_modes_reglements},
+                            {"code" : "emetteurs", "label" : u"Emetteurs de règlements", "infobulle" : u"Paramétrage des émetteurs de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_emetteurs},
+                            ],
+                    },
+                    {"code" : "menu_parametrage_prelevements", "label" : u"Prélèvement automatique", "items" : [
+                            {"code" : "etablissements_bancaires", "label" : u"Etablissements bancaires", "infobulle" : u"Paramétrage des établissements bancaires", "image" : "Images/16x16/Banque.png", "action" : self.On_param_banques},
+                            ],
+                    },
+                    "-",
+                    {"code" : "regimes_sociaux", "label" : u"Régimes sociaux", "infobulle" : u"Paramétrage des régimes sociaux", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
+                    {"code" : "caisses", "label" : u"Caisses", "infobulle" : u"Paramétrage des caisses", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
+                    {"code" : "modeles_aides", "label" : u"Modèles d'aides journalières", "infobulle" : u"Paramétrage des modèles d'aides journalières", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
+                    "-",
+                    {"code" : "menu_parametrage_renseignements", "label" : u"Renseignements", "items" : [
+                            {"code" : "questionnaires", "label" : u"Questionnaires", "infobulle" : u"Paramétrage des questionnaires", "image" : "Images/16x16/Questionnaire.png", "action" : self.On_param_questionnaires},
+                            {"code" : "types_pieces", "label" : u"Types de pièces", "infobulle" : u"Paramétrage des types de pièces", "image" : "Images/16x16/Piece.png", "action" : self.On_param_pieces},
+                            {"code" : "categories_travail", "label" : u"Catégories socio-professionnelles", "infobulle" : u"Paramétrage des catégories socio-professionnelles", "image" : "Images/16x16/Camion.png", "action" : self.On_param_categories_travail},
+                            {"code" : "villes", "label" : u"Villes et codes postaux", "infobulle" : u"Paramétrage des villes et codes postaux", "image" : "Images/16x16/Carte.png", "action" : self.On_param_villes},
+                            {"code" : "secteurs", "label" : u"Secteurs géographiques", "infobulle" : u"Paramétrage des secteurs géographiques", "image" : "Images/16x16/Secteur.png", "action" : self.On_param_secteurs},
+                            {"code" : "types_sieste", "label" : u"Types de sieste", "infobulle" : u"Paramétrage des types de sieste", "image" : "Images/16x16/Reveil.png", "action" : self.On_param_types_sieste},
+                            {"code" : "maladies", "label" : u"Maladies", "infobulle" : u"Paramétrage des maladies", "image" : "Images/16x16/Medical.png", "action" : self.On_param_maladies},
+                            {"code" : "vaccins", "label" : u"Vaccins", "infobulle" : u"Paramétrage des vaccins", "image" : "Images/16x16/Seringue.png", "action" : self.On_param_vaccins},
+                            {"code" : "medecins", "label" : u"Médecins", "infobulle" : u"Paramétrage des médecins", "image" : "Images/16x16/Medecin.png", "action" : self.On_param_medecins},
+                            ],
+                    },
+                    {"code" : "menu_parametrage_scolarite", "label" : u"Scolarité", "items" : [
+                            {"code" : "niveaux_scolaires", "label" : u"Niveaux scolaires", "infobulle" : u"Paramétrage des niveaux scolaires", "image" : "Images/16x16/Niveau_scolaire.png", "action" : self.On_param_niveaux_scolaires},
+                            "-",
+                            {"code" : "ecoles", "label" : u"Ecoles", "infobulle" : u"Paramétrage des écoles", "image" : "Images/16x16/Ecole.png", "action" : self.On_param_ecoles},
+                            {"code" : "classes", "label" : u"Classes", "infobulle" : u"Paramétrage des classes", "image" : "Images/16x16/Classe.png", "action" : self.On_param_classes},
+                            ],
+                    },
+                    {"code" : "menu_parametrage_transports", "label" : u"Transports", "items" : [
+                            {"code" : "menu_parametrage_transports_bus", "label" : u"Bus", "items" : [
+                                    {"code" : "compagnies_bus", "label" : u"Compagnies de bus", "infobulle" : u"Paramétrage des compagnies de bus", "image" : "Images/16x16/Bus.png", "action" : self.On_param_compagnies_bus},
+                                    {"code" : "lignes_bus", "label" : u"Lignes de bus", "infobulle" : u"Paramétrage des lignes de bus", "image" : "Images/16x16/Bus.png", "action" : self.On_param_lignes_bus},
+                                    {"code" : "arrets_bus", "label" : u"Arrêts de bus", "infobulle" : u"Paramétrage des arrêts de bus", "image" : "Images/16x16/Bus.png", "action" : self.On_param_arrets_bus},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_car", "label" : u"Car", "items" : [
+                                    {"code" : "compagnies_cars", "label" : u"Compagnies de cars", "infobulle" : u"Paramétrage des compagnies de cars", "image" : "Images/16x16/Car.png", "action" : self.On_param_compagnies_car},
+                                    {"code" : "lignes_cars", "label" : u"Lignes de cars", "infobulle" : u"Paramétrage des lignes de cars", "image" : "Images/16x16/Car.png", "action" : self.On_param_lignes_car},
+                                    {"code" : "arrets_cars", "label" : u"Arrêts de cars", "infobulle" : u"Paramétrage des arrêts de cars", "image" : "Images/16x16/Car.png", "action" : self.On_param_arrets_car},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_navette", "label" : u"Navette", "items" : [
+                                    {"code" : "compagnies_navettes", "label" : u"Compagnies de navettes", "infobulle" : u"Paramétrage des compagnies de navettes", "image" : "Images/16x16/Navette.png", "action" : self.On_param_compagnies_navette},
+                                    {"code" : "lignes_navettes", "label" : u"Lignes de navettes", "infobulle" : u"Paramétrage des lignes de navettes", "image" : "Images/16x16/Navette.png", "action" : self.On_param_lignes_navette},
+                                    {"code" : "arrets_navettes", "label" : u"Arrêts de navettes", "infobulle" : u"Paramétrage des arrêts de navettes", "image" : "Images/16x16/Navette.png", "action" : self.On_param_arrets_navette},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_taxi", "label" : u"Taxi", "items" : [
+                                    {"code" : "compagnies_taxis", "label" : u"Compagnies de taxis", "infobulle" : u"Paramétrage des compagnies de taxis", "image" : "Images/16x16/Taxi.png", "action" : self.On_param_compagnies_taxi},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_train", "label" : u"Train", "items" : [
+                                    {"code" : "lieux_gares", "label" : u"Gares", "infobulle" : u"Paramétrage des gares", "image" : "Images/16x16/Train.png", "action" : self.On_param_lieux_gares},
+                                    {"code" : "compagnies_trains", "label" : u"Compagnies de trains", "infobulle" : u"Paramétrage des compagnies de trains", "image" : "Images/16x16/Train.png", "action" : self.On_param_compagnies_train},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_avion", "label" : u"Avion", "items" : [
+                                    {"code" : "lieux_aeroports", "label" : u"Aéroports", "infobulle" : u"Paramétrage des aéroports", "image" : "Images/16x16/Avion.png", "action" : self.On_param_lieux_aeroports},
+                                    {"code" : "compagnies_avions", "label" : u"Compagnies aériennes", "infobulle" : u"Paramétrage des compagnies aériennes", "image" : "Images/16x16/Avion.png", "action" : self.On_param_compagnies_avion},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_bateau", "label" : u"Bateau", "items" : [
+                                    {"code" : "lieux_ports", "label" : u"Ports", "infobulle" : u"Paramétrage des ports", "image" : "Images/16x16/Bateau.png", "action" : self.On_param_lieux_ports},
+                                    {"code" : "compagnies_bateaux", "label" : u"Compagnies maritimes", "infobulle" : u"Paramétrage des compagnies maritimes", "image" : "Images/16x16/Bateau.png", "action" : self.On_param_compagnies_bateau},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_metro", "label" : u"Métro", "items" : [
+                                    {"code" : "compagnies_metros", "label" : u"Compagnies de métros", "infobulle" : u"Paramétrage des compagnies de métros", "image" : "Images/16x16/Metro.png", "action" : self.On_param_compagnies_metro},
+                                    {"code" : "lignes_metros", "label" : u"Lignes de métros", "infobulle" : u"Paramétrage des lignes de métros", "image" : "Images/16x16/Metro.png", "action" : self.On_param_lignes_metro},
+                                    {"code" : "arrets_metros", "label" : u"Arrêts de métros", "infobulle" : u"Paramétrage des arrêts de métros", "image" : "Images/16x16/Metro.png", "action" : self.On_param_arrets_metro},
+                                    ],
+                            },
+                            {"code" : "menu_parametrage_transports_pedibus", "label" : u"Pédibus", "items" : [
+                                    {"code" : "lignes_pedibus", "label" : u"Lignes de pédibus", "infobulle" : u"Paramétrage des lignes de pédibus", "image" : "Images/16x16/Pedibus.png", "action" : self.On_param_lignes_pedibus},
+                                    {"code" : "arrets_pedibus", "label" : u"Arrêts de pédibus", "infobulle" : u"Paramétrage des arrêts de pédibus", "image" : "Images/16x16/Pedibus.png", "action" : self.On_param_arrets_pedibus},
+                                    ],
+                            },
+                            ],
+                    },
+                    "-",
+                    {"code" : "categories_messages", "label" : u"Catégories de messages", "infobulle" : u"Paramétrage des catégories de messages", "image" : "Images/16x16/Mail.png", "action" : self.On_param_categories_messages},
+                    {"code" : "restaurateurs", "label" : u"Restaurateurs", "infobulle" : u"Paramétrage des restaurateurs", "image" : "Images/16x16/Restaurateur.png", "action" : self.On_param_restaurateurs},
+                    {"code" : "adresses_exp_mails", "label" : u"Adresses d'expédition d'Emails", "infobulle" : u"Paramétrage des adresses d'expédition d'Emails", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_param_emails_exp},
+                    {"code" : "listes_diffusion", "label" : u"Listes de diffusion", "infobulle" : u"Paramétrage des listes de diffusion", "image" : "Images/16x16/Liste_diffusion.png", "action" : self.On_param_listes_diffusion},
+                    "-",
+                    {"code" : "menu_parametrage_calendrier", "label" : u"Calendrier", "items" : [
+                            {"code" : "vacances", "label" : u"Vacances", "infobulle" : u"Paramétrage des vacances", "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_vacances},
+                            {"code" : "feries", "label" : u"Jours fériés", "infobulle" : u"Paramétrage des jours fériés", "image" : "Images/16x16/Jour.png", "action" : self.On_param_feries},
+                            ],
+                    },
+                    ],
+            },
+
+            # Affichage
+            {"code" : "menu_affichage", "label" : u"Affichage", "items" : [
+                    {"code" : "perspective_defaut", "label" : u"Disposition par défaut", "infobulle" : u"Afficher la disposition par défaut", "action" : self.On_affichage_perspective_defaut, "genre" : wx.ITEM_CHECK},
+                    "-",
+                    {"code" : "perspective_save", "label" : u"Sauvegarder la disposition actuelle", "infobulle" : u"Sauvegarder la disposition actuelle", "image" : "Images/16x16/Perspective_ajouter.png", "action" : self.On_affichage_perspective_save},
+                    {"code" : "perspective_suppr", "label" : u"Supprimer des dispositions", "infobulle" : u"Supprimer des dispositions enregistrées", "image" : "Images/16x16/Perspective_supprimer.png", "action" : self.On_affichage_perspective_suppr},
+                    "-",
+                    "-",
+                    {"code" : "affichage_barres_outils", "label" : u"Barres d'outils personnelles", "infobulle" : u"Barres d'outils personnelles", "image" : "Images/16x16/Barre_outils.png", "action" : self.On_affichage_barres_outils},
+                    "-",
+                    {"code" : "actualiser_affichage", "label" : u"Actualiser l'affichage\tF11", "infobulle" : u"Actualiser l'affichage de la page d'accueil", "image" : "Images/16x16/Actualiser2.png", "action" : self.On_affichage_actualiser},
+                    ],
+            },
+
+            # Outils
+            {"code" : "menu_outils", "label" : u"Outils", "items" : [
+                    {"code" : "statistiques", "label" : u"Statistiques", "infobulle" : u"Statistiques", "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
+                    "-",
+                    {"code" : "editeur_emails", "label" : u"Editeur d'Emails", "infobulle" : u"Editeur d'Emails", "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
+                    {"code" : "calculatrice", "label" : u"Calculatrice\tF12", "infobulle" : u"Calculatrice", "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
+                    {"code" : "calendrier", "label" : u"Calendrier", "infobulle" : u"Calendrier", "image" : "Images/16x16/Calendrier.png", "action" : self.On_outils_calendrier},
+                    "-",
+                    {"code" : "villes2", "label" : u"Villes et codes postaux", "infobulle" : u"Villes et codes postaux", "image" : "Images/16x16/Carte.png", "action" : self.On_outils_villes},
+                    {"code" : "geolocalisation", "label" : u"Géolocalisation GPS", "infobulle" : u"Géolocalisation GPS", "image" : "Images/16x16/Carte.png", "action" : self.On_outils_gps},
+                    {"code" : "meteo", "label" : u"Prévisions météorologiques", "infobulle" : u"Prévisions météorologiques", "image" : "Images/16x16/Meteo.png", "action" : self.On_outils_meteo},
+                    {"code" : "horaires_soleil", "label" : u"Horaires du soleil", "infobulle" : u"Horaires du soleil", "image" : "Images/16x16/Soleil.png", "action" : self.On_outils_horaires_soleil},
+                    "-",
+                    {"code" : "connexions_reseau", "label" : u"Liste des connexions réseau", "infobulle" : u"Liste des connexions réseau", "image" : "Images/16x16/Connexion.png", "action" : self.On_outils_connexions},
+                    "-",
+                    {"code" : "messages", "label" : u"Messages", "infobulle" : u"Liste des messages", "image" : "Images/16x16/Mail.png", "action" : self.On_outils_messages},
+                    {"code" : "historique", "label" : u"Historique", "infobulle" : u"Historique", "image" : "Images/16x16/Historique.png", "action" : self.On_outils_historique},
+                    {"code" : "menu_outils_utilitaires", "label" : u"Utilitaires administrateur", "items" : [
+                            {"code" : "correcteur", "label" : u"Correcteur d'anomalies", "infobulle" : u"Correcteur d'anomalies", "image" : "Images/16x16/Depannage.png", "action" : self.On_outils_correcteur},
+                            "-",
+                            {"code" : "purger_historique", "label" : u"Purger l'historique", "infobulle" : u"Purger l'historique", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_historique},
+                            {"code" : "purger_journal_badgeage", "label" : u"Purger le journal de badgeage", "infobulle" : u"Purger le journal de badgeage", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_journal_badgeage},
+                            {"code" : "purger_archives_badgeage", "label" : u"Purger les archives des badgeages importés", "infobulle" : u"Purger les archives des badgeages importés", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_archives_badgeage},
+                            {"code" : "purger_repertoire_updates", "label" : u"Purger le répertoire Updates", "infobulle" : u"Purger le répertoire Updates", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_rep_updates},
+                            "-",
+                            {"code" : "extensions", "label" : u"Extensions", "infobulle" : u"Extensions", "image" : "Images/16x16/Terminal.png", "action" : self.On_outils_extensions},
+                            {"code" : "procedures", "label" : u"Procédures", "infobulle" : u"Procédures", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_procedures},
+                            {"code" : "reinitialisation", "label" : u"Réinitialisation du fichier de configuration", "infobulle" : u"Réinitialisation du fichier de configuration", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_reinitialisation},
+                            {"code" : "transfert_tables", "label" : u"Transférer des tables", "infobulle" : u"Transférer des tables de données", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_transfert_tables},
+                            "-",
+                            {"code" : "suppression_prestations_sans_conso", "label" : u"Suppression des prestations sans consommations associées", "infobulle" : u"Suppression des prestations sans conso. associées", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_procedure_e4072},
+                            {"code" : "liste_prestations_sans_conso", "label" : u"Liste des prestations sans consommations associées", "infobulle" : u"Liste des prestations sans conso. associées", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_prestations_sans_conso},
+                            {"code" : "liste_conso_sans_prestations", "label" : u"Liste des consommations sans prestations associées", "infobulle" : u"Liste des conso. sans prestations associées", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_conso_sans_prestations},
+                            {"code" : "deverrouillage_forfaits", "label" : u"Déverrouillage des consommations de forfaits", "infobulle" : u"Déverrouillage des consommations de forfaits", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_deverrouillage_forfaits},
+                            "-",
+                            {"code" : "appliquer_tva", "label" : u"Appliquer un taux de TVA à un lot de prestations", "infobulle" : u"Appliquer un taux de TVA à un lot de prestations", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_tva},
+                            {"code" : "appliquer_code_comptable", "label" : u"Appliquer un code comptable à un lot de prestations", "infobulle" : u"Appliquer un code comptable à des prestations", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_code_comptable},
+                            {"code" : "conversion_rib_sepa", "label" : u"Convertir les RIB nationaux en mandats SEPA", "infobulle" : u"Convertir les RIB nationaux en mandats SEPA", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
+                            {"code" : "creation_titulaires_helios", "label" : u"Création automatique des titulaires Hélios", "infobulle" : u"Création automatique des titulaires Hélios", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_titulaires_helios},
+                            "-",
+                            {"code" : "console_python", "label" : u"Console Python", "infobulle" : u"Console Python", "image" : "Images/16x16/Python.png", "action" : self.On_outils_console_python},
+                            {"code" : "console_sql", "label" : u"Console SQL", "infobulle" : u"Console SQL", "image" : "Images/16x16/Sql.png", "action" : self.On_outils_console_sql},
+                            {"code" : "liste_perso", "label" : u"Liste personnalisée SQL", "infobulle" : u"Liste personnalisée SQL", "image" : "Images/16x16/Sql.png", "action" : self.On_outils_liste_perso},
+                            ],
+                    },
+                    "-",
+                    {"code" : "updater", "label" : u"Rechercher une mise à jour du logiciel", "infobulle" : u"Rechercher une mise à jour du logiciel", "image" : "Images/16x16/Updater.png", "action" : self.On_outils_updater},
+                    ],
+            },
+
+            # Individus
+            {"code" : "menu_individus", "label" : u"Individus", "items" : [
+                    {"code" : "scolarite", "label" : u"Inscriptions scolaires", "infobulle" : u"Inscriptions scolaires", "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
+                    "-",
+                    {"code" : "liste_inscriptions", "label" : u"Liste des inscriptions", "infobulle" : u"Editer une liste des inscriptions", "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
+                    {"code" : "liste_individus", "label" : u"Liste des individus", "infobulle" : u"Editer une liste des individus", "image" : "Images/16x16/Personnes.png", "action" : self.On_individus_individus},
+                    {"code" : "liste_familles", "label" : u"Liste des familles", "infobulle" : u"Liste des familles", "image" : "Images/16x16/Famille.png", "action" : self.On_individus_familles},
+                    "-",
+                    {"code" : "menu_individus_transports", "label" : u"Liste des transports", "items" : [
+                            {"code" : "liste_detail_transports", "label" : u"Liste récapitulative", "infobulle" : u"Editer une liste récapitulative des transports", "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_recap},
+                            {"code" : "liste_recap_transports", "label" : u"Liste détaillée", "infobulle" : u"Editer une liste détaillée des transports", "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_detail},
+                            ],
+                    },
+                    "-",
+                    {"code" : "liste_anniversaires", "label" : u"Liste des anniversaires", "infobulle" : u"Editer une liste des anniversaires", "image" : "Images/16x16/Anniversaire.png", "action" : self.On_individus_anniversaires},
+                    {"code" : "liste_infos_medicales", "label" : u"Liste des informations médicales", "infobulle" : u"Editer une liste des informations médicales", "image" : "Images/16x16/Medical.png", "action" : self.On_individus_infos_med},
+                    {"code" : "liste_pieces_fournies", "label" : u"Liste des pièces fournies", "infobulle" : u"Editer la liste des pièces fournies", "image" : "Images/16x16/Piece.png", "action" : self.On_individus_pieces_fournies},
+                    {"code" : "liste_pieces_fournies", "label" : u"Liste des pièces manquantes", "infobulle" : u"Editer la liste des pièces manquantes", "image" : "Images/16x16/Piece.png", "action" : self.On_individus_pieces_manquantes},
+                    {"code" : "liste_regimes_caisses", "label" : u"Liste des régimes et caisses des familles", "infobulle" : u"Editer la liste des régimes et caisses des familles", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_individus_regimes_caisses},
+                    {"code" : "liste_quotients", "label" : u"Liste des quotients familiaux", "infobulle" : u"Editer la liste des quotients familiaux des familles", "image" : "Images/16x16/Calculatrice.png", "action" : self.On_individus_quotients},
+                    {"code" : "liste_mandats_sepa", "label" : u"Liste des mandats SEPA", "infobulle" : u"Editer la liste des mandats SEPA", "image" : "Images/16x16/Prelevement.png", "action" : self.On_individus_mandats},
+                    "-",
+                    {"code" : "importer_photos", "label" : u"Importer des photos individuelles", "infobulle" : u"Importer des photos individuelles", "image" : "Images/16x16/Photos.png", "action" : self.On_individus_importer_photos},
+                    {"code" : "menu_individus_importation", "label" : u"Importer des familles ou des individus", "items" : [
+                            {"code" : "importation_individus_csv", "label" : u"Importer des individus ou des familles depuis un fichier Excel ou CSV", "infobulle" : u"Importer des individus ou des familles", "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_csv},
+                            {"code" : "importation_individus_fichier", "label" : u"Importer des familles depuis un fichier Noethys", "infobulle" : u"Importer des familles depuis un fichier Noethys", "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_fichier},
+                            ],
+                    },
+                    "-",
+                    {"code" : "individus_edition_etiquettes", "label" : u"Edition d'étiquettes et de badges", "infobulle" : u"Edition d'étiquettes et de badges au format PDF", "image" : "Images/16x16/Etiquette2.png", "action" : self.On_individus_edition_etiquettes},
+                    ],
+            },
+                    
+            # Consommations
+            {"code" : "menu_consommations", "label" : u"Consommations", "items" : [
+                    {"code" : "liste_consommations", "label" : u"Liste des consommations", "infobulle" : u"Editer une liste des consommations", "image" : "Images/16x16/Imprimante.png", "action" : self.On_imprim_conso_journ},
+                    {"code" : "gestionnaire_conso", "label" : u"Gestionnaire des consommations", "infobulle" : u"Gestionnaire des consommations", "image" : "Images/16x16/Calendrier.png", "action" : self.On_conso_gestionnaire},
+                    "-",
+                    {"code" : "liste_attente", "label" : u"Liste d'attente", "infobulle" : u"Liste d'attente", "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
+                    {"code" : "liste_refus", "label" : u"Liste des places refusées", "infobulle" : u"Liste des places refusées", "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
+                    {"code" : "liste_absences", "label" : u"Liste des absences", "infobulle" : u"Liste des absences", "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
+                    "-",
+                    {"code" : "synthese_conso", "label" : u"Synthèse des consommations", "infobulle" : u"Synthèse des consommations", "image" : "Images/16x16/Diagramme.png", "action" : self.On_conso_synthese_conso},
+                    {"code" : "etat_global", "label" : u"Etat global", "infobulle" : u"Etat global", "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_global},
+                    {"code" : "etat_nominatif", "label" : u"Etat nominatif", "infobulle" : u"Etat nominatif", "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_nominatif},
+                    "-",
+                    {"code" : "badgeage", "label" : u"Badgeage", "infobulle" : u"Badgeage", "image" : "Images/16x16/Badgeage.png", "action" : self.On_conso_badgeage},
+                    ],
+            },
+
+            # Facturation
+            {"code" : "menu_facturation", "label" : u"Facturation", "items" : [
+                    {"code" : "facturation_verification_ventilation", "label" : u"Vérifier la ventilation", "infobulle" : u"Vérifier la ventilation des règlements", "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
+                    "-",
+                    {"code" : "menu_facturation_factures", "label" : u"Factures", "items" : [
+                            {"code" : "factures_generation", "label" : u"Génération", "infobulle" : u"Génération des factures", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_factures_generation},
+                            "-",
+                            {"code" : "factures_helios", "label" : u"Export vers Hélios", "infobulle" : u"Exporter les factures vers Hélios", "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
+                            {"code" : "factures_prelevement", "label" : u"Prélèvement automatique", "infobulle" : u"Gestion du prélèvement automatique", "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
+                            {"code" : "factures_email", "label" : u"Transmettre par Email", "infobulle" : u"Transmettre les factures par Email", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_factures_email},
+                            {"code" : "factures_imprimer", "label" : u"Imprimer", "infobulle" : u"Imprimer des factures", "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_factures_imprimer},
+                            "-",
+                            {"code" : "factures_liste", "label" : u"Liste des factures", "infobulle" : u"Liste des factures générées", "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_factures_liste},
+                            ],
+                    },
+                    {"code" : "menu_facturation_rappels", "label" : u"Lettres de rappel", "items" : [
+                            {"code" : "rappels_generation", "label" : u"Génération", "infobulle" : u"Génération des lettres de rappel", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_rappels_generation},
+                            "-",
+                            {"code" : "rappels_email", "label" : u"Transmettre par Email", "infobulle" : u"Transmettre les lettres de rappel par Email", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_rappels_email},
+                            {"code" : "rappels_imprimer", "label" : u"Imprimer", "infobulle" : u"Imprimer des lettres de rappel", "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_rappels_imprimer},
+                            "-",
+                            {"code" : "rappels_liste", "label" : u"Liste des lettres de rappel", "infobulle" : u"Liste des lettres de rappel", "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_rappels_liste},
+                            ],
+                    },
+                    {"code" : "menu_facturation_attestations", "label" : u"Attestations de présence", "items" : [
+                            {"code" : "attestations_generation", "label" : u"Génération", "infobulle" : u"Génération des attestations de présence", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_attestations_generation},
+                            {"code" : "attestations_liste", "label" : u"Liste des attestations de présence", "infobulle" : u"Liste des attestations de présence générées", "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_attestations_liste},
+                            ],
+                    },
+                    {"code" : "menu_facturation_attestations_fiscales", "label" : u"Attestations fiscales", "items" : [
+                            {"code" : "attestations_fiscales_generation", "label" : u"Génération", "infobulle" : u"Génération des attestations fiscales", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_attestations_fiscales_generation},
+                            ],
+                    },
+                    "-",
+                    {"code" : "liste_prestations", "label" : u"Liste des prestations", "infobulle" : u"Liste des prestations", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
+                    {"code" : "liste_deductions", "label" : u"Liste des déductions", "infobulle" : u"Liste des déductions", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
+                    "-",
+                    {"code" : "liste_soldes_familles", "label" : u"Liste des soldes", "infobulle" : u"Liste des soldes des comptes familles", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes},
+                    {"code" : "liste_soldes_individus", "label" : u"Liste des soldes individuels", "infobulle" : u"Liste des soldes individuels", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes_individuels},
+                    "-",
+                    {"code" : "solder_impayes", "label" : u"Solder les impayés", "infobulle" : u"Solder les impayés", "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_solder_impayes},
+                    {"code" : "synthese_impayes", "label" : u"Synthèse des impayés", "infobulle" : u"Synthèse des impayés", "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_impayes},
+                    "-",
+                    {"code" : "prestations_villes", "label" : u"Liste des prestations par famille", "infobulle" : u"Liste des prestations par famille", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_prestations_villes},
+                    {"code" : "synthese_prestations", "label" : u"Synthèse des prestations", "infobulle" : u"Synthèse des prestations", "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_prestations},
+                    "-",
+                    {"code" : "export_compta", "label" : u"Export des écritures comptables", "infobulle" : u"Exporter les écritures comptables", "image" : "Images/16x16/Export_comptable.png", "action" : self.On_facturation_export_compta},
+                    ],
+            },
+            
+            # Cotisations
+            {"code" : "menu_cotisations", "label" : u"Cotisations", "items" : [
+                    {"code" : "liste_cotisations", "label" : u"Liste des cotisations", "infobulle" : u"Liste des cotisations", "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_recherche},
+                    {"code" : "liste_cotisations_manquantes", "label" : u"Liste des cotisations manquantes", "infobulle" : u"Liste des cotisations manquantes", "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_manquantes},
+                    "-",
+                    {"code" : "cotisations_email", "label" : u"Transmettre des cotisations par Email", "infobulle" : u"Transmettre des cotisations par Email", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_cotisations_email},
+                    {"code" : "cotisations_imprimer", "label" : u"Imprimer des cotisations", "infobulle" : u"Imprimer une ou plusieurs cotisations", "image" : "Images/16x16/Imprimante.png", "action" : self.On_cotisations_imprimer},
+                    "-",
+                    {"code" : "cotisations_depots", "label" : u"Gestion des dépôts de cotisations", "infobulle" : u"Gestion des dépôts de cotisations", "image" : "Images/16x16/Depot_cotisations.png", "action" : self.On_cotisations_depots},
+                    ],
+            },
+            
+            # Règlements
+            {"code" : "menu_reglements", "label" : u"Règlements", "items" : [
+                    {"code" : "regler_facture", "label" : u"Régler une facture\tF4", "infobulle" : u"Régler une facture à partir de son numéro", "image" : "Images/16x16/Codebarre.png", "action" : self.On_reglements_regler_facture},
+                    "-",
+                    {"code" : "liste_recus_reglements", "label" : u"Liste des reçus de règlements", "infobulle" : u"Consulter la liste des reçus de règlements", "image" : "Images/16x16/Note.png", "action" : self.On_reglements_recus},
+                    {"code" : "liste_reglements", "label" : u"Liste des règlements", "infobulle" : u"Consulter la liste des règlements", "image" : "Images/16x16/Reglement.png", "action" : self.On_reglements_recherche},
+                    "-",
+                    {"code" : "reglements_verification_ventilation", "label" : u"Vérifier la ventilation", "infobulle" : u"Vérifier la ventilation des règlements", "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
+                    {"code" : "analyse_ventilation", "label" : u"Tableau d'analyse croisée ventilation/dépôts", "infobulle" : u"Tableau d'analyse croisée ventilation/dépôts", "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_analyse_ventilation},
+                    {"code" : "syntheses_modes_reglements", "label" : u"Synthèse des modes de règlements", "infobulle" : u"Synthèse des modes de règlements", "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_synthese_modes},
+                    "-",
+                    {"code" : "reglements_prelevement", "label" : u"Prélèvement automatique", "infobulle" : u"Gestion du prélèvement automatique", "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
+                    {"code" : "reglements_depots", "label" : u"Gestion des dépôts", "infobulle" : u"Gestion des dépôts de règlements", "image" : "Images/16x16/Banque.png", "action" : self.On_reglements_depots},
+                    ],
+            },
+
+            # Aide
+            {"code" : "menu_aide", "label" : u"Aide", "items" : [
+                    {"code" : "aide", "label" : u"Consulter l'aide", "infobulle" : u"Consulter l'aide de Noethys", "image" : "Images/16x16/Aide.png", "action" : self.On_aide_aide},
+                    {"code" : "acheter_licence", "label" : u"Acheter une licence pour accéder au manuel de référence", "infobulle" : u"Acheter une licence", "image" : "Images/16x16/Acheter_licence.png", "action" : self.On_propos_soutenir},
+                    "-",
+                    {"code" : "guide_demarrage", "label" : u"Télécharger le guide de démarrage rapide (PDF)", "infobulle" : u"Télécharger le guide de démarrage rapide", "image" : "Images/16x16/Livre.png", "action" : self.On_aide_guide_demarrage},
+                    "-",
+                    {"code" : "forum", "label" : u"Accéder au forum d'entraide", "infobulle" : u"Accéder au forum d'entraide", "image" : "Images/16x16/Dialogue.png", "action" : self.On_aide_forum},
+                    {"code" : "tutoriels_videos", "label" : u"Visionner des tutoriels vidéos", "infobulle" : u"Visionner des tutoriels vidéos", "image" : "Images/16x16/Film.png", "action" : self.On_aide_videos},
+                    {"code" : "telechargements_communautaires", "label" : u"Télécharger des ressources communautaires", "infobulle" : u"Télécharger des ressources communautaires", "image" : "Images/16x16/Updater.png", "action" : self.On_aide_telechargements},
+                    "-",
+                    {"code" : "email_auteur", "label" : u"Envoyer un Email à l'auteur", "infobulle" : u"Envoyer un Email à l'auteur", "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
+                    ],
+            },
+
+            # A propos
+            {"code" : "menu_a_propos", "label" : u"A propos", "items" : [
+                    {"code" : "notes_versions", "label" : u"Notes de versions", "infobulle" : u"Notes de versions", "image" : "Images/16x16/Versions.png", "action" : self.On_propos_versions},
+                    {"code" : "licence_logiciel", "label" : u"Licence", "infobulle" : u"Licence du logiciel", "image" : "Images/16x16/Licence.png", "action" : self.On_propos_licence},
+                    "-",
+                    {"code" : "soutenir_noethys", "label" : u"Soutenir Noethys", "infobulle" : u"Soutenir Noethys", "image" : "Images/16x16/Soutenir_noethys.png", "action" : self.On_propos_soutenir},
+                    "-",
+                    {"code" : "a_propos", "label" : u"A propos", "infobulle" : u"A propos", "image" : "Images/16x16/Information.png", "action" : self.On_propos_propos},
+                    ],
+            },
+
+        ] 
         
-##        item = wx.MenuItem(menu_fichier, ID_ASSISTANT_DEMARRAGE, u"Assistant Démarrage", u"Ouvrir l'assistant démarrage")
-##        item.SetBitmap(wx.Bitmap("Images/16x16/Assistant.png", wx.BITMAP_TYPE_PNG))
-##        menu_fichier.AppendItem(item)
-##        menu_fichier.AppendSeparator()
-        item = wx.MenuItem(menu_fichier, ID_NOUVEAU_FICHIER, u"Créer un nouveau fichier\tCtrl+N", u"Créer un nouveau fichier")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Fichier_nouveau.png", wx.BITMAP_TYPE_PNG))
-        menu_fichier.AppendItem(item)
-        item = wx.MenuItem(menu_fichier, ID_OUVRIR_FICHIER, u"Ouvrir un fichier\tCtrl+O", u"Ouvrir un fichier existant")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Fichier_ouvrir.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item = wx.MenuItem(menu_fichier, ID_FERMER_FICHIER, u"Fermer le fichier\tCtrl+F", u"Fermer le fichier ouvert")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Fichier_fermer.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item.Enable(False)
-        menu_fichier.AppendSeparator()
-        item = wx.MenuItem(menu_fichier, ID_FICHIER_INFORMATIONS, u"Informations sur le fichier", u"Informations sur le fichier ouvert")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Information.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item.Enable(False)
-        menu_fichier.AppendSeparator()
-        item = wx.MenuItem(menu_fichier, ID_CREER_SAUVEGARDE, u"Créer une sauvegarde\tCtrl+S", u"Créer une sauvegarde globale des données")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Sauvegarder.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item = wx.MenuItem(menu_fichier, ID_RESTAURER_SAUVEGARDE, u"Restaurer une sauvegarde\tCtrl+R", u"Restaurer une sauvegarde")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Restaurer.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item = wx.MenuItem(menu_fichier, ID_SAUVEGARDES_AUTO, u"Sauvegardes automatiques", u"Paramétrer des sauvegardes automatiques")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Sauvegarder_param.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        menu_fichier.AppendSeparator()
-        item = wx.MenuItem(menu_fichier, ID_CONVERSION_RESEAU, u"Convertir en fichier réseau", u"Convertir le fichier ouvert en fichier réseau")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Conversion_reseau.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item.Enable(False)
-        item = wx.MenuItem(menu_fichier, ID_CONVERSION_LOCAL, u"Convertir en fichier local", u"Convertir le fichier ouvert en fichier local")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Conversion_local.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
-        item.Enable(False)
-        menu_fichier.AppendSeparator()
-        item = wx.MenuItem(menu_fichier, ID_QUITTER, u"Quitter\tCtrl+Q", u"Quitter l'application")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Quitter.png", wx.BITMAP_TYPE_PNG)) 
-        menu_fichier.AppendItem(item)
+
+        # Création du menu
+        def CreationItem(menuParent, item):
+            id = wx.NewId()
+            if item.has_key("genre"):
+                genre = item["genre"]
+            else :
+                genre = wx.ITEM_NORMAL
+            itemMenu = wx.MenuItem(menuParent, id, item["label"], item["infobulle"], genre)
+            if item.has_key("image") :
+                itemMenu.SetBitmap(wx.Bitmap(item["image"], wx.BITMAP_TYPE_PNG))
+            menuParent.AppendItem(itemMenu)
+            if item.has_key("actif") :
+                itemMenu.Enable(item["actif"])
+            self.Bind(wx.EVT_MENU, item["action"], id=id)
+            self.dictInfosMenu[item["code"]] = {"id" : id, "ctrl" : itemMenu}
+            
+        def CreationMenu(menuParent, item, sousmenu=False):
+            menu = wx.Menu()
+            id = wx.NewId()
+            for sousitem in item["items"] :
+                if sousitem == "-" :
+                    menu.AppendSeparator()
+                elif sousitem.has_key("items") :
+                    CreationMenu(menu, sousitem, sousmenu=True)
+                else :
+                    CreationItem(menu, sousitem)
+            if sousmenu == True :
+                menuParent.AppendMenu(id, item["label"], menu)
+            else :
+                menuParent.Append(menu, item["label"])
+            self.dictInfosMenu[item["code"]] = {"id" : id, "ctrl" : menu}
+
+        self.menu = wx.MenuBar()
+        self.dictInfosMenu = {}
+        for item in self.listeItemsMenu :
+            CreationMenu(self.menu, item)
         
+        
+        # -------------------------- AJOUT DES DERNIERS FICHIERS OUVERTS -----------------------------
+        menu_fichier = self.dictInfosMenu["menu_fichier"]["ctrl"]
+
         # Intégration des derniers fichiers ouverts :
         listeDerniersFichiersTmp = self.userConfig["derniersFichiers"]
         if len(listeDerniersFichiersTmp) > 0 :
@@ -718,7 +927,6 @@ class MainFrame(wx.Frame):
         # Vérification de la liste
         listeDerniersFichiers = []
         for nomFichier in listeDerniersFichiersTmp :
-            
             if "[RESEAU]" in nomFichier :
                 # Version RESEAU
                 listeDerniersFichiers.append(nomFichier)
@@ -740,396 +948,23 @@ class MainFrame(wx.Frame):
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
 
-        menubar.Append(menu_fichier, u"Fichier")
-        
-        # Menu Paramétrage -------------------------------------
-        menu_param = wx.Menu()
-
-        item = wx.MenuItem(menu_param, ID_PARAM_PREFERENCES, u"Préférences", u"Préférences")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_ENREGISTREMENT, u"Enregistrement", u"Enregistrement")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Cle.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        menu_param.AppendSeparator()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_UTILISATEURS, u"Utilisateurs", u"Paramétrage des utilisateurs")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Personnes.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_MODELES_DROITS, u"Modèles de droits", u"Paramétrage des modèles de droits")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Droits.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_UTILISATEURS_RESEAU, u"Accès réseau", u"Paramétrage des accès réseau")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Utilisateur_reseau.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        menu_param.AppendSeparator()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_ORGANISATEUR, u"Organisateur", u"Paramétrage des données sur l'organisateur")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Organisateur.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_GROUPES_ACTIVITES, u"Groupes d'activités", u"Paramétrage des groupes d'activités")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Groupe_activite.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_ACTIVITES, u"Activités", u"Paramétrage des activités")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Activite.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_TYPES_COTISATIONS, u"Cotisations", u"Paramétrage des types de cotisations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Identite.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        menu_param.AppendSeparator()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_DOCUMENTS, u"Modèles de documents", u"Paramétrage des modèles de documents")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Document.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_MODELES_EMAILS, u"Modèles d'Emails", u"Paramétrage des modèles d'Emails")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Emails_modele.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_MODELES_TICKETS, u"Modèles de tickets", u"Paramétrage des modèles de tickets")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Ticket.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        menu_param.AppendSeparator()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_BADGEAGE, u"Procédures de badgeage", u"Paramétrage des procédures de badgeage")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_VOCAL, u"Synthèse vocale", u"Paramétrage de la synthèse vocale")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Vocal.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        menu_param.AppendSeparator()
-        
-        sousMenuFacturation = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LOTS_FACTURES, u"Lots de factures", u"Paramétrage des lots de factures")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Lot_factures.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFacturation.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_LOTS_RAPPELS, u"Lots de rappels", u"Paramétrage des lots de rappels")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Lot_factures.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFacturation.AppendItem(item)
-        
-        item = menu_param.AppendMenu(ID_PARAM_MENU_FACTURATION, u"Facturation", sousMenuFacturation)
-        
-        sousMenuReglements = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPTES, u"Comptes bancaires", u"Paramétrage des comptes bancaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG))
-        sousMenuReglements.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_MODES_REGLEMENTS, u"Modes de règlements", u"Paramétrage des modes de règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mode_reglement.png", wx.BITMAP_TYPE_PNG))
-        sousMenuReglements.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_EMETTEURS, u"Emetteurs de règlements", u"Paramétrage des émetteurs de règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mode_reglement.png", wx.BITMAP_TYPE_PNG))
-        sousMenuReglements.AppendItem(item)
-        
-        item = menu_param.AppendMenu(ID_PARAM_MENU_REGLEMENTS, u"Règlements", sousMenuReglements)
-
-        sousMenuPrelevements = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_BANQUES, u"Etablissements bancaires", u"Paramétrage des établissements bancaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Banque.png", wx.BITMAP_TYPE_PNG))
-        sousMenuPrelevements.AppendItem(item)
-        
-        item = menu_param.AppendMenu(ID_PARAM_MENU_PRELEVEMENTS, u"Prélèvement automatique", sousMenuPrelevements)
-
-        menu_param.AppendSeparator()
-
-        item = wx.MenuItem(menu_param, ID_PARAM_REGIMES, u"Régimes sociaux", u"Paramétrage des régimes sociaux")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_CAISSES, u"Caisses", u"Paramétrage des caisses")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_MODELES_AIDES, u"Modèles d'aides journalières", u"Paramétrage des modèles d'aides journalières")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        menu_param.AppendSeparator()
-        
-        sousMenuRenseignements = wx.Menu()
-
-        item = wx.MenuItem(menu_param, ID_PARAM_QUESTIONNAIRES, u"Questionnaires", u"Paramétrage des questionnaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Questionnaire.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_PIECES, u"Types de pièces", u"Paramétrage des types de pièces")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Piece.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_CATEGORIES_TRAVAIL, u"Catégories socio-professionnelles", u"Paramétrage des catégories socio-professionnelles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Camion.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_VILLES, u"Villes et codes postaux", u"Paramétrage des villes et codes postaux")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Carte.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_SECTEURS, u"Secteurs géographiques", u"Paramétrage des secteurs géographiques")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Secteur.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_TYPES_SIESTE, u"Types de sieste", u"Paramétrage des types de sieste")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Reveil.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_MALADIES, u"Maladies", u"Paramétrage des maladies")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medical.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_VACCINS, u"Vaccins", u"Paramétrage des vaccins")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Seringue.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_MEDECINS, u"Médecins", u"Paramétrage des médecins")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medecin.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRenseignements.AppendItem(item)
-
-        item = menu_param.AppendMenu(ID_PARAM_MENU_RENSEIGNEMENTS, u"Renseignements", sousMenuRenseignements)
-                
-        
-        sousMenuScolaire = wx.Menu()
-
-        item = wx.MenuItem(menu_param, ID_PARAM_NIVEAUX_SCOLAIRES, u"Niveaux scolaires", u"Paramétrage des niveaux scolaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Niveau_scolaire.png", wx.BITMAP_TYPE_PNG))
-        sousMenuScolaire.AppendItem(item)
-        
-        sousMenuScolaire.AppendSeparator()
-
-        item = wx.MenuItem(menu_param, ID_PARAM_ECOLES, u"Ecoles", u"Paramétrage des écoles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Ecole.png", wx.BITMAP_TYPE_PNG))
-        sousMenuScolaire.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_CLASSES, u"Classes", u"Paramétrage des classes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Classe.png", wx.BITMAP_TYPE_PNG))
-        sousMenuScolaire.AppendItem(item)
-        
-        item = menu_param.AppendMenu(ID_PARAM_MENU_SCOLAIRE, u"Scolarité", sousMenuScolaire)
-
-        sousMenuTransports = wx.Menu()
-        
-        
-        # Sous-menu Bus
-        sousMenuTransportsBus = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_BUS, u"Compagnies de bus", u"Compagnies de bus")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Bus.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsBus.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_LIGNES_BUS, u"Lignes de bus", u"Lignes de bus")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Bus.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsBus.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_ARRETS_BUS, u"Arrêts de bus", u"Arrêts de bus")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Bus.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsBus.AppendItem(item)
-
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_BUS, u"Bus", sousMenuTransportsBus)
-        
-        # Sous-menu Car
-        sousMenuTransportsCar = wx.Menu()
-                
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_CAR, u"Compagnies de cars", u"Compagnies de cars")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Car.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsCar.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LIGNES_CAR, u"Lignes de cars", u"Lignes de cars")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Car.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsCar.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_ARRETS_CAR, u"Arrêts de cars", u"Arrêts de cars")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Car.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsCar.AppendItem(item)
-        
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_CAR, u"Car", sousMenuTransportsCar)
-        
-        # Sous-menu Navette
-        sousMenuTransportsNavette = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_NAVETTE, u"Compagnies de navettes", u"Compagnies de navettes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Navette.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsNavette.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LIGNES_NAVETTE, u"Lignes de navettes", u"Lignes de navettes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Navette.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsNavette.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_ARRETS_NAVETTE, u"Arrêts de navettes", u"Arrêts de navettes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Navette.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsNavette.AppendItem(item)
-        
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_NAVETTE, u"Navette", sousMenuTransportsNavette)
-        
-        # Sous-menu Taxi
-        sousMenuTransportsTaxi = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_TAXI, u"Compagnies de taxis", u"Compagnies de taxis")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Taxi.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsTaxi.AppendItem(item)
-        
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_TAXI, u"Taxi", sousMenuTransportsTaxi)
-        
-        # Sous-menu Train
-        sousMenuTransportsTrain = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LIEUX_GARES, u"Gares", u"Paramétrage des gares")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Train.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsTrain.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_TRAIN, u"Compagnies ferroviaires", u"Compagnies ferroviaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Train.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsTrain.AppendItem(item)
-        
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_TRAIN, u"Train", sousMenuTransportsTrain)
-        
-        # Sous-menu Avion
-        sousMenuTransportsAvion = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LIEUX_AEROPORTS, u"Aéroports", u"Paramétrage des aéroports")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Avion.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsAvion.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_AVION, u"Compagnies aériennes", u"Compagnies aériennes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Avion.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsAvion.AppendItem(item)
-
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_AVION, u"Avion", sousMenuTransportsAvion)
-
-        # Sous-menu Bateau
-        sousMenuTransportsBateau = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LIEUX_PORTS, u"Ports", u"Paramétrage des ports")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Bateau.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsBateau.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_BATEAU, u"Compagnies maritimes", u"Compagnies maritimes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Bateau.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsBateau.AppendItem(item)
-        
-##        item = wx.MenuItem(menu_param, ID_PARAM_LIGNES_BATEAU, u"Lignes maritimes", u"Lignes maritimes")
-##        item.SetBitmap(wx.Bitmap("Images/16x16/Bateau.png", wx.BITMAP_TYPE_PNG))
-##        sousMenuTransportsBateau.AppendItem(item)
-##        
-##        item = wx.MenuItem(menu_param, ID_PARAM_ARRETS_BATEAU, u"Arrêts maritimes", u"Arrêts maritimes")
-##        item.SetBitmap(wx.Bitmap("Images/16x16/Bateau.png", wx.BITMAP_TYPE_PNG))
-##        sousMenuTransportsBateau.AppendItem(item)
-        
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_BATEAU, u"Bateau", sousMenuTransportsBateau)
-
-        # Sous-menu Métro
-        sousMenuTransportsMetro = wx.Menu()
-
-##        item = wx.MenuItem(menu_param, ID_PARAM_LIEUX_STATIONS, u"Stations de métro", u"Paramétrage des stations de métro")
-##        item.SetBitmap(wx.Bitmap("Images/16x16/Metro.png", wx.BITMAP_TYPE_PNG))
-##        sousMenuTransportsMetro.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_COMPAGNIES_METRO, u"Compagnies de métros", u"Compagnies de métros")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Metro.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsMetro.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_LIGNES_METRO, u"Lignes de métros", u"Lignes de métros")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Metro.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsMetro.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_ARRETS_METRO, u"Arrêts de métros", u"Arrêts de métros")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Metro.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsMetro.AppendItem(item)
-
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_METRO, u"Métro", sousMenuTransportsMetro)
-
-        # Sous-menu Pédibus
-        sousMenuTransportsPedibus = wx.Menu()
-
-        item = wx.MenuItem(menu_param, ID_PARAM_LIGNES_PEDIBUS, u"Lignes de pédibus", u"Lignes de pédibus")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Pedibus.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsPedibus.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_ARRETS_PEDIBUS, u"Arrêts de pédibus", u"Arrêts de pédibus")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Pedibus.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransportsPedibus.AppendItem(item)
-
-        item = sousMenuTransports.AppendMenu(ID_PARAM_MENU_TRANSPORTS_PEDIBUS, u"Pédibus", sousMenuTransportsPedibus)
-
-        item = menu_param.AppendMenu(ID_PARAM_MENU_TRANSPORTS, u"Transports", sousMenuTransports)
-
-        menu_param.AppendSeparator()
-
-
-        item = wx.MenuItem(menu_param, ID_PARAM_CATEGORIES_MESSAGES, u"Catégories de messages", u"Paramétrage des catégories de messages")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mail.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_RESTAURATEURS, u"Restaurateurs", u"Paramétrage des restaurateurs")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Restaurateur.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_EMAILS_EXP, u"Adresses d'expédition d'Emails", u"Paramétrage des adresses d'expédition d'Emails")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_LISTE_DIFFUSION, u"Listes de diffusion", u"Paramétrage des listes de diffusion")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Liste_diffusion.png", wx.BITMAP_TYPE_PNG))
-        menu_param.AppendItem(item)
-
-        menu_param.AppendSeparator()
-        
-        sousMenuCalendrier = wx.Menu()
-        
-        item = wx.MenuItem(menu_param, ID_PARAM_VACANCES, u"Vacances", u"Paramétrage des vacances")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG))
-        sousMenuCalendrier.AppendItem(item)
-
-        item = wx.MenuItem(menu_param, ID_PARAM_FERIES, u"Jours fériés", u"Paramétrage des jours fériés")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Jour.png", wx.BITMAP_TYPE_PNG))
-        sousMenuCalendrier.AppendItem(item)
-
-        item = menu_param.AppendMenu(ID_PARAM_MENU_CALENDRIER, u"Calendrier", sousMenuCalendrier)
-
-        menubar.Append(menu_param, u"Paramétrage")
-
-        # Menu AFFICHAGE -------------------------------------
-        menu_affichage = wx.Menu()
-        
-        item = wx.MenuItem(menu_affichage, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, u"Disposition par défaut", u"Afficher la disposition par défaut", wx.ITEM_CHECK)
-        menu_affichage.AppendItem(item)
-        if self.perspective_active == None : item.Check(True)
+        # -------------------------- AJOUT DES PERSPECTIVES dans le menu AFFICHAGE -----------------------------
+        if self.perspective_active == None : 
+            self.dictInfosMenu["perspective_defaut"]["ctrl"].Check(True)
         
         index = 0
+        position = 1
+        menu_affichage = self.dictInfosMenu["menu_affichage"]["ctrl"]
         for dictPerspective in self.perspectives:
             label = dictPerspective["label"]
             item = wx.MenuItem(menu_affichage, ID_PREMIERE_PERSPECTIVE + index, label, u"Afficher la disposition '%s'" % label, wx.ITEM_CHECK)
-            menu_affichage.AppendItem(item)
+            menu_affichage.InsertItem(position, item)
             if self.perspective_active == index : item.Check(True)
+            position += 1
             index += 1
-        
-        menu_affichage.AppendSeparator()
-        
-        item = wx.MenuItem(menu_affichage, ID_AFFICHAGE_PERSPECTIVE_SAVE, u"Sauvegarder la disposition actuelle", u"Sauvegarder la disposition actuelle de la page d'accueil")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Perspective_ajouter.png", wx.BITMAP_TYPE_PNG))
-        menu_affichage.AppendItem(item)
-        
-        item = wx.MenuItem(menu_affichage, ID_AFFICHAGE_PERSPECTIVE_SUPPR, u"Supprimer des dispositions", u"Supprimer des dispositions de page d'accueil sauvegardée")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Perspective_supprimer.png", wx.BITMAP_TYPE_PNG))
-        menu_affichage.AppendItem(item)
-        
-        menu_affichage.AppendSeparator()
-        
+        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_perspective_perso, id=ID_PREMIERE_PERSPECTIVE, id2=ID_PREMIERE_PERSPECTIVE+99 )
+
+        # -------------------------- AJOUT DES ELEMENTS A AFFICHER OU CACHER dans le menu AFFICHAGE -----------------------------
         self.listePanneaux = [
             { "label" : u"Effectifs", "code" : "effectifs", "IDmenu" : None },
             { "label" : u"Messages", "code" : "messages", "IDmenu" : None }, 
@@ -1138,607 +973,61 @@ class MainFrame(wx.Frame):
             { "label" : u"Barre utilisateur", "code" : "barre_utilisateur", "IDmenu" : None },
             ]
         ID = ID_AFFICHAGE_PANNEAUX
+        menu_affichage = self.dictInfosMenu["menu_affichage"]["ctrl"]
+        position = self.RechercherPositionItemMenu("menu_affichage", "perspective_suppr") + 2
         for dictPanneau in self.listePanneaux :
             dictPanneau["IDmenu"] = ID
             label = dictPanneau["label"]
-            item = wx.MenuItem(menu_affichage, dictPanneau["IDmenu"], label, u"Afficher le panneau '%s'" % label, wx.ITEM_CHECK)
-            menu_affichage.AppendItem(item)
+            item = wx.MenuItem(menu_affichage, dictPanneau["IDmenu"], label, u"Afficher l'élément '%s'" % label, wx.ITEM_CHECK)
+            menu_affichage.InsertItem(position, item)
+            position += 1
             ID += 1
         self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_panneau_afficher, id=ID_AFFICHAGE_PANNEAUX, id2=ID_AFFICHAGE_PANNEAUX+len(self.listePanneaux) )
         
-        menubar.Append(menu_affichage, u"Affichage")
-        
-        menu_affichage.AppendSeparator()
-        
-        item = wx.MenuItem(menu_affichage, ID_AFFICHAGE_ACTUALISER, u"Actualiser l'affichage\tF11", u"Actualiser les données de la page d'accueil")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_PNG))
-        menu_affichage.AppendItem(item)
-
-        # Menu OUTILS -------------------------------------
-        menu_outils = wx.Menu()
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_STATS, u"Statistiques", u"Afficher les statistiques pour une période donnée")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Barres.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        menu_outils.AppendSeparator()
-
-        
-        item = wx.MenuItem(menu_outils, ID_OUTILS_ENVOI_EMAILS, u"Editeur d'Emails", u"Envoyer des Emails depuis l'éditeur d'Emails")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Editeur_email.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_CALCULATRICE, u"Calculatrice\tF12", u"Utiliser la calculatrice installée par défaut sur votre système d'exploitation")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Calculatrice.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_CALENDRIER, u"Calendrier", u"Afficher un calendrier avec vacances et jours fériés")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        menu_outils.AppendSeparator()
-        
-        item = wx.MenuItem(menu_outils, ID_OUTILS_VILLES, u"Villes et codes postaux", u"Rechercher une ville ou un code postal")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Carte.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_GPS, u"Géolocalisation GPS", u"Trouvez les coordonnées GPS d'un lieu")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Carte.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_METEO, u"Prévisions météorologiques", u"Prévisions météorologiques")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Meteo.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_HORAIRES_SOLEIL, u"Horaires du soleil", u"Affiche les horaires du soleil pour une ville et un mois donnés")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Soleil.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        menu_outils.AppendSeparator()
-        
-        item = wx.MenuItem(menu_outils, ID_OUTILS_CONNEXIONS, u"Liste des connexions réseau", u"Liste des connexions réseau")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Connexion.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-        
-        menu_outils.AppendSeparator()
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_MESSAGES, u"Messages", u"Consulter la liste des messages")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mail.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-
-        item = wx.MenuItem(menu_outils, ID_OUTILS_HISTORIQUE, u"Historique", u"Consulter l'historique des actions effectuées dans le logiciel")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Historique.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-        
-        sousMenuUtilitaires = wx.Menu()
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_CORRECTEUR, u"Correcteur d'anomalies", u"Correcteur d'anomalies")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Depannage.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        sousMenuUtilitaires.AppendSeparator()
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PURGER_HISTORIQUE, u"Purger l'historique", u"Purger l'historique")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Poubelle.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PURGER_JOURNAL_BADGEAGE, u"Purger le journal de badgeage", u"Purger le journal de badgeage")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Poubelle.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PURGER_ARCHIVES_BADGEAGE, u"Purger les archives des badgeages importés", u"Purger les archives des badgeages importés")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Poubelle.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PURGER_REP_UPDATES, u"Purger le répertoire Updates", u"Purger le répertoire Updates")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Poubelle.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        sousMenuUtilitaires.AppendSeparator()
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_EXTENSIONS, u"Extensions", u"Extensions")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Terminal.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PROCEDURES, u"Procédures", u"Procédures")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_REINITIALISATION, u"Réinitialisation du fichier de configuration", u"Réinitialisation du fichier de configuration")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_TRANSFERT_TABLES, u"Transférer des tables", u"Transférer des tables de données")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        sousMenuUtilitaires.AppendSeparator()
-        
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PROCEDURE_E4072, u"Suppression des prestations sans consommations associées", u"Suppression des prestations sans consommations associées")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medecin3.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_PRESTATIONS_SANS_CONSO, u"Liste des prestations sans consommations associées", u"Liste des prestations sans consommations associées")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medecin3.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_CONSO_SANS_PRESTATIONS, u"Liste des consommations sans prestations associées", u"Liste des consommations sans prestations associées")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medecin3.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_DEVERROUILLAGE_FORFAITS, u"Déverrouillage des consommations de forfaits", u"Déverrouiller des consommations de forfaits")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medecin3.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        sousMenuUtilitaires.AppendSeparator()
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_APPLIQUER_TVA, u"Appliquer un taux de TVA à un lot de prestations", u"Appliquer un taux de TVA à un lot de prestations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_APPLIQUER_CODE_COMPTABLE, u"Appliquer un code comptable à un lot de prestations", u"Appliquer un code comptable à un lot de prestations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_CONVERSION_RIB_SEPA, u"Convertir les RIB nationaux en mandats SEPA", u"Convertir les RIB nationaux en mandats SEPA")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_CREATION_TITULAIRES_HELIOS, u"Création automatique des titulaires Hélios", u"Création automatique des titulaires Hélios")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        sousMenuUtilitaires.AppendSeparator()
-        
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_CONSOLE_PYTHON, u"Console Python", u"Console Python")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Python.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_CONSOLE_SQL, u"Console SQL", u"Console SQL")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Sql.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = wx.MenuItem(sousMenuUtilitaires, ID_OUTILS_LISTE_PERSO, u"Liste personnalisée", u"Liste personnalisée SQL")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Sql.png", wx.BITMAP_TYPE_PNG))
-        sousMenuUtilitaires.AppendItem(item)
-
-        item = menu_outils.AppendMenu(ID_OUTILS_UTILITAIRES, u"Utilitaires administrateur", sousMenuUtilitaires)
-        
-        menu_outils.AppendSeparator()
-        
-        item = wx.MenuItem(menu_outils, ID_OUTILS_UPDATER, u"Rechercher une mise à jour du logiciel", u"Rechercher une mise à jour du logiciel sur internet")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Updater.png", wx.BITMAP_TYPE_PNG))
-        menu_outils.AppendItem(item)
-        
-        menubar.Append(menu_outils, u"Outils")
-        
-        # Menu INDIVIDUS -------------------------------------
-        menu_individus = wx.Menu()
-        
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_SCOLARITE, u"Inscriptions scolaires", u"Gestion des inscriptions scolaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Classe.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-        
-        menu_individus.AppendSeparator()
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_INSCRIPTIONS, u"Liste des inscriptions", u"Editer une liste des inscriptions")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Activite.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_INDIVIDUS, u"Liste des individus", u"Editer une liste des individus")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Personnes.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-        
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_FAMILLES, u"Liste des familles", u"Editer une liste des familles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-        
-        menu_individus.AppendSeparator()
-        
-        sousMenuTransports = wx.Menu()
-        
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_TRANSPORTS_RECAP, u"Liste récapitulative", u"Editer une liste récapitulative des transports")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Transport.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransports.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_TRANSPORTS_DETAIL, u"Liste détaillée", u"Editer une liste détaillée des transports")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Transport.png", wx.BITMAP_TYPE_PNG))
-        sousMenuTransports.AppendItem(item)
-        
-        item = menu_individus.AppendMenu(ID_INDIVIDUS_TRANSPORTS, u"Liste des transports", sousMenuTransports)
-
-        menu_individus.AppendSeparator()
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_ANNIVERSAIRES, u"Liste des anniversaires", u"Editer une liste des anniversaires")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Anniversaire.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-        
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_INFOS_MED, u"Liste des informations médicales", u"Editer une liste des informations médicales")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Medical.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_PIECES_FOURNIES, u"Liste des pièces fournies", u"Editer la liste des pièces fournies")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Piece.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_PIECES_MANQUANTES, u"Liste des pièces manquantes", u"Editer la liste des pièces manquantes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Piece.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-        
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_REGIMES_CAISSES, u"Liste des régimes et caisses des familles", u"Editer la liste des régimes et caisses des familles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_QUOTIENTS, u"Liste des quotients familiaux", u"Editer la liste des quotients familiaux des familles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Calculatrice.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_MANDATS, u"Liste des mandats SEPA", u"Editer la liste des mandats SEPA")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Prelevement.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        menu_individus.AppendSeparator()
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_IMPORTER_PHOTOS, u"Importer des photos individuelles", u"Importer des photos individuelles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Photos.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        sousMenuImporter = wx.Menu()
-        
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_IMPORTER_CSV, u"Importer des individus ou des familles depuis un fichier Excel ou CSV", u"Importer des individus ou des familles depuis un fichier Excel ou CSV")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Document_import.png", wx.BITMAP_TYPE_PNG))
-        sousMenuImporter.AppendItem(item)
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_IMPORTER_FICHIER, u"Importer des familles depuis un fichier Noethys", u"Importer des familles depuis un autre fichier de données Noethys")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Document_import.png", wx.BITMAP_TYPE_PNG))
-        sousMenuImporter.AppendItem(item)
-        
-        item = menu_individus.AppendMenu(ID_INDIVIDUS_IMPORTER, u"Importer des familles ou des individus", sousMenuImporter)
-        
-        menu_individus.AppendSeparator()
-
-        item = wx.MenuItem(menu_individus, ID_INDIVIDUS_EDITION_ETIQUETTES, u"Edition d'étiquettes et de badges", u"Edition d'étiquettes et de badges au format PDF")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Etiquette2.png", wx.BITMAP_TYPE_PNG))
-        menu_individus.AppendItem(item)
-
-        menubar.Append(menu_individus, u"Individus")
-
-        # Menu CONSOMMATIONS -------------------------------------
-        menu_consommations = wx.Menu()
-        
-        item = wx.MenuItem(menu_consommations, ID_IMPRIM_LISTE_CONSO_JOURN, u"Liste des consommations", u"Editer une liste journalière ou périodique des consommations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-
-        item = wx.MenuItem(menu_consommations, ID_CONSO_GESTIONNAIRE, u"Gestionnaire des consommations", u"Gestionnaire des consommations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-
-        menu_consommations.AppendSeparator()
-        
-        item = wx.MenuItem(menu_consommations, ID_CONSO_ATTENTE, u"Liste d'attente", u"Consulter la liste d'attente pour la période sélectionnée")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Liste_attente.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-        
-        item = wx.MenuItem(menu_consommations, ID_CONSO_REFUS, u"Liste des places refusées", u"Consulter la liste des places refusées pour la période sélectionnée")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Places_refus.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-
-        item = wx.MenuItem(menu_consommations, ID_CONSO_ABSENCES, u"Liste des absences", u"Consulter la liste des absences injustifiées ou justifiées pour la période sélectionnée")
-        item.SetBitmap(wx.Bitmap("Images/16x16/absenti.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-
-        menu_consommations.AppendSeparator()
-
-        item = wx.MenuItem(menu_consommations, ID_CONSO_SYNTHESE_CONSO, u"Synthèse des consommations", u"Consulter la synthèse des consommations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Diagramme.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-
-        item = wx.MenuItem(menu_consommations, ID_CONSO_ETAT_GLOBAL, u"Etat global", u"Générer un état global des consommations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Tableaux.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-
-        item = wx.MenuItem(menu_consommations, ID_CONSO_ETAT_NOMINATIF, u"Etat nominatif", u"Générer un état nominatif des consommations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Tableaux.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-        
-        menu_consommations.AppendSeparator()
-        
-        item = wx.MenuItem(menu_consommations, ID_CONSO_BADGEAGE, u"Badgeage", u"Lancement d'un procédure de badgeage")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG))
-        menu_consommations.AppendItem(item)
-                
-        menubar.Append(menu_consommations, u"Consommations")
-
-        # Menu FACTURATION -------------------------------------
-        menu_facturation = wx.Menu()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_VENTILATION, u"Vérifier la ventilation", u"Vérifier la ventilation des règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Repartition.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-        
-        menu_facturation.AppendSeparator()
-        
-        sousMenuFactures = wx.Menu()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_FACTURES_GENERATION, u"Génération", u"Génération des factures")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Generation.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFactures.AppendItem(item)
-        
-        sousMenuFactures.AppendSeparator()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_FACTURES_HELIOS, u"Export vers Hélios", u"Exporter les factures vers Hélios")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Helios.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFactures.AppendItem(item)
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_FACTURES_PRELEVEMENT, u"Prélèvement automatique", u"Gestion du prélèvement automatique")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Prelevement.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFactures.AppendItem(item)
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_FACTURES_EMAIL, u"Transmettre par Email", u"Transmettre les factures par Email")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFactures.AppendItem(item)
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_FACTURES_IMPRIMER, u"Imprimer", u"Imprimer une ou plusieurs factures")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFactures.AppendItem(item)
-        
-        sousMenuFactures.AppendSeparator()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_FACTURES_LISTE, u"Liste des factures", u"Liste des factures générées")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Facture.png", wx.BITMAP_TYPE_PNG))
-        sousMenuFactures.AppendItem(item)
-        
-        item = menu_facturation.AppendMenu(ID_FACTURATION_MENU_FACTURES, u"Factures", sousMenuFactures)
-        
-        sousMenuRappels = wx.Menu()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_RAPPELS_GENERATION, u"Génération", u"Génération des lettres de rappel")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Generation.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRappels.AppendItem(item)
-        
-        sousMenuRappels.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_RAPPELS_EMAIL, u"Transmettre par Email", u"Transmettre les lettres de rappel par Email")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRappels.AppendItem(item)
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_RAPPELS_IMPRIMER, u"Imprimer", u"Imprimer une ou plusieurs lettres de rappel")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRappels.AppendItem(item)
-        
-        sousMenuRappels.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_RAPPELS_LISTE, u"Liste des lettres de rappels", u"Liste des lettres de rappel")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Facture.png", wx.BITMAP_TYPE_PNG))
-        sousMenuRappels.AppendItem(item)
-        
-        item = menu_facturation.AppendMenu(ID_FACTURATION_MENU_RAPPELS, u"Lettres de rappels", sousMenuRappels)
-
-        sousMenuAttestations = wx.Menu()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_ATTESTATIONS_GENERATION, u"Génération", u"Génération des attestations de présence par lot")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Generation.png", wx.BITMAP_TYPE_PNG))
-        sousMenuAttestations.AppendItem(item)
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_ATTESTATIONS_LISTE, u"Liste des attestations de présence", u"Liste des attestations de présence générées")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Facture.png", wx.BITMAP_TYPE_PNG))
-        sousMenuAttestations.AppendItem(item)
-        
-        item = menu_facturation.AppendMenu(ID_FACTURATION_MENU_ATTESTATIONS, u"Attestations de présence", sousMenuAttestations)
-
-        sousMenuAttestationsFiscales = wx.Menu()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_ATTESTATIONS_FISCALES_GENERATION, u"Génération", u"Génération des attestations fiscales par lot")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Generation.png", wx.BITMAP_TYPE_PNG))
-        sousMenuAttestationsFiscales.AppendItem(item)
-                
-        item = menu_facturation.AppendMenu(ID_FACTURATION_MENU_ATTESTATIONS_FISCALES, u"Attestations fiscales", sousMenuAttestationsFiscales)
-
-        menu_facturation.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_LISTE_PRESTATIONS, u"Liste des prestations", u"Liste des prestations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_LISTE_DEDUCTIONS, u"Liste des déductions", u"Liste des déductions")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-
-        menu_facturation.AppendSeparator()
-        
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_SOLDES, u"Liste des soldes", u"Liste des soldes des comptes familles")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_SOLDES_INDIVIDUELS, u"Liste des soldes individuels", u"Liste des soldes individuels")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-        
-        menu_facturation.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_SOLDER_IMPAYES, u"Solder les impayés", u"Solder les impayés")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Impayes.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_SYNTHESE_IMPAYES, u"Synthèse des impayés", u"Synthèse des impayés")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Diagramme.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-        
-        menu_facturation.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_PRESTATIONS_VILLES, u"Liste des prestations par famille", u"Liste des prestations par famille")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_SYNTHESE_PRESTATIONS, u"Synthèse des prestations", u"Synthèse des prestations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Diagramme.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-        
-        menu_facturation.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_FACTURATION_EXPORT_COMPTA, u"Export des écritures comptables", u"Exporter les écritures comptables vers des logiciels de comptabilité")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Export_comptable.png", wx.BITMAP_TYPE_PNG))
-        menu_facturation.AppendItem(item)
-
-        menubar.Append(menu_facturation, u"Facturation")
-        
-        # Menu COTISATIONS -------------------------------------
-        menu_cotisations = wx.Menu()
-        
-        item = wx.MenuItem(menu_cotisations, ID_COTISATIONS_LISTE, u"Liste des cotisations", u"Consulter la liste des cotisations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Cotisation.png", wx.BITMAP_TYPE_PNG))
-        menu_cotisations.AppendItem(item)
-        
-        item = wx.MenuItem(menu_cotisations, ID_COTISATIONS_MANQUANTES, u"Liste des cotisations manquantes", u"Editer la liste des cotisations manquantes")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Cotisation.png", wx.BITMAP_TYPE_PNG))
-        menu_cotisations.AppendItem(item)
-        
-        menu_cotisations.AppendSeparator()
-
-        item = wx.MenuItem(menu_cotisations, ID_COTISATIONS_EMAIL, u"Transmettre des cotisations par Email", u"Transmettre des cotisations par Email")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG))
-        menu_cotisations.AppendItem(item)
-        
-        item = wx.MenuItem(menu_cotisations, ID_COTISATIONS_IMPRIMER, u"Imprimer des cotisations", u"Imprimer une ou plusieurs cotisations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
-        menu_cotisations.AppendItem(item)
-
-        menu_cotisations.AppendSeparator()
-
-        item = wx.MenuItem(menu_cotisations, ID_COTISATIONS_DEPOTS, u"Gestion des dépôts de cotisations", u"Gestion des dépôts de cotisations")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Depot_cotisations.png", wx.BITMAP_TYPE_PNG))
-        menu_cotisations.AppendItem(item)
-                
-        menubar.Append(menu_cotisations, u"Cotisations")
-
-        # Menu REGLEMENTS -------------------------------------
-        menu_reglements = wx.Menu()
-        
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_REGLER_FACTURE, u"Régler une facture\tF4", u"Régler une facture à partir de son numéro")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Codebarre.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-        
-        menu_reglements.AppendSeparator()
-        
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_RECUS, u"Liste des reçus de règlements", u"Consulter la liste des reçus de règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Note.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-        
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_LISTE, u"Liste des règlements", u"Consulter la liste des règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-        
-        menu_reglements.AppendSeparator()
-        
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_VENTILATION, u"Vérifier la ventilation", u"Vérifier la ventilation des règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Repartition.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_ANALYSE_VENTILATION, u"Tableau d'analyse croisée ventilation/dépôts", u"Tableau d'analyse croisée ventilation/dépôts")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Diagramme.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_SYNTHESE_MODES, u"Synthèse des modes de règlements", u"Synthèse des modes de règlements")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Diagramme.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-
-        menu_reglements.AppendSeparator()
-
-        item = wx.MenuItem(menu_facturation, ID_REGLEMENTS_PRELEVEMENT, u"Prélèvement automatique", u"Gestion du prélèvement automatique")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Prelevement.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-
-        item = wx.MenuItem(menu_reglements, ID_REGLEMENTS_DEPOTS, u"Gestion des dépôts", u"Gestion des dépôts")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Banque.png", wx.BITMAP_TYPE_PNG))
-        menu_reglements.AppendItem(item)
-                
-        menubar.Append(menu_reglements, u"Règlements")
-        
-        # Menu AIDE -------------------------------------
-        menu_aide = wx.Menu()
-        
-        item = wx.MenuItem(menu_aide, ID_AIDE_AIDE, u"Consulter l'aide", u"Consulter l'aide de Noethys")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Aide.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-    
-        item = wx.MenuItem(menu_aide, ID_AIDE_ACHETER_LICENCE, u"Acheter une licence pour accéder au manuel de référence", u"Acheter une licence pour accéder au manuel de référence de Noethys")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Acheter_licence.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-
-        menu_aide.AppendSeparator()
-
-        item = wx.MenuItem(menu_aide, ID_AIDE_GUIDE_DEMARRAGE, u"Télécharger le guide de démarrage rapide (PDF)", u"Télécharger le guide de démarrage rapide (PDF)")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Livre.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-
-        menu_aide.AppendSeparator()
-
-        item = wx.MenuItem(menu_aide, ID_AIDE_FORUM, u"Accéder au forum d'entraide", u"Accéder au forum d'entraide")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Dialogue.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-
-        item = wx.MenuItem(menu_aide, ID_AIDE_VIDEOS, u"Visionner des tutoriels vidéos", u"Visionner des tutoriels vidéos")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Film.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-
-        item = wx.MenuItem(menu_aide, ID_AIDE_TELECHARGEMENTS, u"Télécharger des ressources communautaires", u"Accéder à la plate-forme de téléchargements communautaire")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Updater.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-        
-        menu_aide.AppendSeparator()
-
-        item = wx.MenuItem(menu_aide, ID_AIDE_AUTEUR, u"Envoyer un Email à l'auteur", u"Envoyer un Email à l'auteur")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mail.png", wx.BITMAP_TYPE_PNG))
-        menu_aide.AppendItem(item)
-        
-        menubar.Append(menu_aide, u"Aide")
-        
-        # Menu A PROPOS -------------------------------------
-        menu_propos = wx.Menu()
-        
-        item = wx.MenuItem(menu_propos, ID_PROPOS_VERSIONS, u"Notes de versions", u"Notes de versions")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Versions.png", wx.BITMAP_TYPE_PNG))
-        menu_propos.AppendItem(item)
-        
-        item = wx.MenuItem(menu_propos, ID_PROPOS_LICENCE, u"Licence", u"Licence du logiciel")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Licence.png", wx.BITMAP_TYPE_PNG))
-        menu_propos.AppendItem(item)
-        
-        menu_propos.AppendSeparator()
-        
-        item = wx.MenuItem(menu_propos, ID_PROPOS_SOUTENIR, u"Soutenir Noethys", u"Soutenir Noethys")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Soutenir_noethys.png", wx.BITMAP_TYPE_PNG))
-        menu_propos.AppendItem(item)
-
-        menu_propos.AppendSeparator()
-        
-        item = wx.MenuItem(menu_propos, ID_PROPOS_PROPOS, u"A propos", u"A propos")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Information.png", wx.BITMAP_TYPE_PNG))
-        menu_propos.AppendItem(item)
-                
-        menubar.Append(menu_propos, u"A propos")
-        
-        # Menu MISE A JOUR INTERNET -------------------------------------
+        # -------------------------- AJOUT MISE A JOUR INTERNET -----------------------------
         if self.MAJexiste == True :
+            id = wx.NewId()
             menu_maj = wx.Menu()
-            item = wx.MenuItem(menu_maj, ID_OUTILS_UPDATER_2, u"Télécharger la mise à jour", u"Télécharger la nouvelle mise à jour")
+            item = wx.MenuItem(menu_maj, id, u"Télécharger la mise à jour", u"Télécharger la nouvelle mise à jour")
             item.SetBitmap(wx.Bitmap("Images/16x16/Updater.png", wx.BITMAP_TYPE_PNG))
             menu_maj.AppendItem(item)
-            menubar.Append(menu_maj, u"<< Télécharger la mise à jour >>")
-            self.Bind(wx.EVT_MENU, self.On_outils_updater, id=ID_OUTILS_UPDATER_2)
+            self.menu.Append(menu_maj, u"<< Télécharger la mise à jour >>")
+            self.Bind(wx.EVT_MENU, self.On_outils_updater, id=id)
 
         # Finalisation Barre de menu
-        self.SetMenuBar(menubar)
-        self.menubar = menubar
-
+        self.SetMenuBar(self.menu)
         
+    
+    def GetDictItemsMenu(self):
+        """ Renvoie tous les items menu de type action sous forme de dictionnaire """
+        dictItems = {}
+        def AnalyseItem(listeItems):
+            for item in listeItems :
+                if type(item) == dict :
+                    if item.has_key("action") :
+                        dictItems[item["code"]] = item
+                    if item.has_key("items") :
+                        AnalyseItem(item["items"])
+        
+        AnalyseItem(self.listeItemsMenu)
+        return dictItems
+
+
+    
+    def RechercherPositionItemMenu(self, codeMenu="", codeItem=""):
+        menu = self.dictInfosMenu[codeMenu]["ctrl"]
+        IDitem = self.dictInfosMenu[codeItem]["id"]
+        index = 0
+        for item in menu.GetMenuItems() :
+            if item.GetId() == IDitem :
+                return index
+            index +=1
+        return 0
     
     def MAJmenuAffichage(self, event):
         """ Met à jour la liste des panneaux ouverts du menu Affichage """
         menuOuvert = event.GetMenu()
-        itemTemp = self.GetMenuBar().FindItemById(ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
-        if menuOuvert == itemTemp.GetMenu() :
+        if menuOuvert == self.dictInfosMenu["menu_affichage"]["ctrl"] :
             for dictPanneau in self.listePanneaux :
                 IDmenuItem = dictPanneau["IDmenu"]
                 item = menuOuvert.FindItemById(IDmenuItem)
@@ -1785,217 +1074,7 @@ class MainFrame(wx.Frame):
         if pb == True :
             self.SupprimeToutesPerspectives() 
         
-    def CreationBinds(self):
-        # Menu Fichier
-        self.Bind(wx.EVT_MENU, self.On_fichier_AssistantDemarrage, id=ID_ASSISTANT_DEMARRAGE)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Nouveau, id=ID_NOUVEAU_FICHIER)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Ouvrir, id=ID_OUVRIR_FICHIER)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Fermer, id=ID_FERMER_FICHIER)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Informations, id=ID_FICHIER_INFORMATIONS)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Sauvegarder, id=ID_CREER_SAUVEGARDE)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Restaurer, id=ID_RESTAURER_SAUVEGARDE)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Sauvegardes_auto, id=ID_SAUVEGARDES_AUTO)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Convertir_reseau, id=ID_CONVERSION_RESEAU)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Convertir_local, id=ID_CONVERSION_LOCAL)
-        self.Bind(wx.EVT_MENU, self.On_fichier_Quitter, id=ID_QUITTER)
-        
-        # Menu Paramétrage
-        self.Bind(wx.EVT_MENU, self.On_param_preferences, id=ID_PARAM_PREFERENCES)
-        self.Bind(wx.EVT_MENU, self.On_param_enregistrement, id=ID_PARAM_ENREGISTREMENT)
-        self.Bind(wx.EVT_MENU, self.On_param_utilisateurs, id=ID_PARAM_UTILISATEURS)
-        self.Bind(wx.EVT_MENU, self.On_param_modeles_droits, id=ID_PARAM_MODELES_DROITS)
-        self.Bind(wx.EVT_MENU, self.On_param_utilisateurs_reseau, id=ID_PARAM_UTILISATEURS_RESEAU)
-        self.Bind(wx.EVT_MENU, self.On_param_organisateur, id=ID_PARAM_ORGANISATEUR)
-        self.Bind(wx.EVT_MENU, self.On_param_comptes, id=ID_PARAM_COMPTES)
-        self.Bind(wx.EVT_MENU, self.On_param_activites, id=ID_PARAM_ACTIVITES)
-        self.Bind(wx.EVT_MENU, self.On_param_documents, id=ID_PARAM_DOCUMENTS)
-        self.Bind(wx.EVT_MENU, self.On_param_modeles_emails, id=ID_PARAM_MODELES_EMAILS)
-        self.Bind(wx.EVT_MENU, self.On_param_modeles_tickets, id=ID_PARAM_MODELES_TICKETS)
-        self.Bind(wx.EVT_MENU, self.On_param_badgeage, id=ID_PARAM_BADGEAGE)
-        self.Bind(wx.EVT_MENU, self.On_param_vocal, id=ID_PARAM_VOCAL)
-        self.Bind(wx.EVT_MENU, self.On_param_pieces, id=ID_PARAM_PIECES)
-        self.Bind(wx.EVT_MENU, self.On_param_categories_travail, id=ID_PARAM_CATEGORIES_TRAVAIL)
-        self.Bind(wx.EVT_MENU, self.On_param_vacances, id=ID_PARAM_VACANCES)
-        self.Bind(wx.EVT_MENU, self.On_param_feries, id=ID_PARAM_FERIES)
-        self.Bind(wx.EVT_MENU, self.On_param_maladies, id=ID_PARAM_MALADIES)
-        self.Bind(wx.EVT_MENU, self.On_param_vaccins, id=ID_PARAM_VACCINS)
-        self.Bind(wx.EVT_MENU, self.On_param_medecins, id=ID_PARAM_MEDECINS)
-        self.Bind(wx.EVT_MENU, self.On_param_restaurateurs, id=ID_PARAM_RESTAURATEURS)
-        self.Bind(wx.EVT_MENU, self.On_param_modes_reglements, id=ID_PARAM_MODES_REGLEMENTS)
-        self.Bind(wx.EVT_MENU, self.On_param_emetteurs, id=ID_PARAM_EMETTEURS)
-        self.Bind(wx.EVT_MENU, self.On_param_banques, id=ID_PARAM_BANQUES)
-        self.Bind(wx.EVT_MENU, self.On_param_lots_factures, id=ID_PARAM_LOTS_FACTURES)
-        self.Bind(wx.EVT_MENU, self.On_param_lots_rappels, id=ID_PARAM_LOTS_RAPPELS)
-        self.Bind(wx.EVT_MENU, self.On_param_questionnaires, id=ID_PARAM_QUESTIONNAIRES)
-        self.Bind(wx.EVT_MENU, self.On_param_regimes, id=ID_PARAM_REGIMES)
-        self.Bind(wx.EVT_MENU, self.On_param_caisses, id=ID_PARAM_CAISSES)
-        self.Bind(wx.EVT_MENU, self.On_param_modeles_aides, id=ID_PARAM_MODELES_AIDES)
-        self.Bind(wx.EVT_MENU, self.On_param_types_cotisations, id=ID_PARAM_TYPES_COTISATIONS)
-        self.Bind(wx.EVT_MENU, self.On_param_groupes_activites, id=ID_PARAM_GROUPES_ACTIVITES)
-        self.Bind(wx.EVT_MENU, self.On_param_villes, id=ID_PARAM_VILLES)
-        self.Bind(wx.EVT_MENU, self.On_param_secteurs, id=ID_PARAM_SECTEURS)
-        self.Bind(wx.EVT_MENU, self.On_param_types_sieste, id=ID_PARAM_TYPES_SIESTE)
-        self.Bind(wx.EVT_MENU, self.On_param_categories_messages, id=ID_PARAM_CATEGORIES_MESSAGES)
-        self.Bind(wx.EVT_MENU, self.On_param_emails_exp, id=ID_PARAM_EMAILS_EXP)
-        self.Bind(wx.EVT_MENU, self.On_param_listes_diffusion, id=ID_PARAM_LISTE_DIFFUSION)
-        self.Bind(wx.EVT_MENU, self.On_param_niveaux_scolaires, id=ID_PARAM_NIVEAUX_SCOLAIRES)
-        self.Bind(wx.EVT_MENU, self.On_param_ecoles, id=ID_PARAM_ECOLES)
-        self.Bind(wx.EVT_MENU, self.On_param_classes, id=ID_PARAM_CLASSES)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_bus, id=ID_PARAM_COMPAGNIES_BUS)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_car, id=ID_PARAM_COMPAGNIES_CAR)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_navette, id=ID_PARAM_COMPAGNIES_NAVETTE)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_taxi, id=ID_PARAM_COMPAGNIES_TAXI)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_avion, id=ID_PARAM_COMPAGNIES_AVION)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_bateau, id=ID_PARAM_COMPAGNIES_BATEAU)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_train, id=ID_PARAM_COMPAGNIES_TRAIN)
-        self.Bind(wx.EVT_MENU, self.On_param_compagnies_metro, id=ID_PARAM_COMPAGNIES_METRO)
-        self.Bind(wx.EVT_MENU, self.On_param_lieux_gares, id=ID_PARAM_LIEUX_GARES)
-        self.Bind(wx.EVT_MENU, self.On_param_lieux_aeroports, id=ID_PARAM_LIEUX_AEROPORTS)
-        self.Bind(wx.EVT_MENU, self.On_param_lieux_ports, id=ID_PARAM_LIEUX_PORTS)
-        self.Bind(wx.EVT_MENU, self.On_param_lieux_stations, id=ID_PARAM_LIEUX_STATIONS)
-
-        self.Bind(wx.EVT_MENU, self.On_param_lignes_bus, id=ID_PARAM_LIGNES_BUS)
-        self.Bind(wx.EVT_MENU, self.On_param_lignes_car, id=ID_PARAM_LIGNES_CAR)
-        self.Bind(wx.EVT_MENU, self.On_param_lignes_navette, id=ID_PARAM_LIGNES_NAVETTE)
-        self.Bind(wx.EVT_MENU, self.On_param_lignes_bateau, id=ID_PARAM_LIGNES_BATEAU)
-        self.Bind(wx.EVT_MENU, self.On_param_lignes_metro, id=ID_PARAM_LIGNES_METRO)
-        self.Bind(wx.EVT_MENU, self.On_param_lignes_pedibus, id=ID_PARAM_LIGNES_PEDIBUS)
-        
-        self.Bind(wx.EVT_MENU, self.On_param_arrets_bus, id=ID_PARAM_ARRETS_BUS)
-        self.Bind(wx.EVT_MENU, self.On_param_arrets_car, id=ID_PARAM_ARRETS_CAR)
-        self.Bind(wx.EVT_MENU, self.On_param_arrets_navette, id=ID_PARAM_ARRETS_NAVETTE)
-        self.Bind(wx.EVT_MENU, self.On_param_arrets_bateau, id=ID_PARAM_ARRETS_BATEAU)
-        self.Bind(wx.EVT_MENU, self.On_param_arrets_metro, id=ID_PARAM_ARRETS_METRO)
-        self.Bind(wx.EVT_MENU, self.On_param_arrets_pedibus, id=ID_PARAM_ARRETS_PEDIBUS)
-
-        # Menu Affichage
-        self.Bind(wx.EVT_MENU, self.On_affichage_perspective_defaut, id=ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
-        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_perspective_perso, id=ID_PREMIERE_PERSPECTIVE, id2=ID_PREMIERE_PERSPECTIVE+99 )
-        self.Bind(wx.EVT_MENU, self.On_affichage_perspective_save, id=ID_AFFICHAGE_PERSPECTIVE_SAVE)
-        self.Bind(wx.EVT_MENU, self.On_affichage_perspective_suppr, id=ID_AFFICHAGE_PERSPECTIVE_SUPPR)
-        self.Bind(wx.EVT_MENU, self.On_affichage_actualiser, id=ID_AFFICHAGE_ACTUALISER)
-        
-        # Menu Outils
-        self.Bind(wx.EVT_MENU, self.On_outils_stats, id=ID_OUTILS_STATS)
-        self.Bind(wx.EVT_MENU, self.On_outils_villes, id=ID_OUTILS_VILLES)
-        self.Bind(wx.EVT_MENU, self.On_outils_calculatrice, id=ID_OUTILS_CALCULATRICE)
-        self.Bind(wx.EVT_MENU, self.On_outils_calendrier, id=ID_OUTILS_CALENDRIER)
-        self.Bind(wx.EVT_MENU, self.On_outils_emails, id=ID_OUTILS_ENVOI_EMAILS)
-        self.Bind(wx.EVT_MENU, self.On_outils_meteo, id=ID_OUTILS_METEO)
-        self.Bind(wx.EVT_MENU, self.On_outils_horaires_soleil, id=ID_OUTILS_HORAIRES_SOLEIL)
-        self.Bind(wx.EVT_MENU, self.On_outils_gps, id=ID_OUTILS_GPS)
-        self.Bind(wx.EVT_MENU, self.On_outils_connexions, id=ID_OUTILS_CONNEXIONS) 
-        self.Bind(wx.EVT_MENU, self.On_outils_messages, id=ID_OUTILS_MESSAGES)
-        self.Bind(wx.EVT_MENU, self.On_outils_historique, id=ID_OUTILS_HISTORIQUE)
-        self.Bind(wx.EVT_MENU, self.On_outils_correcteur, id=ID_OUTILS_CORRECTEUR)
-        self.Bind(wx.EVT_MENU, self.On_outils_purger_historique, id=ID_OUTILS_PURGER_HISTORIQUE)
-        self.Bind(wx.EVT_MENU, self.On_outils_purger_journal_badgeage, id=ID_OUTILS_PURGER_JOURNAL_BADGEAGE)
-        self.Bind(wx.EVT_MENU, self.On_outils_purger_archives_badgeage, id=ID_OUTILS_PURGER_ARCHIVES_BADGEAGE)
-        self.Bind(wx.EVT_MENU, self.On_outils_purger_rep_updates, id=ID_OUTILS_PURGER_REP_UPDATES)
-        self.Bind(wx.EVT_MENU, self.On_outils_extensions, id=ID_OUTILS_EXTENSIONS)
-        self.Bind(wx.EVT_MENU, self.On_outils_procedures, id=ID_OUTILS_PROCEDURES)
-        self.Bind(wx.EVT_MENU, self.On_outils_procedure_e4072, id=ID_OUTILS_PROCEDURE_E4072)
-        self.Bind(wx.EVT_MENU, self.On_outils_reinitialisation, id=ID_OUTILS_REINITIALISATION)
-        self.Bind(wx.EVT_MENU, self.On_outils_transfert_tables, id=ID_OUTILS_TRANSFERT_TABLES)
-        self.Bind(wx.EVT_MENU, self.On_outils_prestations_sans_conso, id=ID_OUTILS_PRESTATIONS_SANS_CONSO)
-        self.Bind(wx.EVT_MENU, self.On_outils_conso_sans_prestations, id=ID_OUTILS_CONSO_SANS_PRESTATIONS)
-        self.Bind(wx.EVT_MENU, self.On_outils_deverrouillage_forfaits, id=ID_OUTILS_DEVERROUILLAGE_FORFAITS)
-        self.Bind(wx.EVT_MENU, self.On_outils_appliquer_tva, id=ID_OUTILS_APPLIQUER_TVA)
-        self.Bind(wx.EVT_MENU, self.On_outils_appliquer_code_comptable, id=ID_OUTILS_APPLIQUER_CODE_COMPTABLE)
-        self.Bind(wx.EVT_MENU, self.On_outils_conversion_rib_sepa, id=ID_OUTILS_CONVERSION_RIB_SEPA)
-        self.Bind(wx.EVT_MENU, self.On_outils_creation_titulaires_helios, id=ID_OUTILS_CREATION_TITULAIRES_HELIOS)
-        self.Bind(wx.EVT_MENU, self.On_outils_updater, id=ID_OUTILS_UPDATER) 
-        self.Bind(wx.EVT_MENU, self.On_outils_console_python, id=ID_OUTILS_CONSOLE_PYTHON) 
-        self.Bind(wx.EVT_MENU, self.On_outils_console_sql, id=ID_OUTILS_CONSOLE_SQL) 
-        self.Bind(wx.EVT_MENU, self.On_outils_liste_perso, id=ID_OUTILS_LISTE_PERSO) 
-
-        # Menu Individus
-        self.Bind(wx.EVT_MENU, self.On_individus_scolarite, id=ID_INDIVIDUS_SCOLARITE)
-        self.Bind(wx.EVT_MENU, self.On_individus_inscriptions, id=ID_INDIVIDUS_INSCRIPTIONS)
-        self.Bind(wx.EVT_MENU, self.On_individus_individus, id=ID_INDIVIDUS_INDIVIDUS)
-        self.Bind(wx.EVT_MENU, self.On_individus_familles, id=ID_INDIVIDUS_FAMILLES)
-        self.Bind(wx.EVT_MENU, self.On_individus_transports_recap, id=ID_INDIVIDUS_TRANSPORTS_RECAP)
-        self.Bind(wx.EVT_MENU, self.On_individus_transports_detail, id=ID_INDIVIDUS_TRANSPORTS_DETAIL)
-        self.Bind(wx.EVT_MENU, self.On_individus_anniversaires, id=ID_INDIVIDUS_ANNIVERSAIRES)
-        self.Bind(wx.EVT_MENU, self.On_individus_infos_med, id=ID_INDIVIDUS_INFOS_MED)
-        self.Bind(wx.EVT_MENU, self.On_individus_pieces_fournies, id=ID_INDIVIDUS_PIECES_FOURNIES)
-        self.Bind(wx.EVT_MENU, self.On_individus_pieces_manquantes, id=ID_INDIVIDUS_PIECES_MANQUANTES)
-        self.Bind(wx.EVT_MENU, self.On_individus_regimes_caisses, id=ID_INDIVIDUS_REGIMES_CAISSES)
-        self.Bind(wx.EVT_MENU, self.On_individus_quotients, id=ID_INDIVIDUS_QUOTIENTS)
-        self.Bind(wx.EVT_MENU, self.On_individus_mandats, id=ID_INDIVIDUS_MANDATS)
-        self.Bind(wx.EVT_MENU, self.On_individus_importer_photos, id=ID_INDIVIDUS_IMPORTER_PHOTOS)
-        self.Bind(wx.EVT_MENU, self.On_individus_importer_csv, id=ID_INDIVIDUS_IMPORTER_CSV)
-        self.Bind(wx.EVT_MENU, self.On_individus_importer_fichier, id=ID_INDIVIDUS_IMPORTER_FICHIER)
-        self.Bind(wx.EVT_MENU, self.On_individus_edition_etiquettes, id=ID_INDIVIDUS_EDITION_ETIQUETTES)
-        
-        # Menu Règlements
-        self.Bind(wx.EVT_MENU, self.On_reglements_regler_facture, id=ID_REGLEMENTS_REGLER_FACTURE)
-        self.Bind(wx.EVT_MENU, self.On_reglements_recus, id=ID_REGLEMENTS_RECUS)
-        self.Bind(wx.EVT_MENU, self.On_reglements_recherche, id=ID_REGLEMENTS_LISTE)
-        self.Bind(wx.EVT_MENU, self.On_reglements_ventilation, id=ID_REGLEMENTS_VENTILATION)
-        self.Bind(wx.EVT_MENU, self.On_reglements_analyse_ventilation, id=ID_REGLEMENTS_ANALYSE_VENTILATION)
-        self.Bind(wx.EVT_MENU, self.On_reglements_synthese_modes, id=ID_REGLEMENTS_SYNTHESE_MODES)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_prelevement, id=ID_REGLEMENTS_PRELEVEMENT)
-        self.Bind(wx.EVT_MENU, self.On_reglements_depots, id=ID_REGLEMENTS_DEPOTS)
-        
-        # Menu Cotisations
-        self.Bind(wx.EVT_MENU, self.On_cotisations_recherche, id=ID_COTISATIONS_LISTE)
-        self.Bind(wx.EVT_MENU, self.On_cotisations_manquantes, id=ID_COTISATIONS_MANQUANTES)
-        self.Bind(wx.EVT_MENU, self.On_cotisations_depots, id=ID_COTISATIONS_DEPOTS)
-        self.Bind(wx.EVT_MENU, self.On_cotisations_email, id=ID_COTISATIONS_EMAIL)
-        self.Bind(wx.EVT_MENU, self.On_cotisations_imprimer, id=ID_COTISATIONS_IMPRIMER)
-
-        # Menu Facturation
-        self.Bind(wx.EVT_MENU, self.On_reglements_ventilation, id=ID_FACTURATION_VENTILATION)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_generation, id=ID_FACTURATION_FACTURES_GENERATION)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_liste, id=ID_FACTURATION_FACTURES_LISTE)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_prelevement, id=ID_FACTURATION_FACTURES_PRELEVEMENT)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_helios, id=ID_FACTURATION_FACTURES_HELIOS)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_email, id=ID_FACTURATION_FACTURES_EMAIL)
-        self.Bind(wx.EVT_MENU, self.On_facturation_factures_imprimer, id=ID_FACTURATION_FACTURES_IMPRIMER)
-        self.Bind(wx.EVT_MENU, self.On_facturation_rappels_generation, id=ID_FACTURATION_RAPPELS_GENERATION)
-        self.Bind(wx.EVT_MENU, self.On_facturation_rappels_email, id=ID_FACTURATION_RAPPELS_EMAIL)
-        self.Bind(wx.EVT_MENU, self.On_facturation_rappels_imprimer, id=ID_FACTURATION_RAPPELS_IMPRIMER)
-        self.Bind(wx.EVT_MENU, self.On_facturation_rappels_liste, id=ID_FACTURATION_RAPPELS_LISTE)
-        self.Bind(wx.EVT_MENU, self.On_facturation_attestations_generation, id=ID_FACTURATION_ATTESTATIONS_GENERATION) 
-        self.Bind(wx.EVT_MENU, self.On_facturation_attestations_liste, id=ID_FACTURATION_ATTESTATIONS_LISTE) 
-        self.Bind(wx.EVT_MENU, self.On_facturation_attestations_fiscales_generation, id=ID_FACTURATION_ATTESTATIONS_FISCALES_GENERATION) 
-        self.Bind(wx.EVT_MENU, self.On_facturation_liste_prestations, id=ID_FACTURATION_LISTE_PRESTATIONS)
-        self.Bind(wx.EVT_MENU, self.On_facturation_liste_deductions, id=ID_FACTURATION_LISTE_DEDUCTIONS)
-        self.Bind(wx.EVT_MENU, self.On_facturation_soldes, id=ID_FACTURATION_SOLDES)
-        self.Bind(wx.EVT_MENU, self.On_facturation_soldes_individuels, id=ID_FACTURATION_SOLDES_INDIVIDUELS)
-        self.Bind(wx.EVT_MENU, self.On_facturation_solder_impayes, id=ID_FACTURATION_SOLDER_IMPAYES)
-        self.Bind(wx.EVT_MENU, self.On_facturation_prestations_villes, id=ID_FACTURATION_PRESTATIONS_VILLES)
-        self.Bind(wx.EVT_MENU, self.On_facturation_synthese_prestations, id=ID_FACTURATION_SYNTHESE_PRESTATIONS)
-        self.Bind(wx.EVT_MENU, self.On_facturation_synthese_impayes, id=ID_FACTURATION_SYNTHESE_IMPAYES)
-        self.Bind(wx.EVT_MENU, self.On_facturation_export_compta, id=ID_FACTURATION_EXPORT_COMPTA)
-        
-        # Menu Consommations
-        self.Bind(wx.EVT_MENU, self.On_imprim_conso_journ, id=ID_IMPRIM_LISTE_CONSO_JOURN)
-        self.Bind(wx.EVT_MENU, self.On_conso_gestionnaire, id=ID_CONSO_GESTIONNAIRE)
-        self.Bind(wx.EVT_MENU, self.On_conso_attente, id=ID_CONSO_ATTENTE)
-        self.Bind(wx.EVT_MENU, self.On_conso_refus, id=ID_CONSO_REFUS)
-        self.Bind(wx.EVT_MENU, self.On_conso_absences, id=ID_CONSO_ABSENCES)
-        self.Bind(wx.EVT_MENU, self.On_conso_synthese_conso, id=ID_CONSO_SYNTHESE_CONSO)
-        self.Bind(wx.EVT_MENU, self.On_conso_etat_global, id=ID_CONSO_ETAT_GLOBAL)
-        self.Bind(wx.EVT_MENU, self.On_conso_etat_nominatif, id=ID_CONSO_ETAT_NOMINATIF)
-        self.Bind(wx.EVT_MENU, self.On_conso_badgeage, id=ID_CONSO_BADGEAGE)
-
-        # Menu Aide
-        self.Bind(wx.EVT_MENU, self.On_aide_aide, id=ID_AIDE_AIDE)
-        self.Bind(wx.EVT_MENU, self.On_propos_soutenir, id=ID_AIDE_ACHETER_LICENCE)
-        self.Bind(wx.EVT_MENU, self.On_aide_guide_demarrage, id=ID_AIDE_GUIDE_DEMARRAGE)
-        self.Bind(wx.EVT_MENU, self.On_aide_forum, id=ID_AIDE_FORUM)
-        self.Bind(wx.EVT_MENU, self.On_aide_videos, id=ID_AIDE_VIDEOS)
-        self.Bind(wx.EVT_MENU, self.On_aide_telechargements, id=ID_AIDE_TELECHARGEMENTS)
-        self.Bind(wx.EVT_MENU, self.On_aide_auteur, id=ID_AIDE_AUTEUR)
-        
-        # Menu A propos
-        self.Bind(wx.EVT_MENU, self.On_propos_versions, id=ID_PROPOS_VERSIONS)
-        self.Bind(wx.EVT_MENU, self.On_propos_licence, id=ID_PROPOS_LICENCE)
-        self.Bind(wx.EVT_MENU, self.On_propos_soutenir, id=ID_PROPOS_SOUTENIR)
-        self.Bind(wx.EVT_MENU, self.On_propos_propos, id=ID_PROPOS_PROPOS)
-        
+    def CreationBinds(self):        
         # Autres
         self.Bind(wx.EVT_MENU_OPEN, self.MAJmenuAffichage)
         
@@ -2012,9 +1091,6 @@ class MainFrame(wx.Frame):
         self.ctrl_individus.MAJ()
         self.ctrl_messages.MAJ() 
         wx.CallAfter(self.ctrl_individus.ctrl_recherche.SetFocus)
-
-    def On_fichier_AssistantDemarrage(self, event):
-        print "ok"
 
     def On_fichier_Nouveau(self, event):
         """ Créé une nouvelle base de données """
@@ -2275,15 +1351,10 @@ class MainFrame(wx.Frame):
 
         # Désactive la commande FERMER du menu Fichier
         menuBar = self.GetMenuBar()
-        menuItem = menuBar.FindItemById(ID_FERMER_FICHIER)
-        menuItem.Enable(False)
-        menuItem = menuBar.FindItemById(ID_FICHIER_INFORMATIONS)
-        menuItem.Enable(False) 
-        menuItem = menuBar.FindItemById(ID_CONVERSION_RESEAU)
-        menuItem.Enable(False) 
-        menuItem = menuBar.FindItemById(ID_CONVERSION_LOCAL)
-        menuItem.Enable(False) 
-
+        self.dictInfosMenu["fermer_fichier"]["ctrl"].Enable(False)
+        self.dictInfosMenu["fichier_informations"]["ctrl"].Enable(False) 
+        self.dictInfosMenu["convertir_fichier_reseau"]["ctrl"].Enable(False) 
+        self.dictInfosMenu["convertir_fichier_local"]["ctrl"].Enable(False) 
 
     def On_fichier_Informations(self, event):
         """ Fichier : Informations sur le fichier """
@@ -2826,11 +1897,8 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def MAJmenuPerspectives(self):
-        
         # Supprime les perspectives perso dans le menu
-        menuBar = self.GetMenuBar()
-        menuItem = menuBar.FindItemById(ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
-        menu_affichage = menuItem.GetMenu()
+        menu_affichage = self.dictInfosMenu["menu_affichage"]["ctrl"]
         item = menu_affichage.FindItemById(ID_PREMIERE_PERSPECTIVE)
         for index in range(0, 99) :
             ID = ID_PREMIERE_PERSPECTIVE + index
@@ -2840,11 +1908,10 @@ class MainFrame(wx.Frame):
             self.Disconnect(ID, -1, 10014) 
                             
         # Décoche la disposition par défaut si nécessaire
-        item = menuBar.FindItemById(ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
         if self.perspective_active == None : 
-            item.Check(True)
+            self.dictInfosMenu["perspective_defaut"]["ctrl"].Check(True)
         else:
-            item.Check(False)
+            self.dictInfosMenu["perspective_defaut"]["ctrl"].Check(False)
             
         # Crée les entrées perspectives dans le menu :
         index = 0
@@ -2924,6 +1991,73 @@ class MainFrame(wx.Frame):
             panneau.Show()
         self._mgr.Update()
     
+    def On_affichage_barres_outils(self, event):
+        # Récupère la liste des codes des barres actuelles
+        texteBarres = self.userConfig["barres_outils_perso"]
+        if len(texteBarres) > 0 :
+            listeTextesBarresActuelles = texteBarres.split("@@@@")
+        else :
+            listeTextesBarresActuelles = []
+        listeCodesBarresActuelles = []
+        for texteBarre in listeTextesBarresActuelles :
+            code, label, observations, style, contenu = texteBarre.split("###")
+            listeCodesBarresActuelles.append(code)
+            
+        # Charge la DLG de gestion des barres d'outils
+        import DLG_Barres_outils
+        texte = self.userConfig["barres_outils_perso"]
+        dlg = DLG_Barres_outils.Dialog(self, texte=texte)
+        dlg.ShowModal() 
+        texteBarres = dlg.GetTexte()
+        listeBarresAffichees = dlg.GetListeAffichees()
+        dlg.Destroy()
+        self.userConfig["barres_outils_perso"] = texteBarres
+        
+        # Met à jour chaque barre d'outils
+        if len(texteBarres) > 0 :
+            listeTextesBarres = texteBarres.split("@@@@")
+        else :
+            listeTextesBarres = []
+        
+        listeCodesBarresNouvelles = []
+        for texte in listeTextesBarres :
+            code, label, observations, style, contenu = texte.split("###")
+            listeCodesBarresNouvelles.append(code)
+            panneau = self._mgr.GetPane(code)
+            
+            if panneau.IsOk() :
+                # Si la barre existe déjà 
+                tb = self.dictBarresOutils[code]["ctrl"]
+                
+                # Modification de la barre
+                if self.dictBarresOutils[code]["texte"] != texte :
+                    self.CreerBarreOutils(texte, ctrl=tb)
+                    panneau.BestSize(tb.DoGetBestSize())
+                    self.dictBarresOutils[code]["texte"] = texte
+                    
+                # Affichage ou masquage
+                if code in listeBarresAffichees :
+                    panneau.Show()
+                else :
+                    panneau.Hide() 
+                self._mgr.Update()
+            else :
+                # Si la barre n'existe pas 
+                self.CreerBarreOutils(texte)
+        
+        # Suppression des barres supprimées
+        for code in listeCodesBarresActuelles :
+            if code not in listeCodesBarresNouvelles :
+                tb = self.dictBarresOutils[code]["ctrl"]
+                panneau = self._mgr.GetPane(code)
+                self._mgr.ClosePane(panneau)
+                self._mgr.Update()
+        
+##        print "------- Liste des panneaux existants : -------"
+##        for panneau in self._mgr.GetAllPanes() :
+##            print panneau.name
+        
+        
     def On_affichage_actualiser(self, event):
         self.MAJ() 
 
@@ -3670,17 +2804,14 @@ class MainFrame(wx.Frame):
 
     def MAJmenuDerniersFichiers(self):
         """ Met à jour la liste des derniers fichiers dans le menu """
-        # Met à jour la liste des derniers fichiers dans la BARRE DES MENUS
-        menuBar = self.GetMenuBar()
-        menuItem = menuBar.FindItemById(ID_QUITTER)
         # Suppression de la liste existante
-        menu = menuItem.GetMenu()
+        menuFichier = self.dictInfosMenu["menu_fichier"]["ctrl"]
         for index in range(ID_DERNIER_FICHIER, ID_DERNIER_FICHIER+10) :
-            item = menuBar.FindItemById(index)
+            item = self.menu.FindItemById(index)
             if item == None : 
                 break
             else:
-                menu.RemoveItem(menuBar.FindItemById(index)) 
+                menuFichier.RemoveItem(self.menu.FindItemById(index)) 
                 self.Disconnect(index, -1, 10014) # Annule le Bind
 
         # Ré-intégration des derniers fichiers ouverts :
@@ -3691,8 +2822,8 @@ class MainFrame(wx.Frame):
                 # Version Reseau
                 if "[RESEAU]" in nomFichier :
                     nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-                item = wx.MenuItem(menu, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), u"Ouvrir le fichier : '%s'" % nomFichier)
-                menu.AppendItem(item)
+                item = wx.MenuItem(menuFichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), u"Ouvrir le fichier : '%s'" % nomFichier)
+                menuFichier.AppendItem(item)
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
 
@@ -3774,23 +2905,17 @@ class MainFrame(wx.Frame):
 
         # Met à jour la liste des derniers fichiers ouverts dans le CONFIG de la page
         self.MAJlisteDerniersFichiers(nomFichier) 
-        
+
         # Active la commande Fermer du menu Fichier
         menuBar = self.GetMenuBar()
-        menuItem = menuBar.FindItemById(ID_FERMER_FICHIER)
-        menuItem.Enable(True)
-        menuItem = menuBar.FindItemById(ID_FICHIER_INFORMATIONS)
-        menuItem.Enable(True)
+        self.dictInfosMenu["fermer_fichier"]["ctrl"].Enable(True)
+        self.dictInfosMenu["fichier_informations"]["ctrl"].Enable(True)
         if "[RESEAU]" in nomFichier :
-            menuItem = menuBar.FindItemById(ID_CONVERSION_RESEAU)
-            menuItem.Enable(False) 
-            menuItem = menuBar.FindItemById(ID_CONVERSION_LOCAL)
-            menuItem.Enable(True) 
+            self.dictInfosMenu["convertir_fichier_reseau"]["ctrl"].Enable(False) 
+            self.dictInfosMenu["convertir_fichier_local"]["ctrl"].Enable(True) 
         else:
-            menuItem = menuBar.FindItemById(ID_CONVERSION_RESEAU)
-            menuItem.Enable(True) 
-            menuItem = menuBar.FindItemById(ID_CONVERSION_LOCAL)
-            menuItem.Enable(False) 
+            self.dictInfosMenu["convertir_fichier_reseau"]["ctrl"].Enable(True) 
+            self.dictInfosMenu["convertir_fichier_local"]["ctrl"].Enable(False) 
         
         # Met à jour le menu
         self.MAJmenuDerniersFichiers()
@@ -3925,8 +3050,25 @@ class MainFrame(wx.Frame):
                 dlg.ShowModal()
                 dlg.Destroy()
             
-            
-            
+            if versionFichier < (1, 1, 3, 0) :
+                texte = u"""
+                <CENTER>
+                <BR>
+                <FONT SIZE=3>
+                <B>Astuce</B><BR><BR>
+                Personnalisez l'interface de la page d'accueil en fonction de vos besoins !
+                <BR><BR>
+                <IMG SRC="Images/Special/Astuce_barres_outils.png">
+                <BR><BR>
+                Déplacer ou cachez les cadres et créez de nouvelles barres d'outils personnalisées pour accéder plus rapidement à vos fonctions préférées.
+                <BR><BR>
+                (Voir menu Affichage)
+                </FONT>
+                </CENTER>
+                """
+                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information")
+                dlg.ShowModal()
+                dlg.Destroy()
             
             
             
@@ -3945,7 +3087,7 @@ class MainFrame(wx.Frame):
     def ActiveBarreMenus(self, etat=True):
         """ Active ou non des menus de la barre """
         for numMenu in range(1, 9):
-            self.menubar.EnableTop(numMenu, etat)
+            self.menu.EnableTop(numMenu, etat)
         self._mgr.GetPane("panel_recherche").Show(etat)
 
     def Identification(self, listeUtilisateurs=[], nomFichier=None):
@@ -3995,9 +3137,10 @@ class MainFrame(wx.Frame):
         else :
             nomImage = dictUtilisateur["image"]
         # Affichage de l'image utilisateur dans la barre d'outils
-        self.toolBar2.SetToolBitmap(ID_TB_UTILISATEUR, wx.Bitmap("Images/Avatars/16x16/%s.png" % nomImage, wx.BITMAP_TYPE_PNG))
-        self.toolBar2.SetToolLabel(ID_TB_UTILISATEUR, u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"]))
-        self.toolBar2.Refresh() 
+        tb = self.dictBarresOutils["barre_utilisateur"]["ctrl"]
+        tb.SetToolBitmap(ID_TB_UTILISATEUR, wx.Bitmap("Images/Avatars/16x16/%s.png" % nomImage, wx.BITMAP_TYPE_PNG))
+        tb.SetToolLabel(ID_TB_UTILISATEUR, u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"]))
+        tb.Refresh() 
         # Affiche le Toaster
         if afficheToaster == True and PASS == None :
             CTRL_Toaster.ToasterUtilisateur(self, prenom=dictUtilisateur["prenom"], nomImage=nomImage) 
