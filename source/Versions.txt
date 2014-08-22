@@ -1,9 +1,12 @@
-Version 1.1.2.9 (15/08/2014) :
+Version 1.1.3.0 (22/08/2014) :
 
 - Ajout de l'export des écritures comptables
+- Ajout des barres d'outils personnelles sur la page d'accueil
+- Ajout du suivi des inscriptions sur la page d'accueil
 - Ajout du rappel de fin de licence
 - Ajout de la mise à jour auto de la version Linux (par Claude)
-- Corrections de petits bugs pour la version Linux (par Claude)
+- Correction de petits bugs pour la version Linux (par Claude)
+- Correction d'un bug sur le module des infos individus
 
 Version 1.1.2.8 (26/07/2014) :
 
