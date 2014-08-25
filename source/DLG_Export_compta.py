@@ -60,8 +60,21 @@ def GetKeysDictTries(dictValeurs={}, key=""):
 
 def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
     """ Formate les lignes au format EBP Compta """
+    montant = ligne["montant"]
+    
+    def GetSens(montant, sens):
+        if montant < FloatToDecimal(0.0) :
+            montant = -montant
+            if sens == "D" : 
+                sens = "C"
+            else :
+                sens = "D"
+        return montant, sens            
+        
+    
     # Total prestations
     if ligne["type"] == "total_prestations" :
+        montant, sens = GetSens(montant, "D")
         ligneTemp = [
             str(numLigne),
             FormateDate(dictParametres["date_fin"], "%d%m%y"),
@@ -70,14 +83,15 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "",
             u'"%s"' % ligne["libelle"],
             "",
-            str(ligne["montant"]),
-            "D",
-           "",
+            str(montant),
+            sens,
+            "",
             "EUR",
             ]
 
     # Prestation
     if ligne["type"] == "prestation" :
+        montant, sens = GetSens(montant, "C")
         ligneTemp = [
             str(numLigne),
             FormateDate(dictParametres["date_fin"], "%d%m%y"),
@@ -86,14 +100,15 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "",
             ligne["intitule"],
             "",
-            str(ligne["montant"]),
-            "C",
+            str(montant),
+            sens,
             "",
             "EUR",
             ]
     
     # Dépôt
     if ligne["type"] == "depot" :
+        montant, sens = GetSens(montant, "D")
         ligneTemp = [
             str(numLigne),
             FormateDate(ligne["date_depot"], "%d%m%y"),
@@ -102,14 +117,15 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "",
             u'"%s"' % ligne["libelle"],
             u'""',
-            str(ligne["montant"]),
-            "D",
+            str(montant),
+            sens,
             "",
             "EUR",
             ]
 
     # Total par mode de règlement
     if ligne["type"] == "total_mode" :
+        montant, sens = GetSens(montant, "D")
         ligneTemp = [
             str(numLigne),
             FormateDate(dictParametres["date_fin"], "%d%m%y"),
@@ -118,14 +134,15 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "",
             u'"%s"' % ligne["libelle"],
             u'""',
-            str(ligne["montant"]),
-            "D",
+            str(montant),
+            sens,
             "",
             "EUR",
             ]
 
     # Règlements
     if ligne["type"] == "total_reglements" :
+        montant, sens = GetSens(montant, "C")
         ligneTemp = [
             str(numLigne),
             FormateDate(dictParametres["date_fin"], "%d%m%y"),
@@ -134,8 +151,8 @@ def Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable=None):
             "",
             u'"%s"' % ligne["libelle"],
             u"",
-            str(ligne["montant"]),
-            "C",
+            str(montant),
+            sens,
             "",
             "EUR",
             ]
@@ -1057,7 +1074,7 @@ class CTRL_Logiciel(wx.combo.BitmapComboBox):
         self.listeFormats = [
             {"code" : "ebp_compta", "label" : u"EBP Compta", "image" : wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
             {"code" : "ciel_compta_ebp", "label" : u"CIEL Compta (Format EBP)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
-##            {"code" : "ciel_compta_ximport", "label" : u"CIEL Compta (Format XImport)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+            {"code" : "ciel_compta_ximport", "label" : u"CIEL Compta (Format XImport)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             ]
         for dictFormat in self.listeFormats :
             self.Append(dictFormat["label"], dictFormat["image"], dictFormat["label"])
@@ -1375,10 +1392,9 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
         donnees = Donnees(dictParametres)
     
         numLigne = 1
-        if format in ["ebp_compta","ciel_compta_ebp"]:
-            listeLignesTxt = ["",]
-        else:
-            listeLignesTxt = []
+        listeLignesTxt = []
+##        if format in ["ebp_compta","ciel_compta_ebp"]:
+##            listeLignesTxt = ["",]
         
         # Ligne d'entête
         if dictParametres["ligne_noms_champs"] == True :
@@ -1390,8 +1406,9 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
             return False
 
         for ligne in lignesVentes :
-            listeLignesTxt.append(self.FormateLigne(format, ligne, dictParametres, numLigne))
-            numLigne += 1
+            if ligne["montant"] != FloatToDecimal(0.0) :
+                listeLignesTxt.append(self.FormateLigne(format, ligne, dictParametres, numLigne))
+                numLigne += 1
 
         # Banque
         for typeComptable in ("banque", "caisse") :
@@ -1407,8 +1424,9 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
                     return False
 
                 for ligne in lignesTemp :
-                    listeLignesTxt.append(self.FormateLigne(format, ligne, dictParametres, numLigne, typeComptable))
-                    numLigne += 1
+                    if ligne["montant"] != FloatToDecimal(0.0) :
+                        listeLignesTxt.append(self.FormateLigne(format, ligne, dictParametres, numLigne, typeComptable))
+                        numLigne += 1
         
         # Finalisation du texte
         texte = "\n".join(listeLignesTxt)
@@ -1421,7 +1439,7 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
         if format == "ciel_compta_ebp" :
             return Export_ebp_compta(ligne, dictParametres, numLigne, typeComptable)
         if format == "ciel_compta_ximport" :
-            return UTILS_XImport.XImportLine(ligne,dictParametres,numLigne, typeComptable).getData()
+            return UTILS_XImport.XImportLine(ligne, dictParametres, numLigne, typeComptable).getData()
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1710,8 +1728,8 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     dlg = Dialog(None)
-    dlg.ctrl_date_debut.SetDate("2013-01-01")
-    dlg.ctrl_date_fin.SetDate("2013-06-30")
+    dlg.ctrl_date_debut.SetDate("2014-01-01")
+    dlg.ctrl_date_fin.SetDate("2014-12-31")
     app.SetTopWindow(dlg)
     dlg.ShowModal()
     app.MainLoop()
