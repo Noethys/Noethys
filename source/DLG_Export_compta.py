@@ -1057,7 +1057,7 @@ class CTRL_Logiciel(wx.combo.BitmapComboBox):
         self.listeFormats = [
             {"code" : "ebp_compta", "label" : u"EBP Compta", "image" : wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
             {"code" : "ciel_compta_ebp", "label" : u"CIEL Compta (Format EBP)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
-            {"code" : "ciel_compta_ximport", "label" : u"CIEL Compta (Format XImport)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+##            {"code" : "ciel_compta_ximport", "label" : u"CIEL Compta (Format XImport)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             ]
         for dictFormat in self.listeFormats :
             self.Append(dictFormat["label"], dictFormat["image"], dictFormat["label"])

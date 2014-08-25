@@ -358,12 +358,12 @@ class MainFrame(wx.Frame):
         # Panneau Ephéméride
         self.ctrl_ephemeride = CTRL_Ephemeride.CTRL(self)
         self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(u"Ephéméride").
-                          Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
+                          Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
 
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
         self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(u"Effectifs").
-                          Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
+                          Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
         
         if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
             self.ctrl_remplissage.LoadPerspective(self.userConfig["perspective_ctrl_effectifs"])
@@ -373,7 +373,7 @@ class MainFrame(wx.Frame):
         # Panneau Messages
         self.ctrl_messages = CTRL_Messages.Panel(self)
         self._mgr.AddPane(self.ctrl_messages, aui.AuiPaneInfo().Name("messages").Caption(u"Messages").
-                          Left().Layer(1).Position(2).CloseButton(True).MinSize((200, 100)).MaximizeButton(True) )
+                          Left().Layer(1).Position(2).CloseButton(True).MinSize((200, 100)).MaximizeButton(True).MinimizeButton(True) )
         pi = self._mgr.GetPane("messages")
         pi.dock_proportion = 50000 # Proportion
         

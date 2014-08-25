@@ -1446,7 +1446,7 @@ def RechercheModules(nomFichier="Noethys.py") :
 if __name__ == "__main__":
     
     # ------- Affiche les stats -------
-    #AfficheStatsProgramme()
+    AfficheStatsProgramme()
 
     
     # ------- Prépare le fichier des tables par défaut -------
@@ -1464,5 +1464,5 @@ if __name__ == "__main__":
 ##    dlg.Destroy() 
 ##    app.MainLoop()
     
-    listeModules = RechercheModules("UTILS_Infos_individus.py")
-    print len(listeModules), "modules trouves : ", listeModules
+##    listeModules = RechercheModules("UTILS_Infos_individus.py")
+##    print len(listeModules), "modules trouves : ", listeModules
