@@ -103,100 +103,61 @@ class XImportLine(object):
         """
         Récupére les donnée utiles fournis en paramétres, les convertis et les enregistre 
         """
-
         values = dict()         #contient les valeurs fournies et non converties
         self.values = dict()    #contiendra les valeurs convertie
 
         values["num_mvnt"]=num_ligne #le numéro de mouvement est le numéro de la ligne ?           
 
         values["montant"]=data["montant"] 
-        values["devise"]=u"¤"
+        values["devise"]=u"€"
 
         if "type" in data:                  #on récupére ce qui nous interesse selon le type de donnée
             
             if data["type"] == "total_prestations":
                 values["isDebit"]=u"D"
-                values["journal"]=dictParametres["journal_ventes"]
-                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
-##                if data["date_echeance"]:
-##                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
-##                else:
-##                    values["date_echeance"]=""
                 values["libelle"]=data["libelle"]
-                values["code_analyt"]=dictParametres["code_clients"]
-
-                #Valeurs fournies non utilisées :                
-                #    'numero': 1
-                #    'date_fin': datetime.date(2014, 12, 31)
-                #    'date_debut': datetime.date(2014, 1, 1)
-                #    'IDfacture': 3
-                #    'famille': u'DUPONT Jean'
+                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
+                values["journal"]=dictParametres["journal_ventes"]
+                values["compte"] = dictParametres["code_clients"]   #+
+                
+                # values["code_analyt"]=dictParametres["code_clients"]  #-
 
             elif data["type"] == "prestation":
                 values["isDebit"]=u"C"
-                values["journal"]=dictParametres["journal_ventes"]
-                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
-##                if data["date_echeance"]:
-##                    values["date_echeance"]=data["date_echeance"].strftime("%Y%m%d")
-##                else:
-##                    values["date_echeance"]=""
                 values["libelle"]=data["intitule"]
-                values["code_analyt"]=data["code_compta"]
+                values["compte"] = data["code_compta"]
+                values["journal"]=dictParametres["journal_ventes"]
+                values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")                
+                # values["code_analyt"]=data["code_compta"] #-
 
-                #Valeurs fournies non utilisées :                
-                #    'intituleTemp': u'Rand - Journ\xe9e'
-                #    'individu_nom': u'DUPONT'
-                #    'date_prestation': datetime.date(2014, 6, 21)
-                #    'individu_prenom': u'Jean'
-                #    'numero_facture': 1
-                #    'libelle_original': u'Journ\xe9e'
-            
             elif data["type"] == "depot":
                 values["isDebit"]=u"D"
-                values["journal"]=dictParametres["journal_%s" % typeComptable]
                 values["date_ecriture"]=data["date_depot"].strftime("%Y%m%d")
-                values["compte"] = data["numeroCompte"]
-                values["libelle_compte"] = data["nomCompte"]
+                values["journal"]=dictParametres["journal_%s" % typeComptable]
+                values["compte"]=data["code_compta"] #+
+                # values["compte"] = data["numeroCompte"] #-
                 values["libelle"] = data["libelle"]
-                values["code_analyt"]=data["code_compta"]
-
-                #Valeurs fournies non utilisées :                
-                #    'IDdepot': 4
-                #    'nom_depot': u'test_depot_4'
-                #    'mode_reglement': u'Ch\xe9que vacances'
+                # values["libelle_compte"] = data["nomCompte"] #-
+                # values["code_analyt"]=data["code_compta"]    #-
 
             elif data["type"] == "total_reglements":
                 values["isDebit"]=u"C"
-                values["journal"]=dictParametres["journal_%s" % typeComptable]
                 values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
-                values["code_analyt"]=dictParametres["code_clients"]
+                values["journal"]=dictParametres["journal_%s" % typeComptable]
+                values["compte"]=dictParametres["code_clients"]
                 values["libelle"] = data["libelle"]
-
-                #Valeurs fournies non utilisées :                
-                #    'attente': 0
-                #    'nom_depot': u'test_depot_4'
-                #    'IDreglement': 7
-                #    'nomPayeur': u'DUPONT Jean'
-                #    'nomFamille': u'DUPONT Jean'
-                #    'numero_quittancier': u''
-                #    'dateReglement': datetime.date(2014, 6, 18)
-                #    'date_differe': None
-                #    'IDmode': 3
-                #    'labelMode': u'Ch\xe9que vacances'
+                # values["code_analyt"]=dictParametres["code_clients"] #-
 
             elif data["type"] == "total_mode":
                 values["isDebit"]=u"D"
-                values["journal"]=dictParametres["journal_%s" % typeComptable]
                 values["date_ecriture"]=dictParametres["date_fin"].strftime("%Y%m%d")
+                values["journal"]=dictParametres["journal_%s" % typeComptable]
+                values["compte"] = data["code_compta"]
                 values["libelle"] = data["libelle"]
                 values["code_analyt"]=data["code_compta"]
 
         else:       #Si aucun type n'est renseigné, il y a un probléme
             raise ValueError("'type' not in data")
-
-        #Valeur manquante : num_pointage
-        #valeur incertaines : num_mvnt est-il bien le numero de ligne ?
-            
         
         for i in dataTypes.keys():  #Convertie toutes les donnée
             if i in values:         #Si la donnée a bien été fournie, on la converti 
