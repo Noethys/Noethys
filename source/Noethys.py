@@ -183,7 +183,8 @@ class MainFrame(wx.Frame):
         
         # Création du AUI de la fenêtre 
         self._mgr = aui.AuiManager()
-        self._mgr.SetArtProvider(aui.ModernDockArt(self))
+        if "linux" not in sys.platform :
+            self._mgr.SetArtProvider(aui.ModernDockArt(self))
         self._mgr.SetManagedWindow(self)
 
         # Barre des tâches
