@@ -1375,7 +1375,10 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
         donnees = Donnees(dictParametres)
     
         numLigne = 1
-        listeLignesTxt = []
+        if format in ["ebp_compta","ciel_compta_ebp"]:
+            listeLignesTxt = ["",]
+        else:
+            listeLignesTxt = []
         
         # Ligne d'entête
         if dictParametres["ligne_noms_champs"] == True :
