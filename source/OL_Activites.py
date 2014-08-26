@@ -69,6 +69,7 @@ class Exporter(UTILS_Export_tables.Exporter):
         self.ExporterTable("combi_tarifs", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
         self.ExporterTable("combi_tarifs_unites", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
         self.ExporterTable("tarifs_lignes", "IDactivite=%d" % ID)
+        self.ExporterTable("questionnaire_filtres", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
 
 
 
