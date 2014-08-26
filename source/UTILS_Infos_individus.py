@@ -701,12 +701,12 @@ class Informations() :
             if niveau_nom == None : niveau_nom = u""
             if niveau_abrege == None : niveau_abrege = u""
             if self.dictIndividus.has_key(IDindividu) :
-                self.dictIndividus["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
-                self.dictIndividus["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
-                self.dictIndividus["SCOLARITE_NOM_ECOLE"] = ecole_nom
-                self.dictIndividus["SCOLARITE_NOM_CLASSE"] = classes_nom
-                self.dictIndividus["SCOLARITE_NOM_NIVEAU"] = niveau_nom
-                self.dictIndividus["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
+                self.dictIndividus[IDindividu]["SCOLARITE_DATE_DEBUT"] = UTILS_Dates.DateEngFr(date_debut)
+                self.dictIndividus[IDindividu]["SCOLARITE_DATE_FIN"] = UTILS_Dates.DateEngFr(date_fin)
+                self.dictIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"] = ecole_nom
+                self.dictIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"] = classes_nom
+                self.dictIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"] = niveau_nom
+                self.dictIndividus[IDindividu]["SCOLARITE_ABREGE_NIVEAU"] = niveau_abrege
                 
 # ---------------------------------------------------------------------------------------------------------------------------------
         
