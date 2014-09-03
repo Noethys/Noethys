@@ -154,6 +154,8 @@ class CTRL_individus(ULC.UltimateListCtrl):
             nom  = dictIndividu["nom"]
             prenom  = dictIndividu["prenom"]
             label = prenom
+            if label == "" :
+                label = " "
             self.InsertImageStringItem(index, label, self.dictPhotos[IDindividu])
             self.SetItemData(index, IDindividu)
             if IDindividu in listeSelectionIndividus or selectionTous == True :
@@ -281,7 +283,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = CTRL(panel, IDfamille=14)
+        self.myOlv = CTRL(panel, IDfamille=209)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

@@ -308,7 +308,8 @@ class Informations() :
             
             # Civilité
             IDcivilite = dictIndividu["individu_IDcivilite"]
-            if IDcivilite == None : IDcivilite = 1
+            if DICT_CIVILITES.has_key(IDcivilite) == False : 
+                IDcivilite = 1
             dictIndividu["INDIVIDU_CIVILITE_COURT"] = DICT_CIVILITES[IDcivilite]["civiliteAbrege"] 
             if dictIndividu["INDIVIDU_CIVILITE_COURT"] == None :
                 dictIndividu["INDIVIDU_CIVILITE_COURT"] = ""
