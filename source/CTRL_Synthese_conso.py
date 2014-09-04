@@ -27,6 +27,7 @@ import traceback
 import GestionDB
 import UTILS_Config
 import UTILS_Organisateur
+import UTILS_Infos_individus
 import wx.lib.agw.pybusyinfo as PBI
 
 LISTE_MOIS = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
@@ -128,26 +129,36 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetColLabelSize(45)
         self.DisableDragColSize()
         self.DisableDragRowSize()
-
+        
+        # Paramètres par défaut
         self.date_debut = None
         self.date_fin = None
         self.IDactivite = []
         self.detail_groupes = False
-        self.affichage_periode = "jour"
+        self.affichage_regroupement = "jour"
         self.affichage_donnees = "quantite"
         self.affichage_mode = "reservation"
         self.affichage_etat = ["reservation", "present"]
         self.labelParametres = ""
+                
 
     def MAJ(self, date_debut=None, date_fin=None, IDactivite=None, listeGroupes=[], detail_groupes=False, affichage_donnees="quantite", 
-                        affichage_periode="jour", affichage_mode="reservation", affichage_etat=["reservation", "present"], labelParametres=u""):     
+                        affichage_regroupement="jour", affichage_mode="reservation", affichage_etat=["reservation", "present"], labelParametres=u""):     
+
+        # Chargement des informations individuelles
+        if self.date_debut != date_debut :
+            self.infosIndividus = UTILS_Infos_individus.Informations(date_reference=date_debut, qf=True, inscriptions=True, messages=False, infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False, questionnaires=True, scolarite=True)
+            self.dictInfosIndividus = self.infosIndividus.GetDictValeurs(mode="individu", ID=None, formatChamp=False)
+            self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=False)
+
+        # Mémorisation des paramètres
         self.date_debut = date_debut
         self.date_fin = date_fin
         self.IDactivite = IDactivite
         self.listeGroupes = listeGroupes
         self.detail_groupes = detail_groupes
         self.affichage_donnees = affichage_donnees
-        self.affichage_periode = affichage_periode
+        self.affichage_regroupement = affichage_regroupement
         self.affichage_mode = affichage_mode
         self.affichage_etat = affichage_etat
         self.labelParametres = labelParametres
@@ -204,10 +215,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         listeGroupes = DB.ResultatReq()
         
         # Consommations
-        req = """SELECT IDconso, consommations.date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, consommations.IDprestation, prestations.temps_facture
+        req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite,
+        heure_debut, heure_fin, etat, quantite, consommations.IDprestation, prestations.temps_facture,
+        comptes_payeurs.IDfamille,  
+        activites.nom,
+        groupes.nom,
+        categories_tarifs.nom
         FROM consommations
         LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
-        WHERE consommations.IDactivite=%d AND IDgroupe IN %s 
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
+        LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite
+        LEFT JOIN groupes ON groupes.IDgroupe = consommations.IDgroupe
+        LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = consommations.IDcategorie_tarif
+        WHERE consommations.IDactivite=%d AND consommations.IDgroupe IN %s 
         AND consommations.date>='%s' AND consommations.date<='%s'
         AND etat IN %s
         ;""" % (self.IDactivite, conditionGroupes, self.date_debut, self.date_fin, conditionEtat)
@@ -218,11 +238,44 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Calcul des données
         dictResultats = {}
         listePrestationsTraitees = []
-        for IDconso, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, IDprestation, tempsFacture in listeConsommations :
+        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, heure_debut, heure_fin, etat, quantite, IDprestation, tempsFacture, IDfamille, nomActivite, nomGroupe, nomCategorie in listeConsommations :
             date = DateEngEnDateDD(date)
             mois = date.month
-            annee = date.year
-            
+            annee = date.year           
+
+            # Recherche du regroupement
+            try :
+                if self.affichage_regroupement == "jour" : regroupement = date
+                if self.affichage_regroupement == "mois" : regroupement = (annee, mois)
+                if self.affichage_regroupement == "annee" : regroupement = annee
+                if self.affichage_regroupement == "activite" : regroupement = nomActivite
+                if self.affichage_regroupement == "groupe" : regroupement = nomGroupe
+                if self.affichage_regroupement == "categorie_tarif" : regroupement = nomCategorie
+                if self.affichage_regroupement == "ville_residence" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                if self.affichage_regroupement == "secteur" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                if self.affichage_regroupement == "genre" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
+                if self.affichage_regroupement == "age" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE"]
+                if self.affichage_regroupement == "ville_naissance" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
+                if self.affichage_regroupement == "nom_ecole" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                if self.affichage_regroupement == "nom_classe" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                if self.affichage_regroupement == "nom_niveau_scolaire" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                if self.affichage_regroupement == "famille" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
+                if self.affichage_regroupement == "individu" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_NOM_COMPLET"]
+                if self.affichage_regroupement == "regime" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                if self.affichage_regroupement == "caisse" : regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                if self.affichage_regroupement == "categorie_travail" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_CATEGORIE_TRAVAIL"]
+                if self.affichage_regroupement == "categorie_travail_pere" : regroupement = self.dictInfosIndividus[IDindividu]["PERE_CATEGORIE_TRAVAIL"]
+                if self.affichage_regroupement == "categorie_travail_mere" : regroupement = self.dictInfosIndividus[IDindividu]["MERE_CATEGORIE_TRAVAIL"]
+                
+                if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement : regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.affichage_regroupement[17:]]
+                if self.affichage_regroupement.startswith("question_") and "individu" in self.affichage_regroupement : regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.affichage_regroupement[18:]]
+                
+            except :
+                regroupement = None
+                
+            if regroupement in ("", None) :
+                regroupement = u"- non renseigné -"
+
             # Quantité
             if quantite == None :
                 quantite = 1
@@ -252,11 +305,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     temps_facture += datetime.timedelta(hours=int(hr), minutes=int(mn))
                     listePrestationsTraitees.append(IDprestation)
 
-            # Mémorisation
-            if self.affichage_periode == "jour" : regroupement = date
-            if self.affichage_periode == "mois" : regroupement = (annee, mois)
-            if self.affichage_periode == "annee" : regroupement = annee
-            
+                
             if self.detail_groupes == True :
                 groupe = IDgroupe
             else :
@@ -359,9 +408,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         index = 0
         dictLignes = {}
         for regroupement in listeRegroupement :
-            if self.affichage_periode == "jour" : label = DateComplete(regroupement)
-            if self.affichage_periode == "mois" : label = FormateMois(regroupement)
-            if self.affichage_periode == "annee" : label = str(regroupement)
+            if self.affichage_regroupement == "jour" : 
+                label = DateComplete(regroupement)
+            elif self.affichage_regroupement == "mois" : 
+                label = FormateMois(regroupement)
+            elif self.affichage_regroupement == "annee" : 
+                label = str(regroupement)
+            else :
+                label = unicode(regroupement)
+            
             self.SetRowLabelValue(index, label)
             self.SetRowSize(index, 30)
             dictLignes[regroupement] = index
@@ -555,7 +610,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel)
         self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2012, 9, 5), date_fin=datetime.date(2012, 9, 5), listeGroupes=[1, 2],
-                                detail_groupes=False, affichage_donnees="temps_presence", affichage_periode="jour") 
+                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="ville_residence") 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)
         panel.SetSizer(sizer_2)

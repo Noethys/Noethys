@@ -292,7 +292,7 @@ class Informations() :
                     # Age
                     if valeur not in (None, "", "//") :
                         bday = UTILS_Dates.DateEngEnDateDD(valeur)
-                        datedujour = datetime.date.today()
+                        datedujour = self.date_reference
                         age = (datedujour.year - bday.year) - int((datedujour.month, datedujour.day) < (bday.month, bday.day))
                         dictTemp[IDindividu]["INDIVIDU_AGE"] = "%d ans" % age
                     else :
@@ -336,8 +336,15 @@ class Informations() :
             dictIndividu["NBRE_ENFANTS"] = 0
             dictIndividu["NBRE_AUTRES_LIENS"] = 0
             dictIndividu["liens"] = []
-            
-            # Mémorisation            
+
+            dictIndividu["SCOLARITE_DATE_DEBUT"] = ""
+            dictIndividu["SCOLARITE_DATE_FIN"] = ""
+            dictIndividu["SCOLARITE_NOM_ECOLE"] = ""
+            dictIndividu["SCOLARITE_NOM_CLASSE"] = ""
+            dictIndividu["SCOLARITE_NOM_NIVEAU"] = ""
+            dictIndividu["SCOLARITE_ABREGE_NIVEAU"] = ""
+
+            # Mémorisation
             dictIndividus[IDindividu] = dictIndividu
         
         return dictIndividus
