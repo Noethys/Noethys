@@ -295,8 +295,10 @@ class Informations() :
                         datedujour = self.date_reference
                         age = (datedujour.year - bday.year) - int((datedujour.month, datedujour.day) < (bday.month, bday.day))
                         dictTemp[IDindividu]["INDIVIDU_AGE"] = "%d ans" % age
+                        dictTemp[IDindividu]["INDIVIDU_AGE_INT"] = age
                     else :
                         dictTemp[IDindividu]["INDIVIDU_AGE"] = ""
+                        dictTemp[IDindividu]["INDIVIDU_AGE_INT"] = ""
                     valeur = UTILS_Dates.DateEngFr(valeur)
                 if code == "INDIVIDU_DATE_CREATION" : valeur = UTILS_Dates.DateEngFr(valeur)
                 dictTemp[IDindividu][code] = valeur
@@ -547,6 +549,7 @@ class Informations() :
                 # Mémorisation du QF actuel au format texte
                 if date_debut <= self.date_reference and date_fin >= self.date_reference :
                     self.dictFamilles[IDfamille]["FAMILLE_QF_ACTUEL"] = str(quotient)
+                    self.dictFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"] = quotient
                 # Mémorisation sous forme de liste
                 if self.dictFamilles[IDfamille].has_key("qf") == False :
                     self.dictFamilles[IDfamille]["qf"] = []

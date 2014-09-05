@@ -254,7 +254,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if self.affichage_regroupement == "ville_residence" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
                 if self.affichage_regroupement == "secteur" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
                 if self.affichage_regroupement == "genre" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
-                if self.affichage_regroupement == "age" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE"]
+                if self.affichage_regroupement == "age" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
                 if self.affichage_regroupement == "ville_naissance" : regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
                 if self.affichage_regroupement == "nom_ecole" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
                 if self.affichage_regroupement == "nom_classe" : regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
@@ -267,12 +267,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if self.affichage_regroupement == "categorie_travail_pere" : regroupement = self.dictInfosIndividus[IDindividu]["PERE_CATEGORIE_TRAVAIL"]
                 if self.affichage_regroupement == "categorie_travail_mere" : regroupement = self.dictInfosIndividus[IDindividu]["MERE_CATEGORIE_TRAVAIL"]
                 
+                # QF
+                if self.affichage_regroupement == "qf" :
+                    regroupement = None
+                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                    for x in range(0, 10000, 100) :
+                        min, max = x, x+99
+                        if qf >= min and qf <= max :
+                            regroupement = (min, max)
+                
+                # Questionnaires
                 if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement : regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.affichage_regroupement[17:]]
                 if self.affichage_regroupement.startswith("question_") and "individu" in self.affichage_regroupement : regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.affichage_regroupement[18:]]
                 
             except :
                 regroupement = None
-                
+            
             if regroupement in ("", None) :
                 regroupement = u"- non renseigné -"
 
@@ -414,6 +424,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 label = FormateMois(regroupement)
             elif self.affichage_regroupement == "annee" : 
                 label = str(regroupement)
+            elif self.affichage_regroupement == "qf" and type(regroupement) == tuple : 
+                label = u"%d-%d" % regroupement
             else :
                 label = unicode(regroupement)
             
@@ -609,8 +621,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel)
-        self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2012, 9, 5), date_fin=datetime.date(2012, 9, 5), listeGroupes=[1, 2],
-                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="ville_residence") 
+        self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2012, 9, 5), date_fin=datetime.date(2014, 9, 5), listeGroupes=[1, 2],
+                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="qf") 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)
         panel.SetSizer(sizer_2)

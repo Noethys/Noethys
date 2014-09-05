@@ -187,6 +187,7 @@ class CTRL_Choix_regroupement(wx.Choice):
             {"label" : u"Individu", "code" : "individu"},
             {"label" : u"Régime social", "code" : "regime"},
             {"label" : u"Caisse d'allocations", "code" : "caisse"},
+            {"label" : u"Quotient familial", "code" : "qf"},
             {"label" : u"Catégorie de travail", "code" : "categorie_travail"},
             {"label" : u"Catégorie de travail du père", "code" : "categorie_travail_pere"},
             {"label" : u"Catégorie de travail de la mère", "code" : "categorie_travail_mere"},
