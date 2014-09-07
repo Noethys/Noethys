@@ -24,6 +24,7 @@ import time
 import UTILS_Envoi_email
 import UTILS_Parametres
 import UTILS_Historique
+import UTILS_Dates
 import CTRL_Editeur_email
 import CTRL_Pieces_jointes_emails
 import OL_Destinataires_emails
@@ -481,6 +482,7 @@ class Dialog(wx.Dialog):
                 if valeur == None : valeur = u""
                 if type(valeur) == int : valeur = str(valeur)
                 if type(valeur) == bool : valeur = str(valeur)
+                if type(valeur) == datetime.date : valeur = UTILS_Dates.DateDDEnFr(valeur)
                 texte = texte.replace(motcle, valeur)
             
             # Envoi du mail
