@@ -260,7 +260,19 @@ class Panel_coords(wx.Panel):
         self.label_secteur = wx.StaticText(self, -1, u"Secteur :")
         self.ctrl_secteur = Secteur(self)
         self.bouton_secteurs = wx.Button(self, -1, "...", size=(20, 20))
-        
+
+        # Coordonnées
+        self.staticbox_coords = wx.StaticBox(self, -1, u"Coordonnées")
+        self.label_tel_domicile = wx.StaticText(self, -1, u"Domicile :")
+        self.ctrl_tel_domicile = CTRL_Saisie_tel.Tel(self, intitule=u"Domicile")
+        self.label_tel_mobile = wx.StaticText(self, -1, u"Mobile :")
+        self.ctrl_tel_mobile = CTRL_Saisie_tel.Tel(self, intitule=u"mobile")
+        self.label_tel_fax = wx.StaticText(self, -1, u"Fax :")
+        self.ctrl_tel_fax = CTRL_Saisie_tel.Tel(self, intitule=u"fax")
+        self.label_mail = wx.StaticText(self, -1, u"Email :")
+        self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
+        self.bouton_mail_perso = wx.BitmapButton(self, 900, wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_ANY))
+
         # Activité professionnelle
         self.staticbox_travail = wx.StaticBox(self, -1, u"Activité professionnelle")
         self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
@@ -276,19 +288,7 @@ class Panel_coords(wx.Panel):
         self.label_travail_mail = wx.StaticText(self, -1, u"Mail :")
         self.ctrl_travail_mail = CTRL_Saisie_mail.Mail(self)
         self.bouton_mail_travail = wx.BitmapButton(self, 800, wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_ANY))
-        
-        # Coordonnées
-        self.staticbox_coords = wx.StaticBox(self, -1, u"Coordonnées")
-        self.label_tel_domicile = wx.StaticText(self, -1, u"Domicile :")
-        self.ctrl_tel_domicile = CTRL_Saisie_tel.Tel(self, intitule=u"Domicile")
-        self.label_tel_mobile = wx.StaticText(self, -1, u"Mobile :")
-        self.ctrl_tel_mobile = CTRL_Saisie_tel.Tel(self, intitule=u"mobile")
-        self.label_tel_fax = wx.StaticText(self, -1, u"Fax :")
-        self.ctrl_tel_fax = CTRL_Saisie_tel.Tel(self, intitule=u"fax")
-        self.label_mail = wx.StaticText(self, -1, u"Email :")
-        self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
-        self.bouton_mail_perso = wx.BitmapButton(self, 900, wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_ANY))
-        
+                
         # Listes de diffusion
         self.staticbox_listesdiff = wx.StaticBox(self, -1, u"Listes de diffusion")
         self.label_listesdiff = wx.StaticText(self, -1, u"Inscrire aux listes suivantes :")
