@@ -83,6 +83,8 @@ def Filtre(controle=None, choix="", criteres="", reponse=""):
     # CHOIX
     if filtre == "choix" :
         listeIDchoix = criteres.split(";")
+        if reponse == None :
+            return False
         listeIDreponses = reponse.split(";")
         for ID in listeIDreponses :
             if ID in listeIDchoix :
