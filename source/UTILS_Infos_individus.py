@@ -569,7 +569,10 @@ class Informations() :
         listeDonnees = self.ReadDB(req)
         for IDinscription, IDindividu, IDfamille, activite, groupe, categorie_tarif, IDcompte_payeur, date_inscription, parti in listeDonnees :
             date_inscription = UTILS_Dates.DateEngFr(date_inscription)
-            nomTitulaires = self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            if self.dictTitulaires.has_key(IDfamille) :
+                nomTitulaires = self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            else :
+                nomTitulaires = u"Famille inconnue"
             if parti == 1 : 
                 parti = u"Oui"
             else :
