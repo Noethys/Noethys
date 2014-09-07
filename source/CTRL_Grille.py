@@ -2080,7 +2080,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Récupération des données du tooltip
         dictDonnees = case.GetTexteInfobulle()
-        if dictDonnees == None :
+        if dictDonnees == None or type(dictDonnees) != dict :
             self.ActiveTooltip(actif=False)
             return
         
@@ -2334,6 +2334,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             resultat = self.CalculeTarif(dictTarif, combinaisons_unites, date, temps_facture, IDfamille, IDindividu, quantite, case)
             if resultat == False :
                 return False
+            elif resultat == "break" :
+                break
             else :
                 montant_tarif, nom_tarif, temps_facture = resultat
             
@@ -2953,6 +2955,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         IDtarif = dictTarif["IDtarif"]
         IDactivite = dictTarif["IDactivite"]
         nom_tarif = dictTarif["nom_tarif"]
+        montant_tarif = 0.0
         methode_calcul = dictTarif["methode"]
         
         # Recherche du montant du tarif : MONTANT UNIQUE
@@ -3266,19 +3269,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
             if dateFound == False : 
                 montant_tarif = 0.0
-
+        
         # Recherche du montant du tarif : VARIABLE (MONTANT ET LABEL SAISIS PAR L'UTILISATEUR)
         if methode_calcul == "variable" :
-            import DLG_Saisie_montant_prestation
-            dlg = DLG_Saisie_montant_prestation.Dialog(self, label=nom_tarif, montant=0.0)
-            if dlg.ShowModal() == wx.ID_OK:
-                nom_tarif = dlg.GetLabel()
-                montant_tarif = dlg.GetMontant()
-                dlg.Destroy()
-            else:
-                dlg.Destroy()
-                return False
-
+            if case.IDunite in combinaisons_unites :
+                # Nouvelle saisie si clic sur la case
+                import DLG_Saisie_montant_prestation
+                dlg = DLG_Saisie_montant_prestation.Dialog(self, label=nom_tarif, montant=0.0)
+                if dlg.ShowModal() == wx.ID_OK:
+                    nom_tarif = dlg.GetLabel()
+                    montant_tarif = dlg.GetMontant()
+                    dlg.Destroy()
+                else:
+                    dlg.Destroy()
+                    return False
+            else :
+                # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation déjà saisie
+                for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
+                    if dictValeurs["date"] == date and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] == IDindividu and dictValeurs["IDtarif"] == IDtarif :
+                        nom_tarif = dictValeurs["label"]
+                        montant_tarif = dictValeurs["montant"]
+    
         # Recherche du montant du tarif : EN FONCTION DU NBRE D'INDIVIDUS
         if "nbre_ind" in methode_calcul :
             montant_tarif = 0.0
