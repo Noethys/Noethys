@@ -146,7 +146,7 @@ def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
     DB.Close()
     
     if fichier != "" :
-        fichier.close()
+        doc.close()
     
     return IDmodele
 
