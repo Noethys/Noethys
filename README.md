@@ -59,9 +59,11 @@ Menu Téléchargements > Ressources communautaires > Divers.
 
 Ils s'installent depuis le terminal tout simplement avec la commande:
 
+```
 apt-get install python-mysqldb python-dateutil python-numpy python-imaging 
 python-reportlab python-matplotlib python-xlrd python-excelerator python-pip 
-python-pyscard python-opencv
+python-pyscard python-opencv python-crypto
+```
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip et les installer par:
 
