@@ -187,34 +187,6 @@ class ListView(GroupListView):
         for IDprestation, montantVentilation in listeVentilation :
             dictVentilation[IDprestation] = montantVentilation
         
-        # Ancienne version non optimisée
-##        req = """
-##        SELECT prestations.IDprestation, prestations.IDcompte_payeur, prestations.date, categorie, 
-##        prestations.label, prestations.montant, 
-##        prestations.IDactivite, activites.nom, activites.abrege,
-##        prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, prestations.IDfacture, factures.numero, factures.date_edition,
-##        prestations.forfait, prestations.IDcategorie_tarif,
-##        IDfamille, prestations.IDindividu, 
-##        individus.nom, individus.prenom,
-##        SUM(ventilation.montant) AS montant_ventilation,
-##        SUM(deductions.montant) AS montant_deduction,
-##        COUNT(deductions.IDdeduction) AS nbre_deductions
-##        FROM prestations
-##        LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
-##        LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
-##        LEFT JOIN individus ON prestations.IDindividu = individus.IDindividu
-##        LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
-##        LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
-##        LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
-##        LEFT JOIN deductions ON deductions.IDprestation = prestations.IDprestation
-##        LEFT JOIN factures ON prestations.IDfacture = factures.IDfacture
-##        WHERE %s %s %s %s
-##        GROUP BY prestations.IDprestation
-##        ORDER BY prestations.date
-##        ;""" % (conditionFamille, conditionComptes, conditionDates, filtreSQL)
-##        DB.ExecuterReq(req)
-##        listeDonnees = DB.ResultatReq() 
-        
         DB.Close() 
         
         listePrestations = []
@@ -252,7 +224,7 @@ class ListView(GroupListView):
             
             # Mémorisation du total des prestations affichées
             total += montant
-            
+        
         return listePrestations, listeIndividus, listeActivites, listeFactures, total
 
 
@@ -266,7 +238,7 @@ class ListView(GroupListView):
             valide = True
             if listeID != None :
                 if item[0] not in listeID :
-                    valide = False
+                    valide = False            
             if valide == True :
                 track = Track(item)
                 listeListeView.append(track)
@@ -367,14 +339,17 @@ class ListView(GroupListView):
     def GetFiltres(self):
         filtreSQL = ""
         for champFiltre, valeur in self.dictFiltres.iteritems() :
-            if valeur != None :
-                filtreSQL += " AND %s = %s" % (champFiltre, valeur)
+            if "COMPLEXE" in champFiltre and valeur != None :
+                filtreSQL += " AND %s" % valeur
+            else :
+                if valeur != None :
+                    filtreSQL += " AND %s = %s" % (champFiltre, valeur)
         return filtreSQL
         
     def SetFiltre(self, champFiltre, valeur):
         self.dictFiltres[champFiltre] = valeur
         self.MAJ() 
-    
+        
     def SetListePeriodes(self, listePeriodes=[]):
         if listePeriodes == None :
             self.listePeriodes = []
