@@ -161,13 +161,21 @@ class CTRL(HTL.HyperTreeList):
         if len(self.listeActivites) == 0 : conditionActivites = "prestations.IDactivite=9999999"
         elif len(self.listeActivites) == 1 : conditionActivites = "prestations.IDactivite=%d" % self.listeActivites[0]
         else : conditionActivites = "prestations.IDactivite IN %s" % str(tuple(self.listeActivites))
+
+        # Filtre Prestation facturée / non facturée
+        conditionFacturee = ""
+        if "facturee" in self.mode_affichage :
+            conditionFacturee = " AND prestations.IDfacture IS NOT NULL"
+        if "nonfacturee" in self.mode_affichage :
+            conditionFacturee = " AND prestations.IDfacture IS NULL"
         
         # Récupération de toutes les prestations de la période
         req = """SELECT IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif
         FROM prestations 
         WHERE date>='%s' AND date <='%s'
         AND %s AND (%s OR prestations.IDactivite IS NULL)
-        ORDER BY date; """ % (self.date_debut, self.date_fin, conditionAfficher, conditionActivites)
+        %s
+        ORDER BY date; """ % (self.date_debut, self.date_fin, conditionAfficher, conditionActivites, conditionFacturee)
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         DB.Close()
@@ -240,6 +248,8 @@ class CTRL(HTL.HyperTreeList):
         dictPrestations, listePeriodes = self.Importation_prestations() 
         self.dictImpression = { "entete" : [], "contenu" : [], "total" : [], "coloration" : [] }
         
+        mode_affichage = self.mode_affichage.split("_")[0]
+
         # Mémorisation des colonnes
         dictColonnes = {}
         index = 1
@@ -277,8 +287,8 @@ class CTRL(HTL.HyperTreeList):
             # Colonnes périodes
             for periode in listePeriodes :
                 if dictPrestations[label]["periodes"].has_key(periode) :
-                    valeur = dictPrestations[label]["periodes"][periode][self.mode_affichage]
-                    if self.mode_affichage == "nbre" : 
+                    valeur = dictPrestations[label]["periodes"][periode][mode_affichage]
+                    if "nbre" in mode_affichage : 
                         texte = str(int(valeur))
                     else:
                         texte = u"%.2f %s" % (valeur, SYMBOLE)
@@ -288,8 +298,8 @@ class CTRL(HTL.HyperTreeList):
                     impressionLigne.append("")
             
             # Colonne Total
-            valeur = dictPrestations[label][self.mode_affichage]
-            if self.mode_affichage == "nbre" : 
+            valeur = dictPrestations[label][mode_affichage]
+            if "nbre" in mode_affichage : 
                 texte = str(int(valeur))
             else:
                 texte = u"%.2f %s" % (valeur, SYMBOLE)
@@ -323,9 +333,9 @@ class CTRL(HTL.HyperTreeList):
                     texte = None
                     if dictPrestations[label]["periodes"].has_key(periode) :
                         if dictPrestations[label]["periodes"][periode]["categories"].has_key(IDcategorie_tarif) :
-                            valeur = dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif][self.mode_affichage]
+                            valeur = dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif][mode_affichage]
                             totalLigne += valeur
-                            if self.mode_affichage == "nbre" : 
+                            if "nbre" in mode_affichage : 
                                 texte = str(int(valeur))
                             else:
                                 texte = u"%.2f %s" % (valeur, SYMBOLE)
@@ -336,7 +346,7 @@ class CTRL(HTL.HyperTreeList):
                         
                 # Colonne Total
                 if self.affichage_details == True :
-                    if self.mode_affichage == "nbre" : 
+                    if "nbre" in mode_affichage : 
                         texte = str(int(totalLigne))
                     else:
                         texte = u"%.2f %s" % (totalLigne, SYMBOLE)
@@ -361,25 +371,25 @@ class CTRL(HTL.HyperTreeList):
                         dictTotal[IDcategorie_tarif] = {}
                     if dictTotal[IDcategorie_tarif].has_key(periode) == False :
                         dictTotal[IDcategorie_tarif][periode] = 0.0
-                    dictTotal[IDcategorie_tarif][periode] += dictCategories[self.mode_affichage]
+                    dictTotal[IDcategorie_tarif][periode] += dictCategories[mode_affichage]
                 
                     if totalPeriodes.has_key(periode) == False :
                         totalPeriodes[periode] = 0.0
-                    totalPeriodes[periode] += dictCategories[self.mode_affichage]
+                    totalPeriodes[periode] += dictCategories[mode_affichage]
         
         totalLigne = 0.0
         for periode in listePeriodes :
 ##        for periode, valeur in totalPeriodes.iteritems() :
             valeur = totalPeriodes[periode]
             totalLigne += valeur
-            if self.mode_affichage == "nbre" : 
+            if "nbre" in mode_affichage : 
                 texte = str(int(valeur))
             else:
                 texte = u"%.2f %s" % (valeur, SYMBOLE)
             self.SetItemText(niveauTotal, texte, dictColonnes[periode])
             impressionLigne.append(texte)
 
-        if self.mode_affichage == "nbre" : 
+        if "nbre" in mode_affichage : 
             texte = str(int(totalLigne))
         else:
             texte = u"%.2f %s" % (totalLigne, SYMBOLE)
@@ -415,7 +425,7 @@ class CTRL(HTL.HyperTreeList):
                         if dictTotal[IDcategorie_tarif].has_key(periode) :
                             valeur = dictTotal[IDcategorie_tarif][periode]
                             totalLigne += valeur
-                            if self.mode_affichage == "nbre" : 
+                            if "nbre" in mode_affichage : 
                                 texte = str(int(valeur))
                             else:
                                 texte = u"%.2f %s" % (valeur, SYMBOLE)
@@ -423,7 +433,7 @@ class CTRL(HTL.HyperTreeList):
                             impressionLigne.append(texte)
                     if texte == None : impressionLigne.append("")
                 
-                if self.mode_affichage == "nbre" : 
+                if "nbre" in mode_affichage : 
                     texte = str(int(totalLigne))
                 else:
                     texte = u"%.2f %s" % (totalLigne, SYMBOLE)
@@ -479,7 +489,7 @@ class CTRL(HTL.HyperTreeList):
         dataTableau = []
         largeursColonnes = ( (largeur_page-175, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (u"Situation financière", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (u"Synthèse des prestations", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 

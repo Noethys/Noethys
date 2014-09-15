@@ -35,6 +35,53 @@ def DateEngFr(textDate):
 
 
 
+class CTRL_Mode(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1) 
+        self.parent = parent
+        self.listeDonnees = [
+            (u"Nombre de prestations", "nbre"),
+            (u"Montant des prestations", "facture"),
+            (u"Montant des prestations réglées", "regle"),
+            (u"Montant des prestations impayées", "impaye"),
+            (u"--------------------------------------------------------------------------------", None),
+            (u"Nombre de prestations facturées", "nbre_facturees"),
+            (u"Montant des prestations facturées", "facture_facturees"),
+            (u"Montant des prestations réglées et facturées", "regle_facturees"),
+            (u"Montant des prestations impayées et facturées", "impaye_facturees"),
+            (u"--------------------------------------------------------------------------------", None),
+            (u"Nombre de prestations non facturées", "nbre_nonfacturees"),
+            (u"Montant des prestations non facturées", "facture_nonfacturees"),
+            (u"Montant des prestations réglées et non facturées", "regle_nonfacturees"),
+            (u"Montant des prestations impayées et non facturées", "impaye_nonfacturees"),
+            ]
+        self.Remplissage() 
+    
+    def Remplissage(self):
+        listeLabels = []
+        for label, code in self.listeDonnees :
+            listeLabels.append(label)
+        self.SetItems(listeLabels)
+    
+    def SetID(self, ID=""):
+        index = 0
+        for label, code in self.listeDonnees :
+            if code == ID :
+                self.SetSelection(index)
+            index += 1
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.listeDonnees[index][1]
+
+    def GetLabel(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.listeDonnees[index][0]
+
+
+
 class ChoixPeriode(wx.Panel):
     def __init__(self, parent, type="", label=u"", infobulle=u""):
         wx.Panel.__init__(self, parent, id=-1, name="panel_choix_periode", style=wx.TAB_TRAVERSAL)
@@ -110,7 +157,7 @@ class Parametres(wx.Panel):
         self.bouton_date_fin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
         
         # Filtres
-        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, u"Affichage")
+        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, u"Types de prestations")
         self.radio_cotisations = wx.CheckBox(self, -1, u"Cotisations")
         self.radio_consommations = wx.CheckBox(self, -1, u"Consommations")
         self.radio_autres = wx.CheckBox(self, -1, u"Autres")
@@ -273,8 +320,11 @@ class Dialog(wx.Dialog):
         # Panel Paramètres
         self.ctrl_parametres = Parametres(self)
         
-        # CTRL Coefficients
+        # CTRL résultats
         self.staticbox_stats_staticbox = wx.StaticBox(self, -1, u"Résultats")
+        self.label_mode_affichage = wx.StaticText(self, -1, u"Mode d'affichage :")
+        self.label_mode_affichage.Show(False)
+        self.ctrl_mode = CTRL_Mode(self)
         self.ctrl_stats = CTRL_Synthese_prestations.CTRL(self)
         
         # Commandes de liste
@@ -282,12 +332,6 @@ class Dialog(wx.Dialog):
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
         # Commandes de résultats
-        self.label_mode_affichage = wx.StaticText(self, -1, u"Mode d'affichage :")
-        self.radio_nbre = wx.RadioButton(self, -1, u"Quantité", style=wx.RB_GROUP)
-        self.radio_facture = wx.RadioButton(self, -1, u"Facturé")
-        self.radio_regle = wx.RadioButton(self, -1, u"Réglé")
-        self.radio_impaye = wx.RadioButton(self, -1, u"Créances")
-                
         self.check_details = wx.CheckBox(self, -1, u"Afficher détails")
         self.check_details.SetValue(True) 
 
@@ -302,10 +346,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioNbre, self.radio_nbre)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFacture, self.radio_facture)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioRegle, self.radio_regle)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioImpaye, self.radio_impaye)
+        self.Bind(wx.EVT_CHOICE, self.OnMode, self.ctrl_mode)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDetails, self.check_details)
 
         self.__set_properties()
@@ -316,8 +357,8 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
         
-        self.mode_affichage = "facture"
-        self.radio_facture.SetValue(True)
+        self.ctrl_mode.SetID("facture")
+        self.OnMode(None) 
         
         self.MAJ() 
 
@@ -326,10 +367,7 @@ class Dialog(wx.Dialog):
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")
         self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter les résultats au format MS Excel")
-        self.radio_nbre.SetToolTipString(u"Cliquez ici pour afficher les quantités de prestations")
-        self.radio_facture.SetToolTipString(u"Cliquez ici pour afficher le total des prestations facturées")
-        self.radio_regle.SetToolTipString(u"Cliquez ici pour afficher le total déjà réglé")
-        self.radio_impaye.SetToolTipString(u"Cliquez ici pour afficher les impayés")
+        self.ctrl_mode.SetToolTipString(u"Sélectionnez le mode d'affichage souhaité")
         self.check_details.SetToolTipString(u"Cliquez ici pour afficher les détails dans les résultats")
         self.SetMinSize((980, 700))
 
@@ -342,10 +380,17 @@ class Dialog(wx.Dialog):
         # Panel des paramètres
         grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
-        # STATS
+        # Résultats
         staticbox_stats= wx.StaticBoxSizer(self.staticbox_stats_staticbox, wx.VERTICAL)
-        grid_sizer_contenu2 = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
-        
+        grid_sizer_contenu2 = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+
+        grid_sizer_affichage = wx.FlexGridSizer(rows=1, cols=11, vgap=5, hgap=5)
+        grid_sizer_affichage.Add(self.label_mode_affichage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_mode, 0, wx.EXPAND, 0) 
+        grid_sizer_affichage.AddGrowableCol(1)
+        grid_sizer_contenu2.Add(grid_sizer_affichage, 1, wx.EXPAND, 0)
+        grid_sizer_contenu2.Add( (5, 5), 1, wx.EXPAND, 0)
+
         grid_sizer_contenu2.Add(self.ctrl_stats, 1, wx.EXPAND, 0)
         
         # Boutons de liste
@@ -356,21 +401,16 @@ class Dialog(wx.Dialog):
         
         # Commandes de liste
         grid_sizer_commandes2 = wx.FlexGridSizer(rows=1, cols=11, vgap=5, hgap=5)
-        grid_sizer_commandes2.Add(self.label_mode_affichage, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.radio_nbre, 0, wx.EXPAND, 0) 
-        grid_sizer_commandes2.Add(self.radio_facture, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.radio_regle, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.radio_impaye, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add( (30, 5), 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.check_details, 0, wx.EXPAND, 0)
+        grid_sizer_commandes2.Add(self.check_details, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_commandes2.Add( (5, 5), 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.hyper_developper, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.label_barre, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.Add(self.hyper_reduire, 0, wx.EXPAND, 0)
-        grid_sizer_commandes2.AddGrowableCol(6)
+        grid_sizer_commandes2.Add(self.hyper_developper, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_commandes2.Add(self.label_barre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_commandes2.Add(self.hyper_reduire, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_commandes2.AddGrowableCol(0)
         grid_sizer_contenu2.Add(grid_sizer_commandes2, 1, wx.EXPAND, 0)
         
-        grid_sizer_contenu2.AddGrowableRow(0)
+        grid_sizer_contenu2.AddGrowableRow(1)
         grid_sizer_contenu2.AddGrowableCol(0)
         
         staticbox_stats.Add(grid_sizer_contenu2, 1, wx.ALL|wx.EXPAND, 5)
@@ -439,20 +479,8 @@ class Dialog(wx.Dialog):
         self.label_barre.Enable(-etat)
         self.hyper_reduire.Enable(-etat)
 
-    def OnRadioNbre(self, event):
-        self.mode_affichage = "nbre"
-        self.MAJ() 
-    
-    def OnRadioFacture(self, event):
-        self.mode_affichage = "facture"
-        self.MAJ() 
-        
-    def OnRadioRegle(self, event):
-        self.mode_affichage = "regle"
-        self.MAJ() 
-        
-    def OnRadioImpaye(self, event):
-        self.mode_affichage = "impaye"
+    def OnMode(self, event):
+        self.mode_affichage = self.ctrl_mode.GetID() 
         self.MAJ() 
         
     def MAJ(self):
@@ -526,10 +554,7 @@ class Dialog(wx.Dialog):
             listeParametres.append(u"Uniquement les règlements déposés du %s au %s" % (date_debut_depot, date_fin_depot))
         
         # Mode d'affichage
-        if self.ctrl_stats.mode_affichage == "nbre" : mode = u"Quantité"
-        if self.ctrl_stats.mode_affichage == "facture" : mode = u"Facturé"
-        if self.ctrl_stats.mode_affichage == "regle" : mode = u"Réglé"
-        if self.ctrl_stats.mode_affichage == "impaye" : mode = u"Créances"
+        mode = self.ctrl_mode.GetLabel()
         listeParametres.append(u"Mode d'affichage : %s" % mode)
         
         labelParametres = " | ".join(listeParametres)
