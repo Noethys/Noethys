@@ -549,6 +549,7 @@ class Dialog(wx.Dialog):
     
     def OnClose(self, event=None):
         self.ctrl_coeff.SauvegardeCoeff() 
+        event.Skip() 
         
     def Apercu(self, event):
         listeAnomalies = []

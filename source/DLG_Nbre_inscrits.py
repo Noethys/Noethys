@@ -213,6 +213,7 @@ class CTRL(ULC.UltimateListCtrl):
         for IDactivite, nom, abrege, nbre_inscrits_max, nbre_inscrits in listeDonnees :
             if nbre_inscrits_max == None : nbre_inscrits_max = 0
             if nbre_inscrits == None : nbre_inscrits = 0
+            if nom == None : nom = u"Sans nom !"
             listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "nbrePlacesDispo" : nbre_inscrits_max, "nbrePlacesPrises" : nbre_inscrits, "nbrePlacesAttente" : 0}) # nbrePlacesAttente à coder plus tard
         
         # Pour éviter l'actualisation de l'affichage si aucune modification des données
@@ -246,7 +247,10 @@ class CTRL(ULC.UltimateListCtrl):
         self.SetColumnWidth(1, ULC.ULC_AUTOSIZE_FILL)
         
         # Actualiser l'affichage pour éviter bug de positionnement
-        self.DoLayout() 
+        try :
+            self.DoLayout() 
+        except :
+            pass
             
     def Tests(self):
         """ UNIQUEMENT POUR TESTS : Test de mise à jour des gauges sur 50 """
