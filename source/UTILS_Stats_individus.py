@@ -178,6 +178,8 @@ def GetDictAges(DB, dictParametres) :
                 datedujour = MODELES.GetDateExtremeActivites(DB, listeActivites=dictParametres["listeActivites"], typeDate="date_milieu", mode="max")
             else :
                 datedujour = date_fin
+            if datedujour == None :
+                datedujour = datetime.date.today() 
             age = (datedujour.year - date_naiss.year) - int((datedujour.month, datedujour.day) < (date_naiss.month, date_naiss.day))
             annee = date_naiss.year
         else:
