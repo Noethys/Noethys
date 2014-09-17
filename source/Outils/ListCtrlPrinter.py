@@ -700,6 +700,7 @@ class ReportFormat(object):
         self.ListHeader = BlockFormat()
         self.GroupTitle = BlockFormat()
         self.ColumnHeader = BlockFormat()
+        self.ColumnFooter = BlockFormat()
         self.Row = BlockFormat()
         self.ListFooter = BlockFormat()
         self.PageFooter = BlockFormat()
@@ -771,6 +772,12 @@ class ReportFormat(object):
         fmt.ColumnHeader.Line(wx.BOTTOM, wx.Colour(192, 192, 192), 1, space=3)
         fmt.ColumnHeader.AlwaysCenter = True
 
+        fmt.ColumnFooter.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, wx.FONTFLAG_BOLD, face=headerFontName)
+        fmt.ColumnFooter.Padding = (0, 12, 0, 12)
+        fmt.ColumnFooter.CellPadding = 5
+        fmt.ColumnFooter.Line(wx.BOTTOM, wx.Colour(192, 192, 192), 1, space=3)
+        fmt.ColumnFooter.AlwaysCenter = True
+
         fmt.Row.Font = wx.FFont(10, wx.FONTFAMILY_DEFAULT, face=rowFontName)
         fmt.Row.CellPadding = 5
         fmt.Row.Line(wx.BOTTOM, wx.Colour(192, 192, 192), 1, space=3)
@@ -809,6 +816,13 @@ class ReportFormat(object):
         fmt.ColumnHeader.GridPen = wx.Pen(wx.WHITE, 1)
         fmt.ColumnHeader.Padding = (0, 0, 0, 12)
         fmt.ColumnHeader.AlwaysCenter = True
+
+        fmt.ColumnFooter.Font = wx.FFont(14, wx.FONTFAMILY_DEFAULT, wx.FONTFLAG_BOLD, face=headerFontName)
+        fmt.ColumnFooter.CellPadding = 2
+        fmt.ColumnFooter.Background(wx.Colour(192, 192, 192))
+        fmt.ColumnFooter.GridPen = wx.Pen(wx.WHITE, 1)
+        fmt.ColumnFooter.Padding = (0, 0, 0, 12)
+        fmt.ColumnFooter.AlwaysCenter = True
 
         fmt.Row.Font = wx.FFont(12, wx.FONTFAMILY_DEFAULT, face=rowFontName)
         fmt.Row.Line(wx.BOTTOM, pen=wx.Pen(wx.BLUE, 1, wx.DOT), space=3)
@@ -2032,6 +2046,11 @@ class ListSliceBlock(Block):
 
         if self.IsColumnHeadingsOnEachPage():
             self.engine.AddBlock(RunningBlockPusher(headerBlock, False))
+        
+        # Colonne Footer
+        if self.lv.ctrl_footer != None :
+            columnFooterBlock = ColumnFooterBlock(self.lv, self.left, self.right, scale, self.allCellWidths)
+            self.engine.AddBlock(columnFooterBlock)
 
         return True
 
@@ -2147,6 +2166,20 @@ class ColumnHeaderBlock(ColumnBasedBlock):
         """
         return False
 
+
+
+class ColumnFooterBlock(ColumnBasedBlock):
+    def GetTexts(self):
+        return self.lv.ctrl_footer.GetDonneesImpression("texte")
+
+    def GetAlignments(self):
+        return self.lv.ctrl_footer.GetDonneesImpression("alignement")
+
+    def GetImages(self):
+        return []
+
+    def IsUseSubstitution(self):
+        return False
 
 #----------------------------------------------------------------------------
 

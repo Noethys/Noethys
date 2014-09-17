@@ -694,6 +694,7 @@ class ReportFormat(object):
         self.ListIntro = BlockFormat()
         self.GroupTitle = BlockFormat()
         self.ColumnHeader = BlockFormat()
+        self.ColumnFooter = BlockFormat()
         self.Row = BlockFormat()
         self.ListFooter = BlockFormat()
         self.PageFooter = BlockFormat()

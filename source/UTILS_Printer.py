@@ -190,6 +190,7 @@ class ObjectListViewPrinter():
         self.intro = intro
         self.total = total
         self.orientation = orientation
+        
         self.printer = ListCtrlPrinter.ListCtrlPrinter(listview, self.titre)
         self.printer.printout.margins = (wx.Point(5, 5), wx.Point(5, 5))
         self.printer.printout.printData.SetOrientation(orientation)
@@ -249,7 +250,7 @@ class ObjectListViewPrinter():
         # Titre de colonne
         fmt.ColumnHeader.Font = wx.FFont(8, wx.FONTFAMILY_SWISS, face=headerFontName)
         fmt.ColumnHeader.Padding = (0, 15, 0, 0)
-        fmt.ColumnHeader.Background(wx.Colour(200, 200, 200))
+        fmt.ColumnHeader.Background(wx.Colour(240, 240, 240))
         fmt.ColumnHeader.CellPadding = 5
         fmt.ColumnHeader.TextAlignment = wx.ALIGN_CENTER
         fmt.ColumnHeader.GridPen = wx.Pen(wx.BLACK, 0.25, wx.SOLID)
@@ -275,7 +276,16 @@ class ObjectListViewPrinter():
         fmt.PageFooter.Font = wx.FFont(7, wx.FONTFAMILY_DECORATIVE, face=headerFontName)
         fmt.PageFooter.Line(wx.TOP, wx.BLACK, 1, space=3)
         fmt.PageFooter.Padding = (0, 16, 0, 0)
-        
+
+        # Pied de colonne
+        fmt.ColumnFooter.Font = wx.FFont(8, wx.FONTFAMILY_SWISS, face=headerFontName)
+        fmt.ColumnFooter.Padding = (0, 0, 0, 0)
+        fmt.ColumnFooter.Background(wx.Colour(240, 240, 240))
+        fmt.ColumnFooter.CellPadding = 5
+        fmt.ColumnFooter.TextAlignment = wx.ALIGN_CENTER
+        fmt.ColumnFooter.GridPen = wx.Pen(wx.BLACK, 0.25, wx.SOLID)
+        fmt.ColumnFooter.SetAlwaysCenter(True)
+
         # Pied de Liste
         fmt.ListFooter.Font = wx.FFont(7, wx.FONTFAMILY_DECORATIVE, wx.FONTFLAG_BOLD, face=headerFontName)
         fmt.ListFooter.Padding = (12, 12, 0, 0)
