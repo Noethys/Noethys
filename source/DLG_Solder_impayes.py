@@ -252,8 +252,9 @@ class Dialog(wx.Dialog):
         self.label_date_fin = wx.StaticText(self, -1, "au")
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         self.bouton_actualiser = wx.Button(self, -1, u"Actualiser la liste")
-        
-        self.ctrl_prestations = OL_Solder_impayes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+
+        self.listviewAvecFooter = OL_Solder_impayes.ListviewAvecFooter(self, kwargs={}) 
+        self.ctrl_prestations = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Solder_impayes.BarreRecherche(self)
         
         self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
@@ -329,7 +330,7 @@ class Dialog(wx.Dialog):
         grid_sizer_periode.AddGrowableCol(5)
         grid_sizer_prestations.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 10)
         
-        grid_sizer_prestations.Add(self.ctrl_prestations, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_prestations.Add(self.listviewAvecFooter, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)

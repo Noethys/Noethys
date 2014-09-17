@@ -110,8 +110,9 @@ class Panel(wx.Panel):
         codesColonnes = ["IDfacture", "date", "numero", "date_debut", "date_fin", "total", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = True
         triColonne = "date"
-        self.ctrl_listview = OL_Factures.ListView(self, id=-1, name="OL_factures", IDcompte_payeur=self.IDcompte_payeur, codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, 
-                                                                    style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : self.IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
+        self.ctrl_listview = self.listviewAvecFooter.GetListview()
+
         self.ctrl_recherche = OL_Factures.BarreRecherche(self)
         
         # Commandes boutons
@@ -140,7 +141,7 @@ class Panel(wx.Panel):
         staticbox_factures = wx.StaticBoxSizer(self.staticbox_factures, wx.VERTICAL)
         grid_sizer_factures = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
-        grid_sizer_factures.Add(self.ctrl_listview, 1, wx.EXPAND, 0)
+        grid_sizer_factures.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_ajouter, 0, wx.ALL, 0)

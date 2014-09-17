@@ -187,8 +187,8 @@ class Panel(wx.Panel):
         IDcompte_payeur = listeDonnees[0][0]
 
         # OL Prestations
-        self.ctrl_reglements = OL_Reglements.ListView(self, id=-1, IDcompte_payeur=IDcompte_payeur, name="OL_reglements", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        self.ctrl_reglements.SetMinSize((20, 20))
+        self.listviewAvecFooter = OL_Reglements.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : IDcompte_payeur}) 
+        self.ctrl_reglements = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Reglements.BarreRecherche(self)
         
         # Commandes boutons
@@ -224,7 +224,7 @@ class Panel(wx.Panel):
         staticbox_reglements = wx.StaticBoxSizer(self.staticbox_reglements, wx.VERTICAL)
         grid_sizer_reglements = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
-        grid_sizer_reglements.Add(self.ctrl_reglements, 1, wx.EXPAND, 0)
+        grid_sizer_reglements.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_ajouter, 0, wx.ALL, 0)

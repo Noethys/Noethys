@@ -54,8 +54,12 @@ class Dialog(wx.Dialog):
         titre = u"Vérification de la ventilation"
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repartition.png")
         
-        self.ctrl_reglements = OL_Verification_ventilation.ListView(self, id=-1, tracks=tracks, IDcompte_payeur=IDcompte_payeur, onlyNonVentiles=True, name="OL_reglements", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.listviewAvecFooter = OL_Verification_ventilation.ListviewAvecFooter(self, kwargs={"tracks" : tracks, "IDcompte_payeur" : IDcompte_payeur, "onlyNonVentiles" : True}) 
+        self.ctrl_reglements = self.listviewAvecFooter.GetListview()
         self.ctrl_reglements.MAJ() 
+        
+##        self.ctrl_reglements = OL_Verification_ventilation.ListView(self, id=-1, tracks=tracks, IDcompte_payeur=IDcompte_payeur, onlyNonVentiles=True, name="OL_reglements", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+##        self.ctrl_reglements.MAJ() 
         self.ctrl_recherche = OL_Verification_ventilation.BarreRecherche(self)
 
         self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
@@ -89,7 +93,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
-        grid_sizer_gauche.Add(self.ctrl_reglements, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
 
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)

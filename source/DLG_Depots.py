@@ -97,14 +97,15 @@ class Dialog(wx.Dialog):
         
         # Reglements disponibles
         self.staticbox_reglements = wx.StaticBox(self, -1, u"Règlements disponibles")
-        self.ctrl_reglements = OL_Reglements_depots.ListView(self, id=-1, inclus=False, selectionPossible=False, size=(-1, 150), style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "selectionPossible" : False, "size" : (-1, 180) }) 
+        self.ctrl_reglements = self.listviewAvecFooter1.GetListview()
         self.ctrl_reglements.SetMinSize((100, 150))
         self.MAJreglements() 
 
         # Dépôts
         self.staticbox_depots = wx.StaticBox(self, -1, u"Dépôts")
-        self.ctrl_depots = OL_Depots.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_depots.SetMinSize((100, 100))
+        self.listviewAvecFooter2 = OL_Depots.ListviewAvecFooter(self, kwargs={}) 
+        self.ctrl_depots = self.listviewAvecFooter2.GetListview()
         self.ctrl_depots.MAJ()
         self.ctrl_recherche = OL_Depots.BarreRecherche(self)
 
@@ -152,7 +153,7 @@ class Dialog(wx.Dialog):
         staticbox_reglements = wx.StaticBoxSizer(self.staticbox_reglements, wx.VERTICAL)
         grid_sizer_reglements = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
-        grid_sizer_reglements.Add(self.ctrl_reglements, 0, wx.EXPAND | wx.ALL, 0)
+        grid_sizer_reglements.Add(self.listviewAvecFooter1, 0, wx.EXPAND | wx.ALL, 0)
         
         grid_sizer_reglements.AddGrowableRow(0)
         grid_sizer_reglements.AddGrowableCol(0)
@@ -164,7 +165,7 @@ class Dialog(wx.Dialog):
         grid_sizer_depots = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche.Add(self.ctrl_depots, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter2, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)

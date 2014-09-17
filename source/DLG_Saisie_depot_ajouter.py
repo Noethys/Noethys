@@ -138,16 +138,20 @@ class Dialog(wx.Dialog):
         
         # Reglements disponibles
         self.staticbox_reglements_disponibles_staticbox = wx.StaticBox(self, -1, u"Règlements disponibles")
-        self.ctrl_reglements_disponibles = OL_Reglements_depots.ListView(self, id=-1, inclus=False, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        
+##        self.ctrl_reglements_disponibles = OL_Reglements_depots.ListView(self, id=-1, inclus=False, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False}) 
+        self.ctrl_reglements_disponibles = self.listviewAvecFooter1.GetListview()
+
         # Commandes
         self.bouton_bas = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_haut_rouge.png", wx.BITMAP_TYPE_ANY))
 
         # Reglements du dépôt
         self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, u"Règlements du dépôt")
-        self.ctrl_reglements_depot = OL_Reglements_depots.ListView(self, id=-1, inclus=True, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        
+##        self.ctrl_reglements_depot = OL_Reglements_depots.ListView(self, id=-1, inclus=True, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.listviewAvecFooter2 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True}) 
+        self.ctrl_reglements_depot = self.listviewAvecFooter2.GetListview()
+
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
@@ -214,7 +218,7 @@ class Dialog(wx.Dialog):
         grid_sizer_options.AddGrowableCol(1)
         grid_sizer_dispo.Add(grid_sizer_options, 0, wx.EXPAND, 0)
         
-        grid_sizer_dispo.Add(self.ctrl_reglements_disponibles, 0, wx.EXPAND, 0)
+        grid_sizer_dispo.Add(self.listviewAvecFooter1, 0, wx.EXPAND, 0)
         
         grid_sizer_dispo.AddGrowableRow(1)
         grid_sizer_dispo.AddGrowableCol(0)
@@ -234,7 +238,7 @@ class Dialog(wx.Dialog):
         
         # Règlements déposés
         staticbox_reglements_depot = wx.StaticBoxSizer(self.staticbox_reglements_depot_staticbox, wx.VERTICAL)
-        staticbox_reglements_depot.Add(self.ctrl_reglements_depot, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_reglements_depot.Add(self.listviewAvecFooter2, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_reglements_depot, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons

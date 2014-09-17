@@ -19,7 +19,7 @@ import UTILS_Utilisateurs
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
-from ObjectListView import GroupListView, ColumnDefn, Filter
+from ObjectListView import GroupListView, ColumnDefn, Filter, PanelAvecFooter
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
@@ -736,6 +736,17 @@ class BarreRecherche(wx.SearchCtrl):
         self.Refresh() 
 
 
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "date" : {"mode" : "nombre", "singulier" : u"prestation", "pluriel" : u"prestations", "alignement" : wx.ALIGN_CENTER},
+            "montant" : {"mode" : "total"},
+            "montant_ventilation" : {"mode" : "total"},
+            "montant_deduction" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 
 # ----------------- FRAME DE TEST ----------------------------------------------------------------

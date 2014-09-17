@@ -21,7 +21,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 
 
@@ -762,7 +762,18 @@ class BarreRecherche(wx.SearchCtrl):
         self.listView.RepopulateList()
         self.Refresh() 
 
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "date_edition" : {"mode" : "nombre", "singulier" : u"facture", "pluriel" : u"factures", "alignement" : wx.ALIGN_CENTER},
+            "total" : {"mode" : "total"},
+            "regle" : {"mode" : "total"},
+            "solde" : {"mode" : "total"},
+            "soldeActuel" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 
 # ----------------- FRAME DE TEST ----------------------------------------------------------------
@@ -780,10 +791,15 @@ class MyFrame(wx.Frame):
         checkColonne = True
         triColonne = "numero"
 
-        self.myOlv = ListView(panel, -1, IDcompte_payeur=IDcompte_payeur, codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER)
-        self.myOlv.MAJ() 
+##        listview = ListView(panel, -1, IDcompte_payeur=IDcompte_payeur, codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER)
+##        listview.MAJ() 
+
+        ctrl = ListviewAvecFooter(panel, kwargs={"IDcompte_payeur" : IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
+        listview = ctrl.GetListview()
+        listview.MAJ() 
+
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
         self.SetSize((800, 400))
         self.Layout()

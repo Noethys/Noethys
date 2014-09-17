@@ -134,8 +134,8 @@ class Dialog(wx.Dialog):
         self.ctrl_facture.Select(0) 
                 
         # Liste
-        self.ctrl_listview = OL_Prestations.ListView(self, id=-1, name="OL_liste_prestations", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        self.ctrl_listview.SetMinSize((10, 10))
+        self.listviewAvecFooter = OL_Prestations.ListviewAvecFooter(self, kwargs={}) 
+        self.ctrl_listview = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Prestations.BarreRecherche(self)
 
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -201,7 +201,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)

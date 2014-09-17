@@ -100,6 +100,7 @@ import copy
 
 import CellEditor
 import OLVEvent
+import Footer
 
 import sys
 sys.path.append("..")
@@ -259,6 +260,7 @@ class ObjectListView(wx.ListCtrl):
         
         self.listeColonnes = [] 
         self.nomListe = None
+        self.ctrl_footer = None
 
         self.rowFormatter = kwargs.pop("rowFormatter", None)
         self.useAlternateBackColors = kwargs.pop("useAlternateBackColors", True)
@@ -286,8 +288,8 @@ class ObjectListView(wx.ListCtrl):
         self.Bind(wx.EVT_SCROLLWIN, self._HandleScroll)
         self.Bind(wx.EVT_SIZE, self._HandleSize)
 
-        # When is this event triggered?
-        #self.Bind(wx.EVT_LIST_COL_DRAGGING, self._HandleColumnDragging)
+        self.Bind(wx.EVT_LIST_COL_DRAGGING, self._HandleColumnDragging)
+        self.Bind(wx.EVT_SCROLL, self.OnScroll)
 
         # For some reason under Linux, the default wx.StaticText always appears
         # behind the ListCtrl. The GenStaticText class appears as it should.
@@ -781,6 +783,9 @@ class ObjectListView(wx.ListCtrl):
         finally:
             self.Thaw()
 
+        # MAJ Footer
+        if self.ctrl_footer :
+            self.MAJ_footer()
 
     def RefreshIndex(self, index, modelObject):
         """
@@ -957,8 +962,7 @@ class ObjectListView(wx.ListCtrl):
 
         if preserveSelection:
             self.SelectObjects(selection)
-
-
+        
     # Synonym as per many wxWindows widgets
     SetValue = SetObjects
 
@@ -1585,8 +1589,9 @@ class ObjectListView(wx.ListCtrl):
         """
         A column is being dragged
         """
-        # When is this triggered?
-
+        # When is this triggered?        
+        self.MAJ_footer()
+        
         # The processing should be the same processing as Dragged
         evt.Skip()
 
@@ -1608,11 +1613,10 @@ class ObjectListView(wx.ListCtrl):
             else:
                 evt.Skip()
                 wx.CallAfter(self._ResizeSpaceFillingColumns)
-
+        
     def _SetColumnWidthAndResize(self, colIndex, newWidth):
         self.SetColumnWidth(colIndex, newWidth)
         self._ResizeSpaceFillingColumns()
-
 
     def _HandleLeftDown(self, evt):
         """
@@ -1692,6 +1696,11 @@ class ObjectListView(wx.ListCtrl):
         The ListView is being scrolled
         """
         self._PossibleFinishCellEdit()
+        self.MAJ_footer()
+        evt.Skip()
+
+    def OnScroll(self, evt):
+        self.MAJ_footer()
         evt.Skip()
 
 
@@ -2252,12 +2261,55 @@ class ObjectListView(wx.ListCtrl):
         if self.nomListe != None :
             import DLG_Configuration_listes
             DLG_Configuration_listes.SauvegardeConfiguration(nomListe=self.nomListe, listeColonnes=self.listeColonnes)
-            
+    
         
-        
+    def AjouteLigneTotal(self, listeNomsColonnes=[]):
+        return
+        for (iCol, col) in enumerate(self.columns):
+            print col, col.__dict__
+            colWidth = self.GetColumnWidth(iCol)
+            boundedWidth = col.CalcBoundedWidth(colWidth)
+            print colWidth, boundedWidth
 
+
+        # Récupération des totaux des colonnes souhaitées
+        dictTotaux = {}
+        nbreLignes = 0
+        for track in self.modelObjects :
+            for nomColonne in listeNomsColonnes :
+                valeur = getattr(track, nomColonne)
+                if dictTotaux.has_key(nomColonne) == False :
+                    dictTotaux[nomColonne] = 0
+                else :
+                    dictTotaux[nomColonne] += valeur
+            nbreLignes += 1
+        
+        track = Track(dictTotaux)
+##        self.modelObjects.append(track)
+        self.AddObject(track)
+    
+    def SetFooter(self, ctrl=None, dictColonnes={}):
+        self.ctrl_footer = ctrl
+        self.ctrl_footer.listview = self
+        self.ctrl_footer.dictColonnes = dictColonnes
+    
+    def MAJ_footer(self):
+        if self.ctrl_footer != None :
+            self.ctrl_footer.MAJ()
+    
+    def GetListview(self):
+        return self
+        
+        
+        
 ########################################################################
 
+class Track():
+    def __init__(self, dictTotaux):
+        for nomColonne, total in dictTotaux.iteritems() :
+            setattr(self, nomColonne, total)
+        
+        
 class AbstractVirtualObjectListView(ObjectListView):
     """
     This class holds the behaviour that is common to all virtual lists.
@@ -2585,10 +2637,13 @@ class FastObjectListView(AbstractVirtualObjectListView):
         self._BuildInnerList()
         self.SetItemCount(len(self.innerList))
         self.RefreshObjects()
-
+        
         # Auto-resize once all the data has been added
         self.AutoSizeColumns()
-
+        
+        # MAJ Footer
+        if self.ctrl_footer :
+            self.MAJ_footer()
 
     def RefreshObjects(self, aList=None):
         """
@@ -2633,6 +2688,31 @@ class FastObjectListView(AbstractVirtualObjectListView):
         self.RefreshObjects()
 
 
+class PanelAvecFooter(wx.Panel):
+    def __init__(self, parent, listview=None, kwargs={}, dictColonnes={}, style=wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL):
+        wx.Panel.__init__(self, parent, id=-1, style=style)
+        
+        # Contrôles
+        if kwargs.has_key("parent") == False : kwargs["parent"] = self
+        if kwargs.has_key("id") == False : kwargs["id"] = -1
+        if kwargs.has_key("style") == False : kwargs["style"] = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES
+        
+        self.ctrl_listview = listview(**kwargs)
+        self.ctrl_listview.SetMinSize((10, 10)) 
+        self.ctrl_footer = Footer.Footer(self)
+        self.ctrl_listview.SetFooter(ctrl=self.ctrl_footer, dictColonnes=dictColonnes)
+        
+        # Layout
+        sizerbase = wx.BoxSizer(wx.VERTICAL)
+        sizerbase.Add(self.ctrl_listview, 1, wx.ALL|wx.EXPAND, 0)
+        sizerbase.Add(self.ctrl_footer, 0, wx.ALL|wx.EXPAND, 0)
+        self.SetSizer(sizerbase)
+        self.Layout()
+        
+    def GetListview(self):
+        return self.ctrl_listview
+        
+    
 #######################################################################
 
 class GroupListView(FastObjectListView):

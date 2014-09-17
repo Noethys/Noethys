@@ -19,7 +19,7 @@ import cStringIO
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 try: import psyco; psyco.full()
 except: pass
@@ -546,6 +546,16 @@ class BarreRecherche(wx.SearchCtrl):
         self.listView.RepopulateList()
         self.Refresh() 
 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nom_mode" : {"mode" : "nombre", "singulier" : u"règlement", "pluriel" : u"règlements", "alignement" : wx.ALIGN_CENTER},
+            "montant" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

@@ -15,7 +15,7 @@ import GestionDB
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 import UTILS_Utilisateurs
 
 
@@ -189,7 +189,7 @@ class ListView(FastObjectListView):
             ColumnDefn(u"Compte", 'left', 120, "nom_compte"),
             ColumnDefn(u"Observations", 'left', 100, "observations"),
             ColumnDefn(u"Nbre", 'centre', 40, "nbre"),
-            ColumnDefn(u"Total", 'right', 65, "total", stringConverter=FormateMontant),
+            ColumnDefn(u"Total", 'right', 75, "total", stringConverter=FormateMontant),
             ColumnDefn(u"Détail", 'left', 210, "detail"),
             ]
         
@@ -413,6 +413,17 @@ class BarreRecherche(wx.SearchCtrl):
         self.listView.RepopulateList()
         self.listView.Refresh() 
 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nom" : {"mode" : "nombre", "singulier" : u"dépôt", "pluriel" : u"dépôts", "alignement" : wx.ALIGN_CENTER},
+            "nbre" : {"mode" : "total"},
+            "total" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

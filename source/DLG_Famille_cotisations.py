@@ -26,8 +26,8 @@ class Panel(wx.Panel):
         codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom"]
         checkColonne = True
         triColonne = "date_debut"
-        self.ctrl_listview = OL_Liste_cotisations.ListView(self, id=-1, IDfamille=IDfamille, mode="famille", codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        self.ctrl_listview.SetMinSize((20, 20))
+        self.listviewAvecFooter = OL_Liste_cotisations.ListviewAvecFooter(self, kwargs={"IDfamille" : IDfamille, "mode" : "famille", "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
+        self.ctrl_listview = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Liste_cotisations.BarreRecherche(self)
         
         # Commandes boutons
@@ -53,7 +53,7 @@ class Panel(wx.Panel):
         staticbox_cotisations = wx.StaticBoxSizer(self.staticbox_cotisations, wx.VERTICAL)
         grid_sizer_cotisations = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
-        grid_sizer_cotisations.Add(self.ctrl_listview, 1, wx.EXPAND, 0)
+        grid_sizer_cotisations.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_ajouter, 0, wx.ALL, 0)

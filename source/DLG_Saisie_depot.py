@@ -181,7 +181,9 @@ class Dialog(wx.Dialog):
         
         # Reglements
         self.staticbox_reglements_staticbox = wx.StaticBox(self, -1, u"Règlements")
-        self.ctrl_reglements = OL_Reglements_depots.ListView(self, id=-1, inclus=True, selectionPossible=False, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.listviewAvecFooter = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True, "selectionPossible" : False}) 
+        self.ctrl_reglements = self.listviewAvecFooter.GetListview()
+        
         self.ctrl_infos = CTRL_Infos(self, hauteur=32, couleurFond="#F0FBED" , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.SUNKEN_BORDER)
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Depot_ajouter.png", wx.BITMAP_TYPE_ANY))
         
@@ -271,7 +273,7 @@ class Dialog(wx.Dialog):
         grid_sizer_parametres.AddGrowableCol(1)
         staticbox_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_parametres, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
-        grid_sizer_reglements.Add(self.ctrl_reglements, 1, wx.EXPAND, 0)
+        grid_sizer_reglements.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         grid_sizer_bas_reglements.Add(self.ctrl_infos, 0, wx.EXPAND, 0)
         grid_sizer_bas_reglements.Add(self.bouton_ajouter, 0, wx.EXPAND, 0)
         grid_sizer_bas_reglements.AddGrowableCol(0)

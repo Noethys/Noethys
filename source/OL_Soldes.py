@@ -18,11 +18,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
-
-try: import psyco; psyco.full()
-except: pass
-
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 
 def DateEngFr(textDate):
@@ -189,7 +185,7 @@ class ListView(FastObjectListView):
                 return self.imgVentilation
 
         def FormateMontant(montant):
-            if montant == None or montant == FloatToDecimal(0.0) : return u""
+            if montant == None : return u""
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateSolde(montant):
@@ -221,6 +217,7 @@ class ListView(FastObjectListView):
         self.date = date
         self.InitModel(date, afficherDebit, afficherCredit, afficherNul)
         self.SetObjects(self.donnees)
+##        self.AjouteLigneTotal(listeNomsColonnes=["solde", "total_prestations", "total_reglements"]) 
 
     def DefileDernier(self):
         """ Defile jusqu'au dernier item de la liste """
@@ -361,6 +358,28 @@ class BarreRecherche(wx.SearchCtrl):
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nomsTitulaires" : {"mode" : "nombre", "singulier" : "famille", "pluriel" : "familles", "alignement" : wx.ALIGN_CENTER},
+            "solde" : {"mode" : "total"},
+            "total_prestations" : {"mode" : "total"},
+            "total_reglements" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
+
+##class ListviewAvecFooter(PanelAvecFooter):
+##    def __init__(self, parent):
+##        dictColonnes = {
+##            "nomsTitulaires" : {"mode" : "nombre", "singulier" : "famille", "pluriel" : "familles", "alignement" : wx.ALIGN_CENTER, "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
+##            "solde" : {"mode" : "total", "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
+##            "total_prestations" : {"mode" : "total", "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD), "couleur" : wx.Colour(0, 0, 0), },
+##            "total_reglements" : {"mode" : "texte", "texte" : u"Coucou !", "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
+##            }
+##        PanelAvecFooter.__init__(self, parent, ListView, dictColonnes)
+
+
+
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         wx.Frame.__init__(self, *args, **kwds)
@@ -368,10 +387,13 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ() 
+        
+        ctrl = ListviewAvecFooter(panel) 
+        listview = ctrl.GetListview()
+        listview.MAJ() 
+        
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(ctrl, 1, wx.ALL|wx.EXPAND, 10)
         panel.SetSizer(sizer_2)
         self.Layout()
         self.SetSize((800, 400))

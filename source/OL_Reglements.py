@@ -18,7 +18,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -622,6 +622,17 @@ class BarreRecherche(wx.SearchCtrl):
         self.listView.GetFilter().SetText(txtSearch)
         self.listView.RepopulateList()
         self.Refresh() 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nom_mode" : {"mode" : "nombre", "singulier" : u"règlement", "pluriel" : u"règlements", "alignement" : wx.ALIGN_CENTER},
+            "montant" : {"mode" : "total"},
+            "montant_ventilation" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

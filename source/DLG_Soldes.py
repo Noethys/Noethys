@@ -14,8 +14,6 @@ import CTRL_Bandeau
 import OL_Soldes
 import CTRL_Saisie_date
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Dialog(wx.Dialog):
@@ -38,7 +36,10 @@ class Dialog(wx.Dialog):
         self.bouton_actualiser = wx.Button(self, -1, u"Actualiser")
         
         # Liste
-        self.ctrl_soldes = OL_Soldes.ListView(self, id=-1, name="OL_soldes", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+##        self.ctrl_soldes = OL_Soldes.ListView(self, id=-1, name="OL_soldes", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.listviewAvecFooter = OL_Soldes.ListviewAvecFooter(self) 
+        self.ctrl_soldes = self.listviewAvecFooter.GetListview()
+
         self.ctrl_recherche = OL_Soldes.BarreRecherche(self)
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
@@ -110,7 +111,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche.Add(self.ctrl_soldes, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)

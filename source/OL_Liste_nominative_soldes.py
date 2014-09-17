@@ -23,7 +23,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 DICT_INFOS_INDIVIDUS = {}
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 
 
@@ -312,8 +312,10 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateSolde(montant):
-            if montant == None or montant == 0.0 : return u""
-            if montant >= decimal.Decimal(str("0.0")) :
+            if montant == None : montant = decimal.Decimal("0.0")
+            if montant == decimal.Decimal(str("0.0")) :
+                return u"%.2f %s" % (montant, SYMBOLE)
+            elif montant > decimal.Decimal(str("0.0")) :
                 return u"- %.2f %s" % (montant, SYMBOLE)
             else:
                 return u"+ %.2f %s" % (montant, SYMBOLE)
@@ -544,7 +546,17 @@ class BarreRecherche(wx.SearchCtrl):
         self.Refresh() 
 
 
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nomComplet" : {"mode" : "nombre", "singulier" : u"individu", "pluriel" : u"individus", "alignement" : wx.ALIGN_CENTER},
+            "totalFacture" : {"mode" : "total"},
+            "totalRegle" : {"mode" : "total"},
+            "totalSolde" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 # ----------------- FRAME DE TEST ----------------------------------------------------------------
 

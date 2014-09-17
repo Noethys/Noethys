@@ -110,8 +110,8 @@ class Dialog(wx.Dialog):
 
         # Dépôts
         self.staticbox_depots = wx.StaticBox(self, -1, u"Dépôts de cotisations")
-        self.ctrl_depots = OL_Depots_cotisations.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_depots.SetMinSize((100, 100))
+        self.listviewAvecFooter = OL_Depots_cotisations.ListviewAvecFooter(self, kwargs={}) 
+        self.ctrl_depots = self.listviewAvecFooter.GetListview()
         self.ctrl_depots.MAJ()
         self.ctrl_recherche = OL_Depots_cotisations.BarreRecherche(self)
 
@@ -165,7 +165,7 @@ class Dialog(wx.Dialog):
         grid_sizer_depots = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche.Add(self.ctrl_depots, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)

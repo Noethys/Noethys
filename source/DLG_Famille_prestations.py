@@ -169,8 +169,8 @@ class Panel(wx.Panel):
         self.staticbox_prestations = wx.StaticBox(self, -1, u"Prestations")
         
         # OL Prestations
-        self.ctrl_prestations = OL_Prestations.ListView(self, id=-1, IDfamille=IDfamille, name="OL_prestations", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        self.ctrl_prestations.SetMinSize((20, 20)) 
+        self.listviewAvecFooter = OL_Prestations.ListviewAvecFooter(self, kwargs={"IDfamille" : IDfamille}) 
+        self.ctrl_prestations = self.listviewAvecFooter.GetListview()
         
         # Options d'affichage hyperliens
         self.ctrl_regroupement = wx.CheckBox(self, -1, u"Regrouper par ")
@@ -188,6 +188,7 @@ class Panel(wx.Panel):
         self.hyper_factures = Hyperlien(self, label=u"Toutes les factures", infobulle=u"Cliquez ici pour filtrer les factures", URL="factures", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les factures", champFiltre="prestations.IDfacture")
         
         self.ctrl_total = wx.StaticText(self, -1, u"Total = 0.00 %s" % SYMBOLE)
+        self.ctrl_total.Show(False)
         
         # Commandes boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -212,7 +213,7 @@ class Panel(wx.Panel):
         staticbox_prestations = wx.StaticBoxSizer(self.staticbox_prestations, wx.VERTICAL)
         grid_sizer_prestations = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
         
-        grid_sizer_prestations.Add(self.ctrl_prestations, 1, wx.EXPAND, 0)
+        grid_sizer_prestations.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_ajouter, 0, wx.ALL, 0)

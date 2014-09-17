@@ -46,9 +46,8 @@ class CTRL(wx.Panel):
         self.parent = parent
         
         # Liste des factures
-        self.ctrl_factures = OL_Factures.ListView(self, id=-1, codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, 
-                                                                    style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        self.ctrl_factures.SetMinSize((100, 100)) 
+        self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
+        self.ctrl_factures = self.listviewAvecFooter.GetListview()
         
         # Ctrl des filtres de sélection
         self.ctrl_filtres = DLG_Filtres_factures.CTRL_Filtres(self, filtres=filtres, ctrl_factures=self.ctrl_factures)
@@ -93,7 +92,7 @@ class CTRL(wx.Panel):
         grid_sizer_base.Add(self.ctrl_filtres, 0, wx.EXPAND | wx.BOTTOM, 5)
         
         grid_sizer_liste = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
-        grid_sizer_liste.Add(self.ctrl_factures, 1, wx.EXPAND, 0)
+        grid_sizer_liste.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
         
         # Commandes de liste
         grid_sizer_commandes = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)

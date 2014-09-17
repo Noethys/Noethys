@@ -19,7 +19,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import UTILS_Titulaires
 import UTILS_Utilisateurs
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 
 class Track(object):
@@ -363,6 +363,16 @@ class BarreRecherche(wx.SearchCtrl):
         self.Refresh() 
 
 
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "titulaires" : {"mode" : "nombre", "singulier" : u"famille", "pluriel" : u"familles", "alignement" : wx.ALIGN_CENTER},
+            "quantite" : {"mode" : "total"},
+            "impaye" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 
 # ----------------- FRAME DE TEST ----------------------------------------------------------------

@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
 
 import UTILS_Utilisateurs
 
@@ -410,6 +410,16 @@ class BarreRecherche(wx.SearchCtrl):
         self.listView.RepopulateList()
         self.listView.Refresh() 
 
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nom" : {"mode" : "nombre", "singulier" : u"dépôt", "pluriel" : u"dépôts", "alignement" : wx.ALIGN_CENTER},
+            "nbre" : {"mode" : "total"},
+            }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

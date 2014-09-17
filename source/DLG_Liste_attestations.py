@@ -12,8 +12,6 @@ import wx
 import CTRL_Bandeau
 import OL_Attestations
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Dialog(wx.Dialog):
@@ -25,8 +23,11 @@ class Dialog(wx.Dialog):
         intro = u"Vous pouvez ici consulter la liste complète des attestations de présence créées dans le logiciel."
         titre = u"Liste des attestations de présence"
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
-        
-        self.ctrl_listview = OL_Attestations.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_attestations", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+
+        self.listviewAvecFooter = OL_Attestations.ListviewAvecFooter(self, kwargs={"IDfamille" : self.IDfamille}) 
+        self.ctrl_listview = self.listviewAvecFooter.GetListview()
+
+##        self.ctrl_listview = OL_Attestations.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_attestations", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_listview.MAJ() 
         self.ctrl_recherche = OL_Attestations.BarreRecherche(self)
 
@@ -58,7 +59,7 @@ class Dialog(wx.Dialog):
         grid_sizer_droit = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
-        grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)

@@ -540,9 +540,9 @@ class Dialog(wx.Dialog):
         titre = u"Liste des inscriptions"
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
-        
-        self.ctrl_listview = OL_Liste_inscriptions.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_listview.SetMinSize((100, 100))
+
+        self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={}) 
+        self.ctrl_listview = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Liste_inscriptions.BarreRecherche(self)
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_listview)
         
@@ -590,7 +590,7 @@ class Dialog(wx.Dialog):
         # Liste + Barre de recherche
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
-        grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)
