@@ -14,7 +14,10 @@ import time
 import datetime
 import GestionDB
 
-import smartcard
+try :
+    import smartcard
+except :
+    pass
 
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC

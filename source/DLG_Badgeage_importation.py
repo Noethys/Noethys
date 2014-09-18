@@ -16,14 +16,20 @@ import wx.lib.agw.hyperlink as Hyperlink
 import wx.lib.filebrowsebutton as filebrowse
 import wx.lib.agw.pybusyinfo as PBI
 
-import xlrd
+try :
+    import xlrd
+except :
+    pass
 from Outils import unicodecsv as csv
 import GestionDB
 import CTRL_Saisie_date
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter
 
-import UTILS_CS1504
+try :
+    import UTILS_CS1504
+except:
+    pass
 import UTILS_Config
 
 

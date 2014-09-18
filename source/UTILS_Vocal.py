@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-import pyttsx
+try :
+    import pyttsx
+except :
+    pass
 import GestionDB
 import UTILS_Parametres
 import UTILS_Config

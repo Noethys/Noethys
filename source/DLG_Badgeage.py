@@ -382,6 +382,16 @@ class Dialog(wx.Dialog):
     
     def OnBoutonImportation(self, event):
         """ Importation de badgeages """
+        # Vérifie si procédure de badgeage sélectionnée
+        nomProcedure = self.ctrl_procedure.GetNom() 
+        IDprocedure = self.ctrl_procedure.GetID() 
+
+        if IDprocedure == None : 
+            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une procédure de badgeage !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         # Recherche des badgeages à importer
         import DLG_Badgeage_importation
         dlg = DLG_Badgeage_importation.Dialog(self)
@@ -393,9 +403,6 @@ class Dialog(wx.Dialog):
             return
         
         # Vérifie si procédure compatible avec importation de badgeages
-        nomProcedure = self.ctrl_procedure.GetNom() 
-        IDprocedure = self.ctrl_procedure.GetID() 
-        
         DB = GestionDB.DB() 
         req = """SELECT IDaction, ordre, action, action_demande, action_message, action_question
         FROM badgeage_actions 
