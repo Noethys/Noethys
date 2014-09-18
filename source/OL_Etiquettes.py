@@ -447,7 +447,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(u"Ville", "left", 120, "ville_resid"),
 ##                ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile"),
 ##                ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile"),
-##                ColumnDefn(u"Email", "left", 150, "mail"),
+                ColumnDefn(u"Email", "left", 150, "mail"),
 ##                ColumnDefn(u"Profession", "left", 150, "profession"),
 ##                ColumnDefn(u"Employeur", "left", 150, "employeur"),
 ##                ColumnDefn(u"Tél pro.", "left", 100, "travail_tel"),
