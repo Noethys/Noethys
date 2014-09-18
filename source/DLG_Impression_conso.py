@@ -2058,13 +2058,14 @@ class Dialog(wx.Dialog):
                             style.append( ('GRID', (0,0), (-1,-1), 0.25, colors.black) )
                         
                         # Vérifie si la largeur du tableau est inférieure à la largeur de la page
-                        largeurTableau = 0
-                        for largeur in largeursColonnes :
-                            if largeur < 0 :
-                                dlg = wx.MessageDialog(self, u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier...", u"Erreur", wx.OK | wx.ICON_ERROR)
-                                dlg.ShowModal()
-                                dlg.Destroy()
-                                return
+                        if modeExport == False :
+                            largeurTableau = 0
+                            for largeur in largeursColonnes :
+                                if largeur < 0 :
+                                    dlg = wx.MessageDialog(self, u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier...", u"Erreur", wx.OK | wx.ICON_ERROR)
+                                    dlg.ShowModal()
+                                    dlg.Destroy()
+                                    return False
                         
                         # Création du tableau
                         if typeListe == "period" :
