@@ -8,7 +8,12 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-from Crypto.Cipher import AES
+try :
+    from Crypto.Cipher import AES
+    CRYPTO_IMPORT = True
+except :
+    CRYPTO_IMPORT = False
+    
 import hashlib
 import pickle
 import sys, getopt
