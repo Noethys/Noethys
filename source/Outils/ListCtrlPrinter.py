@@ -595,7 +595,8 @@ class ListCtrlPrintout(wx.Printout):
             if printer.Print(parent, self, True):
                 self.printData = wx.PrintData(printer.GetPrintDialogData().GetPrintData())
             else:
-                wx.MessageBox(u"Impression annulée", u"Impression", wx.OK)
+                pass
+##                wx.MessageBox(u"Impression annulée", u"Impression", wx.OK)
         finally:
             pdd.Destroy()
 

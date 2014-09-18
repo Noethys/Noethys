@@ -13,11 +13,10 @@ import datetime
 from ObjectListView import ReportFormat
 from Outils import ListCtrlPrinter
 import GestionDB
+import DLG_Options_impression_listes
+import UTILS_Dates
 
 
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
 
 
 class PreviewControlBar(wx.PyPreviewControlBar):
@@ -186,31 +185,159 @@ class PreviewFrame(wx.PyPreviewFrame):
 
 class ObjectListViewPrinter():
     def __init__(self, listview, titre=u"", intro=u"", total=u"", format="A", orientation=wx.PORTRAIT):
+        self.listview = listview
         self.titre = titre
         self.intro = intro
         self.total = total
         self.orientation = orientation
-        
-        self.printer = ListCtrlPrinter.ListCtrlPrinter(listview, self.titre)
-        self.printer.printout.margins = (wx.Point(5, 5), wx.Point(5, 5))
-        self.printer.printout.printData.SetOrientation(orientation)
-        self.printer.printout.printData.SetQuality(wx.PRINT_QUALITY_MEDIUM)
-        dateJour = DateEngFr(str(datetime.date.today()))
-        self.printer.PageFooter = (dateJour, u"%s - %s" % (self.titre, self.GetNomOrganisateur()), "%(currentPage)d / %(totalPages)d")
-        ListCtrlPrinter.LISTINTRO = self.intro
-        ListCtrlPrinter.LISTFOOTER = self.total
-        if format == "A" : self.printer.ReportFormat = self.GetFormatA()
     
+    def InitParametres(self):
+        """ Récupération des paramètres d'impression """
+        # DLG des paramètres d'impression
+        dictOptions = {
+            "titre" : self.titre,
+            "introduction" : self.intro,
+            "conclusion" : self.total,
+            "orientation" : self.orientation,
+            }
+        dlg = DLG_Options_impression_listes.Dialog(None, dictOptions=dictOptions)      
+        if dlg.ShowModal() == wx.ID_OK:
+            dictOptions = dlg.GetOptions()
+            dlg.Destroy() 
+        else :
+            dlg.Destroy() 
+            return False
+        
+        # Remplacement des mots-clés
+        listeChamps = ["pied_page_texte_gauche", "pied_page_texte_milieu", "pied_page_texte_droite"]
+        nomOrganisateur = self.GetNomOrganisateur()
+        for key, valeur in dictOptions.iteritems() :
+            if key in listeChamps :
+                valeur = valeur.replace("{DATE_JOUR}", UTILS_Dates.DateDDEnFr(datetime.date.today()))
+                valeur = valeur.replace("{TITRE_DOCUMENT}", self.titre)
+                valeur = valeur.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
+                valeur = valeur.replace("{NUM_PAGE}", "%(currentPage)d")
+                valeur = valeur.replace("{NBRE_PAGES}", "%(totalPages)d")
+                dictOptions[key] = valeur
+                
+        # Préparation du printout
+        self.printer = ListCtrlPrinter.ListCtrlPrinter(self.listview, dictOptions["titre"])
+        self.printer.printout.margins = (wx.Point(dictOptions["marge_gauche"], dictOptions["marge_haut"]), wx.Point(dictOptions["marge_droite"], dictOptions["marge_bas"]))
+        self.printer.printout.printData.SetOrientation(dictOptions["orientation"])
+        self.printer.printout.printData.SetQuality(dictOptions["qualite_impression"])
+        self.printer.PageFooter = (dictOptions["pied_page_texte_gauche"], dictOptions["pied_page_texte_milieu"], dictOptions["pied_page_texte_droite"])
+        ListCtrlPrinter.LISTINTRO = dictOptions["introduction"]
+        ListCtrlPrinter.LISTFOOTER = dictOptions["conclusion"]
+        
+        # Préparation du format
+        fmt = ReportFormat()
+        
+        # Entête de page
+    ##        fmt.PageHeader.Font = wx.FFont(10, wx.FONTFAMILY_DECORATIVE, wx.FONTFLAG_BOLD, face=headerFontName)
+    ##        fmt.PageHeader.TextColor = wx.WHITE
+    ##        fmt.PageHeader.Background(wx.GREEN, wx.RED, space=(16, 4, 0, 4))
+    ##        fmt.PageHeader.Padding = (0, 0, 0, 12)
+        
+        # Titre de liste
+        fmt.ListHeader.Font = wx.Font(dictOptions["titre_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["titre_style"], faceName="Arial") 
+        fmt.ListHeader.TextColor = dictOptions["titre_couleur"]
+        fmt.ListHeader.Padding = (0, 12, 0, 10)
+        fmt.ListHeader.TextAlignment = dictOptions["titre_alignement"]
+        fmt.ListHeader.Frame(wx.Pen(wx.BLACK, 0.25, wx.SOLID), space=10)
+        
+        # Intro
+        fmt.ListIntro.Font = wx.Font(dictOptions["intro_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["intro_style"], faceName="Arial") 
+        fmt.ListIntro.TextColor = dictOptions["intro_couleur"]
+        fmt.ListIntro.Padding = (12, 2, 12, 2)
+        fmt.ListIntro.TextAlignment = dictOptions["intro_alignement"]
+        fmt.ListIntro.CanWrap = True
+        
+        # Titre de colonne
+        fmt.ColumnHeader.Font = wx.Font(dictOptions["titre_colonne_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["titre_colonne_style"], faceName="Arial") 
+        fmt.ColumnHeader.TextColor = dictOptions["titre_colonne_couleur"]
+        fmt.ColumnHeader.Padding = (0, 15, 0, 0)
+        fmt.ColumnHeader.Background(dictOptions["titre_colonne_couleur_fond"])
+        fmt.ColumnHeader.CellPadding = 5
+        fmt.ColumnHeader.TextAlignment = dictOptions["titre_colonne_alignement"]
+        fmt.ColumnHeader.GridPen = wx.Pen(dictOptions["grille_trait_couleur"], dictOptions["grille_trait_epaisseur"], wx.SOLID)
+        fmt.ColumnHeader.SetAlwaysCenter(True)
+        
+        # Titre d'un groupe
+        fmt.GroupTitle.Font = wx.FFont(9, wx.FONTFAMILY_SWISS, wx.FONTFLAG_BOLD, face="Arial")
+        fmt.GroupTitle.Padding = (2, 10, 2, 2)
+        fmt.GroupTitle.CellPadding = 12
+        fmt.GroupTitle.GridPen = wx.Pen(dictOptions["grille_trait_couleur"], dictOptions["grille_trait_epaisseur"], wx.SOLID)
+        
+##        fmt.GroupTitle.TextColor = wx.BLUE
+##        fmt.GroupTitle.Padding = (0, 12, 0, 12)
+##        fmt.GroupTitle.Line(wx.BOTTOM, wx.GREEN, 4, toColor=wx.WHITE, space=0)
+
+        # Ligne
+        fmt.Row.Font = wx.Font(dictOptions["ligne_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["ligne_style"], faceName="Arial") 
+        fmt.Row.TextColor = dictOptions["ligne_couleur"]
+        fmt.Row.CellPadding = 5
+        fmt.Row.GridPen = wx.Pen(dictOptions["grille_trait_couleur"], dictOptions["grille_trait_epaisseur"], wx.SOLID)
+        fmt.Row.CanWrap = dictOptions["ligne_multilignes"]
+        
+        # Pied de page
+        fmt.PageFooter.Font = wx.Font(dictOptions["pied_page_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["pied_page_style"], faceName="Arial") 
+        fmt.PageFooter.TextColor = dictOptions["pied_page_couleur"]
+        fmt.PageFooter.Line(wx.TOP, wx.BLACK, 1, space=3)
+        fmt.PageFooter.Padding = (0, 16, 0, 0)
+
+        # Pied de colonne
+        fmt.ColumnFooter.Font = wx.Font(dictOptions["pied_colonne_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["pied_colonne_style"], faceName="Arial") 
+        fmt.ColumnFooter.TextColor = dictOptions["pied_colonne_couleur"]
+        fmt.ColumnFooter.Padding = (0, 0, 0, 0)
+        fmt.ColumnFooter.Background(dictOptions["pied_colonne_couleur_fond"])
+        fmt.ColumnFooter.CellPadding = 5
+        fmt.ColumnFooter.TextAlignment = dictOptions["pied_colonne_alignement"]
+        fmt.ColumnFooter.GridPen = wx.Pen(dictOptions["grille_trait_couleur"], dictOptions["grille_trait_epaisseur"], wx.SOLID)
+##        fmt.ColumnFooter.SetAlwaysCenter(True)
+
+        # Conclusion
+        fmt.ListFooter.Font = wx.Font(dictOptions["conclusion_taille_texte"], wx.SWISS, wx.NORMAL, dictOptions["conclusion_style"], faceName="Arial") 
+        fmt.ListFooter.TextColor = dictOptions["conclusion_couleur"]
+        fmt.ListFooter.Padding = (12, 12, 0, 0)
+        fmt.ListFooter.CellPadding = 5
+##        fmt.ListFooter.Line(wx.TOP, wx.BLACK, 1, space=3)
+        fmt.ListFooter.TextAlignment = dictOptions["conclusion_alignement"]
+        fmt.ListFooter.CanWrap = True
+        
+        # Divers paramètres
+        fmt.IsShrinkToFit = True
+        fmt.IncludeImages = dictOptions["inclure_images"]
+        fmt.IsColumnHeadingsOnEachPage = dictOptions["entetes_toutes_pages"]
+        fmt.UseListCtrlTextFormat = True
+
+        self.printer.ReportFormat = fmt
+        return True
+
+##        self.printer = ListCtrlPrinter.ListCtrlPrinter(self.listview, self.titre)
+##        self.printer.printout.margins = (wx.Point(5, 5), wx.Point(5, 5))
+##        self.printer.printout.printData.SetOrientation(orientation)
+##        self.printer.printout.printData.SetQuality(wx.PRINT_QUALITY_MEDIUM)
+##        dateJour = DateEngFr(str(datetime.date.today()))
+##        self.printer.PageFooter = (dateJour, u"%s - %s" % (self.titre, self.GetNomOrganisateur()), "%(currentPage)d / %(totalPages)d")
+##        ListCtrlPrinter.LISTINTRO = self.intro
+##        ListCtrlPrinter.LISTFOOTER = self.total
+##        if format == "A" : self.printer.ReportFormat = self.GetFormatA()
+        
     def PreviewStandard(self):
+        if self.InitParametres() == False :
+            return
         self.printer.PrintPreview()
     
     def Print(self):
+        if self.InitParametres() == False :
+            return
         self.printer.Print() 
     
     def Preview(self):
+        if self.InitParametres() == False :
+            return
         printPreview = self.printer.printout.GetPrintPreview()
 ##        preview_window = PreviewFrame(printPreview, None, self.titre, self.orientation)
-        
         printPreview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
         preview_window = wx.PreviewFrame(printPreview, None, u"Aperçu avant impression")
@@ -243,6 +370,7 @@ class ObjectListViewPrinter():
         
         # Intro
         fmt.ListIntro.Font = wx.FFont(7, wx.FONTFAMILY_DECORATIVE, face=headerFontName)
+        fmt.ListIntro.TextColor = wx.BLACK
         fmt.ListIntro.Padding = (12, 2, 12, 2)
         fmt.ListIntro.TextAlignment = wx.ALIGN_LEFT
         fmt.ListIntro.CanWrap = True
@@ -274,6 +402,7 @@ class ObjectListViewPrinter():
         
         # Pied de page
         fmt.PageFooter.Font = wx.FFont(7, wx.FONTFAMILY_DECORATIVE, face=headerFontName)
+        fmt.PageFooter.TextColor = wx.BLACK
         fmt.PageFooter.Line(wx.TOP, wx.BLACK, 1, space=3)
         fmt.PageFooter.Padding = (0, 16, 0, 0)
 
