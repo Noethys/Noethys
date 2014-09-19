@@ -257,15 +257,15 @@ class ListView(GroupListView):
                 dictTemp["ville_resid"] = DICT_INFOS_INDIVIDUS[adresse_auto]["ville_resid"]
             
             # Facturation
-            totalFacture = 0.0
-            totalRegle = 0.0 
-            totalSolde = 0.0 
+            totalFacture = decimal.Decimal(str(0.0))
+            totalRegle = decimal.Decimal(str(0.0))
+            totalSolde = decimal.Decimal(str(0.0))
             key = (dictTemp["IDfamille"], dictTemp["IDindividu"])
             if dictFacturation.has_key(key) :
                 totalFacture = decimal.Decimal(str(dictFacturation[key]["prestations"]))
-                if totalFacture == None : totalFacture = 0.0
+                if totalFacture == None : totalFacture = decimal.Decimal(str(0.0))
                 totalRegle = decimal.Decimal(str(dictFacturation[key]["ventilation"]))
-                if totalRegle == None : totalRegle = 0.0 
+                if totalRegle == None : totalRegle = decimal.Decimal(str(0.0))
                 totalSolde = totalFacture - totalRegle
             dictTemp["totalFacture"] = totalFacture
             dictTemp["totalRegle"] = totalRegle

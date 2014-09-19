@@ -426,13 +426,13 @@ class CTRL(wx.Panel):
         self.ctrl_image_paysage.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDownPaysage)
         
         # Init contrôle
-        if dictOptions.has_key("titre") : 
+        if dictOptions.has_key("titre") and dictOptions["titre"] != None : 
             self.ctrl_titre.SetValue(dictOptions["titre"])
-        if dictOptions.has_key("introduction") : 
+        if dictOptions.has_key("introduction") and dictOptions["introduction"] != None : 
             self.ctrl_introduction.SetValue(dictOptions["introduction"])
-        if dictOptions.has_key("conclusion") : 
+        if dictOptions.has_key("conclusion") and dictOptions["conclusion"] != None : 
             self.ctrl_conclusion.SetValue(dictOptions["conclusion"])
-        if dictOptions.has_key("orientation") : 
+        if dictOptions.has_key("orientation") and dictOptions["orientation"] != None : 
             self.SetOrientation(dictOptions["orientation"])
             
         

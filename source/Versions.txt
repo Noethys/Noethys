@@ -1,3 +1,14 @@
+Version 1.1.3.2 (19/09/2014) :
+
+- Ajout des totaux de listes
+- Ajout des paramètres d'impression de listes
+- Ajout de modes d'affichage dans la synthèse des prestations
+- Ajout de filtres dans la liste des prestations du menu Facturation
+- Correction d'un bug sur l'export des conso
+- Correction d'un bug dans les filtres de questionnaires
+- Correction d'un bug sur la fusion des mots-clés des Emails
+- Corrections de petits bugs
+
 Version 1.1.3.1 (07/09/2014) :
 
 - Ajout des regroupements dans la synthèse de consommations
