@@ -322,7 +322,7 @@ class ListView(FastObjectListView):
         if dlg.ShowModal() == wx.ID_OK:
             IDdepot = dlg.GetIDdepot()
             self.MAJ(IDdepot)
-            self.GetParent().MAJreglements()
+            self.GetGrandParent().MAJreglements()
         dlg.Destroy()
 
     def Modifier(self, event):
@@ -337,7 +337,7 @@ class ListView(FastObjectListView):
         dlg = DLG_Saisie_depot.Dialog(self, IDdepot=IDdepot)      
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(IDdepot)
-            self.GetParent().MAJreglements()
+            self.GetGrandParent().MAJreglements()
         dlg.Destroy() 
 
     def Supprimer(self, event):
@@ -360,7 +360,7 @@ class ListView(FastObjectListView):
             DB.ReqDEL("depots", "IDdepot", IDdepot)
             DB.Close() 
             self.MAJ()
-            self.GetParent().MAJreglements()
+            self.GetGrandParent().MAJreglements()
         dlg.Destroy()
 
 

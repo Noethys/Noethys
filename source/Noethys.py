@@ -8,8 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-import sys
+
 import wx
+import sys
 import platform
 import os
 import datetime

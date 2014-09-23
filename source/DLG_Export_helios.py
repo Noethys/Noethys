@@ -586,7 +586,7 @@ class Dialog(wx.Dialog):
                 if typeImpression == "detail" and dictPrestations.has_key(track.IDfacture) :
                     
                     dataTableau = [(Paragraph(u"Individu", styleLabel), Paragraph(u"Activité", styleLabel), Paragraph(u"Prestation", styleLabel), Paragraph(u"Quantité", styleLabel), Paragraph(u"Montant total", styleLabel)),]
-                    largeursColonnes = [130, 120, 190, 30, 50]
+                    largeursColonnes = [130, 120, 185, 35, 50]
                     
                     for IDindividu, dictLabels in dictPrestations[track.IDfacture].iteritems() :
                         

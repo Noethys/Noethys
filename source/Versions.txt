@@ -1,3 +1,12 @@
+Version 1.1.3.4 (23/09/2014) :
+
+- Correction d'un bug sur les totaux de listes
+- Correction d'un bug sur l'hypertreelist
+
+Version 1.1.3.3 (22/09/2014) :
+
+- Correction d'un bug sur l'envoi d'Emails
+
 Version 1.1.3.2 (19/09/2014) :
 
 - Ajout des totaux de listes

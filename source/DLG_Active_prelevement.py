@@ -158,16 +158,11 @@ class Dialog(wx.Dialog):
 
         # Vérification des données saisies
         if activation == True :
-            
-            pass
-            # TEST de validité du mandat SEPA à coder ici <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            
-##            if self.ControleRIB() == False :
-##                dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
-##                dlg.ShowModal()
-##                dlg.Destroy()
-##                self.ctrl_code_etab.SetFocus()
-##                return
+            if len(self.ctrl_listview.donnees) == 0 :
+                dlg = wx.MessageDialog(self, u"Vous devez saisir au moins un mandat pour pouvoir activer le prélèvement !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
 
         else :
             # Pas d'activation

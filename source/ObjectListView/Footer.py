@@ -42,11 +42,12 @@ class Footer(wx.PyControl):
         for track in self.listview.innerList :
             for nomColonne, dictColonne in self.dictColonnes.iteritems() :
                 if dictColonne["mode"] == "total" :
-                    total = getattr(track, nomColonne)
-                    if self.dictTotaux.has_key(nomColonne) == False :
-                        self.dictTotaux[nomColonne] = 0
-                    if total != None :
-                        self.dictTotaux[nomColonne] += total
+                    if hasattr(track, nomColonne) :
+                        total = getattr(track, nomColonne)
+                        if self.dictTotaux.has_key(nomColonne) == False :
+                            self.dictTotaux[nomColonne] = 0
+                        if total != None :
+                            self.dictTotaux[nomColonne] += total
     
     def MAJ(self):
         self.MAJ_totaux()

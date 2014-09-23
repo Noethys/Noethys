@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
 import wx
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.agw.hyperlink as Hyperlink
@@ -1062,7 +1063,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        self.ctrl = CTRL(panel, IDcompte_payeur=11, IDreglement=None)
+        self.ctrl = CTRL(panel, IDcompte_payeur=209, IDreglement=None)
         self.ctrl.SetMontantReglement(8.00)
         self.ctrl.MAJ() 
     

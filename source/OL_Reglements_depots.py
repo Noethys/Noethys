@@ -98,7 +98,7 @@ class ListView(FastObjectListView):
                 nextTrack = None
         else:
             nextTrack = self.GetObjectAt(index+1)
-        self.GetParent().MAJListes(self.tracks, selectionTrack=track, nextTrack=nextTrack)
+        self.GetGrandParent().MAJListes(self.tracks, selectionTrack=track, nextTrack=nextTrack)
         
     def InitModel(self, tracks=None, IDcompte=None, IDmode=None):
         if tracks != None :
@@ -435,8 +435,8 @@ class ListView(FastObjectListView):
 
     def Impression(self):
         # Récupère l'intitulé du compte
-        if self.GetParent().GetName() == "DLG_Saisie_depot" :
-            txtIntro = self.GetParent().GetLabelParametres()
+        if self.GetGrandParent().GetName() == "DLG_Saisie_depot" :
+            txtIntro = self.GetGrandParent().GetLabelParametres()
         else :
             txtIntro = u""
         # Récupère le total
@@ -473,10 +473,10 @@ class ListView(FastObjectListView):
         import DLG_Saisie_reglement
         dlg = DLG_Saisie_reglement.Dialog(self, IDcompte_payeur=None, IDreglement=IDreglement)      
         if dlg.ShowModal() == wx.ID_OK:
-            if self.GetParent().GetName() == "DLG_Saisie_depot" :
+            if self.GetGrandParent().GetName() == "DLG_Saisie_depot" :
                 self.MAJ(selectionTrack=track) 
-            if self.GetParent().GetName() == "DLG_Saisie_depot_ajouter" :
-                self.GetParent().MAJListes(self.tracks, selectionTrack=track)
+            if self.GetGrandParent().GetName() == "DLG_Saisie_depot_ajouter" :
+                self.GetGrandParent().MAJListes(self.tracks, selectionTrack=track)
         dlg.Destroy() 
 
     def Supprimer(self, event):
@@ -492,7 +492,7 @@ class ListView(FastObjectListView):
             DB.ReqDEL("reglements", "IDreglement", IDreglement)
             DB.ReqDEL("ventilation", "IDreglement", IDreglement)
             DB.Close() 
-            self.GetParent().MAJListes(self.tracks)
+            self.GetGrandParent().MAJListes(self.tracks)
         dlg.Destroy()
 
 

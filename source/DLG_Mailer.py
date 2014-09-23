@@ -15,6 +15,7 @@ import re
 import cStringIO
 import traceback
 import copy
+import datetime
 import GestionDB
 import CTRL_Bandeau
 import wx.lib.filebrowsebutton as filebrowse
