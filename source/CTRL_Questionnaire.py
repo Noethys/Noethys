@@ -22,13 +22,14 @@ import DLG_Saisie_question
 import CTRL_Vignettes_documents
 
 import UTILS_Utilisateurs
-
+import wx.lib.agw.floatspin as FS
 
 
 LISTE_CONTROLES = [
     {"code" : "ligne_texte", "label" : u"Ligne de texte", "image" : "Texte_ligne.png", "filtre" : "texte"},
     {"code" : "bloc_texte", "label" : u"Bloc de texte multiligne", "image" : "Texte_bloc.png", "options" : {"hauteur":60}, "filtre" : "texte" },
-    {"code" : "entier", "label" : u"Nombre entier", "image" : "Ctrl_nombre.png", "options" : {"min":0, "max":100}, "filtre" : "entier" },
+    {"code" : "entier", "label" : u"Nombre entier", "image" : "Ctrl_nombre.png", "options" : {"min":0, "max":99999}, "filtre" : "entier" },
+    {"code" : "decimal", "label" : u"Nombre décimal", "image" : "Ctrl_decimal.png", "options" : {"min":0, "max":99999}, "filtre" : "decimal" },
     {"code" : "montant", "label" : u"Montant", "image" : "Euro.png", "filtre" : "montant" },
     {"code" : "liste_deroulante", "label" : u"Liste déroulante", "image" : "Ctrl_choice.png", "options":{"choix":None}, "filtre" : "choix" },
     {"code" : "liste_coches", "label" : u"Liste à cocher", "image" : "Coches.png", "options" : {"hauteur":-1, "choix":None} , "filtre" : "choix"},
@@ -206,7 +207,7 @@ class CTRL_entier(wx.SpinCtrl):
         if self.track.dictOptions.has_key("max"):
             max = int(self.track.dictOptions["max"])
         else:
-            max = 100
+            max = 99999
         self.SetRange(min,max)
     
     def SetValeur(self, valeur=None):
@@ -234,6 +235,53 @@ class CTRL_entier(wx.SpinCtrl):
 
 
 # -------------------------------------------------------------------------------------------------------------------
+
+class CTRL_decimal(FS.FloatSpin):
+    def __init__(self, parent, item=None, track=None):
+        self.parent = parent
+        self.item = item
+        self.track = track
+
+        if self.track.dictOptions.has_key("min"):
+            min = int(self.track.dictOptions["min"])
+        else:
+            min = 0
+        if self.track.dictOptions.has_key("max"):
+            max = int(self.track.dictOptions["max"])
+        else:
+            max = 99999
+
+        FS.FloatSpin.__init__(self, parent, id=-1, min_val=min, max_val=max, increment=0.1, agwStyle=FS.FS_RIGHT, size=(track.largeur, -1)) 
+        self.SetFormat("%f")
+        self.SetDigits(6)
+        
+    
+    def SetValeur(self, valeur=None):
+        if valeur == None : valeur = 0.0
+        self.SetValue(valeur)
+
+    def SetValeurStr(self, valeur=None):
+        if valeur == None or valeur == "" : return
+        try : 
+            valeur = float(valeur)
+            self.SetValeur(valeur)
+        except : 
+            pass
+
+    def ValidationValeur(self):
+        return True
+
+    def GetValeur(self):
+        valeur = self.GetValue() 
+        if valeur == "" : valeur = None
+        return valeur
+
+    def GetValeurStr(self):
+        return str(self.GetValeur())
+
+
+# -------------------------------------------------------------------------------------------------------------------
+
 
 class CTRL_montant(CTRL_Saisie_euros.CTRL):
     def __init__(self, parent, item=None, track=None):
@@ -1021,6 +1069,7 @@ class CTRL(HTL.HyperTreeList):
                         if track.controle == "ligne_texte" : ctrl = CTRL_ligne_texte(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, -1) )
                         if track.controle == "bloc_texte" : ctrl = CTRL_bloc_texte(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, 60) )
                         if track.controle == "entier" : ctrl = CTRL_entier(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, -1) )
+                        if track.controle == "decimal" : ctrl = CTRL_decimal(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, -1) )
                         if track.controle == "montant" : ctrl = CTRL_montant(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, -1) )
                         if track.controle == "liste_deroulante" : ctrl = CTRL_liste_deroulante(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, -1) )
                         if track.controle == "liste_coches" : ctrl = CTRL_liste_coches(self.GetMainWindow(), item=brancheQuestion, track=track) # size=(largeurControle, -1) )

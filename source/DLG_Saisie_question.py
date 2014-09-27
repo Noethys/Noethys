@@ -407,10 +407,10 @@ class Dialog(wx.Dialog):
         self.ctrl_hauteur.SetRange(-1, 500)
         self.label_valmin = wx.StaticText(self, -1, u"Valeur minimale :")
         self.ctrl_valmin = wx.SpinCtrl(self, -1, "")
-        self.ctrl_valmin.SetRange(0, 500)
+        self.ctrl_valmin.SetRange(0, 99999)
         self.label_valmax = wx.StaticText(self, -1, u"Valeur maximale :")
         self.ctrl_valmax = wx.SpinCtrl(self, -1, "")
-        self.ctrl_valmax.SetRange(1, 500)
+        self.ctrl_valmax.SetRange(1, 99999)
         
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
