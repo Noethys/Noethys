@@ -38,6 +38,7 @@ import UTILS_Config
 import UTILS_Identification
 import UTILS_Historique
 import UTILS_Filtres_questionnaires
+import UTILS_Questionnaires
 import UTILS_Divers
 import UTILS_Parametres
 import UTILS_Utilisateurs
@@ -2950,7 +2951,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         else :
             duree = None
         return duree, heure_min, heure_max
-
+    
+    def GetQuestionnaire(self, IDquestion=None, IDfamille=None, IDindividu=None):
+        if IDquestion in (None, "", 0):
+            return None
+        q = UTILS_Questionnaires.Questionnaires() 
+        reponse = q.GetReponse(IDquestion, IDfamille, IDindividu)
+        return reponse
+        
     def CalculeTarif(self, dictTarif={}, combinaisons_unites=[], date=None, temps_facture=None, IDfamille=None, IDindividu=None, quantite=None, case=None):       
         IDtarif = dictTarif["IDtarif"]
         IDactivite = dictTarif["IDactivite"]
@@ -2962,6 +2970,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if methode_calcul == "montant_unique" :
             lignes_calcul = dictTarif["lignes_calcul"]
             montant_tarif = lignes_calcul[0]["montant_unique"]
+            
+            montant_questionnaire = self.GetQuestionnaire(lignes_calcul[0]["montant_questionnaire"], IDfamille, IDindividu)
+            if montant_questionnaire not in (None, 0.0) :
+                montant_tarif = montant_questionnaire
             
         # Recherche du montant à appliquer : QUOTIENT FAMILIAL
         if methode_calcul == "qf" :
@@ -3008,7 +3020,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 heure_fin_min = HeureStrEnTime(ligneCalcul["heure_fin_min"])
                 heure_fin_max = HeureStrEnTime(ligneCalcul["heure_fin_max"])
                 montant_tarif_ligne = ligneCalcul["montant_unique"]
-                
+
+                montant_questionnaire = self.GetQuestionnaire(ligneCalcul["montant_questionnaire"], IDfamille, IDindividu)
+                if montant_questionnaire not in (None, 0.0) :
+                    montant_tarif_ligne = montant_questionnaire
+
                 if heure_debut_min <= heure_debut <= heure_debut_max and heure_fin_min <= heure_fin <= heure_fin_max :
                     montant_tarif = montant_tarif_ligne
                     if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
@@ -3119,7 +3135,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 duree_min = HeureStrEnDelta(ligneCalcul["duree_min"])
                 duree_max = HeureStrEnDelta(ligneCalcul["duree_max"])
                 montant_tarif_ligne = ligneCalcul["montant_unique"]
-                
+
+                montant_questionnaire = self.GetQuestionnaire(ligneCalcul["montant_questionnaire"], IDfamille, IDindividu)
+                if montant_questionnaire not in (None, 0.0) :
+                    montant_tarif_ligne = montant_questionnaire
+
                 if duree_min <= duree <= duree_max :
                     montant_tarif = montant_tarif_ligne
                     if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
@@ -3414,6 +3434,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 duree_plafond = HeureStrEnDelta(ligneCalcul["duree_plafond"])
                 unite_horaire = HeureStrEnDelta(ligneCalcul["unite_horaire"])
                 montant_tarif_ligne = ligneCalcul["montant_unique"]
+
+                montant_questionnaire = self.GetQuestionnaire(ligneCalcul["montant_questionnaire"], IDfamille, IDindividu)
+                if montant_questionnaire not in (None, 0.0) :
+                    montant_tarif_ligne = montant_questionnaire
+
                 ajustement = ligneCalcul["ajustement"]
 
                 if duree_min == None : 

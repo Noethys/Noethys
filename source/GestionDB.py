@@ -1479,6 +1479,15 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 3, 5)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("tarifs_lignes", "montant_questionnaire", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
+
 
 
 
@@ -1745,7 +1754,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("depots", "code_compta", "VARCHAR(200)")
+##    db.AjoutChamp("tarifs_lignes", "taux_questionnaire", "INTEGER")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT

@@ -444,6 +444,7 @@ DB_DATA = {
                                     ("duree_plafond", "DATE", u"Durée plafond"), 
                                     ("taux", "FLOAT", u"Taux d'effort"), 
                                     ("ajustement", "FLOAT", u"Ajustement (majoration/déduction)"), 
+                                    ("montant_questionnaire", "INTEGER", u"IDquestion de la table questionnaires"),
                                     ], # Lignes du tableau de calcul de tarifs
                                     
     "inscriptions":[           ("IDinscription", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID inscription"),

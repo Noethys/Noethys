@@ -92,14 +92,19 @@ class Questionnaires():
 
 
     def GetQuestions(self, type="individu"):
+        """ Type = None (tout) ou 'individu' ou 'famille' """
+        if type == None :
+            condition = ""
+        else :
+            condition = "WHERE questionnaire_categories.type = '%s'" % type
         # Importation des questions
         DB = GestionDB.DB()
         req = """SELECT IDquestion, questionnaire_questions.label, type, controle, defaut
         FROM questionnaire_questions
         LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie
-        WHERE questionnaire_categories.type = '%s'
+        %s
         ORDER BY questionnaire_questions.ordre
-        ;""" % type
+        ;""" % condition
         DB.ExecuterReq(req)
         listeQuestions = DB.ResultatReq()
         DB.Close()
@@ -148,7 +153,30 @@ class Questionnaires():
             
         return dictReponses
 
-
+    def GetReponse(self, IDquestion=None, IDfamille=None, IDindividu=None):
+        DB = GestionDB.DB()        
+        req = """SELECT IDreponse, IDindividu, IDfamille, reponse, controle
+        FROM questionnaire_reponses
+        LEFT JOIN questionnaire_questions ON questionnaire_questions.IDquestion = questionnaire_reponses.IDquestion
+        WHERE questionnaire_reponses.IDquestion=%d AND (IDindividu=%d OR IDfamille=%d)
+        ;""" % (IDquestion, IDindividu, IDfamille)
+        DB.ExecuterReq(req)
+        listeReponses = DB.ResultatReq()
+        DB.Close() 
+        if len(listeReponses) == 0 :
+            return None
+        dictReponses = {}
+        IDreponse, IDindividu, IDfamille, reponse, controle = listeReponses[0]
+        filtre = self.GetFiltre(controle)
+        texteReponse = None
+        if filtre != None :
+            # Formatage de la réponse
+            if reponse == None :
+                texteReponse = u""
+            else :
+                texteReponse = self.FormatageReponse(reponse, controle)
+        return texteReponse
+        
 
 class ChampsEtReponses():
     """ Retourne une donnée de type "{QUESTION_24}" = valeur """

@@ -14,18 +14,18 @@ import datetime
 import CTRL_Saisie_heure
 import CTRL_Saisie_date
 import GestionDB
-
-
+import UTILS_Questionnaires
+import wx.lib.wordwrap as wordwrap
 
 
 LISTE_METHODES = [
-    { "code" : "montant_unique", "label" : u"Montant unique", "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("montant_unique",), "champs_obligatoires" : ("montant_unique",) },
+    { "code" : "montant_unique", "label" : u"Montant unique", "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("montant_unique", "montant_questionnaire"), "champs_obligatoires" : ("montant_unique",) },
     { "code" : "qf", "label" : u"En fonction du quotient familial", "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_unique"), "champs_obligatoires" : ("qf_min", "qf_max", "montant_unique") },
     
-    { "code" : "horaire_montant_unique", "label" : u"Montant unique en fonction d'une tranche horaire", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique") },
+    { "code" : "horaire_montant_unique", "label" : u"Montant unique en fonction d'une tranche horaire", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique") },
     { "code" : "horaire_qf", "label" : u"En fonction d'une tranche horaire et du quotient familial", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique") },
     
-    { "code" : "duree_montant_unique", "label" : u"Montant unique en fonction d'une durée", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "montant_unique") },
+    { "code" : "duree_montant_unique", "label" : u"Montant unique en fonction d'une durée", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "montant_unique") },
     { "code" : "duree_qf", "label" : u"En fonction d'une durée et du quotient familial", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "montant_unique") },
     
     { "code" : "montant_unique_date", "label" : u"Montant unique en fonction de la date", "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "montant_unique", "label"), "champs_obligatoires" : ("date", "montant_unique") },
@@ -37,7 +37,7 @@ LISTE_METHODES = [
     { "code" : "montant_unique_nbre_ind_degr", "label" : u"Montant dégressif en fonction du nombre d'individus de la famille présents", "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1") },
     { "code" : "qf_nbre_ind_degr", "label" : u"Montant dégressif en fonction du quotient familial et du nombre d'individus de la famille présents", "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1") },
 
-    { "code" : "duree_coeff_montant_unique", "label" : u"Montant au prorata d'une durée", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique") },
+    { "code" : "duree_coeff_montant_unique", "label" : u"Montant au prorata d'une durée", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_questionnaire", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique") },
     { "code" : "duree_coeff_qf", "label" : u"Montant au prorata d'une durée et selon le quotient familial", "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "unite_horaire", "montant_unique") },
 
     { "code" : "taux_montant_unique", "label" : u"Par taux d'effort", "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("taux",) },
@@ -52,6 +52,7 @@ LISTE_COLONNES = [
     { "code" : "qf_min", "label" : u"QF\nmin >=", "largeur" : 70, "editeur" : "decimal", "infobulle" : u"Quotient familial minimal" },
     { "code" : "qf_max", "label" : u"QF\nmax <=", "largeur" : 70, "editeur" : "decimal", "infobulle" : u"Quotient familial maximal" },
     { "code" : "montant_unique", "label" : u"Tarif", "largeur" : 70, "editeur" : "decimal4", "infobulle" : u"Montant" },
+    { "code" : "montant_questionnaire", "label" : u"Tarif questionnaire", "largeur" : 130, "editeur" : "questionnaire", "infobulle" : u"Montant renseigné dans les questionnaires familiaux ou individuels" },
     { "code" : "montant_enfant_1", "label" : u"Tarif\n1 ind.", "largeur" : 60, "editeur" : "decimal4", "infobulle" : u"Montant" },
     { "code" : "montant_enfant_2", "label" : u"Tarif\n2 ind.", "largeur" : 60, "editeur" : "decimal4", "infobulle" : u"Montant" },
     { "code" : "montant_enfant_3", "label" : u"Tarif\n3 ind.", "largeur" : 60, "editeur" : "decimal4", "infobulle" : u"Montant" },
@@ -79,7 +80,7 @@ LISTE_COLONNES = [
 ]
 
 CHAMPS_TABLE_LIGNES = [
-    "IDligne", "IDactivite", "IDtarif", "code", "num_ligne", "tranche", "qf_min", "qf_max", "montant_unique", 
+    "IDligne", "IDactivite", "IDtarif", "code", "num_ligne", "tranche", "qf_min", "qf_max", "montant_unique", "montant_questionnaire",
     "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", 
     "nbre_enfants", "coefficient", "montant_min", "montant_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "duree_min", "duree_max",
     "date", "label", "temps_facture", "unite_horaire", "duree_seuil", "duree_plafond", "taux", "ajustement",
@@ -87,6 +88,7 @@ CHAMPS_TABLE_LIGNES = [
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+COULEUR_FOND_CASE = (241, 241, 241)
 
 
 def DateFrEnDateDD(dateFr):
@@ -221,6 +223,111 @@ class EditeurDate(gridlib.PyGridCellEditor):
     def Clone(self):
         return EditeurDate()
 
+
+# -------------------------------------------------------------------------------------------------------------------------------------
+
+class EditeurChoix(gridlib.PyGridCellEditor):
+    def __init__(self, listeValeurs=[]):
+        """ listeValeurs = [(ID, label), (ID, label), ...] """
+        self.listeID = []
+        self.listeLabels = []
+        for ID, label in listeValeurs :
+            self.listeID.append(ID)
+            self.listeLabels.append(label)
+        gridlib.PyGridCellEditor.__init__(self)
+
+    def Create(self, parent, id, evtHandler):
+        self._tc = wx.Choice(parent, -1, choices=self.listeLabels)
+        self.SetControl(self._tc)
+        if evtHandler:
+            self._tc.PushEventHandler(evtHandler)
+
+    def BeginEdit(self, row, col, grid):
+        try :
+            id = int(grid.GetTable().GetValue(row, col))
+            index = 0
+            for idTemp in self.listeID :
+                if id == idTemp :
+                    self._tc.SetSelection(index)
+                index += 1
+        except :
+            pass
+
+    def EndEdit(self, row, col, grid, oldVal):
+        changed = False
+        val = self._tc.GetSelection() 
+        if val != oldVal: 
+            return val
+        else:
+            return None
+    
+    def ApplyEdit(self, row, col, grid):
+        index = self._tc.GetSelection() 
+        id = self.listeID[index]
+        grid.GetTable().SetValue(row, col, str(id))
+
+    def Reset(self):
+        self._tc.SetSelection(0)
+
+    def Destroy(self):
+        super(EditeurDate, self).Destroy()
+
+    def Clone(self):
+        return EditeurChoix()
+
+
+class RendererChoix(gridlib.PyGridCellRenderer):
+    def __init__(self, listeValeurs=[]):
+        self.listeValeurs = listeValeurs
+        gridlib.PyGridCellRenderer.__init__(self)
+    
+    def GetTexte(self, grid, row, col):
+        texte = ""
+        try :
+            id = int(grid.GetCellValue(row, col))
+            idx = 0
+            for idTemp, label in self.listeValeurs :
+                if id == idTemp :
+                    texte = label
+                idx += 1
+        except :
+            pass
+        return texte
+    
+    def Draw(self, grid, attr, dc, rect, row, col, isSelected):
+        texte = self.GetTexte(grid, row, col) 
+        
+        # Dessin
+        dc.SetBackgroundMode(wx.SOLID)
+        dc.SetBrush(wx.Brush(COULEUR_FOND_CASE, wx.SOLID))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        dc.DrawRectangleRect(rect)
+        dc.SetBackgroundMode(wx.TRANSPARENT)
+        dc.SetFont(attr.GetFont())
+        
+        largeurTexte, hauteurTexte = dc.GetTextExtent(texte)
+        y = rect.height / 2.0 - hauteurTexte / 2.0
+        
+        # Ajuste largeur texte
+        if largeurTexte > rect.width :
+            for index in range(len(texte), 0, -1) :
+                texteTemp = texte[:index]
+                largeurTexte, h = dc.GetTextExtent(texteTemp)
+                if largeurTexte < rect.width - 1 :
+                    texte = texteTemp
+                    break
+        
+        dc.DrawText(texte, rect.x+2, y)
+    
+    def GetBestSize(self, grid, attr, dc, row, col):
+        texte = self.GetTexte(grid, row, col) 
+        dc.SetFont(attr.GetFont())
+        w, h = dc.GetTextExtent(texte)
+        return wx.Size(w, h)
+    
+    def Clone(self):
+        return RendererChoix() 
+        
 # -------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -249,6 +356,9 @@ class Tableau(gridlib.Grid):
         self.__locale = wx.Locale(li.Language)
 ##        import locale
 ##        locale.setlocale(locale.LC_ALL, 'C')
+        
+        # Importation des questions des questionnaires
+        self.listeQuestions = self.GetQuestionnaires() 
         
         # Binds
         self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
@@ -282,6 +392,14 @@ class Tableau(gridlib.Grid):
             self.listeColonnes.append(index)
             self.dictInfobulles[numColonne] = dictColonne["infobulle"]
             numColonne += 1
+    
+    def GetQuestionnaires(self):
+        """ Recherche les questions des questionnaires """
+        Questionnaires = UTILS_Questionnaires.Questionnaires() 
+        listeQuestions = []
+        for dictQuestion in Questionnaires.GetQuestions(None) :
+            listeQuestions.append(dictQuestion)
+        return listeQuestions
         
     def RechercherChamp(self, codeChamp):
         index = 0
@@ -350,13 +468,21 @@ class Tableau(gridlib.Grid):
             elif codeEditeur == "date" :
                 renderer = None
                 editor = EditeurDate()
+            elif codeEditeur == "questionnaire" :
+                listeChoix = [(0, ""),]
+                for dictQuestion in self.listeQuestions :
+                    if dictQuestion["controle"] in ("montant", "decimal") :
+                        label = dictQuestion["label"] + " (%s)" % dictQuestion["type"].capitalize()
+                        listeChoix.append((dictQuestion["IDquestion"], label))
+                renderer = RendererChoix(listeChoix)
+                editor = EditeurChoix(listeChoix)
             else:
                 renderer = None
                 editor = None
             if renderer != None : self.SetCellRenderer(numLigne, numColonne, renderer)
             if editor != None : self.SetCellEditor(numLigne, numColonne, editor)
             
-            self.SetCellBackgroundColour(numLigne, numColonne, (241, 241, 241))
+            self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_FOND_CASE)
             
             numColonne += 1
     
@@ -409,13 +535,16 @@ class Tableau(gridlib.Grid):
         if editeur != None :
             if editeur.startswith("decimal") and valeur != "" : valeur = float(valeur) 
             if editeur == "entier" and valeur != "" : valeur = int(valeur) 
-        
-        # Mémorisation
+            if editeur == "questionnaire" and valeur != "" : valeur = int(valeur) 
+ 
+       # Mémorisation
         if IDligne != None : self.dictDonnees[self.code][numLigne]["IDligne"] = IDligne
         if valeur == None or valeur == "" :
             del self.dictDonnees[self.code][numLigne][numColonne]
         else:
             self.dictDonnees[self.code][numLigne][numColonne] = valeur
+        
+        return valeur
 
     def Importation(self, IDtarif=None):
         if IDtarif == None : return
