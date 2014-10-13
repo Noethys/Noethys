@@ -19,6 +19,7 @@ import CTRL_Bandeau
 import CTRL_Saisie_date
 import CTRL_Synthese_modes_reglements
 import CTRL_Selection_activites
+import UTILS_Dates
 
 try: import psyco; psyco.full()
 except: pass
@@ -451,18 +452,24 @@ class Dialog(wx.Dialog):
         self.hyper_reduire = self.Build_Hyperlink_reduire()
         
         # Commandes
-        self.label_annee = wx.StaticText(self, -1, u"Filtre de ventilation :")
-        self.ctrl_annee = wx.Choice(self, -1, choices = [])
-        self.ctrl_annee.Select(0)
+        self.label_ventilation = wx.StaticText(self, -1, u"Filtre de ventilation :")
+        self.ctrl_ventilation = wx.Choice(self, -1, choices = [])
+        self.ctrl_ventilation.Select(0)
+        self.label_du = wx.StaticText(self, -1, u"du")
+        self.ctrl_ventilation_debut = CTRL_Saisie_date.Date2(self)
+        self.label_au = wx.StaticText(self, -1, u"au")
+        self.ctrl_ventilation_fin = CTRL_Saisie_date.Date2(self)
+        self.bouton_actualiser = wx.Button(self, -1, u"Actualiser")
 
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
         
-        self.Bind(wx.EVT_CHOICE, self.OnChoixAnneeVentilation, self.ctrl_annee)
+        self.Bind(wx.EVT_CHOICE, self.OnChoixVentilation, self.ctrl_ventilation)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDetails, self.check_details)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
 
         self.__set_properties()
         self.__do_layout()
@@ -474,14 +481,17 @@ class Dialog(wx.Dialog):
         
         self.MAJ() 
 
+        self.OnChoixVentilation(None) 
+
+
     def __set_properties(self):
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")
         self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter les résultats au format MS Excel")
         self.check_details.SetToolTipString(u"Cliquez ici pour afficher les détails dans les résultats")
-        self.ctrl_annee.SetToolTipString(u"Vous pouvez filtrer ici les résultats par année de ventilation")
-        self.SetMinSize((980, 700))
+        self.ctrl_ventilation.SetToolTipString(u"Vous pouvez filtrer ici les résultats par période de ventilation")
+        self.SetMinSize((980, 720))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -494,8 +504,23 @@ class Dialog(wx.Dialog):
         
         # STATS
         staticbox_stats= wx.StaticBoxSizer(self.staticbox_stats_staticbox, wx.VERTICAL)
-        grid_sizer_contenu2 = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_contenu2 = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+
+        # Commandes de liste
+        grid_sizer_ventilation = wx.FlexGridSizer(rows=1, cols=9, vgap=5, hgap=5)
+        grid_sizer_ventilation.Add(self.label_ventilation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_ventilation.Add(self.ctrl_ventilation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_ventilation.Add(self.label_du, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_ventilation.Add(self.ctrl_ventilation_debut, 0, wx.EXPAND, 0)
+        grid_sizer_ventilation.Add(self.label_au, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_ventilation.Add(self.ctrl_ventilation_fin, 0, wx.EXPAND, 0)
+        grid_sizer_ventilation.Add(self.bouton_actualiser, 0, wx.EXPAND, 0)
+
+        grid_sizer_contenu2.Add(grid_sizer_ventilation, 1, wx.EXPAND, 0)
         
+        grid_sizer_contenu2.Add( (5, 5), 0, wx.EXPAND, 0)
+
+        # Résultats
         grid_sizer_contenu2.Add(self.ctrl_stats, 1, wx.EXPAND, 0)
         
         # Boutons de liste
@@ -506,18 +531,16 @@ class Dialog(wx.Dialog):
         
         # Commandes de liste
         grid_sizer_commandes2 = wx.FlexGridSizer(rows=1, cols=9, vgap=5, hgap=5)
-        grid_sizer_commandes2.Add(self.label_annee, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes2.Add(self.ctrl_annee, 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add( (30, 5), 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.check_details, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_commandes2.Add( (30, 5), 0, wx.EXPAND, 0)
         grid_sizer_commandes2.Add(self.hyper_developper, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_commandes2.Add(self.label_barre, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_commandes2.Add(self.hyper_reduire, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes2.AddGrowableCol(2)
+        grid_sizer_commandes2.AddGrowableCol(0)
         grid_sizer_contenu2.Add(grid_sizer_commandes2, 1, wx.EXPAND, 0)
         
-        grid_sizer_contenu2.AddGrowableRow(0)
+        grid_sizer_contenu2.AddGrowableRow(1)
         grid_sizer_contenu2.AddGrowableCol(0)
         
         staticbox_stats.Add(grid_sizer_contenu2, 1, wx.ALL|wx.EXPAND, 5)
@@ -587,29 +610,53 @@ class Dialog(wx.Dialog):
         self.hyper_reduire.Enable(-etat)
     
     def InitChoixAnneeVentilation(self):
-        listeAnnees = self.ctrl_stats.GetAnneesVentilation()
+        valeur = self.ctrl_ventilation.GetStringSelection() 
+        listeAnnees = self.ctrl_stats.GetVentilation()
         listeAnnees.sort()
-        listeTemp = [u"Aucun", u"Non ventilé"]
+        listeTemp = [u"Aucun", u"Non ventilé", u"La période suivante"]
         for annee in listeAnnees :
             listeTemp.append(str(annee))
-        self.ctrl_annee.SetItems(listeTemp)
-        self.ctrl_annee.Select(0)
+        self.ctrl_ventilation.SetItems(listeTemp)
+        self.ctrl_ventilation.Select(0)
+        try :
+            self.ctrl_ventilation.SetStringSelection(valeur)
+        except :
+            pass
     
-    def GetAnneeVentilation(self):
-        selection = self.ctrl_annee.GetSelection()
-        if self.ctrl_annee.GetSelection() == 0 :
-            anneeVentilation = None
-        elif self.ctrl_annee.GetSelection() == 1 :
-            anneeVentilation = 0
+    def GetVentilation(self):
+        selection = self.ctrl_ventilation.GetSelection()
+        if selection == 0 :
+            periode = None
+        elif selection == 1 :
+            periode = 0
+        elif selection == 2 :
+            periode = [self.ctrl_ventilation_debut.GetDate(), self.ctrl_ventilation_fin.GetDate()]
         else :
-            anneeVentilation = int(self.ctrl_annee.GetStringSelection())
-        return anneeVentilation
+            periode = int(self.ctrl_ventilation.GetStringSelection())
+        return periode
         
-    def OnChoixAnneeVentilation(self, event):
-        anneeVentilation = self.GetAnneeVentilation()
-        self.ctrl_stats.SetAnneeVentilation(anneeVentilation)
-        
-    def MAJ(self):
+    def OnChoixVentilation(self, event):
+        periode = self.GetVentilation()
+        self.ctrl_stats.SetVentilation(periode)
+        if type(periode) == list :
+            etat = True
+        else :
+            etat = False
+        self.label_du.Enable(etat)
+        self.ctrl_ventilation_debut.Enable(etat)
+        self.label_au.Enable(etat)
+        self.ctrl_ventilation_fin.Enable(etat)
+        self.bouton_actualiser.Enable(etat)
+        if etat == True and self.ctrl_ventilation_debut.GetDate() == None :
+            self.ctrl_ventilation_debut.SetFocus()
+        self.MAJ() 
+
+    def OnBoutonActualiser(self, event=None):
+        periode = self.GetVentilation()
+        self.ctrl_stats.SetVentilation(periode)
+        self.MAJ() 
+
+    def MAJ(self, event=None):
         mode = self.ctrl_parametres.GetMode()
         date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
@@ -646,12 +693,14 @@ class Dialog(wx.Dialog):
         listeParametres.append(u"Activités : %s" % activites)
         
         # Année de ventilation
-        annee = self.GetAnneeVentilation() 
-        if annee != None :
-            if annee == 0 : 
+        ventilation = self.GetVentilation() 
+        if ventilation != None :
+            if ventilation == 0 : 
                 listeParametres.append(u"Uniquement des règlements non ventilés")
+            elif type(ventilation) == list :
+                listeParametres.append(u"Uniquement des règlements ventilés sur la période du %s au %s" % (UTILS_Dates.DateDDEnFr(ventilation[0]), UTILS_Dates.DateDDEnFr(ventilation[1])))
             else :
-                listeParametres.append(u"Uniquement des règlements ventilés sur %d" % annee)
+                listeParametres.append(u"Uniquement des règlements ventilés sur l'année %d" % annee)
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

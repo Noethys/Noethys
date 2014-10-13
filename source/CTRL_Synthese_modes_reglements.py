@@ -78,6 +78,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeActivites = "toutes"
         self.filtres = []
         self.listeAnneesVentilation = [] 
+        self.ventilation = None
         self.affichage_details = True
         self.labelParametres = ""
         
@@ -111,7 +112,7 @@ class CTRL(HTL.HyperTreeList):
             dictModes[IDmode] = {"nom":label}
         return dictModes
         
-    def Importation(self, anneeVentilation=None):
+    def Importation(self):
         """ Importation des données """
         dictResultats = {}
         listeModes = []
@@ -167,11 +168,30 @@ class CTRL(HTL.HyperTreeList):
         
         self.listeAnneesVentilation = []
         for IDventilation, IDreglement, IDprestation, montantVentilation, dateReglement, dateSaisieReglement, IDmode, dateDepotReglement, datePrestation, labelPrestation, IDactivite, categoriePrestation in listeVentilation :
-            anneePrestation = DateEngEnDateDD(datePrestation).year
+            datePrestation = DateEngEnDateDD(datePrestation)
+            anneePrestation = datePrestation.year
             if anneePrestation not in self.listeAnneesVentilation :
                 self.listeAnneesVentilation.append(anneePrestation)
-
-            if anneeVentilation == None or anneePrestation == anneeVentilation :
+            
+            # Filtre ventilation
+            valide = False
+            if self.ventilation == None :
+                valide = True
+            elif self.ventilation == 0 :
+                valide = False
+            else :
+                if type(self.ventilation) == list :
+                    ventilation_debut, ventilation_fin = self.ventilation
+                    if ventilation_debut != None and ventilation_fin != None :
+                        if datePrestation >= ventilation_debut and datePrestation <= ventilation_fin :
+                            valide = True
+                else :
+                    annee = self.ventilation
+                    if anneePrestation == annee :
+                        valide = True
+            
+            # Mémorisation
+            if valide == True :
             
                 if categoriePrestation == "cotisation" :
                     IDactivite = 99999
@@ -189,7 +209,7 @@ class CTRL(HTL.HyperTreeList):
             
         
         # Recherche des règlements non ventilés
-        if "avoir" in self.filtres and (anneeVentilation == None or anneeVentilation == 0) :
+        if "avoir" in self.filtres and (self.ventilation == None or self.ventilation == 0) :
             
             req = """SELECT IDmode, SUM(montant)
             FROM reglements
@@ -234,11 +254,12 @@ class CTRL(HTL.HyperTreeList):
         DB.Close() 
         return dictResultats, listeModes
     
-    def GetAnneesVentilation(self):
+    def GetVentilation(self):
         return self.listeAnneesVentilation
     
-    def SetAnneeVentilation(self, anneVentilation=None):
-        self.MAJ(mode=self.mode, date_debut=self.date_debut, date_fin=self.date_fin, listeActivites=self.listeActivites, filtres=self.filtres, anneeVentilation=anneVentilation)
+    def SetVentilation(self, ventilation=None):
+        self.ventilation = ventilation
+##        self.MAJ(mode=self.mode, date_debut=self.date_debut, date_fin=self.date_fin, listeActivites=self.listeActivites, filtres=self.filtres, ventilation=ventilation)
     
     def CreationColonnes(self, listeModes=[]):
         """ Création des colonnes """
@@ -267,7 +288,7 @@ class CTRL(HTL.HyperTreeList):
         
         return dictColonnes
         
-    def MAJ(self, mode="saisis", date_debut=None, date_fin=None, listeActivites=[], filtres=[], anneeVentilation=None):     
+    def MAJ(self, mode="saisis", date_debut=None, date_fin=None, listeActivites=[], filtres=[]):     
         self.mode = mode
         self.date_debut = date_debut
         self.date_fin = date_fin
@@ -280,7 +301,7 @@ class CTRL(HTL.HyperTreeList):
         wx.Yield() 
 
         # Importation des données
-        dictResultats, listeModes = self.Importation(anneeVentilation)
+        dictResultats, listeModes = self.Importation()
         self.dictImpression = { "entete" : [], "contenu" : [], "total" : [], "coloration" : [] }
 
         # Tri des modes par ordre alphabétique
