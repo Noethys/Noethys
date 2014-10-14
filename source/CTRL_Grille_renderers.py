@@ -123,7 +123,7 @@ class CaseStandard(gridlib.PyGridCellRenderer):
             dc.DrawBitmap(bmp, rect[0]+rect[2]-tailleImage-paddingImage, rect[1]+paddingImage)
             
         # Dessin de l'image SANS PRESTATION (Alerte)
-        if self.case.etat in ("reservation", "present", "absenti", "absentj") and self.case.IDprestation == None :
+        if self.case.etat in ("reservation", "present", "absenti", "absentj") and self.case.IDprestation == None and grid.afficheSansPrestation == True :
             tailleImage = 16
             paddingImage = 3
             bmp = wx.Bitmap("Images/16x16/Gratuit.png", wx.BITMAP_TYPE_ANY) 
@@ -436,6 +436,8 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
             gc.SetPen(wx.Pen((230, 230, 230), 1, wx.SOLID))
             graduationStep = 25
             listeGraduations = range(UTILS_Dates.HeuresEnDecimal(self.case.heure_min), UTILS_Dates.HeuresEnDecimal(self.case.heure_max)+graduationStep, graduationStep)
+##            if listeGraduations == [0] :
+##                listeGraduations = [0, 1]
             step = 1.0 * (rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2) / (len(listeGraduations) - 1)
             if step > 3.0 :
                 x = PADDING_MULTIHORAIRES["horizontal"]
@@ -504,7 +506,7 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
                 listeImages.append(wx.Bitmap("Images/16x16/absenti.png", wx.BITMAP_TYPE_ANY))
                 
             # Dessin de l'image SANS PRESTATION (Alerte)
-            if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation == None :
+            if conso.etat in ("reservation", "present", "absenti", "absentj") and conso.IDprestation == None and grid.afficheSansPrestation == True :
                 listeImages.append(wx.Bitmap("Images/16x16/Gratuit.png", wx.BITMAP_TYPE_ANY))
 
             paddingImage = 3

@@ -39,6 +39,7 @@ ID_AFFICHAGE_PARAMETRES = wx.NewId()
 ID_AFFICHE_COLONNE_MEMO = wx.NewId()
 ID_AFFICHE_COLONNE_TRANSPORTS = wx.NewId()
 ID_BLOCAGE_SI_COMPLET = wx.NewId()
+ID_AFFICHE_SANS_PRESTATION = wx.NewId()
 
 ID_OUTILS_SAISIE_FORFAIT = wx.NewId()
 ID_OUTILS_RECALCUL = wx.NewId()
@@ -519,7 +520,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_MENU, self.On_affichage_parametres, id=ID_AFFICHAGE_PARAMETRES)
 
         menuPop.AppendSeparator()
-        
+
+        item = wx.MenuItem(menuPop, ID_AFFICHE_SANS_PRESTATION, u"Afficher le symbole 'Sans prestation'", u"Affiche le symbole 'Sans prestation' dans les cases si aucune prestation n'est rattachée", wx.ITEM_CHECK)
+        menuPop.AppendItem(item)
+        item.Check(self.panel_grille.grille.afficheSansPrestation)
+        self.Bind(wx.EVT_MENU, self.On_affiche_sans_prestation, id=ID_AFFICHE_SANS_PRESTATION)
+
         item = wx.MenuItem(menuPop, ID_BLOCAGE_SI_COMPLET, u"Blocage si capacité maximale atteinte", u"Empêche l'utilisateur de saisir une consommation si la capacité maximale est atteinte (case rouge)", wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         item.Check(self.panel_grille.grille.blocageSiComplet)
@@ -642,7 +648,11 @@ class Dialog(wx.Dialog):
     def On_affiche_transports(self, event):
         grille = self.panel_grille.grille
         grille.SetAfficheColonneTransports(not grille.GetAfficheColonneTransports())
-    
+
+    def On_affiche_sans_prestation(self, event):
+        self.panel_grille.grille.afficheSansPrestation = not self.panel_grille.grille.afficheSansPrestation
+        self.panel_grille.grille.MAJ_affichage() 
+
     def On_blocage_si_complet(self, event):
         self.panel_grille.grille.blocageSiComplet = not self.panel_grille.grille.blocageSiComplet
         

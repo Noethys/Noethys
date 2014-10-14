@@ -302,6 +302,12 @@ class Ligne():
                         if typeUnite in ("Multihoraires",) :
                             heure_min = self.grid.dictColonnesMultihoraires[IDunite]["min"]
                             heure_max = self.grid.dictColonnesMultihoraires[IDunite]["max"]
+
+                            if heure_min == None :
+                                heure_min = datetime.time(0, 0)
+                            if heure_max == None or heure_max == datetime.time(0, 0) :
+                                heure_max = datetime.time(23, 0)
+
                             case = CTRL_Grille_cases.CaseMultihoraires(self, self.grid, self.numLigne, numColonne, self.IDindividu, IDfamille, self.date, IDunite, IDactivite, verrouillage, heure_min, heure_max)
                         case.IDunite = IDunite
                         self.dictCases[numColonne] = case
@@ -488,19 +494,48 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
+        # Récupération des paramètres
         global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS
-        AFFICHE_COLONNE_MEMO = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
-        AFFICHE_COLONNE_TRANSPORTS = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
-        self.blocageSiComplet = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=True)
+        
+        parametresDefaut = {
+            "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
+            "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
+            "affiche_sans_prestation" : True,
+            "blocage_si_complet" : True,
+            "hauteur_lignes" : HAUTEUR_LIGNE,
+            "largeur_colonne_memo" : LARGEUR_COLONNE_MEMO,
+            "largeur_colonne_transports" : LARGEUR_COLONNE_TRANSPORTS,
+            }
+        dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="parametres_grille_conso", dictParametres=parametresDefaut)
+        
+        # Paramètres divers
+        AFFICHE_COLONNE_MEMO = dictParametres["affiche_colonne_memo"]
+        AFFICHE_COLONNE_TRANSPORTS = dictParametres["affiche_colonne_transports"]
+        self.blocageSiComplet = dictParametres["blocage_si_complet"]
+        self.afficheSansPrestation = dictParametres["affiche_sans_prestation"]
 
         # Hauteur lignes et largeurs colonne
         self.dictParametres = { 
-            "hauteur" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=HAUTEUR_LIGNE), 
+            "hauteur" : dictParametres["hauteur_lignes"], 
             "largeurs" : { 
                 "unites" : {}, 
-                "memo" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=LARGEUR_COLONNE_MEMO), 
-                "transports" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=LARGEUR_COLONNE_TRANSPORTS)
+                "memo" : dictParametres["largeur_colonne_memo"], 
+                "transports" : dictParametres["largeur_colonne_transports"],
             } }
+
+##        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS
+##        AFFICHE_COLONNE_MEMO = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
+##        AFFICHE_COLONNE_TRANSPORTS = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
+##        self.blocageSiComplet = UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=True)
+##
+##        # Hauteur lignes et largeurs colonne
+##        self.dictParametres = { 
+##            "hauteur" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=HAUTEUR_LIGNE), 
+##            "largeurs" : { 
+##                "unites" : {}, 
+##                "memo" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=LARGEUR_COLONNE_MEMO), 
+##                "transports" : UTILS_Parametres.Parametres(mode="get", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=LARGEUR_COLONNE_TRANSPORTS)
+##            } }
                 
         # Binds
         self.barreMoving = None
@@ -4756,13 +4791,26 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.Close()
     
     def MemoriseParametres(self):
-        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
-        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
-        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=self.dictParametres["hauteur"])
-        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=self.dictParametres["largeurs"]["memo"])
-        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=self.dictParametres["largeurs"]["transports"])
-        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=self.blocageSiComplet)
+        """ Mémorisation des paramètres """
+        dictValeurs = {
+            "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
+            "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
+            "affiche_sans_prestation" : self.afficheSansPrestation,
+            "blocage_si_complet" : self.blocageSiComplet,
+            "hauteur_lignes" : self.dictParametres["hauteur"],
+            "largeur_colonne_memo" : self.dictParametres["largeurs"]["memo"],
+            "largeur_colonne_transports" : self.dictParametres["largeurs"]["transports"],
+            }
+        dictParametres = UTILS_Parametres.ParametresCategorie(mode="set", categorie="parametres_grille_conso", dictParametres=dictValeurs)
+
+##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_memo", valeur=AFFICHE_COLONNE_MEMO)
+##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="affiche_colonne_transports", valeur=AFFICHE_COLONNE_TRANSPORTS)
+##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="hauteur_lignes", valeur=self.dictParametres["hauteur"])
+##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_memo", valeur=self.dictParametres["largeurs"]["memo"])
+##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="largeur_colonne_transports", valeur=self.dictParametres["largeurs"]["transports"])
+##        UTILS_Parametres.Parametres(mode="set", categorie="parametres_grille_conso", nom="blocage_si_complet", valeur=self.blocageSiComplet)
         
+        # Largeurs colonnes
         listeDonnees = []
         for IDunite, largeur in self.dictParametres["largeurs"]["unites"].iteritems() :
             if self.dictUnites.has_key(IDunite) :
