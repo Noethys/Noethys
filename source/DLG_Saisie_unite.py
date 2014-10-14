@@ -592,7 +592,13 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_heure_fin.SetFocus() 
             return False
-
+        
+        if type == "Multihoraires" and (heure_debut == None or heure_fin == False) :
+            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement spécifier une heure de début et une heure de fin pour les unités de type 'Multihoraire' !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        
         # Validité
         if self.radio_illimitee.GetValue() == True :
             date_debut = "1977-01-01"
