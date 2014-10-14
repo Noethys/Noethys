@@ -219,13 +219,6 @@ class ListView(FastObjectListView):
         self.SetObjects(self.donnees)
 ##        self.AjouteLigneTotal(listeNomsColonnes=["solde", "total_prestations", "total_reglements"]) 
 
-    def DefileDernier(self):
-        """ Defile jusqu'au dernier item de la liste """
-        if len(self.GetObjects()) > 0 :
-            dernierTrack = self.GetObjects()[-1]
-            index = self.GetIndexOf(dernierTrack)
-            self.EnsureCellVisible(index, 0)
-
     def Selection(self):
         return self.GetSelectedObjects()
 

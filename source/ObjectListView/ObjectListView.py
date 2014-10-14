@@ -1713,7 +1713,7 @@ class ObjectListView(wx.ListCtrl):
         self._ResizeSpaceFillingColumns()
         # Make sure our empty msg is reasonably positioned
         sz = self.GetClientSize()
-        self.stEmptyListMsg.SetDimensions(0, sz.GetHeight()/3, sz.GetWidth(), sz.GetHeight())
+        self.stEmptyListMsg.SetDimensions(0, sz.GetHeight()/2, sz.GetWidth(), sz.GetHeight()) # J'ai mis 2 a la place de 3
         #self.stEmptyListMsg.Wrap(sz.GetWidth())
 
 
@@ -2300,7 +2300,17 @@ class ObjectListView(wx.ListCtrl):
     def GetListview(self):
         return self
         
-        
+    def DefileDernier(self):
+        """ Defile jusqu'au dernier item de la liste """
+        if self.GetFilter() != None :
+            listeObjets = self.GetFilteredObjects()
+        else :
+            listeObjets = self.GetObjects()
+        if len(listeObjets) > 0 :
+            dernierTrack = listeObjets[-1]
+            index = self.GetIndexOf(dernierTrack)
+            self.EnsureCellVisible(index, 0)
+
         
 ########################################################################
 

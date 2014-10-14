@@ -19,8 +19,8 @@ from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrint
 
 import UTILS_Utilisateurs
 
-TAILLE_IMAGE = (40, 40)
-LOGO_ORGANISATEUR = None
+##TAILLE_IMAGE = (40, 40)
+##LOGO_ORGANISATEUR = None
 
 
 def RecadreImg(img=None):
@@ -55,8 +55,8 @@ class Track(object):
         self.parti = donnees[10]
         self.date_debut = donnees[11]
         self.date_fin = donnees[12]
-        self.logo_activite = donnees[13]
-        self.bmp = self.GetImage()
+##        self.logo_activite = donnees[13]
+##        self.bmp = self.GetImage()
 
         # Nom des titulaires de famille
         self.nomTitulaires = u"IDfamille n°%d" % self.IDfamille
@@ -70,18 +70,18 @@ class Track(object):
         else:
             self.valide = False
             
-    def GetImage(self):
-        """ Récupère une image """            
-        # Recherche de l'image
-        if self.logo_activite != None :
-            io = cStringIO.StringIO(self.logo_activite)
-            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
-            img = RecadreImg(img)
-            bmp = img.ConvertToBitmap()
-            return bmp
-        else:
-            # Si aucune image est trouvée, on prend l'image de l'organisateur
-            return LOGO_ORGANISATEUR
+##    def GetImage(self):
+##        """ Récupère une image """            
+##        # Recherche de l'image
+##        if self.logo_activite != None :
+##            io = cStringIO.StringIO(self.logo_activite)
+##            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
+##            img = RecadreImg(img)
+##            bmp = img.ConvertToBitmap()
+##            return bmp
+##        else:
+##            # Si aucune image est trouvée, on prend l'image de l'organisateur
+##            return LOGO_ORGANISATEUR
 
     
 class ListView(FastObjectListView):
@@ -89,6 +89,7 @@ class ListView(FastObjectListView):
         # Récupération des paramètres perso
         self.IDindividu = kwds.pop("IDindividu", None)
         self.dictFamillesRattachees = kwds.pop("dictFamillesRattachees", {} )
+        self.activeDoubleclick = kwds.pop("activeDoubleclick", True)
         self.nbreFamilles = 0
         self.selectionID = None
         self.selectionTrack = None
@@ -96,7 +97,7 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
-        self.GetLogoOrganisateur()
+##        self.GetLogoOrganisateur()
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -123,7 +124,8 @@ class ListView(FastObjectListView):
         LOGO_ORGANISATEUR = bmp
         
     def OnItemActivated(self,event):
-        self.Modifier(None)
+        if self.activeDoubleclick :
+            self.Modifier(None)
                 
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -135,7 +137,7 @@ class ListView(FastObjectListView):
         req = """SELECT IDinscription, IDindividu, IDfamille, 
         inscriptions.IDactivite, inscriptions.IDgroupe, inscriptions.IDcategorie_tarif, date_inscription, 
         activites.nom, groupes.nom, categories_tarifs.nom,
-        inscriptions.parti, activites.date_debut, activites.date_fin, activites.logo
+        inscriptions.parti, activites.date_debut, activites.date_fin
         FROM inscriptions 
         LEFT JOIN activites ON inscriptions.IDactivite=activites.IDactivite
         LEFT JOIN groupes ON inscriptions.IDgroupe=groupes.IDgroupe
@@ -172,18 +174,18 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         # Création du imageList avec une taille personnalisée
-        dictImages = {}
-        imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
-        for track in self.donnees :
-            indexImg = imageList.Add(track.bmp)            
-            dictImages[track.IDactivite] = indexImg
-        self.SetImageLists(imageList, imageList)
+##        dictImages = {}
+##        imageList = wx.ImageList(TAILLE_IMAGE[0], TAILLE_IMAGE[1])
+##        for track in self.donnees :
+##            indexImg = imageList.Add(track.bmp)            
+##            dictImages[track.IDactivite] = indexImg
+##        self.SetImageLists(imageList, imageList)
                     
-        def GetLogo(track):
-            if dictImages.has_key(track.IDactivite) :
-                return dictImages[track.IDactivite]
-            else :
-                return None
+##        def GetLogo(track):
+##            if dictImages.has_key(track.IDactivite) :
+##                return dictImages[track.IDactivite]
+##            else :
+##                return None
 
         def DateEngFr(textDate):
             if textDate != None :
@@ -199,7 +201,7 @@ class ListView(FastObjectListView):
         if self.nbreFamilles > 1 :
             liste_Colonnes = [
                 ColumnDefn(u"ID", "left", 0, "IDinscription"),
-                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
+##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
                 ColumnDefn(u"Date", 'center', 70, "date_inscription", stringConverter=DateEngFr),
                 ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", isSpaceFilling=True),
                 ColumnDefn(u"Groupe", 'left', 80, "nom_groupe"),
@@ -209,7 +211,7 @@ class ListView(FastObjectListView):
         else:
             liste_Colonnes = [
                 ColumnDefn(u"ID", "left", 0, "IDinscription"),
-                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
+##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
                 ColumnDefn(u"Date", 'center', 70, "date_inscription", stringConverter=DateEngFr),
                 ColumnDefn(u"Nom de l'activité", 'left', 160, "nom_activite", isSpaceFilling=True),
                 ColumnDefn(u"Groupe", 'left', 100, "nom_groupe"),
@@ -220,7 +222,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune activité")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        self.SetSortColumn(self.columns[2])
+        self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
     def MAJ(self, ID=None):
@@ -452,7 +454,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -198,13 +198,6 @@ class ListView(FastObjectListView):
         except : 
             pass
 
-    def DefileDernier(self):
-        """ Defile jusqu'au dernier item de la liste """
-        if len(self.GetObjects()) > 0 :
-            dernierTrack = self.GetObjects()[-1]
-            index = self.GetIndexOf(dernierTrack)
-            self.EnsureCellVisible(index, 0)
-
     def Selection(self):
         return self.GetSelectedObjects()
 
