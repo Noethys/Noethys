@@ -1,3 +1,16 @@
+Version 1.1.3.5 (19/10/2014) :
+
+- Ajout des contrats dans la fiche individuelle
+- Ajout de la liste des contrats dans le menu Individus
+- Ajout de la gestion des modèles de contrats dans le menu Paramétrage
+- Ajout de la gestion des modèles de plannings dans le menu Paramétrage
+- Ajout du tarif selon le questionnaire dans le calcul des tarifs
+- Ajout de la question de type décimal dans les questionnaires
+- Ajout de la ventilation détaillée dans la synthèse des règlements
+- Ajout de l'option Afficher Sans prestation dans la grille des conso
+- Correction d'un bug sur les heures par défaut des unités multihoraires
+- Correction de divers bugs
+
 Version 1.1.3.4 (23/09/2014) :
 
 - Correction d'un bug sur les totaux de listes

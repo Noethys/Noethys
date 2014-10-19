@@ -504,6 +504,7 @@ DB_DATA = {
                                     ("reglement_frais", "INTEGER", u"ID du règlement"),
                                     ("tva", "FLOAT", u"Taux TVA"),
                                     ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
+                                    ("IDcontrat", "INTEGER", u"ID du contrat associé"),
                                     ], # Prestations
 
     "comptes_payeurs":[  ("IDcompte_payeur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID compte_payeur"),
@@ -1291,7 +1292,31 @@ DB_DATA = {
                                     ("objet_piece", "VARCHAR(450)", u"Objet de la pièce"),
                                     ], # Lots PESV2 ORMC
 
+    "contrats":[               ("IDcontrat", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID contrat"),
+                                    ("IDindividu", "INTEGER", u"ID de l'individu"),
+                                    ("IDinscription", "INTEGER", u"ID de l'inscription"),
+                                    ("date_debut", "DATE", u"Date de début"),
+                                    ("date_fin", "DATE", u"Date de fin"),
+                                    ("observations", "VARCHAR(500)", u"Observations"),
+                                    ("IDtarif", "INTEGER", u"ID du tarif"),
+                                    ], # Contrats
 
+    "modeles_contrats":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),
+                                    ("nom", "VARCHAR(450)", u"Nom du modèle"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité"),
+                                    ("date_debut", "DATE", u"Date de début"),
+                                    ("date_fin", "DATE", u"Date de fin"),
+                                    ("observations", "VARCHAR(500)", u"Observations"),
+                                    ("IDtarif", "INTEGER", u"ID du tarif"),
+                                    ("donnees", "LONGBLOB", u"Données en binaire"),
+                                    ], # Modèles de contrats
+
+
+    "modeles_plannings":[("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activités concernée"),
+                                    ("nom", "VARCHAR(450)", u"Nom du modèle"),
+                                    ("donnees", "VARCHAR(900)", u"Données serialisées"),
+                                    ], # Modèles de plannings
 
     }
 

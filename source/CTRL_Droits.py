@@ -40,6 +40,8 @@ LISTE_CATEGORIES = [
     { "label" : u"Modèles de documents", "code" : "parametrage_modeles_docs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : u"Modèles d'Emails", "code" : "parametrage_modeles_emails", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : u"Modèles de tickets", "code" : "parametrage_modeles_tickets", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : u"Modèles de plannings", "code" : "parametrage_modeles_plannings", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : u"Modèles de contrats", "code" : "parametrage_modeles_contrats", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : u"Procédures de badgeage", "code" : "parametrage_procedures_badgeage", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : u"Synthèse vocale", "code" : "parametrage_vocal", "actions" : ["consulter", "modifier"], "restriction" : False },
     { "label" : u"Catégories de messages", "code" : "parametrage_categories_messages", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },

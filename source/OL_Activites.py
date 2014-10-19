@@ -112,6 +112,7 @@ class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
         self.IDactivite = kwds.pop("IDactivite", None)
+        self.modificationAutorisee = kwds.pop("modificationAutorisee", True)
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
@@ -125,7 +126,8 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         
     def OnItemActivated(self,event):
-        self.Modifier(None)
+        if self.modificationAutorisee :
+            self.Modifier(None)
                 
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -211,57 +213,59 @@ class ListView(FastObjectListView):
                 
         # Création du menu contextuel
         menuPop = wx.Menu()
-
-        # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
-        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
-
-        # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
-        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Modifier, id=20)
-        if noSelection == True : item.Enable(False)
         
-        # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
-        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-        if noSelection == True : item.Enable(False)
-        
-        menuPop.AppendSeparator()
-        
-        # Item Dupliquer
-        item = wx.MenuItem(menuPop, 60, u"Dupliquer")
-        bmp = wx.Bitmap("Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Dupliquer, id=60)
-        if noSelection == True : item.Enable(False)
+        if self.modificationAutorisee :
+            
+            # Item Ajouter
+            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
-        menuPop.AppendSeparator()
+            # Item Modifier
+            item = wx.MenuItem(menuPop, 20, u"Modifier")
+            bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Modifier, id=20)
+            if noSelection == True : item.Enable(False)
+            
+            # Item Supprimer
+            item = wx.MenuItem(menuPop, 30, u"Supprimer")
+            bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
+            if noSelection == True : item.Enable(False)
+            
+            menuPop.AppendSeparator()
+            
+            # Item Dupliquer
+            item = wx.MenuItem(menuPop, 60, u"Dupliquer")
+            bmp = wx.Bitmap("Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Dupliquer, id=60)
+            if noSelection == True : item.Enable(False)
 
-        # Item Importer
-        item = wx.MenuItem(menuPop, 80, u"Importer")
-        bmp = wx.Bitmap("Images/16x16/Document_import.png", wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Importer, id=80)
+            menuPop.AppendSeparator()
 
-        # Item Exporter
-        item = wx.MenuItem(menuPop, 90, u"Exporter")
-        bmp = wx.Bitmap("Images/16x16/Document_export.png", wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Exporter, id=90)
+            # Item Importer
+            item = wx.MenuItem(menuPop, 80, u"Importer")
+            bmp = wx.Bitmap("Images/16x16/Document_import.png", wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Importer, id=80)
 
-        menuPop.AppendSeparator()
+            # Item Exporter
+            item = wx.MenuItem(menuPop, 90, u"Exporter")
+            bmp = wx.Bitmap("Images/16x16/Document_export.png", wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Exporter, id=90)
+
+            menuPop.AppendSeparator()
 
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")

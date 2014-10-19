@@ -10,6 +10,7 @@
 
 import wx
 import OL_Inscriptions 
+import OL_Contrats
 import UTILS_Utilisateurs
 
 
@@ -23,27 +24,42 @@ class Panel(wx.Panel):
         # Inscriptions
         self.staticbox_inscriptions = wx.StaticBox(self, -1, u"Inscriptions")
         self.ctrl_inscriptions = OL_Inscriptions.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, id=-1, name="OL_inscriptions", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        self.ctrl_inscriptions.SetMinSize((150, 90))
+        self.ctrl_inscriptions.SetMinSize((150, 50))
         
         self.bouton_ajouter_inscription = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_inscription = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_inscription = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         self.bouton_forfait = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Forfait.png", wx.BITMAP_TYPE_ANY))
+
+        # Contrats
+        self.staticbox_contrats = wx.StaticBox(self, -1, u"Contrats")
+        self.ctrl_contrats = OL_Contrats.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, id=-1, name="OL_contrats", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.ctrl_contrats.SetMinSize((150, 90))
         
+        self.bouton_ajouter_contrat = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier_contrat = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer_contrat = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+
         # Binds
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouter_Inscription, self.bouton_ajouter_inscription)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier_Inscription, self.bouton_modifier_inscription)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer_Inscription, self.bouton_supprimer_inscription)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_inscriptions.Ajouter, self.bouton_ajouter_inscription)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_inscriptions.Modifier, self.bouton_modifier_inscription)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_inscriptions.Supprimer, self.bouton_supprimer_inscription)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonForfait, self.bouton_forfait)
-        
+        self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Ajouter, self.bouton_ajouter_contrat)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Modifier, self.bouton_modifier_contrat)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Supprimer, self.bouton_supprimer_contrat)
+
         # Propriétés
         self.bouton_ajouter_inscription.SetToolTipString(u"Cliquez ici pour inscrire l'individu à une activité")
         self.bouton_modifier_inscription.SetToolTipString(u"Cliquez ici pour modifier l'inscription sélectionnée")
         self.bouton_supprimer_inscription.SetToolTipString(u"Cliquez ici pour supprimer l'inscription sélectionnée")
         self.bouton_forfait.SetToolTipString(u"Cliquez ici pour saisir manuellement un forfait daté")
-        
+        self.bouton_ajouter_contrat.SetToolTipString(u"Cliquez ici pour créer un contrat pour cet individu")
+        self.bouton_modifier_contrat.SetToolTipString(u"Cliquez ici pour modifier le contrat sélectionné")
+        self.bouton_supprimer_contrat.SetToolTipString(u"Cliquez ici pour supprimer le contrat sélectionné")
+
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
         
@@ -53,13 +69,12 @@ class Panel(wx.Panel):
         
         grid_sizer_inscriptions.Add(self.ctrl_inscriptions, 1, wx.EXPAND, 0)
         
-        grid_sizer_boutons = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_ajouter_inscription, 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_modifier_inscription, 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_supprimer_inscription, 0, wx.ALL, 0)
         grid_sizer_boutons.Add( (5, 5), 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_imprimer, 0, wx.ALL, 0)
-        grid_sizer_boutons.Add( (5, 5), 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_forfait, 0, wx.ALL, 0)
         grid_sizer_inscriptions.Add(grid_sizer_boutons, 1, wx.ALL, 0)
         
@@ -67,7 +82,24 @@ class Panel(wx.Panel):
         grid_sizer_inscriptions.AddGrowableRow(0)
         staticbox_inscriptions.Add(grid_sizer_inscriptions, 1, wx.EXPAND|wx.ALL, 5)
         grid_sizer_base.Add(staticbox_inscriptions, 1, wx.EXPAND|wx.ALL, 5)
-                
+
+        # Contrats
+        staticbox_contrats = wx.StaticBoxSizer(self.staticbox_contrats, wx.VERTICAL)
+        grid_sizer_contrats = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        
+        grid_sizer_contrats.Add(self.ctrl_contrats, 1, wx.EXPAND, 0)
+        
+        grid_sizer_boutons = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_ajouter_contrat, 0, wx.ALL, 0)
+        grid_sizer_boutons.Add(self.bouton_modifier_contrat, 0, wx.ALL, 0)
+        grid_sizer_boutons.Add(self.bouton_supprimer_contrat, 0, wx.ALL, 0)
+        grid_sizer_contrats.Add(grid_sizer_boutons, 1, wx.ALL, 0)
+
+        grid_sizer_contrats.AddGrowableCol(0)
+        grid_sizer_contrats.AddGrowableRow(0)
+        staticbox_contrats.Add(grid_sizer_contrats, 1, wx.EXPAND|wx.ALL, 5)
+        grid_sizer_base.Add(staticbox_contrats, 1, wx.EXPAND|wx.ALL, 5)
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
@@ -109,15 +141,6 @@ class Panel(wx.Panel):
         
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-
-    def OnBoutonAjouter_Inscription(self, event):
-        self.ctrl_inscriptions.Ajouter(None)
-
-    def OnBoutonModifier_Inscription(self, event):
-        self.ctrl_inscriptions.Modifier(None)
-
-    def OnBoutonSupprimer_Inscription(self, event):
-        self.ctrl_inscriptions.Supprimer(None)
         
     def OnBoutonForfait(self, event):
         """ Saisir un forfait daté """
@@ -180,6 +203,7 @@ class Panel(wx.Panel):
             print "pas de IDindividu !"
             return
         self.ctrl_inscriptions.MAJ() 
+        self.ctrl_contrats.MAJ() 
         
     def ValidationData(self):
         """ Return True si les données sont valides et pretes à être sauvegardées """
@@ -198,7 +222,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.IDindividu = 20
+        self.IDindividu = 46
         self.ctrl = Panel(panel, IDindividu=self.IDindividu)
         self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

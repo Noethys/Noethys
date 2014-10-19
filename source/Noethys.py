@@ -554,6 +554,9 @@ class MainFrame(wx.Frame):
                     {"code" : "modeles_documents", "label" : u"Modèles de documents", "infobulle" : u"Paramétrage des modèles de documents", "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
                     {"code" : "modeles_emails", "label" : u"Modèles d'Emails", "infobulle" : u"Paramétrage des modèles d'Emails", "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
                     {"code" : "modeles_tickets", "label" : u"Modèles de tickets", "infobulle" : u"Paramétrage des modèles de tickets", "image" : "Images/16x16/Ticket.png", "action" : self.On_param_modeles_tickets},
+                    {"code" : "modeles_contrats", "label" : u"Modèles de contrats", "infobulle" : u"Paramétrage des modèles de contrats", "image" : "Images/16x16/Contrat.png", "action" : self.On_param_modeles_contrats},
+                    {"code" : "modeles_plannings", "label" : u"Modèles de plannings", "infobulle" : u"Paramétrage des modèles de plannings", "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_modeles_plannings},
+                    {"code" : "modeles_aides", "label" : u"Modèles d'aides journalières", "infobulle" : u"Paramétrage des modèles d'aides journalières", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
                     "-",
                     {"code" : "procedures_badgeage", "label" : u"Procédures de badgeage", "infobulle" : u"Paramétrage des procédures de badgeage", "image" : "Images/16x16/Badgeage.png", "action" : self.On_param_badgeage},
                     {"code" : "synthese_vocale", "label" : u"Synthèse vocale", "infobulle" : u"Paramétrage de la synthèse vocale", "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
@@ -574,13 +577,11 @@ class MainFrame(wx.Frame):
                             ],
                     },
                     "-",
-                    {"code" : "regimes_sociaux", "label" : u"Régimes sociaux", "infobulle" : u"Paramétrage des régimes sociaux", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
-                    {"code" : "caisses", "label" : u"Caisses", "infobulle" : u"Paramétrage des caisses", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
-                    {"code" : "modeles_aides", "label" : u"Modèles d'aides journalières", "infobulle" : u"Paramétrage des modèles d'aides journalières", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
-                    "-",
                     {"code" : "menu_parametrage_renseignements", "label" : u"Renseignements", "items" : [
                             {"code" : "questionnaires", "label" : u"Questionnaires", "infobulle" : u"Paramétrage des questionnaires", "image" : "Images/16x16/Questionnaire.png", "action" : self.On_param_questionnaires},
                             {"code" : "types_pieces", "label" : u"Types de pièces", "infobulle" : u"Paramétrage des types de pièces", "image" : "Images/16x16/Piece.png", "action" : self.On_param_pieces},
+                            {"code" : "regimes_sociaux", "label" : u"Régimes sociaux", "infobulle" : u"Paramétrage des régimes sociaux", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
+                            {"code" : "caisses", "label" : u"Caisses", "infobulle" : u"Paramétrage des caisses", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
                             {"code" : "categories_travail", "label" : u"Catégories socio-professionnelles", "infobulle" : u"Paramétrage des catégories socio-professionnelles", "image" : "Images/16x16/Camion.png", "action" : self.On_param_categories_travail},
                             {"code" : "villes", "label" : u"Villes et codes postaux", "infobulle" : u"Paramétrage des villes et codes postaux", "image" : "Images/16x16/Carte.png", "action" : self.On_param_villes},
                             {"code" : "secteurs", "label" : u"Secteurs géographiques", "infobulle" : u"Paramétrage des secteurs géographiques", "image" : "Images/16x16/Secteur.png", "action" : self.On_param_secteurs},
@@ -731,6 +732,7 @@ class MainFrame(wx.Frame):
                     {"code" : "scolarite", "label" : u"Inscriptions scolaires", "infobulle" : u"Inscriptions scolaires", "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
                     "-",
                     {"code" : "liste_inscriptions", "label" : u"Liste des inscriptions", "infobulle" : u"Editer une liste des inscriptions", "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
+                    {"code" : "liste_contrats", "label" : u"Liste des contrats", "infobulle" : u"Editer une liste des contrats", "image" : "Images/16x16/Contrat.png", "action" : self.On_individus_contrats},
                     {"code" : "liste_individus", "label" : u"Liste des individus", "infobulle" : u"Editer une liste des individus", "image" : "Images/16x16/Personnes.png", "action" : self.On_individus_individus},
                     {"code" : "liste_familles", "label" : u"Liste des familles", "infobulle" : u"Liste des familles", "image" : "Images/16x16/Famille.png", "action" : self.On_individus_familles},
                     "-",
@@ -1517,6 +1519,20 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_tickets", "consulter") == False : return
         import DLG_Modeles_tickets
         dlg = DLG_Modeles_tickets.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_modeles_contrats(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_contrats", "consulter") == False : return
+        import DLG_Modeles_contrats
+        dlg = DLG_Modeles_contrats.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_modeles_plannings(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_plannings", "consulter") == False : return
+        import DLG_Modeles_plannings
+        dlg = DLG_Modeles_plannings.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 
@@ -2639,6 +2655,13 @@ class MainFrame(wx.Frame):
         dlg = DLG_Liste_inscriptions.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
+
+    def On_individus_contrats(self, event):
+        import DLG_Liste_contrats
+        dlg = DLG_Liste_contrats.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
 
     def On_individus_individus(self, event):
         import DLG_Liste_individus

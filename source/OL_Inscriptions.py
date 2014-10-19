@@ -103,7 +103,7 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-    
+        
     def GetLogoOrganisateur(self):
         global LOGO_ORGANISATEUR
         DB = GestionDB.DB()

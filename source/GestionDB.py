@@ -1483,6 +1483,10 @@ class DB:
         if versionFichier < versionFiltre :   
             try :
                 self.AjoutChamp("tarifs_lignes", "montant_questionnaire", "INTEGER")
+                self.AjoutChamp("prestations", "IDcontrat", "INTEGER")
+                if self.IsTableExists("contrats") == False : self.CreationTable("contrats", Tables.DB_DATA) 
+                if self.IsTableExists("modeles_contrats") == False : self.CreationTable("modeles_contrats", Tables.DB_DATA)
+                if self.IsTableExists("modeles_plannings") == False : self.CreationTable("modeles_plannings", Tables.DB_DATA)
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
@@ -1719,7 +1723,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
 ##    db = DB(suffixe="DATA")
-##    listeTables = ("pes_lots",)
+##    listeTables = ("modeles_contrats",)
 ##    for nomTable in listeTables :
 ##        db.CreationTable(nomTable, Tables.DB_DATA)
 ##    db.Close()
@@ -1754,7 +1758,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("tarifs_lignes", "taux_questionnaire", "INTEGER")
+##    db.AjoutChamp("prestations", "IDcontrat", "INTEGER")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
