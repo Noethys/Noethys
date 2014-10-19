@@ -700,7 +700,7 @@ class Dialog(wx.Dialog):
             elif type(ventilation) == list :
                 listeParametres.append(u"Uniquement des règlements ventilés sur la période du %s au %s" % (UTILS_Dates.DateDDEnFr(ventilation[0]), UTILS_Dates.DateDDEnFr(ventilation[1])))
             else :
-                listeParametres.append(u"Uniquement des règlements ventilés sur l'année %d" % annee)
+                listeParametres.append(u"Uniquement des règlements ventilés sur l'année %d" % ventilation)
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres
