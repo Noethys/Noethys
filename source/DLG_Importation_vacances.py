@@ -171,12 +171,6 @@ class ListView(FastObjectListView):
 ##            listeDonnees.append(dictTemp)
 ##        return listeDonnees
 
-    def DefileDernier(self):
-        """ Defile jusqu'au dernier item de la liste """
-        if len(self.GetObjects()) > 0 :
-            dernierTrack = self.GetObjects()[-1]
-            index = self.GetIndexOf(dernierTrack)
-            self.EnsureCellVisible(index, 0)
     
     def SetLabelPeriodes(self, texte=""):
         self.GetParent().SetLabelPeriodes(texte)

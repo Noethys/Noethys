@@ -34,6 +34,8 @@ class CTRL_Groupes(wx.CheckListBox):
         self.listeDonnees.sort()
         index = 0
         for nomGroupe, IDtype_groupe_activite in self.listeDonnees :
+            if nomGroupe == None :
+                nomGroupe = u"Groupe inconnu !"
             self.Append(nomGroupe) 
             self.dictIndex[index] = IDtype_groupe_activite
             index += 1

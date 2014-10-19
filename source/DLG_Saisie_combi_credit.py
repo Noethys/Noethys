@@ -44,7 +44,7 @@ class CTRL_Unites(wx.CheckListBox):
 # ------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, IDactivite=None, listeUnites=[]):
+    def __init__(self, parent, IDactivite=None, listeUnites=[], afficheOptions=True):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_combi_credit", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.IDactivite = IDactivite
@@ -58,6 +58,11 @@ class Dialog(wx.Dialog):
         self.staticbox_options = wx.StaticBox(self, -1, u"Options")
         self.check_quantite = wx.CheckBox(self, -1, u"Quantité max. :")
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "", min=0, max=500)
+        
+        if afficheOptions == False :
+            self.staticbox_options.Show(False)
+            self.check_quantite.Show(False)
+            self.ctrl_quantite.Show(False)
 
         self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
@@ -73,7 +78,7 @@ class Dialog(wx.Dialog):
         self.OnCheckQuantite() 
         
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une combinaison de forfait")
+        self.SetTitle(u"Saisie d'une combinaison")
         self.check_quantite.SetToolTipString(u"Vous pouvez définir ici un plafond maximal")
         self.ctrl_unites.SetToolTipString(u"Cochez les unités à combiner")
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")

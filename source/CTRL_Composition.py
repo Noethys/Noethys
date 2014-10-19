@@ -1044,7 +1044,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
     def CacheTooltip(self):
         # Fermeture du tooltip
         if hasattr(self, "tipFrame"):
-            self.tipFrame.Destroy()
+            try :
+                self.tipFrame.Destroy()
+            except :
+                pass
             del self.tipFrame
             self.tip.IDindividu = None
         
