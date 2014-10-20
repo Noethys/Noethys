@@ -1,4 +1,4 @@
-Version 1.1.3.5 (19/10/2014) :
+Version 1.1.3.5 (20/10/2014) :
 
 - Ajout des contrats dans la fiche individuelle
 - Ajout de la liste des contrats dans le menu Individus
