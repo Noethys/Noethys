@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
             ColumnDefn(u"Du", 'left', 70, "date_debut",  stringConverter=FormateDateCourt),
             ColumnDefn(u"au", 'left', 70, "date_fin",  stringConverter=FormateDateCourt),
             ColumnDefn(u"Nom", 'left', 100, "nom", isSpaceFilling=True),
-            ColumnDefn(u"Activite", 'left', 200, "nomActivite"),
+            ColumnDefn(u"Activité", 'left', 200, "nomActivite"),
             ]
 
         self.SetColumns(liste_Colonnes)

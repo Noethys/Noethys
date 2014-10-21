@@ -44,8 +44,8 @@ class Track(object):
         for code, label in DLG_Saisie_contrat_conso_detail.LISTE_SEMAINES :
             if self.semaines == code and code != 1 :
                 listeTemp.append(label)
-        if len(self.jours_scolaires) > 0 : listeTemp.append(ConvertJoursStr(self.jours_scolaires) + " (vac)")
-        if len(self.jours_vacances) > 0 : listeTemp.append(ConvertJoursStr(self.jours_vacances) + " (scol)")
+        if len(self.jours_scolaires) > 0 : listeTemp.append(ConvertJoursStr(self.jours_scolaires) + " (scol)")
+        if len(self.jours_vacances) > 0 : listeTemp.append(ConvertJoursStr(self.jours_vacances) + " (vac)")
         if self.feries == True : listeTemp.append(u"Fériés inclus")
         self.criteres_txt = ", ".join(listeTemp)
         
