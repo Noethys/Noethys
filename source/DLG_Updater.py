@@ -37,8 +37,8 @@ DEBUG = False
 def AffichetailleFichier(fichierURL):
     try :
         fichier = urllib2.urlopen(fichierURL)
-        tailleFichier = (fichier.info().getheaders('Content-Length'))
-        tailleFichier = tailleFichier[0]
+        infoFichier = (fichier.info().getheaders('Content-Length'))
+        tailleFichier = infoFichier[0]
     except IOError :
         tailleFichier = 0
     return tailleFichier

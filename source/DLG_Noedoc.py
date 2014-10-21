@@ -418,6 +418,7 @@ class Reglement():
             (u"Nom du payeur", u"DUPOND Gérard", "{NOM_PAYEUR}"),
             (u"Numéro de quittancier", u"246", "{NUM_QUITTANCIER}"),
             (u"Date de saisie du règlement", u"23/03/2011", "{DATE_SAISIE}"),
+            (u"Observations", u"Observations", "{OBSERVATIONS}"),
             ]
         
         self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))

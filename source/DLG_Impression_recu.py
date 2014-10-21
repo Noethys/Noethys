@@ -709,6 +709,7 @@ class Dialog(wx.Dialog):
         dictValeurs["{NOM_PAYEUR}"] = dictValeurs["nomPayeur"]
         dictValeurs["{NUM_QUITTANCIER}"] = str(dictValeurs["numQuittancier"])
         dictValeurs["{DATE_SAISIE}"] = DateEngFr(dictValeurs["date_saisie"])
+        dictValeurs["{OBSERVATIONS}"] = u"%s" % dictValeurs["observations"]
         
         # Récupération liste des prestations
         if self.ctrl_prestations.GetValue() == True :
