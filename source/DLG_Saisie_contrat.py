@@ -578,7 +578,8 @@ class Dialog(wx.Dialog):
 
             # Suppression des conso supprimées
             for IDconso in self.listeSuppressionConso :
-                DB.ReqDEL("consommations", "IDconso", IDconso)
+                if IDconso != None :
+                    DB.ReqDEL("consommations", "IDconso", IDconso)
 
             # Saisie des consommations générées
             listeAjouts = []
