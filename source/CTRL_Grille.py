@@ -246,11 +246,11 @@ class Ligne():
         if self.estSeparation == True :
                 couleurCase = (150, 150, 150)
         if self.estSeparation == True :
-            renderer = CTRL_Grille_renderers.LabelLigneSeparation(couleurCase, dateTemp)
+            self.renderer_label = CTRL_Grille_renderers.LabelLigneSeparation(couleurCase, dateTemp)
         else :
-            renderer = CTRL_Grille_renderers.LabelLigneStandard(couleurCase, dateTemp)
-        self.grid.SetRowLabelRenderer(numLigne, renderer)
-        self.grid.dictLignes[numLigne] = renderer
+            self.renderer_label = CTRL_Grille_renderers.LabelLigneStandard(couleurCase, dateTemp)
+        self.grid.SetRowLabelRenderer(numLigne, self.renderer_label)
+        self.grid.dictLignes[numLigne] = self.renderer_label
         
         # Création des cases
         self.dictCases = {}
@@ -466,8 +466,19 @@ class Ligne():
             if case.typeCase == typeCase :
                 return case
         return None
-    
 
+    def Flash(self, couleur="#316AC5"):
+        """ Met en surbrillance la case quelques instants """
+        wx.CallLater(1, self.SetCouleurFondLabel, couleur)
+        couleurInitiale = self.renderer_label.couleurFond
+        wx.CallLater(1000, self.SetCouleurFondLabel, couleurInitiale)
+##        wx.CallLater(600, self.SetCouleurFondLabel, couleur)
+##        wx.CallLater(900, self.SetCouleurFondLabel, couleurInitiale)
+    
+    def SetCouleurFondLabel(self, couleur):
+        self.renderer_label.MAJ(couleur)
+        self.grid.Refresh() 
+        
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -4932,10 +4943,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except : 
             pass
         
-        
-        
-        
-        
+
+    def RechercheTexteLigne(self, texte=""):
+        """ Recherche un texte sur une ligne et l'affiche """
+        # Parcours les lignes
+        if texte == "" :
+            return
+        for numLigne, ligne in self.dictLignes.iteritems() :
+            if texte.lower() in ligne.labelLigne.lower() :
+                self.MakeCellVisible(numLigne, 1)
+                ligne.Flash()
+                return True
+        return False
+                
         
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

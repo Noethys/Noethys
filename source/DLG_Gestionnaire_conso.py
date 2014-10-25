@@ -26,6 +26,11 @@ import CTRL_Grille_forfaits2 as CTRL_Grille_forfaits
 import OL_Legende_grille
 import OL_Raccourcis_grille
 
+ID_AJOUTER_INDIVIDU = wx.NewId()
+ID_AFFICHER_TOUS_INSCRITS = wx.NewId()
+ID_MODE_RESERVATION = wx.NewId()
+ID_MODE_ATTENTE = wx.NewId()
+ID_MODE_REFUS = wx.NewId()
 
 ID_AFFICHAGE_PERSPECTIVE_DEFAUT = wx.NewId()
 ID_PREMIERE_PERSPECTIVE = 500
@@ -61,6 +66,20 @@ def CalculeAge(dateReference, date_naiss):
     age = (dateReference.year - date_naiss.year) - int((dateReference.month, dateReference.day) < (date_naiss.month, date_naiss.day))
     return age
 
+def CreationImage(largeur, hauteur, couleur=None):
+    """ couleur peut être RGB ou HEXA """
+    b = wx.EmptyBitmap(largeur, hauteur) 
+    dc = wx.MemoryDC() 
+    dc.SelectObject(b) 
+    dc.SetBackground(wx.Brush("black")) 
+    dc.Clear() 
+    dc.SetBrush(wx.Brush(couleur)) 
+    y = hauteur / 2.0 - largeur / 2.0
+    dc.DrawRectangle(0, y, largeur, largeur)
+    dc.SelectObject(wx.NullBitmap) 
+    b.SetMaskColour("black") 
+    return b
+        
 
 class CTRL_Titre(html.HtmlWindow):
     def __init__(self, parent, texte="", hauteur=30,  couleurFond=(255, 255, 255)):
@@ -75,6 +94,56 @@ class CTRL_Titre(html.HtmlWindow):
         self.SetPage(u"<B><FONT SIZE=5 COLOR='WHITE'>%s</FONT></B>""" % texte)
         self.SetBackgroundColour(self.couleurFond)
 
+
+
+
+class BarreRecherche(wx.SearchCtrl):
+    def __init__(self, parent, ctrl_grille=None, size=(-1,-1)):
+        wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER)
+        self.parent = parent
+        self.ctrl_grille = ctrl_grille
+        self.SetDescriptiveText(u"Rechercher...")
+        self.ShowSearchButton(True)
+        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
+        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
+        
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
+        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
+
+        # HACK pour avoir le EVT_CHAR
+        for child in self.GetChildren(): 
+            if isinstance(child, wx.TextCtrl): 
+                child.Bind(wx.EVT_CHAR, self.OnKeyDown) 
+                break 
+
+    def OnKeyDown(self, event):
+        """ Efface tout si touche ECHAP """
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_ESCAPE :
+            self.OnCancel(None) 
+        event.Skip()
+
+    def OnSearch(self, evt):
+        self.Recherche()
+            
+    def OnCancel(self, evt):
+        self.SetValue("")
+        self.Recherche()
+
+    def OnDoSearch(self, evt):
+        self.Recherche()
+        
+    def Recherche(self):
+        txtSearch = self.GetValue()
+        self.ShowCancelButton(len(txtSearch))
+        self.ctrl_grille.RechercheTexteLigne(txtSearch)
+        self.Refresh() 
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
 
 class Commandes(wx.Panel):
@@ -140,86 +209,86 @@ class Commandes(wx.Panel):
         self.parent.MenuOptions()
 
 
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
-        self.parent = parent
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-    
-    def OnLeftLink(self, event):        
-        if self.URL == "AJOUTER" :
-            import DLG_Grille_ajouter_individu
-            dlg = DLG_Grille_ajouter_individu.Dialog(self)
-            if dlg.ShowModal() == wx.ID_OK:
-                IDindividu = dlg.GetIDindividu()
-                # Recherche si l'individu est déjà dans la grille
-                if IDindividu in self.GetGrandParent().grille.listeSelectionIndividus :
-                    dlg = wx.MessageDialog(self, u"L'individu que vous avez sélectionné est déjà dans la grille des présences !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
-                    dlg.ShowModal()
-                    dlg.Destroy()
-                    return
-                self.GetGrandParent().AjouterIndividu(IDindividu)
-            dlg.Destroy()
+##class Hyperlien(Hyperlink.HyperLinkCtrl):
+##    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
+##        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
+##        self.parent = parent
+##        self.URL = URL
+##        self.AutoBrowse(False)
+##        self.SetColours("BLUE", "BLUE", "BLUE")
+##        self.SetUnderlines(False, False, True)
+##        self.SetBold(False)
+##        self.EnableRollover(True)
+##        self.SetToolTip(wx.ToolTip(infobulle))
+##        self.UpdateLink()
+##        self.DoPopup(False)
+##        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
+##    
+##    def OnLeftLink(self, event):        
+##        if self.URL == "AJOUTER" :
+##            import DLG_Grille_ajouter_individu
+##            dlg = DLG_Grille_ajouter_individu.Dialog(self)
+##            if dlg.ShowModal() == wx.ID_OK:
+##                IDindividu = dlg.GetIDindividu()
+##                # Recherche si l'individu est déjà dans la grille
+##                if IDindividu in self.GetGrandParent().grille.listeSelectionIndividus :
+##                    dlg = wx.MessageDialog(self, u"L'individu que vous avez sélectionné est déjà dans la grille des présences !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##                    dlg.ShowModal()
+##                    dlg.Destroy()
+##                    return
+##                self.GetGrandParent().AjouterIndividu(IDindividu)
+##            dlg.Destroy()
+##
+##        if self.URL == "INSCRITS" :
+##            self.GetGrandParent().AfficherTousInscrits()
+##        
+##        self.UpdateLink()
+        
 
-        if self.URL == "INSCRITS" :
-            self.GetGrandParent().AfficherTousInscrits()
-        
-        self.UpdateLink()
-        
-
-class CTRL_Options(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, -1)
-        self.parent = parent
-        
-        # Ajouter individu
-        self.hyper_ajouter_individu = Hyperlien(self, label=u"Ajouter un individu", infobulle=u"Cliquez ici pour ajouter un individu à la liste afichée", URL="AJOUTER")
-        self.label_separation_1 = wx.StaticText(self, -1, u"|")
-        self.hyper_tous_inscrits = Hyperlien(self, label=u"Afficher tous les inscrits", infobulle=u"Cliquez ici pour afficher tous les inscrits aux activités et groupes sélectionnés", URL="INSCRITS")
-        # Mode de saisie
-        self.label_mode = wx.StaticText(self, -1, u"Mode de saisie :")
-        self.radio_reservation = wx.RadioButton(self, -1, u"Réservation", style = wx.RB_GROUP )
-        self.radio_attente = wx.RadioButton(self, -1, u"Attente" )
-        self.radio_refus = wx.RadioButton(self, -1, u"Refus" )
-        self.radio_reservation.SetValue(True)
-        
-        self.radio_reservation.SetToolTipString(u"Le mode Réservation permet de saisir une réservation")
-        self.radio_attente.SetToolTipString(u"Le mode Attente permet de saisir une place sur liste d'attente")
-        self.radio_refus.SetToolTipString(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")
-        
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.hyper_ajouter_individu, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.label_separation_1, 0, 0, 0)
-        grid_sizer_base.Add(self.hyper_tous_inscrits, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add( (5, 5), 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_reservation, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_attente, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_refus, 0, wx.EXPAND, 0)
-        grid_sizer_base.AddGrowableCol(3)
-        self.SetSizer(grid_sizer_base)
-        self.Layout()
-
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_reservation)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_attente)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_refus)
-    
-    def OnRadioMode(self, event):
-        pass
-    
-    def GetMode(self):
-        if self.radio_reservation.GetValue() == True : return "reservation"
-        if self.radio_attente.GetValue() == True : return "attente"
-        if self.radio_refus.GetValue() == True : return "refus"
+##class CTRL_Options(wx.Panel):
+##    def __init__(self, parent):
+##        wx.Panel.__init__(self, parent, -1)
+##        self.parent = parent
+##        
+##        # Ajouter individu
+##        self.hyper_ajouter_individu = Hyperlien(self, label=u"Ajouter un individu", infobulle=u"Cliquez ici pour ajouter un individu à la liste afichée", URL="AJOUTER")
+##        self.label_separation_1 = wx.StaticText(self, -1, u"|")
+##        self.hyper_tous_inscrits = Hyperlien(self, label=u"Afficher tous les inscrits", infobulle=u"Cliquez ici pour afficher tous les inscrits aux activités et groupes sélectionnés", URL="INSCRITS")
+##        # Mode de saisie
+##        self.label_mode = wx.StaticText(self, -1, u"Mode de saisie :")
+##        self.radio_reservation = wx.RadioButton(self, -1, u"Réservation", style = wx.RB_GROUP )
+##        self.radio_attente = wx.RadioButton(self, -1, u"Attente" )
+##        self.radio_refus = wx.RadioButton(self, -1, u"Refus" )
+##        self.radio_reservation.SetValue(True)
+##        
+##        self.radio_reservation.SetToolTipString(u"Le mode Réservation permet de saisir une réservation")
+##        self.radio_attente.SetToolTipString(u"Le mode Attente permet de saisir une place sur liste d'attente")
+##        self.radio_refus.SetToolTipString(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")
+##        
+##        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
+##        grid_sizer_base.Add(self.hyper_ajouter_individu, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.label_separation_1, 0, 0, 0)
+##        grid_sizer_base.Add(self.hyper_tous_inscrits, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add( (5, 5), 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.radio_reservation, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.radio_attente, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.radio_refus, 0, wx.EXPAND, 0)
+##        grid_sizer_base.AddGrowableCol(3)
+##        self.SetSizer(grid_sizer_base)
+##        self.Layout()
+##
+##        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_reservation)
+##        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_attente)
+##        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_refus)
+##    
+##    def OnRadioMode(self, event):
+##        pass
+##    
+##    def GetMode(self):
+##        if self.radio_reservation.GetValue() == True : return "reservation"
+##        if self.radio_attente.GetValue() == True : return "attente"
+##        if self.radio_refus.GetValue() == True : return "refus"
 
 
 class PanelGrille(wx.Panel):
@@ -239,13 +308,36 @@ class PanelGrille(wx.Panel):
         # Création des contrôles
         self.ctrl_titre = CTRL_Titre(self, couleurFond="#316AC5")
         self.grille = CTRL_Grille.CTRL(self, "date")
-        self.ctrl_options = CTRL_Options(self)
         
+        # Barre d'outils
+        self.barreOutils = wx.ToolBar(self, -1, style = 
+            wx.TB_HORIZONTAL 
+            | wx.NO_BORDER
+            | wx.TB_FLAT
+            | wx.TB_TEXT
+            | wx.TB_HORZ_LAYOUT
+            | wx.TB_NODIVIDER
+            )
+        self.ctrl_recherche = BarreRecherche(self.barreOutils, ctrl_grille=self.grille)
+        self.barreOutils.AddControl(self.ctrl_recherche)
+        
+        self.barreOutils.AddLabelTool(ID_AJOUTER_INDIVIDU, label=u"Ajouter un individu", bitmap=wx.Bitmap("Images/16x16/Femme.png", wx.BITMAP_TYPE_PNG), shortHelp=u"Ajouter un individu", longHelp=u"Ajouter un individu")
+        self.barreOutils.AddLabelTool(ID_AFFICHER_TOUS_INSCRITS, label=u"Afficher tous les inscrits", bitmap=wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG), shortHelp=u"Afficher tous les inscrits", longHelp=u"Afficher tous les inscrits")
+##        self.barreOutils.AddSeparator()
+        self.barreOutils.AddStretchableSpace()
+        self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=u"Réservation", bitmap=CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=u"Mode de saisie 'Réservation'", longHelp=u"Mode de saisie 'Réservation'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=u"Attente", bitmap=CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=u"Mode de saisie 'Attente'", longHelp=u"Mode de saisie 'Attente'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=u"Refus", bitmap=CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=u"Mode de saisie 'Refus'", longHelp=u"Mode de saisie 'Refus'")
+
+        self.Bind(wx.EVT_TOOL, self.AjouterIndividu, id=ID_AJOUTER_INDIVIDU)
+        self.Bind(wx.EVT_TOOL, self.AfficherTousInscrits, id=ID_AFFICHER_TOUS_INSCRITS)
+        self.barreOutils.Realize()
+
         # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
         grid_sizer_base.Add(self.ctrl_titre, 0, wx.EXPAND,  0)
         grid_sizer_base.Add(self.grille, 0, wx.EXPAND,  0)
-        grid_sizer_base.Add(self.ctrl_options, 0, wx.EXPAND|wx.ALL,  5)
+        grid_sizer_base.Add(self.barreOutils, 0, wx.EXPAND|wx.ALL,  5)
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(1)
         self.SetSizer(grid_sizer_base)
@@ -313,7 +405,19 @@ class PanelGrille(wx.Panel):
         
         return listeSelectionIndividus
 
-    def AjouterIndividu(self, IDindividu=None):
+    def AjouterIndividu(self, event=None):
+        IDindividu = None
+        import DLG_Grille_ajouter_individu
+        dlg = DLG_Grille_ajouter_individu.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK:
+            IDindividu = dlg.GetIDindividu()
+            # Recherche si l'individu est déjà dans la grille
+            if IDindividu in self.grille.listeSelectionIndividus :
+                dlg = wx.MessageDialog(self, u"L'individu que vous avez sélectionné est déjà dans la grille des présences !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+        dlg.Destroy()
         if IDindividu == None : return
         self.listeSelectionIndividus.append(IDindividu)
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
@@ -323,8 +427,7 @@ class PanelGrille(wx.Panel):
         if IDindividu not in self.dictIndividusAjoutes[self.date] :
             self.dictIndividusAjoutes[self.date].append(IDindividu)
 
-
-    def AfficherTousInscrits(self):
+    def AfficherTousInscrits(self, event=None):
         """ Affiche tous les inscrits à l'activité """
         # Conditions Activités :
         if len(self.listeActivites) == 0 : conditionActivites = "()"
@@ -357,7 +460,14 @@ class PanelGrille(wx.Panel):
         # MAJ de l'affichage
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
         
-        
+    def GetMode(self):
+        if self.barreOutils.GetToolState(ID_MODE_RESERVATION) == True : return "reservation"
+        if self.barreOutils.GetToolState(ID_MODE_ATTENTE) == True : return "attente"
+        if self.barreOutils.GetToolState(ID_MODE_REFUS) == True : return "refus"
+
+
+
+
         
 class Dialog(wx.Dialog):
     def __init__(self, parent):
@@ -837,7 +947,6 @@ class Dialog(wx.Dialog):
 
 if __name__ == "__main__":
     app = wx.App(0)
-    import CTRL_Grille
     dialog_1 = Dialog(None)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()

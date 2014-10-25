@@ -981,7 +981,7 @@ class CaseStandard(Case):
         if self.grid.mode == "individu" :
             mode = self.grid.GetGrandParent().panel_activites.ctrl_mode.GetMode()
         else:
-            mode = self.grid.GetGrandParent().panel_grille.ctrl_options.GetMode()
+            mode = self.grid.GetGrandParent().panel_grille.GetMode()
         
         # Si l'unité est fermée
         if self.ouvert == False : 
