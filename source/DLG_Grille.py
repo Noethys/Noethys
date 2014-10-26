@@ -437,7 +437,6 @@ class Dialog(wx.Dialog):
             self._mgr.GetPane("forfaits").Show()
         else:
             self._mgr.GetPane("forfaits").Hide()
-##        self._mgr.Update()
         
         # Contre le bug de maximize
         wx.CallAfter(self._mgr.Update)
@@ -455,7 +454,11 @@ class Dialog(wx.Dialog):
         self.panel_periode.SetVisibleSelection()
         
 
-    def MAJ_grille(self):
+    def MAJ_grille(self, autoCocheActivites=True):
+        if autoCocheActivites == True :
+            date_min, date_max = self.panel_grille.grille.GetDatesExtremes(self.panel_grille.listePeriodes)
+            listeIDactivites = self.panel_activites.ctrl_activites.CocheActivitesOuvertes(date_min, date_max)
+            self.SetListeSelectionActivites(listeIDactivites)
         self.panel_grille.MAJ_grille()
     
     def OnClose(self, event):

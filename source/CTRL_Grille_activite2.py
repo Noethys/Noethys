@@ -104,8 +104,8 @@ class CTRL_Activites(ULC.UltimateListCtrl):
         self.listeActivites = self.Importation()
         self.Remplissage()
         self.MAJaffichage() 
-        self.CocheTout()
-    
+##        self.CocheTout()
+        
     def SetListeSelectionIndividus(self, listeSelectionIndividus):
         self.listeSelectionIndividus = listeSelectionIndividus
         self.MAJ() 
@@ -220,17 +220,18 @@ class CTRL_Activites(ULC.UltimateListCtrl):
                 return dictInscriptions["IDgroupe"]
         return None
 
-    def OnCheck(self, event):
+    def OnCheck(self, event=None):
         """ Quand une sélection d'activités est effectuée... """
         listeSelections = self.GetIDcoches()
         try :
             self.GetGrandParent().SetListeSelectionActivites(listeSelections)
-            self.GetGrandParent().MAJ_grille()
+            self.GetGrandParent().MAJ_grille(autoCocheActivites=False)
         except :
             print "Erreur dans le Check du ultimatelistctrl.", listeSelections
         # Déselectionne l'item après la coche
-        itemIndex = event.m_itemIndex
-        self.Select(itemIndex, False)
+        if event != None :
+            itemIndex = event.m_itemIndex
+            self.Select(itemIndex, False)
 
     def CocheTout(self):
         for index in range(0, len(self.listeActivites)):
@@ -252,7 +253,27 @@ class CTRL_Activites(ULC.UltimateListCtrl):
             ID = self.listeActivites[index][1]
             if ID in listeIDcoches :
                 item.Check(True)
-
+    
+    def CocheActivitesOuvertes(self, date_min=None, date_max=None):
+        """ Coche uniquement les activités ouvertes """
+        listeIDactivites = []
+        for index in range(0, len(self.listeActivites)):
+            item = self.GetItem(index, 0)
+            IDactivite = self.listeActivites[index][1]
+            date_debut_activite = self.dictActivites[IDactivite]["date_debut"]
+            date_fin_activite = self.dictActivites[IDactivite]["date_fin"]
+            if date_debut_activite <= date_max and date_fin_activite >= date_min :
+                item.Check(True)
+                listeIDactivites.append(IDactivite)
+            else :
+                item.Check(False)
+            self.SetItem(item)
+        return listeIDactivites
+        
+        
+        
+        
+        
 ##class CTRL(wx.CheckListBox):
 ##    def __init__(self, parent, dictIndividus={}, dictActivites={}):
 ##        wx.CheckListBox.__init__(self, parent, -1)
