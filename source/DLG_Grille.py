@@ -50,6 +50,9 @@ ID_OUTILS_LOT_SUPPR = wx.NewId()
 ID_OUTILS_IMPRIMER_CONSO = wx.NewId()
 ID_OUTILS_ENVOYER_CONSO = wx.NewId()
 
+ID_MODE_RESERVATION = wx.NewId()
+ID_MODE_ATTENTE = wx.NewId()
+ID_MODE_REFUS = wx.NewId()
 
 
 
@@ -195,11 +198,29 @@ class PanelGrille(wx.Panel):
         # Création des contrôles
 ##        self.ctrl_titre = CTRL_titre(self, IDfamille, couleurFond="#316AC5")
         self.grille = CTRL_Grille.CTRL(self, IDfamille=IDfamille)
-        
+
+        # Barre d'outils
+        self.barreOutils = wx.ToolBar(self, -1, style = 
+            wx.TB_HORIZONTAL 
+            | wx.NO_BORDER
+            | wx.TB_FLAT
+            | wx.TB_TEXT
+            | wx.TB_HORZ_LAYOUT
+            | wx.TB_NODIVIDER
+            )
+        self.ctrl_recherche = CTRL_Grille.BarreRecherche(self.barreOutils, ctrl_grille=self.grille, size=(300, -1))
+        self.barreOutils.AddControl(self.ctrl_recherche)
+        self.barreOutils.AddStretchableSpace()
+        self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=u"Réservation", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=u"Mode de saisie 'Réservation'", longHelp=u"Mode de saisie 'Réservation'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=u"Attente", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=u"Mode de saisie 'Attente'", longHelp=u"Mode de saisie 'Attente'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=u"Refus", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=u"Mode de saisie 'Refus'", longHelp=u"Mode de saisie 'Refus'")
+        self.barreOutils.Realize()
+
         # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
 ##        grid_sizer_base.Add(self.ctrl_titre, 0, wx.EXPAND,  0)
         grid_sizer_base.Add(self.grille, 0, wx.EXPAND,  0)
+        grid_sizer_base.Add(self.barreOutils, 0, wx.EXPAND|wx.ALL,  5)
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
         self.SetSizer(grid_sizer_base)
@@ -243,7 +264,13 @@ class PanelGrille(wx.Panel):
     
     def SetListeSelectionActivites(self, listeActivites=[]):
         self.listeSelectionActivites = listeActivites
-        
+
+    def GetMode(self):
+        if self.barreOutils.GetToolState(ID_MODE_RESERVATION) == True : return "reservation"
+        if self.barreOutils.GetToolState(ID_MODE_ATTENTE) == True : return "attente"
+        if self.barreOutils.GetToolState(ID_MODE_REFUS) == True : return "refus"
+
+
 
 class Notebook(aui.AuiNotebook):
     def __init__(self, parent):
@@ -338,7 +365,7 @@ class Dialog(wx.Dialog):
                         
         self.panel_activites = CTRL_Grille_activite2.CTRL(self, self.dictIndividus, self.dictActivites, self.dictGroupes, self.listeSelectionIndividus)
         self._mgr.AddPane(self.panel_activites, aui.AuiPaneInfo().
-                          Name("activites").Caption(u"Options d'affichage et de saisie").
+                          Name("activites").Caption(u"Sélection des activités").
                           Top().Layer(1).Position(3).CloseButton(False).MaximizeButton(False).MinSize((160, 100)))
         
         self.panel_facturation = CTRL_Grille_facturation.CTRL(self)

@@ -64,22 +64,7 @@ def DateEngEnDateDD(dateEng):
 def CalculeAge(dateReference, date_naiss):
     # Calcul de l'age de la personne
     age = (dateReference.year - date_naiss.year) - int((dateReference.month, dateReference.day) < (date_naiss.month, date_naiss.day))
-    return age
-
-def CreationImage(largeur, hauteur, couleur=None):
-    """ couleur peut être RGB ou HEXA """
-    b = wx.EmptyBitmap(largeur, hauteur) 
-    dc = wx.MemoryDC() 
-    dc.SelectObject(b) 
-    dc.SetBackground(wx.Brush("black")) 
-    dc.Clear() 
-    dc.SetBrush(wx.Brush(couleur)) 
-    y = hauteur / 2.0 - largeur / 2.0
-    dc.DrawRectangle(0, y, largeur, largeur)
-    dc.SelectObject(wx.NullBitmap) 
-    b.SetMaskColour("black") 
-    return b
-        
+    return age        
 
 class CTRL_Titre(html.HtmlWindow):
     def __init__(self, parent, texte="", hauteur=30,  couleurFond=(255, 255, 255)):
@@ -97,53 +82,6 @@ class CTRL_Titre(html.HtmlWindow):
 
 
 
-class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent, ctrl_grille=None, size=(-1,-1)):
-        wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER)
-        self.parent = parent
-        self.ctrl_grille = ctrl_grille
-        self.SetDescriptiveText(u"Rechercher...")
-        self.ShowSearchButton(True)
-        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
-        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
-        
-        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
-        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
-
-        # HACK pour avoir le EVT_CHAR
-        for child in self.GetChildren(): 
-            if isinstance(child, wx.TextCtrl): 
-                child.Bind(wx.EVT_CHAR, self.OnKeyDown) 
-                break 
-
-    def OnKeyDown(self, event):
-        """ Efface tout si touche ECHAP """
-        keycode = event.GetKeyCode()
-        if keycode == wx.WXK_ESCAPE :
-            self.OnCancel(None) 
-        event.Skip()
-
-    def OnSearch(self, evt):
-        self.Recherche()
-            
-    def OnCancel(self, evt):
-        self.SetValue("")
-        self.Recherche()
-
-    def OnDoSearch(self, evt):
-        self.Recherche()
-        
-    def Recherche(self):
-        txtSearch = self.GetValue()
-        self.ShowCancelButton(len(txtSearch))
-        self.ctrl_grille.RechercheTexteLigne(txtSearch)
-        self.Refresh() 
-
-
-# -------------------------------------------------------------------------------------------------------------------------------------------
 
 
 class Commandes(wx.Panel):
@@ -318,16 +256,15 @@ class PanelGrille(wx.Panel):
             | wx.TB_HORZ_LAYOUT
             | wx.TB_NODIVIDER
             )
-        self.ctrl_recherche = BarreRecherche(self.barreOutils, ctrl_grille=self.grille)
+        self.ctrl_recherche = CTRL_Grille.BarreRecherche(self.barreOutils, ctrl_grille=self.grille)
         self.barreOutils.AddControl(self.ctrl_recherche)
         
         self.barreOutils.AddLabelTool(ID_AJOUTER_INDIVIDU, label=u"Ajouter un individu", bitmap=wx.Bitmap("Images/16x16/Femme.png", wx.BITMAP_TYPE_PNG), shortHelp=u"Ajouter un individu", longHelp=u"Ajouter un individu")
         self.barreOutils.AddLabelTool(ID_AFFICHER_TOUS_INSCRITS, label=u"Afficher tous les inscrits", bitmap=wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG), shortHelp=u"Afficher tous les inscrits", longHelp=u"Afficher tous les inscrits")
-##        self.barreOutils.AddSeparator()
         self.barreOutils.AddStretchableSpace()
-        self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=u"Réservation", bitmap=CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=u"Mode de saisie 'Réservation'", longHelp=u"Mode de saisie 'Réservation'")
-        self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=u"Attente", bitmap=CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=u"Mode de saisie 'Attente'", longHelp=u"Mode de saisie 'Attente'")
-        self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=u"Refus", bitmap=CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=u"Mode de saisie 'Refus'", longHelp=u"Mode de saisie 'Refus'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=u"Réservation", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=u"Mode de saisie 'Réservation'", longHelp=u"Mode de saisie 'Réservation'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=u"Attente", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=u"Mode de saisie 'Attente'", longHelp=u"Mode de saisie 'Attente'")
+        self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=u"Refus", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=u"Mode de saisie 'Refus'", longHelp=u"Mode de saisie 'Refus'")
 
         self.Bind(wx.EVT_TOOL, self.AjouterIndividu, id=ID_AJOUTER_INDIVIDU)
         self.Bind(wx.EVT_TOOL, self.AfficherTousInscrits, id=ID_AFFICHER_TOUS_INSCRITS)

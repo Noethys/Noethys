@@ -323,40 +323,40 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        except :
 ##            print listeSelections
 
-class CTRL_Mode(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, -1)
-        self.parent = parent
-        
-        self.label_mode = wx.StaticText(self, -1, u"Mode de saisie :")
-        self.radio_reservation = wx.RadioButton(self, -1, u"Réservation", style = wx.RB_GROUP )
-        self.radio_attente = wx.RadioButton(self, -1, u"Attente" )
-        self.radio_refus = wx.RadioButton(self, -1, u"Refus" )
-        self.radio_reservation.SetValue(True)
-        
-        self.radio_reservation.SetToolTipString(u"Le mode Réservation permet de saisir une réservation")
-        self.radio_attente.SetToolTipString(u"Le mode Attente permet de saisir une place sur liste d'attente")
-        self.radio_refus.SetToolTipString(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")
-        
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_reservation, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_attente, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.radio_refus, 0, wx.EXPAND, 0)
-        self.SetSizer(grid_sizer_base)
-        self.Layout()
-
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_reservation)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_attente)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_refus)
-    
-    def OnRadioMode(self, event):
-        pass
-    
-    def GetMode(self):
-        if self.radio_reservation.GetValue() == True : return "reservation"
-        if self.radio_attente.GetValue() == True : return "attente"
-        if self.radio_refus.GetValue() == True : return "refus"
+##class CTRL_Mode(wx.Panel):
+##    def __init__(self, parent):
+##        wx.Panel.__init__(self, parent, -1)
+##        self.parent = parent
+##        
+##        self.label_mode = wx.StaticText(self, -1, u"Mode de saisie :")
+##        self.radio_reservation = wx.RadioButton(self, -1, u"Réservation", style = wx.RB_GROUP )
+##        self.radio_attente = wx.RadioButton(self, -1, u"Attente" )
+##        self.radio_refus = wx.RadioButton(self, -1, u"Refus" )
+##        self.radio_reservation.SetValue(True)
+##        
+##        self.radio_reservation.SetToolTipString(u"Le mode Réservation permet de saisir une réservation")
+##        self.radio_attente.SetToolTipString(u"Le mode Attente permet de saisir une place sur liste d'attente")
+##        self.radio_refus.SetToolTipString(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")
+##        
+##        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+##        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.radio_reservation, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.radio_attente, 0, wx.EXPAND, 0)
+##        grid_sizer_base.Add(self.radio_refus, 0, wx.EXPAND, 0)
+##        self.SetSizer(grid_sizer_base)
+##        self.Layout()
+##
+##        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_reservation)
+##        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_attente)
+##        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioMode, self.radio_refus)
+##    
+##    def OnRadioMode(self, event):
+##        pass
+##    
+##    def GetMode(self):
+##        if self.radio_reservation.GetValue() == True : return "reservation"
+##        if self.radio_attente.GetValue() == True : return "attente"
+##        if self.radio_refus.GetValue() == True : return "refus"
         
         
         
@@ -367,11 +367,11 @@ class CTRL(wx.Panel):
         self.parent = parent
         
         self.ctrl_activites = CTRL_Activites(self, dictIndividus, dictActivites, dictGroupes, listeSelectionIndividus)
-        self.ctrl_mode = CTRL_Mode(self)
+##        self.ctrl_mode = CTRL_Mode(self)
         
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
         grid_sizer_base.Add(self.ctrl_activites, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.ctrl_mode, 0, wx.EXPAND|wx.ALL, 5)
+##        grid_sizer_base.Add(self.ctrl_mode, 0, wx.EXPAND|wx.ALL, 5)
         grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)

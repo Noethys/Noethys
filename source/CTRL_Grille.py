@@ -172,6 +172,68 @@ def ConvertStrToListe(texte=None):
         listeResultats.append(int(ID))
     return listeResultats
 
+def CreationImage(largeur, hauteur, couleur=None):
+    """ couleur peut être RGB ou HEXA """
+    b = wx.EmptyBitmap(largeur, hauteur) 
+    dc = wx.MemoryDC() 
+    dc.SelectObject(b) 
+    dc.SetBackground(wx.Brush("black")) 
+    dc.Clear() 
+    dc.SetBrush(wx.Brush(couleur)) 
+    y = hauteur / 2.0 - largeur / 2.0
+    dc.DrawRectangle(0, y, largeur, largeur)
+    dc.SelectObject(wx.NullBitmap) 
+    b.SetMaskColour("black") 
+    return b
+
+
+class BarreRecherche(wx.SearchCtrl):
+    def __init__(self, parent, ctrl_grille=None, size=(-1,-1)):
+        wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER)
+        self.parent = parent
+        self.ctrl_grille = ctrl_grille
+        self.SetDescriptiveText(u"Rechercher...")
+        self.ShowSearchButton(True)
+        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
+        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
+        
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
+        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
+
+        # HACK pour avoir le EVT_CHAR
+        for child in self.GetChildren(): 
+            if isinstance(child, wx.TextCtrl): 
+                child.Bind(wx.EVT_CHAR, self.OnKeyDown) 
+                break 
+
+    def OnKeyDown(self, event):
+        """ Efface tout si touche ECHAP """
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_ESCAPE :
+            self.OnCancel(None) 
+        event.Skip()
+
+    def OnSearch(self, evt):
+        self.Recherche()
+            
+    def OnCancel(self, evt):
+        self.SetValue("")
+        self.Recherche()
+
+    def OnDoSearch(self, evt):
+        self.Recherche()
+        
+    def Recherche(self):
+        txtSearch = self.GetValue()
+        self.ShowCancelButton(len(txtSearch))
+        self.ctrl_grille.RechercheTexteLigne(txtSearch)
+        self.Refresh() 
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
 
 
 class Conso():
@@ -195,8 +257,6 @@ class Conso():
         self.quantite = None
         self.statut = None
         self.case = None
-
-
 
 
     

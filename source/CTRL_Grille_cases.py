@@ -978,10 +978,11 @@ class CaseStandard(Case):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         
         # Récupération du mode de saisie
-        if self.grid.mode == "individu" :
-            mode = self.grid.GetGrandParent().panel_activites.ctrl_mode.GetMode()
-        else:
-            mode = self.grid.GetGrandParent().panel_grille.GetMode()
+        mode = self.grid.GetGrandParent().panel_grille.GetMode()
+##        if self.grid.mode == "individu" :
+##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
+##        else:
+##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
         
         # Si l'unité est fermée
         if self.ouvert == False : 
@@ -1884,10 +1885,11 @@ class CaseMultihoraires(Case):
         conso.heure_fin = UTILS_Dates.DatetimeTimeEnStr(heure_fin, ":") # self.grid.dictUnites[self.IDunite]["heure_fin"]
         
         # Mode de saisie
-        if self.grid.mode == "individu" :
-            mode = self.grid.GetGrandParent().panel_activites.ctrl_mode.GetMode()
-        else:
-            mode = self.grid.GetGrandParent().panel_grille.ctrl_options.GetMode()
+        mode = self.grid.GetGrandParent().panel_grille.GetMode()
+##        if self.grid.mode == "individu" :
+##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
+##        else:
+##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
         conso.etat = mode
         
         conso.verrouillage = 0
