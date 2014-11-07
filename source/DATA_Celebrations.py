@@ -316,7 +316,7 @@ DICT_FETES = {
     (29, 10) : u"Narcisse",
     (30, 10) : u"Heidi",
     (31, 10) : u"Quentin;Wolfgang",
-    (1, 11) : u";Harold;Mathurin;Toussaint",
+    (1, 11) : u"Harold;Mathurin;Toussaint",
     (2, 11) : u"Défunts",
     (3, 11) : u"Gwénaël;Gwénaëlle;Hubert",
     (4, 11) : u"Aymeric;Charles;Charlie;Émeric;Jessica;Jessy",

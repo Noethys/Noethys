@@ -757,7 +757,10 @@ class Facturation():
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
             dlgAttente = PBI.PyBusyInfo(u"Génération des factures à l'unité au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
-            wx.Yield() 
+            try :
+                wx.Yield() 
+            except :
+                pass
             try :
                 index = 0
                 for IDfacture, dictFacture in dictFactures.iteritems() :

@@ -143,7 +143,10 @@ class CTRL(HTL.HyperTreeList):
             if IDgroupe == None :
                 nomGroupe = u"Tous les groupes"
             else :
-                nomGroupe = self.dictGroupes[IDgroupe]["nom"]
+                if self.dictGroupes.has_key(IDgroupe) :
+                    nomGroupe = self.dictGroupes[IDgroupe]["nom"]
+                else :
+                    nomGroupe = u"Groupe inconnu"
             groupe = (nomGroupe, IDgroupe)
             if dictTemp.has_key(groupe) == False :
                 dictTemp[groupe] = []

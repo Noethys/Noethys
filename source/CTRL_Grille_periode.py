@@ -16,7 +16,7 @@ import GestionDB
 
 class DatePickerCtrl(wx.DatePickerCtrl):
     def __init__(self, parent):
-        wx.DatePickerCtrl.__init__(self, parent, -1, wx.DateTime.Today(), style=wx.DP_DROPDOWN) 
+        wx.DatePickerCtrl.__init__(self, parent, -1, style=wx.DP_DROPDOWN) 
         self.parent = parent
         self.Bind(wx.EVT_DATE_CHANGED, self.OnDateChanged)
         self.Bind(wx.EVT_CHILD_FOCUS, self.OnFocus)

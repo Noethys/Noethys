@@ -200,6 +200,9 @@ class ListView(GroupListView):
                 montant_ventilation = FloatToDecimal(dictVentilation[IDprestation])
             else :
                 montant_ventilation = FloatToDecimal(0.0)
+            if montant == None :
+                montant = 0.0 
+                
             dictTemp = {
                 "IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "date" : date, "categorie" : categorie,
                 "label" : label, "montant" : FloatToDecimal(montant), "IDactivite" : IDactivite, "nomActivite" : nomActivite, "nomAbregeActivite" : nomAbregeActivite, "IDtarif" : IDtarif, "nomTarif" : nomTarif, 

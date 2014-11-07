@@ -331,7 +331,7 @@ class Page_scanner(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         
         # Propriétés
-        self.ctrl_port.SetToolTipString("Sélectionnez le port sur lequel est branché le scanner")
+        self.ctrl_port.SetToolTipString(u"Sélectionnez le port sur lequel est branché le scanner")
         self.check_vider.SetToolTipString(u"Cochez cette case pour vider l'appareil après l'importation")
         self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder aux commandes spéciales du scanner")
         self.ctrl_appareil.SetToolTipString(u"Sélectionnez le nom du scanner")

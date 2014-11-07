@@ -167,23 +167,24 @@ class CTRL(HTL.HyperTreeList):
                 labelPrestation = u"%s - %s" % (nomActivite, labelPrestation)
             
             # Retient la période de ventilation
-            annee = datePrestation.year
-            mois = datePrestation.month
-            if self.mode_affichage == "mois" :
-                periode = (annee, mois)
-            else:
-                periode = annee
-            
-            if periode not in listePeriodes :
-                listePeriodes.append(periode)
+            if datePrestation != None :
+                annee = datePrestation.year
+                mois = datePrestation.month
+                if self.mode_affichage == "mois" :
+                    periode = (annee, mois)
+                else:
+                    periode = annee
                 
-            if dictVentilation.has_key(IDdepot) == False :
-                dictVentilation[IDdepot] = {}
-            if dictVentilation[IDdepot].has_key(periode) == False :
-                dictVentilation[IDdepot][periode] = {}
-            if dictVentilation[IDdepot][periode].has_key(labelPrestation) == False :
-                dictVentilation[IDdepot][periode][labelPrestation] = 0.0
-            dictVentilation[IDdepot][periode][labelPrestation] += montantVentilation
+                if periode not in listePeriodes :
+                    listePeriodes.append(periode)
+                    
+                if dictVentilation.has_key(IDdepot) == False :
+                    dictVentilation[IDdepot] = {}
+                if dictVentilation[IDdepot].has_key(periode) == False :
+                    dictVentilation[IDdepot][periode] = {}
+                if dictVentilation[IDdepot][periode].has_key(labelPrestation) == False :
+                    dictVentilation[IDdepot][periode][labelPrestation] = 0.0
+                dictVentilation[IDdepot][periode][labelPrestation] += montantVentilation
         
         DB.Close() 
         listePeriodes.sort()
