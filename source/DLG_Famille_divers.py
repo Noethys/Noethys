@@ -193,6 +193,23 @@ class Panel(wx.Panel):
                 
     def ValidationData(self):
         """ Return True si les données sont valides et pretes à être sauvegardées """
+        # Titulaire Hélios
+        titulaire_helios = self.ctrl_parametres.GetPropertyValue("titulaire_helios")
+        if titulaire_helios != None :
+            DB = GestionDB.DB()
+            req = """SELECT IDrattachement, IDindividu, IDcategorie, titulaire
+            FROM rattachements WHERE IDfamille=%d;""" % self.IDfamille
+            DB.ExecuterReq(req)
+            listeRattachements = DB.ResultatReq()
+            DB.Close()
+            for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements:
+                if titulaire_helios == IDindividu and titulaire == 0 :
+                    dlg = wx.MessageDialog(self, u"Attention, le titulaire Hélios doit être obligatoirement un titulaire du dossier !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
+
+        # Compte internet
         if self.check_activation.GetValue() == True :
             if self.ctrl_identifiant.GetValue() == "" :
                 dlg = wx.MessageDialog(self, u"L'identifiant internet saisi n'est pas valide !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
