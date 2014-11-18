@@ -175,6 +175,8 @@ class DB:
                     nbreCaract = int(typeChamp[typeChamp.find("(")+1:typeChamp.find(")")])
                     if nbreCaract > 255 :
                         typeChamp = "TEXT(%d)" % nbreCaract
+                    if nbreCaract > 20000 :
+                        typeChamp = "MEDIUMTEXT"
                 # ------------------------------
                 req = req + "%s %s, " % (nomChamp, typeChamp)
             req = req[:-2] + ")"
@@ -1491,6 +1493,18 @@ class DB:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
         # =============================================================
+
+        versionFiltre = (1, 1, 3, 6)
+        if versionFichier < versionFiltre :   
+            try :
+                if self.isNetwork == True :
+                    self.ExecuterReq("ALTER TABLE parametres MODIFY COLUMN parametre MEDIUMTEXT;")
+                    self.Commit()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
+
 
 
 

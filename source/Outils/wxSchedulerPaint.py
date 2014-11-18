@@ -24,6 +24,8 @@ EVT_SCHEDULE_RIGHT_CLICK = wx.PyEventBinder( wxEVT_COMMAND_SCHEDULE_RIGHT_CLICK 
 wxEVT_COMMAND_SCHEDULE_DCLICK = wx.NewEventType()
 EVT_SCHEDULE_DCLICK = wx.PyEventBinder( wxEVT_COMMAND_SCHEDULE_DCLICK )
 
+wxEVT_COMMAND_SCHEDULE_MOTION = wx.NewEventType()
+EVT_SCHEDULE_MOTION = wx.PyEventBinder( wxEVT_COMMAND_SCHEDULE_MOTION)
 
 class wxSchedulerSizer(wx.PySizer):
 	def __init__(self, minSizeCallback):
@@ -71,24 +73,34 @@ class wxSchedulerPaint( object ):
 	def _doDClickControl( self, point ):
 		self._processEvt( wxEVT_COMMAND_SCHEDULE_DCLICK, point )
 
+	def _doMotionControl( self, point ):
+		self._processEvt( wxEVT_COMMAND_SCHEDULE_MOTION, point )
+
 	def _findSchedule( self, point ):
 		"""
 		Check if the point is on a schedule and return the schedule
 		"""
+		sched = None
 		for schedule, pointMin, pointMax in self._schedulesCoords:
 			inX = ( pointMin.x <= point.x ) & ( point.x <= pointMax.x )
 			inY = ( pointMin.y <= point.y ) & ( point.y <= pointMax.y )
 			
 			if inX & inY:
-				return schedule.GetClientData()
+				sched = schedule.GetClientData()
 
+		datet = None
+		dateExacte = None
 		for dt, pointMin, pointMax in self._datetimeCoords:
 			inX = ( pointMin.x <= point.x ) & ( point.x <= pointMax.x )
 			inY = ( pointMin.y <= point.y ) & ( point.y <= pointMax.y )
 			
 			if inX & inY:
-				return dt
+				datet = utils.copyDateTime(dt)
+				minutes = int(30.0 * (point.y - pointMin.y) / (pointMax.y - pointMin.y)) 
+				minutes = minutes - (minutes % 5)
+				dateExacte = datet.AddTS(wx.TimeSpan(minutes=minutes))
 
+		return sched, datet, dateExacte
 
 	def _getSchedInPeriod( schedules, start, end):
 		"""
@@ -104,7 +116,7 @@ class wxSchedulerPaint( object ):
 
 			if schedule.start.IsLaterThan(end):
 				continue
-                        if start.IsLaterThan(schedule.end):
+			if start.IsLaterThan(schedule.end):
 				continue
 
 			newSchedule = schedule.Clone()
@@ -116,7 +128,7 @@ class wxSchedulerPaint( object ):
 			if schedule.end.IsLaterThan(end):
 				newSchedule.end = utils.copyDateTime(end)
 
-                        results.append(newSchedule)
+			results.append(newSchedule)
 
 		return results
 
@@ -543,16 +555,10 @@ class wxSchedulerPaint( object ):
 		Process the command event passed at the given point
 		"""
 		evt = wx.PyCommandEvent( commandEvent )
-		sch = self._findSchedule( point )
-		if isinstance( sch, wxSchedule ):
-			mySch = sch
-			myDate = None
-		else:
-			mySch = None
-			myDate = sch
-		
+		mySch, myDate, dateExacte = self._findSchedule( point )
 		evt.schedule = mySch
 		evt.date = myDate
+		evt.dateExacte = dateExacte
 		evt.SetEventObject( self )
 		self.ProcessEvent( evt ) 
 

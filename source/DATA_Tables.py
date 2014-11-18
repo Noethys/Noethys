@@ -1343,3 +1343,13 @@ DB_DOCUMENTS = {
                                     ], # BLOB documents
                                     
     }
+
+
+
+if __name__ == "__main__":
+    """ Affichage de stats sur les tables """
+    nbreChamps = 0
+    for nomTable, listeChamps in DB_DATA.iteritems() :
+        nbreChamps += len(listeChamps)
+    print "Nbre de champs DATA =", nbreChamps
+    print "Nbre de tables DATA =", len(DB_DATA.keys())
