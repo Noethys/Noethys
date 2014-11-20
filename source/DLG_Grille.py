@@ -210,7 +210,10 @@ class PanelGrille(wx.Panel):
             )
         self.ctrl_recherche = CTRL_Grille.BarreRecherche(self.barreOutils, ctrl_grille=self.grille, size=(300, -1))
         self.barreOutils.AddControl(self.ctrl_recherche)
-        self.barreOutils.AddStretchableSpace()
+        try :
+            self.barreOutils.AddStretchableSpace()
+        except :
+            self.barreOutils.AddSeparator()
         self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=u"Réservation", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=u"Mode de saisie 'Réservation'", longHelp=u"Mode de saisie 'Réservation'")
         self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=u"Attente", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=u"Mode de saisie 'Attente'", longHelp=u"Mode de saisie 'Attente'")
         self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=u"Refus", bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=u"Mode de saisie 'Refus'", longHelp=u"Mode de saisie 'Refus'")
