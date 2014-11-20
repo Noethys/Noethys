@@ -728,13 +728,20 @@ class CTRL_Page(wx.Panel):
         self.IDquestion = IDquestion
         self.filtre = filtre
         
-        if filtre == "texte" : self.ctrl_contenu = CTRL_Page_texte(self)
-        if filtre == "entier" : self.ctrl_contenu = CTRL_Page_entier(self)
-        if filtre == "montant" : self.ctrl_contenu = CTRL_Page_montant(self)
-        if filtre == "coche" : self.ctrl_contenu = CTRL_Page_coche(self)
-        if filtre == "choix" : self.ctrl_contenu = CTRL_Page_choix(self, IDquestion=IDquestion)
-        if filtre == "date" : self.ctrl_contenu = CTRL_Page_date(self)
-        if filtre == None : self.ctrl_contenu = CTRL_Page_vide(self, texte=u"Aucun filtre disponible pour cette question !")
+        if filtre == "texte" : 
+            self.ctrl_contenu = CTRL_Page_texte(self)
+        elif filtre == "entier" : 
+            self.ctrl_contenu = CTRL_Page_entier(self)
+        elif filtre == "montant" : 
+            self.ctrl_contenu = CTRL_Page_montant(self)
+        elif filtre == "coche" : 
+            self.ctrl_contenu = CTRL_Page_coche(self)
+        elif filtre == "choix" : 
+            self.ctrl_contenu = CTRL_Page_choix(self, IDquestion=IDquestion)
+        elif filtre == "date" : 
+            self.ctrl_contenu = CTRL_Page_date(self)
+        else :
+            self.ctrl_contenu = CTRL_Page_vide(self, texte=u"Aucun filtre disponible pour cette question !")
 
         grid_sizer = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer.Add(self.ctrl_titre, 1, wx.ALL|wx.EXPAND, 5)
