@@ -42,18 +42,21 @@ def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
     listeChaines = texte.split("##")
     listeNomsTemp = []
     for chaine in listeChaines :
-        nom, visible = chaine.split(";")
-        if visible == "oui" :
-            visible = True
-        else :
-            visible = False
+        try :
+            nom, visible = chaine.split(";")
+            if visible == "oui" :
+                visible = True
+            else :
+                visible = False
+                
+            if dictColonnes.has_key(nom) :
+                col = dictColonnes[nom]
+                col.visible = visible
+                listeColonnesFinale.append(col)
+                listeNomsTemp.append(nom)
+        except :
+            pass
             
-        if dictColonnes.has_key(nom) :
-            col = dictColonnes[nom]
-            col.visible = visible
-            listeColonnesFinale.append(col)
-            listeNomsTemp.append(nom)
-    
     # Vérifie que toutes les colonnes de la liste initiale ont été traitées
     for nom, col in dictColonnes.iteritems() :
         if nom not in listeNomsTemp :
