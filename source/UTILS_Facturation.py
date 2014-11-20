@@ -801,7 +801,10 @@ class Facturation():
         # Fabrication du PDF global
         if repertoireTemp == False :
             dlgAttente = PBI.PyBusyInfo(u"Création du PDF des factures...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
-            wx.Yield() 
+            try :
+                wx.Yield() 
+            except :
+                pass
             self.EcritStatusbar(u"Création du PDF des factures en cours... veuillez patienter...")
             try :
                 UTILS_Impression_facture.Impression(dictFactures, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
