@@ -551,6 +551,7 @@ class ListView(GroupListView):
             if reponse != wx.ID_YES :
                 return
         
+        nePlusDemanderConfirmation = False
         listeSuppressions = []
         for track in listeSelections :
             
@@ -587,7 +588,31 @@ class ListView(GroupListView):
             nbreVerrouillees = 0
             
             if len(listeConsommations) > 0 and valide == True :
-                message = u"Attention, la prestation n°%d est rattachée aux %d consommation(s) suivantes :\n\n" % (track.IDprestation, len(listeConsommations))
+##                message = u"Attention, la prestation n°%d est rattachée aux %d consommation(s) suivantes :\n\n" % (track.IDprestation, len(listeConsommations))
+##                lignesConso = []
+##                for IDconso, date, etat, IDunite, nomUnite, IDindividu, nomIndividu, prenomIndividu in listeConsommations :
+##                    listeIDconso.append(IDconso)
+##                    if etat == "present" :
+##                        nbreVerrouillees += 1
+##                    dateDD = DateEngEnDateDD(date)
+##                    dateFr = DateComplete(dateDD)
+##                    if IDindividu == 0 or IDindividu == None :
+##                        individu = u""
+##                    else:
+##                        individu = u"pour %s %s" % (nomIndividu, prenomIndividu)
+##                    ligneTexte = u"   - Le %s : %s %s\n" % (dateFr, nomUnite, individu)
+##                    #message += ligneTexte
+##                    lignesConso.append(ligneTexte)
+##                
+##                maxAffichage = 20
+##                if len(lignesConso) > maxAffichage :
+##                    message += "".join(lignesConso[:maxAffichage]) + u"   - Et %d autres consommations...\n" % (len(lignesConso) - maxAffichage)
+##                else :
+##                    message += "".join(lignesConso)
+##                    
+##                message += u"\nSouhaitez-vous supprimer également ces consommations (conseillé) ?\n\n(Si vous répondez non, les consommations seront conservées dans le calendrier mais seront considérées comme gratuites)"
+
+
                 lignesConso = []
                 for IDconso, date, etat, IDunite, nomUnite, IDindividu, nomIndividu, prenomIndividu in listeConsommations :
                     listeIDconso.append(IDconso)
@@ -603,21 +628,26 @@ class ListView(GroupListView):
                     #message += ligneTexte
                     lignesConso.append(ligneTexte)
                 
+                detail = ""
                 maxAffichage = 20
                 if len(lignesConso) > maxAffichage :
-                    message += "".join(lignesConso[:maxAffichage]) + u"   - Et %d autres consommations...\n" % (len(lignesConso) - maxAffichage)
+                    detail += "".join(lignesConso[:maxAffichage]) + u"   - Et %d autres consommations...\n" % (len(lignesConso) - maxAffichage)
                 else :
-                    message += "".join(lignesConso)
-                    
-                message += u"\nSouhaitez-vous supprimer également ces consommations (conseillé) ?\n\n(Si vous répondez non, les consommations seront conservées dans le calendrier mais seront considérées comme gratuites)"
-                
+                    detail += "".join(lignesConso)
+
+                introduction = u"Attention, la prestation n°%d est rattachée aux %d consommation(s) suivantes :" % (track.IDprestation, len(listeConsommations))
+                conclusion = u"Souhaitez-vous supprimer également ces consommations (conseillé) ?\n\n(Si vous répondez non, les consommations seront conservées dans le calendrier mais seront considérées comme gratuites)"
+
                 # Demande confirmation pour supprimer les consommations associées
-                dlg = wx.MessageDialog(self, message, u"Suppression", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-                reponse = dlg.ShowModal() 
-                dlg.Destroy()
-                if reponse == wx.ID_CANCEL :
-                    valide = False
-                if reponse == wx.ID_YES :
+                if nePlusDemanderConfirmation == False :
+                    import DLG_Messagebox
+                    dlg = DLG_Messagebox.Dialog(self, titre=u"Avertissement", introduction=introduction, detail=detail, conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[u"Oui", u"Oui pour tout", u"Non", u"Annuler"], defaut=0)
+                    reponse = dlg.ShowModal() 
+                    dlg.Destroy() 
+                else :
+                    reponse = 0
+                    
+                if reponse == 0 or nePlusDemanderConfirmation == True :
                     if nbreVerrouillees > 0 :
                         # Annule la procédure d'annulation si des consommations sont déjà pointées sur 'présent' :
                         dlg = wx.MessageDialog(self, u"La prestation %d est rattachée à %d consommation(s) déjà pointées.\nIl vous est donc impossible de le(s) supprimer !\n\nProcédure de suppression annulée." % (track.IDprestation, nbreVerrouillees), u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
@@ -628,11 +658,19 @@ class ListView(GroupListView):
                         # Suppression des consommations associées
                         for IDconso in listeIDconso :
                             DB.ReqDEL("consommations", "IDconso", IDconso)
-                if reponse == wx.ID_NO :
+
+                if reponse == 1 :
+                    nePlusDemanderConfirmation = True
+
+                if reponse == 2 :
                     # Supprime la référence à la prestation des consommations
                     for IDconso in listeIDconso :
                         listeDonnees = [("IDprestation", None),]
                         DB.ReqMAJ("consommations", listeDonnees, "IDconso", IDconso)
+
+                if reponse == 3 :
+                    return
+
             
             # Recherche s'il s'agit d'une prestation de frais de gestion pour un règlement
             if track.reglement_frais != None :
