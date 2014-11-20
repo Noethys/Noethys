@@ -16,12 +16,12 @@ import CTRL_Grille
 import UTILS_Dates
 
 
-class CTRL_Mode():
-    def __init__(self, parent):
-        self.parent = parent
-        
-    def GetMode(self):
-        return self.parent.parent.mode
+##class CTRL_Mode():
+##    def __init__(self, parent):
+##        self.parent = parent
+##        
+##    def GetMode(self):
+##        return self.parent.parent.mode
 
 class CTRL_Activites():
     def __init__(self, parent):
@@ -34,7 +34,7 @@ class Panel_Activites():
     def __init__(self, parent):
         self.parent = parent
         self.ctrl_activites = CTRL_Activites(self)
-        self.ctrl_mode = CTRL_Mode(self)
+##        self.ctrl_mode = CTRL_Mode(self)
 
 class Panel_Facturation():
     def __init__(self, parent):
@@ -60,7 +60,9 @@ class PanelGrille(wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
     
-    
+    def GetMode(self):
+        return self.parent.mode
+
 
 
 class CTRL_Titre(wx.Panel):
