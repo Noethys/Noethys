@@ -124,6 +124,7 @@ class Facture():
             (u"Total déjà réglé pour la période", u"6.00 ¤", "{TOTAL_REGLE}"),
             (u"Solde dû pour la période", u"4.00 ¤", "{SOLDE_DU}"),
             (u"Total des reports des périodes précédentes", u"134.50 ¤", "{TOTAL_REPORTS}"),
+            (u"Total des déductions", u"20.50 ¤", "{TOTAL_DEDUCTIONS}"),
             ]
         
         self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))
@@ -232,6 +233,7 @@ class Attestation():
             (u"Total des prestations de la période", u"10.00 ¤", "{TOTAL_PERIODE}"),
             (u"Total déjà réglé pour la période", u"6.00 ¤", "{TOTAL_REGLE}"),
             (u"Solde dû pour la période", u"4.00 ¤", "{SOLDE_DU}"),
+            (u"Total des déductions", u"20.50 ¤", "{TOTAL_DEDUCTIONS}"),
             ]
         
         self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))

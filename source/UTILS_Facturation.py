@@ -334,6 +334,7 @@ class Facturation():
                     "{FAMILLE_VILLE}" : ville_resid,
                     "individus" : {},
                     "listePrestations" : [],
+                    "listeDeductions" : [],
                     "prestations_familiales" : [],
                     "total" : FloatToDecimal(0.0),
                     "ventilation" : FloatToDecimal(0.0),
@@ -465,6 +466,10 @@ class Facturation():
             else :
                 deductions = []
 
+            # Mémorisation des déductions pour total
+            for dictDeduction in deductions :
+                dictComptes[ID]["listeDeductions"].append(dictDeduction)
+
             # Adaptation du label
             if typeLabel == 2 and IDtarif != None :
                 label = nomTarif
@@ -497,10 +502,17 @@ class Facturation():
                 dictComptes[ID]["individus"][IDindividu]["activites"][IDactivite]["presences"][date]["total"] += montant
             if montant_ventilation != None : 
                 dictComptes[ID]["individus"][IDindividu]["ventilation"] += montant_ventilation
-            
+                        
             # Stockage des IDprestation pour saisir le IDfacture après création de la facture
             dictComptes[ID]["listePrestations"].append( (IDindividu, IDprestation) )
         
+        # Intégration des total des déductions
+        for ID, valeurs in dictComptes.iteritems() :
+            totalDeductions = 0.0
+            for dictDeduction in dictComptes[ID]["listeDeductions"] :
+                totalDeductions += dictDeduction["montant"]
+            dictComptes[ID]["{TOTAL_DEDUCTIONS}"] = u"%.02f %s" % (totalDeductions, SYMBOLE)
+
         # Intégration du REPORT des anciennes prestations NON PAYEES
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listeReports :
             montant = FloatToDecimal(montant) 
@@ -851,5 +863,5 @@ if __name__ == '__main__':
 ##    print facturation.Impression(listeFactures=[92, 93], nomDoc=None, afficherDoc=True, dictOptions=None)
 ##    print len(facturation.GetDonnees2(listeFactures=range(3240, 3400)))
 ##    facturation.GetDonneesImpression2(listeFactures=range(3240, 3400))
-    print facturation.Impression(listeFactures=[30,])
+    print "resultats =", facturation.Impression(listeFactures=[77,])
     app.MainLoop()

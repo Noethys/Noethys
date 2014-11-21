@@ -12,6 +12,10 @@ import wx
 import re
 import wx.lib.agw.hyperlink as Hyperlink
 
+import UTILS_Config
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+
+
 OPERATEURS = [
     (u"est égal à", "="),
     (u"est différent de", "<>"),
@@ -189,6 +193,40 @@ class Dialog(wx.Dialog):
 
 ####-----Résolveur de formule-----------------------------------------------------------------
 
+
+def ResolveurCalcul(texte=u"", dictValeurs={}):
+    """ Pour résoudre les calculs """
+    resultat = ""
+    resultatEuros = False
+    # Remplacement des valeurs
+    for motcle, valeur in dictValeurs.iteritems() :
+        if motcle in texte :
+            # Conversion de la valeur
+            if u"¤" in valeur :
+                resultatEuros = True
+                
+            for caract in u" ¤abcdefghijklmnopqrstuvwxyzéè-_" :
+                valeur = valeur.replace(caract, "")
+                valeur = valeur.replace(caract.upper(), "")
+            
+            # Remplacement des valeurs
+            texte = texte.replace(motcle, valeur)
+            
+    # Réalisation du calcul
+    try :
+        exec("resultat = %s" % texte)
+        if resultatEuros == True :
+            resultat = u"%.02f %s" % (resultat, SYMBOLE)
+        else :
+            resultat = str(resultat)
+    except :
+        pass
+            
+    return resultat
+    
+    
+    
+    
 def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
     """ Permet de résoudre une formule """
     formule = formule.rstrip("]]")
@@ -196,8 +234,12 @@ def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
     # Recherche les infos dans la formule
     regex = re.compile(r"[^SI]({.+})(<>|>=|<=|>|<|=)(.*)->(.*)") 
     resultat = regex.search(formule)
-    if resultat == None : return u""
-    if len(resultat.groups()) != 4 : return u""
+    if resultat == None or len(resultat.groups()) != 4 : 
+        # Si aucune formule conditionnelle trouvée, regarde si c'est un calcul à effectuer
+        resultat = ResolveurCalcul(texte=formule, dictValeurs=dictValeurs)
+        return resultat
+    
+    # Formule conditionnelle
     champ, operateur, condition, valeur = resultat.groups()
     
     # Recherche une condition avec " OU "
@@ -271,15 +313,22 @@ if __name__ == u"__main__":
     
     dictValeurs = {
         "{ORGANISATEUR_NOM}" : u"Association Noethys",
+        "{FAMILLE_VILLE}" : u"QUIMPER",
+        "{MONTANT}" : u"2.00 ¤",
         }
     
 ##    dialog_1 = Dialog(None, listeChamps=listeChamps)
 ##    app.SetTopWindow(dialog_1)
 ##    dialog_1.ShowModal()
 ##    app.MainLoop()
-        
+    
+    # Test des formules conditionnelles
     resultat = ResolveurTexte(
-                texte=u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilà et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]...", 
+                texte=u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilà et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]. Je veux aussi résoudre le calcul suivant : [[1+2.0]] Euros", 
                 listeChamps=listeChamps, 
                 dictValeurs=dictValeurs)
+    print (resultat,)
+    
+    # Test des formules de calcul
+    resultat = ResolveurCalcul(texte=u"({MONTANT}*10)+2", dictValeurs=dictValeurs)
     print (resultat,)
