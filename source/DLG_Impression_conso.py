@@ -1649,11 +1649,14 @@ class Dialog(wx.Dialog):
             story.append(tableau)
         
         def CreationSautPage():
-            element = str(story[-3])
-            if element != "PageBreak()" :
-                story.append(PageBreak())
-                CreationTitreDocument() 
-        
+            try :
+                element = str(story[-3])
+                if element != "PageBreak()" :
+                    story.append(PageBreak())
+                    CreationTitreDocument() 
+            except :
+                pass
+                
         # Prépare liste pour Export Excel
         listeExport = []
 
