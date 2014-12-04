@@ -270,7 +270,7 @@ class ObjectListView(wx.ListCtrl):
 
         self.evenRowsBackColor = wx.Colour(240, 248, 255) # ALICE BLUE
         self.oddRowsBackColor = wx.Colour(255, 250, 205) # LEMON CHIFFON
-
+        
         wx.ListCtrl.__init__(self, *args, **kwargs)
 
         if self.sortable:
@@ -2703,7 +2703,8 @@ class PanelAvecFooter(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=style)
         
         # Contrôles
-        if kwargs.has_key("parent") == False : kwargs["parent"] = self
+        kwargs["parent"] = self
+##        if kwargs.has_key("parent") == False : kwargs["parent"] = self # BUG ICI
         if kwargs.has_key("id") == False : kwargs["id"] = -1
         if kwargs.has_key("style") == False : kwargs["style"] = wx.LC_REPORT|wx.NO_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES
         
