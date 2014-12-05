@@ -3429,7 +3429,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 montant_enfant_4 = lignes_calcul[0]["montant_enfant_4"]
                 montant_enfant_5 = lignes_calcul[0]["montant_enfant_5"]
                 montant_enfant_6 = lignes_calcul[0]["montant_enfant_6"]
-            else:
+                
+            if "qf" in methode_calcul  :
                 # Selon QF
                 tarifFound = False
                 for ligneCalcul in lignes_calcul :
@@ -3452,6 +3453,62 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             break
                     if tarifFound == True :
                         break
+
+            if "horaire" in methode_calcul  :
+                tarifFound = False
+
+                # Recherche des heures debut et fin des unités cochées
+                heure_debut = None
+                heure_fin = None
+                for IDunite, listeConso in self.dictConsoIndividus[IDindividu][date].iteritems() :
+                    if IDunite in combinaisons_unites :
+                        for conso in listeConso :
+                            heure_debut_temp = HeureStrEnTime(conso.heure_debut)
+                            heure_fin_temp = HeureStrEnTime(conso.heure_fin)
+                            
+                            if heure_debut == None or heure_debut_temp < heure_debut : 
+                                heure_debut = heure_debut_temp
+                                
+                            if heure_fin == None or heure_fin_temp > heure_fin : 
+                                heure_fin = heure_fin_temp
+                
+                for ligneCalcul in lignes_calcul :
+                    heure_debut_min = HeureStrEnTime(ligneCalcul["heure_debut_min"])
+                    heure_debut_max = HeureStrEnTime(ligneCalcul["heure_debut_max"])
+                    heure_fin_min = HeureStrEnTime(ligneCalcul["heure_fin_min"])
+                    heure_fin_max = HeureStrEnTime(ligneCalcul["heure_fin_max"])
+                    montant_tarif_ligne = ligneCalcul["montant_unique"]
+
+                    montant_questionnaire = self.GetQuestionnaire(ligneCalcul["montant_questionnaire"], IDfamille, IDindividu)
+                    if montant_questionnaire not in (None, 0.0) :
+                        montant_tarif_ligne = montant_questionnaire
+
+                    if heure_debut_min <= heure_debut <= heure_debut_max and heure_fin_min <= heure_fin <= heure_fin_max :
+                        montant_tarif = montant_tarif_ligne
+                        if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
+                            temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"]) 
+                            temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
+                        else :
+                            temps_facture = SoustractionHeures(heure_fin_max, heure_debut_min)
+                            
+                        heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
+                        heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
+                        duree_delta = heure_fin_delta - heure_debut_delta
+                        
+                        # Création du label personnalisé
+                        label = ligneCalcul["label"]
+                        if label != None and label != "" :
+                            if "{TEMPS_REALISE}" in label : 
+                                label = label.replace("{TEMPS_REALISE}", DeltaEnStr(duree_delta))
+                            if "{TEMPS_FACTURE}" in label : 
+                                label = label.replace("{TEMPS_FACTURE}", DeltaEnStr(temps_facture))
+                            if "{HEURE_DEBUT}" in label : 
+                                label = label.replace("{HEURE_DEBUT}", DeltaEnStr(heure_debut_delta))
+                            if "{HEURE_FIN}" in label : 
+                                label = label.replace("{HEURE_FIN}", DeltaEnStr(heure_fin_delta))
+                            nom_tarif = label
+                        break
+
 
             # Recherche combien d'individus de la famille sont déjà présents ce jour-là
             listeIndividusPresents = []
