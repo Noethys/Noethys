@@ -260,6 +260,10 @@ def GetXML(dictDonnees={}):
             
             if dictPiece["sequence"] == "FRST" : 
                 sequence = "02"
+            elif dictPiece["sequence"] == "RCUR" :
+                sequence = "03"
+            elif dictPiece["sequence"] == "FNAL" :
+                sequence = "04"
             else :
                 sequence = "01"
             SequencePres = doc.createElement("SequencePres")

@@ -42,8 +42,8 @@ def Supprime_accent(texte):
     return texte
 
 def GetMoisStr(numMois, majuscules=False, sansAccents=False) :
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
-    nom = listeMois[numMois-1]
+    listeMois = (u"_", u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    nom = listeMois[numMois]
     if sansAccents == True : 
         nom = Supprime_accent(nom)
     if majuscules == True :
@@ -117,8 +117,8 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         self.Append(propriete)
         self.SetPropertyEditor("exercice", "SpinCtrl")
         
-        listeMois = [u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
-        propriete = wxpg.EnumProperty(label=u"Mois", name="mois", labels=listeMois, values=range(1, 13) , value=datetime.date.today().month)
+        listeMois = [u"_", u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
+        propriete = wxpg.EnumProperty(label=u"Mois", name="mois", labels=listeMois, values=range(0, 13) , value=datetime.date.today().month)
         propriete.SetHelpString(u"Sélectionnez le mois") 
         self.Append(propriete)
         

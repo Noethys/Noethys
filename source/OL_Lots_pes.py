@@ -97,8 +97,8 @@ class ListView(FastObjectListView):
         def FormatePeriode(periode):
             if periode == None or periode == "" : return u""
             annee, mois = periode.split("-")
-            listeMois = [u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
-            return u"%s %s" % (listeMois[int(mois)-1], annee)
+            listeMois = [u"_", u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
+            return u"%s %s" % (listeMois[int(mois)], annee)
 
         liste_Colonnes = [
             ColumnDefn(u"ID", "left", 42, "IDlot", imageGetter=GetImageVerrouillage),
