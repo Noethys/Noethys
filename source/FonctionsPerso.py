@@ -1243,29 +1243,42 @@ def OuvrirCalculatrice():
 
 def RemplacerContenuFichier():
     listeRemplacements = [
-        ("import GestionDB", "import GestionDB"),
-        ("import DATA_Civilites as Civilites", "import DATA_Civilites as Civilites"),
-        ("import DATA_Liens as Liens", "import DATA_Liens as Liens"),
-        ("import DATA_Renseignements as Renseignements", "import DATA_Renseignements as Renseignements"),
-        ("import DATA_Tables as Tables", "import DATA_Tables as Tables"),
-        ("import DATA_Touches as Touches", "import DATA_Touches as Touches"),
-        ("import UTILS_Config", "import UTILS_Config"),
+##        ("import GestionDB", "import GestionDB"),
+##        ("import DATA_Civilites as Civilites", "import DATA_Civilites as Civilites"),
+##        ("import DATA_Liens as Liens", "import DATA_Liens as Liens"),
+##        ("import DATA_Renseignements as Renseignements", "import DATA_Renseignements as Renseignements"),
+##        ("import DATA_Tables as Tables", "import DATA_Tables as Tables"),
+##        ("import DATA_Touches as Touches", "import DATA_Touches as Touches"),
+        ("wx.SearchCtrl.__init__(self, parent, size=(-1,-1),", "wx.SearchCtrl.__init__(self, parent, size=(-1,20),"),
         ]
-    listeFichiers = os.listdir("")
+    listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
     for nomFichier in listeFichiers :
         if nomFichier.endswith(".py") :
-            print "%s..." % nomFichier
             fichier = open(nomFichier, 'r')
-            nouveauFichier = open("New/%s" % nomFichier, 'w')
-            for line in fichier :
-                for old, new in listeRemplacements :
+            
+            # Recherche si fichier concerné ou non
+            trouve = False
+            for old, new in listeRemplacements :
+                for line in fichier :
                     if old in line :
-                        print "  ->", old
-                        line = line.replace(old, new)
-                nouveauFichier.write(line)
-                
+                        trouve = True
+                        break
+            
             fichier.close()
-            nouveauFichier.close()
+            
+            # Effectue les remplacements
+            if trouve == True :
+                nouveauFichier = open("New/%s" % nomFichier, 'w')
+                fichier = open(nomFichier, 'r')
+                for line in fichier :
+                    for old, new in listeRemplacements :
+                        if old in line :
+                            print nomFichier
+                            line = line.replace(old, new)
+                    nouveauFichier.write(line)
+                nouveauFichier.close()
+                fichier.close()
+            
 
 def PreparationFichierDefaut(nomFichier=""):
     """ Prépare le fichier de données par défaut """
@@ -1444,10 +1457,10 @@ def RechercheModules(nomFichier="Noethys.py") :
     return listeModules
     
 if __name__ == "__main__":
-    
+    RemplacerContenuFichier() 
     # ------- Affiche les stats -------
-    AfficheStatsProgramme()
-
+##    AfficheStatsProgramme()
+    
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")

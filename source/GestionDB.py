@@ -1505,6 +1505,25 @@ class DB:
         
         # =============================================================
 
+##        versionFiltre = (1, 1, 3, 8)
+##        if versionFichier < versionFiltre :   
+##            try :
+##                if self.IsTableExists("compta_operations") == False : self.CreationTable("compta_operations", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_ventilation") == False : self.CreationTable("compta_ventilation", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_exercices") == False : self.CreationTable("compta_exercices", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_analytiques") == False : self.CreationTable("compta_analytiques", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_categories") == False : self.CreationTable("compta_categories", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_comptes_comptables") == False : self.CreationTable("compta_comptes_comptables", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_codes_tresorerie") == False : self.CreationTable("compta_codes_tresorerie", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_tiers") == False : self.CreationTable("compta_tiers", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_budgets") == False : self.CreationTable("compta_budgets", Tables.DB_DATA) 
+##                if self.IsTableExists("compta_releves") == False : self.CreationTable("compta_releves", Tables.DB_DATA) 
+##            except Exception, err :
+##                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
+
+
 
 
 
@@ -1742,6 +1761,23 @@ if __name__ == "__main__":
 ##        db.CreationTable(nomTable, Tables.DB_DATA)
 ##    db.Close()
 ##    print "creation tables ok."                
+    
+    # Création des tables COMPTA
+    db = DB(suffixe="DATA")
+    listeTables = (
+        "compta_operations", "compta_ventilation", "compta_exercices", "compta_analytiques",
+        "compta_categories", "compta_comptes_comptables", 
+        "compta_tiers", "compta_budgets", "compta_releves", "compta_virements", "compta_categories_budget",
+##        "compta_journaux", "compta_codes_tresorerie",
+        )
+    for nomTable in listeTables :
+        try :
+            db.CreationTable(nomTable, Tables.DB_DATA)
+        except :
+            pass
+    db.Close()
+    print "creation tables ok."                
+
 
 ## ----------------------------------------------------------------------
 

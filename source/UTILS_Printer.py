@@ -10,6 +10,7 @@
 
 import wx
 import datetime
+import copy
 from ObjectListView import ReportFormat
 from Outils import ListCtrlPrinter
 import GestionDB
@@ -263,7 +264,7 @@ class ObjectListViewPrinter():
         fmt.ColumnHeader.SetAlwaysCenter(True)
         
         # Titre d'un groupe
-        fmt.GroupTitle.Font = wx.FFont(9, wx.FONTFAMILY_SWISS, wx.FONTFLAG_BOLD, face="Arial")
+        fmt.GroupTitle.Font = wx.FFont(10, wx.FONTFAMILY_SWISS, wx.FONTFLAG_BOLD, face="Arial")
         fmt.GroupTitle.Padding = (2, 10, 2, 2)
         fmt.GroupTitle.CellPadding = 12
         fmt.GroupTitle.GridPen = wx.Pen(dictOptions["grille_trait_couleur"], dictOptions["grille_trait_epaisseur"], wx.SOLID)

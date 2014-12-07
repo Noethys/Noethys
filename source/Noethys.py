@@ -566,10 +566,18 @@ class MainFrame(wx.Frame):
                             {"code" : "lots_rappels", "label" : u"Lots de rappels", "infobulle" : u"Paramétrage des lots de rappels", "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_rappels},
                             ],
                     },
-                    {"code" : "menu_parametrage_reglements", "label" : u"Règlements", "items" : [
+                    {"code" : "menu_parametrage_reglements", "label" : u"Comptabilité", "items" : [
                             {"code" : "comptes_bancaires", "label" : u"Comptes bancaires", "infobulle" : u"Paramétrage des comptes bancaires", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes},
+                            "-",
                             {"code" : "modes_reglements", "label" : u"Modes de règlements", "infobulle" : u"Paramétrage des modes de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_modes_reglements},
                             {"code" : "emetteurs", "label" : u"Emetteurs de règlements", "infobulle" : u"Paramétrage des émetteurs de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_emetteurs},
+##                            "-",
+##                            {"code" : "compta_exercices", "label" : u"Exercices comptables", "infobulle" : u"Paramétrage des exercices comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_exercices},
+##                            {"code" : "compta_analytiques", "label" : u"Postes analytiques", "infobulle" : u"Paramétrage des postes analytiques", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_analytiques},
+##                            {"code" : "compta_categories", "label" : u"Catégories comptables", "infobulle" : u"Paramétrage des catégories comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_categories_comptables},
+##                            {"code" : "compta_comptes", "label" : u"Comptes comptables", "infobulle" : u"Paramétrage des comptes comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes_comptables},
+##                            {"code" : "compta_tiers", "label" : u"Tiers", "infobulle" : u"Paramétrage des tiers", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_tiers},
+##                            {"code" : "compta_budgets", "label" : u"Budgets", "infobulle" : u"Paramétrage des budgets", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_budgets},
                             ],
                     },
                     {"code" : "menu_parametrage_prelevements", "label" : u"Prélèvement automatique", "items" : [
@@ -855,6 +863,16 @@ class MainFrame(wx.Frame):
                     {"code" : "reglements_depots", "label" : u"Gestion des dépôts", "infobulle" : u"Gestion des dépôts de règlements", "image" : "Images/16x16/Banque.png", "action" : self.On_reglements_depots},
                     ],
             },
+
+            # Comptabilité
+##            {"code" : "menu_comptabilite", "label" : u"Comptabilité", "items" : [
+##                    {"code" : "liste_comptes", "label" : u"Liste des comptes", "infobulle" : u"Consulter ou modifier la liste des comptes", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_comptes},
+##                    {"code" : "liste_operations", "label" : u"Liste des opérations", "infobulle" : u"Consulter ou modifier la liste des opérations", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations},
+##                    {"code" : "liste_virements", "label" : u"Liste des virements", "infobulle" : u"Consulter ou modifier la liste des virements", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_virements},
+##                    "-",
+##                    {"code" : "tresorerie", "label" : u"Trésorerie", "infobulle" : u"Suivre la trésorerie", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_tresorerie},
+##                    ],
+##            },
 
             # Aide
             {"code" : "menu_aide", "label" : u"Aide", "items" : [
@@ -1655,6 +1673,48 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emetteurs", "consulter") == False : return
         import DLG_Emetteurs
         dlg = DLG_Emetteurs.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_exercices(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_exercices", "consulter") == False : return
+        import DLG_Exercices
+        dlg = DLG_Exercices.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_analytiques(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_analytiques", "consulter") == False : return
+        import DLG_Analytiques
+        dlg = DLG_Analytiques.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_categories_comptables(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "consulter") == False : return
+        import DLG_Categories_operations
+        dlg = DLG_Categories_operations.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_comptes_comptables(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_comptables", "consulter") == False : return
+        import DLG_Comptes_comptables
+        dlg = DLG_Comptes_comptables.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_tiers(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_tiers", "consulter") == False : return
+        import DLG_Tiers
+        dlg = DLG_Tiers.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_budgets(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_budgets", "consulter") == False : return
+        import DLG_Budgets
+        dlg = DLG_Budgets.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 
@@ -2754,6 +2814,30 @@ class MainFrame(wx.Frame):
     def On_individus_edition_etiquettes(self, event):
         import DLG_Impression_etiquettes
         dlg = DLG_Impression_etiquettes.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_Comptabilite_comptes(self, event):
+        import DLG_Liste_comptes
+        dlg = DLG_Liste_comptes.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_Comptabilite_operations(self, event):
+        import DLG_Liste_operations
+        dlg = DLG_Liste_operations.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_Comptabilite_virements(self, event):
+        import DLG_Liste_virements
+        dlg = DLG_Liste_virements.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+        
+    def On_Comptabilite_tresorerie(self, event):
+        import DLG_Tresorerie
+        dlg = DLG_Tresorerie.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 

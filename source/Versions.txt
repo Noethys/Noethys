@@ -1,3 +1,14 @@
+Version 1.1.3.8 (07/12/2014) :
+
+- Ajout du tarif Selon le nbre d'individus présents de la famille et l'horaire
+- Ajout des formules de calcul perso dans les factures
+- Mise à jour de la librairie graphique wxPython (3.0.2.0.)
+- Correction d'un bug sur bordereau PES ORMC (Par Claude)
+- Correction d'un bug sur la synthèse des prestations
+- Correction d'un bug sur les dépôts de cotisations
+- Correction d'un bug sur les ListViewAvecPanel
+- Correction de divers petits bugs
+
 Version 1.1.3.7 (20/11/2014) :
 
 - Correction d'un bug sur le badgeage
