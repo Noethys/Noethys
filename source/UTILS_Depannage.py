@@ -195,6 +195,16 @@ class LiensErrones(Anomalie):
         self.corrige = True
 
 
+class VentilationsExcessives(Anomalie):
+    def Correction(self, DB=None):
+        IDventilation = self.kwds["IDventilation"]
+        IDprestation = self.kwds["IDprestation"]
+        IDreglement = self.kwds["IDreglement"]
+        IDfamille = self.kwds["IDfamille"]
+        DB.ReqDEL("ventilation", "IDventilation", IDventilation)
+        self.corrige = True
+
+
 # --------------------------------------------------------------------------------------------------------------------------------------------
 
 class Depannage():
@@ -256,6 +266,7 @@ class Depannage():
         self.LiensTronques() 
         self.RattachementsTronques() 
         self.LiensErrones() 
+        self.VentilationExcessive()
                 
         # Fermeture DB
         self.DB.Close()
@@ -581,13 +592,31 @@ class Depannage():
             listeTemp.append(LiensErrones(label=label, IDfamille=IDfamille, listeIDlien=listeIDlien))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
         
-        
+    def VentilationExcessive(self):
+        labelProbleme = u"Ventilations excessives"
+        labelCorrection = u"Supprimer la ventilation excessive"
+        req = """SELECT IDventilation, ventilation.IDcompte_payeur, IDreglement, IDprestation, comptes_payeurs.IDfamille
+        FROM ventilation
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = ventilation.IDcompte_payeur;"""
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
+        listeTemp = []
+        dictTemp = {}
+        for IDventilation, IDcompte_payeur, IDreglement, IDprestation, IDfamille in listeDonnees :
+            key = (IDcompte_payeur, IDreglement, IDprestation)
+            if dictTemp.has_key(key) :
+                label = u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d" % (IDventilation, IDprestation, IDreglement, IDfamille)
+                listeTemp.append(VentilationsExcessives(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
+            else :
+                dictTemp[key] = IDventilation
+        self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
+
 
 
 
 if __name__ == "__main__":
-##    d = Depannage()
-##    print (d.GetTexte(),)
+    d = Depannage()
+    print (d.GetTexte(),)
     
     
     pass
