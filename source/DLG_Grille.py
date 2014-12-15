@@ -783,10 +783,11 @@ class Dialog(wx.Dialog):
         self.panel_grille.grille.EnvoyerEmail() 
 
 
+
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=209, selectionIndividus=[1932,])
+    dialog_1 = Dialog(None, IDfamille=14, selectionIndividus=[46,])
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()    

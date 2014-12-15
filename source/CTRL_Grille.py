@@ -188,7 +188,7 @@ def CreationImage(largeur, hauteur, couleur=None):
 
 
 class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent, ctrl_grille=None, size=(-1,-1)):
+    def __init__(self, parent, ctrl_grille=None, size=(-1,20)):
         wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.ctrl_grille = ctrl_grille
@@ -529,15 +529,15 @@ class Ligne():
 
     def Flash(self, couleur="#316AC5"):
         """ Met en surbrillance la case quelques instants """
-        wx.CallLater(1, self.SetCouleurFondLabel, couleur)
-        couleurInitiale = self.renderer_label.couleurFond
-        wx.CallLater(1000, self.SetCouleurFondLabel, couleurInitiale)
-##        wx.CallLater(600, self.SetCouleurFondLabel, couleur)
-##        wx.CallLater(900, self.SetCouleurFondLabel, couleurInitiale)
+        wx.CallLater(1, self.renderer_label.Flash, couleur)
+        
+##        wx.CallLater(1, self.SetCouleurFondLabel, couleur)
+##        couleurInitiale = self.renderer_label.couleurFond
+##        wx.CallLater(1000, self.SetCouleurFondLabel, couleurInitiale)
     
-    def SetCouleurFondLabel(self, couleur):
-        self.renderer_label.MAJ(couleur)
-        self.grid.Refresh() 
+##    def SetCouleurFondLabel(self, couleur):
+##        self.renderer_label.MAJ(couleur)
+##        self.grid.Refresh() 
         
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -5069,7 +5069,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for numLigne, ligne in self.dictLignes.iteritems() :
             if texte.lower() in ligne.labelLigne.lower() :
                 self.MakeCellVisible(numLigne, 1)
-                ligne.Flash()
+##                ligne.Flash()
                 return True
         return False
                 

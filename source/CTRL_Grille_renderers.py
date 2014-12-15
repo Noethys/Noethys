@@ -590,16 +590,18 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
 class LabelLigneStandard(glr.GridLabelRenderer):
     def __init__(self, bgcolor=None, date=None):
         self.couleurFond = bgcolor
+        self.couleurInitiale = bgcolor
         self.rect = None
         self.date = date
         
     def Draw(self, grid, dc, rect, row):
         self.rect = rect
+        self.grid = grid
         if self.couleurFond != None :
             dc.SetBrush(wx.Brush(self.couleurFond))
             dc.SetPen(wx.TRANSPARENT_PEN)
             dc.DrawRectangleRect(rect)
-        self.couleurFond = dc.GetBackground().GetColour() 
+##        self.couleurFond = dc.GetBackground().GetColour() 
         hAlign, vAlign = grid.GetRowLabelAlignment()
         text = grid.GetRowLabelValue(row)
         DrawBorder(grid, dc, rect)
@@ -613,8 +615,11 @@ class LabelLigneStandard(glr.GridLabelRenderer):
     
     def MAJ(self, couleur):
         self.couleurFond = couleur
+        self.grid.Refresh() 
     
-        
+    def Flash(self, couleur=None):
+        self.MAJ(couleur)
+        wx.CallLater(1000, self.MAJ, self.couleurInitiale)
 
 
 
