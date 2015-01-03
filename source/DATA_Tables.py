@@ -18,6 +18,7 @@ TABLES_IMPORTATION_OPTIONNELLES = [
         [u"Régimes d'appartenance", ("regimes",), True],
         [u"Modèles de documents", ("documents_modeles", "documents_objets"), True],
         [u"Niveaux scolaires", ("niveaux_scolaires",), True],
+        [u"Comptes comptables", ("compta_comptes_comptables",), True],
         ] # [Nom Categorie, (liste des tables...,), Selectionné]
 
 TABLES_IMPORTATION_OBLIGATOIRES = []
@@ -1317,93 +1318,88 @@ DB_DATA = {
                                     ("donnees", "VARCHAR(900)", u"Données serialisées"),
                                     ], # Modèles de plannings
 
-##    "compta_operations":[("IDoperation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID opération"),
-##                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
-##                                    ("date", "DATE", u"Date de l'opération"),
-##                                    ("libelle", "VARCHAR(400)", u"Libellé de l'opération"),
-##                                    ("IDtiers", "INTEGER", u"ID du tiers"),
-##                                    ("IDmode", "INTEGER", u"ID du mode de règlement"),
-##                                    ("num_piece", "VARCHAR(200)", u"Numéro de pièce"),
-##                                    ("ref_piece", "VARCHAR(200)", u"Référence de la pièce"),
-##                                    ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire"),
-##                                    ("IDreleve", "INTEGER", u"ID du relevé bancaire"),
-##                                    ("montant", "FLOAT", u"Montant de l'opération"),
-##                                    ("observations", "VARCHAR(450)", u"Observations"),
-##                                    ("IDvirement", "INTEGER", u"IDvirement associé"),
-##                                    ], # Compta : Opérations
-##
-##    "compta_virements":[ ("IDvirement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID virement"),
-##                                    ("IDoperation_debit", "INTEGER", u"ID opération débiteur"),
-##                                    ("IDoperation_credit", "INTEGER", u"ID opération créditeur"),
-##                                    ], # Compta : Virements
-##
-##    "compta_ventilation":[("IDventilation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID ventilation"),
-##                                    ("IDoperation", "INTEGER", u"ID de l'opération"),
-##                                    ("IDexercice", "INTEGER", u"ID de l'exercice"),
-##                                    ("IDcategorie", "INTEGER", u"ID de la catégorie"),
-##                                    ("IDanalytique", "INTEGER", u"ID du poste analytique"),
-##                                    ("libelle", "VARCHAR(400)", u"Libellé de la ventilation"),
-##                                    ("montant", "FLOAT", u"Montant de la ventilation"),
-##                                    ], # Compta : Ventilation des opérations
-##                                    
-##    "compta_exercices":[("IDexercice", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Exercice"),
-##                                    ("nom", "VARCHAR(400)", u"Nom de l'exercice"),
-##                                    ("date_debut", "DATE", u"Date de début"),
-##                                    ("date_fin", "DATE", u"Date de fin"),
-##                                    ("defaut", "INTEGER", u"Défaut (0/1)"),
-##                                    ], # Compta : Exercices
-##
-##    "compta_analytiques":[("IDanalytique", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Analytique"),
-##                                    ("nom", "VARCHAR(400)", u"Nom du poste analytique"),
-##                                    ("abrege", "VARCHAR(200)", u"Abrégé du poste analytique"),
-##                                    ("defaut", "INTEGER", u"Défaut (0/1)"),
-##                                    ], # Compta : Postes analytiques
-##
-##    "compta_categories":[("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Catégorie"),
-##                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
-##                                    ("nom", "VARCHAR(400)", u"Nom de la catégorie"),
-##                                    ("abrege", "VARCHAR(200)", u"Abrégé de la catégorie"),
-##                                    ("journal", "VARCHAR(200)", u"Code journal"),
-##                                    ("IDcompte", "INTEGER", u"ID du compte comptable"),
-##                                    ], # Compta : Catégories de ventilation
-##
-##    "compta_comptes_comptables":[("IDcompte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDcompte"),
-##                                    ("numero", "VARCHAR(200)", u"Numéro"),
-##                                    ("nom", "VARCHAR(400)", u"Nom du code"),
-##                                    ], # Compta : Comptes comptables
-##
-##    "compta_tiers":         [("IDtiers", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Tiers"),
-##                                    ("nom", "VARCHAR(400)", u"Nom du tiers"),
-##                                    ("observations", "VARCHAR(450)", u"Observations"),
-##                                    ("IDcode_comptable", "INTEGER", u"ID du code comptable"),
-##                                    ], # Compta : Tiers
-##
-##    "compta_budgets":    [("IDbudget", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Budget"),
-##                                    ("IDexercice", "INTEGER", u"ID de l'exercice"),
-##                                    ("nom", "VARCHAR(400)", u"Nom du budget"),
-##                                    ("observations", "VARCHAR(200)", u"Abrégé du budget"),
-##                                    ("analytiques", "VARCHAR(450)", u"Liste des postes analytiques associés"),
-##                                    ], # Compta : Budgets
-##
-##    "compta_categories_budget":[("IDcategorie_budget", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Categorie budget"),
-##                                    ("IDbudget", "INTEGER", u"ID du budget"),
-##                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
-##                                    ("IDcategorie", "INTEGER", u"ID de la catégorie rattachée"),
-##                                    ("valeur", "VARCHAR(450)", u"Valeur ou formule"),
-##                                    ], # Compta : Catégories de budget
-##
-##    "compta_releves":   [("IDreleve", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Relevé"),
-##                                    ("nom", "VARCHAR(400)", u"Nom du relevé"),
-##                                    ("date_debut", "DATE", u"Date de début"),
-##                                    ("date_fin", "DATE", u"Date de fin"),
-##                                    ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire"),
-##                                    ], # Compta : Relevés de comptes
+    "compta_operations":[("IDoperation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID opération"),
+                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
+                                    ("date", "DATE", u"Date de l'opération"),
+                                    ("libelle", "VARCHAR(400)", u"Libellé de l'opération"),
+                                    ("IDtiers", "INTEGER", u"ID du tiers"),
+                                    ("IDmode", "INTEGER", u"ID du mode de règlement"),
+                                    ("num_piece", "VARCHAR(200)", u"Numéro de pièce"),
+                                    ("ref_piece", "VARCHAR(200)", u"Référence de la pièce"),
+                                    ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire"),
+                                    ("IDreleve", "INTEGER", u"ID du relevé bancaire"),
+                                    ("montant", "FLOAT", u"Montant de l'opération"),
+                                    ("observations", "VARCHAR(450)", u"Observations"),
+                                    ("IDvirement", "INTEGER", u"IDvirement associé"),
+                                    ], # Compta : Opérations
 
-##    "compta_codes_tresorerie":[("IDcode_tresorerie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Code trésorerie"),
-##                                    ("nom", "VARCHAR(400)", u"Nom du poste analytique"),
-##                                    ("abrege", "VARCHAR(200)", u"Abrégé du poste analytique"),
-##                                    ("IDcode_comptable", "INTEGER", u"ID du code comptable"),
-##                                    ], # Compta : Codes trésorerie
+    "compta_virements":[ ("IDvirement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID virement"),
+                                    ("IDoperation_debit", "INTEGER", u"ID opération débiteur"),
+                                    ("IDoperation_credit", "INTEGER", u"ID opération créditeur"),
+                                    ], # Compta : Virements
+
+    "compta_ventilation":[("IDventilation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID ventilation"),
+                                    ("IDoperation", "INTEGER", u"ID de l'opération"),
+                                    ("IDexercice", "INTEGER", u"ID de l'exercice"),
+                                    ("IDcategorie", "INTEGER", u"ID de la catégorie"),
+                                    ("IDanalytique", "INTEGER", u"ID du poste analytique"),
+                                    ("libelle", "VARCHAR(400)", u"Libellé de la ventilation"),
+                                    ("montant", "FLOAT", u"Montant de la ventilation"),
+                                    ], # Compta : Ventilation des opérations
+                                    
+    "compta_exercices":[("IDexercice", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Exercice"),
+                                    ("nom", "VARCHAR(400)", u"Nom de l'exercice"),
+                                    ("date_debut", "DATE", u"Date de début"),
+                                    ("date_fin", "DATE", u"Date de fin"),
+                                    ("defaut", "INTEGER", u"Défaut (0/1)"),
+                                    ], # Compta : Exercices
+
+    "compta_analytiques":[("IDanalytique", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Analytique"),
+                                    ("nom", "VARCHAR(400)", u"Nom du poste analytique"),
+                                    ("abrege", "VARCHAR(200)", u"Abrégé du poste analytique"),
+                                    ("defaut", "INTEGER", u"Défaut (0/1)"),
+                                    ], # Compta : Postes analytiques
+
+    "compta_categories":[("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Catégorie"),
+                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
+                                    ("nom", "VARCHAR(400)", u"Nom de la catégorie"),
+                                    ("abrege", "VARCHAR(200)", u"Abrégé de la catégorie"),
+                                    ("journal", "VARCHAR(200)", u"Code journal"),
+                                    ("IDcompte", "INTEGER", u"ID du compte comptable"),
+                                    ], # Compta : Catégories de ventilation
+
+    "compta_comptes_comptables":[("IDcompte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDcompte"),
+                                    ("numero", "VARCHAR(200)", u"Numéro"),
+                                    ("nom", "VARCHAR(400)", u"Nom du code"),
+                                    ], # Compta : Comptes comptables
+
+    "compta_tiers":         [("IDtiers", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Tiers"),
+                                    ("nom", "VARCHAR(400)", u"Nom du tiers"),
+                                    ("observations", "VARCHAR(450)", u"Observations"),
+                                    ("IDcode_comptable", "INTEGER", u"ID du code comptable"),
+                                    ], # Compta : Tiers
+
+    "compta_budgets":    [("IDbudget", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Budget"),
+                                    ("IDexercice", "INTEGER", u"ID de l'exercice"),
+                                    ("nom", "VARCHAR(400)", u"Nom du budget"),
+                                    ("observations", "VARCHAR(200)", u"Observations sur le budget"),
+                                    ("analytiques", "VARCHAR(450)", u"Liste des postes analytiques associés"),
+                                    ], # Compta : Budgets
+
+    "compta_categories_budget":[("IDcategorie_budget", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Categorie budget"),
+                                    ("IDbudget", "INTEGER", u"ID du budget"),
+                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
+                                    ("IDcategorie", "INTEGER", u"ID de la catégorie rattachée"),
+                                    ("valeur", "VARCHAR(450)", u"Valeur ou formule"),
+                                    ], # Compta : Catégories de budget
+
+    "compta_releves":   [("IDreleve", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Relevé"),
+                                    ("nom", "VARCHAR(400)", u"Nom du relevé"),
+                                    ("date_debut", "DATE", u"Date de début"),
+                                    ("date_fin", "DATE", u"Date de fin"),
+                                    ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire"),
+                                    ], # Compta : Relevés de comptes
+
 
 
     }

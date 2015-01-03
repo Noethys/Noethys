@@ -17,7 +17,7 @@ import datetime
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 import UTILS_Utilisateurs
 import UTILS_Dates
@@ -103,12 +103,12 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDcompte"),
-            ColumnDefn(u"Numéro", 'left', 120, "numero"),
-            ColumnDefn(u"Nom", 'left', 200, "nom", isSpaceFilling=True),
-            ColumnDefn(u"Solde du jour", "right", 100, "solde_jour", stringConverter=FormateMontant),
-            ColumnDefn(u"Solde pointé", "right", 100, "solde_pointe", stringConverter=FormateMontant),
-            ColumnDefn(u"Solde final", "right", 100, "solde", stringConverter=FormateMontant),
+            ColumnDefn(u"", "left", 0, "IDcompte", typeDonnee="entier"),
+            ColumnDefn(u"Numéro", 'left', 120, "numero", typeDonnee="texte"),
+            ColumnDefn(u"Nom", 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Solde du jour", "right", 100, "solde_jour", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Solde pointé", "right", 100, "solde_pointe", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Solde final", "right", 100, "solde", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.SetColumns(liste_Colonnes)

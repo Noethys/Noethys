@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import DLG_Saisie_compte
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -87,13 +87,13 @@ class ListView(FastObjectListView):
             else: return None 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 21, "IDcompte", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Intitulé", 'left', 200, "nom"),
-            ColumnDefn(u"Numéro", "left", 100, "numero"),
-            ColumnDefn(u"Raison sociale", "left", 170, "raison"),
-            ColumnDefn(u"Code Etab.", "left", 80, "code_etab"),
-            ColumnDefn(u"Code Guichet", "left", 90, "code_guichet"),
-            ColumnDefn(u"N° NNE", "left", 80, "code_nne"),
+            ColumnDefn(u"", "left", 21, "IDcompte", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"Intitulé", 'left', 200, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Numéro", "left", 100, "numero", typeDonnee="texte"),
+            ColumnDefn(u"Raison sociale", "left", 170, "raison", typeDonnee="texte"),
+            ColumnDefn(u"Code Etab.", "left", 80, "code_etab", typeDonnee="texte"),
+            ColumnDefn(u"Code Guichet", "left", 90, "code_guichet", typeDonnee="texte"),
+            ColumnDefn(u"N° NNE", "left", 80, "code_nne", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)
@@ -231,30 +231,62 @@ class ListView(FastObjectListView):
             return
         IDcompte = self.Selection()[0].IDcompte
         
-        # Vérifie que ce compte n'a pas déjà été attribué à un règlement ou un dépôt de règlements
+        # Vérifie que ce compte n'a pas déjà été attribué à un règlement
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDreglement)
         FROM reglements 
         WHERE IDcompte=%d
         ;""" % IDcompte
         DB.ExecuterReq(req)
-        nbreReglements = int(DB.ResultatReq()[0][0])
+        nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
-        if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreReglements, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+        if nbre > 0 :
+            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
+
+        # Vérifie que ce compte n'a pas déjà été attribué à un dépôt
         DB = GestionDB.DB()
         req = """SELECT COUNT(IDdepot)
         FROM depots 
         WHERE IDcompte=%d
         ;""" % IDcompte
         DB.ExecuterReq(req)
-        nbreDepots = int(DB.ResultatReq()[0][0])
+        nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
-        if nbreDepots > 0 :
-            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d dépôt(s) de règlements.\n\nVous ne pouvez donc pas le supprimer !" % nbreDepots, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+        if nbre > 0 :
+            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d dépôt(s) de règlements.\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Vérifie que ce compte n'a pas déjà été attribué à une opération comptable
+        DB = GestionDB.DB()
+        req = """SELECT COUNT(IDoperation)
+        FROM compta_operations 
+        WHERE IDcompte_bancaire=%d
+        ;""" % IDcompte
+        DB.ExecuterReq(req)
+        nbre = int(DB.ResultatReq()[0][0])
+        DB.Close()
+        if nbre > 0 :
+            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d opérations comptables.\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Vérifie que ce compte n'a pas déjà été attribué à un relevé de compte
+        DB = GestionDB.DB()
+        req = """SELECT COUNT(IDreleve)
+        FROM compta_releves 
+        WHERE IDcompte_bancaire=%d
+        ;""" % IDcompte
+        DB.ExecuterReq(req)
+        nbre = int(DB.ResultatReq()[0][0])
+        DB.Close()
+        if nbre > 0 :
+            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d relevés de compte.\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

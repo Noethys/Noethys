@@ -13,7 +13,7 @@ import GestionDB
 
 
 class CTRL(wx.SearchCtrl):
-    def __init__(self, parent, size=(-1,-1), IDfamille=None):
+    def __init__(self, parent, size=(-1,20), IDfamille=None):
         wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.IDfamille = IDfamille

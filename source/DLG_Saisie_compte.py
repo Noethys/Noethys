@@ -257,12 +257,11 @@ class Dialog(wx.Dialog):
             ("bic", bic),
             ("code_ics", code_ics),
             ]
-        
         if self.IDcompte == None :
             self.IDcompte = DB.ReqInsert("comptes_bancaires", listeDonnees)
         else :
             DB.ReqMAJ("comptes_bancaires", listeDonnees, "IDcompte", self.IDcompte)
-            
+        DB.Close()
 
     def Importation(self):
         """ Importation des valeurs """
