@@ -13,13 +13,13 @@ import datetime
 
 
 class CTRL(wx.SearchCtrl):
-    def __init__(self, parent, listeUtilisateurs=[], size=(-1,-1), modeDLG=False):
+    def __init__(self, parent, listeUtilisateurs=[], size=(-1,20), modeDLG=False):
         wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER | wx.TE_PASSWORD)
         self.parent = parent
         self.listeUtilisateurs = listeUtilisateurs
         self.modeDLG = modeDLG
         self.SetDescriptiveText(u"   ")
-            
+        
         # Options
         self.ShowSearchButton(True)
         self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))

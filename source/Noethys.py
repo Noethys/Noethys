@@ -571,13 +571,14 @@ class MainFrame(wx.Frame):
                             "-",
                             {"code" : "modes_reglements", "label" : u"Modes de règlements", "infobulle" : u"Paramétrage des modes de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_modes_reglements},
                             {"code" : "emetteurs", "label" : u"Emetteurs de règlements", "infobulle" : u"Paramétrage des émetteurs de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_emetteurs},
-##                            "-",
-##                            {"code" : "compta_exercices", "label" : u"Exercices comptables", "infobulle" : u"Paramétrage des exercices comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_exercices},
-##                            {"code" : "compta_analytiques", "label" : u"Postes analytiques", "infobulle" : u"Paramétrage des postes analytiques", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_analytiques},
-##                            {"code" : "compta_categories", "label" : u"Catégories comptables", "infobulle" : u"Paramétrage des catégories comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_categories_comptables},
-##                            {"code" : "compta_comptes", "label" : u"Comptes comptables", "infobulle" : u"Paramétrage des comptes comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes_comptables},
-##                            {"code" : "compta_tiers", "label" : u"Tiers", "infobulle" : u"Paramétrage des tiers", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_tiers},
-##                            {"code" : "compta_budgets", "label" : u"Budgets", "infobulle" : u"Paramétrage des budgets", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_budgets},
+                            "-",
+                            {"code" : "compta_exercices", "label" : u"Exercices comptables", "infobulle" : u"Paramétrage des exercices comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_exercices},
+                            {"code" : "compta_analytiques", "label" : u"Postes analytiques", "infobulle" : u"Paramétrage des postes analytiques", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_analytiques},
+                            {"code" : "compta_categories", "label" : u"Catégories comptables", "infobulle" : u"Paramétrage des catégories comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_categories_comptables},
+                            {"code" : "compta_comptes", "label" : u"Comptes comptables", "infobulle" : u"Paramétrage des comptes comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes_comptables},
+                            {"code" : "compta_tiers", "label" : u"Tiers", "infobulle" : u"Paramétrage des tiers", "image" : "Images/16x16/Tiers.png", "action" : self.On_param_tiers},
+                            {"code" : "compta_budgets", "label" : u"Budgets", "infobulle" : u"Paramétrage des budgets", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_param_budgets},
+                            {"code" : "compta_releves", "label" : u"Relevés bancaires", "infobulle" : u"Paramétrage des relevés bancaires", "image" : "Images/16x16/Document_coches.png", "action" : self.On_param_releves_bancaires},
                             ],
                     },
                     {"code" : "menu_parametrage_prelevements", "label" : u"Prélèvement automatique", "items" : [
@@ -865,14 +866,19 @@ class MainFrame(wx.Frame):
             },
 
             # Comptabilité
-##            {"code" : "menu_comptabilite", "label" : u"Comptabilité", "items" : [
-##                    {"code" : "liste_comptes", "label" : u"Liste des comptes", "infobulle" : u"Consulter ou modifier la liste des comptes", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_comptes},
-##                    {"code" : "liste_operations", "label" : u"Liste des opérations", "infobulle" : u"Consulter ou modifier la liste des opérations", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations},
-##                    {"code" : "liste_virements", "label" : u"Liste des virements", "infobulle" : u"Consulter ou modifier la liste des virements", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_virements},
-##                    "-",
-##                    {"code" : "tresorerie", "label" : u"Trésorerie", "infobulle" : u"Suivre la trésorerie", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_tresorerie},
-##                    ],
-##            },
+            {"code" : "menu_comptabilite", "label" : u"Comptabilité", "items" : [
+                    {"code" : "liste_comptes", "label" : u"Liste des comptes", "infobulle" : u"Consulter ou modifier la liste des comptes", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_comptes},
+                    {"code" : "liste_operations", "label" : u"Liste des opérations", "infobulle" : u"Consulter ou modifier la liste des opérations", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations},
+                    {"code" : "liste_virements", "label" : u"Liste des virements", "infobulle" : u"Consulter ou modifier la liste des virements", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_virements},
+                    "-",
+                    {"code" : "rapprochement_bancaire", "label" : u"Rapprochement bancaire", "infobulle" : u"Rapprochement bancaire", "image" : "Images/16x16/Document_coches.png", "action" : self.On_Comptabilite_rapprochement},
+                    "-",
+                    {"code" : "suivi_tresorerie", "label" : u"Suivi de la trésorerie", "infobulle" : u"Suivre la trésorerie", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_tresorerie},
+                    {"code" : "suivi_budgets", "label" : u"Suivi des budgets", "infobulle" : u"Suivre les budgets", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_budgets},
+                    "-",
+                    {"code" : "compta_graphiques", "label" : u"Graphiques", "infobulle" : u"Graphiques", "image" : "Images/16x16/Diagramme.png", "action" : self.On_Comptabilite_graphiques},
+                    ],
+            },
 
             # Aide
             {"code" : "menu_aide", "label" : u"Aide", "items" : [
@@ -1715,6 +1721,12 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_budgets", "consulter") == False : return
         import DLG_Budgets
         dlg = DLG_Budgets.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_releves_bancaires(self, event):
+        import DLG_Releves_compta
+        dlg = DLG_Releves_compta.Dialog(self, titre=u"Gestion des relevés bancaires")
         dlg.ShowModal() 
         dlg.Destroy()
 
@@ -2834,10 +2846,28 @@ class MainFrame(wx.Frame):
         dlg = DLG_Liste_virements.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
-        
+
+    def On_Comptabilite_rapprochement(self, event):
+        import DLG_Releves_compta
+        dlg = DLG_Releves_compta.Dialog(self, titre=u"Rapprochement bancaire")
+        dlg.ShowModal() 
+        dlg.Destroy()
+
     def On_Comptabilite_tresorerie(self, event):
         import DLG_Tresorerie
         dlg = DLG_Tresorerie.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_Comptabilite_budgets(self, event):
+        import DLG_Suivi_budget
+        dlg = DLG_Suivi_budget.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_Comptabilite_graphiques(self, event):
+        import DLG_Compta_graphiques
+        dlg = DLG_Compta_graphiques.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 

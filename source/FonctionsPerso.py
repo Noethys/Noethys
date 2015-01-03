@@ -1243,13 +1243,8 @@ def OuvrirCalculatrice():
 
 def RemplacerContenuFichier():
     listeRemplacements = [
-##        ("import GestionDB", "import GestionDB"),
-##        ("import DATA_Civilites as Civilites", "import DATA_Civilites as Civilites"),
-##        ("import DATA_Liens as Liens", "import DATA_Liens as Liens"),
-##        ("import DATA_Renseignements as Renseignements", "import DATA_Renseignements as Renseignements"),
-##        ("import DATA_Tables as Tables", "import DATA_Tables as Tables"),
-##        ("import DATA_Touches as Touches", "import DATA_Touches as Touches"),
-        ("wx.SearchCtrl.__init__(self, parent, size=(-1,-1),", "wx.SearchCtrl.__init__(self, parent, size=(-1,20),"),
+##        ("ColumnDefn, Filter", "ColumnDefn, Filter, CTRL_Outils"),
+        (".CTRL_Outils(self, listview=self.ctrl_listview)", ".CTRL_Outils(self, listview=self.ctrl_listview)"),
         ]
     listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
     for nomFichier in listeFichiers :
