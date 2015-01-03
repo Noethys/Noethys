@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import datetime
 
-from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter
+from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING
 
 import UTILS_Config
@@ -191,12 +191,12 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"Prestation", 'left', 190, "label", isEditable=False),
-            ColumnDefn(u"Ajustement", "center", 80, "ajustement", isEditable=True), 
-            ColumnDefn(u"Activité", "left", 90, "nomActivite", isEditable=False), 
-            ColumnDefn(u"Total", "left", 110, "total_str", isEditable=False),
-            ColumnDefn(u"Réglé", "left", 110, "regle_str", isEditable=False),
-            ColumnDefn(u"Impayé", "left", 110, "impaye_str", isEditable=False),
+            ColumnDefn(u"Prestation", 'left', 190, "label", typeDonnee="texte", isEditable=False),
+            ColumnDefn(u"Ajustement", "center", 80, "ajustement", typeDonnee="texte", isEditable=True), 
+            ColumnDefn(u"Activité", "left", 90, "nomActivite", typeDonnee="texte", isEditable=False), 
+            ColumnDefn(u"Total", "left", 110, "total_str", typeDonnee="texte", isEditable=False),
+            ColumnDefn(u"Réglé", "left", 110, "regle_str", typeDonnee="texte", isEditable=False),
+            ColumnDefn(u"Impayé", "left", 110, "impaye_str", typeDonnee="texte", isEditable=False),
             ]
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)

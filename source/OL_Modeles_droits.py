@@ -14,7 +14,7 @@ import GestionDB
 import UTILS_Export_tables
 import UTILS_Utilisateurs
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 class Exporter(UTILS_Export_tables.Exporter):
@@ -133,10 +133,10 @@ class ListView(FastObjectListView):
             else: return None 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDmodele", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Nom", 'left', 200, "nom"),
-            ColumnDefn(u"Détails", 'left', 250, "details"),
-            ColumnDefn(u"Observations", 'left', 200, "observations", isSpaceFilling=True),
+            ColumnDefn(u"", "left", 22, "IDmodele", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"Nom", 'left', 200, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Détails", 'left', 250, "details", typeDonnee="texte"),
+            ColumnDefn(u"Observations", 'left', 200, "observations", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)

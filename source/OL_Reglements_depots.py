@@ -19,7 +19,7 @@ import cStringIO
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 try: import psyco; psyco.full()
 except: pass
@@ -295,20 +295,20 @@ class ListView(FastObjectListView):
                     listItem.SetTextColour((255, 0, 0))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDreglement"),
-            ColumnDefn(u"Date", 'left', 80, "date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Mode", 'left', 120, "nom_mode", imageGetter=GetImageMode),
-            ColumnDefn(u"Emetteur", 'left', 145, "nom_emetteur", imageGetter=GetImageEmetteur),
-            ColumnDefn(u"Numéro", 'left', 60, "numero_piece"),
-            ColumnDefn(u"Quittancier", 'left', 65, "numero_quittancier"),
-            ColumnDefn(u"Payeur", 'left', 160, "nom_payeur"),
-            ColumnDefn(u"Montant", 'right', 80, "montant", stringConverter=FormateMontant),
+            ColumnDefn(u"ID", "left", 0, "IDreglement", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Mode", 'left', 120, "nom_mode", typeDonnee="texte", imageGetter=GetImageMode),
+            ColumnDefn(u"Emetteur", 'left', 145, "nom_emetteur", typeDonnee="texte", imageGetter=GetImageEmetteur),
+            ColumnDefn(u"Numéro", 'left', 60, "numero_piece", typeDonnee="texte"),
+            ColumnDefn(u"Quittancier", 'left', 65, "numero_quittancier", typeDonnee="texte"),
+            ColumnDefn(u"Payeur", 'left', 160, "nom_payeur", typeDonnee="texte"),
+            ColumnDefn(u"Montant", 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             #ColumnDefn(u"Ventilé", 'right', 80, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(u"Avis", 'left', 35, "avis_depot", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
-            ColumnDefn(u"Compte", 'left', 100, "nom_compte"),
-            ColumnDefn(u"Différé", 'left', 85, "date_differe", stringConverter=FormateDateCourt), #, imageGetter=GetImageDiffere),
-            ColumnDefn(u"Attente", 'left', 65, "encaissement_attente", stringConverter=FormateAttente), #, imageGetter=GetImageAttente),
-            ColumnDefn(u"Observations", 'left', 200, "observations"),
+            ColumnDefn(u"Avis", 'left', 35, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
+            ColumnDefn(u"Compte", 'left', 100, "nom_compte", typeDonnee="texte"),
+            ColumnDefn(u"Différé", 'left', 85, "date_differe", typeDonnee="date", stringConverter=FormateDateCourt), #, imageGetter=GetImageDiffere),
+            ColumnDefn(u"Attente", 'left', 65, "encaissement_attente", typeDonnee="texte", stringConverter=FormateAttente), #, imageGetter=GetImageAttente),
+            ColumnDefn(u"Observations", 'left', 200, "observations", typeDonnee="texte"),
             ]
         
         self.rowFormatter = rowFormatter

@@ -13,7 +13,7 @@ import GestionDB
 import datetime
 import UTILS_Titulaires
 import UTILS_Utilisateurs
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Infos_individus
 
@@ -164,21 +164,22 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille"),
-            ColumnDefn(u"Famille", 'left', 250, "nomTitulaires"),
-            ColumnDefn(u"Rue", "left", 160, "rue"),
-            ColumnDefn(u"C.P.", "left", 45, "cp"),
-            ColumnDefn(u"Ville", "left", 120, "ville"),
-            ColumnDefn(u"Secteur", "left", 100, "secteur"),
-            ColumnDefn(u"Régime", "left", 130, "regime"),
-            ColumnDefn(u"Caisse", "left", 130, "caisse"),
-            ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc"),
+            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(u"Famille", 'left', 250, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Rue", "left", 160, "rue", typeDonnee="texte"),
+            ColumnDefn(u"C.P.", "left", 45, "cp", typeDonnee="texte"),
+            ColumnDefn(u"Ville", "left", 120, "ville", typeDonnee="texte"),
+            ColumnDefn(u"Secteur", "left", 100, "secteur", typeDonnee="texte"),
+            ColumnDefn(u"Régime", "left", 130, "regime", typeDonnee="texte"),
+            ColumnDefn(u"Caisse", "left", 130, "caisse", typeDonnee="texte"),
+            ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc", typeDonnee="texte"),
             ]        
 
         # Insertion des champs infos de base individus
         listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="famille")
         for nomChamp in listeChamps :
-            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, visible=False))
+            typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
 
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_familles")
         self.SetEmptyListMsg(u"Aucune famille")

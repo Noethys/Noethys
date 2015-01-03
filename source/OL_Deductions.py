@@ -15,7 +15,7 @@ import GestionDB
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -119,9 +119,9 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDdeduction"),
-            ColumnDefn(u"Montant", 'centre', 90, "montant", stringConverter=FormateMontant), 
-            ColumnDefn(u"Label", 'left', 300, "label"),
+            ColumnDefn(u"ID", "left", 0, "IDdeduction", typeDonnee="entier"),
+            ColumnDefn(u"Montant", 'centre', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
+            ColumnDefn(u"Label", 'left', 300, "label", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

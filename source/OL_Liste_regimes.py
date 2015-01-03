@@ -13,7 +13,7 @@ import GestionDB
 import datetime
 import UTILS_Titulaires
 import UTILS_Utilisateurs
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -157,11 +157,11 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille"),
-            ColumnDefn(u"Famille", 'left', 250, "nomTitulaires"),
-            ColumnDefn(u"Régime", "left", 130, "nomRegime"),
-            ColumnDefn(u"Caisse", "left", 130, "nomCaisse"),
-            ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc"),
+            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(u"Famille", 'left', 250, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Régime", "left", 130, "nomRegime", typeDonnee="texte"),
+            ColumnDefn(u"Caisse", "left", 130, "nomCaisse", typeDonnee="texte"),
+            ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc", typeDonnee="texte"),
             ]        
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune famille")

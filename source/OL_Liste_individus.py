@@ -15,7 +15,7 @@ import UTILS_Titulaires
 import DATA_Civilites as Civilites
 import UTILS_Infos_individus
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -226,24 +226,26 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDindividu", imageGetter=GetImageCivilite),
-            ColumnDefn(u"Nom", 'left', 100, "nom"),
-            ColumnDefn(u"Prénom", "left", 100, "prenom"),
-            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", stringConverter=FormateDate),
-            ColumnDefn(u"Genre", "left", 50, "genre"),
-            ColumnDefn(u"Age", "left", 50, "age", stringConverter=FormateAge),
-            ColumnDefn(u"Rue", "left", 150, "rue_resid"),
-            ColumnDefn(u"C.P.", "left", 50, "cp_resid"),
-            ColumnDefn(u"Ville", "left", 120, "ville_resid"),
-            ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile"),
-            ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile"),
-            ColumnDefn(u"Email", "left", 150, "mail"),
+            ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
+            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Genre", "left", 50, "genre", typeDonnee="texte"),
+            ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
+            ColumnDefn(u"Rue", "left", 150, "rue_resid", typeDonnee="texte"),
+            ColumnDefn(u"C.P.", "left", 50, "cp_resid", typeDonnee="texte"),
+            ColumnDefn(u"Ville", "left", 120, "ville_resid", typeDonnee="texte"),
+            ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile", typeDonnee="texte"),
+            ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile", typeDonnee="texte"),
+            ColumnDefn(u"Email", "left", 150, "mail", typeDonnee="texte"),
             ]
         
         # Insertion des champs infos de base individus
         listeChamps = self.infosIndividus.GetNomsChampsPresents(mode="individu")
         for nomChamp in listeChamps :
-            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, visible=False))
+            typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+            liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
+
 
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_individus")
         

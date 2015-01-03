@@ -10,7 +10,7 @@
 
 import wx
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -56,10 +56,10 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
             
         liste_Colonnes = [
-            ColumnDefn(u"", 'left', 0, "" ),
-            ColumnDefn(u"Nom du champ", 'left', 150, "nom", isSpaceFilling=True ),
-            ColumnDefn(u"Valeur exemple", 'left', 150, "exemple"),
-            ColumnDefn(u"Code", 'left', 230, "code"),
+            ColumnDefn(u"", 'left', 0, ""),
+            ColumnDefn(u"Nom du champ", 'left', 150, "nom", typeDonnee="texte", isSpaceFilling=True ),
+            ColumnDefn(u"Valeur exemple", 'left', 150, "exemple", typeDonnee="texte"),
+            ColumnDefn(u"Code", 'left', 230, "code", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

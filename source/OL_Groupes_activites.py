@@ -11,7 +11,7 @@
 import wx
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -77,9 +77,9 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                     
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtype_groupe_activite"),
-            ColumnDefn(u"Nom", "left", 300, "nom"), 
-            ColumnDefn(u"Nbre d'activités rattachées", "left", 150, "nbreActivitesRattachees"), 
+            ColumnDefn(u"ID", "left", 0, "IDtype_groupe_activite", typeDonnee="entier"),
+            ColumnDefn(u"Nom", "left", 300, "nom", typeDonnee="texte"), 
+            ColumnDefn(u"Nbre d'activités rattachées", "left", 150, "nbreActivitesRattachees", typeDonnee="entier"), 
             ]
         
         self.SetColumns(liste_Colonnes)

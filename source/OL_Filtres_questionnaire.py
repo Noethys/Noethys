@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from CTRL_Questionnaire import LISTE_CONTROLES
 

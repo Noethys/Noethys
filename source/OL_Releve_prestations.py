@@ -14,7 +14,7 @@ import datetime
 import operator
 import DLG_Releve_prestations_saisie
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
         
 LISTE_MOIS = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
 
@@ -111,11 +111,11 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"Période", 'left', 180, "label_periode"),
-            ColumnDefn(u"Type", "left", 100, "label_type"),
-            ColumnDefn(u"Options", "left", 230, "label_options"),
-            ColumnDefn(u"Date de début", "left", 0, "date_debut"),
-            ColumnDefn(u"Date de fin", "left", 0, "date_fin"),
+            ColumnDefn(u"Période", 'left', 180, "label_periode", typeDonnee="entier"),
+            ColumnDefn(u"Type", "left", 100, "label_type", typeDonnee="texte"),
+            ColumnDefn(u"Options", "left", 230, "label_options", typeDonnee="texte"),
+            ColumnDefn(u"Date de début", "left", 0, "date_debut", typeDonnee="date"),
+            ColumnDefn(u"Date de fin", "left", 0, "date_fin", typeDonnee="date"),
             ]
         
         self.SetColumns(liste_Colonnes)

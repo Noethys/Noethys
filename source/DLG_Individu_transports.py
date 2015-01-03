@@ -39,8 +39,9 @@ class Panel(wx.Panel):
         self.bouton_liste_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_liste_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
         
-        self.ctrl_recherche = OL_Transports.BarreRecherche(self, listview=self.ctrl_liste_transports)
-
+        self.ctrl_recherche = OL_Transports.CTRL_Outils(self, listview=self.ctrl_liste_transports, afficherCocher=True)
+        self.ctrl_recherche.SetBackgroundColour((255, 255, 255)) 
+        
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouterProg, self.bouton_prog_ajouter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifierProg, self.bouton_prog_modifier)

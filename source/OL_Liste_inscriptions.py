@@ -13,6 +13,7 @@ import GestionDB
 import datetime
 import decimal
 
+import UTILS_Dates
 import UTILS_Utilisateurs
 import UTILS_Titulaires
 import DATA_Civilites as Civilites
@@ -23,54 +24,54 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 DICT_INFOS_INDIVIDUS = {}
 
-from ObjectListView import GroupListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 
 LISTE_CHAMPS = [
-    {"label":u"IDindividu", "code":"IDindividu", "champ":"inscriptions.IDindividu", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":u"Nom complet", "code":"nomComplet", "champ":None, "align":"left", "largeur":200, "stringConverter":None, "imageGetter":"civilite", "actif":True, "afficher":True},
+    {"label":u"IDindividu", "code":"IDindividu", "champ":"inscriptions.IDindividu", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":u"Nom complet", "code":"nomComplet", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":200, "stringConverter":None, "imageGetter":"civilite", "actif":True, "afficher":True},
 
-    {"label":u"Groupe", "code":"nomGroupe", "champ":"groupes.nom", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Catégorie", "code":"nomCategorie", "champ":"categories_tarifs.nom", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Date inscrip.", "code":"dateInscription", "champ":"inscriptions.date_inscription", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
+    {"label":u"Groupe", "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Catégorie", "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Date inscrip.", "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
     
-    {"label":u"Facturé", "code":"totalFacture", "champ":None, "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
-    {"label":u"Réglé", "code":"totalRegle", "champ":None, "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
-    {"label":u"Solde", "code":"totalSolde", "champ":None, "align":"right", "largeur":85, "stringConverter":"solde", "imageGetter":"ventilation", "actif":True, "afficher":True},
+    {"label":u"Facturé", "code":"totalFacture", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
+    {"label":u"Réglé", "code":"totalRegle", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
+    {"label":u"Solde", "code":"totalSolde", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":85, "stringConverter":"solde", "imageGetter":"ventilation", "actif":True, "afficher":True},
 
-    {"label":u"IDcivilite", "code":"IDcivilite", "champ":"IDcivilite", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":u"Nom", "code":"nomIndividu", "champ":"individus.nom", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Prénom", "code":"prenomIndividu", "champ":"prenom", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"IDcivilite", "code":"IDcivilite", "champ":"IDcivilite", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":u"Nom", "code":"nomIndividu", "champ":"individus.nom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Prénom", "code":"prenomIndividu", "champ":"prenom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
     
-    {"label":u"Rue", "code":"rue_resid", "champ":"rue_resid", "align":"left", "largeur":125, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"CP", "code":"cp_resid", "champ":"cp_resid", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Ville", "code":"ville_resid", "champ":"ville_resid", "align":"left", "largeur":110, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Rue", "code":"rue_resid", "champ":"rue_resid", "typeDonnee":"texte", "align":"left", "largeur":125, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"CP", "code":"cp_resid", "champ":"cp_resid", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Ville", "code":"ville_resid", "champ":"ville_resid", "typeDonnee":"texte", "align":"left", "largeur":110, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":u"Num. Sécu.", "code":"num_secu", "champ":"num_secu", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Date naiss.", "code":"date_naiss", "champ":"date_naiss", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":True},
-    {"label":u"Age", "code":"age", "champ":None, "align":"left", "largeur":45, "stringConverter":"age", "actif":True, "afficher":True},
-    {"label":u"CP naiss.", "code":"cp_naiss", "champ":"cp_naiss", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Ville naiss.", "code":"ville_naiss", "champ":"ville_naiss", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"adresse_auto", "code":"adresse_auto", "champ":"adresse_auto", "align":"left", "largeur":75, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":u"Catégorie socio.", "code":"categorie_socio", "champ":"categories_travail.nom", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Num. Sécu.", "code":"num_secu", "champ":"num_secu", "typeDonnee":"texte", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Date naiss.", "code":"date_naiss", "champ":"date_naiss", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":True},
+    {"label":u"Age", "code":"age", "champ":None, "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":"age", "actif":True, "afficher":True},
+    {"label":u"CP naiss.", "code":"cp_naiss", "champ":"cp_naiss", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Ville naiss.", "code":"ville_naiss", "champ":"ville_naiss", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"adresse_auto", "code":"adresse_auto", "champ":"adresse_auto", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":u"Catégorie socio.", "code":"categorie_socio", "champ":"categories_travail.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":u"Profession", "code":"profession", "champ":"profession", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Employeur", "code":"employeur", "champ":"employeur", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Tél pro.", "code":"travail_tel", "champ":"travail_tel", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Fax pro.", "code":"travail_fax", "champ":"travail_fax", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Email pro.", "code":"travail_mail", "champ":"travail_mail", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Tél dom.", "code":"tel_domicile", "champ":"tel_domicile", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Tél mobile", "code":"tel_mobile", "champ":"tel_mobile", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Fax dom.", "code":"tel_fax", "champ":"tel_fax", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Email", "code":"mail", "champ":"mail", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Profession", "code":"profession", "champ":"profession", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Employeur", "code":"employeur", "champ":"employeur", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Tél pro.", "code":"travail_tel", "champ":"travail_tel", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Fax pro.", "code":"travail_fax", "champ":"travail_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Email pro.", "code":"travail_mail", "champ":"travail_mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Tél dom.", "code":"tel_domicile", "champ":"tel_domicile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Tél mobile", "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":u"Fax dom.", "code":"tel_fax", "champ":"tel_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Email", "code":"mail", "champ":"mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":u"Genre", "code":"genre", "champ":None, "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Civilité court", "code":"civiliteLong", "champ":None, "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Civilité long", "code":"civiliteAbrege", "champ":None, "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"nomImage", "code":"nomImage", "champ":None, "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":u"Genre", "code":"genre", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Civilité court", "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"Civilité long", "code":"civiliteAbrege", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":u"nomImage", "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
     
-    {"label":u"IDfamille", "code":"IDfamille", "champ":"inscriptions.IDfamille", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":u"IDfamille", "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
     
     ]
 
@@ -354,7 +355,7 @@ class ListView(GroupListView):
                 else:
                     imageGetter = None
                 # Création de la colonne
-                colonne = ColumnDefn(dictChamp["label"], dictChamp["align"], dictChamp["largeur"], dictChamp["code"], stringConverter=stringConverter, imageGetter=imageGetter)
+                colonne = ColumnDefn(dictChamp["label"], dictChamp["align"], dictChamp["largeur"], dictChamp["code"], typeDonnee=dictChamp["typeDonnee"], stringConverter=stringConverter, imageGetter=imageGetter)
                 listeColonnes.append(colonne)
         self.SetColumns(listeColonnes)
         

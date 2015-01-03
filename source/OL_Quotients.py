@@ -14,7 +14,7 @@ import GestionDB
 
 import DLG_Saisie_quotient
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -127,11 +127,11 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
             
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDquotient", imageGetter=GetImage),
-            ColumnDefn(u"Date de début", 'left', 165, "date_debut", stringConverter=FormateDate),
-            ColumnDefn(u"Date de fin", 'left', 165, "date_fin", stringConverter=FormateDate),
-            ColumnDefn(u"Quotient familial", 'center', 100, "quotient"),
-            ColumnDefn(u"Observations", 'left', 340, "observations"),
+            ColumnDefn(u"", "left", 22, "IDquotient", typeDonnee="entier", imageGetter=GetImage),
+            ColumnDefn(u"Date de début", 'left', 165, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Date de fin", 'left', 165, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Quotient familial", 'center', 100, "quotient", typeDonnee="entier"),
+            ColumnDefn(u"Observations", 'left', 340, "observations", typeDonnee="texte"),
             ]
         
         self.rowFormatter = rowFormatter

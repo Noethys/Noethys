@@ -14,7 +14,7 @@ import GestionDB
 import os
 import FonctionsPerso
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 LISTE_EXTENSIONS = ["bmp", "doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "tous", "xls", "xlsx", "zip", "plusieurs",]
 
@@ -159,8 +159,8 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, None),
-            ColumnDefn(u"Adresse", 'left', 150, "adresse", isSpaceFilling=True),
-            ColumnDefn(u"Pièces jointes personnelles", 'left', 190, "texte_pieces", imageGetter=GetImagePiece),
+            ColumnDefn(u"Adresse", 'left', 150, "adresse", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Pièces jointes personnelles", 'left', 190, "texte_pieces", typeDonnee="texte", imageGetter=GetImagePiece),
             ]
         
         self.SetColumns(liste_Colonnes)

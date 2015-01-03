@@ -29,7 +29,7 @@ class Dialog(wx.Dialog):
 
 ##        self.ctrl_listview = OL_Attestations.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_attestations", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_listview.MAJ() 
-        self.ctrl_recherche = OL_Attestations.BarreRecherche(self)
+        self.ctrl_recherche = OL_Attestations.CTRL_Outils(self, listview=self.ctrl_listview)
 
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))

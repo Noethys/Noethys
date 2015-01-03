@@ -123,7 +123,7 @@ class Notebook(wx.Notebook):
         """ MAJ la page active du notebook """
         indexPage = self.GetSelection()
         page = self.GetPage(indexPage)
-        page.MAJ() 
+        page.MAJ()
     
     def MAJpage(self, codePage=""):
         page = self.dictPages[codePage]["ctrl"]
@@ -725,7 +725,10 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    import time
+    heure_debut = time.time()
     dialog_1 = Dialog(None, IDfamille=14)
+    print "Temps de chargement =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

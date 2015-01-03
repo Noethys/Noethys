@@ -14,7 +14,7 @@ import GestionDB
 
 import DLG_Saisie_type_cotisation
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -109,9 +109,9 @@ class ListView(FastObjectListView):
             else: return None 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDtype_cotisation", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Nom", 'left', 300, "nom"),
-            ColumnDefn(u"Type", 'left', 200, "typeStr"),
+            ColumnDefn(u"", "left", 22, "IDtype_cotisation", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"Nom", 'left', 300, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Type", 'left', 200, "typeStr", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

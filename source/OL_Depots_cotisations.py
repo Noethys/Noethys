@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 import UTILS_Utilisateurs
 
@@ -181,11 +181,11 @@ class ListView(FastObjectListView):
             return u"%.2f ¤" % montant
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 42, "IDdepot_cotisation", imageGetter=GetImageVerrouillage),
-            ColumnDefn(u"Date", 'left', 160, "date", stringConverter=FormateDateLong),
-            ColumnDefn(u"Nom", 'left', 250, "nom"),
-            ColumnDefn(u"Observations", 'left', 250, "observations"),
-            ColumnDefn(u"Nbre cotisations", 'centre', 100, "nbre"),
+            ColumnDefn(u"ID", "left", 42, "IDdepot_cotisation", typeDonnee="entier", imageGetter=GetImageVerrouillage),
+            ColumnDefn(u"Date", 'left', 160, "date", typeDonnee="date", stringConverter=FormateDateLong),
+            ColumnDefn(u"Nom", 'left', 250, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Observations", 'left', 250, "observations", typeDonnee="texte"),
+            ColumnDefn(u"Nbre cotisations", 'centre', 100, "nbre", typeDonnee="entier"),
 ##            ColumnDefn(u"Total", 'right', 65, "total", stringConverter=FormateMontant),
 ##            ColumnDefn(u"Détail", 'left', 210, "detail"),
             ]

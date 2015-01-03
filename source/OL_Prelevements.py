@@ -23,7 +23,7 @@ import wx.lib.dialogs as dialogs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Titulaires
 
@@ -224,26 +224,26 @@ class ListView(FastObjectListView):
                 return u""
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDprelevement"),
-            ColumnDefn(u"Date prélèv.", 'left', 75, "dateLot", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Lot prélèv.", 'left', 150, "nomLot"),
+            ColumnDefn(u"ID", "left", 0, "IDprelevement", typeDonnee="entier"),
+            ColumnDefn(u"Date prélèv.", 'left', 75, "dateLot", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Lot prélèv.", 'left', 150, "nomLot", typeDonnee="texte"),
 ##            ColumnDefn(u"Type", 'left', 70, "type", stringConverter=FormateType),
-            ColumnDefn(u"Libellé", 'left', 110, "libelle"),
+            ColumnDefn(u"Libellé", 'left', 110, "libelle", typeDonnee="texte"),
 ##            ColumnDefn(u"Banque", 'left', 120, "nomBanque"),
-            ColumnDefn(u"Montant", 'right', 70, "montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Statut", 'left', 80, "statut", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(u"Règlement", 'left', 70, "reglement", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(u"Séquence", 'left', 70, "sequence"),
-            ColumnDefn(u"IBAN", 'left', 190, "prelevement_iban"),
-            ColumnDefn(u"BIC", 'left', 100, "prelevement_bic"),
+            ColumnDefn(u"Montant", 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Statut", 'left', 80, "statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
+            ColumnDefn(u"Règlement", 'left', 70, "reglement", typeDonnee="texte", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(u"Séquence", 'left', 70, "sequence", typeDonnee="texte"),
+            ColumnDefn(u"IBAN", 'left', 190, "prelevement_iban", typeDonnee="texte"),
+            ColumnDefn(u"BIC", 'left', 100, "prelevement_bic", typeDonnee="texte"),
 ##            ColumnDefn(u"Etab.", 'left', 50, "prelevement_etab"),
 ##            ColumnDefn(u"Guich.", 'left', 50, "prelevement_guichet"),
 ##            ColumnDefn(u"Compte", 'left', 90, "prelevement_numero"),
 ##            ColumnDefn(u"Clé", 'left', 30, "prelevement_cle"),
-            ColumnDefn(u"Banque", 'left', 130, "nomBanque"),
-            ColumnDefn(u"Titulaire du compte", 'left', 160, "titulaire"),
-            ColumnDefn(u"Ref. mandat", 'left', 90, "prelevement_reference_mandat"),
-            ColumnDefn(u"Date mandat", 'left', 100, "prelevement_date_mandat", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Banque", 'left', 130, "nomBanque", typeDonnee="texte"),
+            ColumnDefn(u"Titulaire du compte", 'left', 160, "titulaire", typeDonnee="texte"),
+            ColumnDefn(u"Ref. mandat", 'left', 90, "prelevement_reference_mandat", typeDonnee="texte"),
+            ColumnDefn(u"Date mandat", 'left', 100, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
             ]
         
 ##        if self.IDfamille == None :

@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import UTILS_Dates
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -83,10 +83,10 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDsauvegarde"),
-            ColumnDefn(u"Nom", "left", 300, "nom"), 
-            ColumnDefn(u"Dernière sauvegarde", "left", 150, "date_derniere", stringConverter=FormateDateCourt), 
-            ColumnDefn(u"Observations", "left", 150, "observations", isSpaceFilling=True), 
+            ColumnDefn(u"ID", "left", 0, "IDsauvegarde", typeDonnee="entier"),
+            ColumnDefn(u"Nom", "left", 300, "nom", typeDonnee="texte"), 
+            ColumnDefn(u"Dernière sauvegarde", "left", 150, "date_derniere", typeDonnee="date", stringConverter=FormateDateCourt), 
+            ColumnDefn(u"Observations", "left", 150, "observations", typeDonnee="texte", isSpaceFilling=True), 
             ]
         
         self.SetColumns(liste_Colonnes)

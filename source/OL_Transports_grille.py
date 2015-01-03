@@ -16,7 +16,7 @@ import UTILS_Transports
 
 from CTRL_Saisie_transport import DICT_CATEGORIES
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def DateEngFr(textDate):
@@ -140,12 +140,12 @@ class ListView(FastObjectListView):
             return DICT_CATEGORIES[categorie]["label"]
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtransport"), 
-            ColumnDefn(u"Transport", "left", 80, "categorie", stringConverter=FormateCategorie,  imageGetter=GetImageCategorie),
-            ColumnDefn(u"Départ", 'left', 130, "depart_dateHeure", stringConverter=FormateDateHeure),
-            ColumnDefn(u"Origine", 'left', 120, "depart_nom"),
-            ColumnDefn(u"Arrivée", 'left', 130, "arrivee_dateHeure", stringConverter=FormateDateHeure),
-            ColumnDefn(u"Destination", 'left', 120, "arrivee_nom"),
+            ColumnDefn(u"ID", "left", 0, "IDtransport", typeDonnee="entier"), 
+            ColumnDefn(u"Transport", "left", 80, "categorie", typeDonnee="texte", stringConverter=FormateCategorie,  imageGetter=GetImageCategorie),
+            ColumnDefn(u"Départ", 'left', 130, "depart_dateHeure", typeDonnee="texte", stringConverter=FormateDateHeure),
+            ColumnDefn(u"Origine", 'left', 120, "depart_nom", typeDonnee="texte"),
+            ColumnDefn(u"Arrivée", 'left', 130, "arrivee_dateHeure", typeDonnee="texte", stringConverter=FormateDateHeure),
+            ColumnDefn(u"Destination", 'left', 120, "arrivee_nom", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

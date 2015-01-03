@@ -861,8 +861,9 @@ class Notebook(wx.aui.AuiNotebook):
                 self.AddPage(page, nomIndividu)
                 # Intégration de l'image dans l'onglet
                 IDcivilite = self.donnees.dictInfosIndividus[IDindividu]["IDcivilite"]
-                nomImage = dictCivilites[IDcivilite]["nomImage"]
-                self.SetPageBitmap(indexPage, wx.Bitmap("Images/16x16/%s" % nomImage, wx.BITMAP_TYPE_PNG))
+                if IDcivilite != None :
+                    nomImage = dictCivilites[IDcivilite]["nomImage"]
+                    self.SetPageBitmap(indexPage, wx.Bitmap("Images/16x16/%s" % nomImage, wx.BITMAP_TYPE_PNG))
                 indexPage += 1
         
         # MAJ des pages

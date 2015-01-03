@@ -15,7 +15,7 @@ import GestionDB
 
 import DLG_Saisie_texte_rappel
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -114,11 +114,11 @@ class ListView(FastObjectListView):
             return texte
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtexte"),
-            ColumnDefn(u"Intitulé", 'left', 200, "label", imageGetter=GetImage),
-            ColumnDefn(u"Titre", 'left', 180, "titre"),
-            ColumnDefn(u"Retard Min.", 'centre', 110, "retard_min", stringConverter=FormateJours),
-            ColumnDefn(u"Retard Max.", 'centre', 110, "retard_max", stringConverter=FormateJours),
+            ColumnDefn(u"ID", "left", 0, "IDtexte", typeDonnee="entier"),
+            ColumnDefn(u"Intitulé", 'left', 200, "label", typeDonnee="texte", imageGetter=GetImage),
+            ColumnDefn(u"Titre", 'left', 180, "titre", typeDonnee="texte"),
+            ColumnDefn(u"Retard Min.", 'centre', 110, "retard_min", typeDonnee="entier", stringConverter=FormateJours),
+            ColumnDefn(u"Retard Max.", 'centre', 110, "retard_max", typeDonnee="entier", stringConverter=FormateJours),
             ]
         
         self.SetColumns(liste_Colonnes)

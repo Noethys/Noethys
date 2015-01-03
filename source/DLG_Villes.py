@@ -32,7 +32,7 @@ class Dialog(wx.Dialog):
         self.ctrl_villes = OL_Villes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_villes.MAJ()
 
-        self.ctrl_barreRecherche = OL_Villes.BarreRecherche(self)
+        self.ctrl_barreRecherche = OL_Villes.CTRL_Outils(self, listview=self.ctrl_villes)
 
         self.staticbox_saisie_staticbox = wx.StaticBox(self.panel_saisie, -1, u"Insertion manuelle d'une ville dans le champ Adresse")
         self.label_cp = wx.StaticText(self.panel_saisie, -1, "Code postal :")

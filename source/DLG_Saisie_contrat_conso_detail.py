@@ -239,7 +239,7 @@ class CTRL_Quantite(wx.Panel):
         self.Refresh() 
     
     def SetQuantite(self, quantite=None):
-        self.ctrl_quantite.SetValeur(quantite)
+        self.ctrl_quantite.SetValue(quantite)
         self.MAJ() 
     
     def GetQuantite(self):

@@ -16,7 +16,7 @@ import UTILS_Utilisateurs
 import UTILS_Dates
 import UTILS_Titulaires
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from UTILS_Mandats import LISTE_SEQUENCES
 

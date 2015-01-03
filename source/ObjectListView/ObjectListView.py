@@ -101,10 +101,12 @@ import copy
 import CellEditor
 import OLVEvent
 import Footer
+import Filter
 
 import sys
 sys.path.append("..")
 
+import UTILS_Dates
 
 
 
@@ -259,8 +261,10 @@ class ObjectListView(wx.ListCtrl):
         self.objectToIndexMap = None
         
         self.listeColonnes = [] 
+        self.listeFiltresColonnes = []
         self.nomListe = None
         self.ctrl_footer = None
+        self.barreRecherche = None
 
         self.rowFormatter = kwargs.pop("rowFormatter", None)
         self.useAlternateBackColors = kwargs.pop("useAlternateBackColors", True)
@@ -331,6 +335,7 @@ class ObjectListView(wx.ListCtrl):
         This clears any preexisting CheckStateColumn. The first column that is a check state
         column will be installed as the CheckStateColumn for this listview.
         """
+        self.listeColonnes = columns
         sortCol = self.GetSortColumn()
         wx.ListCtrl.ClearAll(self)
         self.checkStateColumn = None
@@ -1648,7 +1653,11 @@ class ObjectListView(wx.ListCtrl):
         if modelObject is not None:
             column.SetCheckState(modelObject, not column.GetCheckState(modelObject))
             self.RefreshIndex(rowIndex, modelObject)
-
+            self.OnCheck(modelObject)
+    
+    def OnCheck(self, modelObject=None):
+        """ Fonction perso a surcharger """
+        pass
 
     def _HandleLeftClickOrDoubleClick(self, evt):
         """
@@ -2311,14 +2320,329 @@ class ObjectListView(wx.ListCtrl):
             index = self.GetIndexOf(dernierTrack)
             self.EnsureCellVisible(index, 0)
 
+    def Filtrer(self, texteRecherche=None):
+        listeFiltres = []
         
+        # Filtre barre de recherche
+        if texteRecherche != None :
+            filtre = Filter.TextSearch(self, self.columns[0:self.GetColumnCount()])
+            filtre.SetText(texteRecherche)
+            listeFiltres.append(filtre)
+        
+        # Filtres de colonnes
+        for texteFiltre in self.formatageFiltres(self.listeFiltresColonnes) :
+            exec("filtre = Filter.Predicate(lambda track: %s)" % texteFiltre)
+            listeFiltres.append(filtre)
+            
+        self.SetFilter(Filter.Chain(*listeFiltres))
+        self.RepopulateList()
+        self.Refresh() 
+    
+    def SetFiltresColonnes(self, listeFiltresColonnes=[]):
+        self.listeFiltresColonnes = listeFiltresColonnes
+        if self.barreRecherche != None :
+            self.barreRecherche.Cancel()
+        self.Filtrer() 
+    
+    def formatageFiltres(self, listeFiltres=[]):
+        # Formatage du filtre
+        listeFiltresFinale = []
+        for dictFiltre in listeFiltres :
+            code = dictFiltre["code"]
+            choix = dictFiltre["choix"]
+            criteres = dictFiltre["criteres"]
+            typeDonnee = dictFiltre["typeDonnee"]
+            
+            # Texte
+            if typeDonnee == "texte" :
+                if choix == "EGAL" :
+                    filtre = "track.%s != None and track.%s.lower() == '%s'.lower()" % (code, code, criteres)
+                if choix == "DIFFERENT" :
+                    filtre = "track.%s != None and track.%s.lower() != '%s'.lower()" % (code, code, criteres)
+                if choix == "CONTIENT" :
+                    filtre = "track.%s != None and '%s'.lower() in track.%s.lower()" % (code, criteres, code)
+                if choix == "CONTIENTPAS" :
+                    filtre = "track.%s != None and '%s'.lower() not in track.%s.lower()" % (code, criteres, code)
+                if choix == "VIDE" :
+                    filtre = "track.%s == '' or track.%s == None" % (code, code)
+                if choix == "PASVIDE" :
+                    filtre = "track.%s != '' and track.%s != None" % (code, code)
+            
+            # Entier, montant
+            if typeDonnee in ("entier", "montant") :
+                
+                if choix == "COMPRIS" :
+                    min = str(criteres.split(";")[0])
+                    max = str(criteres.split(";")[1])
+                else :
+                    criteres = str(criteres)
+                        
+                if choix == "EGAL" :
+                    filtre = "track.%s == %s" % (code, criteres)
+                if choix == "DIFFERENT" :
+                    filtre = "track.%s != %s" % (code, criteres)
+                if choix == "SUP" :
+                    filtre = "track.%s > %s" % (code, criteres)
+                if choix == "SUPEGAL" :
+                    filtre = "track.%s >= %s" % (code, criteres)
+                if choix == "INF" :
+                    filtre = "track.%s < %s" % (code, criteres)
+                if choix == "INFEGAL" :
+                    filtre = "track.%s <= %s" % (code, criteres)
+                if choix == "COMPRIS" :
+                    filtre = "track.%s >= %s and track.%s <= %s" % (code, min, code, max)
+
+            # Date
+            if typeDonnee == "date" :
+                        
+                if choix == "EGAL" :
+                    filtre = "track.%s != None and str(track.%s) == '%s'" % (code, code, criteres)
+                if choix == "DIFFERENT" :
+                    filtre = "track.%s != None and str(track.%s) != '%s'" % (code, code, criteres)
+                if choix == "SUP" :
+                    filtre = "track.%s != None and str(track.%s) > '%s'" % (code, code, criteres)
+                if choix == "SUPEGAL" :
+                    filtre = "track.%s != None and str(track.%s) >= '%s'" % (code, code, criteres)
+                if choix == "INF" :
+                    filtre = "track.%s != None and str(track.%s) < '%s'" % (code, code, criteres)
+                if choix == "INFEGAL" :
+                    filtre = "track.%s != None and str(track.%s) <= '%s'" % (code, code, criteres)
+                if choix == "COMPRIS" :
+                    min = criteres.split(";")[0]
+                    max = criteres.split(";")[1]
+                    filtre = "track.%s != None and str(track.%s) >= '%s' and str(track.%s) <= '%s'" % (code, code, min, code, max)
+            
+            # Inscrits
+            if typeDonnee == "inscrits" :
+                if choix == "INSCRITS" :
+                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres))
+                if choix == "PRESENTS" :
+                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres["listeActivites"], periode=(criteres["date_debut"], criteres["date_fin"])))
+                    
+            # Mémorisation
+            listeFiltresFinale.append(filtre) 
+        
+        return listeFiltresFinale
+
+    def GetInscrits(self, mode="individu", listeActivites=[], periode=None):
+        """ Récupération de la liste des individus inscrits et présents """        
+        # Conditions Activites
+        if listeActivites == None or listeActivites == [] :
+            conditionActivites = ""
+        else:
+            if len(listeActivites) == 1 :
+                conditionActivites = " AND inscriptions.IDactivite=%d" % listeActivites[0]
+            else:
+                conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
+
+        # Conditions Présents
+        conditionPresents = ""
+        jointurePresents = ""
+        if periode != None :
+            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(periode[0]), str(periode[1]))
+            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = inscriptions.IDindividu"
+        
+        # Choix de la key
+        if mode == "individu" :
+            key = "inscriptions.IDindividu"
+        if mode == "famille" :
+            key = "inscriptions.IDfamille"
+        
+        import GestionDB
+        DB = GestionDB.DB()
+        req = """SELECT %s
+        FROM inscriptions 
+        %s
+        WHERE (inscriptions.parti=0 OR inscriptions.parti IS NULL)  %s %s
+        GROUP BY %s
+        ;""" % (key, jointurePresents, conditionActivites, conditionPresents, key)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close() 
+        
+        listeID = []
+        for donnees in listeDonnees :
+            listeID.append(donnees[0])
+        return listeID
+
+    def SetBarreRecherche(self, ctrl=None):
+        self.barreRecherche = ctrl
+
+    def CocheListeTout(self, event=None):
+        for track in self.donnees :
+            self.Check(track)
+            self.RefreshObject(track)
+        
+    def CocheListeRien(self, event=None):
+        for track in self.donnees :
+            self.Uncheck(track)
+            self.RefreshObject(track)
+
 ########################################################################
 
 class Track():
     def __init__(self, dictTotaux):
         for nomColonne, total in dictTotaux.iteritems() :
             setattr(self, nomColonne, total)
+
+
+class BarreRecherche(wx.SearchCtrl):
+    def __init__(self, parent, listview, texteDefaut=u"Rechercher..."):
+        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
+        self.parent = parent
+        self.listview = listview
+        self.rechercheEnCours = False
         
+        # Assigne cette barre de recherche au listview
+        self.listview.SetBarreRecherche(self)
+        
+        self.SetDescriptiveText(texteDefaut)
+        self.ShowSearchButton(True)
+        
+        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
+        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
+        
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
+        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
+
+    def OnSearch(self, evt):
+        self.Recherche()
+            
+    def OnCancel(self, evt):
+        self.SetValue("")
+        self.Recherche()
+
+    def OnDoSearch(self, evt):
+        self.Recherche()
+    
+    def Cancel(self):
+        self.OnCancel(None)
+        
+    def Recherche(self):
+        txtSearch = self.GetValue()
+        self.ShowCancelButton(len(txtSearch))
+        self.listview.Filtrer(txtSearch)
+
+        
+class CTRL_Outils(wx.Panel):
+    def __init__(self, parent, listview=None, texteDefaut=u"Rechercher...", afficherCocher=False, style=wx.NO_BORDER | wx.TAB_TRAVERSAL):
+        wx.Panel.__init__(self, parent, id=-1, style=style)
+        self.listview = listview
+        
+        # Contrôles
+        self.barreRecherche = BarreRecherche(self, listview=listview, texteDefaut=texteDefaut)
+##        self.bouton_filtrage = wx.Button(self, -1, u"Filtrage avancé", size=(-1, 20))
+##        self.bouton_filtrage = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Filtrer_liste_2.png", wx.BITMAP_TYPE_ANY))
+        
+        import wx.lib.platebtn as platebtn
+        
+        # Bouton Filtrer
+        self.bouton_filtrer = platebtn.PlateButton(self, -1, u" Filtrer", wx.Bitmap("Images/16x16/Filtre.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_filtrer.SetToolTipString(u"Cliquez ici pour filtrer cette liste")
+        
+        menu = wx.Menu()
+        item = wx.MenuItem(menu, 10, u"Ajouter, modifier ou supprimer des filtres", u"Cliquez ici pour accéder à la gestion des filtres de listes")
+        item.SetBitmap(wx.Bitmap("Images/16x16/Filtre.png", wx.BITMAP_TYPE_ANY))
+        menu.AppendItem(item)
+        menu.AppendSeparator()
+        item = wx.MenuItem(menu, 11, u"Supprimer tous les filtres", u"Cliquez ici pour supprimer tous les filtres")
+        item.SetBitmap(wx.Bitmap("Images/16x16/Filtre_supprimer.png", wx.BITMAP_TYPE_ANY))
+        menu.AppendItem(item)        
+        self.bouton_filtrer.SetMenu(menu)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonFiltrer, self.bouton_filtrer) 
+        
+        # Bouton Cocher
+        if afficherCocher == True :
+            self.bouton_cocher = platebtn.PlateButton(self, -1, u" Cocher", wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_cocher.SetToolTipString(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")
+            
+            menu = wx.Menu()
+            item = wx.MenuItem(menu, 20, u"Tout cocher", u"Cliquez ici pour cocher tous les éléments de la liste")
+            item.SetBitmap(wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_ANY))
+            menu.AppendItem(item)
+            item = wx.MenuItem(menu, 21, u"Tout décocher", u"Cliquez ici pour décocher tous les éléments de la liste")
+            item.SetBitmap(wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_ANY))
+            menu.AppendItem(item)        
+            self.bouton_cocher.SetMenu(menu)
+            self.Bind(wx.EVT_BUTTON, self.OnBoutonCocher, self.bouton_cocher) 
+
+        self.Bind(wx.EVT_MENU, self.OnMenu)
+        self.Bind(wx.EVT_SIZE, self.OnSize)
+        
+        # Layout
+        sizerbase = wx.BoxSizer(wx.HORIZONTAL)
+        sizerbase.Add(self.barreRecherche, 1, wx.ALL|wx.EXPAND, 0)
+        sizerbase.Add(self.bouton_filtrer, 0, wx.LEFT|wx.EXPAND, 5)
+        if afficherCocher == True :
+            sizerbase.Add(self.bouton_cocher, 0, wx.LEFT|wx.EXPAND, 5)
+        self.SetSizer(sizerbase)
+        self.Layout()
+    
+    def OnSize(self, event):
+        self.Refresh() 
+        event.Skip() 
+        
+    def MAJ_ctrl_filtrer(self):
+        """ Met à jour l'image du bouton Filtrage """
+        nbreFiltres = len(self.listview.listeFiltresColonnes)
+        
+        # Modifie l'image selon le nbre de filtres activés
+        if nbreFiltres == 0 :
+            nomImage = "Filtre"
+        elif nbreFiltres < 10 :
+            nomImage = "Filtre_%d" % nbreFiltres
+        else :
+            nomImage = "Filtre_10"
+        self.bouton_filtrer.SetBitmap(wx.Bitmap("Images/16x16/%s.png" % nomImage, wx.BITMAP_TYPE_ANY))
+        self.bouton_filtrer.Refresh() 
+        
+        # Modifie le tip en fonction des filtres activés
+        if nbreFiltres == 0 :
+            texte = u"Cliquez ici pour filtrer cette liste"
+        else :
+            if nbreFiltres == 1 :
+                texte = u"Cliquez ici pour filtrer cette liste\n> 1 filtre activé"
+            else :
+                texte = u"Cliquez ici pour filtrer cette liste\n> %d filtres activés" % nbreFiltres        
+        self.bouton_filtrer.SetToolTipString(texte)
+        
+    def OnBoutonFiltrer(self, event):
+        listeFiltres = []
+        import DLG_Filtres_listes
+        dlg = DLG_Filtres_listes.Dialog(self, ctrl_listview=self.listview)
+        if dlg.ShowModal() == wx.ID_OK :
+            listeFiltres = dlg.GetDonnees()                 
+            self.listview.SetFiltresColonnes(listeFiltres)
+            self.listview.Filtrer() 
+            self.MAJ_ctrl_filtrer() 
+        dlg.Destroy()
+    
+    def OnBoutonCocher(self, event):
+        self.bouton_cocher.ShowMenu() 
+        
+    def OnMenu(self, event):
+        ID = event.GetId()
+        # Accéder à la gestion des filtres
+        if ID == 10 : 
+            self.OnBoutonFiltrer(None)
+        # Supprimer tous les filtres
+        if ID == 11 : 
+            self.listview.SetFiltresColonnes([])
+            self.listview.Filtrer() 
+            self.MAJ_ctrl_filtrer() 
+        # Tout cocher
+        if ID == 20 :
+            self.listview.CocheListeTout()
+        # Tout décocher
+        if ID == 21 :
+            self.listview.CocheListeRien()
+            
+            
+            
+    
+
         
 class AbstractVirtualObjectListView(ObjectListView):
     """
@@ -3681,7 +4005,7 @@ class ColumnDefn(object):
                  checkStateGetter=None, checkStateSetter=None,
                  isSearchable=True, useBinarySearch=None, headerImage=-1,
                  groupKeyGetter=None, groupKeyConverter=None, useInitialLetterForGroupKey=False,
-                 groupTitleSingleItem=None, groupTitlePluralItems=None, visible=True):
+                 groupTitleSingleItem=None, groupTitlePluralItems=None, visible=True, typeDonnee=None):
         """
         Create a new ColumnDefn using the given attributes.
 
@@ -3720,6 +4044,7 @@ class ColumnDefn(object):
         self.groupTitlePluralItems = groupTitlePluralItems or "%(title)s (%(count)d items)"
         self.isInternal = False # was this column created internally by ObjectListView?
         self.visible = visible
+        self.typeDonnee = typeDonnee
 
         self.minimumWidth = minimumWidth
         self.maximumWidth = maximumWidth

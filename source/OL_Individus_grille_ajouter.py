@@ -14,7 +14,7 @@ import datetime
 import GestionDB
 import DATA_Civilites as Civilites
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -130,11 +130,11 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDindividu", imageGetter=GetImageCivilite),
-            ColumnDefn(u"Nom", 'left', 100, "nom"),
-            ColumnDefn(u"Prénom", "left", 100, "prenom"),
-            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", stringConverter=FormateDate),
-            ColumnDefn(u"Age", "left", 50, "age", stringConverter=FormateAge),
+            ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
+            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ]
         
         self.SetColumns(liste_Colonnes)

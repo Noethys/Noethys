@@ -31,7 +31,7 @@ class Dialog(wx.Dialog):
         self.ctrl_listview = OL_Mandats.ListView(self, id=-1, mode="liste", name="OL_mandats", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_listview.SetMinSize((100, 100))
         self.ctrl_listview.MAJ() 
-        self.ctrl_recherche = OL_Mandats.BarreRecherche(self, listView=self.ctrl_listview)
+        self.ctrl_recherche = OL_Mandats.CTRL_Outils(self, listview=self.ctrl_listview)
                 
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))

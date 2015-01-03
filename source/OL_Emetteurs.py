@@ -17,7 +17,7 @@ import GestionDB
 
 import DLG_Saisie_emetteur
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -125,10 +125,10 @@ class ListView(FastObjectListView):
             return dictImages[track.IDemetteur]
                     
         liste_Colonnes = [
-            ColumnDefn(u"IDemetteur", "left", 0, "IDemetteur"),
+            ColumnDefn(u"IDemetteur", "left", 0, "IDemetteur", typeDonnee="entier"),
             ColumnDefn(u"Image", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
-            ColumnDefn(u"Mode de règlement", 'left', 0, "label_mode"),
-            ColumnDefn(u"Nom de l'émetteur", 'left', 410, "nom"),
+            ColumnDefn(u"Mode de règlement", 'left', 0, "label_mode", typeDonnee="texte"),
+            ColumnDefn(u"Nom de l'émetteur", 'left', 410, "nom", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

@@ -210,7 +210,7 @@ class Dialog(wx.Dialog):
         self.ctrl_listview = OL_Historique.ListView(self, id=-1, IDutilisateur=IDutilisateur, IDfamille=IDfamille, IDindividu=IDindividu, IDcategorie=IDcategorie, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.SetMinSize((100, 100))
         self.ctrl_listview.MAJ()
-        self.ctrl_recherche = OL_Historique.BarreRecherche(self)
+        self.ctrl_recherche = OL_Historique.CTRL_Outils(self, listview=self.ctrl_listview)
         
         # Filtres
         self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, u"Filtres")

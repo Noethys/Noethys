@@ -16,7 +16,7 @@ import UTILS_Titulaires
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -195,16 +195,16 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDdeduction"),
-            ColumnDefn(u"Date", 'left', 90, "date", stringConverter=FormateDateCourt), 
-            ColumnDefn(u"Famille", 'left', 160, "nomTitulaires"),
-            ColumnDefn(u"Individu", 'left', 140, "nomComplet"), 
-            ColumnDefn(u"Déduction", 'left', 220, "label"), 
-            ColumnDefn(u"Montant", 'right', 90, "montant", stringConverter=FormateMontant), 
-            ColumnDefn(u"Prestation", 'left', 150, "labelPrestation"), 
-            ColumnDefn(u"Activité", 'left', 70, "abregeActivite"), 
-            ColumnDefn(u"Montant initial", 'right', 90, "montantInitialPrestation", stringConverter=FormateMontant),
-            ColumnDefn(u"Montant final", 'right', 90, "montantPrestation", stringConverter=FormateMontant),
+            ColumnDefn(u"ID", "left", 0, "IDdeduction", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
+            ColumnDefn(u"Famille", 'left', 160, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Individu", 'left', 140, "nomComplet", typeDonnee="texte"), 
+            ColumnDefn(u"Déduction", 'left', 220, "label", typeDonnee="texte"), 
+            ColumnDefn(u"Montant", 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
+            ColumnDefn(u"Prestation", 'left', 150, "labelPrestation", typeDonnee="texte"), 
+            ColumnDefn(u"Activité", 'left', 70, "abregeActivite", typeDonnee="texte"), 
+            ColumnDefn(u"Montant initial", 'right', 90, "montantInitialPrestation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Montant final", 'right', 90, "montantPrestation", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.SetColumns(liste_Colonnes)

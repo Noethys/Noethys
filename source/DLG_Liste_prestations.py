@@ -136,7 +136,7 @@ class Dialog(wx.Dialog):
         # Liste
         self.listviewAvecFooter = OL_Prestations.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Prestations.BarreRecherche(self)
+        self.ctrl_recherche = OL_Prestations.CTRL_Outils(self, listview=self.ctrl_listview)
 
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))

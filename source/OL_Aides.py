@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -221,25 +221,25 @@ class ListView(FastObjectListView):
         if self.IDfamille == None :
             # Version MODELES
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDaide"),
-                ColumnDefn(u"Du", 'left', 75, "date_debut", stringConverter=FormateDateCourt),
-                ColumnDefn(u"Au", 'left', 75, "date_fin", stringConverter=FormateDateCourt),
-                ColumnDefn(u"Nom", 'left', 160, "nom"),
-                ColumnDefn(u"Activité", 'left', 60, "nom_activite"),
-                ColumnDefn(u"Caisse", 'left', 140, "nom_caisse"), 
+                ColumnDefn(u"ID", "left", 0, "IDaide", typeDonnee="entier"),
+                ColumnDefn(u"Du", 'left', 75, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
+                ColumnDefn(u"Au", 'left', 75, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+                ColumnDefn(u"Nom", 'left', 160, "nom", typeDonnee="texte"),
+                ColumnDefn(u"Activité", 'left', 60, "nom_activite", typeDonnee="texte"),
+                ColumnDefn(u"Caisse", 'left', 140, "nom_caisse", typeDonnee="texte"), 
                 ]
         else:
             # Version FAMILLE
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDaide"),
-                ColumnDefn(u"Du", 'left', 75, "date_debut", stringConverter=FormateDateCourt),
-                ColumnDefn(u"Au", 'left', 75, "date_fin", stringConverter=FormateDateCourt),
-                ColumnDefn(u"Nom", 'left', 130, "nom"),
-                ColumnDefn(u"Activité", 'left', 60, "nom_activite"),
-                ColumnDefn(u"Caisse", 'left', 80, "nom_caisse"), 
-                ColumnDefn(u"Bénéficiaires", 'left', 130, "texteBeneficiaires"),
-                ColumnDefn(u"Total des déductions", 'left', 140, "texte_montant_max"),
-                ColumnDefn(u"Nbre de dates", 'left', 130, "texte_dates_max"),
+                ColumnDefn(u"ID", "left", 0, "IDaide", typeDonnee="entier"),
+                ColumnDefn(u"Du", 'left', 75, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
+                ColumnDefn(u"Au", 'left', 75, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+                ColumnDefn(u"Nom", 'left', 130, "nom", typeDonnee="texte"),
+                ColumnDefn(u"Activité", 'left', 60, "nom_activite", typeDonnee="texte"),
+                ColumnDefn(u"Caisse", 'left', 80, "nom_caisse", typeDonnee="texte"), 
+                ColumnDefn(u"Bénéficiaires", 'left', 130, "texteBeneficiaires", typeDonnee="texte"),
+                ColumnDefn(u"Total des déductions", 'left', 140, "texte_montant_max", typeDonnee="texte"),
+                ColumnDefn(u"Nbre de dates", 'left', 130, "texte_dates_max", typeDonnee="texte"),
                 ]
         
         self.rowFormatter = rowFormatter

@@ -15,7 +15,7 @@ import Image
 import os
 import cStringIO
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import CTRL_Questionnaire
 import DLG_Saisie_choix_question

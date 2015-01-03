@@ -13,7 +13,7 @@ import os
 import GestionDB
 import UTILS_Export_tables
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -172,10 +172,10 @@ class ListView(FastObjectListView):
             return u"Du %s au %s" % (DateEngFr(date_debut), DateEngFr(date_fin))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDactivite"),
-            ColumnDefn(u"Nom de l'activité", 'left', 220, "nom", isSpaceFilling=True),
-            ColumnDefn(u"Abrégé", 'left', 80, "abrege"),
-            ColumnDefn(u"Période de validité", 'left', 200, "periode", stringConverter=FormatePeriode),
+            ColumnDefn(u"ID", "left", 0, "IDactivite", typeDonnee="entier"),
+            ColumnDefn(u"Nom de l'activité", 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Abrégé", 'left', 80, "abrege", typeDonnee="texte"),
+            ColumnDefn(u"Période de validité", 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
             ]
         
         self.SetColumns(liste_Colonnes)

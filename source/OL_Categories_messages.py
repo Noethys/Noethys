@@ -14,7 +14,7 @@ import datetime
 import GestionDB
 import DLG_Saisie_message_categorie
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -87,9 +87,9 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDcategorie"),
-            ColumnDefn(u"Nom", 'left', 400, "nom"),
-            ColumnDefn(u"Nbre messages", 'center', 100, "nbreMessages"),
+            ColumnDefn(u"", "left", 0, "IDcategorie", typeDonnee="entier"),
+            ColumnDefn(u"Nom", 'left', 400, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Nbre messages", 'center', 100, "nbreMessages", typeDonnee="entier"),
             ]
         
         self.SetColumns(liste_Colonnes)

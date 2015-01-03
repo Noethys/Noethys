@@ -16,7 +16,7 @@ import GestionDB
 import UTILS_Icalendar
 import wx.lib.agw.hyperlink as Hyperlink
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import urllib2
 import re

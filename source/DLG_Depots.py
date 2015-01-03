@@ -107,7 +107,7 @@ class Dialog(wx.Dialog):
         self.listviewAvecFooter2 = OL_Depots.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_depots = self.listviewAvecFooter2.GetListview()
         self.ctrl_depots.MAJ()
-        self.ctrl_recherche = OL_Depots.BarreRecherche(self)
+        self.ctrl_recherche = OL_Depots.CTRL_Outils(self, listview=self.ctrl_depots)
 
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))

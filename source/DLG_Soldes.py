@@ -40,7 +40,7 @@ class Dialog(wx.Dialog):
         self.listviewAvecFooter = OL_Soldes.ListviewAvecFooter(self) 
         self.ctrl_soldes = self.listviewAvecFooter.GetListview()
 
-        self.ctrl_recherche = OL_Soldes.BarreRecherche(self)
+        self.ctrl_recherche = OL_Soldes.CTRL_Outils(self, listview=self.ctrl_soldes)
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))

@@ -285,7 +285,7 @@ class CTRL_Filtres(wx.Panel):
         self.SetBackgroundColour(couleurFond)
         
         self.ctrl_html = MyHtml(self, texte=u"Aucun filtre de sélection.", couleurFond=couleurFond, hauteur=25)
-        self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))#wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Filtre.png", wx.BITMAP_TYPE_ANY))#wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_parametres.SetToolTipString(u"Cliquez ici pour modifier les filtres de sélection des cotisations")
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)

@@ -28,7 +28,8 @@ class Panel(wx.Panel):
         triColonne = "date_debut"
         self.listviewAvecFooter = OL_Liste_cotisations.ListviewAvecFooter(self, kwargs={"IDfamille" : IDfamille, "mode" : "famille", "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Liste_cotisations.BarreRecherche(self)
+        self.ctrl_recherche = OL_Liste_cotisations.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
+        self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
         
         # Commandes boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))

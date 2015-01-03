@@ -15,7 +15,7 @@ import UTILS_Utilisateurs
 import UTILS_Dates
 import UTILS_Titulaires
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from UTILS_Mandats import LISTE_SEQUENCES
 
@@ -174,20 +174,20 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDmandat"),
-            ColumnDefn(u"Date", 'left', 75, "date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"RUM", 'left', 60, "rum"),
-            ColumnDefn(u"Type", 'left', 70, "typeMandatStr"),
-            ColumnDefn(u"Nbre prélèv.", 'center', 80, "nbrePrelevements"),
-            ColumnDefn(u"IBAN", 'left', 180, "iban"),
-            ColumnDefn(u"BIC", 'left', 100, "bic"),
-            ColumnDefn(u"Titulaire", 'left', 110, "individu_nom_complet"),
-            ColumnDefn(u"Séquence suiv.", 'left', 100, "sequenceStr"),
-            ColumnDefn(u"Observations", 'left', 120, "memo"),
+            ColumnDefn(u"ID", "left", 0, "IDmandat", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'left', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"RUM", 'left', 60, "rum", typeDonnee="texte"),
+            ColumnDefn(u"Type", 'left', 70, "typeMandatStr", typeDonnee="texte"),
+            ColumnDefn(u"Nbre prélèv.", 'center', 80, "nbrePrelevements", typeDonnee="entier"),
+            ColumnDefn(u"IBAN", 'left', 180, "iban", typeDonnee="texte"),
+            ColumnDefn(u"BIC", 'left', 100, "bic", typeDonnee="texte"),
+            ColumnDefn(u"Titulaire", 'left', 110, "individu_nom_complet", typeDonnee="texte"),
+            ColumnDefn(u"Séquence suiv.", 'left', 100, "sequenceStr", typeDonnee="texte"),
+            ColumnDefn(u"Observations", 'left', 120, "memo", typeDonnee="texte"),
             ]
         
         if self.mode == "liste" :
-            liste_Colonnes.insert(4, ColumnDefn(u"Famille", 'left', 150, "titulairesFamille"))
+            liste_Colonnes.insert(4, ColumnDefn(u"Famille", 'left', 150, "titulairesFamille", typeDonnee="texte"))
             
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)

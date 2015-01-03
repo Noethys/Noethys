@@ -11,7 +11,7 @@
 import wx
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 class Track(object):
@@ -74,9 +74,9 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                     
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDprofil"),
-            ColumnDefn(u"Nom", "left", 350, "label"), 
-            ColumnDefn(u"Nbre de champs", "left", 130, "nbreChamps"), 
+            ColumnDefn(u"ID", "left", 0, "IDprofil", typeDonnee="entier"),
+            ColumnDefn(u"Nom", "left", 350, "label", typeDonnee="texte"), 
+            ColumnDefn(u"Nbre de champs", "left", 130, "nbreChamps", typeDonnee="entier"), 
             ]
         
         self.SetColumns(liste_Colonnes)

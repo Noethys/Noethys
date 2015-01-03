@@ -15,7 +15,7 @@ import datetime
 import GestionDB
 import UTILS_Historique
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 import UTILS_Utilisateurs
 
@@ -200,22 +200,22 @@ class ListView(FastObjectListView):
 
         if self.nbreFamilles > 1 :
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDinscription"),
+                ColumnDefn(u"ID", "left", 0, "IDinscription", typeDonnee="entier"),
 ##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
-                ColumnDefn(u"Date", 'center', 70, "date_inscription", stringConverter=DateEngFr),
-                ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", isSpaceFilling=True),
-                ColumnDefn(u"Groupe", 'left', 80, "nom_groupe"),
-                ColumnDefn(u"Catégorie de tarifs", 'left', 110, "nom_categorie"),
-                ColumnDefn(u"Famille", 'left', 110, "nomTitulaires"),
+                ColumnDefn(u"Date", 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
+                ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+                ColumnDefn(u"Groupe", 'left', 80, "nom_groupe", typeDonnee="texte"),
+                ColumnDefn(u"Catégorie de tarifs", 'left', 110, "nom_categorie", typeDonnee="texte"),
+                ColumnDefn(u"Famille", 'left', 110, "nomTitulaires", typeDonnee="texte"),
                 ]
         else:
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDinscription"),
+                ColumnDefn(u"ID", "left", 0, "IDinscription", typeDonnee="entier"),
 ##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
-                ColumnDefn(u"Date", 'center', 70, "date_inscription", stringConverter=DateEngFr),
-                ColumnDefn(u"Nom de l'activité", 'left', 160, "nom_activite", isSpaceFilling=True),
-                ColumnDefn(u"Groupe", 'left', 100, "nom_groupe"),
-                ColumnDefn(u"Catégorie de tarifs", 'left', 140, "nom_categorie"),
+                ColumnDefn(u"Date", 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
+                ColumnDefn(u"Nom de l'activité", 'left', 160, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+                ColumnDefn(u"Groupe", 'left', 100, "nom_groupe", typeDonnee="texte"),
+                ColumnDefn(u"Catégorie de tarifs", 'left', 140, "nom_categorie", typeDonnee="texte"),
                 ]
 
         self.rowFormatter = rowFormatter

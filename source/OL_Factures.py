@@ -21,7 +21,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 
@@ -421,18 +421,18 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         dictColonnes = {
-            "IDfacture" : ColumnDefn(u"", "left", 0, "IDfacture"),
-            "date" : ColumnDefn(u"Date", "centre", 80, "date_edition", stringConverter=FormateDate),
-            "numero" : ColumnDefn(u"N°", "centre", 65, "numero", stringConverter=FormateNumero),
-            "famille" : ColumnDefn(u"Famille", "left", 180, "nomsTitulaires"),
-            "date_debut" : ColumnDefn(u"Date début", "centre", 80, "date_debut", stringConverter=FormateDate),
-            "date_fin" : ColumnDefn(u"Date fin", "centre", 80, "date_fin", stringConverter=FormateDate),
-            "total" : ColumnDefn(u"Total", "right", 65, "total", stringConverter=FormateMontant),
-            "regle" : ColumnDefn(u"Réglé", "right", 65, "regle", stringConverter=FormateMontant),
-            "solde" : ColumnDefn(u"Solde", "right", 65, "solde", stringConverter=FormateMontant),
-            "solde_actuel" : ColumnDefn(u"Solde actuel", "right", 90, "soldeActuel", stringConverter=FormateMontant, imageGetter=GetImageSoldeActuel),
-            "date_echeance" : ColumnDefn(u"Echéance", "centre", 80, "date_echeance", stringConverter=FormateDate),
-            "nom_lot" : ColumnDefn(u"Lot", "left", 150, "nomLot"),
+            "IDfacture" : ColumnDefn(u"", "left", 0, "IDfacture", typeDonnee="entier"),
+            "date" : ColumnDefn(u"Date", "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            "numero" : ColumnDefn(u"N°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
+            "famille" : ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            "date_debut" : ColumnDefn(u"Date début", "centre", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            "date_fin" : ColumnDefn(u"Date fin", "centre", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            "total" : ColumnDefn(u"Total", "right", 65, "total", typeDonnee="montant", stringConverter=FormateMontant),
+            "regle" : ColumnDefn(u"Réglé", "right", 65, "regle", typeDonnee="montant", stringConverter=FormateMontant),
+            "solde" : ColumnDefn(u"Solde", "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
+            "solde_actuel" : ColumnDefn(u"Solde actuel", "right", 90, "soldeActuel", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageSoldeActuel),
+            "date_echeance" : ColumnDefn(u"Echéance", "centre", 80, "date_echeance", typeDonnee="date", stringConverter=FormateDate),
+            "nom_lot" : ColumnDefn(u"Lot", "left", 150, "nomLot", typeDonnee="texte"),
             "prelevement" : ColumnDefn(u"P", "left", 20, "", imageGetter=GetImagePrelevement),
             "email" : ColumnDefn(u"E", "left", 20, "", imageGetter=GetImageEmail),
             }

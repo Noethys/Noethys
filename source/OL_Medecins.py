@@ -11,7 +11,7 @@
 import wx
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 import UTILS_Utilisateurs
 
@@ -84,14 +84,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDmedecin"),
-            ColumnDefn(u"Nom", 'left', 120, "nom"),
-            ColumnDefn(u"Prénom", "left", 120, "prenom"),
-            ColumnDefn(u"Rue", "left", 140, "rue_resid"),
-            ColumnDefn(u"C.P.", "left", 45, "cp_resid"),
-            ColumnDefn(u"Ville", "left", 110, "ville_resid"),
-            ColumnDefn(u"Tél. Cabinet", "left", 100, "tel_cabinet"),
-            ColumnDefn(u"Tél. Mobile", "left", 100, "tel_mobile"),
+            ColumnDefn(u"ID", "left", 0, "IDmedecin", typeDonnee="entier"),
+            ColumnDefn(u"Nom", 'left', 120, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Prénom", "left", 120, "prenom", typeDonnee="texte"),
+            ColumnDefn(u"Rue", "left", 140, "rue_resid", typeDonnee="texte"),
+            ColumnDefn(u"C.P.", "left", 45, "cp_resid", typeDonnee="texte"),
+            ColumnDefn(u"Ville", "left", 110, "ville_resid", typeDonnee="texte"),
+            ColumnDefn(u"Tél. Cabinet", "left", 100, "tel_cabinet", typeDonnee="texte"),
+            ColumnDefn(u"Tél. Mobile", "left", 100, "tel_mobile", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

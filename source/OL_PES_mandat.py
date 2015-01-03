@@ -20,7 +20,7 @@ import wx.lib.dialogs as dialogs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Titulaires
 DICT_INDIVIDUS = UTILS_Titulaires.GetIndividus()
@@ -223,23 +223,23 @@ class ListView(FastObjectListView):
                 return self.imgRefus
             
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDprelevement"),
-            ColumnDefn(u"Date Prélèv.", 'left', 80, "datePrelevement", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Nom bordereau", 'left', 150, "nomLot"),
+            ColumnDefn(u"ID", "left", 0, "IDprelevement", typeDonnee="entier"),
+            ColumnDefn(u"Date Prélèv.", 'left', 80, "datePrelevement", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Nom bordereau", 'left', 150, "nomLot", typeDonnee="texte"),
 ##            ColumnDefn(u"Famille", 'left', 230, "titulaires"),
 ##            ColumnDefn(u"Type", 'left', 70, "type", stringConverter=FormateType),
-            ColumnDefn(u"Libellé", 'left', 110, "libelle"),
-            ColumnDefn(u"Montant", 'right', 70, "montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Statut", 'left', 80, "prelevement_statut", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(u"Règlement", 'left', 70, "reglement", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(u"Séquence", 'left', 70, "prelevement_sequence"),
-            ColumnDefn(u"IBAN", 'left', 190, "prelevement_iban"),
-            ColumnDefn(u"BIC", 'left', 100, "prelevement_bic"),
-            ColumnDefn(u"Titulaire compte bancaire", 'left', 160, "prelevement_titulaire"),
-            ColumnDefn(u"Ref. mandat", 'left', 90, "prelevement_rum"),
-            ColumnDefn(u"Date mandat", 'left', 80, "prelevement_date_mandat", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Titulaire Hélios", 'left', 150, "titulaireNomComplet"),
-            ColumnDefn(u"Adresse", 'left', 220, "titulaireAdresse"),
+            ColumnDefn(u"Libellé", 'left', 110, "libelle", typeDonnee="texte"),
+            ColumnDefn(u"Montant", 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Statut", 'left', 80, "prelevement_statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
+            ColumnDefn(u"Règlement", 'left', 70, "reglement", typeDonnee="montant", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(u"Séquence", 'left', 70, "prelevement_sequence", typeDonnee="texte"),
+            ColumnDefn(u"IBAN", 'left', 190, "prelevement_iban", typeDonnee="texte"),
+            ColumnDefn(u"BIC", 'left', 100, "prelevement_bic", typeDonnee="texte"),
+            ColumnDefn(u"Titulaire compte bancaire", 'left', 160, "prelevement_titulaire", typeDonnee="texte"),
+            ColumnDefn(u"Ref. mandat", 'left', 90, "prelevement_rum", typeDonnee="texte"),
+            ColumnDefn(u"Date mandat", 'left', 80, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Titulaire Hélios", 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
+            ColumnDefn(u"Adresse", 'left', 220, "titulaireAdresse", typeDonnee="texte"),
             ]
             
         self.SetColumns(liste_Colonnes)

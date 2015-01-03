@@ -171,24 +171,26 @@ class Panel(wx.Panel):
         # OL Prestations
         self.listviewAvecFooter = OL_Prestations.ListviewAvecFooter(self, kwargs={"IDfamille" : IDfamille}) 
         self.ctrl_prestations = self.listviewAvecFooter.GetListview()
-        
+        self.ctrl_recherche = OL_Prestations.CTRL_Outils(self, listview=self.ctrl_prestations, afficherCocher=True)
+        self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
+
         # Options d'affichage hyperliens
-        self.ctrl_regroupement = wx.CheckBox(self, -1, u"Regrouper par ")
-        self.ctrl_regroupement.SetValue(False)
-        self.hyper_regroupement = Hyperlien_regroupement(self, label=u"Date", infobulle=u"Cliquez ici pour choisir une catégorie de regroupement", URL="regroupement", listeChoix=[], indexChoixDefaut=None)
-        self.hyper_regroupement.Enable(False)
-        
-        self.label_filtres_1 = wx.StaticText(self, -1, u"Afficher ")
-        self.hyper_periodes = Hyperlien_periodes(self, label=u"Toutes les périodes", infobulle=u"Cliquez ici pour filtrer les périodes", URL="periodes")
-        self.label_filtres_2 = wx.StaticText(self, -1, u" | ")
-        self.hyper_individus = Hyperlien(self, label=u"Tous les individus", infobulle=u"Cliquez ici pour filtrer les individus", URL="individus", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Tous les individus", champFiltre="prestations.IDindividu")
-        self.label_filtres_3 = wx.StaticText(self, -1, u" | ")
-        self.hyper_activites = Hyperlien(self, label=u"Toutes les activités", infobulle=u"Cliquez ici pour fitrer les activités", URL="activites", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les activités", champFiltre="prestations.IDactivite")
-        self.label_filtres_4 = wx.StaticText(self, -1, u" | ")
-        self.hyper_factures = Hyperlien(self, label=u"Toutes les factures", infobulle=u"Cliquez ici pour filtrer les factures", URL="factures", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les factures", champFiltre="prestations.IDfacture")
-        
-        self.ctrl_total = wx.StaticText(self, -1, u"Total = 0.00 %s" % SYMBOLE)
-        self.ctrl_total.Show(False)
+##        self.ctrl_regroupement = wx.CheckBox(self, -1, u"Regrouper par ")
+##        self.ctrl_regroupement.SetValue(False)
+##        self.hyper_regroupement = Hyperlien_regroupement(self, label=u"Date", infobulle=u"Cliquez ici pour choisir une catégorie de regroupement", URL="regroupement", listeChoix=[], indexChoixDefaut=None)
+##        self.hyper_regroupement.Enable(False)
+##        
+##        self.label_filtres_1 = wx.StaticText(self, -1, u"Afficher ")
+##        self.hyper_periodes = Hyperlien_periodes(self, label=u"Toutes les périodes", infobulle=u"Cliquez ici pour filtrer les périodes", URL="periodes")
+##        self.label_filtres_2 = wx.StaticText(self, -1, u" | ")
+##        self.hyper_individus = Hyperlien(self, label=u"Tous les individus", infobulle=u"Cliquez ici pour filtrer les individus", URL="individus", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Tous les individus", champFiltre="prestations.IDindividu")
+##        self.label_filtres_3 = wx.StaticText(self, -1, u" | ")
+##        self.hyper_activites = Hyperlien(self, label=u"Toutes les activités", infobulle=u"Cliquez ici pour fitrer les activités", URL="activites", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les activités", champFiltre="prestations.IDactivite")
+##        self.label_filtres_4 = wx.StaticText(self, -1, u" | ")
+##        self.hyper_factures = Hyperlien(self, label=u"Toutes les factures", infobulle=u"Cliquez ici pour filtrer les factures", URL="factures", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les factures", champFiltre="prestations.IDfacture")
+##        
+##        self.ctrl_total = wx.StaticText(self, -1, u"Total = 0.00 %s" % SYMBOLE)
+##        self.ctrl_total.Show(False)
         
         # Commandes boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -201,7 +203,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckRegroupement, self.ctrl_regroupement)
+##        self.Bind(wx.EVT_CHECKBOX, self.OnCheckRegroupement, self.ctrl_regroupement)
         
         # Propriétés
         self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir une prestation")
@@ -223,23 +225,25 @@ class Panel(wx.Panel):
         grid_sizer_boutons.Add(self.bouton_imprimer, 0, wx.ALL, 0)
         grid_sizer_prestations.Add(grid_sizer_boutons, 1, wx.ALL, 0)
         
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=13, vgap=0, hgap=0)
-        grid_sizer_options.Add(self.ctrl_regroupement, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.hyper_regroupement, 0, wx.ALL, 0)
-        grid_sizer_options.Add( (30, 5), 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.label_filtres_1, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.hyper_periodes, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.label_filtres_2, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.hyper_individus, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.label_filtres_3, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.hyper_activites, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.label_filtres_4, 0, wx.ALL, 0)
-        grid_sizer_options.Add(self.hyper_factures, 0, wx.ALL, 0)
-        grid_sizer_options.Add( (20, 5), 0, wx.EXPAND|wx.ALL, 0)
-        grid_sizer_options.Add(self.ctrl_total, 0, wx.ALL, 0)
-        grid_sizer_options.AddGrowableCol(11)
-        self.grid_sizer_options = grid_sizer_options
-        grid_sizer_prestations.Add(grid_sizer_options, 1, wx.EXPAND|wx.ALL, 0)
+        grid_sizer_prestations.Add(self.ctrl_recherche, 0, wx.EXPAND|wx.ALL, 0)
+        
+##        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=13, vgap=0, hgap=0)
+##        grid_sizer_options.Add(self.ctrl_regroupement, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.hyper_regroupement, 0, wx.ALL, 0)
+##        grid_sizer_options.Add( (30, 5), 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.label_filtres_1, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.hyper_periodes, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.label_filtres_2, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.hyper_individus, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.label_filtres_3, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.hyper_activites, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.label_filtres_4, 0, wx.ALL, 0)
+##        grid_sizer_options.Add(self.hyper_factures, 0, wx.ALL, 0)
+##        grid_sizer_options.Add( (20, 5), 0, wx.EXPAND|wx.ALL, 0)
+##        grid_sizer_options.Add(self.ctrl_total, 0, wx.ALL, 0)
+##        grid_sizer_options.AddGrowableCol(11)
+##        self.grid_sizer_options = grid_sizer_options
+##        grid_sizer_prestations.Add(grid_sizer_options, 1, wx.EXPAND|wx.ALL, 0)
         
         grid_sizer_prestations.AddGrowableCol(0)
         grid_sizer_prestations.AddGrowableRow(0)
@@ -313,10 +317,10 @@ class Panel(wx.Panel):
     def MAJ(self):
         """ MAJ integrale du controle avec MAJ des donnees """
         self.ctrl_prestations.MAJ() 
-        self.hyper_regroupement.SetListeChoix(self.ctrl_prestations.GetTitresColonnes())
-        self.hyper_individus.SetListeChoix(self.ctrl_prestations.GetListeIndividus())
-        self.hyper_activites.SetListeChoix(self.ctrl_prestations.GetListeActivites())
-        self.hyper_factures.SetListeChoix(self.ctrl_prestations.GetListeFactures())
+##        self.hyper_regroupement.SetListeChoix(self.ctrl_prestations.GetTitresColonnes())
+##        self.hyper_individus.SetListeChoix(self.ctrl_prestations.GetListeIndividus())
+##        self.hyper_activites.SetListeChoix(self.ctrl_prestations.GetListeActivites())
+##        self.hyper_factures.SetListeChoix(self.ctrl_prestations.GetListeFactures())
 ##        self.MAJtotal() 
         self.Refresh() 
         

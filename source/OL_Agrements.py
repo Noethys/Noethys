@@ -11,7 +11,7 @@
 import wx
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -86,10 +86,10 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDactivite"),
-            ColumnDefn(u"Date de fin de validité", 'left', 0, "date_fin"),
-            ColumnDefn(u"Période de validité", 'left', 200, "datesValidite"),
-            ColumnDefn(u"Agrément", "left", 250, "agrement"),
+            ColumnDefn(u"ID", "left", 0, "IDactivite", typeDonnee="entier"),
+            ColumnDefn(u"Date de fin de validité", 'left', 0, "date_fin", typeDonnee="date"),
+            ColumnDefn(u"Période de validité", 'left', 200, "datesValidite", typeDonnee="texte"),
+            ColumnDefn(u"Agrément", "left", 250, "agrement", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

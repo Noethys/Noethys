@@ -17,7 +17,7 @@ import UTILS_Titulaires
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 import UTILS_Utilisateurs
 
@@ -162,15 +162,15 @@ class ListView(FastObjectListView):
         
         # Version pour liste factures générale
         self.SetColumns([
-            ColumnDefn(u"", "left", 0, "IDfacture"),
-            ColumnDefn(u"Date", "left", 70, "date_edition", stringConverter=FormateDate),
-            ColumnDefn(u"Numéro", "centre", 60, "numero", stringConverter=FormateNumero), 
-            ColumnDefn(u"Famille", "left", 180, "nomsTitulaires"),
-            ColumnDefn(u"Date début", "centre", 75, "date_debut", stringConverter=FormateDate),
-            ColumnDefn(u"Date fin", "centre", 75, "date_fin", stringConverter=FormateDate),
-            ColumnDefn(u"Total", "right", 65, "total", stringConverter=FormateMontant),
-            ColumnDefn(u"Réglé", "right", 65, "regle", stringConverter=FormateMontant),
-            ColumnDefn(u"Solde", "right", 65, "solde", stringConverter=FormateMontant),
+            ColumnDefn(u"", "left", 0, "IDfacture", typeDonnee="entier"),
+            ColumnDefn(u"Date", "left", 70, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Numéro", "centre", 60, "numero", typeDonnee="entier", stringConverter=FormateNumero), 
+            ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Date début", "centre", 75, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Date fin", "centre", 75, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Total", "right", 65, "total", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Réglé", "right", 65, "regle", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Solde", "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
         ])
         self.SetSortColumn(self.columns[1])
         self.SetEmptyListMsg(u"Aucune attestation de présence")

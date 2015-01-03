@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 from CTRL_Badgeage_action import DICT_LABELS_ACTIONS, GetDetailAction
 
@@ -84,10 +84,10 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"IDaction", "left", 0, "IDaction"),
-            ColumnDefn(u"Ordre", "center", 50, "ordre"),
-            ColumnDefn(u"Action", "left", 250, "texte_action"), 
-            ColumnDefn(u"Détail", 'left', 100, "texte_detail", isSpaceFilling=True),
+            ColumnDefn(u"IDaction", "left", 0, "IDaction", typeDonnee="entier"),
+            ColumnDefn(u"Ordre", "center", 50, "ordre", typeDonnee="entier"),
+            ColumnDefn(u"Action", "left", 250, "texte_action", typeDonnee="texte"), 
+            ColumnDefn(u"Détail", 'left', 100, "texte_detail", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)

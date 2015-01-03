@@ -13,14 +13,14 @@ import GestionDB
 import UTILS_Dates
 import UTILS_Titulaires
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 class Track(object):
     def __init__(self, donnees, dictTitulaires):
         self.IDpiece = donnees[0]
-        self.date_debut = donnees[1]
-        self.date_fin = donnees[2]
+        self.date_debut = UTILS_Dates.DateEngEnDateDD(donnees[1])
+        self.date_fin = UTILS_Dates.DateEngEnDateDD(donnees[2])
         self.public = donnees[3]
         self.nomPiece = donnees[4]
         self.IDindividu = donnees[5]
@@ -118,17 +118,24 @@ class ListView(FastObjectListView):
             if dateDD == "2999-01-01" :
                 return u"Illimitée"
             else:
-                return UTILS_Dates.DateEngFr(str(dateDD))
+                return UTILS_Dates.DateDDEnFr(dateDD)
 
         liste_Colonnes = [
-            ColumnDefn(u"IDPiece", "left", 0, "IDpiece"),
-            ColumnDefn(u"Individu", 'left', 170, "individu_nom_complet"),
-            ColumnDefn(u"Famille", 'left', 220, "nom_titulaires"),
-            ColumnDefn(u"Du", "left", 80, "date_debut", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Au", "left", 80, "date_fin", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Type de pièce", "left", 100, "nomPublic"),
+            ColumnDefn(u"IDPiece", "left", 0, "IDpiece", typeDonnee="entier"),
+            ColumnDefn(u"Individu", 'left', 170, "individu_nom_complet", typeDonnee="texte"),
+            ColumnDefn(u"Famille", 'left', 220, "nom_titulaires", typeDonnee="texte"),
+            ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Au", "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Type de pièce", "left", 100, "nomPublic", typeDonnee="texte"),
             ]
         
+##        # Test pour intégrer le filtre inscrits/Présents
+##        if len(self.donnees) > 0 :
+##            if self.donnees[0].public == "famille" :
+##                liste_Colonnes.append(ColumnDefn(u"IDfamille", "left", 0, "IDfamille", typeDonnee="entier"))
+##            else :
+##                liste_Colonnes.append(ColumnDefn(u"IDindividu", "left", 0, "IDindividu", typeDonnee="entier"))
+
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune pièce")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))

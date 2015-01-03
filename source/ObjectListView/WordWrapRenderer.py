@@ -83,8 +83,8 @@ class WordWrapRenderer:
             bounds = wx.Rect(*bounds)
         except:
             pass
-
-        if allowClipping:
+        
+        if allowClipping == False :
             clipper = wx.DCClipper(dc, bounds)
 
         # There is a bug in the wordwrap routine where a string that needs truncated and
@@ -177,7 +177,7 @@ This is on new line by itself.
 This should have a blank line in front of it but still wrap when we reach the edge.
 
 The bottom of the red rectangle should be immediately below this."""
-            self.font = wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL, faceName="Gill Sans")
+            self.font = self.GetFont() #wx.Font(12, wx.SWISS, wx.NORMAL, wx.NORMAL, faceName="Gill Sans")
 
         def OnPaint(self, evt):
             dc = wx.PaintDC(self)
@@ -185,12 +185,13 @@ The bottom of the red rectangle should be immediately below this."""
             rect = [inset[0], inset[1], self.GetSize().width-(inset[0]+inset[2]), self.GetSize().height-(inset[1]+inset[3])]
 
             # Calculate exactly how high the wrapped is going to be and put a frame around it.
-            dc.SetFont(self.font)
-            dc.SetPen(wx.RED_PEN)
+            #dc.SetFont(self.font)
+            #dc.SetPen(wx.RED_PEN)
             rect[3] = WordWrapRenderer.CalculateHeight(dc, self.text, rect[2])
-            dc.DrawRectangle(*rect)
+            #dc.DrawRectangle(*rect)
             WordWrapRenderer.DrawString(dc, self.text, rect, wx.ALIGN_LEFT)
-            #WordWrapRenderer.DrawTruncatedString(dc, self.text, rect, wx.ALIGN_CENTER_HORIZONTAL,s ellipse=wx.CENTER)
+            
+            #WordWrapRenderer.DrawTruncatedString(dc, self.text, rect, wx.ALIGN_CENTER_HORIZONTAL, ellipse=wx.CENTER)
 
             #bmp = wx.EmptyBitmap(rect[0]+rect[2], rect[1]+rect[3])
             #mdc = wx.MemoryDC(bmp)
@@ -205,6 +206,9 @@ The bottom of the red rectangle should be immediately below this."""
             #dc = wx.ScreenDC()
             #dc.DrawBitmap(bmp, 20, 20)
 
+            self.SetMinSize((rect[2]+inset[0]+inset[2], rect[3]+inset[1]+inset[3]))
+            
+
     class MyFrame(wx.Frame):
         def __init__(self, *args, **kwds):
             kwds["style"] = wx.DEFAULT_FRAME_STYLE
@@ -212,9 +216,11 @@ The bottom of the red rectangle should be immediately below this."""
 
             self.panel = wx.Panel(self, -1)
             self.testPanel = TestPanel(self.panel)
+            self.ctrl_texte = wx.TextCtrl(self, -1, u"bonjour", style=wx.TE_MULTILINE)
 
             sizer_2 = wx.BoxSizer(wx.VERTICAL)
-            sizer_2.Add(self.testPanel, 1, wx.ALL|wx.EXPAND, 4)
+            sizer_2.Add(self.testPanel, 0, wx.ALL|wx.EXPAND, 0)
+            sizer_2.Add(self.ctrl_texte, 1, wx.ALL|wx.EXPAND, 0)
             self.panel.SetSizer(sizer_2)
             self.panel.Layout()
 
@@ -225,7 +231,7 @@ The bottom of the red rectangle should be immediately below this."""
 
 
     app = wx.PySimpleApp(0)
-    wx.InitAllImageHandlers()
+    #wx.InitAllImageHandlers()
     frame_1 = MyFrame(None, -1, "")
     app.SetTopWindow(frame_1)
     frame_1.Show()

@@ -15,7 +15,7 @@ import UTILS_Utilisateurs
 
 from DLG_Saisie_modele_ticket import CATEGORIES
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -90,9 +90,9 @@ class ListView(FastObjectListView):
             else: return None 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDmodele", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Nom", "left", 200, "nom"), 
-            ColumnDefn(u"Description", "left", 120, "description", isSpaceFilling=True), 
+            ColumnDefn(u"", "left", 22, "IDmodele", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"Nom", "left", 200, "nom", typeDonnee="texte"), 
+            ColumnDefn(u"Description", "left", 120, "description", typeDonnee="texte", isSpaceFilling=True), 
             ]
         
         self.SetColumns(liste_Colonnes)

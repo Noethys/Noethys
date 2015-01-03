@@ -24,6 +24,17 @@ import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
+def GetTypeChamp(codeChamp=""):
+    """ Renvoie le type de donnée d'un champ """
+    codeChamp = codeChamp.replace("{", "").replace("}", "")
+    dictTypes = {
+        "INDIVIDU_AGE_INT" : "entier",
+        }
+    if dictTypes.has_key(codeChamp) :
+        return dictTypes[codeChamp]
+    else :
+        return "texte"
+
 
 def GetNomsChampsPossibles(mode="individu+famille"):
     listeChamps = []
@@ -691,7 +702,7 @@ class Informations() :
                 if dictPublic.has_key(ID) :
                     if dictPublic[ID].has_key("questionnaires") == False :
                         dictPublic[ID]["questionnaires"] = []
-                    listeDonnees = q.GetDonnees(ID) 
+                    listeDonnees = q.GetDonnees(ID, formatStr=False) 
                     for donnee in listeDonnees :
                         # Mémorisation de la liste
                         dictPublic[ID]["questionnaires"].append(donnee)

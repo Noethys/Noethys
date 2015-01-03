@@ -11,31 +11,6 @@
 import wx
 import CTRL_Bandeau
 import OL_Verification_ventilation
-import wx.lib.agw.hyperlink as Hyperlink
-
-
-
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
-        self.parent = parent
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-    
-    def OnLeftLink(self, event):
-        if self.URL == "tout" :
-            self.parent.ctrl_reglements.CocheTout() 
-        if self.URL == "rien" :
-            self.parent.ctrl_reglements.CocheRien() 
-        self.UpdateLink()
 
 
 
@@ -60,11 +35,7 @@ class Dialog(wx.Dialog):
         
 ##        self.ctrl_reglements = OL_Verification_ventilation.ListView(self, id=-1, tracks=tracks, IDcompte_payeur=IDcompte_payeur, onlyNonVentiles=True, name="OL_reglements", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
 ##        self.ctrl_reglements.MAJ() 
-        self.ctrl_recherche = OL_Verification_ventilation.BarreRecherche(self)
-
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
-        self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.ctrl_recherche = OL_Verification_ventilation.CTRL_Outils(self, listview=self.ctrl_reglements, afficherCocher=True)
 
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
         
@@ -97,10 +68,6 @@ class Dialog(wx.Dialog):
 
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
-        grid_sizer_options.Add((10, 10), 0, 0, 0)
-        grid_sizer_options.Add(self.hyper_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.hyper_rien, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.AddGrowableCol(0)
         grid_sizer_gauche.Add(grid_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 0)
 

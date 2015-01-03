@@ -15,7 +15,7 @@ import UTILS_Dates
 import DLG_Saisie_contrat_conso_detail
 import cPickle
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 LISTE_JOURS = [u"LU", u"MA", u"ME", u"JE", u"VE", u"SA", u"DI"]
@@ -130,9 +130,9 @@ class ListView(FastObjectListView):
                 return "n°%d"% numero
             
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, ""),
-            ColumnDefn(u"Unités", 'left', 200, "unites_txt"),
-            ColumnDefn(u"Conditions", 'left', 200, "criteres_txt", isSpaceFilling=True),
+            ColumnDefn(u"", "left", 0, "", typeDonnee="entier"),
+            ColumnDefn(u"Unités", 'left', 200, "unites_txt", typeDonnee="texte"),
+            ColumnDefn(u"Conditions", 'left', 200, "criteres_txt", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)

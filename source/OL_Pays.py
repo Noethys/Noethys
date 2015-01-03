@@ -11,7 +11,7 @@
 
 import wx
 import GestionDB
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -100,9 +100,9 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 29, "IDpays", imageGetter=GetImageDrapeau),
-            ColumnDefn(u"Nom du pays", 'left', 210, "nom"),
-            ColumnDefn(u"Nationalité", "left", 200, "nationalite"),
+            ColumnDefn(u"", "left", 29, "IDpays", typeDonnee="entier", imageGetter=GetImageDrapeau),
+            ColumnDefn(u"Nom du pays", 'left', 210, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Nationalité", "left", 200, "nationalite", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

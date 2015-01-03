@@ -19,7 +19,7 @@ import UTILS_Utilisateurs
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
-from ObjectListView import GroupListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
@@ -289,19 +289,19 @@ class ListView(GroupListView):
             listeColonnes = ["IDprestation", "date", "nom_complet_individu", "nom_activite", "label", "montant", "regle", "deductions", "categorie_tarif", "num_facture"]
         
         dictColonnes = {
-            "IDprestation" : ColumnDefn(u"", "left", 0, "IDprestation"),
-            "date" : ColumnDefn(u"Date", "left", 160, "date", stringConverter=FormateDate),
-            "categorie_prestation" : ColumnDefn(u"Catégorie", "left", 100, "categorie"),
-            "prenom_individu" : ColumnDefn(u"Individu", "left", 75, "prenomIndividu"),
-            "nom_complet_individu" : ColumnDefn(u"Individu", "left", 150, "nomCompletIndividu"),
-            "nom_activite" : ColumnDefn(u"Activité", "left", 55, "nomAbregeActivite"),
-            "label" : ColumnDefn(u"Label", "left", 155, "label"),
-            "montant" : ColumnDefn(u"Montant", "right", 65, "montant", stringConverter=FormateMontant),
-            "regle" : ColumnDefn(u"Réglé", "right", 72, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            "deductions" : ColumnDefn(u"Déduc.", "right", 55, "montant_deduction", stringConverter=FormateMontant),
-            "nom_tarif" : ColumnDefn(u"Tarif", "left", 140, "nomTarif"),
-            "categorie_tarif" : ColumnDefn(u"Catégorie de tarif", "left", 100, "nomCategorieTarif"),
-            "num_facture" : ColumnDefn(u"N° Facture", "left", 70, "label_facture"),
+            "IDprestation" : ColumnDefn(u"", "left", 0, "IDprestation", typeDonnee="entier"),
+            "date" : ColumnDefn(u"Date", "left", 160, "date", typeDonnee="date", stringConverter=FormateDate),
+            "categorie_prestation" : ColumnDefn(u"Catégorie", "left", 100, "categorie", typeDonnee="texte"),
+            "prenom_individu" : ColumnDefn(u"Individu", "left", 75, "prenomIndividu", typeDonnee="texte"),
+            "nom_complet_individu" : ColumnDefn(u"Individu", "left", 150, "nomCompletIndividu", typeDonnee="texte"),
+            "nom_activite" : ColumnDefn(u"Activité", "left", 55, "nomAbregeActivite", typeDonnee="texte"),
+            "label" : ColumnDefn(u"Label", "left", 155, "label", typeDonnee="texte"),
+            "montant" : ColumnDefn(u"Montant", "right", 65, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            "regle" : ColumnDefn(u"Réglé", "right", 72, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            "deductions" : ColumnDefn(u"Déduc.", "right", 55, "montant_deduction", typeDonnee="montant", stringConverter=FormateMontant),
+            "nom_tarif" : ColumnDefn(u"Tarif", "left", 140, "nomTarif", typeDonnee="texte"),
+            "categorie_tarif" : ColumnDefn(u"Catégorie de tarif", "left", 100, "nomCategorieTarif", typeDonnee="texte"),
+            "num_facture" : ColumnDefn(u"N° Facture", "left", 70, "label_facture", typeDonnee="texte"),
         }
         
         self.SetColumns([dictColonnes[code] for code in listeColonnes])

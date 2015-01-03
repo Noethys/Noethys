@@ -68,7 +68,7 @@ class Questionnaires():
         filtre = self.GetFiltre(controle)
         texteReponse = u""
         if filtre == "texte" : texteReponse = reponse
-        if filtre == "entier" : texteReponse = reponse
+        if filtre == "entier" : texteReponse = int(reponse)
         if filtre == "montant" : texteReponse = float(reponse)#decimal.Decimal(reponse)
         if filtre == "choix" :
             if reponse != None :
@@ -185,10 +185,12 @@ class ChampsEtReponses():
         self.listeQuestions = Q.GetQuestions(type=type)
         self.dictReponses = Q.GetReponses(type=type)
 
-    def GetDonnees(self, ID):
+    def GetDonnees(self, ID, formatStr=True):
         listeDonnees = []
         for dictQuestion in self.listeQuestions :
-            reponse = FormateStr(GetReponse(self.dictReponses, dictQuestion["IDquestion"], ID))
+            reponse = GetReponse(self.dictReponses, dictQuestion["IDquestion"], ID)
+            if formatStr == True :
+                reponse = FormateStr(reponse)
             champ = "{QUESTION_%d}" % dictQuestion["IDquestion"]
             dictReponse = {
                 "champ":champ, "reponse":reponse, "IDquestion":dictQuestion["IDquestion"], "label":dictQuestion["label"], 

@@ -18,7 +18,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -219,15 +219,15 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDreglement"),
-            ColumnDefn(u"Date", 'left', 160, "date", stringConverter=FormateDateLong),
-            ColumnDefn(u"Mode", 'left', 110, "nom_mode"),
-            ColumnDefn(u"Emetteur", 'left', 120, "nom_emetteur"),
-            ColumnDefn(u"Numéro", 'left', 60, "numero_piece"),
-            ColumnDefn(u"Payeur", 'left', 130, "nom_payeur"),
-            ColumnDefn(u"Montant", 'right', 60, "montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Ventilé", 'right', 80, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(u"Dépôt", 'left', 90, "date_depot", stringConverter=FormateDateCourt, imageGetter=GetImageDepot),
+            ColumnDefn(u"ID", "left", 0, "IDreglement", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'left', 160, "date", typeDonnee="date", stringConverter=FormateDateLong),
+            ColumnDefn(u"Mode", 'left', 110, "nom_mode", typeDonnee="texte"),
+            ColumnDefn(u"Emetteur", 'left', 120, "nom_emetteur", typeDonnee="texte"),
+            ColumnDefn(u"Numéro", 'left', 60, "numero_piece", typeDonnee="texte"),
+            ColumnDefn(u"Payeur", 'left', 130, "nom_payeur", typeDonnee="texte"),
+            ColumnDefn(u"Montant", 'right', 60, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Ventilé", 'right', 80, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(u"Dépôt", 'left', 90, "date_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageDepot),
             ]
         
         self.SetColumns(liste_Colonnes)

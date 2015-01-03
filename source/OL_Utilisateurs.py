@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -137,11 +137,11 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             
-            ColumnDefn(u"", 'left', 22, "IDutilisateur", imageGetter=GetImageAvatar),
-            ColumnDefn(u"Nom", 'left', 150, "nom"),
-            ColumnDefn(u"Prénom", 'left', 150, "prenom"),
-            ColumnDefn(u"Actif", "left", 60, "texteActif", imageGetter=GetImageActif),
-            ColumnDefn(u"Droits", 'left', 200, "texteDroits"),
+            ColumnDefn(u"", 'left', 22, "IDutilisateur", typeDonnee="entier", imageGetter=GetImageAvatar),
+            ColumnDefn(u"Nom", 'left', 150, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Prénom", 'left', 150, "prenom", typeDonnee="texte"),
+            ColumnDefn(u"Actif", "left", 60, "texteActif", typeDonnee="texte", imageGetter=GetImageActif),
+            ColumnDefn(u"Droits", 'left', 200, "texteDroits", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

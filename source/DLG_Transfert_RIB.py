@@ -55,7 +55,7 @@ class Dialog(wx.Dialog):
         self.ctrl_listview = OL_Transfert_RIB.ListView(self, id=-1, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_listview.SetMinSize((100, 100))
         self.ctrl_listview.MAJ() 
-        self.ctrl_recherche = OL_Transfert_RIB.BarreRecherche(self)
+        self.ctrl_recherche = OL_Transfert_RIB.CTRL_Outils(self, listview=self.ctrl_listview)
 
         self.hyper_valides = Hyperlien(self, label=u"Cocher les valides", infobulle=u"Cliquez ici pour cocher uniquement les valides", URL="valides")
         self.label_separation1 = wx.StaticText(self, -1, "|")

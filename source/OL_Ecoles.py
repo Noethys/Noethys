@@ -11,7 +11,7 @@
 import wx
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -109,15 +109,15 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDecole"),
-            ColumnDefn(u"Nom", 'left', 250, "nom"),
-            ColumnDefn(u"Rue", "left", 140, "rue"),
-            ColumnDefn(u"C.P.", "left", 45, "cp"),
-            ColumnDefn(u"Ville", "left", 110, "ville"),
-            ColumnDefn(u"Tél.", "left", 100, "tel"),
-            ColumnDefn(u"Fax.", "left", 100, "fax"),
-            ColumnDefn(u"Email", "left", 100, "mail"),
-            ColumnDefn(u"Secteurs", "left", 250, "txtSecteurs"),
+            ColumnDefn(u"ID", "left", 0, "IDecole", typeDonnee="entier"),
+            ColumnDefn(u"Nom", 'left', 250, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Rue", "left", 140, "rue", typeDonnee="texte"),
+            ColumnDefn(u"C.P.", "left", 45, "cp", typeDonnee="texte"),
+            ColumnDefn(u"Ville", "left", 110, "ville", typeDonnee="texte"),
+            ColumnDefn(u"Tél.", "left", 100, "tel", typeDonnee="texte"),
+            ColumnDefn(u"Fax.", "left", 100, "fax", typeDonnee="texte"),
+            ColumnDefn(u"Email", "left", 100, "mail", typeDonnee="texte"),
+            ColumnDefn(u"Secteurs", "left", 250, "txtSecteurs", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

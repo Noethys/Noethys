@@ -17,7 +17,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import GroupListView, ColumnDefn, Filter
+from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
@@ -297,18 +297,18 @@ class ListView(GroupListView):
         # Paramètres ListView
         self.useExpansionColumn = True
         self.SetColumns([
-            ColumnDefn(u"", "left", 0, "IDprestation"),
-            ColumnDefn(u"Date", "left", 160, "date", stringConverter=FormateDate),
+            ColumnDefn(u"", "left", 0, "IDprestation", typeDonnee="entier"),
+            ColumnDefn(u"Date", "left", 160, "date", typeDonnee="date", stringConverter=FormateDate),
 ##            ColumnDefn(u"Catégorie", "left", 100, "categorie"),
-            ColumnDefn(u"Individu", "left", 75, "prenomIndividu"),
-            ColumnDefn(u"Activité", "left", 55, "nomAbregeActivite"),
-            ColumnDefn(u"Label", "left", 155, "label"),
-            ColumnDefn(u"Montant", "right", 65, "montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Réglé", "right", 72, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(u"Déduc.", "right", 55, "montant_deduction", stringConverter=FormateMontant),
+            ColumnDefn(u"Individu", "left", 75, "prenomIndividu", typeDonnee="texte"),
+            ColumnDefn(u"Activité", "left", 55, "nomAbregeActivite", typeDonnee="texte"),
+            ColumnDefn(u"Label", "left", 155, "label", typeDonnee="texte"),
+            ColumnDefn(u"Montant", "right", 65, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Réglé", "right", 72, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(u"Déduc.", "right", 55, "montant_deduction", typeDonnee="montant", stringConverter=FormateMontant),
 ##            ColumnDefn(u"Tarif", "left", 140, "nomTarif"),
-            ColumnDefn(u"Catégorie de tarif", "left", 100, "nomCategorieTarif"),
-            ColumnDefn(u"N° Facture", "left", 70, "label_facture"),
+            ColumnDefn(u"Catégorie de tarif", "left", 100, "nomCategorieTarif", typeDonnee="texte"),
+            ColumnDefn(u"N° Facture", "left", 70, "label_facture", typeDonnee="texte"),
         ])
 ##        self.SetShowGroups(False)
         self.CreateCheckStateColumn(0)

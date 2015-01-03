@@ -777,7 +777,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()       
         ics = ""
-        if (listeDonnees) > 0 :
+        if len(listeDonnees) > 0 :
             IDcompte, nomCompte, numeroCompte, ics = listeDonnees[0]
             if ics == None :
                 ics = ""

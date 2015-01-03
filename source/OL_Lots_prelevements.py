@@ -13,7 +13,7 @@ import GestionDB
 import UTILS_Dates
 import UTILS_Utilisateurs
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -99,12 +99,12 @@ class ListView(FastObjectListView):
                 return None
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 42, "IDlot", imageGetter=GetImageVerrouillage),
-            ColumnDefn(u"Nom", "left", 290, "nom"), 
-            ColumnDefn(u"Date", "left", 80, "date", stringConverter=FormateDate),
-            ColumnDefn(u"Nbre Prélèv.", "center", 80, "nbrePrelevements"), 
-            ColumnDefn(u"Type", "left", 70, "typePrelevementStr"), 
-            ColumnDefn(u"Observations", "left", 200, "observations"), 
+            ColumnDefn(u"ID", "left", 42, "IDlot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
+            ColumnDefn(u"Nom", "left", 290, "nom", typeDonnee="texte"), 
+            ColumnDefn(u"Date", "left", 80, "date", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Nbre Prélèv.", "center", 80, "nbrePrelevements", typeDonnee="entier"), 
+            ColumnDefn(u"Type", "left", 70, "typePrelevementStr", typeDonnee="texte"), 
+            ColumnDefn(u"Observations", "left", 200, "observations", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)

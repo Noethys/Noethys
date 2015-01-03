@@ -16,7 +16,7 @@ import UTILS_Utilisateurs
 
 from DLG_Badgeage_interface import LISTE_STYLES, LISTE_THEMES
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 class Exporter(UTILS_Export_tables.Exporter):
@@ -113,9 +113,9 @@ class ListView(FastObjectListView):
             else: return None 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDprocedure", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Nom", 'left', 300, "nom"),
-            ColumnDefn(u"Interface", 'left', 200, "interface", isSpaceFilling=True),
+            ColumnDefn(u"", "left", 22, "IDprocedure", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"Nom", 'left', 300, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Interface", 'left', 200, "interface", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)

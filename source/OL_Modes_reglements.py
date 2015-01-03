@@ -18,7 +18,7 @@ import GestionDB
 
 import DLG_Saisie_mode_reglement
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -144,10 +144,10 @@ class ListView(FastObjectListView):
             return dictImages[track.IDmode]
                     
         liste_Colonnes = [
-            ColumnDefn(u"IDmode", "left", 0, "IDmode"),
+            ColumnDefn(u"IDmode", "left", 0, "IDmode", typeDonnee="entier"),
             ColumnDefn(u"Image", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
-            ColumnDefn(u"Nom", 'left', 400, "label"),
-            ColumnDefn(u"Nbre émetteurs", 'left', 190, "texte_emetteurs"),
+            ColumnDefn(u"Nom", 'left', 400, "label", typeDonnee="texte"),
+            ColumnDefn(u"Nbre émetteurs", 'left', 190, "texte_emetteurs", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

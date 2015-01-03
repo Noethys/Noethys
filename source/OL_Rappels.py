@@ -22,7 +22,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 
@@ -292,18 +292,18 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         dictColonnes = {
-            "IDrappel" : ColumnDefn(u"", "left", 0, "IDrappel"),
-            "date_edition" : ColumnDefn(u"Date d'édition", "centre", 80, "date_edition", stringConverter=FormateDate),
-            "date_reference" : ColumnDefn(u"Date de référence", "centre", 80, "date_reference", stringConverter=FormateDate),
-            "numero" : ColumnDefn(u"N°", "centre", 65, "numero", stringConverter=FormateNumero),
-            "famille" : ColumnDefn(u"Famille", "left", 180, "nomsTitulaires"),
-            "date_min" : ColumnDefn(u"Date min", "centre", 80, "date_min", stringConverter=FormateDate),
-            "date_max" : ColumnDefn(u"Date max", "centre", 80, "date_max", stringConverter=FormateDate),
-            "solde" : ColumnDefn(u"Solde", "right", 65, "solde", stringConverter=FormateMontant),
-            "nom_lot" : ColumnDefn(u"Lot", "left", 150, "nomLot"),
-            "labelTexte" : ColumnDefn(u"Texte", "left", 150, "labelTexte"),
+            "IDrappel" : ColumnDefn(u"", "left", 0, "IDrappel", typeDonnee="entier"),
+            "date_edition" : ColumnDefn(u"Date d'édition", "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            "date_reference" : ColumnDefn(u"Date de référence", "centre", 80, "date_reference", typeDonnee="date", stringConverter=FormateDate),
+            "numero" : ColumnDefn(u"N°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
+            "famille" : ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            "date_min" : ColumnDefn(u"Date min", "centre", 80, "date_min", typeDonnee="date", stringConverter=FormateDate),
+            "date_max" : ColumnDefn(u"Date max", "centre", 80, "date_max", typeDonnee="date", stringConverter=FormateDate),
+            "solde" : ColumnDefn(u"Solde", "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
+            "nom_lot" : ColumnDefn(u"Lot", "left", 150, "nomLot", typeDonnee="texte"),
+            "labelTexte" : ColumnDefn(u"Texte", "left", 150, "labelTexte", typeDonnee="texte"),
             "email" : ColumnDefn(u"E", "left", 20, "", imageGetter=GetImageEmail),
-            "retard" : ColumnDefn(u"Retard", "left", 80, "retard"),
+            "retard" : ColumnDefn(u"Retard", "left", 80, "retard", typeDonnee="texte"),
             }
 
         listeColonnes = []

@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from CTRL_Questionnaire import LISTE_CONTROLES
 
 
@@ -301,12 +301,12 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDchamp"),
-            ColumnDefn(u"Code", "left", 200, "code", imageGetter=GetImageCode), 
-            ColumnDefn(u"Description", 'left', 300, "label"),
-            ColumnDefn(u"Titre", 'left', 120, "titre"),
-            ColumnDefn(u"Catégorie", 'left', 80, "categorie"),
-            ColumnDefn(u"Formule", 'left', 150, "formule", imageGetter=GetImageFormule, isSpaceFilling=True),
+            ColumnDefn(u"ID", "left", 0, "IDchamp", typeDonnee="entier"),
+            ColumnDefn(u"Code", "left", 200, "code", typeDonnee="texte", imageGetter=GetImageCode), 
+            ColumnDefn(u"Description", 'left', 300, "label", typeDonnee="texte"),
+            ColumnDefn(u"Titre", 'left', 120, "titre", typeDonnee="texte"),
+            ColumnDefn(u"Catégorie", 'left', 80, "categorie", typeDonnee="texte"),
+            ColumnDefn(u"Formule", 'left', 150, "formule", typeDonnee="texte", imageGetter=GetImageFormule, isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)

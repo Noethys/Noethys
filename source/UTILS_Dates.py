@@ -14,6 +14,7 @@ import time
 
 def DateEngFr(textDate):
     if textDate in (None, "") : return ""
+    if type(textDate) == datetime.date : return DateDDEnFr(textDate)
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
     return text
 

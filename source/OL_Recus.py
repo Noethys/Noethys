@@ -17,7 +17,7 @@ import UTILS_Utilisateurs
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -147,11 +147,11 @@ class ListView(FastObjectListView):
 
         # Version pour liste reçus
         self.SetColumns([
-            ColumnDefn(u"", "left", 0, "IDrecu"),
-            ColumnDefn(u"Date", "left", 70, "date_edition", stringConverter=FormateDate),
-            ColumnDefn(u"Numéro", "centre", 60, "numero", stringConverter=FormateNumero), 
-            ColumnDefn(u"Famille", "left", 180, "nomsTitulaires"),
-            ColumnDefn(u"IDreglement", "centre", 75, "IDreglement"),
+            ColumnDefn(u"", "left", 0, "IDrecu", typeDonnee="entier"),
+            ColumnDefn(u"Date", "left", 70, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Numéro", "centre", 60, "numero", typeDonnee="entier", stringConverter=FormateNumero), 
+            ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"IDreglement", "centre", 75, "IDreglement", typeDonnee="entier"),
         ])
         self.SetSortColumn(self.columns[1])
         self.SetEmptyListMsg(u"Aucun reçu de règlement")

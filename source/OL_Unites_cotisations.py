@@ -17,7 +17,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import DLG_Saisie_unite_cotisation
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -142,11 +142,11 @@ class ListView(FastObjectListView):
 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDunite_cotisation", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Du", 'left', 70, "date_debut", stringConverter=FormateDate),
-            ColumnDefn(u"Au", 'left', 70, "date_fin", stringConverter=FormateDate),
-            ColumnDefn(u"Nom", 'left', 150, "nom"),
-            ColumnDefn(u"Montant", 'right', 70, "montant", stringConverter=FormateMontant),
+            ColumnDefn(u"", "left", 22, "IDunite_cotisation", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Au", 'left', 70, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Nom", 'left', 150, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Montant", 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
         self.rowFormatter = rowFormatter

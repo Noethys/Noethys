@@ -13,7 +13,7 @@ import GestionDB
 import datetime
 import UTILS_Titulaires
 import UTILS_Utilisateurs
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 DICT_TITULAIRES = {}
 
@@ -160,12 +160,12 @@ class ListView(FastObjectListView):
             return DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille"),
-            ColumnDefn(u"Famille", 'left', 280, "nomTitulaires"),
-            ColumnDefn(u"Quotient", "left", 70, "quotient"),
-            ColumnDefn(u"Du", "left", 80, "date_debut", stringConverter=FormateDate),
-            ColumnDefn(u"Au", "left", 80, "date_fin", stringConverter=FormateDate),
-            ColumnDefn(u"Observations", "left", 250, "observations"),
+            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(u"Famille", 'left', 280, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Quotient", "left", 70, "quotient", typeDonnee="entier"),
+            ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Au", "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Observations", "left", 250, "observations", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

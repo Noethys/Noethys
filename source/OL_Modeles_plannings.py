@@ -14,7 +14,7 @@ import datetime
 import GestionDB
 import UTILS_Historique
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 import UTILS_Utilisateurs
 
@@ -80,9 +80,9 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
 
         liste_Colonnes = [
-            ColumnDefn(u"IDmodele", "left", 0, "IDmodele"),
-            ColumnDefn(u"Nom", 'left', 70, "nom", isSpaceFilling=True),
-            ColumnDefn(u"Activite", 'left', 200, "nomActivite"),
+            ColumnDefn(u"IDmodele", "left", 0, "IDmodele", typeDonnee="entier"),
+            ColumnDefn(u"Nom", 'left', 70, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Activite", 'left', 200, "nomActivite", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)

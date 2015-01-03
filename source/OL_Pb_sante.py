@@ -15,7 +15,7 @@ import GestionDB
 
 import DLG_Saisie_pb_sante
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -132,8 +132,8 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
             
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDprobleme"),
-            ColumnDefn(u"Intitulé", 'left', 360, "texteComplet", imageGetter=GetImage, isSpaceFilling=True),
+            ColumnDefn(u"", "left", 0, "IDprobleme", typeDonnee="entier"),
+            ColumnDefn(u"Intitulé", 'left', 360, "texteComplet", typeDonnee="texte", imageGetter=GetImage, isSpaceFilling=True),
 ##            ColumnDefn(u"Nbre de jours restants", 'left', 0, "nbreJoursRestants"),
             ]
         

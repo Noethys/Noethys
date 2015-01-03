@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import datetime
 
-from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter
+from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING
 
 import UTILS_Config
@@ -103,11 +103,11 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"Prestation", 'left', 250, "label", isSpaceFilling=True, isEditable=False),
-            ColumnDefn(u"Commentaire", "left", 150, "commentaire", isEditable=True), 
-            ColumnDefn(u"Activité", "left", 120, "nomActivite", isEditable=False), 
-            ColumnDefn(u"Qté", "left", 50, "nombre", isEditable=False), 
-            ColumnDefn(u"Total", "left", 90, "montant", stringConverter=FormateMontant, isEditable=False),
+            ColumnDefn(u"Prestation", 'left', 250, "label", typeDonnee="texte", isSpaceFilling=True, isEditable=False),
+            ColumnDefn(u"Commentaire", "left", 150, "commentaire", typeDonnee="texte", isEditable=True), 
+            ColumnDefn(u"Activité", "left", 120, "nomActivite", typeDonnee="texte", isEditable=False), 
+            ColumnDefn(u"Qté", "left", 50, "nombre", typeDonnee="entier", isEditable=False), 
+            ColumnDefn(u"Total", "left", 90, "montant", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
             ]
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)

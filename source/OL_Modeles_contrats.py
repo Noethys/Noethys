@@ -15,7 +15,7 @@ import GestionDB
 import UTILS_Historique
 import UTILS_Dates
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 import UTILS_Utilisateurs
 
@@ -91,11 +91,11 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"IDmodele", "left", 0, "IDmodele"),
-            ColumnDefn(u"Du", 'left', 70, "date_debut",  stringConverter=FormateDateCourt),
-            ColumnDefn(u"au", 'left', 70, "date_fin",  stringConverter=FormateDateCourt),
-            ColumnDefn(u"Nom", 'left', 100, "nom", isSpaceFilling=True),
-            ColumnDefn(u"Activité", 'left', 200, "nomActivite"),
+            ColumnDefn(u"IDmodele", "left", 0, "IDmodele", typeDonnee="entier"),
+            ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"au", 'left', 70, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Activité", 'left', 200, "nomActivite", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)

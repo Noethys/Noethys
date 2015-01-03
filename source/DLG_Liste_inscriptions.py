@@ -543,7 +543,7 @@ class Dialog(wx.Dialog):
 
         self.listviewAvecFooter = OL_Liste_inscriptions.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Liste_inscriptions.BarreRecherche(self)
+        self.ctrl_recherche = OL_Liste_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview)
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_listview)
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))

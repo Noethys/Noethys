@@ -16,7 +16,7 @@ import UTILS_Utilisateurs
 
 from CTRL_Saisie_transport import DICT_CATEGORIES
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def DateEngFr(textDate):
@@ -218,14 +218,14 @@ class ListView(FastObjectListView):
             return DICT_CATEGORIES[categorie]["label"]
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtransport"), 
-            ColumnDefn(u"Transport", "left", 70, "categorie", stringConverter=FormateCategorie,  imageGetter=GetImageCategorie),
-            ColumnDefn(u"Du", 'left', 80, "date_debut", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Au", 'left', 80, "date_fin", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Départ", 'center', 50, "depart_heure", stringConverter=FormateHeure),
-            ColumnDefn(u"Origine", 'left', 110, "depart_nom"),
-            ColumnDefn(u"Arrivée", 'center', 50, "arrivee_heure", stringConverter=FormateHeure),
-            ColumnDefn(u"Destination", 'left', 110, "arrivee_nom"),
+            ColumnDefn(u"ID", "left", 0, "IDtransport", typeDonnee="entier"), 
+            ColumnDefn(u"Transport", "left", 70, "categorie", typeDonnee="texte", stringConverter=FormateCategorie,  imageGetter=GetImageCategorie),
+            ColumnDefn(u"Du", 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Au", 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Départ", 'center', 50, "depart_heure", typeDonnee="texte", stringConverter=FormateHeure),
+            ColumnDefn(u"Origine", 'left', 110, "depart_nom", typeDonnee="texte"),
+            ColumnDefn(u"Arrivée", 'center', 50, "arrivee_heure", typeDonnee="texte", stringConverter=FormateHeure),
+            ColumnDefn(u"Destination", 'left', 110, "arrivee_nom", typeDonnee="texte"),
             ]
 
         self.rowFormatter = rowFormatter

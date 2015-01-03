@@ -190,7 +190,7 @@ class Dialog(wx.Dialog):
         # Liste
         self.listviewAvecFooter = OL_Reglements.ListviewAvecFooter(self, kwargs={"mode" : "liste"}) 
         self.ctrl_reglements = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Reglements.BarreRecherche(self)
+        self.ctrl_recherche = OL_Reglements.CTRL_Outils(self, listview=self.ctrl_reglements)
         
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))

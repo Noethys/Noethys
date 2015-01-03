@@ -23,7 +23,7 @@ class Panel(wx.Panel):
         self.staticbox = wx.StaticBox(self, -1, u"Jours %ss" % self.type)
         self.ctrl_listview = OL_Feries.ListView(self, type=self.type, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
-        self.ctrl_recherche = OL_Feries.BarreRecherche(self)
+        self.ctrl_recherche = OL_Feries.CTRL_Outils(self, listview=self.ctrl_listview)
 
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))

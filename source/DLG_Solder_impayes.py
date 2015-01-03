@@ -11,7 +11,6 @@
 import wx
 import datetime
 import decimal
-import wx.lib.agw.hyperlink as Hyperlink
 
 import CTRL_Bandeau
 import CTRL_Saisie_date
@@ -25,32 +24,6 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
 
-
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
-        self.parent = parent
-        
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-    
-    def OnLeftLink(self, event):
-        if self.URL == "tout" :
-            self.parent.ctrl_prestations.CocheTout() 
-        if self.URL == "rien" :
-            self.parent.ctrl_prestations.CocheRien() 
-        self.UpdateLink()
-
-
-# -----------------------------------------------------------------------------------------------------------------------
 
 
 class CTRL_Compte(wx.Choice):
@@ -255,11 +228,7 @@ class Dialog(wx.Dialog):
 
         self.listviewAvecFooter = OL_Solder_impayes.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_prestations = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Solder_impayes.BarreRecherche(self)
-        
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
-        self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.ctrl_recherche = OL_Solder_impayes.CTRL_Outils(self, listview=self.ctrl_prestations, afficherCocher=True)
         
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
@@ -334,10 +303,6 @@ class Dialog(wx.Dialog):
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_options.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
-        grid_sizer_options.Add((20, 20), 0, 0, 0)
-        grid_sizer_options.Add(self.hyper_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.hyper_rien, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.AddGrowableCol(0)
         grid_sizer_prestations.Add(grid_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         grid_sizer_prestations.AddGrowableRow(1)

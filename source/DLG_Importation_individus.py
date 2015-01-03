@@ -30,7 +30,7 @@ import CTRL_Saisie_adresse
 import DLG_Famille
 import UTILS_Parametres
 
-from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter
+from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 TYPES_IMPORTATION = [
     {"code":"familles", "label":u"Familles", "infos":u"Sélectionnez ce type d'importation si votre fichier de données comporte une famille par ligne.\nNoethys créera alors une fiche famille pour chaque ligne ainsi que les fiches individuelles correspondantes."},
@@ -45,6 +45,7 @@ DICT_COLONNES = {
                         {"code":"famille_rue_resid", "label":u"Rue de résidence de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemple : 10 rue des oiseaux."},
                         {"code":"famille_cp_resid", "label":u"CP ville de résidence de la famille", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
                         {"code":"famille_ville_resid", "label":u"Ville de résidence de la famille", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
+                        {"code":"famille_secteur", "label":u"Secteur de résidence de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemples : Brest Nord..."},
                         {"code":"famille_tel_domicile", "label":u"Numéro de tél. du domicile famille", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
                         {"code":"famille_caisse", "label":u"Nom de caisse de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemples : CAF, MSA (Doit être présent dans base)."},
                         {"code":"famille_num_allocataire", "label":u"Numéro d'allocataire de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemple : 7798769X."},
@@ -131,6 +132,7 @@ DICT_COLONNES = {
                         {"code":"individu_rue_resid", "label":u"Rue de résidence", "format":"texte", "obligatoire":False, "infos":u"Exemple : 10 rue des oiseaux."},
                         {"code":"individu_cp_resid", "label":u"Code postal de la ville de résidence", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
                         {"code":"individu_ville_resid", "label":u"Ville de résidence", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
+                        {"code":"individu_secteur", "label":u"Secteur de résidence", "format":"texte", "obligatoire":False, "infos":u"Exemples : Brest Nord..."},
                         {"code":"individu_tel_domicile", "label":u"Numéro de domicile", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
                         {"code":"individu_tel_mobile", "label":u"Numéro de mobile", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
                         {"code":"individu_email", "label":u"Email", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
@@ -1164,6 +1166,7 @@ class Dialog(wx.Dialog):
             AjouteChamp("individu_rue_resid", "rue_resid", "")
             AjouteChamp("individu_cp_resid", "cp_resid", None)
             AjouteChamp("individu_ville_resid", "ville_resid", None)
+            AjouteChamp("individu_secteur", "IDsecteur", None)
             AjouteChamp("individu_tel_domicile", "tel_domicile", None)
             AjouteChamp("individu_tel_mobile", "tel_mobile", None)
             AjouteChamp("individu_email", "mail", None)
@@ -1222,6 +1225,7 @@ class Dialog(wx.Dialog):
                 dictTemp["individu_rue_resid"] = dictValeurs["famille_rue_resid"]
                 dictTemp["individu_cp_resid"] = dictValeurs["famille_cp_resid"]
                 dictTemp["individu_ville_resid"] = dictValeurs["famille_ville_resid"]
+                dictTemp["individu_secteur"] = dictValeurs["famille_secteur"]
 
                 dictIDindividus["pere"] = CreationIndividu(dictTemp)
                 if dictIDindividus["pere"] != None :
@@ -1247,10 +1251,12 @@ class Dialog(wx.Dialog):
                 dictTemp["individu_tel_domicile"] = dictValeurs["famille_tel_domicile"]
                 if dictIDindividus["pere"] != None :
                     dictTemp["individu_adresse_auto"] = dictIDindividus["pere"]
+                    dictTemp["individu_secteur"] = dictValeurs["famille_secteur"]
                 else :
                     dictTemp["individu_rue_resid"] = dictValeurs["famille_rue_resid"]
                     dictTemp["individu_cp_resid"] = dictValeurs["famille_cp_resid"]
                     dictTemp["individu_ville_resid"] = dictValeurs["famille_ville_resid"]
+                    dictTemp["individu_secteur"] = dictValeurs["famille_secteur"]
 
                 dictIDindividus["mere"] = CreationIndividu(dictTemp)
                 if dictIDindividus["mere"] != None :
@@ -1355,7 +1361,12 @@ class ValidationDonnees():
         listeNomsVilles, self.listeVilles, dictRegions, dictDepartements = CTRL_Saisie_adresse.Importation_donnees()
         
         DB = GestionDB.DB()
-        
+
+        # Récupération des secteurs géographiques
+        req = """SELECT IDsecteur, nom FROM secteurs ORDER BY nom;"""
+        DB.ExecuterReq(req)
+        self.listeSecteurs = DB.ResultatReq()
+
         # Récupération des catégories de travail
         req = """SELECT IDcategorie, nom FROM categories_travail ORDER BY nom;"""
         DB.ExecuterReq(req)
@@ -1498,7 +1509,23 @@ class ValidationDonnees():
                     anomalie = u"Anomalie : Ville absente de la base de données"
                     valeur = None
                     label = anomalie
-    
+
+        # Secteur
+        if code.endswith("_secteur") :
+            label = valeur
+            if valeur == "" : 
+                valeur = None
+            else :
+                valide = False
+                for IDsecteur, nom in self.listeSecteurs :
+                    if nom == valeur :
+                        valeur = IDsecteur
+                        valide = True
+                if valide == False :
+                    anomalie = u"Anomalie : Secteur géographique absent de la base de données"
+                    valeur = None
+                    label = anomalie
+
         # Catégorie
         if code.endswith("_categorie") :
             label = valeur

@@ -14,7 +14,7 @@ import datetime
 import UTILS_Utilisateurs
 import UTILS_Dates
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -117,10 +117,10 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDindividu"),
-            ColumnDefn(u"Individu", 'left', 200, "nomComplet"),
-            ColumnDefn(u"Nbre", 'center', 70, "nbreDates"),
-            ColumnDefn(u"Absences", "left", 450, "labelConsommations"),
+            ColumnDefn(u"ID", "left", 0, "IDindividu", typeDonnee="entier"),
+            ColumnDefn(u"Individu", 'left', 200, "nomComplet", typeDonnee="texte"),
+            ColumnDefn(u"Nbre", 'center', 70, "nbreDates", typeDonnee="entier"),
+            ColumnDefn(u"Absences", "left", 450, "labelConsommations", typeDonnee="texte"),
             ]        
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune absence")

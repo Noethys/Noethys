@@ -91,7 +91,7 @@ class Dialog(wx.Dialog):
         self.ctrl_inscrits = OL_Inscriptions_scolaires.ListView(self, id=-1, name="OL_Inscriptions_scolaires", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_inscrits.MAJ() 
         
-        self.ctrl_recherche = OL_Inscriptions_scolaires.BarreRecherche(self)
+        self.ctrl_recherche = OL_Inscriptions_scolaires.CTRL_Outils(self, listview=self.ctrl_inscrits)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))

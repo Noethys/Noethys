@@ -13,7 +13,7 @@ import datetime
 import GestionDB
 import UTILS_Historique
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -231,35 +231,35 @@ class ListView(FastObjectListView):
             # Si On est dans une fiche INDIVIDU
             if self.nbreFamilles < 2 :
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 190, "nom", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Nom de la pièce", 'left', 190, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", imageGetter=GetImageDocument, isSpaceFilling=True),
-                    ColumnDefn(u"Famille", 'left', 150, "nomTitulaires"),
+                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(u"Famille", 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
         else :
             # Si On est dans une fiche FAMILLE
             if self.nbreFamilles < 2 :
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 340, "nom", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Nom de la pièce", 'left', 340, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", imageGetter=GetImageDocument, isSpaceFilling=True),
-                    ColumnDefn(u"Famille", 'left', 150, "nomTitulaires"),
+                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(u"Famille", 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
         
         self.rowFormatter = rowFormatter

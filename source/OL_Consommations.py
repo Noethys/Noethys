@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import datetime
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 try: import psyco; psyco.full()
 except: pass
@@ -122,11 +122,11 @@ class ListView(FastObjectListView):
             return DateComplete(dateDD)
 
         liste_Colonnes = [
-            ColumnDefn(u"IDconso", "left", 0, "IDconso"),
-            ColumnDefn(u"Date", 'left', 150, "date", stringConverter=FormateDate),
-            ColumnDefn(u"Individu", "left", 130, "individu"),
-            ColumnDefn(u"Activité", "left", 120, "nomActivite"),
-            ColumnDefn(u"Unité", "left", 120, "nomUnite"),
+            ColumnDefn(u"IDconso", "left", 0, "IDconso", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'left', 150, "date", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Individu", "left", 130, "individu", typeDonnee="texte"),
+            ColumnDefn(u"Activité", "left", 120, "nomActivite", typeDonnee="texte"),
+            ColumnDefn(u"Unité", "left", 120, "nomUnite", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

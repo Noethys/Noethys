@@ -10,7 +10,7 @@
 
 import wx
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -53,10 +53,10 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"Index", "left", 0, "index"),
-            ColumnDefn(u"Famille", "left", 240, "nomTitulaires"),
-            ColumnDefn(u"Email", 'left', 180, "adresse"),
-            ColumnDefn(u"Règlement", "left", 200, "detail_reglement"), 
+            ColumnDefn(u"Index", "left", 0, "index", typeDonnee="entier"),
+            ColumnDefn(u"Famille", "left", 240, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Email", 'left', 180, "adresse", typeDonnee="texte"),
+            ColumnDefn(u"Règlement", "left", 200, "detail_reglement", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)

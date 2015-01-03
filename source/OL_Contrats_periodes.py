@@ -18,7 +18,7 @@ import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 import UTILS_Dates
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
                 
 
@@ -99,14 +99,14 @@ class ListView(FastObjectListView):
                 return "n°%d"% numero
             
         liste_Colonnes = [
-            ColumnDefn(u"IDprestation", "left", 0, "IDprestation"),
-            ColumnDefn(u"Du", 'centre', 70, "date_debut", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Au", 'centre', 70, "date_fin", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Label", "left", 150, "label_prestation", isSpaceFilling=True),
-            ColumnDefn(u"Montant", 'right', 80, "montant_prestation", stringConverter=FormateMontant),
-            ColumnDefn(u"Date prestation", 'centre', 100, "date_prestation", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Nbre conso.", 'centre', 80, "nbreConso"),
-            ColumnDefn(u"Facture", 'centre', 65, "numFacture", stringConverter=FormateNumFacture),
+            ColumnDefn(u"IDprestation", "left", 0, "IDprestation", typeDonnee="entier"),
+            ColumnDefn(u"Du", 'centre', 70, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Au", 'centre', 70, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Label", "left", 150, "label_prestation", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Montant", 'right', 80, "montant_prestation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Date prestation", 'centre', 100, "date_prestation", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Nbre conso.", 'centre', 80, "nbreConso", typeDonnee="entier"),
+            ColumnDefn(u"Facture", 'centre', 65, "numFacture", typeDonnee="texte", stringConverter=FormateNumFacture),
             ]
         
         self.SetColumns(liste_Colonnes)

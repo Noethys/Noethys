@@ -24,7 +24,9 @@ class Panel(wx.Panel):
         
         # OL Quotients
         self.ctrl_quotients = OL_Quotients.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_quotients", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
-        
+        self.ctrl_recherche = OL_Quotients.CTRL_Outils(self, listview=self.ctrl_quotients)
+        self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
+
         # Commandes boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -52,7 +54,9 @@ class Panel(wx.Panel):
         grid_sizer_boutons.Add(self.bouton_modifier, 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_supprimer, 0, wx.ALL, 0)
         grid_sizer_quotients.Add(grid_sizer_boutons, 1, wx.ALL, 0)
-        
+
+        grid_sizer_quotients.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
+
         grid_sizer_quotients.AddGrowableCol(0)
         grid_sizer_quotients.AddGrowableRow(0)
         staticbox_quotients.Add(grid_sizer_quotients, 1, wx.EXPAND|wx.ALL, 5)

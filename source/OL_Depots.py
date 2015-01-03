@@ -15,7 +15,7 @@ import GestionDB
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 import UTILS_Utilisateurs
 
 
@@ -183,14 +183,14 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 42, "IDdepot", imageGetter=GetImageVerrouillage),
-            ColumnDefn(u"Date", 'left', 80, "date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Nom", 'left', 170, "nom"),
-            ColumnDefn(u"Compte", 'left', 120, "nom_compte"),
-            ColumnDefn(u"Observations", 'left', 100, "observations"),
-            ColumnDefn(u"Nbre", 'centre', 40, "nbre"),
-            ColumnDefn(u"Total", 'right', 75, "total", stringConverter=FormateMontant),
-            ColumnDefn(u"Détail", 'left', 210, "detail"),
+            ColumnDefn(u"ID", "left", 42, "IDdepot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
+            ColumnDefn(u"Date", 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Nom", 'left', 170, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Compte", 'left', 120, "nom_compte", typeDonnee="texte"),
+            ColumnDefn(u"Observations", 'left', 100, "observations", typeDonnee="texte"),
+            ColumnDefn(u"Nbre", 'centre', 40, "nbre", typeDonnee="entier"),
+            ColumnDefn(u"Total", 'right', 75, "total", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Détail", 'left', 210, "detail", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

@@ -17,7 +17,7 @@ import UTILS_Utilisateurs
 
 from CTRL_Saisie_transport import DICT_CATEGORIES
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def DateEngFr(textDate):
@@ -187,16 +187,16 @@ class ListView(FastObjectListView):
             return DICT_CATEGORIES[categorie]["label"]
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDtransport"), 
-            ColumnDefn(u"Transport", "left", 70, "categorie", stringConverter=FormateCategorie,  imageGetter=GetImageCategorie),
-            ColumnDefn(u"Départ", 'left', 110, "depart_dateHeure", stringConverter=FormateDateHeure),
-            ColumnDefn(u"Origine", 'left', 120, "depart_nom"),
-            ColumnDefn(u"Arrivée", 'left', 110, "arrivee_dateHeure", stringConverter=FormateDateHeure),
-            ColumnDefn(u"Destination", 'left', 120, "arrivee_nom"),
+            ColumnDefn(u"", "left", 0, "IDtransport", typeDonnee="entier"), 
+            ColumnDefn(u"Transport", "left", 70, "categorie", typeDonnee="texte", stringConverter=FormateCategorie,  imageGetter=GetImageCategorie),
+            ColumnDefn(u"Départ", 'left', 110, "depart_dateHeure", typeDonnee="texte", stringConverter=FormateDateHeure),
+            ColumnDefn(u"Origine", 'left', 120, "depart_nom", typeDonnee="texte"),
+            ColumnDefn(u"Arrivée", 'left', 110, "arrivee_dateHeure", typeDonnee="texte", stringConverter=FormateDateHeure),
+            ColumnDefn(u"Destination", 'left', 120, "arrivee_nom", typeDonnee="texte"),
             ]
         
         if self.IDindividu == None :
-            liste_Colonnes.insert(1, ColumnDefn(u"Individu", "left", 150, "individu_nom_complet") )
+            liste_Colonnes.insert(1, ColumnDefn(u"Individu", "left", 150, "individu_nom_complet", typeDonnee="texte") )
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(1)
         self.SetEmptyListMsg(u"Aucun transport")

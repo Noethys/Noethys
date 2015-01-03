@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import datetime
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import DLG_Saisie_barre_outils
 

@@ -15,7 +15,7 @@ import datetime
 import GestionDB
 import UTILS_Historique
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
 import UTILS_Utilisateurs
 
@@ -132,12 +132,12 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDscolarite"),
-            ColumnDefn(u"Du", 'left', 70, "date_debut", stringConverter=DateEngFr),
-            ColumnDefn(u"Au", 'left', 70, "date_fin", stringConverter=DateEngFr),
-            ColumnDefn(u"Ecole", 'left', 160, "nomEcole"),
-            ColumnDefn(u"Classe", 'left', 100, "nomClasse", isSpaceFilling=True),
-            ColumnDefn(u"Niveau", 'left', 60, "abregeNiveau"),
+            ColumnDefn(u"ID", "left", 0, "IDscolarite", typeDonnee="entier"),
+            ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(u"Au", 'left', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(u"Ecole", 'left', 160, "nomEcole", typeDonnee="texte"),
+            ColumnDefn(u"Classe", 'left', 100, "nomClasse", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Niveau", 'left', 60, "abregeNiveau", typeDonnee="texte"),
             ]
 
         self.rowFormatter = rowFormatter

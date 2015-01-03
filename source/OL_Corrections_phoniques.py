@@ -12,7 +12,7 @@ import wx
 import GestionDB
 import UTILS_Utilisateurs
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 

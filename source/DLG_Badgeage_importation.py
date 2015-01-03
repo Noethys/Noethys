@@ -24,7 +24,7 @@ from Outils import unicodecsv as csv
 import GestionDB
 import CTRL_Saisie_date
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try :
     import UTILS_CS1504

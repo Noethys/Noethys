@@ -21,7 +21,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 class Track(object):
@@ -495,26 +495,26 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
         
         dictColonnes = {
-            "IDcotisation" : ColumnDefn(u"", "left", 0, "IDcotisation"),
-            "date_debut" : ColumnDefn(u"Du", 'left', 80, "date_debut", stringConverter=FormateDate), 
-            "date_fin" : ColumnDefn(u"Au", 'left', 80, "date_fin", stringConverter=FormateDate),
-            "date_saisie" : ColumnDefn(u"Date saisie", 'left', 80, "date_saisie", stringConverter=FormateDate), 
-            "beneficiaires" : ColumnDefn(u"Bénéficiaires", 'left', 150, "beneficiaires"),
-            "rue" : ColumnDefn(u"Rue", 'left', 120, "rue"),
-            "cp" : ColumnDefn(u"CP", 'left', 70, "cp"),
-            "ville" : ColumnDefn(u"Ville", 'left', 100, "ville"),
-            "type" : ColumnDefn(u"Type", 'left', 110, "typeStr"),
-            "nom" : ColumnDefn(u"Nom", 'left', 210, "nomCotisation"),
-            "type_cotisation" : ColumnDefn(u"Type", 'left', 210, "nomTypeCotisation"),
-            "unite_cotisation" : ColumnDefn(u"Unité", 'left', 90, "nomUniteCotisation"),
-            "numero" : ColumnDefn(u"Numéro", 'left', 70, "numero"), 
-            "montant" : ColumnDefn(u"Montant", 'left', 70, "montant", stringConverter=FormateMontant), 
-            "regle" : ColumnDefn(u"Réglé", 'left', 70, "ventilation", stringConverter=FormateMontant), 
-            "date_reglement" : ColumnDefn(u"Date réglement", 'left', 80, "dateReglement", stringConverter=FormateDate), 
-            "mode_reglement" : ColumnDefn(u"Mode réglement", 'left', 80, "modeReglement"), 
-            "solde" : ColumnDefn(u"Solde", 'left', 80, "solde", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
-            "date_creation_carte" : ColumnDefn(u"Création carte", 'left', 100, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-            "depot_nom" : ColumnDefn(u"Dépôt carte", 'left', 100, "depotStr", imageGetter=GetImageDepot), 
+            "IDcotisation" : ColumnDefn(u"", "left", 0, "IDcotisation", typeDonnee="entier"),
+            "date_debut" : ColumnDefn(u"Du", 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+            "date_fin" : ColumnDefn(u"Au", 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            "date_saisie" : ColumnDefn(u"Date saisie", 'left', 80, "date_saisie", typeDonnee="date", stringConverter=FormateDate), 
+            "beneficiaires" : ColumnDefn(u"Bénéficiaires", 'left', 150, "beneficiaires", typeDonnee="texte"),
+            "rue" : ColumnDefn(u"Rue", 'left', 120, "rue", typeDonnee="texte"),
+            "cp" : ColumnDefn(u"CP", 'left', 70, "cp", typeDonnee="texte"),
+            "ville" : ColumnDefn(u"Ville", 'left', 100, "ville", typeDonnee="texte"),
+            "type" : ColumnDefn(u"Type", 'left', 110, "typeStr", typeDonnee="texte"),
+            "nom" : ColumnDefn(u"Nom", 'left', 210, "nomCotisation", typeDonnee="texte"),
+            "type_cotisation" : ColumnDefn(u"Type", 'left', 210, "nomTypeCotisation", typeDonnee="texte"),
+            "unite_cotisation" : ColumnDefn(u"Unité", 'left', 90, "nomUniteCotisation", typeDonnee="texte"),
+            "numero" : ColumnDefn(u"Numéro", 'left', 70, "numero", typeDonnee="texte"), 
+            "montant" : ColumnDefn(u"Montant", 'left', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
+            "regle" : ColumnDefn(u"Réglé", 'left', 70, "ventilation", typeDonnee="montant", stringConverter=FormateMontant), 
+            "date_reglement" : ColumnDefn(u"Date réglement", 'left', 80, "dateReglement", typeDonnee="date", stringConverter=FormateDate), 
+            "mode_reglement" : ColumnDefn(u"Mode réglement", 'left', 80, "modeReglement", typeDonnee="texte"), 
+            "solde" : ColumnDefn(u"Solde", 'left', 80, "solde", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
+            "date_creation_carte" : ColumnDefn(u"Création carte", 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
+            "depot_nom" : ColumnDefn(u"Dépôt carte", 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
             }
             
             

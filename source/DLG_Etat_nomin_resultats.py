@@ -26,7 +26,7 @@ class Dialog(wx.Dialog):
         self.bouton_export_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Facture.png", wx.BITMAP_TYPE_ANY))
         self.bouton_export_excel = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
-        self.ctrl_recherche = OL_Etat_nomin_resultats.BarreRecherche(self)
+        self.ctrl_recherche = OL_Etat_nomin_resultats.CTRL_Outils(self, listview=self.ctrl_listview)
         self.ctrl_totaux = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.ctrl_totaux.SetMinSize((-1, 80)) 
         

@@ -432,7 +432,7 @@ class Dialog(wx.Dialog):
 
         self.listviewAvecFooter = OL_Liste_nominative_soldes.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Liste_nominative_soldes.BarreRecherche(self)
+        self.ctrl_recherche = OL_Liste_nominative_soldes.CTRL_Outils(self, listview=self.ctrl_listview)
         self.ctrl_parametres = Parametres(self, listview=self.ctrl_listview)
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))

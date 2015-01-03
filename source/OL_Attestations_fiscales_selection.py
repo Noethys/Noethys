@@ -13,7 +13,7 @@ import GestionDB
 import datetime
 import copy
 
-from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter
+from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -144,14 +144,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"IDcompte_payeur", 'left', 0, "IDcompte_payeur", isEditable=False),
-            ColumnDefn(u"Famille", 'left', 290, "nomsTitulairesSansCivilite", isEditable=True),
-            ColumnDefn(u"Total", 'right', 70, "montant_total", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(u"Réglé", 'right', 70, "montant_regle", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(u"Impayé", 'right', 70, "montant_impaye", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(u"Rue", 'left', 150, "rue_resid", isEditable=True),
-            ColumnDefn(u"CP", 'left', 50, "cp_resid", isEditable=True),
-            ColumnDefn(u"Ville", 'left', 150, "ville_resid", isEditable=True),
+            ColumnDefn(u"IDcompte_payeur", 'left', 0, "IDcompte_payeur", typeDonnee="entier", isEditable=False),
+            ColumnDefn(u"Famille", 'left', 290, "nomsTitulairesSansCivilite", typeDonnee="texte", isEditable=True),
+            ColumnDefn(u"Total", 'right', 70, "montant_total", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
+            ColumnDefn(u"Réglé", 'right', 70, "montant_regle", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
+            ColumnDefn(u"Impayé", 'right', 70, "montant_impaye", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
+            ColumnDefn(u"Rue", 'left', 150, "rue_resid", typeDonnee="texte", isEditable=True),
+            ColumnDefn(u"CP", 'left', 50, "cp_resid", typeDonnee="texte", isEditable=True),
+            ColumnDefn(u"Ville", 'left', 150, "ville_resid", typeDonnee="texte", isEditable=True),
             ]
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)

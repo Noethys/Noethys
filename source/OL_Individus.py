@@ -15,7 +15,7 @@ import GestionDB
 import DATA_Civilites as Civilites
 import UTILS_Titulaires
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -291,18 +291,18 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 22, "IDindividu", imageGetter=GetImageCivilite),
-            ColumnDefn(u"Nom", 'left', 100, "nom"),
-            ColumnDefn(u"Prénom", "left", 100, "prenom"),
-            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", stringConverter=FormateDate),
-            ColumnDefn(u"Age", "left", 50, "age", stringConverter=FormateAge),
-            ColumnDefn(u"Rue", "left", 150, "rue_resid"),
-            ColumnDefn(u"C.P.", "left", 50, "cp_resid"),
-            ColumnDefn(u"Ville", "left", 100, "ville_resid"),
-            ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile"),
-            ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile"),
-            ColumnDefn(u"Email", "left", 150, "mail"),
-            ColumnDefn(u"Recherche", "left", 0, "champ_recherche"),
+            ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
+            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
+            ColumnDefn(u"Rue", "left", 150, "rue_resid", typeDonnee="texte"),
+            ColumnDefn(u"C.P.", "left", 50, "cp_resid", typeDonnee="texte"),
+            ColumnDefn(u"Ville", "left", 100, "ville_resid", typeDonnee="texte"),
+            ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile", typeDonnee="texte"),
+            ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile", typeDonnee="texte"),
+            ColumnDefn(u"Email", "left", 150, "mail", typeDonnee="texte"),
+            ColumnDefn(u"Recherche", "left", 0, "champ_recherche", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -614,7 +614,7 @@ class ListView(FastObjectListView):
 
 class BarreRecherche(wx.SearchCtrl):
     def __init__(self, parent, historique=False):
-        wx.SearchCtrl.__init__(self, parent, size=(-1, 20), style=wx.TE_PROCESS_ENTER)
+        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.historique = historique
         

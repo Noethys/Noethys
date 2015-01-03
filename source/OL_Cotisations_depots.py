@@ -12,7 +12,7 @@ import wx
 import datetime
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -125,14 +125,14 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
         
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDcotisation"),
-            ColumnDefn(u"Du", 'left', 70, "date_debut", stringConverter=FormateDate), 
-            ColumnDefn(u"au", 'left', 70, "date_fin", stringConverter=FormateDate), 
-            ColumnDefn(u"Famille", 'left', 130, "nomTitulaires"), 
-            ColumnDefn(u"Type", 'left', 150, "typeStr"),
-            ColumnDefn(u"Nom", 'left', 270, "nomCotisation"),
-            ColumnDefn(u"Numéro", 'left', 80, "numero"), 
-            ColumnDefn(u"Création carte", 'left', 100, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
+            ColumnDefn(u"", "left", 0, "IDcotisation", typeDonnee="entier"),
+            ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+            ColumnDefn(u"au", 'left', 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+            ColumnDefn(u"Famille", 'left', 130, "nomTitulaires", typeDonnee="texte"), 
+            ColumnDefn(u"Type", 'left', 150, "typeStr", typeDonnee="texte"),
+            ColumnDefn(u"Nom", 'left', 270, "nomCotisation", typeDonnee="texte"),
+            ColumnDefn(u"Numéro", 'left', 80, "numero", typeDonnee="texte"), 
+            ColumnDefn(u"Création carte", 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
 ##            ColumnDefn(u"Dépôt carte", 'left', 100, "depotStr", imageGetter=GetImageDepot), 
             ]
         

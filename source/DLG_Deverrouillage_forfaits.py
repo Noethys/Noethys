@@ -52,7 +52,7 @@ class Dialog(wx.Dialog):
         
         self.ctrl_listview = OL_Deverrouillage_forfaits.ListView(self, id=-1, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_listview.MAJ() 
-        self.ctrl_recherche = OL_Deverrouillage_forfaits.BarreRecherche(self)
+        self.ctrl_recherche = OL_Deverrouillage_forfaits.CTRL_Outils(self, listview=self.ctrl_listview)
 
         self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")

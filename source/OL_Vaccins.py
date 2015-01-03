@@ -13,7 +13,7 @@ import datetime
 import CTRL_Saisie_date
 import GestionDB
 from dateutil import relativedelta
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
 
@@ -201,10 +201,10 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDvaccin"),
-            ColumnDefn(u"Nom du vaccin", 'left', 140, "nom"),
-            ColumnDefn(u"Validité", "left", 120, "nbreJoursRestants", stringConverter=FormateValidite), 
-            ColumnDefn(u"Maladies associées", "left", 110, "txt_maladies_associees", isSpaceFilling=True), 
+            ColumnDefn(u"ID", "left", 0, "IDvaccin", typeDonnee="entier"),
+            ColumnDefn(u"Nom du vaccin", 'left', 140, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Validité", "left", 120, "nbreJoursRestants", typeDonnee="texte", stringConverter=FormateValidite), 
+            ColumnDefn(u"Maladies associées", "left", 110, "txt_maladies_associees", typeDonnee="texte", isSpaceFilling=True), 
             ]
         
         self.rowFormatter = rowFormatter

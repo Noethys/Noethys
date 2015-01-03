@@ -92,7 +92,7 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
-        self.ctrl_recherche = OL_Pieces_fournies.BarreRecherche(self)
+        self.ctrl_recherche = OL_Pieces_fournies.CTRL_Outils(self, listview=self.ctrl_donnees)
         
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))

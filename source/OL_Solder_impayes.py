@@ -19,7 +19,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import UTILS_Titulaires
 import UTILS_Utilisateurs
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 class Track(object):
@@ -158,10 +158,10 @@ class ListView(FastObjectListView):
         # Paramètres ListView
         self.useExpansionColumn = True
         self.SetColumns([
-            ColumnDefn(u"", "left", 0, "IDfamille"),
-            ColumnDefn(u"Famille", "left", 250, "titulaires"),
-            ColumnDefn(u"Nbre Prest.", "center", 80, "quantite"),
-            ColumnDefn(u"Impayés", "right", 80, "impaye", stringConverter=FormateMontant),
+            ColumnDefn(u"", "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(u"Famille", "left", 250, "titulaires", typeDonnee="texte"),
+            ColumnDefn(u"Nbre Prest.", "center", 80, "quantite", typeDonnee="entier"),
+            ColumnDefn(u"Impayés", "right", 80, "impaye", typeDonnee="montant", stringConverter=FormateMontant),
         ])
         self.CreateCheckStateColumn(0)
         self.SetSortColumn(self.columns[2])

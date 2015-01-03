@@ -13,7 +13,7 @@ import GestionDB
 import UTILS_Dates
 import UTILS_Utilisateurs
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -128,11 +128,11 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtype_piece"),
-            ColumnDefn(u"Nom de la pièce", 'left', 220, "nom"),
-            ColumnDefn(u"Public", "left", 70, "txt_public"), 
-            ColumnDefn(u"Validité", "left", 140, "txt_duree_validite"), 
-            ColumnDefn(u"Rattachement valide", "left", 120, "txt_rattachement"), 
+            ColumnDefn(u"ID", "left", 0, "IDtype_piece", typeDonnee="entier"),
+            ColumnDefn(u"Nom de la pièce", 'left', 220, "nom", typeDonnee="texte"),
+            ColumnDefn(u"Public", "left", 70, "txt_public", typeDonnee="texte"), 
+            ColumnDefn(u"Validité", "left", 140, "txt_duree_validite", typeDonnee="texte"), 
+            ColumnDefn(u"Rattachement valide", "left", 120, "txt_rattachement", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)

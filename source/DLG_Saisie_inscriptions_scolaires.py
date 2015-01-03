@@ -346,7 +346,7 @@ class Dialog(wx.Dialog):
         self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
         self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
-        self.ctrl_recherche = OL_Inscriptions_scolaires_2.BarreRecherche(self)
+        self.ctrl_recherche = OL_Inscriptions_scolaires_2.CTRL_Outils(self, listview=self.ctrl_listview)
         
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))

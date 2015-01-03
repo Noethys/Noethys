@@ -113,7 +113,8 @@ class Panel(wx.Panel):
         self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : self.IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
 
-        self.ctrl_recherche = OL_Factures.BarreRecherche(self)
+        self.ctrl_recherche = OL_Factures.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
+        self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
         
         # Commandes boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))

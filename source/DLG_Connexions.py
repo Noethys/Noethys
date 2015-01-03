@@ -27,7 +27,7 @@ class Dialog(wx.Dialog):
         
         self.ctrl_listview = OL_Connexions.ListView(self, id=-1, name="OL_connexions", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_listview.MAJ() 
-        self.ctrl_recherche = OL_Connexions.BarreRecherche(self)
+        self.ctrl_recherche = OL_Connexions.CTRL_Outils(self, listview=self.ctrl_listview)
         
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))

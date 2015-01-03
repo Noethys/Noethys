@@ -17,7 +17,7 @@ import UTILS_Historique
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter, PanelAvecFooter
 
 import UTILS_Utilisateurs
 
@@ -135,15 +135,15 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDcontrat"),
-            ColumnDefn(u"Du", 'center', 70, "date_debut", stringConverter=DateEngFr),
-            ColumnDefn(u"Au", 'center', 70, "date_fin", stringConverter=DateEngFr),
-            ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", isSpaceFilling=True),
-            ColumnDefn(u"Montant", 'right', 80, "montant", stringConverter=FormateMontant),
+            ColumnDefn(u"IDcontrat", "left", 0, "IDcontrat", typeDonnee="entier"),
+            ColumnDefn(u"Du", 'center', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(u"Au", 'center', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(u"Montant", 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
         if self.IDindividu == None :
-            liste_Colonnes.insert(3, ColumnDefn(u"Individu", 'left', 200, "nomCompletIndividu"))
+            liste_Colonnes.insert(3, ColumnDefn(u"Individu", 'left', 200, "nomCompletIndividu", typeDonnee="texte"))
             
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)

@@ -13,7 +13,7 @@ import GestionDB
 import datetime
 import UTILS_Pieces_manquantes
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
 except: pass
@@ -71,9 +71,9 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille"),
-            ColumnDefn(u"Famille", 'left', 200, "nomTitulaires"),
-            ColumnDefn(u"Pièces manquantes", "left", 500, "pieces"),
+            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(u"Famille", 'left', 200, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Pièces manquantes", "left", 500, "pieces", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Copyright:       (c) 2010-14 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -16,12 +16,10 @@ import UTILS_Questionnaires
 import DATA_Civilites as Civilites
 import UTILS_Infos_individus
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 DICT_INFOS_INDIVIDUS = {}
-DICT_QUESTIONNAIRES = {}
-LISTE_QUESTIONS = {} 
 
 
 def DateEngEnDateDD(dateEng):
@@ -82,18 +80,14 @@ def FormateDate(dateStr):
     return text
 
 
-def GetReponse(IDquestion=None, ID=None):
-    if DICT_QUESTIONNAIRES.has_key(IDquestion) :
-        if DICT_QUESTIONNAIRES[IDquestion].has_key(ID) :
-            return DICT_QUESTIONNAIRES[IDquestion][ID]
-    return u""
 
 
 
 #-----------INDIVIDUS-----------
 
 class TrackIndividu(object):
-    def __init__(self, donnees, infosIndividus):
+    def __init__(self, listview, donnees, infosIndividus):
+        self.listview = listview
         self.infosIndividus = infosIndividus
         self.IDindividu = donnees["IDindividu"]
         self.IDcivilite = donnees["IDcivilite"]
@@ -134,9 +128,9 @@ class TrackIndividu(object):
         self.nomImage = donnees["nomImage"]     
         
         # Récupération des réponses des questionnaires
-        for dictQuestion in LISTE_QUESTIONS :
-            exec(u"self.question_%d = GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDindividu))
-
+        for dictQuestion in self.listview.LISTE_QUESTIONS :
+            exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDindividu))
+            
 
     def GetDict(self):
         dictTemp = {
@@ -167,7 +161,7 @@ class TrackIndividu(object):
             }
         
         # Questionnaires
-        for dictQuestion in LISTE_QUESTIONS :
+        for dictQuestion in self.listview.LISTE_QUESTIONS :
             exec(u"dictTemp['{QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
             if dictQuestion["controle"] == "codebarres" :
                 exec(u"dictTemp['{CODEBARRES_QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
@@ -177,7 +171,7 @@ class TrackIndividu(object):
         
         return dictTemp
 
-def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None, infosIndividus=None):
+def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindividu=None, infosIndividus=None):
     # Conditions Activites
     if listeActivites == None or listeActivites == [] :
         conditionActivites = ""
@@ -255,7 +249,7 @@ def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None, infos
             dictTemp["age"] = age
                     
         # Formatage sous forme de TRACK
-        track = TrackIndividu(dictTemp, infosIndividus)
+        track = TrackIndividu(listview, dictTemp, infosIndividus)
         listeListeView.append(track)
         
     return listeListeView
@@ -264,7 +258,8 @@ def GetListeIndividus(listeActivites=None, presents=None, IDindividu=None, infos
 #-----------FAMILLES-----------
 
 class TrackFamille(object):
-    def __init__(self, donnees, infosIndividus):
+    def __init__(self, listview, donnees, infosIndividus):
+        self.listview = listview
         self.infosIndividus = infosIndividus
         self.IDfamille = donnees["IDfamille"]
         self.nomTitulaires = donnees["titulaires"]
@@ -276,8 +271,8 @@ class TrackFamille(object):
         self.numAlloc = donnees["numAlloc"]
 
         # Récupération des réponses des questionnaires
-        for dictQuestion in LISTE_QUESTIONS :
-            exec(u"self.question_%d = GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDfamille))
+        for dictQuestion in self.listview.LISTE_QUESTIONS :
+            exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDfamille))
 
     def GetDict(self):
         dictTemp = {
@@ -293,7 +288,7 @@ class TrackFamille(object):
             }
         
         # Questionnaires
-        for dictQuestion in LISTE_QUESTIONS :
+        for dictQuestion in self.listview.LISTE_QUESTIONS :
             exec(u"dictTemp['{QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
             if dictQuestion["controle"] == "codebarres" :
                 exec(u"dictTemp['{CODEBARRES_QUESTION_%d}'] = FormateStr(self.question_%d)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"]))
@@ -303,7 +298,7 @@ class TrackFamille(object):
 
         return dictTemp
 
-def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None, infosIndividus=None):
+def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamille=None, infosIndividus=None):
     """ Récupération des infos familles """
     # Conditions Activites
     if listeActivites == None or listeActivites == [] :
@@ -368,7 +363,7 @@ def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None, infosIn
             }
     
         # Formatage sous forme de TRACK
-        track = TrackFamille(dictTemp, infosIndividus)
+        track = TrackFamille(listview, dictTemp, infosIndividus)
         listeListeView.append(track)
         
     return listeListeView
@@ -379,11 +374,11 @@ def GetListeFamilles(listeActivites=None, presents=None, IDfamille=None, infosIn
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
-        self.categorie = "individus"
+        self.categorie = kwds.pop("categorie", "individus")
+        self.IDindividu = kwds.pop("IDindividu", None)
+        self.IDfamille = kwds.pop("IDfamille", None)
         self.listeActivites = None
         self.presents = None
-        self.IDindividu = None
-        self.IDfamille = None
         # Infos organisme
         self.dictOrganisme = GetInfosOrganisme()
         self.UtilsQuestionnaires = UTILS_Questionnaires.Questionnaires()
@@ -394,21 +389,19 @@ class ListView(FastObjectListView):
 
     def InitModel(self):
         # Récupération des questions
-        global LISTE_QUESTIONS
-        LISTE_QUESTIONS = self.UtilsQuestionnaires.GetQuestions(type=self.categorie[:-1])
+        self.LISTE_QUESTIONS = self.UtilsQuestionnaires.GetQuestions(type=self.categorie[:-1])
         
         # Récupération des questionnaires
-        global DICT_QUESTIONNAIRES
-        DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type=self.categorie[:-1])
+        self.DICT_QUESTIONNAIRES = self.UtilsQuestionnaires.GetReponses(type=self.categorie[:-1])
 
         # Récupération des infos de base individus et familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
         
         # Récupération des tracks
         if self.categorie == "individus" :
-            self.donnees = GetListeIndividus(self.listeActivites, self.presents, self.IDindividu, self.infosIndividus)
+            self.donnees = GetListeIndividus(self, self.listeActivites, self.presents, self.IDindividu, self.infosIndividus)
         else:
-            self.donnees = GetListeFamilles(self.listeActivites, self.presents, self.IDfamille, self.infosIndividus)
+            self.donnees = GetListeFamilles(self, self.listeActivites, self.presents, self.IDfamille, self.infosIndividus)
 
     def InitObjectListView(self):
         # Création du imageList
@@ -437,17 +430,17 @@ class ListView(FastObjectListView):
         if self.categorie == "individus" :
             # INDIVIDUS
             liste_Colonnes = [
-                ColumnDefn(u"", "left", 22, "IDindividu", imageGetter=GetImageCivilite),
-                ColumnDefn(u"Nom", 'left', 100, "nom"),
-                ColumnDefn(u"Prénom", "left", 100, "prenom"),
-                ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", stringConverter=FormateDate),
-                ColumnDefn(u"Age", "left", 50, "age", stringConverter=FormateAge),
-                ColumnDefn(u"Rue", "left", 150, "rue_resid"),
-                ColumnDefn(u"C.P.", "left", 50, "cp_resid"),
-                ColumnDefn(u"Ville", "left", 120, "ville_resid"),
+                ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
+                ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
+                ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
+                ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+                ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
+                ColumnDefn(u"Rue", "left", 150, "rue_resid", typeDonnee="texte"),
+                ColumnDefn(u"C.P.", "left", 50, "cp_resid", typeDonnee="texte"),
+                ColumnDefn(u"Ville", "left", 120, "ville_resid", typeDonnee="texte"),
 ##                ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile"),
 ##                ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile"),
-                ColumnDefn(u"Email", "left", 150, "mail"),
+                ColumnDefn(u"Email", "left", 150, "mail", typeDonnee="texte"),
 ##                ColumnDefn(u"Profession", "left", 150, "profession"),
 ##                ColumnDefn(u"Employeur", "left", 150, "employeur"),
 ##                ColumnDefn(u"Tél pro.", "left", 100, "travail_tel"),
@@ -457,19 +450,21 @@ class ListView(FastObjectListView):
         else:
             # FAMILLES
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDfamille"),
-                ColumnDefn(u"Famille", 'left', 200, "nomTitulaires"),
-                ColumnDefn(u"Rue", "left", 160, "rue"),
-                ColumnDefn(u"C.P.", "left", 45, "cp"),
-                ColumnDefn(u"Ville", "left", 120, "ville"),
-                ColumnDefn(u"Régime", "left", 130, "regime"),
-                ColumnDefn(u"Caisse", "left", 130, "caisse"),
-                ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc"),
+                ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
+                ColumnDefn(u"Famille", 'left', 200, "nomTitulaires", typeDonnee="texte"),
+                ColumnDefn(u"Rue", "left", 160, "rue", typeDonnee="texte"),
+                ColumnDefn(u"C.P.", "left", 45, "cp", typeDonnee="texte"),
+                ColumnDefn(u"Ville", "left", 120, "ville", typeDonnee="texte"),
+                ColumnDefn(u"Régime", "left", 130, "regime", typeDonnee="texte"),
+                ColumnDefn(u"Caisse", "left", 130, "caisse", typeDonnee="texte"),
+                ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc", typeDonnee="texte"),
                 ]        
         
         # Ajout des questions des questionnaires
-        for dictQuestion in LISTE_QUESTIONS :
-            liste_Colonnes.append(ColumnDefn(dictQuestion["label"], "left", 150, "question_%d" % dictQuestion["IDquestion"]))
+        for dictQuestion in self.LISTE_QUESTIONS :
+            nomChamp = "question_%d" % dictQuestion["IDquestion"]
+            typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+            liste_Colonnes.append(ColumnDefn(dictQuestion["label"], "left", 150, "question_%d" % dictQuestion["IDquestion"], typeDonnee=typeDonnee))
 
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
@@ -490,20 +485,16 @@ class ListView(FastObjectListView):
         if presents != None : self.presents = presents
         self.InitModel()
         self.InitObjectListView()
-    
+
+    def GetReponse(self, IDquestion=None, ID=None):
+        if self.DICT_QUESTIONNAIRES.has_key(IDquestion) :
+            if self.DICT_QUESTIONNAIRES[IDquestion].has_key(ID) :
+                return self.DICT_QUESTIONNAIRES[IDquestion][ID]
+        return u""
+
     def Selection(self):
         return self.GetSelectedObjects()
     
-    def CocheTout(self, event=None):
-        for track in self.donnees :
-            self.Check(track)
-            self.RefreshObject(track)
-        
-    def CocheRien(self, event=None):
-        for track in self.donnees :
-            self.Uncheck(track)
-            self.RefreshObject(track)
-
     def GetTracksCoches(self):
         return self.GetCheckedObjects()
     
@@ -516,38 +507,33 @@ class ListView(FastObjectListView):
             listeDonnees.append(dictTemp)
         return listeDonnees
     
-    def Filtrer(self, event=None):
-        import DLG_Selection_individus
-        dlg = DLG_Selection_individus.Dialog(self)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.listeActivites = dlg.GetActivites() 
-            self.presents = dlg.GetPeriodePresents() 
-            self.MAJ() 
-            self.CocheTout() 
-            dlg.Destroy()
-        else:
-            dlg.Destroy()
-            return
+##    def FiltrerPresents(self, event=None):
+##        import DLG_Selection_individus
+##        dlg = DLG_Selection_individus.Dialog(self)
+##        if dlg.ShowModal() == wx.ID_OK:
+##            self.listeActivites = dlg.GetActivites() 
+##            self.presents = dlg.GetPeriodePresents() 
+##            self.MAJ() 
+##            self.CocheTout() 
+##            dlg.Destroy()
+##        else:
+##            dlg.Destroy()
+##            return
         
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        # Fltrer
-        item = wx.MenuItem(menuPop, 10, u"Filtrer")
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Filtrer, id=10)
-        
         # Tout sélectionner
-        item = wx.MenuItem(menuPop, 20, u"Tout sélectionner")
+        item = wx.MenuItem(menuPop, 20, u"Tout cocher")
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.CocheTout, id=20)
+        self.Bind(wx.EVT_MENU, self.CocheListeTout, id=20)
 
         # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, u"Tout dé-sélectionner")
+        item = wx.MenuItem(menuPop, 30, u"Tout décocher")
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.CocheRien, id=30)
+        self.Bind(wx.EVT_MENU, self.CocheListeRien, id=30)
         
         menuPop.AppendSeparator()
         

@@ -36,6 +36,9 @@ import UTILS_Codesbarres
 import UTILS_Dates
 import UTILS_Infos_individus
 
+import UTILS_Config
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+
 import UTILS_Impressions
 UTILS_Impressions.AjouterPolicesPDF() 
         
@@ -4846,7 +4849,7 @@ class ModeleDoc():
                 if type(nomChamp) in (str, unicode) and nomChamp.startswith("{") :
                     if valeur == None : valeur = ""
                     if type(valeur) == int : valeur = str(valeur)
-                    if type(valeur) == float : valeur = u"%.02f %s" % valeur
+                    if type(valeur) == float : valeur = u"%.02f %s" % (valeur, SYMBOLE)
                     if type(valeur) == datetime.date : valeur = UTILS_Dates.DateDDEnFr(valeur)
                     if nomChamp in texte :
                         texte = texte.replace(nomChamp, valeur)

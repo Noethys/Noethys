@@ -20,8 +20,6 @@ import CTRL_Choix_modele
 import UTILS_Config
 import OL_Etiquettes
 
-try: import psyco; psyco.full()
-except: pass
 
 # Couleurs
 COULEUR_ZONE_TRAVAIL = (100, 200, 0)
@@ -179,32 +177,69 @@ class CTRL_Apercu(wx.Panel):
                 x += (self.largeurEtiquette + self.espaceHorizontal)
             y -= (self.hauteurEtiquette + self.espaceVertical)
 
+        
+# ---------------------------------------------------------------------------------------------------------------------------------
 
-# ----------------------------------------------------------------------------------------------------------------------------------------
+class CTRL_Donnees(wx.Panel):
+    def __init__(self, parent, categorie="individus", IDindividu=None, IDfamille=None):
+        wx.Panel.__init__(self, parent, id=-1) 
+        
+        # Contrôles
+        self.listview = OL_Etiquettes.ListView(self, id=-1, categorie=categorie, IDindividu=IDindividu, IDfamille=IDfamille, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.listview.SetMinSize((10, 10))
+        self.barre_recherche = OL_Etiquettes.CTRL_Outils(self, listview=self.listview, afficherCocher=True)
+        self.listview.MAJ() 
+        self.listview.CocheListeTout() 
+        
+        # Layout
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.Add(self.listview, 1, wx.EXPAND | wx.BOTTOM, 5)
+        sizer.Add(self.barre_recherche, 0, wx.EXPAND, 0)
+        self.SetSizer(sizer)
+        sizer.Fit(self)
+        
 
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL=""):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL)
-        self.parent = parent
+class Panel_Donnees(wx.Panel):
+    def __init__(self, parent, IDindividu=None, IDfamille=None):
+        wx.Panel.__init__(self, parent, id=-1) 
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self.listePages = []
+
+        # Page Individus
+        page =  CTRL_Donnees(self, categorie="individus", IDindividu=IDindividu)
+        sizer.Add(page, 1, wx.EXPAND, 0)
+        page.Show(False)
+        self.listePages.append(("individu", page))
+
+        # Page Familles
+        page =  CTRL_Donnees(self, categorie="familles", IDfamille=IDfamille)
+        sizer.Add(page, 1, wx.EXPAND, 0)
+        page.Show(False)
+        self.listePages.append(("famille", page))
+
+        self.SetSizer(sizer)
+        sizer.Fit(self)
         
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-        
-    def OnLeftLink(self, event):
-        if self.URL == "filtrer" : self.parent.ctrl_donnees.Filtrer()
-        if self.URL == "tout" : self.parent.ctrl_donnees.CocheTout()
-        if self.URL == "rien" : self.parent.ctrl_donnees.CocheRien()
-        self.UpdateLink()
-        
-        
+    def SetSelection(self, categorie="individu"):
+        self.Freeze()
+        for categoriePage, page in self.listePages :
+            if categoriePage == categorie :
+                page.Show(True)
+            else :
+                page.Show(False)
+        self.Layout() 
+        self.Thaw() 
+            
+    def GetPage(self):
+        for categoriePage, page in self.listePages :
+            if page.IsShown() :
+                return page
+        return None
+    
+    def GetInfosCoches(self):
+        return self.GetPage().listview.GetInfosCoches() 
+    
+
 # ---------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
@@ -265,20 +300,11 @@ class Dialog(wx.Dialog):
         
         # Données
         self.box_donnees_staticbox = wx.StaticBox(self, -1, u"Données")
-        self.ctrl_donnees = OL_Etiquettes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_donnees.SetMinSize((10, 10))
-        self.hyper_filtrer = Hyperlien(self, label=u"Filtrer", infobulle=u"Cliquez ici pour filtrer la liste", URL="filtrer")
-        self.label_separation1 = wx.StaticText(self, -1, u"|")
-        self.hyper_select = Hyperlien(self, label=u"Tout sélectionner", infobulle=u"Cliquez ici pour tout sélectionner", URL="tout")
-        self.label_separation2 = wx.StaticText(self, -1, u"|")
-        self.hyper_deselect = Hyperlien(self, label=u"Tout désélectionner", infobulle=u"Cliquez ici pour tout désélectionner", URL="rien")
+        self.ctrl_donnees = Panel_Donnees(self, IDindividu=IDindividu, IDfamille=IDfamille)
         
-        if IDindividu != None or IDfamille != None : 
-            self.hyper_filtrer.Enable(False)
-            self.label_separation1.Enable(False)
-            self.hyper_select.Enable(False)
-            self.label_separation2.Enable(False)
-            self.hyper_deselect.Enable(False)
+##        self.ctrl_donnees = OL_Etiquettes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+##        self.ctrl_donnees.SetMinSize((10, 10))
+##        self.ctrl_recherche = OL_Etiquettes.CTRL_Outils(self, listview=self.ctrl_donnees, afficherCocher=True)
 
         # Mémorisation des paramètres
         self.ctrl_memoriser = wx.CheckBox(self, -1, u"Mémoriser les paramètres")
@@ -352,13 +378,10 @@ class Dialog(wx.Dialog):
         if IDindividu != None or IDfamille != None :
             self.ctrl_categorie.Enable(False)
         
-        # Init liste données
-        self.ctrl_donnees.IDindividu = IDindividu
-        self.ctrl_donnees.IDfamille = IDfamille
-        self.ctrl_donnees.MAJ(self.categorie) 
-        self.ctrl_donnees.CocheTout() 
-        
         del dlgAttente
+        
+        self.ctrl_donnees.SetSelection(categorie=self.categorie)
+
 
     def __set_properties(self):
         self.ctrl_categorie.SetToolTipString(u"Sélectionnez ici une catégorie de données")
@@ -386,14 +409,14 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher un apercu du PDF")
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
         self.ctrl_memoriser.SetToolTipString(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")
-        self.SetMinSize((750, 770))
+        self.SetMinSize((980, 770))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+        grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
 
         # Modèle
         box_modele = wx.StaticBoxSizer(self.box_modele_staticbox, wx.VERTICAL)
@@ -443,33 +466,26 @@ class Dialog(wx.Dialog):
         # Aperçu
         box_apercu = wx.StaticBoxSizer(self.box_apercu_staticbox, wx.VERTICAL)
         box_apercu.Add(self.ctrl_apercu, 1, wx.ALL|wx.EXPAND, 5)
-        
-        grid_sizer_haut.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
-        grid_sizer_haut.Add(box_apercu, 1, wx.EXPAND, 0)
-        grid_sizer_haut.AddGrowableRow(0)
-        grid_sizer_haut.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_haut, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_gauche.Add(box_apercu, 1, wx.EXPAND, 0)
+
+        grid_sizer_gauche.AddGrowableRow(3)
+        grid_sizer_gauche.AddGrowableCol(0)
+        grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
 
         # Données
         box_donnees = wx.StaticBoxSizer(self.box_donnees_staticbox, wx.VERTICAL)
         grid_sizer_donnees = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_donnees.Add(self.ctrl_donnees, 1, wx.EXPAND, 0)
-        
-        # Commandes de liste
-        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=6, vgap=2, hgap=2)
-        grid_sizer_commandes.Add((10, 10), 0, wx.EXPAND, 0)
-        grid_sizer_commandes.Add(self.hyper_filtrer, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.Add(self.label_separation1, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.Add(self.hyper_select, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.Add(self.label_separation2, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.Add(self.hyper_deselect, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_commandes.AddGrowableCol(0)
-        grid_sizer_donnees.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
+                
         grid_sizer_donnees.AddGrowableRow(0)
         grid_sizer_donnees.AddGrowableCol(0)
         box_donnees.Add(grid_sizer_donnees, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(box_donnees, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+        grid_sizer_contenu.Add(box_donnees, 1,wx.EXPAND, 0)
+
+        grid_sizer_contenu.AddGrowableRow(0)
+        grid_sizer_contenu.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
         # Check Mémoriser
         grid_sizer_base.Add(self.ctrl_memoriser, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -482,7 +498,7 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
 
-        grid_sizer_base.AddGrowableRow(2)
+        grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
 
         self.SetSizer(grid_sizer_base)
@@ -497,8 +513,7 @@ class Dialog(wx.Dialog):
         self.ctrl_modele.SetCategorie(self.categorie)
         self.ctrl_apercu.SetModele(self.ctrl_modele.GetID())
         self.ctrl_apercu.MAJ() 
-        self.ctrl_donnees.MAJ(categorie=self.categorie)
-        self.ctrl_donnees.CocheTout() 
+        self.ctrl_donnees.SetSelection(categorie=self.categorie)
         
     def OnChoixModele(self, event): 
         self.ctrl_apercu.SetModele(self.ctrl_modele.GetID())

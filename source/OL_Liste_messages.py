@@ -14,7 +14,7 @@ import GestionDB
 import UTILS_Historique
 import UTILS_Dates
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -111,9 +111,9 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDmessage"),
-            ColumnDefn(u"Date", 'centre', 75, "date_parution", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Texte", 'left', 420, "texte", imageGetter=GetImagePriorite, isSpaceFilling=True),
+            ColumnDefn(u"", "left", 0, "IDmessage", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'centre', 75, "date_parution", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Texte", 'left', 420, "texte", typeDonnee="texte", imageGetter=GetImagePriorite, isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)

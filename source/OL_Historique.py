@@ -14,7 +14,7 @@ import GestionDB
 import UTILS_Historique
 import UTILS_Titulaires
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 
@@ -159,14 +159,14 @@ class ListView(FastObjectListView):
             return DateEngFr(dateStr)
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDaction"),
-            ColumnDefn(u"Date", 'center', 70, "dateHeure", stringConverter=FormateDate),
-            ColumnDefn(u"Heure", 'center', 60, "heure"),
-            ColumnDefn(u"Utilisateur", 'left', 130, "nomComplet_utilisateur"),
-            ColumnDefn(u"Famille", 'left', 120, "nomTitulaires"),
-            ColumnDefn(u"Individu", 'left', 120, "nomComplet_individu"),
-            ColumnDefn(u"Catégorie", 'left', 150, "nomCategorie"),
-            ColumnDefn(u"Action", 'left', 700, "action"),
+            ColumnDefn(u"ID", "left", 0, "IDaction", typeDonnee="entier"),
+            ColumnDefn(u"Date", 'center', 70, "dateHeure", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Heure", 'center', 60, "heure", typeDonnee="texte"),
+            ColumnDefn(u"Utilisateur", 'left', 130, "nomComplet_utilisateur", typeDonnee="texte"),
+            ColumnDefn(u"Famille", 'left', 120, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Individu", 'left', 120, "nomComplet_individu", typeDonnee="texte"),
+            ColumnDefn(u"Catégorie", 'left', 150, "nomCategorie", typeDonnee="texte"),
+            ColumnDefn(u"Action", 'left', 700, "action", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

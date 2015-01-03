@@ -13,7 +13,7 @@ import datetime
 import time
 import GestionDB
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def DateEngFr(textDate):
@@ -140,20 +140,20 @@ class ListView(FastObjectListView):
         if self.modeHistorique == True :
             liste_Colonnes = [
                 ColumnDefn(u"", "left", 0, ""),
-                ColumnDefn(u"Date", 'center', 88, "date", stringConverter=FormateDate), 
-                ColumnDefn(u"Heure", 'center', 60, "heure", stringConverter=FormateHeure), 
-                ColumnDefn(u"Action", 'left', 270, "action"), 
-                ColumnDefn(u"Individu", 'left', 150, "individu"), 
-                ColumnDefn(u"Résultat", 'left', 150, "texteResultat", imageGetter=GetImageStatut, isSpaceFilling=True), 
+                ColumnDefn(u"Date", 'center', 88, "date", typeDonnee="date", stringConverter=FormateDate), 
+                ColumnDefn(u"Heure", 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
+                ColumnDefn(u"Action", 'left', 270, "action", typeDonnee="texte"), 
+                ColumnDefn(u"Individu", 'left', 150, "individu", typeDonnee="texte"), 
+                ColumnDefn(u"Résultat", 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
                 ]
         else :
             liste_Colonnes = [
                 ColumnDefn(u"", "left", 0, ""),
-                ColumnDefn(u"Date", 'center', 88, "date", stringConverter=FormateDate), 
-                ColumnDefn(u"Heure", 'center', 60, "heure", stringConverter=FormateHeure), 
-                ColumnDefn(u"Action", 'left', 270, "action"), 
-                ColumnDefn(u"Individu", 'left', 130, "individu"), 
-                ColumnDefn(u"Résultat", 'left', 150, "texteResultat", imageGetter=GetImageStatut, isSpaceFilling=True), 
+                ColumnDefn(u"Date", 'center', 88, "date", typeDonnee="date", stringConverter=FormateDate), 
+                ColumnDefn(u"Heure", 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
+                ColumnDefn(u"Action", 'left', 270, "action", typeDonnee="texte"), 
+                ColumnDefn(u"Individu", 'left', 130, "individu", typeDonnee="texte"), 
+                ColumnDefn(u"Résultat", 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
                 ]
 
         self.SetColumns(liste_Colonnes)

@@ -16,29 +16,6 @@ import DLG_Filtres_cotisations #DLG_Filtres_factures
 import UTILS_Utilisateurs
 
 
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
-        self.parent = parent
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-    
-    def OnLeftLink(self, event):
-        if self.URL == "tout" :
-            self.parent.ctrl_cotisations.CocheTout()
-        if self.URL == "rien" :
-            self.parent.ctrl_cotisations.CocheRien()
-        self.UpdateLink()
-        
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 class CTRL(wx.Panel):
@@ -64,10 +41,7 @@ class CTRL(wx.Panel):
         self.bouton_liste_export_excel = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
         # Options de liste
-        self.ctrl_recherche = OL_Liste_cotisations.BarreRecherche(self, listview=self.ctrl_cotisations)
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
-        self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.ctrl_recherche = OL_Liste_cotisations.CTRL_Outils(self, listview=self.ctrl_cotisations, afficherCocher=True)
 
         self.__set_properties()
         self.__do_layout()
@@ -116,10 +90,6 @@ class CTRL(wx.Panel):
         # Options de liste
         grid_sizer_options_liste = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5) 
         grid_sizer_options_liste.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
-        grid_sizer_options_liste.Add((40, 5), 0, wx.EXPAND, 0)
-        grid_sizer_options_liste.Add(self.hyper_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_liste.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_liste.Add(self.hyper_rien, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options_liste.AddGrowableCol(0)
         grid_sizer_liste.Add(grid_sizer_options_liste, 1, wx.EXPAND, 0)
         

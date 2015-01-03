@@ -19,7 +19,7 @@ from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, PanelAvecFooter
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
 def DateEngFr(textDate):
@@ -364,13 +364,13 @@ class ListView(FastObjectListView):
                 return u"- %.2f %s" % (-montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"IDfamille", "left", 0, "IDfamille"),
-            ColumnDefn(u"Famille", 'left', 250, "nomsTitulaires"),
-            ColumnDefn(u"Solde", 'right', 80, "solde", stringConverter=FormateSolde),
-            ColumnDefn(u"Prestations", 'right', 80, "total_prestations", stringConverter=FormateMontant),
-            ColumnDefn(u"Règlements", 'right', 80, "total_reglements", stringConverter=FormateMontant),
-            ColumnDefn(u"Total ventilé", 'right', 80, "total_ventilations", stringConverter=FormateMontant),
-            ColumnDefn(u"A ventiler", 'right', 80, "reste_a_ventiler", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(u"IDfamille", "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(u"Famille", 'left', 250, "nomsTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Solde", 'right', 80, "solde", typeDonnee="montant", stringConverter=FormateSolde),
+            ColumnDefn(u"Prestations", 'right', 80, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Règlements", 'right', 80, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Total ventilé", 'right', 80, "total_ventilations", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"A ventiler", 'right', 80, "reste_a_ventiler", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ]
         
         self.SetColumns(liste_Colonnes)
