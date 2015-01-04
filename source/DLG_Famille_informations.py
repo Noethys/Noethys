@@ -10,6 +10,7 @@
 
 import wx
 import time
+import sys
 import CTRL_Informations
 import OL_Etat_compte
 
@@ -20,6 +21,7 @@ from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 import GestionDB
 import UTILS_Utilisateurs
+import UTILS_Linux
 
 
 class CTRL_Solde(wx.Panel):
@@ -78,6 +80,9 @@ class Panel(wx.Panel):
         self.staticbox_facturation = wx.StaticBox(self, -1, u"Etat du compte")
         self.ctrl_facturation = OL_Etat_compte.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_Etat_compte", style=wx.LC_REPORT|wx.LC_NO_HEADER|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_facturation.SetMinSize((220, 20))
+        
+        if "linux" in sys.platform :
+            UTILS_Linux.AdaptePolice(self.ctrl_facturation)
         
         # Solde du compte
         self.staticbox_solde = wx.StaticBox(self, -1, u"Solde du compte")

@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 import wx
+import sys
 import datetime
 import GestionDB
 import decimal
@@ -211,11 +212,13 @@ class ListView(FastObjectListView):
                     return u"- %.2f %s" % (-valeur, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "position"),
             ColumnDefn(u"Label", "left", 115, "label"),
             ColumnDefn(u"Valeur", 'right', 80, "valeur", stringConverter=FormateValeur), #, isSpaceFilling=True),
             ]
         
+        if "linux" not in sys.platform :
+            liste_Colonnes.insert(0, ColumnDefn(u"", "left", 0, "position"))
+            
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune facturation")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
