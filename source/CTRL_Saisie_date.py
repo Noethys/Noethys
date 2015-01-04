@@ -9,6 +9,7 @@
 #-----------------------------------------------------------
 
 import wx
+import sys
 import wx.lib.masked as masked
 import datetime
 import calendar
@@ -39,7 +40,10 @@ class Date(masked.TextCtrl):
         self.date_max = date_max
         self.dateDD = None
         self.lienCtrlAge = False
-        self.SetMinSize((95, -1))
+        largeur = 95
+        if "linux" in sys.platform :
+            largeur = 110
+        self.SetMinSize((largeur, -1))
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
     
