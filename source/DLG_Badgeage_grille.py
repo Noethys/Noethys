@@ -46,6 +46,9 @@ class Panel_Facturation():
     def SaisiePrestation(self, *args, **kwds):
         pass
 
+    def ModifiePrestation(self, *args, **kwds):
+        pass
+    
     
     
 class PanelGrille(wx.Panel):
