@@ -9,6 +9,7 @@
 #-----------------------------------------------------------
 
 import wx
+import sys
 import CTRL_Newsticker
 import wx.lib.analogclock as clock
 import GestionDB
@@ -81,6 +82,13 @@ class CTRL(wx.Panel):
         # Newsticker
         self.ctrl_ticker = CTRL_Newsticker.Newsticker(self, pauseTime=10000, start=False, size=(-1, 100))   
         self.ctrl_ticker.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
+        
+        # Adaptation pour Linux : Couleur de l'horloge
+        if  "linux" in sys.platform :
+            couleur = self.ctrl_date.GetBackgroundColour()
+            self.ctrl_horloge.SetBackgroundColour(couleur)
+            self.ctrl_horloge.SetFaceFillColour(couleur)
+            self.ctrl_horloge.SetFaceBorderColour(couleur)
         
         self.__set_properties()
         self.__do_layout()
