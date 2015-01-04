@@ -1244,7 +1244,7 @@ def OuvrirCalculatrice():
 def RemplacerContenuFichier():
     listeRemplacements = [
 ##        ("ColumnDefn, Filter", "ColumnDefn, Filter, CTRL_Outils"),
-        (".CTRL_Outils(self, listview=self.ctrl_listview)", ".CTRL_Outils(self, listview=self.ctrl_listview)"),
+        ("wx.SearchCtrl.__init__(self, parent, size=(-1,20)", "wx.SearchCtrl.__init__(self, parent, size=(-1, -1)"),
         ]
     listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
     for nomFichier in listeFichiers :

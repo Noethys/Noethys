@@ -499,7 +499,7 @@ class Saisie(wx.Dialog):
 
 class BarreRecherche(wx.SearchCtrl):
     def __init__(self, parent):
-        wx.SearchCtrl.__init__(self, parent, size=(-1,20), style=wx.TE_PROCESS_ENTER)
+        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.rechercheEnCours = False
         
