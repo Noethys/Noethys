@@ -97,6 +97,7 @@ import operator
 import string
 import time
 import copy
+import sys
 
 import CellEditor
 import OLVEvent
@@ -4049,7 +4050,11 @@ class ColumnDefn(object):
         self.minimumWidth = minimumWidth
         self.maximumWidth = maximumWidth
         self.width = self.CalcBoundedWidth(width)
-
+        
+        # Adaptation pour linux
+        if self.width <= 22 and "linux" in sys.platform :
+            self.width += 25
+        
         if fixedWidth is not None:
             self.SetFixedWidth(fixedWidth)
 
