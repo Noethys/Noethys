@@ -71,15 +71,15 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, ""),
+##            ColumnDefn(u"", "left", 0, ""),
             ColumnDefn(u"Label", 'left', 160, "label", imageGetter=GetImage, isSpaceFilling=True),
-            ColumnDefn(u"Ordre", 'left', 0, "ordre"),
+##            ColumnDefn(u"Ordre", 'left', 0, "ordre"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune touche raccourci")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        self.SetSortColumn(self.columns[2])
+##        self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        
 

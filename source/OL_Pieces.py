@@ -232,15 +232,15 @@ class ListView(FastObjectListView):
             if self.nbreFamilles < 2 :
                 liste_Colonnes = [
                     ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(u"Nom de la pièce", 'left', 190, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
                     ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ColumnDefn(u"Famille", 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
@@ -249,15 +249,15 @@ class ListView(FastObjectListView):
             if self.nbreFamilles < 2 :
                 liste_Colonnes = [
                     ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(u"Nom de la pièce", 'left', 340, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
                     ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
-                    ColumnDefn(u"Du", "left", 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
                     ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ColumnDefn(u"Famille", 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]

@@ -4053,7 +4053,7 @@ class ColumnDefn(object):
         
         # Adaptation pour linux
         if self.width <= 22 and "linux" in sys.platform :
-            self.width += 25
+            self.width += 30
         
         if fixedWidth is not None:
             self.SetFixedWidth(fixedWidth)

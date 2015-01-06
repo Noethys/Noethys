@@ -141,7 +141,11 @@ class Dialog(wx.Dialog):
         if IDfamille == None :
             self.CreateIDfamille()
             self.nouvelleFiche = True
-        
+
+        # Adapte taille Police pour Linux
+        import UTILS_Linux
+        UTILS_Linux.AdaptePolice(self)
+
         # Composition
         self.sizer_composition_staticbox = wx.StaticBox(self, -1, u"Composition de la famille")
         self.ctrl_composition = CTRL_Composition.Notebook(self, IDfamille=self.IDfamille)
