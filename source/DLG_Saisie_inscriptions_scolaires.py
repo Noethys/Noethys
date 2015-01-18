@@ -11,7 +11,6 @@
 import wx
 import datetime
 import GestionDB
-import wx.lib.agw.hyperlink as Hyperlink
 import wx.lib.agw.pybusyinfo as PBI
 
 import CTRL_Saisie_date
@@ -29,31 +28,6 @@ def DateEngFr(textDate):
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
     return text
 
-
-
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL=""):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL)
-        self.parent = parent
-        
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-        
-    def OnLeftLink(self, event):
-        if self.URL == "tout" : self.parent.ctrl_individus.CocheTout()
-        if self.URL == "rien" : self.parent.ctrl_individus.CocheRien()
-        self.UpdateLink()
-        
-        
-# ---------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -342,11 +316,7 @@ class Dialog(wx.Dialog):
         
         self.ctrl_individus = OL_Inscriptions_scolaires_2.ListView(self, id=-1, name="OL_Inscriptions_scolaires_2", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_individus.MAJ(forceMAJ=True) 
-        
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
-        self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
-        self.ctrl_recherche = OL_Inscriptions_scolaires_2.BarreRecherche(self)
+        self.ctrl_recherche = OL_Inscriptions_scolaires_2.CTRL_Outils(self, listview=self.ctrl_individus, afficherCocher=True)
         
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
@@ -433,10 +403,6 @@ class Dialog(wx.Dialog):
         # Hyperliens
         grid_sizer_hyperliens = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_hyperliens.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
-        grid_sizer_hyperliens.Add((10, 10), 0, wx.EXPAND, 0)
-        grid_sizer_hyperliens.Add(self.hyper_tout, 0, 0, 0)
-        grid_sizer_hyperliens.Add(self.label_separation, 0, 0, 0)
-        grid_sizer_hyperliens.Add(self.hyper_rien, 0, 0, 0)
         grid_sizer_hyperliens.AddGrowableCol(0)
         grid_sizer_individus.Add(grid_sizer_hyperliens, 1, wx.EXPAND, 0)
         
