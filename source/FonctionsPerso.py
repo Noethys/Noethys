@@ -1452,7 +1452,7 @@ def RechercheModules(nomFichier="Noethys.py") :
     return listeModules
     
 if __name__ == "__main__":
-    RemplacerContenuFichier() 
+##    RemplacerContenuFichier() 
     # ------- Affiche les stats -------
 ##    AfficheStatsProgramme()
     
@@ -1472,5 +1472,8 @@ if __name__ == "__main__":
 ##    dlg.Destroy() 
 ##    app.MainLoop()
     
-##    listeModules = RechercheModules("UTILS_Infos_individus.py")
-##    print len(listeModules), "modules trouves : ", listeModules
+    # Recherche de modules
+    listeModules = RechercheModules("OL_Liste_comptes.py")
+    for x in listeModules :
+        print x
+    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 

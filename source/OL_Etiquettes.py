@@ -519,6 +519,12 @@ class ListView(FastObjectListView):
 ##        else:
 ##            dlg.Destroy()
 ##            return
+    
+    def OnCheck(self, track):
+        try :
+            self.GetParent().OnCheck(track)
+        except :
+            pass
         
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """            
