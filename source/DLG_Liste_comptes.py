@@ -30,6 +30,11 @@ class Dialog(wx.Dialog):
         self.ctrl_recherche = OL_Liste_comptes.CTRL_Outils(self, listview=self.ctrl_comptes)
 
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
 
@@ -38,12 +43,20 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.Modifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.ExportTexte, self.bouton_texte)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_comptes.ExportExcel, self.bouton_excel)
 
         # Init contrôles
         self.ctrl_comptes.MAJ() 
 
     def __set_properties(self):
         self.bouton_modifier.SetToolTipString(u"Cliquez ici pour accéder au compte bancaire sélectionné")
+        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
+        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
+        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
+        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.SetMinSize((800, 600))
@@ -61,9 +74,15 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         
-        grid_sizer_droit = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=8, cols=1, vgap=5, hgap=5)
         grid_sizer_droit.Add(self.bouton_modifier, 0, 0, 0)
-        
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_imprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_texte, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_excel, 0, 0, 0)
+
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(0)

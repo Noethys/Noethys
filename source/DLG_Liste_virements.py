@@ -30,7 +30,11 @@ class Dialog(wx.Dialog):
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
 
@@ -40,12 +44,21 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.AjouterVirement, self.bouton_ajouter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Modifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportTexte, self.bouton_texte)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportExcel, self.bouton_excel)
+
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
         self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un virement")
         self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le virement sélectionné dans la liste")
         self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le virement sélectionné dans la liste")
+        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
+        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
+        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
+        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.SetMinSize((700, 600))
@@ -63,10 +76,17 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         
-        grid_sizer_droit = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)
         grid_sizer_droit.Add(self.bouton_ajouter, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_modifier, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_imprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_texte, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_excel, 0, 0, 0)
+
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         
         grid_sizer_contenu.AddGrowableRow(0)
