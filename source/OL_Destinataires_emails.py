@@ -96,11 +96,12 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.listeFiltres = []
 
-        self.valeurs_manuel = u""
-        self.valeurs_diff = []
-        self.valeurs_familles = []
-        self.valeurs_individus = []
-
+##        self.valeurs_manuel = u""
+##        self.valeurs_diff = []
+##        self.valeurs_familles = []
+##        self.valeurs_individus = []
+        
+        self.memoire_donnees = {}
         self.memoire_pieces = {}
         self.memoire_champs = {}
 
@@ -271,15 +272,10 @@ class ListView(FastObjectListView):
     
     def Modifier(self, event=None):
         import DLG_Selection_mails
-        dlg = DLG_Selection_mails.Dialog(self, 
-                                                            valeurs_manuel = self.valeurs_manuel,
-                                                            valeurs_diff = self.valeurs_diff,
-                                                            valeurs_familles = self.valeurs_familles,
-                                                            valeurs_individus = self.valeurs_individus,
-                                                            )
+        dlg = DLG_Selection_mails.Dialog(self)
+        dlg.SetDonnees(self.memoire_donnees)
         dlg.ShowModal()
-        listeAdresses = dlg.GetListeMails()
-        self.valeurs_manuel, self.valeurs_diff, self.valeurs_familles, self.valeurs_individus = dlg.GetValeurs()
+        self.memoire_donnees, listeAdresses = dlg.GetDonnees()
         dlg.Destroy()
         
         listeTemp = []
@@ -310,7 +306,10 @@ class ListView(FastObjectListView):
         for track in self.donnees :
             if track.adresse != None :
                 listeTemp.append(track.adresse) 
-        self.valeurs_manuel = ";".join(listeTemp)
+        self.memoire_donnees["saisie_manuelle"] = {
+            "texte" : ";".join(listeTemp),
+            "liste_adresses" : listeTemp,
+            }
 
     def AjouterPiece(self, event):
         """ Demande l'emplacement du fichier à joindre """
@@ -548,7 +547,7 @@ class MyFrame(wx.Frame):
             {"adresse" : "monadresse2@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : u"nom2", "{UTILISATEUR_PRENOM}" : u"prenom2" } },
             {"adresse" : "monadresse3@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : u"nom3", "{UTILISATEUR_PRENOM}" : u"prenom3" } },
             ]
-        self.myOlv.SetDonneesManuelles(listeDonnees, modificationAutorisee=False)
+        self.myOlv.SetDonneesManuelles(listeDonnees, modificationAutorisee=True)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

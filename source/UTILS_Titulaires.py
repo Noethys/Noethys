@@ -132,12 +132,19 @@ def GetTitulaires(listeIDfamille=[]):
                 IDsecteur = dictIndividus[IDindividuTitulaire]["IDsecteur"]
                 nomSecteur = dictIndividus[IDindividuTitulaire]["nomSecteur"]
             dictAdresse = {"rue":rue_resid, "cp":cp_resid, "ville":ville_resid, "IDsecteur":IDsecteur, "nomSecteur":nomSecteur}
-        
+            
+            # Recherche des adresses Emails des titulaires
+            listeMails = []
+            for dictTemp in listeTitulaires :
+                if dictTemp["mail"] not in (None, ""):
+                    listeMails.append(dictTemp["mail"])
+            
             # Définit les noms des titulaires
             dictFamilles[IDfamille]["titulairesAvecCivilite"] = nomsTitulaires["avecCivilite"]
             dictFamilles[IDfamille]["titulairesSansCivilite"] = nomsTitulaires["sansCivilite"]
             dictFamilles[IDfamille]["listeTitulaires"] = listeTitulaires
             dictFamilles[IDfamille]["adresse"] = dictAdresse
+            dictFamilles[IDfamille]["listeMails"] = listeMails
         
         else:
             # Définit les noms des titulaires
@@ -145,6 +152,7 @@ def GetTitulaires(listeIDfamille=[]):
             dictFamilles[IDfamille]["titulairesSansCivilite"] = u"Sans titulaires"
             dictFamilles[IDfamille]["listeTitulaires"] = []
             dictFamilles[IDfamille]["adresse"] = {"rue":"", "cp":"", "ville":"", "IDsecteur":None, "nomSecteur":""}
+            dictFamilles[IDfamille]["listeMails"] = []
     
     return dictFamilles
 

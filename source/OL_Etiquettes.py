@@ -269,7 +269,14 @@ class TrackFamille(object):
         self.regime = donnees["nomRegime"]
         self.caisse = donnees["nomCaisse"]
         self.numAlloc = donnees["numAlloc"]
-
+        
+        # Ajout des adresses Emails des titulaires
+        self.listeMails = donnees["listeMails"]
+        if len(self.listeMails) > 0 :
+            self.mail = self.listeMails[0]
+        else :
+            self.mail = None
+        
         # Récupération des réponses des questionnaires
         for dictQuestion in self.listview.LISTE_QUESTIONS :
             exec(u"self.question_%d = self.listview.GetReponse(%d, %s)" % (dictQuestion["IDquestion"], dictQuestion["IDquestion"], self.IDfamille))
@@ -351,15 +358,17 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
             rue = titulaires[IDfamille]["adresse"]["rue"]
             cp = titulaires[IDfamille]["adresse"]["cp"]
             ville = titulaires[IDfamille]["adresse"]["ville"]
+            listeMails = titulaires[IDfamille]["listeMails"]
         else :
             nomTitulaires = u"Aucun titulaire"
             rue = u""
             cp = u""
             ville = u""
+            listeMails = []
         dictTemp = {
             "IDfamille" : IDfamille, "titulaires" : nomTitulaires, "nomRegime" : nomRegime, 
             "nomCaisse" : nomCaisse, "numAlloc" : numAlloc,
-            "rue" : rue, "cp" : cp, "ville" : ville,
+            "rue" : rue, "cp" : cp, "ville" : ville, "listeMails" : listeMails,
             }
     
         # Formatage sous forme de TRACK
@@ -455,6 +464,7 @@ class ListView(FastObjectListView):
                 ColumnDefn(u"Rue", "left", 160, "rue", typeDonnee="texte"),
                 ColumnDefn(u"C.P.", "left", 45, "cp", typeDonnee="texte"),
                 ColumnDefn(u"Ville", "left", 120, "ville", typeDonnee="texte"),
+                ColumnDefn(u"Email", "left", 100, "mail", typeDonnee="texte"),
                 ColumnDefn(u"Régime", "left", 130, "regime", typeDonnee="texte"),
                 ColumnDefn(u"Caisse", "left", 130, "caisse", typeDonnee="texte"),
                 ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc", typeDonnee="texte"),
@@ -507,6 +517,22 @@ class ListView(FastObjectListView):
             listeDonnees.append(dictTemp)
         return listeDonnees
     
+    def SetIDcoches(self, listeID=[]):
+        for track in self.donnees :
+            if self.categorie == "individus" :
+                ID = track.IDindividu
+            else :
+                ID = track.IDfamille
+            if ID in listeID :
+                self.Check(track)
+                self.RefreshObject(track)
+    
+    def OnCheck(self, track=None):
+        try :
+            self.GetParent().OnCheck(track)
+        except :
+            pass
+        
 ##    def FiltrerPresents(self, event=None):
 ##        import DLG_Selection_individus
 ##        dlg = DLG_Selection_individus.Dialog(self)
@@ -656,7 +682,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(categorie="individu", listeActivites=None, presents=None)
+        self.myOlv.MAJ(categorie="famille", listeActivites=None, presents=None)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

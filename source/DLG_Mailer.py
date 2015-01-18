@@ -638,17 +638,15 @@ class Dialog(wx.Dialog):
 
 
 if __name__ == u"__main__":
-    pass
-    
-##    app = wx.App(0)
-##    dlg = Dialog(None)
-##    listeDonnees = [
-##        {"adresse" : "noéthys@gmail.com", "pieces" : [], "champs" : {} },
-##        ]
-##    dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
-##    app.SetTopWindow(dlg)
-##    dlg.ShowModal()
-##    app.MainLoop()
+    app = wx.App(0)
+    dlg = Dialog(None)
+    listeDonnees = [
+##        {"adresse" : "test@gmail.com", "pieces" : [], "champs" : {} },
+        ]
+    dlg.SetDonnees(listeDonnees, modificationAutorisee=True)
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
+    app.MainLoop()
     
 
 ##    app = wx.App(0)
