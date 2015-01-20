@@ -2074,9 +2074,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numColonne = self.XToCol(x)
         case = None
         if numLigne != -1 and numColonne != -1 : 
-            ligne = self.dictLignes[numLigne]
-            if ligne.dictCases.has_key(numColonne) :
-                case = ligne.dictCases[numColonne]            
+            if self.dictLignes.has_key(numLigne) :
+                ligne = self.dictLignes[numLigne]
+                if ligne.dictCases.has_key(numColonne) :
+                    case = ligne.dictCases[numColonne]            
 
         # Dragging barre
         if self.barreMoving != None :

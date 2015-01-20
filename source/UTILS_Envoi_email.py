@@ -140,6 +140,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
 def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, ssl=False, listeImages=[], motdepasse=None, accuseReception=False):
     """ Envoi d'un mail avec pièce jointe """
     import smtplib
+    import poplib
     from email.MIMEMultipart import MIMEMultipart
     from email.MIMEBase import MIMEBase
     from email.MIMEText import MIMEText
@@ -222,12 +223,19 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         msg.attach(msgImage)
         index += 1
     
+##    pop = poplib.POP3(serveur)
+##    print pop.getwelcome()
+##    pop.user(adresseExpediteur)
+##    pop.pass_(motdepasse)
+##    print pop.stat()
+##    print pop.list()
+    
     if ssl == False :
         # Envoi standard
-        smtp = smtplib.SMTP(serveur)
+        smtp = smtplib.SMTP(serveur, timeout=3)
     else:
         # Si identification SSL nécessaire :
-        smtp = smtplib.SMTP(serveur, port, timeout=120)
+        smtp = smtplib.SMTP(serveur, port, timeout=3)
         smtp.ehlo()
         smtp.starttls()
         smtp.ehlo()
@@ -235,6 +243,24 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
     
     smtp.sendmail(adresseExpediteur, listeDestinataires + listeDestinatairesCCI, msg.as_string())
     smtp.close()
-
+    
     return True
-        
+
+
+
+# TEST d'envoi d'emails
+if __name__ == u"__main__":
+    print Envoi_mail( 
+        adresseExpediteur="XXX", 
+        listeDestinataires=["XXX",], 
+        listeDestinatairesCCI=[], 
+        sujetMail=u"Sujet du Mail", 
+        texteMail=u"Texte du Mail", 
+        listeFichiersJoints=[], 
+        serveur="XXX", 
+        port=465, 
+        ssl=True, 
+        listeImages=[],
+        motdepasse="XXX",
+        accuseReception = False,
+        )

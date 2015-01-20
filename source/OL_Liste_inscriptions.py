@@ -369,7 +369,8 @@ class ListView(GroupListView):
             self.useExpansionColumn = False
             
         self.SetShowItemCounts(True)
-        self.SetSortColumn(self.columns[0])
+        if len(self.columns) > 0 :
+            self.SetSortColumn(self.columns[0])
         self.SetEmptyListMsg(u"Aucune inscription")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)

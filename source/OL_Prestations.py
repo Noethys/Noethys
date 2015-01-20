@@ -553,9 +553,9 @@ class ListView(GroupListView):
         
         nePlusDemanderConfirmation = False
         listeSuppressions = []
+        DB = GestionDB.DB()
         for track in listeSelections :
             
-            DB = GestionDB.DB()
             valide = True
             
             # Vérifie si ce n'est pas un forfait non supprimable
