@@ -822,16 +822,18 @@ class MainFrame(wx.Frame):
                     },
                     "-",
                     {"code" : "liste_prestations", "label" : u"Liste des prestations", "infobulle" : u"Liste des prestations", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
+                    "-",
                     {"code" : "liste_deductions", "label" : u"Liste des déductions", "infobulle" : u"Liste des déductions", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
+                    {"code" : "saisir_lot_deductions", "label" : u"Saisir un lot de déductions", "infobulle" : u"Saisir un lot de déductions", "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
                     "-",
                     {"code" : "liste_soldes_familles", "label" : u"Liste des soldes", "infobulle" : u"Liste des soldes des comptes familles", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes},
                     {"code" : "liste_soldes_individus", "label" : u"Liste des soldes individuels", "infobulle" : u"Liste des soldes individuels", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes_individuels},
                     "-",
-                    {"code" : "solder_impayes", "label" : u"Solder les impayés", "infobulle" : u"Solder les impayés", "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_solder_impayes},
                     {"code" : "synthese_impayes", "label" : u"Synthèse des impayés", "infobulle" : u"Synthèse des impayés", "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_impayes},
+                    {"code" : "solder_impayes", "label" : u"Solder les impayés", "infobulle" : u"Solder les impayés", "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_solder_impayes},
                     "-",
-                    {"code" : "prestations_villes", "label" : u"Liste des prestations par famille", "infobulle" : u"Liste des prestations par famille", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_prestations_villes},
                     {"code" : "synthese_prestations", "label" : u"Synthèse des prestations", "infobulle" : u"Synthèse des prestations", "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_prestations},
+                    {"code" : "prestations_villes", "label" : u"Liste des prestations par famille", "infobulle" : u"Liste des prestations par famille", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_prestations_villes},
                     "-",
                     {"code" : "export_compta", "label" : u"Export des écritures comptables", "infobulle" : u"Exporter les écritures comptables", "image" : "Images/16x16/Export_comptable.png", "action" : self.On_facturation_export_compta},
                     ],
@@ -2568,8 +2570,16 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def On_facturation_liste_deductions(self, event):
+        if self.VerificationVentilation() == False : return
         import DLG_Liste_deductions
         dlg = DLG_Liste_deductions.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_facturation_saisir_deductions(self, event):
+        if self.VerificationVentilation() == False : return
+        import DLG_Saisie_lot_deductions
+        dlg = DLG_Saisie_lot_deductions.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 

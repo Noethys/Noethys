@@ -12,30 +12,13 @@ import wx
 import datetime
 import GestionDB
 
+import UTILS_Dates
 import UTILS_Titulaires
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-try: import psyco; psyco.full()
-except: pass
-
-
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
-
-def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
-    return dateComplete
-
-def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
 
         
@@ -63,6 +46,8 @@ class Track(object):
         self.labelPrestation = donnees["labelPrestation"]
         self.montantPrestation = donnees["montantPrestation"]
         self.montantInitialPrestation = donnees["montantInitialPrestation"]
+        self.datePrestation = donnees["datePrestation"]
+        self.IDfacture = donnees["IDfacture"]
         
         if self.labelPrestation != None and self.montantPrestation != None and self.montantInitialPrestation != None :
             self.textePrestation = u"%s (initial : %.2f %s - final : %.2f %s)" % (self.labelPrestation, self.montantInitialPrestation, SYMBOLE, self.montantPrestation, SYMBOLE)
@@ -135,7 +120,7 @@ class ListView(FastObjectListView):
         db = GestionDB.DB()
         req = """SELECT 
         IDdeduction, deductions.IDprestation, deductions.IDcompte_payeur, deductions.date, deductions.montant, deductions.label, IDaide, 
-        individus.nom, individus.prenom, prestations.label, prestations.montant, prestations.montant_initial, prestations.IDfamille, prestations.IDactivite, activites.abrege, prestations.IDindividu
+        individus.nom, individus.prenom, prestations.label, prestations.montant, prestations.montant_initial, prestations.IDfamille, prestations.IDactivite, activites.abrege, prestations.IDindividu, prestations.date, prestations.IDfacture
         FROM deductions
         LEFT JOIN prestations ON prestations.IDprestation = deductions.IDprestation
         LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
@@ -145,14 +130,15 @@ class ListView(FastObjectListView):
         listeDonnees = db.ResultatReq()
         db.Close() 
         listeDeductions = []
-        for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu in listeDonnees :
-            date = DateEngEnDateDD(date)
+        for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu, datePrestation, IDfacture in listeDonnees :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
             dictTemp = {
                 "IDdeduction" : IDdeduction, "IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, 
                 "date" : date, "montant" : montant, "label" : label, "IDaide" : IDaide, 
                 "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, 
                 "labelPrestation" : labelPrestation, "montantPrestation" : montantPrestation, "montantInitialPrestation" : montantInitialPrestation,
-                "IDfamille" : IDfamille, "IDactivite" : IDactivite, "abregeActivite" : abregeActivite, "IDindividu" : IDindividu,
+                "IDfamille" : IDfamille, "IDactivite" : IDactivite, "abregeActivite" : abregeActivite, "IDindividu" : IDindividu, "datePrestation" : datePrestation, "IDfacture" : IDfacture,
                 }
             listeDeductions.append(dictTemp)
         return listeDeductions
@@ -182,32 +168,41 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
 
         def FormateDateLong(dateDD):
-            return DateComplete(dateDD)
+            return UTILS_Dates.DateComplete(dateDD)
 
         def FormateDateCourt(dateDD):
             if dateDD == None :
                 return ""
             else:
-                return DateEngFr(str(dateDD))
+                return UTILS_Dates.DateEngFr(str(dateDD))
 
         def FormateMontant(montant):
             if montant == None : return u""
             return u"%.2f %s" % (montant, SYMBOLE)
         
+        def FormateFacture(IDfacture):
+            if IDfacture == None :
+                return u"Non"
+            else :
+                return u"Oui"
+            
         liste_Colonnes = [
             ColumnDefn(u"ID", "left", 0, "IDdeduction", typeDonnee="entier"),
             ColumnDefn(u"Date", 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
             ColumnDefn(u"Famille", 'left', 160, "nomTitulaires", typeDonnee="texte"),
             ColumnDefn(u"Individu", 'left', 140, "nomComplet", typeDonnee="texte"), 
-            ColumnDefn(u"Déduction", 'left', 220, "label", typeDonnee="texte"), 
+            ColumnDefn(u"Label déduction", 'left', 220, "label", typeDonnee="texte"), 
             ColumnDefn(u"Montant", 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
-            ColumnDefn(u"Prestation", 'left', 150, "labelPrestation", typeDonnee="texte"), 
+            ColumnDefn(u"Label prestation", 'left', 150, "labelPrestation", typeDonnee="texte"), 
+            ColumnDefn(u"Date prestation", 'left', 90, "datePrestation", typeDonnee="date", stringConverter=FormateDateCourt), 
             ColumnDefn(u"Activité", 'left', 70, "abregeActivite", typeDonnee="texte"), 
             ColumnDefn(u"Montant initial", 'right', 90, "montantInitialPrestation", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(u"Montant final", 'right', 90, "montantPrestation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Facturé", 'left', 60, "IDfacture", typeDonnee="texte", stringConverter=FormateFacture),
             ]
 
         self.SetColumns(liste_Colonnes)
+        self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(u"Aucune déduction")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
@@ -248,23 +243,23 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-##        # Item Modifier
-##        item = wx.MenuItem(menuPop, 20, u"Modifier")
-##        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
-##        item.SetBitmap(bmp)
-##        menuPop.AppendItem(item)
-##        self.Bind(wx.EVT_MENU, self.Modifier, id=20)
-##        if noSelection == True : item.Enable(False)
-##        
-##        # Item Supprimer
-##        item = wx.MenuItem(menuPop, 30, u"Supprimer")
-##        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
-##        item.SetBitmap(bmp)
-##        menuPop.AppendItem(item)
-##        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-##        if noSelection == True : item.Enable(False)
-##                
-##        menuPop.AppendSeparator()
+        # Item Modifier
+        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Modifier, id=20)
+        if noSelection == True : item.Enable(False)
+        
+        # Item Supprimer
+        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
+        if noSelection == True : item.Enable(False)
+                
+        menuPop.AppendSeparator()
     
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
@@ -350,22 +345,78 @@ class ListView(FastObjectListView):
         dlg.Destroy() 
 
     def Supprimer(self, event):
-        if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+        if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDdeduction = self.Selection()[0].IDdeduction
-        montant = self.Selection()[0].montant
-        IDprestation = self.Selection()[0].IDprestation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette déduction ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-        if dlg.ShowModal() == wx.ID_YES :
-            DB = GestionDB.DB()
-            DB.ReqDEL("deductions", "IDdeduction", IDdeduction)
-            DB.Close() 
-            self.MAJ(date_debut=self.date_debut, date_fin=self.date_fin, listeActivites=self.listeActivites, filtres=self.filtres)
-        dlg.Destroy()
-    
+
+        if len(self.GetTracksCoches()) > 0 :
+            # Suppression multiple
+            listeSelections = self.GetTracksCoches()
+            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les %d déductions cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal() 
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+        
+        else :
+            # Suppression unique
+            listeSelections = self.Selection()        
+            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la déduction n°%d ?" % listeSelections[0].IDdeduction, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal() 
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+        
+        # Vérifie les prestations déjà facturées
+        nbreFactures = 0
+        for track in listeSelections :
+            if track.IDfacture != None :
+                nbreFactures += 1
+        if nbreFactures > 0 :
+            dlg = wx.MessageDialog(self, u"Suppression impossible : %d déductions sont associées à des prestations déjà facturées !" % nbreFactures, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False                
+            
+        # Sauvegarde
+        listeSupprDeductions = []
+        listeSupprVentilations = []
+        listeModifications = []
+        dictMontantsPrestations = {}
+        for track in listeSelections :
+            if dictMontantsPrestations.has_key(track.IDprestation) :
+                montantPrestation = dictMontantsPrestations[track.IDprestation]
+            else :
+                montantPrestation = track.montantPrestation
+            listeSupprDeductions.append(track.IDdeduction)
+            if track.IDprestation not in listeSupprVentilations :
+                listeSupprVentilations.append(track.IDprestation)
+            newMontantPrestation = montantPrestation + track.montant
+            listeModifications.append((newMontantPrestation, track.IDprestation))
+            dictMontantsPrestations[track.IDprestation] = newMontantPrestation
+            
+        DB = GestionDB.DB()
+        if len(listeSupprDeductions) > 0 :
+            if len(listeSupprDeductions) == 1 : conditionSuppressions = "(%d)" % listeSupprDeductions[0]
+            else : conditionSuppressions = str(tuple(listeSupprDeductions))
+            DB.ExecuterReq("DELETE FROM deductions WHERE IDdeduction IN %s" % conditionSuppressions)
+        if len(listeSupprVentilations) > 0 :
+            if len(listeSupprVentilations) == 1 : conditionSuppressions = "(%d)" % listeSupprVentilations[0]
+            else : conditionSuppressions = str(tuple(listeSupprVentilations))
+            DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppressions)
+        if len(listeModifications) > 0 :
+            DB.Executermany(u"UPDATE prestations SET montant=? WHERE IDprestation=?", listeModifications, commit=False)
+        DB.Commit()
+        DB.Close() 
+
+        # MAJ affichage
+        self.MAJ(date_debut=self.date_debut, date_fin=self.date_fin, listeActivites=self.listeActivites, filtres=self.filtres)
+
+    def GetTracksCoches(self):
+        return self.GetCheckedObjects()
+
     def GetTotalDeductions(self):
         """ Est utilisée par la DLG_Saisie_prestation pour connaître le montant total des déductions """
         total = 0.0

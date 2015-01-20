@@ -382,9 +382,11 @@ class Dialog(wx.Dialog):
         # ListView
         self.ctrl_listview = OL_Liste_deductions.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.SetMinSize((100, 100))
-        self.ctrl_recherche = OL_Liste_deductions.CTRL_Outils(self, listview=self.ctrl_listview)
+        self.ctrl_recherche = OL_Liste_deductions.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
         
         # Commandes de liste
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         self.bouton_export_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
@@ -393,11 +395,13 @@ class Dialog(wx.Dialog):
         # Commandes
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
-        
-        self.Bind(wx.EVT_BUTTON, self.Apercu, self.bouton_apercu)
-        self.Bind(wx.EVT_BUTTON, self.Imprimer, self.bouton_imprimer)
-        self.Bind(wx.EVT_BUTTON, self.ExportTexte, self.bouton_export_texte)
-        self.Bind(wx.EVT_BUTTON, self.ExportExcel, self.bouton_export_excel)
+
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportTexte, self.bouton_export_texte)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportExcel, self.bouton_export_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
         self.__set_properties()
@@ -413,6 +417,8 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la déduction sélectionnée dans la liste")
+        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la déduction sélectionnée dans la liste")
         self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
         self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
         self.bouton_export_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
@@ -434,7 +440,10 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu2.Add(self.ctrl_listview, 1, wx.EXPAND, 0)
         
         # Boutons de liste
-        grid_sizer_droit = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=8, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (10, 10), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_imprimer, 0, 0, 0)
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
@@ -503,18 +512,6 @@ class Dialog(wx.Dialog):
                 
         labelParametres = " | ".join(listeParametres)
         return labelParametres
-
-    def Apercu(self, event):
-        self.ctrl_listview.Apercu(None)
-        
-    def Imprimer(self, event):
-        self.ctrl_listview.Imprimer(None)
-
-    def ExportTexte(self, event):
-        self.ctrl_listview.ExportTexte(None)
-        
-    def ExportExcel(self, event):
-        self.ctrl_listview.ExportExcel(None)
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
