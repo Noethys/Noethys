@@ -14,6 +14,7 @@ from xml.dom.minidom import Document
 
 import wx
 import UTILS_Utilisateurs
+import FonctionsPerso
 
 
 
@@ -67,7 +68,7 @@ def GetXML(dictDonnees={}):
     Parametres.appendChild(TypFic)
 
     NomFic = doc.createElement("NomFic")
-    NomFic.setAttribute("V", dictDonnees["nom_fichier"])
+    NomFic.setAttribute("V", dictDonnees["nom_fichier"][:100])
     Parametres.appendChild(NomFic)
 
     Emetteur = doc.createElement("Emetteur")
@@ -76,6 +77,11 @@ def GetXML(dictDonnees={}):
     Sigle = doc.createElement("Sigle")
     Sigle.setAttribute("V", "NOETHYS")
     Emetteur.appendChild(Sigle)
+    
+    versionLogiciel = FonctionsPerso.GetVersionLogiciel()
+    Adresse = doc.createElement("Adresse")
+    Adresse.setAttribute("V", u"Noethys %s" % versionLogiciel)
+    Emetteur.appendChild(Adresse)
 
     # EnTetePES
     EnTetePES = doc.createElement("EnTetePES")
@@ -86,19 +92,19 @@ def GetXML(dictDonnees={}):
     EnTetePES.appendChild(DteStr)
 
     IdPost = doc.createElement("IdPost")
-    IdPost.setAttribute("V", dictDonnees["id_poste"])
+    IdPost.setAttribute("V", dictDonnees["id_poste"][:7])
     EnTetePES.appendChild(IdPost)
 
     IdColl = doc.createElement("IdColl")
-    IdColl.setAttribute("V", dictDonnees["id_collectivite"])
+    IdColl.setAttribute("V", dictDonnees["id_collectivite"][:14])
     EnTetePES.appendChild(IdColl)
 
     CodCol = doc.createElement("CodCol")
-    CodCol.setAttribute("V", dictDonnees["code_collectivite"])
+    CodCol.setAttribute("V", dictDonnees["code_collectivite"][:3])
     EnTetePES.appendChild(CodCol)
 
     CodBud = doc.createElement("CodBud")
-    CodBud.setAttribute("V", dictDonnees["code_budget"])
+    CodBud.setAttribute("V", dictDonnees["code_budget"][:10])
     EnTetePES.appendChild(CodBud)
 
     # PES_RecetteAller
@@ -126,11 +132,11 @@ def GetXML(dictDonnees={}):
     Bordereau.appendChild(BlocBordereau)
     
     Exer = doc.createElement("Exer")
-    Exer.setAttribute("V", dictDonnees["exercice"])
+    Exer.setAttribute("V", dictDonnees["exercice"][:4])
     BlocBordereau.appendChild(Exer)
     
     IdBord = doc.createElement("IdBord")
-    IdBord.setAttribute("V", dictDonnees["id_bordereau"])
+    IdBord.setAttribute("V", dictDonnees["id_bordereau"][:7])
     BlocBordereau.appendChild(IdBord)
     
     DteBordEm = doc.createElement("DteBordEm")
@@ -154,7 +160,7 @@ def GetXML(dictDonnees={}):
     BlocBordereau.appendChild(DteAsp)
 
     Objet = doc.createElement("Objet")
-    Objet.setAttribute("V", dictDonnees["objet_dette"])
+    Objet.setAttribute("V", dictDonnees["objet_dette"][:160])
     BlocBordereau.appendChild(Objet)
     
     # ----------------------- PIECES --------------------------------------------------------------------------------------------------------------------------
@@ -169,7 +175,7 @@ def GetXML(dictDonnees={}):
         Piece.appendChild(BlocPiece)
     
         IdPce = doc.createElement("IdPce")
-        IdPce.setAttribute("V", dictPiece["id_piece"])
+        IdPce.setAttribute("V", dictPiece["id_piece"][:8])
         BlocPiece.appendChild(IdPce)
     
         TypPce = doc.createElement("TypPce")
@@ -181,15 +187,15 @@ def GetXML(dictDonnees={}):
         BlocPiece.appendChild(NatPce)
 
         ObjPce = doc.createElement("ObjPce")
-        ObjPce.setAttribute("V", dictPiece["objet_piece"])
+        ObjPce.setAttribute("V", dictPiece["objet_piece"][:160])
         BlocPiece.appendChild(ObjPce)
-
+        
         NumDette = doc.createElement("NumDette")
-        NumDette.setAttribute("V", u"{:0>13}".format(dictPiece["num_dette"]))
+        NumDette.setAttribute("V", dictPiece["num_dette"][:15])
         BlocPiece.appendChild(NumDette)
 
         Per = doc.createElement("Per")
-        Per.setAttribute("V", dictDonnees["mois"])
+        Per.setAttribute("V", dictDonnees["mois"][:1])
         BlocPiece.appendChild(Per)
 
         Cle1 = doc.createElement("Cle1")
@@ -216,8 +222,12 @@ def GetXML(dictDonnees={}):
         IdLigne.setAttribute("V", "1")
         InfoLignePiece.appendChild(IdLigne)
 
+        ObjLignePce = doc.createElement("ObjLignePce")
+        ObjLignePce.setAttribute("V", dictPiece["objet_piece"][:160])
+        InfoLignePiece.appendChild(ObjLignePce)
+
         CodProdLoc = doc.createElement("CodProdLoc")
-        CodProdLoc.setAttribute("V", dictDonnees["code_prodloc"])
+        CodProdLoc.setAttribute("V", dictDonnees["code_prodloc"][:4])
         InfoLignePiece.appendChild(CodProdLoc)
 
         Nature = doc.createElement("Nature")
@@ -289,12 +299,27 @@ def GetXML(dictDonnees={}):
         InfoTiers = doc.createElement("InfoTiers")
         Tiers.appendChild(InfoTiers)
         
+        if dictPiece["idtiers_helios"] != "" :
+            IdTiers = doc.createElement("IdTiers")
+            IdTiers.setAttribute("V", dictPiece["idtiers_helios"])
+            InfoTiers.appendChild(IdTiers)
+
+        if dictPiece["natidtiers_helios"] != "" :
+            NatIdTiers = doc.createElement("NatIdTiers")
+            NatIdTiers.setAttribute("V", dictPiece["natidtiers_helios"])
+            InfoTiers.appendChild(NatIdTiers)
+
+        if dictPiece["reftiers_helios"] != "" :
+            RefTiers = doc.createElement("RefTiers")
+            RefTiers.setAttribute("V", dictPiece["reftiers_helios"])
+            InfoTiers.appendChild(RefTiers)
+        
         CatTiers = doc.createElement("CatTiers")
-        CatTiers.setAttribute("V", "01")
+        CatTiers.setAttribute("V", dictPiece["cattiers_helios"])
         InfoTiers.appendChild(CatTiers)
         
         NatJur = doc.createElement("NatJur")
-        NatJur.setAttribute("V", "01")
+        NatJur.setAttribute("V", dictPiece["natjur_helios"])
         InfoTiers.appendChild(NatJur)
         
         TypTiers = doc.createElement("TypTiers")
@@ -304,17 +329,20 @@ def GetXML(dictDonnees={}):
         civilite = dictPiece["titulaire_civilite"]
         if civilite == "M." : civilite = "Mr"
         if civilite == "Melle" : civilite = "Mme"
-        Civilite = doc.createElement("Civilite")
-        Civilite.setAttribute("V", civilite)
-        InfoTiers.appendChild(Civilite)
+        if civilite not in (None, "") :
+            Civilite = doc.createElement("Civilite")
+            Civilite.setAttribute("V", civilite[:10])
+            InfoTiers.appendChild(Civilite)
         
         Nom = doc.createElement("Nom")
-        Nom.setAttribute("V", dictPiece["titulaire_nom"])
+        Nom.setAttribute("V", dictPiece["titulaire_nom"][:38])
         InfoTiers.appendChild(Nom)
         
-        Prenom = doc.createElement("Prenom")
-        Prenom.setAttribute("V", dictPiece["titulaire_prenom"])
-        InfoTiers.appendChild(Prenom)
+        prenom = dictPiece["titulaire_prenom"]
+        if prenom not in (None, "") :
+            Prenom = doc.createElement("Prenom")
+            Prenom.setAttribute("V", prenom[:38])
+            InfoTiers.appendChild(Prenom)
         
         # Adresse
         Adresse = doc.createElement("Adresse")
@@ -323,17 +351,17 @@ def GetXML(dictDonnees={}):
         TypAdr = doc.createElement("TypAdr")
         TypAdr.setAttribute("V", "1")
         Adresse.appendChild(TypAdr)
-        
+
         Adr2 = doc.createElement("Adr2")
-        Adr2.setAttribute("V", dictPiece["titulaire_rue"])
+        Adr2.setAttribute("V", dictPiece["titulaire_rue"][:38])
         Adresse.appendChild(Adr2)
         
         CP = doc.createElement("CP")
-        CP.setAttribute("V", dictPiece["titulaire_cp"])
+        CP.setAttribute("V", dictPiece["titulaire_cp"][:5])
         Adresse.appendChild(CP)
         
         Ville = doc.createElement("Ville")
-        Ville.setAttribute("V", dictPiece["titulaire_ville"])
+        Ville.setAttribute("V", dictPiece["titulaire_ville"][:38])
         Adresse.appendChild(Ville)
 
         CodRes = doc.createElement("CodRes")
@@ -355,7 +383,7 @@ def GetXML(dictDonnees={}):
             CpteBancaire.appendChild(IBAN)
             
             TitCpte = doc.createElement("TitCpte")
-            TitCpte.setAttribute("V", dictPiece["prelevement_titulaire"])
+            TitCpte.setAttribute("V", dictPiece["prelevement_titulaire"][:32])
             CpteBancaire.appendChild(TitCpte)
 
     return doc

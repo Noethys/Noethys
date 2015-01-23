@@ -635,6 +635,11 @@ class Dialog(wx.Dialog):
                 "titulaire_rue" : track.titulaireRue,
                 "titulaire_cp" : track.titulaireCP,
                 "titulaire_ville" : track.titulaireVille,
+                "idtiers_helios" : track.idtiers_helios,
+                "natidtiers_helios" : track.natidtiers_helios,
+                "reftiers_helios" : track.reftiers_helios,
+                "cattiers_helios" : track.cattiers_helios,
+                "natjur_helios" : track.natjur_helios,
                 }        
             listePieces.append(dictPiece)
             montantTotal += montant

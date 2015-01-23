@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
         
         # Si c'est une nouvelle fiche, on propose immédiatement la création d'un individu
         if self.nouvelleFiche == True :
-            wx.CallAfter(self.ctrl_composition.Ajouter, 0)
+            wx.CallAfter(self.CreerPremierIndividu)
         
         # MAJ de l'onglet Informations
         self.notebook.GetPageAvecCode("informations").MAJ() 
@@ -271,7 +271,12 @@ class Dialog(wx.Dialog):
         else:
             self.SetSize(taille_fenetre)        
         self.CenterOnScreen() 
-        
+    
+    def CreerPremierIndividu(self):
+        IDindividu = self.ctrl_composition.Ajouter()
+        # Renseigne le premier individu comme titulaire Hélios
+        if IDindividu != None :
+            self.notebook.GetPageAvecCode("divers").ctrl_parametres.SetPropertyValue("titulaire_helios", IDindividu)
     
     def MAJpageActive(self):
         self.notebook.MAJpageActive() 

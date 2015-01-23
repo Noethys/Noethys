@@ -1231,7 +1231,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     }
                 dlg = DLG_Individu.Dialog(None, IDindividu=None, dictInfosNouveau=dictInfosNouveau)
                 if dlg.ShowModal() == wx.ID_OK:
-                    pass #print "Nouvelle fiche creee et deja rattachee."
+                    IDindividu = dlg.IDindividu #print "Nouvelle fiche creee et deja rattachee."
                 else:
                     self.SupprimerFamille() 
                 dlg.Destroy()
@@ -1241,9 +1241,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
             # MAJ de l'affichage
             self.MAJ() 
             self.MAJnotebook() 
+            return IDindividu
         else:
             dlg.Destroy()
             self.SupprimerFamille() 
+            return None
     
     def SupprimerFamille(self):
         # Supprime la fiche famille lorsqu'on annule le rattachement du premier titulaire
@@ -1980,7 +1982,8 @@ class Notebook(wx.Notebook):
 
     def Ajouter(self, event=None):
         page = self.GetPage(self.GetSelection())
-        page.Ajouter(None)
+        IDindividu = page.Ajouter(None)
+        return IDindividu
 
     def Modifier_selection(self, event=None):
         page = self.GetPage(self.GetSelection())

@@ -15,7 +15,64 @@ import UTILS_Utilisateurs
 import wx.propgrid as wxpg
 
 
+LISTE_CATEGORIES_TIERS = [
+    ("01", u"Personne physique"),
+    ("20", u"Etat ou établissement public national"),
+    ("21", u"Région"),
+    ("22", u"Département"),
+    ("23", u"Commune"),
+    ("24", u"Groupement de collectivités"),
+    ("25", u"Caisse des écoles"),
+    ("26", u"CCAS"),
+    ("27", u"Etablissement public de santé"),
+    ("28", u"Ecole nationale de la santé publique"),
+    ("29", u"Autre établissement publique ou organisme international"),
+    ("50", u"Personne morale de droit privé autre qu'organisme social"),
+    ("60", u"Caisse de sécurité sociale régime général"),
+    ("61", u"Caisse de sécurité sociale régime agricole"),
+    ("62", u"Sécurité sociale des travailleurs non salariés et professions non agricoles"),
+    ("63", u"Autre régime obligatoire de sécurité sociale"),
+    ("64", u"Mutuelle ou organisme d'assurance"),
+    ("65", u"Autre tiers payant"),
+    ("70", u"CNRACL"),
+    ("71", u"IRCANTEC"),
+    ("72", u"ASSEDIC"),
+    ("73", u"Caisse mutualiste de retraite complémentaire"),
+    ("74", u"Autre organisme social"),
+    ]
 
+LISTE_NATURES_JURIDIQUES = [
+    ("00", u"Inconnu"),
+    ("01", u"Particulier"),
+    ("02", u"Artisan / commerçant / agriculteur"),
+    ("03", u"Société"),
+    ("04", u"CAM ou Caisse appliquant les mêmes règles"),
+    ("05", u"Caisse complémentaire"),
+    ("06", u"Association"),
+    ("07", u"Etat ou organisme d'état"),
+    ("08", u"Etablissement public national"),
+    ("09", u"Collectivité territoriale / EPL / EPS"),
+    ("10", u"Etat étranger"),
+    ("11", u"CAF"),
+    ]
+
+LISTE_TYPES_ID_TIERS = [
+    ("9999", u"Aucun"),
+    ("01", u"SIRET"),
+    ("02", u"SIREN"),
+    ("03", u"FINESS"),
+    ("04", u"NIR"),
+    ]
+
+def GetDonneesListe(liste):
+        listeLabels, listeID = [], []
+        for ID, label in liste :
+            listeID.append(int(ID))
+            if ID == "9999" :
+                listeLabels.append(label)
+            else :
+                listeLabels.append(u"%s - %s" % (ID, label))
+        return listeLabels, listeID
 
 
 class CTRL_Parametres(wxpg.PropertyGrid) :
@@ -32,13 +89,39 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 ##        self.SetVerticalSpacing(3) 
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         
-        # Bordereau
-        self.Append( wxpg.PropertyCategory(u"Facturation") )
+        # Données Tiers pour Hélios
+        self.Append( wxpg.PropertyCategory(u"Données tiers pour Hélios") )
         
-        propriete = wxpg.EnumProperty(label=u"Titulaire pour Hélios", name="titulaire_helios")
+        propriete = wxpg.EnumProperty(label=u"Titulaire", name="titulaire_helios")
         propriete.SetHelpString(u"Sélectionnez le titulaire du compte pour Hélios (Trésor Public)")
         self.Append(propriete)
         self.MAJ_titulaire_helios() 
+
+        propriete = wxpg.StringProperty(label=u"Identifiant national", name="idtiers_helios", value=u"")
+        propriete.SetHelpString(u"[Facultatif] Saisissez l'identifiant national (SIRET ou SIREN ou FINESS ou NIR)") 
+        self.Append(propriete)
+
+        listeLabels, listeID = GetDonneesListe(LISTE_TYPES_ID_TIERS)
+        propriete = wxpg.EnumProperty(label=u"Type d'identifiant national", name="natidtiers_helios", labels=listeLabels, values=listeID, value=9999)
+        propriete.SetHelpString(u"[Facultatif] Sélectionnez le type d'identifiant national du tiers pour Hélios (Trésor Public)")
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=u"Référence locale", name="reftiers_helios", value="")
+        propriete.SetHelpString(u"[Facultatif] Saisissez la référence locale du tiers") 
+        self.Append(propriete)
+
+        listeLabels, listeID = GetDonneesListe(LISTE_CATEGORIES_TIERS)
+        propriete = wxpg.EnumProperty(label=u"Catégorie", name="cattiers_helios", labels=listeLabels, values=listeID, value=1)
+        propriete.SetHelpString(u"Sélectionnez la catégorie de tiers pour Hélios (Trésor Public)")
+        self.Append(propriete)
+
+        listeLabels, listeID = GetDonneesListe(LISTE_NATURES_JURIDIQUES)
+        propriete = wxpg.EnumProperty(label=u"Nature juridique", name="natjur_helios", labels=listeLabels, values=listeID, value=1)
+        propriete.SetHelpString(u"Sélectionnez la nature juridique du tiers pour Hélios (Trésor Public)")
+        self.Append(propriete)
+
+        # Comptabilité
+        self.Append( wxpg.PropertyCategory(u"Comptabilité") )
 
         propriete = wxpg.StringProperty(label=u"Code comptable", name="code_comptable", value=u"")
         propriete.SetHelpString(u"Saisissez le code comptable de la famille (Utilisé pour les exports vers logiciels de compta)") 
@@ -165,18 +248,23 @@ class Panel(wx.Panel):
         """ MAJ integrale du controle avec MAJ des donnees """
         if self.majEffectuee == False :
             DB = GestionDB.DB()
-            req = """SELECT internet_actif, internet_identifiant, internet_mdp, titulaire_helios, code_comptable
+            req = """SELECT internet_actif, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios
             FROM familles
             WHERE IDfamille=%d;""" % self.IDfamille
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                internet_activation, internet_identifiant, internet_mdp, titulaire_helios, code_comptable = listeDonnees[0]
+                internet_activation, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios = listeDonnees[0]
                 if internet_activation != None : self.check_activation.SetValue(internet_activation)
                 if internet_identifiant != None : self.ctrl_identifiant.SetValue(internet_identifiant)
                 if internet_mdp != None : self.ctrl_mdp.SetValue(internet_mdp)
                 self.ctrl_parametres.SetPropertyValue("titulaire_helios", titulaire_helios)
+                if idtiers_helios != None : self.ctrl_parametres.SetPropertyValue("idtiers_helios", idtiers_helios)
+                if natidtiers_helios != None : self.ctrl_parametres.SetPropertyValue("natidtiers_helios", natidtiers_helios)
+                if reftiers_helios != None : self.ctrl_parametres.SetPropertyValue("reftiers_helios", reftiers_helios)
+                if cattiers_helios != None : self.ctrl_parametres.SetPropertyValue("cattiers_helios", cattiers_helios)
+                if natjur_helios != None : self.ctrl_parametres.SetPropertyValue("natjur_helios", natjur_helios)
                 self.ctrl_parametres.SetPropertyValue("code_comptable", code_comptable)
             self.MAJaffichage()
         
@@ -228,6 +316,11 @@ class Panel(wx.Panel):
         internet_identifiant = self.ctrl_identifiant.GetValue() 
         internet_mdp = self.ctrl_mdp.GetValue() 
         titulaire_helios = self.ctrl_parametres.GetPropertyValue("titulaire_helios")
+        idtiers_helios = self.ctrl_parametres.GetPropertyValue("idtiers_helios")
+        natidtiers_helios = self.ctrl_parametres.GetPropertyValue("natidtiers_helios")
+        reftiers_helios = self.ctrl_parametres.GetPropertyValue("reftiers_helios")
+        cattiers_helios = self.ctrl_parametres.GetPropertyValue("cattiers_helios")
+        natjur_helios = self.ctrl_parametres.GetPropertyValue("natjur_helios")
         code_comptable = self.ctrl_parametres.GetPropertyValue("code_comptable")
         DB = GestionDB.DB()
         listeDonnees = [    
@@ -236,6 +329,11 @@ class Panel(wx.Panel):
                 ("internet_mdp", internet_mdp),
                 ("titulaire_helios", titulaire_helios),
                 ("code_comptable", code_comptable),
+                ("idtiers_helios", idtiers_helios),
+                ("natidtiers_helios", natidtiers_helios),
+                ("reftiers_helios", reftiers_helios),
+                ("cattiers_helios", cattiers_helios),
+                ("natjur_helios", natjur_helios),
                 ]
         DB.ReqMAJ("familles", listeDonnees, "IDfamille", self.IDfamille)
         DB.Close()
