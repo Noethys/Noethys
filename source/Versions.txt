@@ -1,3 +1,12 @@
+Version 1.1.4.0 (23/01/2015) :
+
+- Amélioration de l'export vers Hélios
+- Amélioration de la sélection des destinataires dans l'éditeur d'Emails
+- Améliorations sur l'interface de la version Linux
+- Ajout de la saisie et suppression de lots de déductions (menu Facturation)
+- Correction d'un bug sur les inscriptions scolaires (par Claude)
+- Correction d'un bug sur le badgeage
+
 Version 1.1.3.9 (03/01/2015) :
 
 - Ajout de l'outil de gestion comptabilité

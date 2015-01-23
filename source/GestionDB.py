@@ -1528,6 +1528,18 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 4, 0)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("familles", "idtiers_helios", "VARCHAR(200)")
+                self.AjoutChamp("familles", "natidtiers_helios", "INTEGER")
+                self.AjoutChamp("familles", "reftiers_helios", "VARCHAR(200)")
+                self.AjoutChamp("familles", "cattiers_helios", "INTEGER")
+                self.AjoutChamp("familles", "natjur_helios", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
 
 
 

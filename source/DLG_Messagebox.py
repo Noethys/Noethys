@@ -55,12 +55,12 @@ class Dialog(wx.Dialog):
         if detail :
             t = wx.TextCtrl(self, style=wx.TE_MULTILINE|wx.TE_READONLY|wx.TE_RICH|wx.TE_DONTWRAP)
             t.SetValue(detail)
-            
+
             dc = wx.ClientDC(t)
             dc.SetFont(t.GetFont())
             w,h,lh = dc.GetMultiLineTextExtent(detail)
             w = min(self.largeur_max, 10 + w + wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X))
-            h = min(self.hauteur_max, 10 + h)
+            h = min(self.hauteur_max, 10 + h) + 20
             t.SetMinSize((w,h))
             messageSizer.Add(t, 0, wx.EXPAND | wx.BOTTOM, 10)
         
