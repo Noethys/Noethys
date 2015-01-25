@@ -205,7 +205,7 @@ class DLG_Rapport(wx.Dialog):
             smtp = smtplib.SMTP(serveur)
         else:
             # Si identification SSL nécessaire :
-            smtp = smtplib.SMTP(serveur, port, timeout=120)
+            smtp = smtplib.SMTP(serveur, port, timeout=150)
             smtp.ehlo()
             smtp.starttls()
             smtp.ehlo()

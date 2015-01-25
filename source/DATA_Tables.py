@@ -108,6 +108,11 @@ DB_DATA = {
                                     ("email_depots", "VARCHAR(450)", u"Adresse Email pour avis d'encaissement des règlements"),
                                     ("titulaire_helios", "INTEGER", u"IDindividu du titulaire Hélios"),
                                     ("code_comptable", "VARCHAR(450)", u"Code comptable pour facturation et export logiciels compta"),
+                                    ("idtiers_helios", "VARCHAR(300)", u"IDtiers pour Hélios"),
+                                    ("natidtiers_helios", "INTEGER", u"Nature IDtiers pour Hélios"),
+                                    ("reftiers_helios", "VARCHAR(300)", u"Référence locale du tiers pour Hélios"),
+                                    ("cattiers_helios", "INTEGER", u"Catégorie de tiers pour Hélios"),
+                                    ("natjur_helios", "INTEGER", u"Nature juridique du tiers pour Hélios"),
                                     ], # Les familles
     
     "rattachements":[       ("IDrattachement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID rattachement"),

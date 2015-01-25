@@ -232,10 +232,10 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
     
     if ssl == False :
         # Envoi standard
-        smtp = smtplib.SMTP(serveur, timeout=3)
+        smtp = smtplib.SMTP(serveur, timeout=150)
     else:
         # Si identification SSL nécessaire :
-        smtp = smtplib.SMTP(serveur, port, timeout=3)
+        smtp = smtplib.SMTP(serveur, port, timeout=150)
         smtp.ehlo()
         smtp.starttls()
         smtp.ehlo()
