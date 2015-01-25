@@ -390,7 +390,8 @@ class CTRL_liste_coches(wx.CheckListBox):
             self.dictDonnees[index] = dictChoix
             index += 1
         self.SetItems(self.listeLabels)
-    
+        self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+
     def SetValeur(self, listeIDchoix=[]):
         for index, dictChoix in self.dictDonnees.iteritems() :
             if dictChoix["IDchoix"] in listeIDchoix :
@@ -430,7 +431,40 @@ class CTRL_liste_coches(wx.CheckListBox):
         texte = ";".join(listeStr)
         return texte
         
-        
+    def OnContextMenu(self, event):
+        """Ouverture du menu contextuel """
+        # Création du menu contextuel
+        menuPop = wx.Menu()
+
+        # Item Tout cocher
+        item = wx.MenuItem(menuPop, 10, u"Tout cocher")
+        bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.CocheTout, id=10)
+
+        # Item Tout décocher
+        item = wx.MenuItem(menuPop, 20, u"Tout décocher")
+        bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.CocheRien, id=20)
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def CocheTout(self, event=None):
+        index = 0
+        for index in range(0, len(self.listeLabels)):
+            self.Check(index)
+            index += 1
+
+    def CocheRien(self, event=None):
+        index = 0
+        for index in range(0, len(self.listeLabels)):
+            self.Check(index, False)
+            index += 1
+
 
 # -------------------------------------------------------------------------------------------------------------------
 
