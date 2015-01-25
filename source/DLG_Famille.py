@@ -276,8 +276,11 @@ class Dialog(wx.Dialog):
         IDindividu = self.ctrl_composition.Ajouter()
         # Renseigne le premier individu comme titulaire Hélios
         if IDindividu != None :
-            self.notebook.GetPageAvecCode("divers").ctrl_parametres.SetPropertyValue("titulaire_helios", IDindividu)
-    
+            try :
+                self.notebook.GetPageAvecCode("divers").ctrl_parametres.SetPropertyValue("titulaire_helios", IDindividu)
+            except :
+                pass
+                
     def MAJpageActive(self):
         self.notebook.MAJpageActive() 
     
@@ -540,6 +543,21 @@ class Dialog(wx.Dialog):
         except :
             pass
     
+    def OuvrirGrilleIndividu(self, IDindividu=None):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "consulter") == False : return
+        self.Sauvegarde()
+        import DLG_Grille
+        dlg = DLG_Grille.Dialog(self, IDfamille=self.IDfamille, selectionIndividus=[IDindividu,])
+        if dlg.ShowModal() == wx.ID_OK:
+            self.MAJpageActive() 
+        try :
+            dlg.Destroy()
+        except :
+            pass
+    
+    def OuvrirFicheIndividu(self, IDindividu=None):
+        self.ctrl_composition.Modifier_individu(IDindividu)
+        
     def OnBoutonSaisieReglement(self, event):
         self.notebook.AffichePage("reglements")
         pageReglements = self.notebook.GetPageAvecCode("reglements")

@@ -15,6 +15,8 @@ import UTILS_Config
 ID_CREER_FAMILLE = wx.NewId()
 ID_MODIFIER_FAMILLE = wx.NewId()
 ID_SUPPRIMER_FAMILLE = wx.NewId()
+ID_OUVRIR_GRILLE = 60
+ID_OUVRIR_FICHE_IND = 70
 ID_PARAMETRES = wx.NewId()
 ID_OUTILS = wx.NewId()
 
@@ -32,10 +34,13 @@ class ToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, *args, **kwds)
         
         # Boutons
-        self.AddLabelTool(ID_CREER_FAMILLE, u"Ajouter", wx.Bitmap("Images/32x32/Creer_famille.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Créer une nouvelle famille", "")
+        self.AddLabelTool(ID_CREER_FAMILLE, u"Ajouter", wx.Bitmap("Images/32x32/Famille_ajouter.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Créer une nouvelle famille", "")
         self.AddSeparator()
-        self.AddLabelTool(ID_MODIFIER_FAMILLE, u"Modifier", wx.Bitmap("Images/32x32/Modifier_famille.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Modifier l'individu sélectionné", "")
-        self.AddLabelTool(ID_SUPPRIMER_FAMILLE, u"Supprimer", wx.Bitmap("Images/32x32/Supprimer_famille.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Supprimer ou détacher l'individu sélectionné", "")
+        self.AddLabelTool(ID_MODIFIER_FAMILLE, u"Modifier", wx.Bitmap("Images/32x32/Famille_modifier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Modifier la fiche famille de l'individu sélectionné", "")
+        self.AddLabelTool(ID_SUPPRIMER_FAMILLE, u"Supprimer", wx.Bitmap("Images/32x32/Famille_supprimer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Supprimer ou détacher l'individu sélectionné", "")
+        self.AddSeparator()
+        self.AddLabelTool(ID_OUVRIR_GRILLE, u"Calendrier", wx.Bitmap("Images/32x32/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)", "")
+        self.AddLabelTool(ID_OUVRIR_FICHE_IND, u"Fiche ind.", wx.Bitmap("Images/32x32/Personnes.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)", "")
         self.AddSeparator()
 ##        self.AddLabelTool(ID_PARAMETRES, u"Paramètres", wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Sélectionner les paramètres d'affichage", "")
         self.AddLabelTool(ID_OUTILS, u"Outils", wx.Bitmap("Images/32x32/Configuration.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Outils", "")
@@ -44,6 +49,8 @@ class ToolBar(wx.ToolBar):
         self.Bind(wx.EVT_TOOL, self.Ajouter_famille, id=ID_CREER_FAMILLE)
         self.Bind(wx.EVT_TOOL, self.Modifier_famille, id=ID_MODIFIER_FAMILLE)
         self.Bind(wx.EVT_TOOL, self.Supprimer_famille, id=ID_SUPPRIMER_FAMILLE)
+        self.Bind(wx.EVT_TOOL, self.Ouvrir_grille, id=ID_OUVRIR_GRILLE)
+        self.Bind(wx.EVT_TOOL, self.Ouvrir_fiche_ind, id=ID_OUVRIR_FICHE_IND)
         self.Bind(wx.EVT_TOOL, self.Parametres, id=ID_PARAMETRES)
         self.Bind(wx.EVT_TOOL, self.MenuOutils, id=ID_OUTILS)
         
@@ -58,6 +65,12 @@ class ToolBar(wx.ToolBar):
 
     def Supprimer_famille(self, event):
         self.GetParent().ctrl_listview.Supprimer(None)
+
+    def Ouvrir_grille(self, event):
+        self.GetParent().ctrl_listview.Modifier(event)
+
+    def Ouvrir_fiche_ind(self, event):
+        self.GetParent().ctrl_listview.Modifier(event)
 
     def Parametres(self, event):
         import DLG_Selection_individus

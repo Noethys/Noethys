@@ -353,32 +353,48 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
-        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
+        item = wx.MenuItem(menuPop, 10, u"Ajouter une fiche famille")
+        bmp = wx.Bitmap("Images/16x16/Famille_ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
         
-        menuPop.AppendSeparator()
-
-        # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
-        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
+        # Item Modifier
+        item = wx.MenuItem(menuPop, 20, u"Modifier la fiche famille")
+        bmp = wx.Bitmap("Images/16x16/Famille_modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Modifier, id=20)
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
-        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
+        item = wx.MenuItem(menuPop, 30, u"Supprimer la fiche famille")
+        bmp = wx.Bitmap("Images/16x16/Famille_supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
         if noSelection == True : item.Enable(False)
                 
         menuPop.AppendSeparator()
-    
+
+        # Item Ajouter
+        item = wx.MenuItem(menuPop, 60, u"Ouvrir la grille des consommations")
+        bmp = wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Modifier, id=60)
+        if noSelection == True : item.Enable(False)
+        
+        # Item Supprimer
+        item = wx.MenuItem(menuPop, 70, u"Ouvrir la fiche individuelle")
+        bmp = wx.Bitmap("Images/16x16/Personnes.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Modifier, id=70)
+        if noSelection == True : item.Enable(False)
+        
+        menuPop.AppendSeparator()
+
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
@@ -455,15 +471,28 @@ class ListView(FastObjectListView):
             return
         # Si on est dans le panel de recherche d'individus
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         # Ouvrir la fiche famille de l'individu
         track = self.Selection()[0]
-        self.OuvrirFicheFamille(track)
+        
+        ouvrirGrille=False
+        ouvrirFicheInd = False
+        if event != None :
+            # Ouverture grille de l'individu si touche CTRL enfoncée
+            if wx.GetKeyState(wx.WXK_CONTROL) == True or event.GetId() == 60 :
+                ouvrirGrille=True
+            
+            # Ouverture fiche de l'individu si touche SHIFT enfoncée
+            if wx.GetKeyState(wx.WXK_SHIFT) == True or event.GetId() == 70 :
+                ouvrirFicheInd = True
+        
+        # Ouverture de la fiche famille
+        self.OuvrirFicheFamille(track, ouvrirGrille, ouvrirFicheInd)
     
-    def OuvrirFicheFamille(self, track):
+    def OuvrirFicheFamille(self, track, ouvrirGrille, ouvrirFicheInd):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         import DLG_Famille
         IDindividu = track.IDindividu
@@ -517,6 +546,12 @@ class ListView(FastObjectListView):
         # Ouverture de la fiche famille
         if IDfamille != None and IDfamille != -1 :
             dlg = DLG_Famille.Dialog(self, IDfamille)
+            # Ouverture grille de l'individ
+            if ouvrirGrille == True :
+                dlg.OuvrirGrilleIndividu(IDindividu)
+            # Ouverture fiche de l'individu
+            if ouvrirFicheInd == True :
+                dlg.OuvrirFicheIndividu(IDindividu)
             if dlg.ShowModal() == wx.ID_OK:
                 self.MAJ(IDindividu)
             dlg.Destroy()
