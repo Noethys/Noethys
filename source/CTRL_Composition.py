@@ -1988,7 +1988,11 @@ class Notebook(wx.Notebook):
     def Modifier_selection(self, event=None):
         page = self.GetPage(self.GetSelection())
         page.Modifier_selection()
-        
+
+    def Modifier_individu(self, IDindividu=None):
+        page = self.GetPage(self.GetSelection())
+        page.Modifier(IDindividu)
+
     def Supprimer_selection(self, event=None):
         page = self.GetPage(self.GetSelection())
         page.Supprimer_selection()
