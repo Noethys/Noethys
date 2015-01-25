@@ -1,3 +1,9 @@
+Version 1.1.4.1 (25/01/2015) :
+
+- Ajout des boutons accès direct consos et fiche ind. depuis page d'accueil
+- Ajout du menu contextuel sur question de type coches multiples
+- Correction d'un bug sur saisie nouvelle famille
+
 Version 1.1.4.0 (23/01/2015) :
 
 - Amélioration de l'export vers Hélios

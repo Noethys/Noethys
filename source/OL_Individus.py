@@ -492,7 +492,7 @@ class ListView(FastObjectListView):
         # Ouverture de la fiche famille
         self.OuvrirFicheFamille(track, ouvrirGrille, ouvrirFicheInd)
     
-    def OuvrirFicheFamille(self, track, ouvrirGrille, ouvrirFicheInd):
+    def OuvrirFicheFamille(self, track=None, ouvrirGrille=False, ouvrirFicheInd=False):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         import DLG_Famille
         IDindividu = track.IDindividu
