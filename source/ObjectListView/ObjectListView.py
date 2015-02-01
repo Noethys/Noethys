@@ -2342,6 +2342,7 @@ class ObjectListView(wx.ListCtrl):
         self.SetFilter(Filter.Chain(*listeFiltres))
         self.RepopulateList()
         self.Refresh() 
+        self.OnCheck(None) 
     
     def SetFiltresColonnes(self, listeFiltresColonnes=[]):
         self.listeFiltresColonnes = listeFiltresColonnes

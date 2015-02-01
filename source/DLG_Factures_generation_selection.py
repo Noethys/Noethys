@@ -12,58 +12,32 @@ import wx
 import sys
 import datetime
 import traceback
-import wx.lib.agw.hyperlink as Hyperlink
 import wx.lib.agw.pybusyinfo as PBI
 
-import CTRL_Factures_generation_selection
+import OL_Factures_generation_selection
 import UTILS_Identification
 import UTILS_Texte
 
 import GestionDB
 
 
-class Hyperlien(Hyperlink.HyperLinkCtrl):
-    def __init__(self, parent, id=-1, label="", infobulle="", URL="", size=(-1, -1), pos=(0, 0)):
-        Hyperlink.HyperLinkCtrl.__init__(self, parent, id, label, URL=URL, size=size, pos=pos)
-        self.parent = parent
-        self.URL = URL
-        self.AutoBrowse(False)
-        self.SetColours("BLUE", "BLUE", "BLUE")
-        self.SetUnderlines(False, False, True)
-        self.SetBold(False)
-        self.EnableRollover(True)
-        self.SetToolTip(wx.ToolTip(infobulle))
-        self.UpdateLink()
-        self.DoPopup(False)
-        self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
-    
-    def OnLeftLink(self, event):
-        if self.URL == "tout" :
-            self.parent.ctrl_factures.CocheTout()
-        if self.URL == "rien" :
-            self.parent.ctrl_factures.DecocheTout()
-        self.UpdateLink()
-        
-        
-# ---------------------------------------------------------------------------------------------------------------------------------------
 
 class Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, name="DLG_Factures_generation_selection", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.box_factures_staticbox = wx.StaticBox(self, -1, u"Factures")
-        self.ctrl_factures = CTRL_Factures_generation_selection.CTRL(self)
-        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        
-        self.hyper_select_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
-        self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_selection_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.box_factures_staticbox = wx.StaticBox(self, -1, u"Factures à générer")
 
+        self.listviewAvecFooter = OL_Factures_generation_selection.ListviewAvecFooter(self) 
+        self.ctrl_factures = self.listviewAvecFooter.GetListview()
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.ctrl_recherche = OL_Factures_generation_selection.CTRL_Outils(self, listview=self.ctrl_factures, afficherCocher=True)
+        
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonApercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_factures.AfficherApercu, self.bouton_apercu)
 
     def __set_properties(self):
         self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu PDF de la facture sélectionnée")
@@ -71,32 +45,27 @@ class Panel(wx.Panel):
     def __do_layout(self):
         box_factures = wx.StaticBoxSizer(self.box_factures_staticbox, wx.VERTICAL)
         grid_sizer_factures = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+        
+        grid_sizer_factures.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
+        
         grid_sizer_boutons = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
-        grid_sizer_factures.Add(self.ctrl_factures, 1, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_apercu, 0, 0, 0)
         grid_sizer_factures.Add(grid_sizer_boutons, 1, wx.EXPAND, 0)
-        grid_sizer_options.Add((10, 10), 0, wx.EXPAND, 0)
-        grid_sizer_options.Add(self.hyper_select_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.Add(self.hyper_selection_rien, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options.AddGrowableCol(0)
-        grid_sizer_factures.Add(grid_sizer_options, 1, wx.EXPAND, 0)
+        
+        grid_sizer_factures.Add(self.ctrl_recherche, 1, wx.EXPAND, 0)
+        
         grid_sizer_factures.AddGrowableRow(0)
         grid_sizer_factures.AddGrowableCol(0)
         box_factures.Add(grid_sizer_factures, 1, wx.ALL|wx.EXPAND, 10)
         self.SetSizer(box_factures)
         box_factures.Fit(self)
 
-    def OnBoutonApercu(self, event):
-        self.ctrl_factures.AfficherApercu()
-
     def MAJ(self):
         self.ctrl_factures.SetParametres(self.parent.dictParametres)
         
     def Validation(self):
         # Validation de la saisie
-        nbreCoches = len(self.ctrl_factures.GetCoches())
+        nbreCoches = len(self.ctrl_factures.GetTracksCoches())
         if nbreCoches == 0 :
             dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à générer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -113,7 +82,7 @@ class Panel(wx.Panel):
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return False
-
+    
         # Génération des factures
         listeFacturesGenerees = self.SauvegardeFactures() 
         if listeFacturesGenerees == False :
@@ -144,10 +113,8 @@ class Panel(wx.Panel):
         
         # Tri par ordre alphabétique de la liste
         listeComptes = []
-        dictCoches = self.ctrl_factures.GetCoches()
-        for IDcompte_payeur, dictCompte in self.ctrl_factures.dictComptes.iteritems() :
-            if dictCompte["select"] == True and dictCoches.has_key(IDcompte_payeur) :
-                listeComptes.append((dictCompte["nomSansCivilite"], IDcompte_payeur))
+        for track in self.ctrl_factures.GetTracksCoches() :
+            listeComptes.append((track.nomSansCivilite, track.IDcompte_payeur))
         listeComptes.sort()
         
         # Sélection du prochain numéro de facture
