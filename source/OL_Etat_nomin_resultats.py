@@ -610,14 +610,31 @@ class ListView(FastObjectListView):
             if isinstance(valeur, datetime.date) : 
                 valeur = DateEngFr(str(valeur))
                 return valeur
-
+            # Autre
             return None
         
+        def RechercheTypeDonnee(champ):
+            """ Pour les filtres de liste """
+            for track in self.donnees :
+                try :
+                    valeur = getattr(track, champ.code)
+                except :
+                    valeur = None
+                # Entier
+                if isinstance(valeur, int) : 
+                    return "entier"
+                # Date
+                if isinstance(valeur, datetime.date) : 
+                    return "date"
+            # Autre
+            return "texte"
+            
+            
         # Création des colonnes
-        liste_Colonnes = [ColumnDefn("", "left", 0, "IDindividu"), ]
+        liste_Colonnes = [ColumnDefn("", "left", 0, "IDindividu", typeDonnee="entier"), ]
         for champ in self.dictParametres["champs"] :
             if champ.type != None :
-                liste_Colonnes.append(ColumnDefn(champ.titre, "left", champ.largeur, champ.code, stringConverter=FormatageValeur))
+                liste_Colonnes.append(ColumnDefn(champ.titre, "left", champ.largeur, champ.code, typeDonnee=RechercheTypeDonnee(champ), stringConverter=FormatageValeur))
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(u"Aucune donnée")
