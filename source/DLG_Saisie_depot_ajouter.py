@@ -143,8 +143,10 @@ class Dialog(wx.Dialog):
         self.ctrl_reglements_disponibles = self.listviewAvecFooter1.GetListview()
 
         # Commandes
+        self.bouton_bas_tout = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_double_bas.png", wx.BITMAP_TYPE_ANY))
         self.bouton_bas = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_haut_rouge.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_haut_tout = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_double_haut_rouge.png", wx.BITMAP_TYPE_ANY))
 
         # Reglements du dépôt
         self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, u"Règlements du dépôt")
@@ -159,9 +161,11 @@ class Dialog(wx.Dialog):
 
         self.__set_properties()
         self.__do_layout()
-
+        
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonBasTout, self.bouton_bas_tout)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonBas, self.bouton_bas)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonHaut, self.bouton_haut)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonHautTout, self.bouton_haut_tout)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_CHOICE, self.OnChoixCompte, self.ctrl_compte)
@@ -181,10 +185,14 @@ class Dialog(wx.Dialog):
         self.ctrl_mode.SetToolTipString(u"Sélectionnez un filtre de mode de règlement")
         self.ctrl_tri.SetToolTipString(u"Sélectionnez le critère de tri")
         self.ctrl_ordre.SetToolTipString(u"Sélectionnez l'ordre de tri")
+        self.bouton_bas_tout.SetToolTipString(u"Cliquez ici pour ajouter tous les règlements dans le dépôt")
         self.bouton_bas.SetToolTipString(u"Cliquez ici pour ajouter le règlement disponible selectionné dans le dépôt")
-        self.bouton_bas.SetMinSize((100, -1))
-        self.bouton_haut.SetMinSize((100, -1))
+        self.bouton_bas_tout.SetMinSize((80, -1))
+        self.bouton_bas.SetMinSize((150, -1))
+        self.bouton_haut.SetMinSize((150, -1))
+        self.bouton_haut_tout.SetMinSize((80, -1))
         self.bouton_haut.SetToolTipString(u"Cliquez ici pour retirer le règlement sélectionné du dépôt")
+        self.bouton_haut_tout.SetToolTipString(u"Cliquez ici pour retirer tous les règlements du dépôt")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
@@ -226,14 +234,15 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(staticbox_reglements_disponibles, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Commandes de transfert
-        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
+        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=6, vgap=10, hgap=10)
         grid_sizer_commandes.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_commandes.Add(self.bouton_bas_tout, 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_bas, 0, 0, 0)
-        grid_sizer_commandes.Add((20, 20), 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_haut, 0, 0, 0)
+        grid_sizer_commandes.Add(self.bouton_haut_tout, 0, 0, 0)
         grid_sizer_commandes.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_commandes.AddGrowableCol(0)
-        grid_sizer_commandes.AddGrowableCol(4)
+        grid_sizer_commandes.AddGrowableCol(5)
         grid_sizer_base.Add(grid_sizer_commandes, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Règlements déposés
@@ -270,6 +279,13 @@ class Dialog(wx.Dialog):
         self.ctrl_reglements_depot.MAJ(self.tracks, selectionTrack=selectionTrack, nextTrack=nextTrack) 
         self.staticbox_reglements_depot_staticbox.SetLabel(self.ctrl_reglements_depot.GetLabelListe(u"règlements dans ce dépôt"))
     
+    def DeplacerTout(self, inclus=True):
+        listeTracks = []
+        for track in self.tracks :
+            track.inclus = inclus
+            listeTracks.append(track)
+        self.MAJListes(listeTracks)
+        
     def GetTracks(self):
         return self.tracks
     
@@ -296,6 +312,20 @@ class Dialog(wx.Dialog):
 
     def OnBoutonHaut(self, event):
         self.ctrl_reglements_depot.Deplacer()
+
+    def OnBoutonBasTout(self, event): 
+        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment ajouter tous les règlements ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse ==  wx.ID_YES :
+            self.DeplacerTout(inclus=True)
+
+    def OnBoutonHautTout(self, event):
+        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment retirer tous les règlements ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse ==  wx.ID_YES :
+            self.DeplacerTout(inclus=False)
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide

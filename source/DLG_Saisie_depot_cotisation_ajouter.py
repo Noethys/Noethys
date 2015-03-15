@@ -37,8 +37,10 @@ class Dialog(wx.Dialog):
         self.ctrl_cotisations_disponibles = OL_Cotisations_depots.ListView(self, id=-1, inclus=False, name="OL_cotisations_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         # Commandes
+        self.bouton_bas_tout = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_double_bas.png", wx.BITMAP_TYPE_ANY))
         self.bouton_bas = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_haut_rouge.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_haut_tout = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_double_haut_rouge.png", wx.BITMAP_TYPE_ANY))
 
         # Reglements du dépôt
         self.staticbox_cotisations_depot_staticbox = wx.StaticBox(self, -1, u"Cotisations du dépôt")
@@ -52,8 +54,10 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonBasTout, self.bouton_bas_tout)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonBas, self.bouton_bas)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonHaut, self.bouton_haut)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonHautTout, self.bouton_haut_tout)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_CHOICE, self.OnChoixTri, self.ctrl_tri)
@@ -67,10 +71,14 @@ class Dialog(wx.Dialog):
         self.SetTitle(u"Ajouter ou retirer des cotisations")
         self.ctrl_tri.SetToolTipString(u"Sélectionnez le critère de tri")
         self.ctrl_ordre.SetToolTipString(u"Sélectionnez l'ordre de tri")
+        self.bouton_bas_tout.SetToolTipString(u"Cliquez ici pour ajouter toutes les cotisations dans le dépôt")
         self.bouton_bas.SetToolTipString(u"Cliquez ici pour ajouter la cotisation disponible selectionné dans le dépôt")
-        self.bouton_bas.SetMinSize((100, -1))
-        self.bouton_haut.SetMinSize((100, -1))
+        self.bouton_bas_tout.SetMinSize((80, -1))
+        self.bouton_bas.SetMinSize((150, -1))
+        self.bouton_haut.SetMinSize((150, -1))
+        self.bouton_haut_tout.SetMinSize((80, -1))
         self.bouton_haut.SetToolTipString(u"Cliquez ici pour retirer la cotisation sélectionnée du dépôt")
+        self.bouton_haut_tout.SetToolTipString(u"Cliquez ici pour retirer toutes les cotisations du dépôt")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
@@ -97,14 +105,15 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(staticbox_reglements_disponibles, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Commandes de transfert
-        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
+        grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=6, vgap=10, hgap=10)
         grid_sizer_commandes.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_commandes.Add(self.bouton_bas_tout, 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_bas, 0, 0, 0)
-        grid_sizer_commandes.Add((20, 20), 0, 0, 0)
         grid_sizer_commandes.Add(self.bouton_haut, 0, 0, 0)
+        grid_sizer_commandes.Add(self.bouton_haut_tout, 0, 0, 0)
         grid_sizer_commandes.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_commandes.AddGrowableCol(0)
-        grid_sizer_commandes.AddGrowableCol(4)
+        grid_sizer_commandes.AddGrowableCol(5)
         grid_sizer_base.Add(grid_sizer_commandes, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Cotisations déposées
@@ -133,7 +142,14 @@ class Dialog(wx.Dialog):
         self.tracks = tracks
         self.ctrl_cotisations_disponibles.MAJ(tracks, selectionTrack=selectionTrack, nextTrack=nextTrack) 
         self.ctrl_cotisations_depot.MAJ(tracks, selectionTrack=selectionTrack, nextTrack=nextTrack) 
-    
+
+    def DeplacerTout(self, inclus=True):
+        listeTracks = []
+        for track in self.tracks :
+            track.inclus = inclus
+            listeTracks.append(track)
+        self.MAJListes(listeTracks)
+
     def GetTracks(self):
         return self.tracks
 
@@ -154,6 +170,20 @@ class Dialog(wx.Dialog):
 
     def OnBoutonHaut(self, event):
         self.ctrl_cotisations_depot.Deplacer()
+
+    def OnBoutonBasTout(self, event): 
+        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment ajouter toutes les cotisations ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse ==  wx.ID_YES :
+            self.DeplacerTout(inclus=True)
+
+    def OnBoutonHautTout(self, event):
+        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment retirer toutes les cotisations ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse ==  wx.ID_YES :
+            self.DeplacerTout(inclus=False)
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
