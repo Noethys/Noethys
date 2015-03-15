@@ -72,7 +72,7 @@ class Dialog(wx.Dialog):
         self.radio_annee = wx.RadioButton(self, -1, u"Année")
         self.ctrl_annee = wx.SpinCtrl(self, -1, u"2012", min=1900, max=2099)
         self.radio_vacances = wx.RadioButton(self, -1, u"Vacances de")
-        self.ctrl_vacances = wx.Choice(self, -1, choices=["Février", u"Pâques", u"Eté", u"Toussaint", u"Noël"])
+        self.ctrl_vacances = wx.Choice(self, -1, choices=[u"Février", u"Pâques", u"Eté", u"Toussaint", u"Noël"])
         self.ctrl_vacances_annee = wx.SpinCtrl(self, -1, u"2012", min=1900, max=2099)
         
         # Boutons
