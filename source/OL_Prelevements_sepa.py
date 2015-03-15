@@ -18,6 +18,7 @@ import DLG_Saisie_prelevement_sepa
 import UTILS_Identification
 import UTILS_Prelevements
 import UTILS_Mandats
+import UTILS_Historique
 import wx.lib.dialogs as dialogs
 
 import UTILS_Config
@@ -881,6 +882,7 @@ class ListView(FastObjectListView):
                         
         # Sauvegarde des règlements + ventilation
         listeSuppressionReglements = []
+        listeHistoriqueAjouts = []
         for track in self.GetObjects() :
 
             # Ajouts et modifications
@@ -920,10 +922,12 @@ class ListView(FastObjectListView):
                 # Ajout
                 if track.IDreglement == None :
                     track.IDreglement = DB.ReqInsert("reglements", listeDonnees)
+                    listeHistoriqueAjouts.append(self.MemoriseReglementHistorique(mode="saisie", IDfamille=track.IDfamille, IDreglement=track.IDreglement, montant=track.montant))
                     
                 # Modification
                 else:
                     DB.ReqMAJ("reglements", listeDonnees, "IDreglement", track.IDreglement)
+                    #listeHistoriqueAjouts.append(self.MemoriseReglementHistorique(mode="modification", IDfamille=track.IDfamille, IDreglement=track.IDreglement, montant=track.montant))
                 track.dateReglement = date
                 
                 # ----------- Sauvegarde de la ventilation ---------
@@ -943,15 +947,38 @@ class ListView(FastObjectListView):
                 if track.IDreglement != None :
                     DB.ReqDEL("reglements", "IDreglement", track.IDreglement)
                     DB.ReqDEL("ventilation", "IDreglement", track.IDreglement)
+                    listeHistoriqueAjouts.append(self.MemoriseReglementHistorique(mode="suppression", IDfamille=track.IDfamille, IDreglement=track.IDreglement, montant=track.montant))
             
             # MAJ du track
             self.RefreshObject(track)
-        
+            
+            # Sauvegarde dans historique
+            
         DB.Close() 
 
-
-
-
+        # Sauvegarde dans historique
+        UTILS_Historique.InsertActions(listeHistoriqueAjouts)
+    
+    def MemoriseReglementHistorique(self, mode="saisie", IDfamille=None, IDreglement=None, montant=0.0):
+        """ Mémorisation d'un règlement dans l'historique """
+        # Choix du mode
+        if mode == "saisie" :
+            IDcategorie = 6
+            categorie = u"Saisie"
+        if mode == "modification" :
+            IDcategorie = 7
+            categorie = "Modification"
+        if mode == "suppression" : 
+            IDcategorie = 8
+            categorie = "Suppression"
+            
+        montantStr = u"%.2f %s" % (montant, SYMBOLE)
+        dictAction = {
+            "IDfamille" : IDfamille,
+            "IDcategorie" : IDcategorie, 
+            "action" : u"%s du règlement ID%d : %s payés par prélèvement automatique SEPA" % (categorie, IDreglement, montantStr),
+            }
+        return dictAction
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

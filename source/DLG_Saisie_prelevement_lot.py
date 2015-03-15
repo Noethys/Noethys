@@ -18,6 +18,7 @@ import cStringIO
 
 import CTRL_Saisie_date
 import UTILS_Dates
+import UTILS_Historique
 
 import OL_Prelevements_national
 import OL_Prelevements_sepa
@@ -857,6 +858,12 @@ class Dialog(wx.Dialog):
         finally:
             f.close()
 
+        # Mémorisation dans historique
+        UTILS_Historique.InsertActions([{
+            "IDcategorie" : 35, 
+            "action" : u"Génération du fichier XML SEPA '%s'" % remise_nom,
+            },])
+
         # Confirmation de création du fichier et demande d'ouverture directe
         txtMessage = u"Le fichier SEPA a été créé avec succès.\n\nSouhaitez-vous visualiser son contenu maintenant ?"
         dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
@@ -866,24 +873,6 @@ class Dialog(wx.Dialog):
             return
         else:
             FonctionsPerso.LanceFichierExterne(cheminFichier)
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         
         
         
@@ -1180,7 +1169,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDlot=5, typePrelevement="sepa")
+    dialog_1 = Dialog(None, IDlot=1, typePrelevement="sepa")
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
