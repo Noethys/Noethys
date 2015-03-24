@@ -280,10 +280,12 @@ class Dialog(wx.Dialog):
         # Montants
         self.label_montant_avant_deduc = wx.StaticText(self, -1, u"Montant TTC (%s) :" % SYMBOLE)
         self.ctrl_montant_avant_deduc = CTRL_Saisie_euros.CTRL(self)
+        self.ctrl_montant_avant_deduc.SetMinSize((100, -1))
         self.label_montant = wx.StaticText(self, -1, u"Montant final TTC (%s) :" % SYMBOLE)
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, font=wx.Font(13, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         self.ctrl_montant.SetBackgroundColour("#F0FBED")
         self.ctrl_montant.SetEditable(False)
+        self.ctrl_montant.SetMinSize((100, -1))
         
         # Déductions associées
         self.staticbox_deductions_staticbox = wx.StaticBox(self, -1, u"Déductions")
@@ -383,6 +385,8 @@ class Dialog(wx.Dialog):
         self.ctrl_code_comptable.SetToolTipString(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]")
 
         self.ctrl_label.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
+        
+        self.SetMinSize((850, 700))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -488,7 +492,6 @@ class Dialog(wx.Dialog):
         
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        self.SetMinSize(self.GetSize())
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
@@ -546,18 +549,20 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des données """
         DB = GestionDB.DB()
-        req = """SELECT IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, prestations.IDactivite, 
-        prestations.IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, prestations.IDcategorie_tarif, prestations.code_compta, prestations.tva
+        req = """SELECT IDprestation, prestations.IDcompte_payeur, date, categorie, label, montant_initial, montant, prestations.IDactivite, 
+        prestations.IDtarif, prestations.IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, prestations.IDcategorie_tarif, prestations.code_compta, prestations.tva,
+        factures.numero
         FROM prestations 
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
         LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
+        LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
         WHERE IDprestation=%d;""" % self.IDprestation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
         prestation = listeDonnees[0]
-        IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, tva = prestation
+        IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, tva, numFacture = prestation
         
         # Date
         self.ctrl_date.SetDate(date)
@@ -593,8 +598,8 @@ class Dialog(wx.Dialog):
         self.ancienMontant = montant
         # Facture
         self.IDfacture = IDfacture
-        if IDfacture != None :
-            self.ctrl_facture.SetLabel(u"Facture n°%d" % IDfacture)
+        if numFacture != None :
+            self.ctrl_facture.SetLabel(u"Facture n°%d" % numFacture)
             self.ctrl_deductions.Enable(False)
             self.bouton_ajouter.Enable(False)
             self.bouton_modifier.Enable(False)
@@ -854,7 +859,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDprestation=2388, IDfamille=14)
+    dialog_1 = Dialog(None, IDprestation=26675, IDfamille=399)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
