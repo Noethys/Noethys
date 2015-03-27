@@ -183,7 +183,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDadresse, adresse, motdepasse, smtp, port, defaut, auth = listeDonnees[0]
+        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS = listeDonnees[0]
         
         self.defaut = bool(defaut)
         
@@ -211,6 +211,8 @@ class Dialog(wx.Dialog):
                 self.ctrl_port.SetValue(str(port))
             if auth != None :
                 self.ctrl_authentification.SetValue(auth)
+            if startTLS != None :
+                self.ctrl_startTLS.SetValue(startTLS)
             self.radio_personnalise.SetValue(True)
         
         self.ActiveCtrlMdp()
@@ -322,7 +324,11 @@ class Dialog(wx.Dialog):
                 auth = 1
             else:
                 auth = 0
-        
+            if self.ctrl_startTLS.GetValue() == True :
+                startTLS = 1
+            else:
+                startTLS = 0
+
         # Si c'est la première adresse saisie, on la met comme defaut
         nbreAdresses = self.GetNbreAdresses() 
         if nbreAdresses == 0 :
@@ -337,7 +343,9 @@ class Dialog(wx.Dialog):
                                     ("smtp",    smtp),
                                     ("port",    port), 
                                     ("connexionssl",    auth),
-                                    ("defaut",    defaut), 
+                                    ("defaut",    defaut),
+                                    ("connexionAuthentifiee", auth),
+                                    ("startTLS", startTLS)
                                     ]
         if self.IDadresse == None :
             # Enregistrement

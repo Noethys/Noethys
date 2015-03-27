@@ -22,6 +22,7 @@ DICT_PROCEDURES = {
     "X1234" : u"Exportation des données d'une table dans la table DEFAUT",
     "S1290" : u"Modification du IDcategorie_tarif",
     "D1051" : u"Ajout du champ type dans la table Documents",
+    "O1051" : u"Ajout du champ largeurBarre dans la table documents_objets",
     "E4072" : u"Suppression des prestations sans consommations associées",
     "X0202" : u"Ajout de du champ forfait_date_debut à la table Prestations",
     "G2345" : u"Attribution d'un ordre aux groupes",
@@ -181,7 +182,20 @@ def D1051():
     DB.AjoutChamp("documents", "label", "VARCHAR(400)")
     DB.AjoutChamp("documents", "IDreponse", "INTEGER")
     DB.Close()
-    
+
+def O1051():
+    """ Création du champ largeurbarre dans la table documents_objets """
+    DB = GestionDB.DB()
+    DB.AjoutChamp("documents_objets", "largeurbarre", "FLOAT")
+    DB.Close()
+
+def O1052():
+    """ Création du champ connexionAuthentifiee et startTLS dans adresses_mail """
+    DB = GestionDB.DB()
+    DB.AjoutChamp("adresses_mail", "connexionAuthentifiee", "BOOLEAN")
+    DB.AjoutChamp("adresses_mail", "startTLS", "BOOLEAN")
+    DB.Close()
+
 def E4072():
     """ Suppression des prestations sans consommations associées """    
     print "Lancement de la procedure E4072..."
@@ -624,5 +638,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8452()
+    O1052()
     app.MainLoop()
