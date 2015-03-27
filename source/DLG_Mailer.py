@@ -390,7 +390,8 @@ class Dialog(wx.Dialog):
         exp = dictExp["adresse"]
         serveur = dictExp["smtp"]
         port = dictExp["port"]
-        connexionssl = dictExp["ssl"]
+        connexionAuthentifiee = dictExp["auth"]
+        connexionStartTLS = dictExp["startTLS"]
         motdepasse = dictExp["motdepasse"]
         
         # Accusé de réception
@@ -505,7 +506,8 @@ class Dialog(wx.Dialog):
                     listeFichiersJoints=listePieces, 
                     serveur=serveur, 
                     port=port, 
-                    ssl=connexionssl, 
+                    avecAuthentification=connexionAuthentifiee,
+                    avecStartTLS=connexionStartTLS,
                     listeImages=listeImages,
                     motdepasse=motdepasse,
                     accuseReception = accuseReception,
