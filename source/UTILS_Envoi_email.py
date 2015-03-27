@@ -262,8 +262,8 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 # TEST d'envoi d'emails
 if __name__ == u"__main__":
     print Envoi_mail( 
-        adresseExpediteur="goutatou@orange.fr",
-        listeDestinataires=["marc.pasteur@free.fr",],
+        adresseExpediteur="xxxx@xxx.fr",
+        listeDestinataires=["xxx.xxxx@free.fr",],
         listeDestinatairesCCI=[], 
         sujetMail=u"Sujet du Mail", 
         texteMail=u"Texte du Mail", 
@@ -273,6 +273,6 @@ if __name__ == u"__main__":
         avecAuthentification=True,
         avecStartTLS=False,
         listeImages=[],
-        motdepasse="urhr4c7",
+        motdepasse="xxxxx",
         accuseReception = False,
         )
