@@ -94,3 +94,6 @@ source/Images/80x80/Thumbs.db
 source/Images/Badgeage/Thumbs.db
 source/Images/BoutonsImages/Thumbs.db
 source/Images/Special/Thumbs.db
+
+# PyCharm
+.idea/

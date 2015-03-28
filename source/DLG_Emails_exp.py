@@ -243,7 +243,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         self.SetColumnWidth(3, 50) 
         self.InsertColumn(4, u"Defaut")
         self.SetColumnWidth(4, 0) 
-        self.InsertColumn(5, u"Connexion SSL")
+        self.InsertColumn(5, u"Connexion authentifiée")
         self.SetColumnWidth(5, 100) 
         
 
