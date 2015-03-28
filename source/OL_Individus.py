@@ -14,6 +14,7 @@ import datetime
 import GestionDB
 import DATA_Civilites as Civilites
 import UTILS_Titulaires
+import UTILS_Dates
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -200,10 +201,11 @@ class ListView(FastObjectListView):
                 dictTemp["age"] = None
             else:
                 try : 
-                    datenaissDD = datetime.date(year=int(dictTemp["date_naiss"][:4]), month=int(dictTemp["date_naiss"][5:7]), day=int(dictTemp["date_naiss"][8:10]))
+                    datenaissDD = UTILS_Dates.DateEngEnDateDD(dictTemp["date_naiss"])
                     datedujour = datetime.date.today()
                     age = (datedujour.year - datenaissDD.year) - int((datedujour.month, datedujour.day) < (datenaissDD.month, datenaissDD.day))
                     dictTemp["age"] = age
+                    dictTemp["date_naiss"] = datenaissDD
                 except :
                     dictTemp["age"] = None
         
@@ -275,11 +277,8 @@ class ListView(FastObjectListView):
         def GetImageCivilite(track):
             return track.nomImage
 
-        def FormateDate(dateStr):
-            if dateStr == "" or dateStr == None : return ""
-            date = str(datetime.date(year=int(dateStr[:4]), month=int(dateStr[5:7]), day=int(dateStr[8:10])))
-            text = str(date[8:10]) + "/" + str(date[5:7]) + "/" + str(date[:4])
-            return text
+        def FormateDate(date):
+            return UTILS_Dates.DateDDEnFr(date)
         
         def FormateAge(age):
             if age == None : return ""

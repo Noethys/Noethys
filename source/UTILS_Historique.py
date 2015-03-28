@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Copyright:       (c) 2010-15 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -47,6 +47,7 @@ CATEGORIES = {
     32 : u"Suppression d'une inscription scolaire",
     33 : u"Envoi d'un Email",
     34 : u"Edition d'une confirmation d'inscription",
+    35 : u"Génération d'un fichier XML SEPA",
     }
 
 DICT_COULEURS = {
@@ -67,35 +68,40 @@ def InsertActions(listeActions=[]):
     date = str(datetime.date.today())
     heure = "%02d:%02d:%02d" % (datetime.datetime.now().hour, datetime.datetime.now().minute, datetime.datetime.now().second)
     
-    DB = GestionDB.DB()
+    # Traitement des actions
+    listeAjouts = []
     for dictAction in listeActions :
-        if dictAction.has_key("IDutilisateur") : IDutilisateur = dictAction["IDutilisateur"]
-        else : IDutilisateur = UTILS_Identification.GetIDutilisateur()
-        if dictAction.has_key("IDfamille") : IDfamille = dictAction["IDfamille"]
-        else : IDfamille = None
-        if dictAction.has_key("IDindividu") : IDindividu = dictAction["IDindividu"]
-        else : IDindividu = None
-        if dictAction.has_key("IDcategorie") : IDcategorie = dictAction["IDcategorie"]
-        else : IDcategorie = None
-        if dictAction.has_key("action") : action = dictAction["action"]
-        else : action = u""
+        if dictAction.has_key("IDutilisateur") : 
+            IDutilisateur = dictAction["IDutilisateur"]
+        else : 
+            IDutilisateur = UTILS_Identification.GetIDutilisateur()
+        if dictAction.has_key("IDfamille") : 
+            IDfamille = dictAction["IDfamille"]
+        else : 
+            IDfamille = None
+        if dictAction.has_key("IDindividu") : 
+            IDindividu = dictAction["IDindividu"]
+        else : 
+            IDindividu = None
+        if dictAction.has_key("IDcategorie") : 
+            IDcategorie = dictAction["IDcategorie"]
+        else : 
+            IDcategorie = None
+        if dictAction.has_key("action") : 
+            action = dictAction["action"]
+        else : 
+            action = u""
         if len(action) >= 500 :
             action = action[:495] + "..." # Texte limité à 499 caractères
-            
-        listeDonnees = [
-            ("date", date),
-            ("heure", heure),
-            ("IDutilisateur", IDutilisateur),
-            ("IDfamille", IDfamille),
-            ("IDindividu", IDindividu),
-            ("IDcategorie", IDcategorie),
-            ("action", action), 
-            ]
-        try :
-            IDaction = DB.ReqInsert("historique", listeDonnees)
-        except :
-            pass
-    DB.Close()
+        
+        listeAjouts.append((date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action))
+    
+    # Enregistrement dans la base
+    if len(listeAjouts) > 0 :
+        DB = GestionDB.DB()
+        DB.Executermany(u"INSERT INTO historique (date, heure, IDutilisateur, IDfamille, IDindividu, IDcategorie, action) VALUES (?, ?, ?, ?, ?, ?, ?)", listeAjouts, commit=False)
+        DB.Commit()
+        DB.Close()
 
 
 

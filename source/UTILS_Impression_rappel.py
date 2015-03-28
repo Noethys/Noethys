@@ -179,7 +179,7 @@ class MyPageTemplate(PageTemplate):
             canvas.setFont("Helvetica", 8)
             canvas.drawString(x+2*mm, y+hauteur-4*mm, u"Merci de joindre ce coupon à votre règlement")
             canvas.setFont("Helvetica", 7)
-            solde = dictCompte["total"] - dictCompte["ventilation"]
+            solde = dictCompte["solde_num"]#dictCompte["total"] - dictCompte["ventilation"]
             numero = dictCompte["numero"]
             nom = dictCompte["nomSansCivilite"]
             canvas.drawString(x+2*mm, y+hauteur-9*mm, u"%s - %.02f %s" % (numero, solde, SYMBOLE))

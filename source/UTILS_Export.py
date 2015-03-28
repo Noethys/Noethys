@@ -12,19 +12,19 @@ import wx
 import os
 import datetime
 import sys
+import decimal
 import DLG_Selection_liste
 import FonctionsPerso
 
-try: import psyco; psyco.full() 
-except: pass
-
+import UTILS_Dates
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
 
-def GetValeursListview(listview=None):
+def GetValeursListview(listview=None, format="texte"):
     """ Récupère les valeurs affichées sous forme de liste """
+    """ format = "texte" ou "original" """
     # Récupère les labels de colonnes
     listeColonnes = []
     for colonne in listview.columns :
@@ -36,7 +36,10 @@ def GetValeursListview(listview=None):
     for object in listeObjects :
         valeursLigne = []
         for indexCol in range(0, listview.GetColumnCount() ) :
-            valeur = listview.GetStringValueAt(object, indexCol)
+            if format == "texte" :
+                valeur = listview.GetStringValueAt(object, indexCol)
+            else :
+                valeur = listview.GetValueAt(object, indexCol)
             valeursLigne.append(valeur)
         listeValeurs.append(valeursLigne)
         
@@ -75,7 +78,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
 
     # Récupération des valeurs
     if listview != None and listeColonnes == None and listeValeurs == None :
-        listeColonnes, listeValeurs = GetValeursListview(listview)
+        listeColonnes, listeValeurs = GetValeursListview(listview, format="texte")
         
     if grid != None and listeColonnes == None and listeValeurs == None :
         autoriseSelections = False
@@ -176,7 +179,7 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
         
     # Récupération des valeurs
     if listview != None and listeColonnes == None and listeValeurs == None :
-        listeColonnes, listeValeurs = GetValeursListview(listview)
+        listeColonnes, listeValeurs = GetValeursListview(listview, format="original")
         
     if grid != None and listeColonnes == None and listeValeurs == None :
         autoriseSelections = False
@@ -262,9 +265,11 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
         ws1.col(y).width = largeur*42
         y += 1
 
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
     # Création des lignes
-    def RechercheFormat(valeur):
-        """ Recherche si la valeur est un nombre """
+    def RechercheFormatFromChaine(valeur):
+        """ Recherche le type de la chaîne """
         if valeur.endswith(SYMBOLE) :
             # Si c'est un montant en euros
             try :
@@ -309,7 +314,34 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
 ##        except :
 ##            pass
 
-        return False, None
+        return unicode(valeur), None
+
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def RechercheFormat(valeur):
+        """ Recherche le type de la donnée """
+        if type(valeur) == decimal.Decimal :
+            valeur = float(valeur)
+            return (valeur, styleEuros)
+                
+        if type(valeur) == float :
+            return (valeur, None)
+                
+        if type(valeur) == int :
+            return (valeur, None)
+        
+        if type(valeur) == datetime.date :
+            valeur = UTILS_Dates.DateDDEnFr(valeur)
+            return (valeur, styleDate)
+        
+        if type(valeur) in (str, unicode) :
+            if len(valeur) == 10 :
+                if valeur[2] == "/" and valeur[5] == "/" : return (valeur, styleDate)
+                if valeur[4] == "-" and valeur[7] == "-" : return (UTILS_Dates.DateEngFr(valeur), styleDate)
+                
+        return unicode(valeur), None
+
+    # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     x = 1
     y = 0
@@ -320,10 +352,11 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
                     valeur = u""
                     
                 # Recherche s'il y a un format de nombre ou de montant
-                nbre, format = RechercheFormat(valeur)
-                if nbre != False : 
-                    valeur = nbre
-
+                if listview != None :
+                    valeur, format = RechercheFormat(valeur) #RechercheFormatFromChaine(valeur)
+                else :
+                    valeur, format = RechercheFormatFromChaine(valeur)
+                        
                 # Enregistre la valeur
                 if format != None :
                     ws1.write(x, y, valeur, format)

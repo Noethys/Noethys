@@ -34,6 +34,7 @@ class Track(object):
         self.texte = donnees[11]
         self.nom = donnees[12]
         self.rappel = donnees[13]
+        self.nomCategorie = donnees[14]
         
         if self.IDfamille != None and self.nom != None :
             self.texte = u"Famille de %s : %s" % (self.nom, self.texte)
@@ -69,9 +70,10 @@ class ListView(FastObjectListView):
         listeID = None
 
         DB = GestionDB.DB()
-        req = """SELECT IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite,
-        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel
+        req = """SELECT IDmessage, type, messages.IDcategorie, date_saisie, IDutilisateur, date_parution, messages.priorite,
+        messages.afficher_accueil, messages.afficher_liste, IDfamille, IDindividu, texte, messages.nom, rappel, messages_categories.nom
         FROM messages 
+        LEFT JOIN messages_categories ON messages_categories.IDcategorie = messages.IDcategorie
         ;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -113,6 +115,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDmessage", typeDonnee="entier"),
             ColumnDefn(u"Date", 'centre', 75, "date_parution", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(u"Catégorie", 'left', 160, "nomCategorie", typeDonnee="texte"),
             ColumnDefn(u"Texte", 'left', 420, "texte", typeDonnee="texte", imageGetter=GetImagePriorite, isSpaceFilling=True),
             ]
         
