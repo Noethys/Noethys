@@ -1350,6 +1350,7 @@ DB_DATA = {
                                     ("IDanalytique", "INTEGER", u"ID du poste analytique"),
                                     ("libelle", "VARCHAR(400)", u"Libellé de la ventilation"),
                                     ("montant", "FLOAT", u"Montant de la ventilation"),
+                                    ("date_budget", "DATE", u"Date d'impact budgétaire"),
                                     ], # Compta : Ventilation des opérations
                                     
     "compta_exercices":[("IDexercice", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Exercice"),
@@ -1389,6 +1390,8 @@ DB_DATA = {
                                     ("nom", "VARCHAR(400)", u"Nom du budget"),
                                     ("observations", "VARCHAR(200)", u"Observations sur le budget"),
                                     ("analytiques", "VARCHAR(450)", u"Liste des postes analytiques associés"),
+                                    ("date_debut", "DATE", u"Date de début de période"),
+                                    ("date_fin", "DATE", u"Date de fin de période"),
                                     ], # Compta : Budgets
 
     "compta_categories_budget":[("IDcategorie_budget", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Categorie budget"),
@@ -1405,6 +1408,14 @@ DB_DATA = {
                                     ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire"),
                                     ], # Compta : Relevés de comptes
 
+    "compta_operations_budgetaires":[("IDoperation_budgetaire", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID opération budgétaire"),
+                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
+                                    ("date_budget", "DATE", u"Date d'impact budgétaire"),
+                                    ("IDcategorie", "INTEGER", u"ID de la catégorie"),
+                                    ("IDanalytique", "INTEGER", u"ID du poste analytique"),
+                                    ("libelle", "VARCHAR(400)", u"Libellé de la ventilation"),
+                                    ("montant", "FLOAT", u"Montant de la ventilation"),
+                                    ], # Compta : Ventilation des opérations
 
 
     }

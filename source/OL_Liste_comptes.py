@@ -10,7 +10,7 @@
 
 import wx
 import GestionDB
-import DLG_Saisie_operation
+import DLG_Saisie_operation_tresorerie
 import DLG_Saisie_virement
 import datetime
 
@@ -211,8 +211,8 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        import DLG_Liste_operations
-        dlg = DLG_Liste_operations.Dialog(self, IDcompte_bancaire=track.IDcompte)
+        import DLG_Liste_operations_tresorerie
+        dlg = DLG_Liste_operations_tresorerie.Dialog(self, IDcompte_bancaire=track.IDcompte)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(track=track)
         dlg.Destroy()

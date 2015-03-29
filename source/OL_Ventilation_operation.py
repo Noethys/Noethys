@@ -11,6 +11,7 @@
 import wx
 import GestionDB
 import DLG_Saisie_ventilation_operation
+import UTILS_Dates
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -23,7 +24,7 @@ from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, 
 class Track(object):
     def __init__(self, donnees):
         self.IDventilation = donnees["IDventilation"]
-        self.IDexercice = donnees["IDexercice"]
+        self.date_budget = donnees["date_budget"]
         self.IDcategorie = donnees["IDcategorie"]
         self.IDanalytique = donnees["IDanalytique"]
         self.libelle = donnees["libelle"]
@@ -33,12 +34,7 @@ class Track(object):
         self.dictCategories = {}
         self.dictAnalytiques = {}
     
-    def MAJ(self):
-        if self.dictExercices.has_key(self.IDexercice) :
-            self.label_exercice = self.dictExercices[self.IDexercice]
-        else :
-            self.label_exercice = u"Exercice inconnu"
-            
+    def MAJ(self):            
         if self.dictCategories.has_key(self.IDcategorie) :
             self.label_categorie = self.dictCategories[self.IDcategorie]
         else :
@@ -52,16 +48,17 @@ class Track(object):
 
 def Importation(IDoperation=None):
     DB = GestionDB.DB()
-    req = """SELECT IDventilation, IDexercice, IDcategorie, IDanalytique, libelle, montant
+    req = """SELECT IDventilation, date_budget, IDcategorie, IDanalytique, libelle, montant
     FROM compta_ventilation 
     WHERE IDoperation=%d;""" % IDoperation
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
     listeTracks = []
-    for IDventilation, IDexercice, IDcategorie, IDanalytique, libelle, montant in listeDonnees :
+    for IDventilation, date_budget, IDcategorie, IDanalytique, libelle, montant in listeDonnees :
+        date_budget = UTILS_Dates.DateEngEnDateDD(date_budget)
         dictTemp = {
-            "IDventilation" : IDventilation, "IDexercice" : IDexercice, "IDcategorie" : IDcategorie, 
+            "IDventilation" : IDventilation, "date_budget" : date_budget, "IDcategorie" : IDcategorie, 
             "IDanalytique" : IDanalytique, "libelle" : libelle, "montant" : montant, 
             }
         track = Track(dictTemp)
@@ -96,16 +93,7 @@ class ListView(FastObjectListView):
                 
     def InitModel(self):
         DB = GestionDB.DB()
-        
-        # Importation des exercices
-        req = """SELECT IDexercice, nom
-        FROM compta_exercices ;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        self.dictExercices = {}
-        for IDexercice, nom in listeDonnees :
-            self.dictExercices[IDexercice] = nom
-        
+                
         # Importation des catégories
         req = """SELECT IDcategorie, nom
         FROM compta_categories ;"""
@@ -127,7 +115,6 @@ class ListView(FastObjectListView):
         DB.Close()
 
         for track in self.listeTracks :
-            track.dictExercices = self.dictExercices
             track.dictCategories = self.dictCategories
             track.dictAnalytiques = self.dictAnalytiques
             track.MAJ() 
@@ -140,14 +127,17 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
+        def FormateDate(date):
+            return UTILS_Dates.DateDDEnFr(date)
+
         def FormateMontant(montant):
             if montant == None : return u""
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDreleve", typeDonnee="entier"),
-            ColumnDefn(u"Exercice", 'left', 120, "label_exercice", typeDonnee="texte"),
-            ColumnDefn(u"Analytique", "left", 120, "label_analytique", typeDonnee="texte"),
+            ColumnDefn(u"Date budget", 'left', 100, "date_budget", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Analytique", "left", 150, "label_analytique", typeDonnee="texte"),
             ColumnDefn(u"Catégorie", "left", 150, "label_categorie", typeDonnee="texte"),
             ColumnDefn(u"Libellé", "left", 120, "libelle", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(u"Montant", "right", 100, "montant", typeDonnee="montant", stringConverter=FormateMontant),
@@ -244,7 +234,11 @@ class ListView(FastObjectListView):
         prt.Print()
 
     def Ajouter(self, event):
-        dlg = DLG_Saisie_ventilation_operation.Dialog(self, typeOperation=self.typeOperation, track=None)
+        if self.GetGrandParent().GetName() == "DLG_Saisie_operation_tresorerie" :
+            dateOperation = self.GetGrandParent().ctrl_date.GetDate()
+        else :
+            dateOperation = None
+        dlg = DLG_Saisie_ventilation_operation.Dialog(self, typeOperation=self.typeOperation, track=None, dateOperation=dateOperation)
         if dlg.ShowModal() == wx.ID_OK:
             dictDonnees = dlg.GetDictDonnees() 
             track = Track(dictDonnees)

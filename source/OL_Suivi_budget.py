@@ -42,43 +42,72 @@ class Analyse():
             nomChamp = "{NBRE_UNITE_%d}" % IDunite
             self.dictChamps[nomChamp] = nbreConso
         
-        # Récupération du réalisé
+        # Condition analytiques
         if len(self.dictBudget["analytiques"]) == 0 : conditionAnalytiques = ""
         elif len(self.dictBudget["analytiques"]) == 1 : conditionAnalytiques = "(%d)" % self.dictBudget["analytiques"][0]
         else : conditionAnalytiques = str(tuple(self.dictBudget["analytiques"]))
+        
+        listeCategoriesUtilisees = []
+        
+        # Récupération des opérations de trésorerie
         req = """SELECT IDcategorie, SUM(montant)
         FROM compta_ventilation
-        WHERE IDexercice=%d AND IDanalytique IN %s
+        WHERE date_budget>='%s' AND date_budget<='%s' AND IDanalytique IN %s
         GROUP BY IDcategorie
-        ;""" % (self.dictBudget["IDexercice"], conditionAnalytiques)
+        ;""" % (self.dictBudget["date_debut"], self.dictBudget["date_fin"], conditionAnalytiques)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        dictRealise = {}
+        dictOperationsTresorerie = {}
         for IDcategorie, montant in listeDonnees :
-            dictRealise[IDcategorie] = montant        
+            dictOperationsTresorerie[IDcategorie] = montant       
+            if IDcategorie not in listeCategoriesUtilisees :
+                listeCategoriesUtilisees.append(IDcategorie) 
+
+        # Récupération des opérations budgétaires
+        req = """SELECT IDcategorie, SUM(montant)
+        FROM compta_operations_budgetaires
+        WHERE date_budget>='%s' AND date_budget<='%s' AND IDanalytique IN %s
+        GROUP BY IDcategorie
+        ;""" % (self.dictBudget["date_debut"], self.dictBudget["date_fin"], conditionAnalytiques)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dictOperationsBudgetaires = {}
+        for IDcategorie, montant in listeDonnees :
+            dictOperationsBudgetaires[IDcategorie] = montant        
+            if IDcategorie not in listeCategoriesUtilisees :
+                listeCategoriesUtilisees.append(IDcategorie) 
+
+        # Récupéraion des infos sur les catégories
+        req = """SELECT IDcategorie, type, nom, abrege
+        FROM compta_categories;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dictInfosCategories = {}
+        for IDcategorie, typeCategorie, nom, abrege in listeDonnees :
+            dictInfosCategories[IDcategorie] = {"typeCategorie" : typeCategorie, "nom" : nom, "abrege" : abrege}        
         
         # Récupération des catégories budgétaires
-        req = """SELECT IDcategorie_budget, compta_categories_budget.type, compta_categories_budget.IDcategorie, valeur,
-        compta_categories.nom
+        req = """SELECT IDcategorie_budget, type, IDcategorie, valeur
         FROM compta_categories_budget
-        LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_categories_budget.IDcategorie
-        WHERE compta_categories_budget.IDbudget=%d
-        ORDER BY compta_categories_budget.type, compta_categories.nom
+        WHERE IDbudget=%d
+        ORDER BY type
         ;""" % self.dictBudget["IDbudget"]
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         
         listeCategories = []
+        listeIDcategories = []
         totalPlafond = 0.0
         totalRealise = 0.0
         totalSolde = 0.0
-        for IDcategorie_budget, typeCategorie, IDcategorie, valeur, nomCategorie in listeDonnees :
+        for IDcategorie_budget, typeCategorie, IDcategorie, valeur in listeDonnees :
             plafond = self.CalculePlafond(valeur)
             
-            if dictRealise.has_key(IDcategorie) :
-                realise = dictRealise[IDcategorie]
-            else :
-                realise = 0.0
+            realise = 0.0
+            if dictOperationsTresorerie.has_key(IDcategorie) :
+                realise += dictOperationsTresorerie[IDcategorie]
+            if dictOperationsBudgetaires.has_key(IDcategorie) :
+                realise += dictOperationsBudgetaires[IDcategorie]
                 
             if typeCategorie == "debit" : 
                 solde = plafond - realise
@@ -96,19 +125,47 @@ class Analyse():
             
             totalSolde += solde 
             
+            listeIDcategories.append(IDcategorie)
             listeCategories.append({
                 "IDcategorie_budget" : IDcategorie_budget, "typeCategorie" : typeCategorie, 
-                "IDcategorie" : IDcategorie, "valeur" : valeur, "nomCategorie" : nomCategorie,
+                "IDcategorie" : IDcategorie, "valeur" : valeur, "nomCategorie" : dictInfosCategories[IDcategorie]["nom"],
                 "plafond" : plafond, "realise" : realise, "solde" : solde, "pourcentage" : pourcentage,
                 })
 
         DB.Close() 
         
+        # Catégories non budgétées
+        if self.dictBudget["inclure_toutes_categories"] == True :
+            
+            for IDcategorie in listeCategoriesUtilisees :
+                if IDcategorie not in listeIDcategories :
+                    typeCategorie = dictInfosCategories[IDcategorie]["typeCategorie"]
+                    
+                    realise = 0.0
+                    if dictOperationsBudgetaires.has_key(IDcategorie) :
+                        realise += dictOperationsBudgetaires[IDcategorie]
+                    if dictOperationsTresorerie.has_key(IDcategorie) :
+                        realise += dictOperationsTresorerie[IDcategorie]
+
+                    if typeCategorie == "debit" : 
+                        solde = - realise
+                        totalRealise -= realise
+                    else :
+                        solde = realise
+                        totalRealise += realise
+                    totalSolde += solde 
+                    
+                    listeCategories.append({
+                        "IDcategorie_budget" : None, "typeCategorie" : typeCategorie, 
+                        "IDcategorie" : IDcategorie, "valeur" : 0.0, "nomCategorie" : dictInfosCategories[IDcategorie]["nom"],
+                        "plafond" : 0.0, "realise" : realise, "solde" : solde, "pourcentage" : None,
+                        })
+        
         # Total
         try :
             pourcentage = 100.0 * totalRealise / totalPlafond
         except :
-            pourcentage = 0.0
+            pourcentage = None
             
         listeCategories.append({
             "IDcategorie_budget" : None, "typeCategorie" : "total", 
@@ -383,9 +440,9 @@ class MyFrame(wx.Frame):
         
         dictBudget = {
             "IDbudget" : 1,
-            "IDexercice" : 1,
-            "date_debut" : datetime.date(2014, 1, 1),
-            "date_fin" : datetime.date(2014, 12, 31),
+            "inclure_toutes_categories" : True,
+            "date_debut" : datetime.date(2015, 1, 1),
+            "date_fin" : datetime.date(2015, 12, 31),
             "analytiques" : (1, 2),
             }
         self.ctrl.SetDictBudget(dictBudget)

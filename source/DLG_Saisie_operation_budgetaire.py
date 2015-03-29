@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-14 Ivan LUCAS
+# Copyright:       (c) 2010-15 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -12,58 +12,10 @@ import wx
 import GestionDB
 
 import CTRL_Saisie_euros
-import CTRL_Saisie_date
 import CTRL_Combobox_autocomplete
+import CTRL_Saisie_date
+import UTILS_Dates
 
-
-
-##class CTRL_Exercice(CTRL_Combobox_autocomplete.CTRL):
-##    def __init__(self, parent):
-##        CTRL_Combobox_autocomplete.CTRL.__init__(self, parent) 
-##        self.parent = parent
-##        self.IDdefaut = None
-##        self.MAJ() 
-##    
-##    def MAJ(self):
-##        listeItems = self.GetListeDonnees()
-##        if len(listeItems) == 0 :
-##            self.Enable(False)
-##        self.SetItems(listeItems)
-##        self.SetID(self.IDdefaut)
-##    
-##    def GetListeDonnees(self):
-##        listeItems = [u"",]
-##        self.dictDonnees = { 0 : {"ID":None}, }
-##        DB = GestionDB.DB()
-##        req = """SELECT IDexercice, nom, date_debut, date_fin, defaut
-##        FROM compta_exercices
-##        ORDER BY date_debut; """
-##        DB.ExecuterReq(req)
-##        listeDonnees = DB.ResultatReq()
-##        DB.Close()
-##        index = 1
-##        for IDexercice, nom, date_debut, date_fin, defaut in listeDonnees :
-##            self.dictDonnees[index] = { "ID" : IDexercice }
-##            label = nom
-##            listeItems.append(label)
-##            if defaut == 1 :
-##                self.IDdefaut = IDexercice
-##            index += 1
-##        return listeItems
-##
-##    def SetID(self, ID=0):
-##        for index, values in self.dictDonnees.iteritems():
-##            if values["ID"] == ID :
-##                 self.SetSelection(index)
-##
-##    def GetID(self):
-##        index = self.GetSelection()
-##        if index == -1 : return None
-##        return self.dictDonnees[index]["ID"]
-
-
-
-# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 class CTRL_Analytique(CTRL_Combobox_autocomplete.CTRL):
@@ -160,20 +112,18 @@ class CTRL_Categorie(CTRL_Combobox_autocomplete.CTRL):
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, typeOperation="credit", track=None, dateOperation=None):
+    def __init__(self, parent, typeOperation="credit", IDoperation_budgetaire=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent  
         self.typeOperation = typeOperation 
-        self.track = track
-        self.IDventilation = None
+        self.IDoperation_budgetaire = IDoperation_budgetaire
 
         self.label_date_budget = wx.StaticText(self, wx.ID_ANY, u"Date budget :")
         self.ctrl_date_budget = CTRL_Saisie_date.Date2(self)
-        self.ctrl_date_budget.SetDate(dateOperation) 
         
         self.label_analytique = wx.StaticText(self, wx.ID_ANY, u"Analytique :")
         self.ctrl_analytique = CTRL_Analytique(self)
-        self.ctrl_analytique.SetMinSize((300, -1)) 
+        self.ctrl_analytique.SetMinSize((300, -1))
         
         self.label_categorie = wx.StaticText(self, wx.ID_ANY, u"Catégorie :")
         self.ctrl_categorie = CTRL_Categorie(self, typeOperation=typeOperation)
@@ -201,17 +151,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
         if self.typeOperation == "credit" : 
-            titre = u"Ventilation d'une opération au crédit"
+            titre = u"Ventilation d'une opération budgétaire au crédit"
         elif self.typeOperation == "debit" : 
-            titre = u"Ventilation d'une opération au débit"
+            titre = u"Ventilation d'une opération budgétaire au débit"
         else :
             titre = u""
         self.SetTitle(titre)
         
-        if self.track != None :
+        if self.IDoperation_budgetaire != None :
             self.Importation()
-        
-        wx.CallAfter(self.ctrl_date_budget.SetInsertionPoint, 0)
 
     def __set_properties(self):
         self.ctrl_date_budget.SetToolTipString(u"Saisissez la date d'impact budgétaire")
@@ -298,7 +246,30 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event): 
-        IDventilation = self.IDventilation
+        etat = self.Sauvegarde() 
+        if etat == False :
+            return
+        self.EndModal(wx.ID_OK)
+    
+    def Importation(self):
+        DB = GestionDB.DB()
+        req = """SELECT type, date_budget, IDanalytique, IDcategorie, libelle, montant
+        FROM compta_operations_budgetaires WHERE IDoperation_budgetaire=%d;""" % self.IDoperation_budgetaire
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        DB.Close()
+        if len(listeTemp) == 0 : return
+        typeOperation, date_budget, IDanalytique, IDcategorie, libelle, montant = listeTemp[0]
+        date_budget = UTILS_Dates.DateEngEnDateDD(date_budget)
+        
+        self.ctrl_date_budget.SetDate(date_budget)
+        self.ctrl_analytique.SetID(IDanalytique)
+        self.ctrl_categorie.SetID(IDcategorie)
+        self.ctrl_libelle.SetValue(libelle)
+        self.ctrl_montant.SetMontant(montant)
+        self.typeOperation = typeOperation
+
+    def Sauvegarde(self):
         date_budget = self.ctrl_date_budget.GetDate()
         IDanalytique = self.ctrl_analytique.GetID()
         IDcategorie = self.ctrl_categorie.GetID()
@@ -333,33 +304,34 @@ class Dialog(wx.Dialog):
             self.ctrl_montant.SetFocus()
             return False
 
-        self.EndModal(wx.ID_OK)
+        # Sauvegarde de l'opération
+        DB = GestionDB.DB()
+        
+        listeDonnees = [ 
+            ("type", self.typeOperation),
+            ("date_budget", date_budget),
+            ("IDanalytique", IDanalytique),
+            ("IDcategorie", IDcategorie),
+            ("libelle", libelle),
+            ("montant", montant),
+            ]
+        if self.IDoperation_budgetaire == None :
+            self.IDoperation_budgetaire = DB.ReqInsert("compta_operations_budgetaires", listeDonnees)
+        else :
+            DB.ReqMAJ("compta_operations_budgetaires", listeDonnees, "IDoperation_budgetaire", self.IDoperation_budgetaire)
+        DB.Close()
+
+        return True
     
-    def Importation(self):
-        """ Importation depuis un track """
-        self.IDventilation = self.track.IDventilation
-        self.ctrl_date_budget.SetDate(self.track.date_budget)
-        self.ctrl_analytique.SetID(self.track.IDanalytique)
-        self.ctrl_categorie.SetID(self.track.IDcategorie)
-        self.ctrl_libelle.SetValue(self.track.libelle)
-        self.ctrl_montant.SetMontant(self.track.montant)
+    def GetIDoperation_budgetaire(self):
+        return self.IDoperation_budgetaire
     
-    def GetDictDonnees(self):
-        dictDonnees = {
-            "IDventilation" : self.IDventilation, 
-            "date_budget" : self.ctrl_date_budget.GetDate(),
-            "IDanalytique" : self.ctrl_analytique.GetID(),
-            "IDcategorie" : self.ctrl_categorie.GetID(),
-            "libelle" : self.ctrl_libelle.GetValue(),
-            "montant" : self.ctrl_montant.GetMontant(),
-            }
-        return dictDonnees
 
 
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, typeOperation="debit")
+    dialog_1 = Dialog(None, typeOperation="debit", IDoperation_budgetaire=1)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

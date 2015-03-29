@@ -15,10 +15,12 @@ import datetime
 
 import OL_Suivi_budget
 import CTRL_Bandeau
+import CTRL_Saisie_date
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
+import copy
 import numpy as np
 import matplotlib
 matplotlib.interactive(False)
@@ -58,17 +60,15 @@ class CTRL_Budget(wx.Choice):
         listeItems = []
         self.dictDonnees = {}
         DB = GestionDB.DB()
-        req = """SELECT compta_budgets.IDbudget, compta_budgets.IDexercice, compta_budgets.nom, compta_budgets.observations, compta_budgets.analytiques, 
-        compta_exercices.date_debut, compta_exercices.date_fin
+        req = """SELECT IDbudget, nom, observations, analytiques, date_debut, date_fin
         FROM compta_budgets
-        LEFT JOIN compta_exercices ON compta_exercices.IDexercice = compta_budgets.IDexercice
         ORDER BY date_debut; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         dateJour = datetime.date.today() 
         index = 0
-        for IDbudget, IDexercice, nom, observations, analytiques, date_debut, date_fin in listeDonnees :
+        for IDbudget, nom, observations, analytiques, date_debut, date_fin in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             
@@ -83,7 +83,7 @@ class CTRL_Budget(wx.Choice):
             analytiques = listeTemp
             
             dictTemp = {
-                "IDbudget" : IDbudget, "IDexercice" : IDexercice, "nom" : nom, "observations" : observations, 
+                "IDbudget" : IDbudget, "nom" : nom, "observations" : observations, 
                 "analytiques" : analytiques, "date_debut" : date_debut, "date_fin" : date_fin, 
                 }
             self.dictDonnees[index] = dictTemp
@@ -105,7 +105,8 @@ class CTRL_Budget(wx.Choice):
     def GetDictBudget(self):
         index = self.GetSelection()
         if index == -1 : return None
-        return self.dictDonnees[index]
+        dictBudget = self.dictDonnees[index]
+        return dictBudget
         
 # ----------------------------------------------------------------------------------------------------------------------------
 
@@ -361,11 +362,19 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tresorerie.png")
 
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Paramètres")
         self.label_budget = wx.StaticText(self, wx.ID_ANY, u"Budget :")
         self.ctrl_budget = CTRL_Budget(self)
         self.bouton_budget = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-
+        
+        self.check_periode = wx.CheckBox(self, -1, u"Période personnalisée :")
+        self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
+        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
+        self.bouton_valider_periode = wx.Button(self, -1, u"Valider") 
+        
+        self.check_inclure = wx.CheckBox(self, -1, u"Inclure les catégories non budgétées")
+        
         # Situation
         self.box_situation_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Situation")
         self.notebook = wx.Notebook(self, -1, style=wx.BK_BOTTOM)
@@ -394,17 +403,24 @@ class Dialog(wx.Dialog):
         
         # Binds
         self.Bind(wx.EVT_CHOICE, self.OnChoixBudget, self.ctrl_budget)
+        self.Bind(wx.EVT_CHECKBOX, self.OnChoixBudget, self.check_inclure)
+        self.Bind(wx.EVT_CHECKBOX, self.OnChoixBudget, self.check_periode)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonBudget, self.bouton_budget)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
+        self.Bind(wx.EVT_BUTTON, self.OnChoixBudget, self.bouton_valider_periode)
         self.notebook.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
-
+        
         # Init
         self.OnChoixBudget(None) 
         
 
     def __set_properties(self):
         self.ctrl_budget.SetToolTipString(u"Sélectionnez une budget dans la liste")
+        self.check_periode.SetToolTipString(u"Cochez cette case pour saisir une autre date que celle définie dans le budget")
+        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de période")
+        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de période")
+        self.bouton_valider_periode.SetToolTipString(u"Cliquez ici pour valider les dates saisies")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.SetMinSize((770, 680))
@@ -415,16 +431,29 @@ class Dialog(wx.Dialog):
 
         # Généralités
         box_generalites = wx.StaticBoxSizer(self.box_generalites_staticbox, wx.VERTICAL)
-        grid_sizer_generalites = wx.FlexGridSizer(2, 2, 10, 10)
+        grid_sizer_generalites = wx.FlexGridSizer(3, 2, 10, 10)
                 
         grid_sizer_generalites.Add(self.label_budget, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         
-        grid_sizer_budget = wx.FlexGridSizer(1, 2, 5, 5)
+        grid_sizer_budget = wx.FlexGridSizer(1, 5, 5, 5)
         grid_sizer_budget.Add(self.ctrl_budget, 0, wx.EXPAND, 0)
         grid_sizer_budget.Add(self.bouton_budget, 0, 0, 0)
         grid_sizer_budget.AddGrowableCol(0)
         grid_sizer_generalites.Add(grid_sizer_budget, 1, wx.EXPAND, 0)
         
+        grid_sizer_generalites.Add( (5, 5), 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        
+        grid_sizer_periode = wx.FlexGridSizer(1, 5, 5, 5)
+        grid_sizer_periode.Add(self.check_periode, 0, wx.EXPAND, 0)
+        grid_sizer_periode.Add(self.ctrl_date_debut, 0, 0, 0)
+        grid_sizer_periode.Add(self.label_au, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.ctrl_date_fin, 0, 0, 0)
+        grid_sizer_periode.Add(self.bouton_valider_periode, 0, 0, 0)
+        grid_sizer_generalites.Add(grid_sizer_periode, 1, wx.EXPAND, 0)
+
+        grid_sizer_generalites.Add( (50, 5), 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.check_inclure, 1, wx.EXPAND, 0)
+
         grid_sizer_generalites.AddGrowableCol(1)
         box_generalites.Add(grid_sizer_generalites, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_generalites, 1, wx.EXPAND | wx.LEFT | wx.RIGHT, 10)
@@ -464,9 +493,24 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         self.ctrl_budget.MAJ()
         self.ctrl_budget.SetID(IDbudget)
+        self.OnChoixBudget(None)
     
     def OnChoixBudget(self, event):
-        dictBudget = self.ctrl_budget.GetDictBudget()
+        # Activation de la période personnalisée
+        self.ctrl_date_debut.Enable(self.check_periode.GetValue())
+        self.label_au.Enable(self.check_periode.GetValue())
+        self.ctrl_date_fin.Enable(self.check_periode.GetValue())
+        self.bouton_valider_periode.Enable(self.check_periode.GetValue())
+        # Récupération des données
+        dictBudget = copy.copy(self.ctrl_budget.GetDictBudget())
+        dictBudget["inclure_toutes_categories"] = self.check_inclure.GetValue() 
+        if self.check_periode.GetValue() == True :
+            if self.ctrl_date_debut.GetDate() != None and self.ctrl_date_fin.GetDate() != None :
+                dictBudget["date_debut"] = self.ctrl_date_debut.GetDate()
+                dictBudget["date_fin"] = self.ctrl_date_fin.GetDate()
+            else :
+                dictBudget = None
+        # Envoi des données vers le ctrl de suivi
         page = self.notebook.GetPage(self.notebook.GetSelection())
         page.SetDictBudget(dictBudget)
 
@@ -475,7 +519,9 @@ class Dialog(wx.Dialog):
         old = event.GetOldSelection()
         self.OnChoixBudget(None)
         event.Skip()
-
+    
+        
+        
 
 if __name__ == u"__main__":
     app = wx.App(0)

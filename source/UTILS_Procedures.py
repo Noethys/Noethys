@@ -36,6 +36,8 @@ DICT_PROCEDURES = {
     "A8120" : u"Renseignement automatique du type comptable du mode de règlement (banque ou caisse)",
     "A8260" : u"Modification de la table Paramètres",
     "A8452" : u"Nettoyage des liens superflus",
+    "A8574" : u"Mise à niveau de la base de données",
+    "A8623" : u"Remplacement des exercices comptables par les dates budgétaires",
     }
 
 # -------------------------------------------------------------------------------------------------------------------------
@@ -537,6 +539,69 @@ def A8452():
     print "Nbre de liens supprimes :", len(listeLiensASupprimer)
     print listeIDfamille
     
+def A8574():
+    """ Mise à niveau de la base de données """
+    import FonctionsPerso
+    versionApplication = FonctionsPerso.GetVersionLogiciel()
+    dlg = wx.TextEntryDialog(None, u"Saisissez le numéro de version à partir duquel vous souhaitez \neffectuer la mise à niveau ('x.x.x.x'):", u"Mise à niveau de la base de données", versionApplication)
+    reponse = dlg.ShowModal() 
+    version = dlg.GetValue()
+    dlg.Destroy()
+    if reponse != wx.ID_OK:
+        return
+    
+    valide = True
+    try :
+        version = [int(x) for x in version.split(".")]
+    except :
+        valide = False
+    if len(version) != 4 :
+        valide = False
+    
+    if valide == False :
+        dlg = wx.MessageDialog(None, u"Impossible d'effectuer la procédure !\n\nLe numéro de version que vous avez saisi semble erroné. Vérifiez qu'il est formaté de la façon suivante : 'x.x.x.x'", u"Erreur", wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return False
+    
+    print "Procedure manuelle de mise a niveau de la base de donnee depuis la version : ", version
+    DB = GestionDB.DB()        
+    resultat = DB.ConversionDB(version)
+    DB.Close()
+    print resultat
+    
+def A8623():
+    """ Remplacement des exercices comptables par les dates budgétaires """
+    DB = GestionDB.DB()
+    
+    # Remplacement dans la ventilation des opérations de trésorerie
+    req = """SELECT IDventilation, compta_ventilation.IDexercice, date_budget, compta_exercices.date_debut
+    FROM compta_ventilation
+    LEFT JOIN compta_exercices ON compta_exercices.IDexercice = compta_ventilation.IDexercice
+    WHERE date_budget IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    for IDventilation, IDexercice, date_budget, date_debut_exercice in listeDonnees :
+        DB.ReqMAJ("compta_ventilation", [("date_budget", date_debut_exercice),], "IDventilation", IDventilation)
+    
+    # Remplacement dans les budgets
+    req = """SELECT IDbudget, compta_budgets.IDexercice, compta_budgets.date_debut, compta_budgets.date_fin, compta_exercices.date_debut, compta_exercices.date_fin
+    FROM compta_budgets
+    LEFT JOIN compta_exercices ON compta_exercices.IDexercice = compta_budgets.IDexercice
+    WHERE compta_budgets.date_debut IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    for IDbudget, IDexercice, date_debut, date_fin, date_debut_exercice, date_fin_exercice in listeDonnees :
+        DB.ReqMAJ("compta_budgets", [("date_debut", date_debut_exercice), ("date_fin", date_fin_exercice)], "IDbudget", IDbudget)
+    
+    DB.Close() 
+    
+    
+    
+    
+    
+    
+    
     
     
 
@@ -624,5 +689,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8452()
+    A8623()
     app.MainLoop()

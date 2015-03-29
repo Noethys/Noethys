@@ -36,8 +36,12 @@ except Exception, err :
 
 
 LISTE_MODELES = [
-    {"code" : "repartition_categories_debit", "label" : u"Répartition des dépenses", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit", "label" : u"Répartition des recettes", "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_tresorerie", "label" : u"Répartition des opérations de trésorerie au débit", "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie", "label" : u"Répartition des opérations de trésorerie au crédit", "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_budgetaires", "label" : u"Répartition des opérations budgétaires au débit", "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_budgetaires", "label" : u"Répartition des opérations budgétaires au crédit", "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_tresorerie_budgetaires", "label" : u"Répartition des opérations de trésorerie + budgétaires au débit", "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie_budgetaires", "label" : u"Répartition des opérations de trésorerie + budgétaires au crédit", "image" : "Repartition.png"},
     {"code" : "tiers_debit", "label" : u"Dépenses par tiers", "image" : "Barres.png"},
     {"code" : "tiers_credit", "label" : u"Recettes par tiers", "image" : "Barres.png"},
     #{"code" : "repartition_depenses", "label" : u"Graphique 3", "image" : "Courbes2.png"},
@@ -102,7 +106,7 @@ class CTRL_Exercice(wx.Choice):
     
     def GetListeDonnees(self):
         listeItems = [u"Tous les exercices",]
-        self.dictDonnees = { 0 : {"ID":None}, }
+        self.dictDonnees = { 0 : {"ID":None, "date_debut":None, "date_fin":None}, }
         DB = GestionDB.DB()
         req = """SELECT IDexercice, nom, date_debut, date_fin, defaut
         FROM compta_exercices
@@ -112,7 +116,9 @@ class CTRL_Exercice(wx.Choice):
         DB.Close()
         index = 1
         for IDexercice, nom, date_debut, date_fin, defaut in listeDonnees :
-            self.dictDonnees[index] = { "ID" : IDexercice }
+            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            self.dictDonnees[index] = { "ID" : IDexercice, "date_debut" : date_debut, "date_fin" : date_fin}
             label = nom
             listeItems.append(label)
             if defaut == 1 :
@@ -129,7 +135,11 @@ class CTRL_Exercice(wx.Choice):
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]["ID"]
-
+    
+    def GetDictExercice(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -244,17 +254,22 @@ class CTRL_Graphique(wx.Panel):
             wx.CallAfter(self.SendSizeEvent)
             return
         
-        if self.dictParametres["IDmodele"] == "repartition_categories_debit" : self.Graphe_repartition_categories(typeCategorie="debit")
-        if self.dictParametres["IDmodele"] == "repartition_categories_credit" : self.Graphe_repartition_categories(typeCategorie="credit")
+        if self.dictParametres["IDmodele"] == "repartition_categories_debit_tresorerie" : self.Graphe_repartition_categories(typeCategorie="debit", typeDonnees="tresorerie")
+        if self.dictParametres["IDmodele"] == "repartition_categories_credit_tresorerie" : self.Graphe_repartition_categories(typeCategorie="credit", typeDonnees="tresorerie")
+        if self.dictParametres["IDmodele"] == "repartition_categories_debit_budgetaires" : self.Graphe_repartition_categories(typeCategorie="debit", typeDonnees="budgetaires")
+        if self.dictParametres["IDmodele"] == "repartition_categories_credit_budgetaires" : self.Graphe_repartition_categories(typeCategorie="credit", typeDonnees="budgetaires")
+        if self.dictParametres["IDmodele"] == "repartition_categories_debit_tresorerie_budgetaires" : self.Graphe_repartition_categories(typeCategorie="debit", typeDonnees="tresorerie+budgetaires")
+        if self.dictParametres["IDmodele"] == "repartition_categories_credit_tresorerie_budgetaires" : self.Graphe_repartition_categories(typeCategorie="credit", typeDonnees="tresorerie+budgetaires")
         if self.dictParametres["IDmodele"] == "tiers_debit" : self.Graphe_tiers(typeCategorie="debit")
         if self.dictParametres["IDmodele"] == "tiers_credit" : self.Graphe_tiers(typeCategorie="credit")
         self.Layout()
 
-    def Graphe_repartition_categories(self, typeCategorie=""):
+    def Graphe_repartition_categories(self, typeCategorie="", typeDonnees="tresorerie+budgetaires"):
         # Récupération des données
         conditions = []
-        if self.dictParametres["IDexercice"] != None :
-            conditions.append("IDexercice=%d" % self.dictParametres["IDexercice"])
+        if self.dictParametres["date_debut"] != None :
+            conditions.append("date_budget>='%s'" % self.dictParametres["date_debut"])
+            conditions.append("date_budget<='%s'" % self.dictParametres["date_fin"])
         if self.dictParametres["IDanalytique"] != None :
             conditions.append("IDanalytique=%d" % self.dictParametres["IDanalytique"])
         if len(conditions) > 0 :
@@ -263,16 +278,38 @@ class CTRL_Graphique(wx.Panel):
             ConditionsStr = ""
             
         DB = GestionDB.DB()
-        req = """SELECT compta_ventilation.IDcategorie, compta_categories.nom, SUM(compta_ventilation.montant)
-        FROM compta_ventilation
-        LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_ventilation.IDcategorie
-        WHERE type='%s' %s
-        GROUP BY compta_ventilation.IDcategorie
-        ;""" % (typeCategorie, ConditionsStr)
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        dictDonnees = {}
+        
+        if "budgetaires" in typeDonnees :
+            req = """SELECT compta_operations_budgetaires.IDcategorie, compta_categories.nom, SUM(compta_operations_budgetaires.montant)
+            FROM compta_operations_budgetaires
+            LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_operations_budgetaires.IDcategorie
+            WHERE compta_operations_budgetaires.type='%s' %s
+            GROUP BY compta_operations_budgetaires.IDcategorie
+            ;""" % (typeCategorie, ConditionsStr)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            for IDcategorie, nom, montant in listeDonnees :
+                if dictDonnees.has_key(IDcategorie) == False :
+                    dictDonnees[IDcategorie] = {"nom" : nom, "montant" : 0.0}
+                dictDonnees[IDcategorie]["montant"] += montant
+        
+        if "tresorerie" in typeDonnees :
+            req = """SELECT compta_ventilation.IDcategorie, compta_categories.nom, SUM(compta_ventilation.montant)
+            FROM compta_ventilation
+            LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_ventilation.IDcategorie
+            WHERE type='%s' %s
+            GROUP BY compta_ventilation.IDcategorie
+            ;""" % (typeCategorie, ConditionsStr)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            for IDcategorie, nom, montant in listeDonnees :
+                if dictDonnees.has_key(IDcategorie) == False :
+                    dictDonnees[IDcategorie] = {"nom" : nom, "montant" : 0.0}
+                dictDonnees[IDcategorie]["montant"] += montant
+
         DB.Close()
-        if len(listeDonnees) == 0 :
+        if len(dictDonnees) == 0 :
             return
 
         listeValeurs = []
@@ -280,13 +317,13 @@ class CTRL_Graphique(wx.Panel):
         listeCouleurs = []
         
         montantTotal = 0.0
-        for IDcategorie, nom, montant in listeDonnees :
-            montantTotal += montant
+        for IDcategorie, dictTemp in dictDonnees.iteritems() :
+            montantTotal += dictTemp["montant"]
             
         index = 1
-        for IDcategorie, nom, montant in listeDonnees :
-            listeValeurs.append(montant)
-            label = nom
+        for IDcategorie, dictTemp in dictDonnees.iteritems() :
+            listeValeurs.append(dictTemp["montant"])
+            label = dictTemp["nom"]
             if self.afficher_valeurs == True :
                 label += u"\n%.2f %s" % (float(montant), SYMBOLE)
             listeLabels.append(label)            
@@ -316,8 +353,9 @@ class CTRL_Graphique(wx.Panel):
     def Graphe_tiers(self, typeCategorie=""):
         # Récupération des données
         conditions = []
-        if self.dictParametres["IDexercice"] != None :
-            conditions.append("IDexercice=%d" % self.dictParametres["IDexercice"])
+        if self.dictParametres["date_debut"] != None :
+            conditions.append("date_budget>='%s'" % self.dictParametres["date_debut"])
+            conditions.append("date_budget<='%s'" % self.dictParametres["date_fin"])
         if self.dictParametres["IDanalytique"] != None :
             conditions.append("IDanalytique=%d" % self.dictParametres["IDanalytique"])
         if len(conditions) > 0 :
@@ -628,10 +666,16 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def MAJgraphique(self, event=None):
+        dictExercice = self.ctrl_exercice.GetDictExercice() 
+        if dictExercice == None : return
+        date_debut = dictExercice["date_debut"]
+        date_fin = dictExercice["date_fin"]
+        
         dictParametres = {
             "IDmodele" : self.ctrl_modele.GetID(),
             "nom" : self.ctrl_modele.GetLabel(),
-            "IDexercice" : self.ctrl_exercice.GetID() ,
+            "date_debut" : date_debut,
+            "date_fin" : date_fin,
             "IDanalytique" : self.ctrl_analytique.GetID(),
             }
         

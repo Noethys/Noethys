@@ -13,6 +13,7 @@ import GestionDB
 import UTILS_Dates
 import datetime
 
+import CTRL_Saisie_date
 import OL_Categories_budgetaires
 
 
@@ -94,49 +95,49 @@ class Panel_OL(wx.Panel):
         self.Layout()
     
 
-class CTRL_Exercice(wx.Choice):
-    def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
-        self.parent = parent
-        self.IDdefaut = None
-        self.MAJ() 
-    
-    def MAJ(self):
-        listeItems = self.GetListeDonnees()
-        if len(listeItems) == 0 :
-            self.Enable(False)
-        self.SetItems(listeItems)
-        self.SetID(self.IDdefaut)
-    
-    def GetListeDonnees(self):
-        listeItems = [u"",]
-        self.dictDonnees = { 0 : {"ID":None}, }
-        DB = GestionDB.DB()
-        req = """SELECT IDexercice, nom, date_debut, date_fin, defaut
-        FROM compta_exercices
-        ORDER BY date_debut; """
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        index = 1
-        for IDexercice, nom, date_debut, date_fin, defaut in listeDonnees :
-            self.dictDonnees[index] = { "ID" : IDexercice }
-            label = nom
-            listeItems.append(label)
-            if defaut == 1 :
-                self.IDdefaut = IDexercice
-            index += 1
-        return listeItems
-
-    def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
-            if values["ID"] == ID :
-                 self.SetSelection(index)
-
-    def GetID(self):
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]["ID"]
+##class CTRL_Exercice(wx.Choice):
+##    def __init__(self, parent):
+##        wx.Choice.__init__(self, parent, -1) 
+##        self.parent = parent
+##        self.IDdefaut = None
+##        self.MAJ() 
+##    
+##    def MAJ(self):
+##        listeItems = self.GetListeDonnees()
+##        if len(listeItems) == 0 :
+##            self.Enable(False)
+##        self.SetItems(listeItems)
+##        self.SetID(self.IDdefaut)
+##    
+##    def GetListeDonnees(self):
+##        listeItems = [u"",]
+##        self.dictDonnees = { 0 : {"ID":None}, }
+##        DB = GestionDB.DB()
+##        req = """SELECT IDexercice, nom, date_debut, date_fin, defaut
+##        FROM compta_exercices
+##        ORDER BY date_debut; """
+##        DB.ExecuterReq(req)
+##        listeDonnees = DB.ResultatReq()
+##        DB.Close()
+##        index = 1
+##        for IDexercice, nom, date_debut, date_fin, defaut in listeDonnees :
+##            self.dictDonnees[index] = { "ID" : IDexercice }
+##            label = nom
+##            listeItems.append(label)
+##            if defaut == 1 :
+##                self.IDdefaut = IDexercice
+##            index += 1
+##        return listeItems
+##
+##    def SetID(self, ID=0):
+##        for index, values in self.dictDonnees.iteritems():
+##            if values["ID"] == ID :
+##                 self.SetSelection(index)
+##
+##    def GetID(self):
+##        index = self.GetSelection()
+##        if index == -1 : return None
+##        return self.dictDonnees[index]["ID"]
 
 
 
@@ -152,9 +153,10 @@ class Dialog(wx.Dialog):
         self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
         self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_exercice = wx.StaticText(self, wx.ID_ANY, u"Exercice :")
-        self.ctrl_exercice = CTRL_Exercice(self)
-        self.bouton_exercice = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, u"Période :")
+        self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
+        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         self.label_observations = wx.StaticText(self, wx.ID_ANY, u"Notes :")
         self.ctrl_observations = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
         self.ctrl_observations.SetMinSize((270, -1))
@@ -188,7 +190,6 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
         # Binds
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonExercices, self.bouton_exercice)
         self.Bind(wx.EVT_BUTTON, self.OnAjouter, self.bouton_ajouter_categories)
         self.Bind(wx.EVT_BUTTON, self.OnModifier, self.bouton_modifier_categories)
         self.Bind(wx.EVT_BUTTON, self.OnSupprimer, self.bouton_supprimer_categories)
@@ -222,7 +223,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce budget (Ex : Année 2015)")
-        self.ctrl_exercice.SetToolTipString(u"Sélectionnez un exercice")
+        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de la période à budgéter")
+        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de la période à budgéter")
         self.ctrl_observations.SetToolTipString(u"Saisissez des observations")
         self.bouton_ajouter_categories.SetToolTipString(u"Cliquez ici pour ajouter une catégorie budgétaire")
         self.bouton_modifier_categories.SetToolTipString(u"Cliquez ici pour modifier la catégorie budgétaire sélectionnée")
@@ -243,13 +245,13 @@ class Dialog(wx.Dialog):
         grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
         
-        grid_sizer_generalites.Add(self.label_exercice, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.label_periode, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         
-        grid_sizer_exercice = wx.FlexGridSizer(1, 2, 5, 5)
-        grid_sizer_exercice.Add(self.ctrl_exercice, 0, wx.EXPAND, 0)
-        grid_sizer_exercice.Add(self.bouton_exercice, 0, 0, 0)
-        grid_sizer_exercice.AddGrowableCol(0)
-        grid_sizer_generalites.Add(grid_sizer_exercice, 1, wx.EXPAND, 0)
+        grid_sizer_periode = wx.FlexGridSizer(1, 4, 5, 5)
+        grid_sizer_periode.Add(self.ctrl_date_debut, 0, wx.EXPAND, 0)
+        grid_sizer_periode.Add(self.label_au, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.ctrl_date_fin, 0, wx.EXPAND, 0)
+        grid_sizer_generalites.Add(grid_sizer_periode, 1, wx.EXPAND, 0)
         
         grid_sizer_generalites.Add(self.label_observations, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_generalites.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
@@ -307,14 +309,14 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)
 
-    def OnBoutonExercices(self, event):  
-        IDexercice = self.ctrl_exercice.GetID()
-        import DLG_Exercices
-        dlg = DLG_Exercices.Dialog(self)
-        dlg.ShowModal()
-        dlg.Destroy()
-        self.ctrl_exercice.MAJ()
-        self.ctrl_exercice.SetID(IDexercice)
+##    def OnBoutonExercices(self, event):  
+##        IDexercice = self.ctrl_exercice.GetID()
+##        import DLG_Exercices
+##        dlg = DLG_Exercices.Dialog(self)
+##        dlg.ShowModal()
+##        dlg.Destroy()
+##        self.ctrl_exercice.MAJ()
+##        self.ctrl_exercice.SetID(IDexercice)
     
     def OnAjouter(self, event):
         if self.notebook.GetSelection() == 0 :
@@ -342,21 +344,25 @@ class Dialog(wx.Dialog):
         
     def Importation(self):
         DB = GestionDB.DB()
-        req = """SELECT nom, IDexercice, observations, analytiques
+        req = """SELECT nom, date_debut, date_fin, observations, analytiques
         FROM compta_budgets WHERE IDbudget=%d;""" % self.IDbudget
         DB.ExecuterReq(req)
         listeTemp = DB.ResultatReq()
         DB.Close()
         if len(listeTemp) == 0 : return
-        nom, IDexercice, observations, analytiques = listeTemp[0]
+        nom, date_debut, date_fin, observations, analytiques = listeTemp[0]
+        date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+        date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
         self.ctrl_nom.SetValue(nom)
-        self.ctrl_exercice.SetID(IDexercice)
+        self.ctrl_date_debut.SetDate(date_debut)
+        self.ctrl_date_fin.SetDate(date_fin)
         self.ctrl_observations.SetValue(observations) 
         self.ctrl_analytiques.SetCochesStr(analytiques)
 
     def Sauvegarde(self):
         nom = self.ctrl_nom.GetValue()
-        IDexercice = self.ctrl_exercice.GetID()
+        date_debut = self.ctrl_date_debut.GetDate()
+        date_fin = self.ctrl_date_fin.GetDate()
         observations = self.ctrl_observations.GetValue()
         analytiques = self.ctrl_analytiques.GetCochesStr()
         tracksCategoriesDebit = self.ctrl_categories_debit.ctrl.GetTracks() 
@@ -369,11 +375,25 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return False
 
-        if IDexercice == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un exercice pour ce budget !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        if date_debut == None :
+            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de période pour ce budget !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_exercice.SetFocus()
+            self.ctrl_date_debut.SetFocus()
+            return False
+
+        if date_fin == None :
+            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de période pour ce budget !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_date_fin.SetFocus()
+            return False
+
+        if date_fin < date_debut :
+            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début de période !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_date_fin.SetFocus()
             return False
 
         if analytiques == "" :
@@ -387,7 +407,8 @@ class Dialog(wx.Dialog):
         
         listeDonnees = [ 
             ("nom", nom),
-            ("IDexercice", IDexercice),
+            ("date_debut", date_debut),
+            ("date_fin", date_fin),
             ("observations", observations),
             ("analytiques", analytiques),
             ]

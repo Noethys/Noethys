@@ -10,7 +10,7 @@
 
 import wx
 import GestionDB
-import DLG_Saisie_operation
+import DLG_Saisie_operation_tresorerie
 import DLG_Saisie_virement
 import datetime
 

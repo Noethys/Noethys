@@ -1074,7 +1074,8 @@ class CTRL_Champs(wx.TreeCtrl):
                 for dictChamp in self.dictChamps[codeCategorie] :
                     item = self.AppendItem(categorie, dictChamp["titre"])
                     self.SetPyData(item, dictChamp)
-                    self.SetItemImage(item, self.dictImages[dictChamp["typeDonnee"]], which=wx.TreeItemIcon_Normal)
+                    if dictChamp["typeDonnee"] != None :
+                        self.SetItemImage(item, self.dictImages[dictChamp["typeDonnee"]], which=wx.TreeItemIcon_Normal)
                     self.dictItems[dictChamp["code"]] = item
         
         wx.CallAfter(self.Init)

@@ -10,14 +10,13 @@
 
 import wx
 import GestionDB
-import DLG_Saisie_operation_tresorerie
-import DLG_Saisie_virement
+import DLG_Saisie_operation_budgetaire
 import datetime
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, CTRL_Outils
 
 import UTILS_Utilisateurs
 import UTILS_Dates
@@ -25,32 +24,36 @@ import UTILS_Dates
 
 class Track(object):
     def __init__(self, donnees):
-        self.IDvirement = donnees["IDvirement"]
-        self.IDoperation_debit = donnees["IDoperation_debit"]
-        self.IDoperation_credit = donnees["IDoperation_credit"]
-        self.date = donnees["date"]
+        self.IDoperation_budgetaire = donnees["IDoperation_budgetaire"]
+        self.typeOperation = donnees["typeOperation"]
+        self.date_budget = donnees["date_budget"]
+        self.IDcategorie = donnees["IDcategorie"]
+        self.IDanalytique = donnees["IDanalytique"]
         self.libelle = donnees["libelle"]
         self.montant = donnees["montant"]
-        self.observations = donnees["observations"]
-        self.IDreleve_debit = donnees["IDreleve_debit"]
-        self.IDreleve_credit = donnees["IDreleve_credit"]
+        self.label_categorie = donnees["label_categorie"]
+        self.label_analytique = donnees["label_analytique"]
         
+        if self.typeOperation == "debit" :
+            self.debit = self.montant
+            self.credit = None
+        else :
+            self.debit = None
+            self.credit = self.montant
+            
 
-    
+
+
+
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso
-        self.IDcompte_bancaire = kwds.pop("IDcompte_bancaire", None)
-        self.ctrl_soldes = None
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-    
-    def SetCompteBancaire(self, IDcompte_bancaire=None):
-        self.IDcompte_bancaire = IDcompte_bancaire
-        
+            
     def OnItemActivated(self,event):
         self.Modifier(None)
                 
@@ -59,39 +62,24 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        DB = GestionDB.DB()
-        
-        req = """SELECT IDvirement, IDoperation_debit, IDoperation_credit
-        FROM compta_virements;"""
-        DB.ExecuterReq(req)
-        listeVirements = DB.ResultatReq()
-
-        req = """SELECT IDoperation, date, libelle, montant, IDreleve, IDvirement, observations
-        FROM compta_operations
-        WHERE IDvirement IS NOT NULL;"""
-        DB.ExecuterReq(req)
-        listeOperations = DB.ResultatReq()
-
-        DB.Close()
-        
-        dictOperations = {}
-        for IDoperation, date, libelle, montant, IDreleve, IDvirement, observations in listeOperations :
-            date = UTILS_Dates.DateEngEnDateDD(date)
-            dictOperations[IDoperation] = {
-                "IDoperation" : IDoperation, "date" : date, "libelle" : libelle, 
-                "montant" : montant, "IDreleve" : IDreleve, "IDvirement" : IDvirement, "observations" : observations, 
-                }
-            
+        db = GestionDB.DB()
+        req = """SELECT 
+        IDoperation_budgetaire, compta_operations_budgetaires.type, date_budget, compta_operations_budgetaires.IDcategorie, compta_operations_budgetaires.IDanalytique, libelle, montant,
+        compta_categories.nom, compta_analytiques.nom
+        FROM compta_operations_budgetaires 
+        LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_operations_budgetaires.IDcategorie
+        LEFT JOIN compta_analytiques ON compta_analytiques.IDanalytique = compta_operations_budgetaires.IDanalytique
+        ORDER BY date_budget, IDoperation_budgetaire
+        ;""" 
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
         listeListeView = []
-        for IDvirement, IDoperation_debit, IDoperation_credit in listeVirements :
-            dictOperationDebit = dictOperations[IDoperation_debit]
-            dictOperationCredit = dictOperations[IDoperation_credit]
-            
+        for IDoperation_budgetaire, typeOperation, date_budget, IDcategorie, IDanalytique, libelle, montant, label_categorie, label_analytique in listeDonnees :
+            date_budget = UTILS_Dates.DateEngEnDateDD(date_budget)
             dictTemp = {
-                "IDvirement" : IDvirement, "IDoperation_debit" : IDoperation_debit, "IDoperation_credit" : IDoperation_credit, 
-                "date" : dictOperationDebit["date"], "libelle" : dictOperationDebit["libelle"], "montant" : dictOperationDebit["montant"], 
-                "observations" : dictOperationDebit["observations"], "IDreleve_debit" : dictOperationDebit["IDreleve"],
-                "IDreleve_credit" : dictOperationCredit["IDreleve"],
+                "IDoperation_budgetaire" : IDoperation_budgetaire, "typeOperation" : typeOperation, "date_budget" : date_budget, "IDcategorie" : IDcategorie, 
+                "IDanalytique" : IDanalytique, "libelle" : libelle, "montant" : montant, "label_categorie" : label_categorie, "label_analytique" : label_analytique, 
                 }
             track = Track(dictTemp)
             listeListeView.append(track)
@@ -105,7 +93,7 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
 
         def rowFormatter(listItem, track):
-            if track.date > datetime.date.today() :
+            if track.date_budget > datetime.date.today() :
                 listItem.SetTextColour((180, 180, 180))
 
         def FormateDate(date):
@@ -116,34 +104,31 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 0, "IDvirement", typeDonnee="entier"),
-            ColumnDefn(u"Date", 'left', 80, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Libellé", 'left', 200, "libelle", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Montant", "right", 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"", "left", 0, "IDoperation_budgetaire", typeDonnee="entier"),
+            ColumnDefn(u"Date Budget", 'left', 120, "date_budget", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(u"Analytique", "left", 160, "label_analytique", typeDonnee="texte"),
+            ColumnDefn(u"Catégorie", "left", 160, "label_categorie", typeDonnee="texte"),
+            ColumnDefn(u"Libellé", "left", 120, "libelle", typeDonnee="texte", isSpaceFilling=True),
+            #ColumnDefn(u"Montant", "right", 100, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Débit", "right", 80, "debit", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(u"Crédit", "right", 80, "credit", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun virement")
+        self.SetEmptyListMsg(u"Aucune opération budgétaire")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, track=None, IDoperation=None, IDvirement=None):
+    def MAJ(self, IDoperation_budgetaire=None):
         self.Freeze()
         self.InitModel()
         self.InitObjectListView()
         # Sélection d'un item
-        if track != None :
-            self.SelectObject(track, deselectOthers=True, ensureVisible=True)
-        if IDoperation != None :
+        if IDoperation_budgetaire != None :
             for trackTemp in self.donnees :
-                if trackTemp.IDoperation == IDoperation :
-                    self.SelectObject(trackTemp, deselectOthers=True, ensureVisible=True)
-                    break
-        if IDvirement != None :
-            for trackTemp in self.donnees :
-                if trackTemp.IDvirement == IDvirement :
+                if trackTemp.IDoperation_budgetaire == IDoperation_budgetaire :
                     self.SelectObject(trackTemp, deselectOthers=True, ensureVisible=True)
                     break
         # MAJ listctrl
@@ -159,17 +144,23 @@ class ListView(FastObjectListView):
             noSelection = True
         else:
             noSelection = False
-            ID = self.Selection()[0].IDvirement
+            ID = self.Selection()[0].IDoperation_budgetaire
                 
         # Création du menu contextuel
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Ajouter un virement")
-        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
+        item = wx.MenuItem(menuPop, 10, u"Ajouter une opération au débit")
+        bmp = wx.Bitmap("Images/16x16/Addition.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.AjouterVirement, id=10)
+        self.Bind(wx.EVT_MENU, self.AjouterDebit, id=10)
+
+        item = wx.MenuItem(menuPop, 11, u"Ajouter une opération au crédit")
+        bmp = wx.Bitmap("Images/16x16/Addition.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.AjouterCredit, id=11)
 
         menuPop.AppendSeparator()
 
@@ -226,107 +217,64 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des virements", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des opérations budgétaires", format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des virements", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des opérations budgétaires", format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des virements")
+        UTILS_Export.ExportTexte(self, titre=u"Liste des opérations budgétaires")
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des virements")
+        UTILS_Export.ExportExcel(self, titre=u"Liste des opérations budgétaires")
 
-    def AjouterVirement(self, event):
-        dlg = DLG_Saisie_virement.Dialog(self)
+    def AjouterDebit(self, event):
+        self.Ajouter("debit")
+
+    def AjouterCredit(self, event):
+        self.Ajouter("credit")
+
+    def Ajouter(self, typeOperation="credit"):
+        dlg = DLG_Saisie_operation_budgetaire.Dialog(self, typeOperation=typeOperation)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(IDvirement=dlg.GetIDvirement())
+            self.MAJ(IDoperation_budgetaire=dlg.GetIDoperation_budgetaire())
         dlg.Destroy()
-        
+
     def Modifier(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun virement à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune opération budgétaire à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        dlg = DLG_Saisie_virement.Dialog(self, track.IDvirement)
+        dlg = DLG_Saisie_operation_budgetaire.Dialog(self, typeOperation=track.typeOperation, IDoperation_budgetaire=track.IDoperation_budgetaire)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ(track=track)
+            self.MAJ(IDoperation_budgetaire=dlg.GetIDoperation_budgetaire())
         dlg.Destroy()
 
     def Supprimer(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun virement à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune opération budgétaire à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        track = self.Selection()[0]
-        if track.IDreleve_debit != None or track.IDreleve_debit != None :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas supprimer un virement pointé sur un relevé bancaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-
-        # Suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce virement ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        track = self.Selection()[0]            
+        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette opération budgétaire ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
-            DB.ReqDEL("compta_operations", "IDvirement", track.IDvirement)
-            DB.ReqDEL("compta_virements", "IDvirement", track.IDvirement)
+            DB.ReqDEL("compta_operations_budgetaires", "IDoperation_budgetaire", track.IDoperation_budgetaire)
             DB.Close() 
             self.MAJ()
         dlg.Destroy()
     
     
-# -------------------------------------------------------------------------------------------------------------------------------------------
-
-class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent):
-        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
-        self.parent = parent
-        self.rechercheEnCours = False
-        
-        self.SetDescriptiveText(u"Rechercher...")
-        self.ShowSearchButton(True)
-        
-        self.listView = self.parent.ctrl_listview
-        nbreColonnes = self.listView.GetColumnCount()
-        self.listView.SetFilter(Filter.TextSearch(self.listView, self.listView.columns[0:nbreColonnes]))
-        
-        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
-        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
-        
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
-        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
-
-    def OnSearch(self, evt):
-        self.Recherche()
-            
-    def OnCancel(self, evt):
-        self.SetValue("")
-        self.Recherche()
-
-    def OnDoSearch(self, evt):
-        self.Recherche()
-        
-    def Recherche(self):
-        txtSearch = self.GetValue()
-        self.ShowCancelButton(len(txtSearch))
-        self.listView.GetFilter().SetText(txtSearch)
-        self.listView.RepopulateList()
-        self.Refresh() 
-
-
 
 ### -------------------------------------------------------------------------------------------------------------------------------------------
 ##
@@ -350,14 +298,15 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
 
-        self.ctrl_virements = ListView(panel, id=-1, IDcompte_bancaire=1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_virements.MAJ() 
+        self.ctrl_operations = ListView(panel, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)        
+        self.ctrl_operations.MAJ() 
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_2.Add(self.ctrl_virements, 1, wx.ALL|wx.EXPAND)
+        sizer_2.Add(self.ctrl_operations, 1, wx.ALL|wx.EXPAND)
         panel.SetSizer(sizer_2)
         self.Layout()
-
+        self.SetSize((800, 500))
+        
 
 
 if __name__ == '__main__':

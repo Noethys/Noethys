@@ -83,7 +83,7 @@ class ListView(FastObjectListView):
             else: return None 
 
         liste_Colonnes = [
-            ColumnDefn(u"", "left", 21, "IDexercice", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(u"", "left", 21, "IDanalytique", typeDonnee="entier", imageGetter=GetImageDefaut),
             ColumnDefn(u"Nom", 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(u"Abrégé", 'left', 200, "abrege", typeDonnee="texte"),
             ]

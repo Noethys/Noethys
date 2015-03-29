@@ -10,7 +10,7 @@
 
 import wx
 import GestionDB
-import DLG_Saisie_operation
+import DLG_Saisie_operation_tresorerie
 import DLG_Saisie_virement
 import datetime
 
@@ -156,7 +156,7 @@ class ListView(FastObjectListView):
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune opération")
+        self.SetEmptyListMsg(u"Aucune opération de trésorerie")
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -299,7 +299,7 @@ class ListView(FastObjectListView):
         dlg.Destroy()
 
     def Ajouter(self, typeOperation="credit"):
-        dlg = DLG_Saisie_operation.Dialog(self, IDcompte_bancaire=self.IDcompte_bancaire, typeOperation=typeOperation, IDoperation=None)
+        dlg = DLG_Saisie_operation_tresorerie.Dialog(self, IDcompte_bancaire=self.IDcompte_bancaire, typeOperation=typeOperation, IDoperation=None)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(IDoperation=dlg.GetIDoperation())
         dlg.Destroy()
@@ -318,7 +318,7 @@ class ListView(FastObjectListView):
                 self.MAJ(IDvirement=track.IDvirement)
             dlg.Destroy()
         else :
-            dlg = DLG_Saisie_operation.Dialog(self, IDcompte_bancaire=self.IDcompte_bancaire, typeOperation=track.typeOperation, IDoperation=track.IDoperation)
+            dlg = DLG_Saisie_operation_tresorerie.Dialog(self, IDcompte_bancaire=self.IDcompte_bancaire, typeOperation=track.typeOperation, IDoperation=track.IDoperation)
             if dlg.ShowModal() == wx.ID_OK:
                 self.MAJ(IDoperation=dlg.GetIDoperation())
             dlg.Destroy()

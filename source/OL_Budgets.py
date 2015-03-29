@@ -21,12 +21,10 @@ import UTILS_Dates
 class Track(object):
     def __init__(self, donnees):
         self.IDbudget = donnees[0]
-        self.IDexercice = donnees[1]
-        self.nom = donnees[2]
-        self.observations = donnees[3]
-        self.nomExercice = donnees[4]
-        self.date_debut = donnees[5]
-        self.date_fin = donnees[6]
+        self.nom = donnees[1]
+        self.observations = donnees[2]
+        self.date_debut = donnees[3]
+        self.date_fin = donnees[4]
 
     
 
@@ -56,12 +54,9 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT 
-        compta_budgets.IDbudget, compta_budgets.IDexercice, compta_budgets.nom, compta_budgets.observations,
-        compta_exercices.nom, compta_exercices.date_debut, compta_exercices.date_fin
+        req = """SELECT IDbudget, nom, observations, date_debut, date_fin
         FROM compta_budgets 
-        LEFT JOIN compta_exercices ON compta_exercices.IDexercice = compta_budgets.IDexercice
-        ORDER BY compta_exercices.date_debut; """
+        ORDER BY date_debut; """
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -91,7 +86,6 @@ class ListView(FastObjectListView):
             ColumnDefn(u"", "left", 0, "IDbudget", typeDonnee="entier"),
             ColumnDefn(u"Du", 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(u"au", 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Exercice", 'left', 140, "nomExercice", typeDonnee="texte"),
             ColumnDefn(u"Nom", 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(u"Observations", 'left', 200, "observations", typeDonnee="texte"),
             ]
