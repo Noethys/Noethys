@@ -710,7 +710,10 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Etatnominatif")
 
     def OnBoutonFermer(self, event): 
-        self.EndModal(wx.ID_CANCEL)
+        try :
+            self.EndModal(wx.ID_CANCEL)
+        except :
+            pass
 
     def OnCheckActivites(self, event=None):
         listeActivites = self.ctrl_activites.GetActivites()

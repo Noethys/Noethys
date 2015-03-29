@@ -154,7 +154,7 @@ def ImporteFichierReservations():
     """ Récupère le contenu du fichier présences sur Internet """
     
     # Récupère le fichier en ligne
-    f = urllib.urlopen('http://www.clsh-lannilis.com/espaceadherent/presences.txt')
+    f = urllib.urlopen('http://xxx/presences.txt')
     txtPresences = f.readlines()
     f.close()
     

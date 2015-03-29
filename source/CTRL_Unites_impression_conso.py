@@ -353,7 +353,7 @@ class CTRL(HTL.HyperTreeList):
     def Monter(self, event):
         item = self.GetSelection()
         track = self.GetMainWindow().GetItemPyData(item)
-        if track == None :
+        if track == None or type(track) == int :
             dlg = wx.MessageDialog(self, u"Nous n'avez sélectionné aucune unité à déplacer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -372,7 +372,7 @@ class CTRL(HTL.HyperTreeList):
     def Descendre(self, event):
         item = self.GetSelection()
         track = self.GetMainWindow().GetItemPyData(item)
-        if track == None :
+        if track == None or type(track) == int :
             dlg = wx.MessageDialog(self, u"Nous n'avez sélectionné aucune unité à déplacer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()

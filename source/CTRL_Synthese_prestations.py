@@ -403,7 +403,7 @@ class CTRL(HTL.HyperTreeList):
             # Tri des catégories
             listeCategories = []
             for IDcategorie_tarif in dictTotal.keys() :
-                if IDcategorie_tarif == None : 
+                if IDcategorie_tarif == None or dictCategoriesTarifs.has_key(IDcategorie_tarif) == False : 
                     nomCategorie = u"Sans catégorie"
                 else: 
                     nomCategorie = u"%s - %s" % (dictCategoriesTarifs[IDcategorie_tarif]["nomActivite"], dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"])

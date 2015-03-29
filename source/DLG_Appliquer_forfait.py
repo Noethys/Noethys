@@ -219,8 +219,8 @@ class Forfaits():
                         # Sélectionne les combinaisons données ou les ouvertures de l'activités
                         options = dictTarif["options"]
                         if options != None and "calendrier" in options :
+                            combinaisons = []
                             if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe) :
-                                combinaisons = []
                                 for dateTemp, listeCombis in dictActivites[IDactivite]["ouvertures"][IDgroupe].iteritems() :
                                     if dateTemp >= dictTarif["date_debut"] and (dictTarif["date_fin"] == None or dateTemp <= dictTarif["date_fin"]) :
                                         combinaisons.append(tuple(listeCombis))

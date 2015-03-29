@@ -1450,7 +1450,17 @@ def RechercheModules(nomFichier="Noethys.py") :
             listeModules.append(cheminFichier)
     listeModules.sort() 
     return listeModules
-    
+
+def GetIDfichier():
+    DB = GestionDB.DB()
+    req = """SELECT IDparametre, nom, parametre 
+    FROM parametres WHERE nom='IDfichier';"""
+    DB.ExecuterReq(req)
+    listeTemp = DB.ResultatReq()
+    DB.Close() 
+    IDfichier = listeTemp[0][2]
+    return IDfichier
+
 if __name__ == "__main__":
 ##    RemplacerContenuFichier() 
     # ------- Affiche les stats -------

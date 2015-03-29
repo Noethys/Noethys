@@ -367,7 +367,10 @@ class Date2(wx.Panel):
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         self.Layout()
-
+    
+    def SetToolTipString(self, texte=""):
+        self.ctrl_date.SetToolTipString(texte)
+        
     def OnBoutonCalendrier(self, event): 
         import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)
