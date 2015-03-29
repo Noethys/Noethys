@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 import GestionDB
+import sqlite3
 import datetime
 import base64
 import cPickle
@@ -852,16 +853,90 @@ class Informations() :
         chaine = base64.b64decode(chaine)
         dictTemp = cPickle.loads(chaine)
         return dictTemp
+    
+    def EnregistreDansDB(self, nomFichier="Temp/database.dat"):
+        dbdest = GestionDB.DB(suffixe=None, nomFichier=nomFichier, modeCreation=True)
+        dictTables = {
 
+            "individus":[               ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la personne"),
+                                            ("IDcivilite", "INTEGER", u"Civilité de la personne"),
+                                            ("nom", "VARCHAR(100)", u"Nom de famille de la personne"),
+                                            ("prenom", "VARCHAR(100)", u"Prénom de la personne"),
+                                            ("photo", "BLOB", u"Photo de la personne"),
+                                            ],
+
+            "informations":[          ("IDinfo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la ligne"),
+                                            ("IDindividu", "INTEGER", u"ID de la personne"),
+                                            ("champ", "VARCHAR(500)", u"Nom du champ"),
+                                            ("valeur", "VARCHAR(500)", u"Valeur du champ"),
+                                            ]
+            }
+        try :
+            dbdest.CreationTables(dicoDB=dictTables)
+        except :
+            pass
+        
+
+        def Enregistre(nomTable, listeChamps, listeDonnees):
+            txtChamps = ", ".join(listeChamps)
+            txtQMarks = ", ".join(["?" for x in listeChamps])
+            req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, txtChamps, txtQMarks)
+            dbdest.cursor.executemany(req, listeDonnees)
+
+
+        # Insertion des données du dictIndividus
+        dictValeurs = self.GetDictValeurs(mode="individu", formatChamp=False)
+        listeDonnees = []
+        for ID, dictTemp in dictValeurs.iteritems() :
+            for champ, valeur in dictTemp.iteritems() :
+                if type(valeur) in (str, unicode) and valeur not in ("", None) :
+                    listeDonnees.append((ID, champ, valeur))
+        
+        Enregistre(nomTable="informations", listeChamps=["IDindividu", "champ", "valeur"], listeDonnees=listeDonnees)
+        
+        # Insertion des données individus
+        db = GestionDB.DB(suffixe="PHOTOS")
+        req = """SELECT IDindividu, photo FROM photos;"""
+        db.ExecuterReq(req)
+        listePhotos = db.ResultatReq()
+        db.Close()
+        dictPhotos = {}
+        for IDindividu, photo in listePhotos :
+            dictPhotos[IDindividu] = photo
+
+        db = GestionDB.DB()
+        req = """SELECT IDindividu, IDcivilite, nom, prenom FROM individus;"""
+        db.ExecuterReq(req)
+        listeIndividus = db.ResultatReq()
+        db.Close()
+        listeDonnees = []
+        for IDindividu, IDcivilite, nom, prenom in listeIndividus :
+            if dictPhotos.has_key(IDindividu) :
+                photo = sqlite3.Binary(dictPhotos[IDindividu])
+            else :
+                photo = None
+            listeDonnees.append((IDindividu, IDcivilite, nom, prenom, photo))
+
+        Enregistre(nomTable="individus", listeChamps=["IDindividu", "IDcivilite", "nom", "prenom", "photo"], listeDonnees=listeDonnees)
+        
+        
+        # Cloture de la base
+        dbdest.connexion.commit()
+        dbdest.Close() 
+        
+        
 # ---------------------------------------------------------------------------------------------------------------------------------
     
     def Tests(self):
         """ Pour les tests """
         # Récupération des noms des champs
-        print len(self.GetNomsChampsPresents(mode="individu", listeID=None))
+        #print len(self.GetNomsChampsPresents(mode="individu", listeID=None))
 ##        print len(GetNomsChampsPossibles(mode="individu"))
+        #for x in self.GetNomsChampsPresents(mode="individu", listeID=None) :
+        # print x
         
-##        self.EnregistreFichier(mode="famille") 
+        #self.EnregistreFichier(mode="individu", nomFichier="Temp/infos_individus.dat") 
+        self.EnregistreDansDB()
 ##        print len(self.LectureFichier())
         
 if __name__ == '__main__':

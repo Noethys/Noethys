@@ -1541,9 +1541,28 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 4, 2)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("compta_ventilation", "date_budget", "DATE")
+                if self.IsTableExists("compta_operations_budgetaires") == False : self.CreationTable("compta_operations_budgetaires", Tables.DB_DATA) 
+                self.AjoutChamp("compta_budgets", "date_debut", "DATE")
+                self.AjoutChamp("compta_budgets", "date_fin", "DATE")
+                import UTILS_Procedures
+                UTILS_Procedures.A8623() 
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
 
-
-
+    
+        
+        
+        
+        
+        
+        
+        
 
 
 
@@ -1768,12 +1787,11 @@ def CreationBaseAnnonces():
     db.Close()
     
 
-# Création des tables tests pour le module RECRUTEMENT
 if __name__ == "__main__":
                 
     # Création d'une table données
 ##    db = DB(suffixe="DATA")
-##    listeTables = ("modeles_contrats",)
+##    listeTables = ("compta_operations_budgetaires",)
 ##    for nomTable in listeTables :
 ##        db.CreationTable(nomTable, Tables.DB_DATA)
 ##    db.Close()
@@ -1822,7 +1840,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("prestations", "IDcontrat", "INTEGER")
+##    db.AjoutChamp("compta_budgets", "date_fin", "DATE")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT

@@ -366,7 +366,7 @@ class Calendrier(wx.ScrolledWindow):
                 self.caseSurvol = None
                 try : wx.GetApp().GetTopWindow().SetStatusText("", 0)
                 except : pass
-        try : wx.GetApp().GetTopWindow().SetStatusText("", 1)
+        try : wx.GetApp().GetTopWindow().SetStatusText("", 0)
         except : pass
         event.Skip()
         

@@ -16,12 +16,6 @@ import CTRL_Grille
 import UTILS_Dates
 
 
-##class CTRL_Mode():
-##    def __init__(self, parent):
-##        self.parent = parent
-##        
-##    def GetMode(self):
-##        return self.parent.parent.mode
 
 class CTRL_Activites():
     def __init__(self, parent):
@@ -30,11 +24,12 @@ class CTRL_Activites():
     def GetIDgroupe(self, IDactivite=None, IDindividu=None):
         return None
 
+
 class Panel_Activites():
     def __init__(self, parent):
         self.parent = parent
         self.ctrl_activites = CTRL_Activites(self)
-##        self.ctrl_mode = CTRL_Mode(self)
+
 
 class Panel_Facturation():
     def __init__(self, parent):
@@ -154,13 +149,6 @@ class CTRL(wx.Panel):
     def HasPlacesDisponibles(self, IDunite=None, date=None):
         case = self.GetCase(IDunite, date)
         return case.HasPlaceDisponible() 
-##        if case == None :
-##            return None
-##        if case.dictInfosPlaces == None :
-##            return None
-##        else :
-##            nbrePlaces = case.dictInfosPlaces["nbrePlacesRestantes"]
-##            return nbrePlaces
         
     def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None):
         """ Crée ou modifie une conso pour l'unité indiquée """

@@ -364,6 +364,13 @@ class MainFrame(wx.Frame):
         self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(u"Ephéméride").
                           Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
 
+        # Panneau Serveur
+        if UTILS_Config.GetParametre("synchro_serveur_activer", defaut=False) == True :
+            import CTRL_Serveur_nomade
+            self.ctrl_serveur_nomade = CTRL_Serveur_nomade.Panel(self)
+            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(u"Serveur Nomade").
+                              Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
+
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
         self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(u"Effectifs").
@@ -870,7 +877,8 @@ class MainFrame(wx.Frame):
             # Comptabilité
             {"code" : "menu_comptabilite", "label" : u"Comptabilité", "items" : [
                     {"code" : "liste_comptes", "label" : u"Liste des comptes", "infobulle" : u"Consulter ou modifier la liste des comptes", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_comptes},
-                    {"code" : "liste_operations", "label" : u"Liste des opérations", "infobulle" : u"Consulter ou modifier la liste des opérations", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations},
+                    {"code" : "liste_operations_tresorerie", "label" : u"Liste des opérations de trésorerie", "infobulle" : u"Consulter ou modifier la liste des opérations de trésorerie", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations_tresorerie},
+                    {"code" : "liste_operations_budgetaires", "label" : u"Liste des opérations budgétaires", "infobulle" : u"Consulter ou modifier la liste des opérations budgétaires", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations_budgetaires},
                     {"code" : "liste_virements", "label" : u"Liste des virements", "infobulle" : u"Consulter ou modifier la liste des virements", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_virements},
                     "-",
                     {"code" : "rapprochement_bancaire", "label" : u"Rapprochement bancaire", "infobulle" : u"Rapprochement bancaire", "image" : "Images/16x16/Document_coches.png", "action" : self.On_Comptabilite_rapprochement},
@@ -2845,9 +2853,15 @@ class MainFrame(wx.Frame):
         dlg.ShowModal() 
         dlg.Destroy()
 
-    def On_Comptabilite_operations(self, event):
-        import DLG_Liste_operations
-        dlg = DLG_Liste_operations.Dialog(self)
+    def On_Comptabilite_operations_tresorerie(self, event):
+        import DLG_Liste_operations_tresorerie
+        dlg = DLG_Liste_operations_tresorerie.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_Comptabilite_operations_budgetaires(self, event):
+        import DLG_Liste_operations_budgetaires
+        dlg = DLG_Liste_operations_budgetaires.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 
@@ -3509,7 +3523,7 @@ class MyApp(wx.App):
         heure_debut = time.time()
         
         # Vérifie l'existence des répertoires
-        for rep in ("Aide", "Temp", "Updates") :
+        for rep in ("Aide", "Temp", "Updates", "Sync") :
             if os.path.isdir(rep) == False :
                 os.makedirs(rep)
                 print "Creation du repertoire : ", rep
@@ -3569,6 +3583,10 @@ class MyApp(wx.App):
                 # Détection d'anomalies
                 if financement == False :
                     frame.AutodetectionAnomalies() 
+        
+        # Démarrage du serveur
+        if hasattr(frame, "ctrl_serveur_nomade") :
+            frame.ctrl_serveur_nomade.StartServeur()
         
 ##        print time.time() - heure_debut
         return True
