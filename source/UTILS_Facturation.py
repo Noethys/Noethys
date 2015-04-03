@@ -203,7 +203,25 @@ class Facturation():
         dictVentilationPrestations = {}
         for IDprestation, montant_ventilation in listeVentilationPrestations :
             dictVentilationPrestations[IDprestation] = montant_ventilation
-
+            
+        # Recherche des QF aux dates concernées
+        date_min = datetime.date(9999, 12, 31)
+        date_max = datetime.date(1, 1, 1)
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
+            if dictFactures[IDfacture]["date_debut"] < date_min :
+                date_min = dictFactures[IDfacture]["date_debut"]
+            if dictFactures[IDfacture]["date_fin"] > date_max :
+                date_max = dictFactures[IDfacture]["date_fin"]
+        conditions = "WHERE quotients.date_fin>='%s' AND quotients.date_debut<='%s' " % (date_min, date_max)
+        req = """
+        SELECT quotients.IDfamille, quotients.quotient, quotients.date_debut, quotients.date_fin
+        FROM quotients
+        %s
+        ORDER BY quotients.date_debut
+        ;""" % conditions
+        DB.ExecuterReq(req)
+        listeQfdates = DB.ResultatReq()
+            
         # Recherche des anciennes prestations impayées (=le report antérieur)
         if len(listeFactures) == 0 :
             conditions = "WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL) AND prestations.date<'%s' " % (conditionActivites, date_debut)
@@ -339,6 +357,7 @@ class Facturation():
                     "total" : FloatToDecimal(0.0),
                     "ventilation" : FloatToDecimal(0.0),
                     "solde" : FloatToDecimal(0.0),
+                    "qfdates" : {},
                     "reports" : {},
                     "total_reports" : FloatToDecimal(0.0),
                     "{TOTAL_REPORTS}" : u"0.00 %s" % SYMBOLE,
@@ -505,6 +524,22 @@ class Facturation():
                         
             # Stockage des IDprestation pour saisir le IDfacture après création de la facture
             dictComptes[ID]["listePrestations"].append( (IDindividu, IDprestation) )
+            
+            # Intégration des qf aux dates concernées
+            for qf_idfamille, quotient, qfdate_debut, qfdate_fin in listeQfdates :
+                qfdate_debut = UTILS_Dates.DateEngEnDateDD(qfdate_debut)
+                qfdate_fin = UTILS_Dates.DateEngEnDateDD(qfdate_fin)
+                if qf_idfamille == IDfamille and qfdate_debut <= date_fin and qfdate_fin >= date_debut :
+                    if qfdate_debut < date_debut :
+                        plage = "du %s " % UTILS_Dates.DateEngFr(str(date_debut))
+                    else :
+                        plage = "du %s " % UTILS_Dates.DateEngFr(str(qfdate_debut))
+                    if qfdate_fin > date_fin :
+                        plage = plage + "au %s" % UTILS_Dates.DateEngFr(str(date_fin))
+                    else :
+                        plage = plage + "au %s" % UTILS_Dates.DateEngFr(str(qfdate_fin))
+                    dictComptes[IDfacture]["qfdates"][plage] = quotient
+                
         
         # Intégration des total des déductions
         for ID, valeurs in dictComptes.iteritems() :

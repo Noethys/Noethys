@@ -96,6 +96,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=u"Afficher les avis de prélèvements", name="afficher_avis_prelevements", value=True)
         propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les avis de prélèvements dans le document") 
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete) 
+        
+        # Afficher les QF aux dates concernées
+        propriete = wxpg.BoolProperty(label=u"Afficher les QF", name="afficher_qf_dates", value=True)
+        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les QF aux dates concernées dans le document") 
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
         # Catégorie 

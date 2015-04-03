@@ -638,7 +638,7 @@ class Impression():
                         story.append(tableau)
                         story.append(Spacer(0, 10))
                 
-                # Intégration des messages et des reports
+                # Intégration des messages, des reports et des qf
                 listeMessages = []
                 paraStyle = ParagraphStyle(name="message",
                                           fontName="Helvetica",
@@ -651,6 +651,17 @@ class Impression():
                 # Date d'échéance
 ##                if dictOptions["echeance"] != None :
 ##                    listeMessages.append(Paragraph(dictOptions["echeance"], paraStyle))
+
+               # QF aux dates de facture
+                if mode == "facture" and dictOptions["afficher_qf_dates"] == True :
+                    dictQfdates = dictValeur["qfdates"]
+                    listeDates = dictQfdates.keys() 
+                    listeDates.sort() 
+                    if len(listeDates) > 0 :
+                        for dates in listeDates :
+                            texteQf = u"--- Votre QF %s : <b>%s</b> ---" % (dates, dictQfdates[dates])
+                            listeMessages.append(Paragraph(texteQf, paraStyle))
+                
                 
                 # Reports
                 if mode == "facture" and dictOptions["afficher_impayes"] == True :
@@ -680,8 +691,8 @@ class Impression():
                             texte = u"<b>Message : </b>%s" % texte
                             listeMessages.append(Paragraph(texte, paraStyle))
                             
-                        if len(listeMessages) > 0 :
-                            listeMessages.insert(0, Paragraph(u"<u>Informations :</u>", paraStyle))
+                if len(listeMessages) > 0 :
+                    listeMessages.insert(0, Paragraph(u"<u>Informations :</u>", paraStyle))
                 
                 # ------------------ CADRE TOTAUX ------------------------
                 dataTableau = []
