@@ -503,13 +503,14 @@ class Dialog(wx.Dialog):
         self.bouton_valider_periode.Enable(self.check_periode.GetValue())
         # Récupération des données
         dictBudget = copy.copy(self.ctrl_budget.GetDictBudget())
-        dictBudget["inclure_toutes_categories"] = self.check_inclure.GetValue() 
-        if self.check_periode.GetValue() == True :
-            if self.ctrl_date_debut.GetDate() != None and self.ctrl_date_fin.GetDate() != None :
-                dictBudget["date_debut"] = self.ctrl_date_debut.GetDate()
-                dictBudget["date_fin"] = self.ctrl_date_fin.GetDate()
-            else :
-                dictBudget = None
+        if dictBudget != None :
+            dictBudget["inclure_toutes_categories"] = self.check_inclure.GetValue() 
+            if self.check_periode.GetValue() == True :
+                if self.ctrl_date_debut.GetDate() != None and self.ctrl_date_fin.GetDate() != None :
+                    dictBudget["date_debut"] = self.ctrl_date_debut.GetDate()
+                    dictBudget["date_fin"] = self.ctrl_date_fin.GetDate()
+                else :
+                    dictBudget = None
         # Envoi des données vers le ctrl de suivi
         page = self.notebook.GetPage(self.notebook.GetSelection())
         page.SetDictBudget(dictBudget)

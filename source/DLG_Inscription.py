@@ -71,6 +71,8 @@ class ListBox(wx.ListBox):
         if len(self.listeDonnees) > 0 :
             for dictValeurs in self.listeDonnees :
                 label = dictValeurs["nom"]
+                if label == None :
+                    label = "Inconnu (ID%d)" % dictValeurs["ID"]
                 listeItems.append(label)
         self.Set(listeItems)
         # Si un seul item dans la liste, le sélectionne...
