@@ -748,6 +748,8 @@ class MainFrame(wx.Frame):
                     {"code" : "scolarite", "label" : u"Inscriptions scolaires", "infobulle" : u"Inscriptions scolaires", "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
                     "-",
                     {"code" : "liste_inscriptions", "label" : u"Liste des inscriptions", "infobulle" : u"Editer une liste des inscriptions", "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
+                    {"code" : "saisir_lot_inscriptions", "label" : u"Saisir un lot d'inscriptions", "infobulle" : u"Saisir un lot d'inscriptions", "image" : "Images/16x16/Activite.png", "action" : self.On_individus_saisir_lot_inscriptions},
+                    "-",
                     {"code" : "liste_contrats", "label" : u"Liste des contrats", "infobulle" : u"Editer une liste des contrats", "image" : "Images/16x16/Contrat.png", "action" : self.On_individus_contrats},
                     {"code" : "liste_individus", "label" : u"Liste des individus", "infobulle" : u"Editer une liste des individus", "image" : "Images/16x16/Personnes.png", "action" : self.On_individus_individus},
                     {"code" : "liste_familles", "label" : u"Liste des familles", "infobulle" : u"Liste des familles", "image" : "Images/16x16/Famille.png", "action" : self.On_individus_familles},
@@ -2743,6 +2745,12 @@ class MainFrame(wx.Frame):
     def On_individus_inscriptions(self, event):
         import DLG_Liste_inscriptions
         dlg = DLG_Liste_inscriptions.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_individus_saisir_lot_inscriptions(self, event):
+        import DLG_Saisie_lot_inscriptions
+        dlg = DLG_Saisie_lot_inscriptions.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 

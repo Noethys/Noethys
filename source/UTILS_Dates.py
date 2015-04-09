@@ -41,8 +41,12 @@ def PeriodeComplete(mois, annee):
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
-def CalculeAge(dateReference, date_naiss):
-    # Calcul de l'age de la personne
+def CalculeAge(dateReference=None, date_naiss=None):
+    """ Calcul de l'age de la personne """
+    if dateReference == None :
+        dateReference = datetime.date.today()
+    if date_naiss in (None, "") :
+        return None
     age = (dateReference.year - date_naiss.year) - int((dateReference.month, dateReference.day) < (date_naiss.month, date_naiss.day))
     return age
 
