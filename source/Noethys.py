@@ -2958,23 +2958,29 @@ class MainFrame(wx.Frame):
         dlg = DLG_A_propos.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
-
-    def MAJlisteDerniersFichiers(self, nomFichier) :
+    
+    def PurgeListeDerniersFichiers(self, nbre=1):
+        listeFichiers = UTILS_Config.GetParametre("derniersFichiers", [])
+        UTILS_Config.SetParametre("derniersFichiers", listeFichiers[:nbre])
+        self.MAJmenuDerniersFichiers() 
+        
+    def MAJlisteDerniersFichiers(self, nomFichier=None) :
         """ MAJ la liste des derniers fichiers ouverts dans le config et la barre des menus """
         
         # MAJ de la liste des derniers fichiers ouverts :
-        listeFichiers = self.userConfig["derniersFichiers"]
-        nbreFichiersMax = 10 # Valeur à changer en fonction des souhaits
+        listeFichiers = UTILS_Config.GetParametre("derniersFichiers", defaut=[])
+        nbreFichiersMax = UTILS_Config.GetParametre("nbre_derniers_fichiers", defaut=10)
         
         # Si le nom est déjà dans la liste, on le supprime :
         if nomFichier in listeFichiers : listeFichiers.remove(nomFichier)
            
         # On ajoute le nom du fichier en premier dans la liste :
-        listeFichiers.insert(0, nomFichier)
+        if nomFichier != None :
+            listeFichiers.insert(0, nomFichier)
         listeFichiers = listeFichiers[:nbreFichiersMax]
         
         # On enregistre dans le Config :
-        self.userConfig["derniersFichiers"] = listeFichiers
+        UTILS_Config.SetParametre("derniersFichiers", listeFichiers)
 
     def MAJmenuDerniersFichiers(self):
         """ Met à jour la liste des derniers fichiers dans le menu """

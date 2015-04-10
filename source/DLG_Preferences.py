@@ -310,6 +310,75 @@ class Propose_maj(wx.Panel):
 
 # ---------------------------------------------------------------------------------------------------------------------------
 
+class DerniersFichiers(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+
+        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Liste des derniers fichiers ouverts")
+        self.label_nbre = wx.StaticText(self, -1, u"Nombre de fichiers affichés :")
+        self.ctrl_nbre = wx.SpinCtrl(self, -1)
+        self.ctrl_nbre.SetRange(1, 20)
+        self.bouton_purge = wx.Button(self, -1, u"Purger la liste")
+
+        self.__set_properties()
+        self.__do_layout()
+        
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonPurge, self.bouton_purge)
+        
+        self.Importation() 
+
+    def __set_properties(self):
+        self.ctrl_nbre.SetToolTipString(u"Saisissez ici le nombre de fichiers à afficher dans la liste des fichiers ouverts")
+        self.bouton_purge.SetToolTipString(u"Cliquez ici pour purger la liste des derniers fichiers ouverts")
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_nbre, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_nbre, 0, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.bouton_purge, 0, wx.EXPAND, 0)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+    
+    def Importation(self):
+        nbre = UTILS_Config.GetParametre("nbre_derniers_fichiers", 10)
+        self.ctrl_nbre.SetValue(nbre)
+        
+    def Validation(self):
+        return True
+    
+    def Sauvegarde(self):
+        nbre = self.ctrl_nbre.GetValue()
+        UTILS_Config.SetParametre("nbre_derniers_fichiers", nbre)
+        topWindow = wx.GetApp().GetTopWindow()
+        topWindow.PurgeListeDerniersFichiers(nbre)
+
+    def OnBoutonPurge(self, event):
+        topWindow = wx.GetApp().GetTopWindow()
+        topWindow.PurgeListeDerniersFichiers(1) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
@@ -327,6 +396,7 @@ class Dialog(wx.Dialog):
         self.ctrl_adresses = Adresses(self)
         self.ctrl_rapport_bugs = Rapport_bugs(self)
         self.ctrl_propose_maj = Propose_maj(self)
+        self.ctrl_derniers_fichiers = DerniersFichiers(self)
 
         # Redémarrage
         self.label_redemarrage = wx.StaticText(self, -1, u"* Le changement sera effectif au redémarrage du logiciel")
@@ -350,7 +420,7 @@ class Dialog(wx.Dialog):
         self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=10, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=12, cols=1, vgap=10, hgap=10)
         
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_base.Add(self.ctrl_monnaie, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -359,7 +429,8 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_adresses, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.Add(self.ctrl_rapport_bugs, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.Add(self.ctrl_propose_maj, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+        grid_sizer_base.Add(self.ctrl_derniers_fichiers, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
         # Ligne vide pour agrandir la fenêtre
         grid_sizer_base.Add( (20, 100), 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.AddGrowableRow(2)
@@ -396,6 +467,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_adresses.Validation() == False : return
         if self.ctrl_rapport_bugs.Validation() == False : return
         if self.ctrl_propose_maj.Validation() == False : return
+        if self.ctrl_derniers_fichiers.Validation() == False : return
         
         # Sauvegarde
         self.ctrl_monnaie.Sauvegarde()
@@ -404,6 +476,7 @@ class Dialog(wx.Dialog):
         self.ctrl_adresses.Sauvegarde()
         self.ctrl_rapport_bugs.Sauvegarde()
         self.ctrl_propose_maj.Sauvegarde()
+        self.ctrl_derniers_fichiers.Sauvegarde()
         
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
