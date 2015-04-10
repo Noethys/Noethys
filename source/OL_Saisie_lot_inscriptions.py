@@ -32,6 +32,10 @@ class Track(object):
         self.nomTitulaires = donnees["nomTitulaires"]
         self.IDcompte_payeur = donnees["IDcompte_payeur"]
         self.IDfamille = donnees["IDfamille"]
+        self.rue = donnees["rue"]
+        self.cp = donnees["cp"]
+        self.ville = donnees["ville"]
+        self.nomSecteur = donnees["nomSecteur"]
         self.inscrit = "non"
         
         
@@ -83,7 +87,14 @@ class ListView(FastObjectListView):
             date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
             age = UTILS_Dates.CalculeAge(date_naiss=date_naiss)
             nomTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
-            dictTemp = {"IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomTitulaires" : nomTitulaires, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur}
+            rue = dictTitulaires[IDfamille]["adresse"]["rue"]
+            cp = dictTitulaires[IDfamille]["adresse"]["cp"]
+            ville = dictTitulaires[IDfamille]["adresse"]["ville"]
+            nomSecteur = dictTitulaires[IDfamille]["adresse"]["nomSecteur"]
+            dictTemp = {
+                "IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomTitulaires" : nomTitulaires, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur,
+                "rue" : rue, "cp" : cp, "ville" : ville, "nomSecteur" : nomSecteur,
+                }
             listeListeView.append(Track(dictTemp))
         return listeListeView
       
@@ -113,7 +124,11 @@ class ListView(FastObjectListView):
             ColumnDefn(u"Prénom", "left", 120, "prenom", typeDonnee="texte"),
             ColumnDefn(u"Date naiss.", "left", 80, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(u"Age", "left", 60, "age", typeDonnee="entier", stringConverter=FormateAge),
-            ColumnDefn(u"Titulaires du dossier", "left", 300, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Famille", "left", 280, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(u"Rue", "left", 200, "rue", typeDonnee="texte"),
+            ColumnDefn(u"CP", "left", 50, "cp", typeDonnee="texte"),
+            ColumnDefn(u"Ville", "left", 150, "ville", typeDonnee="texte"),
+            ColumnDefn(u"Secteur", "left", 150, "nomSecteur", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
