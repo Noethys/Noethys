@@ -67,13 +67,12 @@ class ListView(FastObjectListView):
             self.dictInscriptions[(IDindividu, IDfamille, IDactivite) ] = {"IDinscription" : IDinscription, "IDgroupe" : IDgroupe, "IDcategorie_tarif" : IDcategorie_tarif} 
         
         # Récupération des individus
-        req = """SELECT individus.IDindividu, nom, prenom, date_naiss,
-        rattachements.IDfamille, comptes_payeurs.IDcompte_payeur
+        req = """SELECT individus.IDindividu, nom, prenom, date_naiss, rattachements.IDfamille, comptes_payeurs.IDcompte_payeur
         FROM individus
         LEFT JOIN rattachements ON rattachements.IDindividu = individus.IDindividu
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = rattachements.IDfamille
         WHERE IDcategorie IN (1, 2) AND rattachements.IDfamille IS NOT NULL
-        GROUP BY IDindividu, IDfamille;"""
+        GROUP BY individus.IDindividu, rattachements.IDfamille;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         
