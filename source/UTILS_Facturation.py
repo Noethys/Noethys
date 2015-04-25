@@ -205,14 +205,17 @@ class Facturation():
             dictVentilationPrestations[IDprestation] = montant_ventilation
             
         # Recherche des QF aux dates concernées
-        date_min = datetime.date(9999, 12, 31)
-        date_max = datetime.date(1, 1, 1)
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
-            if dictFactures[IDfacture]["date_debut"] < date_min :
-                date_min = dictFactures[IDfacture]["date_debut"]
-            if dictFactures[IDfacture]["date_fin"] > date_max :
-                date_max = dictFactures[IDfacture]["date_fin"]
-        conditions = "WHERE quotients.date_fin>='%s' AND quotients.date_debut<='%s' " % (date_min, date_max)
+        if len(listeFactures) == 0 :
+            conditions = ""
+        else :
+            date_min = datetime.date(9999, 12, 31)
+            date_max = datetime.date(1, 1, 1)
+            for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, tva, IDactivite, nomActivite, abregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDindividu, IDfamille in listePrestations :
+                if dictFactures[IDfacture]["date_debut"] < date_min :
+                    date_min = dictFactures[IDfacture]["date_debut"]
+                if dictFactures[IDfacture]["date_fin"] > date_max :
+                    date_max = dictFactures[IDfacture]["date_fin"]
+            conditions = "WHERE quotients.date_fin>='%s' AND quotients.date_debut<='%s' " % (date_min, date_max)
         req = """
         SELECT quotients.IDfamille, quotients.quotient, quotients.date_debut, quotients.date_fin
         FROM quotients
@@ -538,7 +541,7 @@ class Facturation():
                         plage = plage + "au %s" % UTILS_Dates.DateEngFr(str(date_fin))
                     else :
                         plage = plage + "au %s" % UTILS_Dates.DateEngFr(str(qfdate_fin))
-                    dictComptes[IDfacture]["qfdates"][plage] = quotient
+                    dictComptes[ID]["qfdates"][plage] = quotient
                 
         
         # Intégration des total des déductions
