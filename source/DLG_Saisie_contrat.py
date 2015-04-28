@@ -62,7 +62,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
         dictIndividus = {}
         req = """SELECT IDtarif, tarifs.IDactivite, 
         tarifs.IDnom_tarif, noms_tarifs.nom, 
-        date_debut, date_fin, methode, categories_tarifs, groupes
+        date_debut, date_fin, methode, categories_tarifs, groupes, description
         FROM tarifs
         LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
         WHERE type='CREDIT' AND forfait_beneficiaire='individu' AND tarifs.IDactivite=%d
@@ -70,7 +70,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeTarifs = []
-        for IDtarif, IDactivite, IDnom_tarif, nomTarif, date_debut, date_fin, methode, categories_tarifs, groupes in listeDonnees :
+        for IDtarif, IDactivite, IDnom_tarif, nomTarif, date_debut, date_fin, methode, categories_tarifs, groupes, description in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
@@ -85,7 +85,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
                     "IDtarif" : IDtarif, "IDactivite" : IDactivite, 
                     "IDnom_tarif" : IDnom_tarif, "nomTarif" : nomTarif, "date_debut" : date_debut,
                     "date_fin" : date_fin, "methode" : methode, "categories_tarifs":categories_tarifs, "groupes":groupes,
-                    "listeNomsCategories" : listeNomsCategories,
+                    "listeNomsCategories" : listeNomsCategories, "nomPrecisTarif":description,
                     }
             
             if self.IDcategorie_tarif in listeCategoriesTarifs or self.IDcategorie_tarif == None :
@@ -105,7 +105,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
             if date_debut != None and date_fin == None : label = u"%s (A partir du %s)" % (nom, UTILS_Dates.DateDDEnFr(date_debut))
             if date_debut != None and date_fin != None : label = u"%s (Du %s au %s)" % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
             
-            description = " ou ".join(dictTarif["listeNomsCategories"])
+            description = dictTarif["nomPrecisTarif"] + " --- " + " ou ".join(dictTarif["listeNomsCategories"])
             listeItems.append({"label" : label, "description" : description})
         self.SetDonnees(listeItems)
     
