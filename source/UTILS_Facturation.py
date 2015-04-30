@@ -206,7 +206,8 @@ class Facturation():
             
         # Recherche des QF aux dates concernées
         if len(listeFactures) == 0 :
-            conditions = ""
+            date_min = date_debut
+            date_max = date_fin
         else :
             date_min = datetime.date(9999, 12, 31)
             date_max = datetime.date(1, 1, 1)
@@ -215,7 +216,7 @@ class Facturation():
                     date_min = dictFactures[IDfacture]["date_debut"]
                 if dictFactures[IDfacture]["date_fin"] > date_max :
                     date_max = dictFactures[IDfacture]["date_fin"]
-            conditions = "WHERE quotients.date_fin>='%s' AND quotients.date_debut<='%s' " % (date_min, date_max)
+        conditions = "WHERE quotients.date_fin>='%s' AND quotients.date_debut<='%s' " % (date_min, date_max)
         req = """
         SELECT quotients.IDfamille, quotients.quotient, quotients.date_debut, quotients.date_fin
         FROM quotients
