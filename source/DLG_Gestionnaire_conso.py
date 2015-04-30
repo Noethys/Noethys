@@ -45,6 +45,11 @@ ID_BLOCAGE_SI_COMPLET = wx.NewId()
 ID_AFFICHE_SANS_PRESTATION = wx.NewId()
 ID_COCHER_ACTIVITES = wx.NewId()
 ID_AFFICHE_SANS_PRESTATION = wx.NewId()
+ID_FORMAT_LABEL_LIGNE_MENU = wx.NewId()
+ID_FORMAT_LABEL_LIGNE_1 = wx.NewId()
+ID_FORMAT_LABEL_LIGNE_2 = wx.NewId()
+ID_FORMAT_LABEL_LIGNE_3 = wx.NewId()
+ID_FORMAT_LABEL_LIGNE_4 = wx.NewId()
 
 ID_OUTILS_SAISIE_FORFAIT = wx.NewId()
 ID_OUTILS_RECALCUL = wx.NewId()
@@ -749,6 +754,31 @@ class Dialog(wx.Dialog):
         
         menuPop.AppendSeparator()
         
+        sousMenuLabelLigne = wx.Menu()
+            
+        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_1, u"Nom Prénom", u"Format du label : 'Nom Prénom'", wx.ITEM_RADIO)
+        sousMenuLabelLigne.AppendItem(item)
+        item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "nom_prenom")
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_1)
+
+        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_2, u"Prénom Nom", u"Format du label : 'Prénom Nom'", wx.ITEM_RADIO)
+        sousMenuLabelLigne.AppendItem(item)
+        item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "prenom_nom")
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_2)
+
+        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_3, u"Nom Prénom (ID)", u"Format du label : 'Nom Prénom (ID)'", wx.ITEM_RADIO)
+        sousMenuLabelLigne.AppendItem(item)
+        item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "nom_prenom_id")
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_3)
+
+        item = wx.MenuItem(sousMenuLabelLigne, ID_FORMAT_LABEL_LIGNE_4, u"Prénom Nom (ID)", u"Format du label : 'Prénom Nom (ID)'", wx.ITEM_RADIO)
+        sousMenuLabelLigne.AppendItem(item)
+        item.Check(self.panel_grille.grille.GetFormatLabelLigne() == "prenom_nom_id")
+        self.Bind(wx.EVT_MENU, self.On_format_label_ligne, id=ID_FORMAT_LABEL_LIGNE_4)
+        
+        item = menuPop.AppendMenu(ID_FORMAT_LABEL_LIGNE_MENU, u"Format du label de la ligne", sousMenuLabelLigne)
+
+        
         menuPop.AppendSeparator()
 
         item = wx.MenuItem(menuPop, ID_AFFICHE_COLONNE_MEMO, u"Afficher la colonne Mémo journalier", u"Afficher la colonne Mémo journalier", wx.ITEM_CHECK)
@@ -883,7 +913,15 @@ class Dialog(wx.Dialog):
     def On_affiche_sans_prestation(self, event):
         self.panel_grille.grille.afficheSansPrestation = not self.panel_grille.grille.afficheSansPrestation
         self.panel_grille.grille.MAJ_affichage() 
+    
+    def On_format_label_ligne(self, event):
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_1 : self.panel_grille.grille.SetFormatLabelLigne("nom_prenom")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_2 : self.panel_grille.grille.SetFormatLabelLigne("prenom_nom")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_3 : self.panel_grille.grille.SetFormatLabelLigne("nom_prenom_id")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_4 : self.panel_grille.grille.SetFormatLabelLigne("prenom_nom_id")
 
+
+        
 
 if __name__ == "__main__":
     app = wx.App(0)

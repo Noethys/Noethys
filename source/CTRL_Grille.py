@@ -61,6 +61,7 @@ import CTRL_Grille_renderers
 AFFICHE_NOM_GROUPE = True
 AFFICHE_COLONNE_MEMO = True
 AFFICHE_COLONNE_TRANSPORTS = True
+FORMAT_LABEL_LIGNE = "nom_prenom"
 
 # Colonnes unités
 HAUTEUR_LIGNE = 30
@@ -277,7 +278,15 @@ class Ligne():
         if modeLabel == "date" : 
             self.labelLigne = DateComplete(self.date)
         if modeLabel == "nom" : 
-            nomIndividu = u"%s %s" % (self.dictInfosIndividu["nom"], self.dictInfosIndividu["prenom"])
+            if FORMAT_LABEL_LIGNE == "nom_prenom" :
+                nomIndividu = u"%s %s" % (self.dictInfosIndividu["nom"], self.dictInfosIndividu["prenom"])
+            if FORMAT_LABEL_LIGNE == "prenom_nom" :
+                nomIndividu = u"%s %s" % (self.dictInfosIndividu["prenom"], self.dictInfosIndividu["nom"])
+            if FORMAT_LABEL_LIGNE == "nom_prenom_id" :
+                nomIndividu = u"%s %s (%s)" % (self.dictInfosIndividu["nom"], self.dictInfosIndividu["prenom"], self.IDindividu)
+            if FORMAT_LABEL_LIGNE == "prenom_nom_id" :
+                nomIndividu = u"%s %s (%s)" % (self.dictInfosIndividu["prenom"], self.dictInfosIndividu["nom"], self.IDindividu)
+
             self.labelLigne = nomIndividu
         
         # Couleurs de label
@@ -566,11 +575,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
         # Récupération des paramètres
-        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS
+        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE
         
         parametresDefaut = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
             "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
+            "format_label_ligne" : FORMAT_LABEL_LIGNE,
             "affiche_sans_prestation" : True,
             "blocage_si_complet" : True,
             "hauteur_lignes" : HAUTEUR_LIGNE,
@@ -582,6 +592,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Paramètres divers
         AFFICHE_COLONNE_MEMO = dictParametres["affiche_colonne_memo"]
         AFFICHE_COLONNE_TRANSPORTS = dictParametres["affiche_colonne_transports"]
+        FORMAT_LABEL_LIGNE = dictParametres["format_label_ligne"]
         self.blocageSiComplet = dictParametres["blocage_si_complet"]
         self.afficheSansPrestation = dictParametres["affiche_sans_prestation"]
 
@@ -658,8 +669,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictAides = self.GetAides() 
                         
         
-    def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[]):
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+    def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[], modeSilencieux=False):
+        if modeSilencieux == False :
+            attente = wx.BusyInfo(u"Recherche des données...", self)
         self.mode = "individu"
         self.listeActivites = listeActivites
         self.listeSelectionIndividus = listeSelectionIndividus
@@ -670,10 +682,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Importation_forfaits(listeComptesPayeurs=[self.dictComptesPayeurs[self.IDfamille],]) 
         self.Importation_transports()
         self.MAJ()
-        attente.Destroy() 
+        if modeSilencieux == False :
+            attente.Destroy() 
 
-    def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None):
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+    def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None, modeSilencieux=False):
+        if modeSilencieux == False :
+            attente = wx.BusyInfo(u"Recherche des données...", self)
         self.mode = "date"
         self.listeActivites = listeActivites
         self.date = date
@@ -685,7 +699,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Importation_forfaits() 
         self.Importation_transports()
         self.MAJ()
-        attente.Destroy() 
+        if modeSilencieux == False :
+            attente.Destroy() 
 
     def MAJ(self):
         self.MAJ_donnees()
@@ -939,7 +954,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
             listeNomsIndividus = []
             for IDindividu, dictInfos in self.dictInfosIndividus.iteritems() :
-                nomIndividu = u"%s %s" % (dictInfos["nom"], dictInfos["prenom"])
+                if FORMAT_LABEL_LIGNE.startswith("nom_prenom") : 
+                    nomIndividu = u"%s %s" % (dictInfos["nom"], dictInfos["prenom"])
+                if FORMAT_LABEL_LIGNE.startswith("prenom_nom") : 
+                    nomIndividu = u"%s %s" % (dictInfos["prenom"], dictInfos["nom"])
                 listeNomsIndividus.append( (nomIndividu, IDindividu) )
             listeNomsIndividus.sort()
             nbreLignes = len(listeNomsIndividus)
@@ -4924,6 +4942,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictValeurs = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
             "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
+            "format_label_ligne" : FORMAT_LABEL_LIGNE,
             "affiche_sans_prestation" : self.afficheSansPrestation,
             "blocage_si_complet" : self.blocageSiComplet,
             "hauteur_lignes" : self.dictParametres["hauteur"],
@@ -4995,7 +5014,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global AFFICHE_COLONNE_TRANSPORTS
         AFFICHE_COLONNE_TRANSPORTS = etat
         self.MAJ_affichage() 
-        
+    
     def GetAfficheColonneMemo(self):
         return AFFICHE_COLONNE_MEMO
     
@@ -5003,7 +5022,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global AFFICHE_COLONNE_MEMO
         AFFICHE_COLONNE_MEMO = etat
         self.MAJ_affichage() 
-        
+
+    def GetFormatLabelLigne(self):
+        return FORMAT_LABEL_LIGNE
+    
+    def SetFormatLabelLigne(self, format="nom_prenom"):
+        global FORMAT_LABEL_LIGNE
+        FORMAT_LABEL_LIGNE = format
+        self.MAJ_affichage() 
+    
     def Parametres(self):
         listeDonnees = []
         
