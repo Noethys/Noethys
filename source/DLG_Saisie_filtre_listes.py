@@ -134,21 +134,21 @@ class CTRL_Page_entier(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
         self.radio_egal = wx.RadioButton(self, -1, u"Est égal à", style=wx.RB_GROUP)
-        self.ctrl_egal = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_egal = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_different = wx.RadioButton(self, -1, u"Est différent de")
-        self.ctrl_different = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_different = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_sup = wx.RadioButton(self, -1, u"Est supérieur à")
-        self.ctrl_sup = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_sup = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_supegal = wx.RadioButton(self, -1, u"Est supérieur ou égal à")
-        self.ctrl_supegal = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_supegal = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_inf = wx.RadioButton(self, -1, u"Est inférieur à")
-        self.ctrl_inf = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_inf = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_infegal = wx.RadioButton(self, -1, u"Est inférieur ou égal à")
-        self.ctrl_infegal = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_infegal = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.radio_compris = wx.RadioButton(self, -1, u"Est compris entre")
-        self.ctrl_min = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_min = wx.SpinCtrl(self, -1, "", min=0, max=999999)
         self.label_et = wx.StaticText(self, -1, u"et")
-        self.ctrl_max = wx.SpinCtrl(self, -1, "", min=0, max=100)
+        self.ctrl_max = wx.SpinCtrl(self, -1, "", min=0, max=999999)
 
         self.__set_properties()
         self.__do_layout()
@@ -223,7 +223,7 @@ class CTRL_Page_entier(wx.Panel):
             self.radio_egal.SetValue(True)
             self.ctrl_egal.SetValue(int(criteres))
         if choix == "DIFFERENT" : 
-            self.radio_diff.SetValue(True)
+            self.radio_different.SetValue(True)
             self.ctrl_different.SetValue(int(criteres))
         if choix == "SUP" : 
             self.radio_sup.SetValue(True)
@@ -378,7 +378,7 @@ class CTRL_Page_montant(wx.Panel):
             self.radio_egal.SetValue(True)
             self.ctrl_egal.SetMontant(float(criteres))
         if choix == "DIFFERENT" : 
-            self.radio_diff.SetValue(True)
+            self.radio_different.SetValue(True)
             self.ctrl_different.SetMontant(float(criteres))
         if choix == "SUP" : 
             self.radio_sup.SetValue(True)
@@ -523,7 +523,7 @@ class CTRL_Page_date(wx.Panel):
             self.radio_egal.SetValue(True)
             self.ctrl_egal.SetDate(criteres)
         if choix == "DIFFERENT" : 
-            self.radio_diff.SetValue(True)
+            self.radio_different.SetValue(True)
             self.ctrl_different.SetDate(criteres)
         if choix == "SUP" : 
             self.radio_sup.SetValue(True)
