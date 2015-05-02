@@ -183,7 +183,14 @@ def D1051():
     DB.AjoutChamp("documents", "label", "VARCHAR(400)")
     DB.AjoutChamp("documents", "IDreponse", "INTEGER")
     DB.Close()
-    
+
+def O1052():
+    """ Création du champ connexionAuthentifiee et startTLS dans adresses_mail """
+    DB = GestionDB.DB()
+    DB.AjoutChamp("adresses_mail", "connexionAuthentifiee", "BOOLEAN")
+    DB.AjoutChamp("adresses_mail", "startTLS", "BOOLEAN")
+    DB.Close()
+
 def E4072():
     """ Suppression des prestations sans consommations associées """    
     print "Lancement de la procedure E4072..."

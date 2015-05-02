@@ -137,7 +137,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         return listeMails[0]
 
 
-def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, ssl=False, listeImages=[], motdepasse=None, accuseReception=False):
+def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False):
     """ Envoi d'un mail avec pi�ce jointe """
     import smtplib
     import poplib
@@ -230,15 +230,26 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 ##    print pop.stat()
 ##    print pop.list()
     
-    if ssl == False :
+
+## Certains SMTP (exemple Orange Pro) demandent une authentifcation (en g�n�ral user : boite mail et pwd : mot de passe associé au smtp sécurisé )
+## mais ne supportent pas le mode starttls
+## Ces identifiants sont généralement utilisés lors d'un envoi de mail abec un FAI différent du propriétaire du SMTP
+## Par exemple pour envoyer un mail avec le smtp pro orange depuis un autre FAI (Free, SFR....)
+##      serveur : smtp.premium.orange.fr - port 587
+##      user : mon.user@orange.fr
+##      pwd : mon_pwd
+##  On positionne dans ce cas le parametre avecAuthentification a True
+##  et le parametre avecStartTLS est positionné selon l'état du support de la fonction startTLS par le SMTP
+    if avecAuthentification == False :
         # Envoi standard
         smtp = smtplib.SMTP(serveur, timeout=150)
     else:
         # Si identification SSL n�cessaire :
         smtp = smtplib.SMTP(serveur, port, timeout=150)
         smtp.ehlo()
-        smtp.starttls()
-        smtp.ehlo()
+        if avecStartTLS == True :
+            smtp.starttls()
+            smtp.ehlo()
         smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
     
     smtp.sendmail(adresseExpediteur, listeDestinataires + listeDestinatairesCCI, msg.as_string())
@@ -259,7 +270,8 @@ if __name__ == u"__main__":
         listeFichiersJoints=[], 
         serveur="XXX", 
         port=465, 
-        ssl=True, 
+        avecAuthentification=True,
+        avecStartTLS=False,
         listeImages=[],
         motdepasse="XXX",
         accuseReception = False,
