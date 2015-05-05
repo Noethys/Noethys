@@ -304,7 +304,15 @@ class MyDialog(wx.Dialog):
             dlg.Destroy()
             self.text_nomFichier.SetFocus()
             return
-            
+        
+        for caract in nomFichier :
+            if caract in u"éèëäâïîùûüàôç'&%*,;!:?./§@¤" :
+                dlg = wx.MessageDialog(self, u"Il est interdit d'utiliser des accents ou autres caractères spéciaux dans le nom de fichier !", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.text_nomFichier.SetFocus()
+                return
+                    
         # Traitement du checkbox
         if self.checkbox_details.GetValue() == False :
             

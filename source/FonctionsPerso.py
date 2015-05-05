@@ -1324,7 +1324,7 @@ def Formate_taille_octets(size):
     elif size > seuil_Kio:
         return "%.2f Ko" % (size/float(seuil_Kio))
     else:
-        return "%io" % size
+        return "%i o" % size
 
 def RechercheImports():
     """ Renvoie la liste de tous les modules importés du logiciel """

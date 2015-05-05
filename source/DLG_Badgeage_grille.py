@@ -124,7 +124,7 @@ class CTRL(wx.Panel):
             date_debut, date_fin = date, date
         else :
             date_debut, date_fin = periode
-        self.grille.SetModeIndividu([IDactivite,], [IDindividu,], [IDindividu,], [(date_debut, date_fin),])
+        self.grille.SetModeIndividu([IDactivite,], [IDindividu,], [IDindividu,], [(date_debut, date_fin),], modeSilencieux=True)
         
         # Récupération des informations
         self.dictInfosIndividu = self.grille.dictInfosIndividus[IDindividu]
@@ -137,12 +137,15 @@ class CTRL(wx.Panel):
         """ Sauvegarde de la grille """
         self.grille.Sauvegarde()
     
-    def GetCase(self, IDunite=None, date=None):
+    def GetCase(self, IDunite=None, date=None, memo=False):
         """ Récupère une case d'après un IDunite """
         for numLigne, ligne in self.grille.dictLignes.iteritems() :
             for numColonne, case in ligne.dictCases.iteritems() :
                 if case.typeCase == "consommation" :
                     if case.IDunite == IDunite and (case.date == date or date == None) :
+                        return case
+                if case.typeCase == "memo" :
+                    if case.date == date or date == None :
                         return case
         return None
     
@@ -244,12 +247,19 @@ class CTRL(wx.Panel):
                 case.ModifieEtat(None, etat)
         return True
     
+    def ModifieMemo(self, date=None, texte=""):
+        case = self.GetCase(date=date, memo=True)
+        if case == None :
+            return u"La case mémo journalier est inexistante."
+        case.SetTexte(texte)
+        return True        
+        
     
 # FONCTIONS DISPONIBLES :
 # Sauvegarde() : Pour sauvegarder
 # SaisieConso() : Pour ajouter une conso
 # SupprimeConso() : Pour Supprimer une conso
-
+# ModifieMemo(): Pour modifier le mémo journalier
 
 
 

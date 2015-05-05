@@ -368,7 +368,7 @@ class MainFrame(wx.Frame):
         if UTILS_Config.GetParametre("synchro_serveur_activer", defaut=False) == True :
             import CTRL_Serveur_nomade
             self.ctrl_serveur_nomade = CTRL_Serveur_nomade.Panel(self)
-            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(u"Serveur Nomade").
+            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(u"Serveur Nomadhys").
                               Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
         # Panneau Effectifs
@@ -696,6 +696,8 @@ class MainFrame(wx.Frame):
             # Outils
             {"code" : "menu_outils", "label" : u"Outils", "items" : [
                     {"code" : "statistiques", "label" : u"Statistiques", "infobulle" : u"Statistiques", "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
+##                    "-",
+##                    {"code" : "nomadhys_synchro", "label" : u"Synchronisation avec Nomadhys", "infobulle" : u"Nomadhys", "image" : "Images/16x16/Tablette.png", "action" : self.On_outils_nomadhys_synchro},
                     "-",
                     {"code" : "editeur_emails", "label" : u"Editeur d'Emails", "infobulle" : u"Editeur d'Emails", "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "calculatrice", "label" : u"Calculatrice\tF12", "infobulle" : u"Calculatrice", "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
@@ -2172,6 +2174,12 @@ class MainFrame(wx.Frame):
         dlg = DLG_Stats.Dialog(self)
         if dlg.ModificationParametres(premiere=True) == True :
             dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_outils_nomadhys_synchro(self, event):
+        import DLG_Synchronisation
+        dlg = DLG_Synchronisation.Dialog(self)
+        dlg.ShowModal() 
         dlg.Destroy()
 
     def On_outils_villes(self, event):

@@ -1,3 +1,13 @@
+Version 1.1.4.3 (05/05/2015) :
+
+- Ajout de la saisie des inscriptions par lot dans le menu Individus
+- Ajout de l'option impression des QF sur les factures (par Claude)
+- Ajout du choix de format des labels de lignes dans le gestionnaire des conso
+- Ajout de la purge des derniers fichiers ouverts dans les Préférences
+- Amélioration du choix du tarif dans les contrats (par Claude)
+- Correction d'un bug sur les entiers dans les filtres de listes
+- Correction de divers bugs
+
 Version 1.1.4.2 (29/03/2015) :
 
 - Ajout des opérations budgétaires dans la comptabilité

@@ -101,6 +101,20 @@ def DatetimeTimeEnStr(heure, separateur="h"):
     else :
         return u"%02d%s%02d" % (heure.hour, separateur, heure.minute)
 
+def HorodatageEnDatetime(horodatage, separation=None):
+    if separation == None :
+        annee = int(horodatage[0:4])
+        mois = int(horodatage[4:6])
+        jour = int(horodatage[6:8])
+        heures = int(horodatage[8:10])
+        minutes = int(horodatage[10:12])
+        secondes = int(horodatage[12:14])
+        horodatage = datetime.datetime(annee, mois, jour, heures, minutes, secondes)
+    else :
+        annee, mois, jour, heures, minutes, secondes = horodatage.split(separation)
+        horodatage = datetime.datetime(int(annee), int(mois), int(jour), int(heures), int(minutes), int(secondes))
+    return horodatage
+
 
 
 if __name__ == "__main__":

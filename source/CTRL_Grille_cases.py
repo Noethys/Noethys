@@ -176,7 +176,12 @@ class CaseMemo():
         
     def GetStatutTexte(self, x, y):
         return u"Double-cliquez sur la case 'Mémo' pour ajouter, modifier ou supprimer un mémo"
-
+    
+    def SetTexte(self, texte=""):
+        """ Modification manuelle du mémo """
+        self.grid.SetCellValue(self.numLigne, self.numColonne, texte)
+        self.MemoriseValeurs()
+        
         
 
 class CaseTransports():
