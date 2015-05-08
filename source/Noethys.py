@@ -696,8 +696,8 @@ class MainFrame(wx.Frame):
             # Outils
             {"code" : "menu_outils", "label" : u"Outils", "items" : [
                     {"code" : "statistiques", "label" : u"Statistiques", "infobulle" : u"Statistiques", "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
-##                    "-",
-##                    {"code" : "nomadhys_synchro", "label" : u"Synchronisation avec Nomadhys", "infobulle" : u"Nomadhys", "image" : "Images/16x16/Tablette.png", "action" : self.On_outils_nomadhys_synchro},
+                    "-",
+                    {"code" : "nomadhys_synchro", "label" : u"Synchroniser Nomadhys", "infobulle" : u"Synchroniser Nomadhys, l'application nomade de Noethys", "image" : "Images/16x16/Tablette.png", "action" : self.On_outils_nomadhys_synchro},
                     "-",
                     {"code" : "editeur_emails", "label" : u"Editeur d'Emails", "infobulle" : u"Editeur d'Emails", "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "calculatrice", "label" : u"Calculatrice\tF12", "infobulle" : u"Calculatrice", "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
@@ -1135,6 +1135,8 @@ class MainFrame(wx.Frame):
         self.ctrl_remplissage.MAJ() 
         self.ctrl_individus.MAJ()
         self.ctrl_messages.MAJ() 
+        if hasattr(self, "ctrl_serveur_nomade") :
+            self.ctrl_serveur_nomade.MAJ()
         wx.CallAfter(self.ctrl_individus.ctrl_recherche.SetFocus)
 
     def On_fichier_Nouveau(self, event):
@@ -2181,6 +2183,8 @@ class MainFrame(wx.Frame):
         dlg = DLG_Synchronisation.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
+        if hasattr(self, "ctrl_serveur_nomade") :
+            self.ctrl_serveur_nomade.MAJ()
 
     def On_outils_villes(self, event):
         import DLG_Villes
