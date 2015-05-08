@@ -1417,6 +1417,12 @@ DB_DATA = {
                                     ("montant", "FLOAT", u"Montant de la ventilation"),
                                     ], # Compta : Ventilation des opérations
 
+    "nomade_archivage":  [("IDarchive", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Archive"),
+                                    ("nom_fichier", "VARCHAR(400)", u"Nom du fichier"),
+                                    ("ID_appareil", "VARCHAR(100)", u"ID de l'appareil"),
+                                    ("date", "DATE", u"Date de l'archivage"),
+                                    ], # Synchronisation Nomadhys : Archivage des fichiers
+
 
     }
 

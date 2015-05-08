@@ -1555,7 +1555,16 @@ class DB:
         
         # =============================================================
 
-    
+        versionFiltre = (1, 1, 4, 4)
+        if versionFichier < versionFiltre :   
+            try :
+                if self.IsTableExists("nomade_archivage") == False : self.CreationTable("nomade_archivage", Tables.DB_DATA) 
+                import UTILS_Procedures
+                UTILS_Procedures.A8733() 
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
         
         
         
@@ -1791,7 +1800,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
 ##    db = DB(suffixe="DATA")
-##    listeTables = ("compta_operations_budgetaires",)
+##    listeTables = ("nomade_archivage",)
 ##    for nomTable in listeTables :
 ##        db.CreationTable(nomTable, Tables.DB_DATA)
 ##    db.Close()
