@@ -950,6 +950,7 @@ class CaseStandard(Case):
             self.statut = self.conso.statut
             self.quantite = self.conso.quantite
             self.IDgroupe = self.conso.IDgroupe
+            self.IDinscription = self.conso.IDinscription
             
             if self.IDprestation != None and self.grid.dictPrestations.has_key(self.IDprestation) :
                 self.IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
@@ -1413,7 +1414,6 @@ class CaseStandard(Case):
         self.conso.date = self.date
         self.conso.IDunite = self.IDunite
         self.conso.IDactivite = self.IDactivite
-        self.conso.IDinscription = self.IDinscription
 
         if index != None :
             self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite][index] = self.conso

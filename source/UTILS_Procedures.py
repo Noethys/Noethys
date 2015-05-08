@@ -38,6 +38,7 @@ DICT_PROCEDURES = {
     "A8452" : u"Nettoyage des liens superflus",
     "A8574" : u"Mise à niveau de la base de données",
     "A8623" : u"Remplacement des exercices comptables par les dates budgétaires",
+    "A8733" : u"Correction des IDinscription disparus",
     }
 
 # -------------------------------------------------------------------------------------------------------------------------
@@ -596,8 +597,39 @@ def A8623():
     
     DB.Close() 
     
+def A8733():
+    """ Correction des IDinscription disparus """
+    DB = GestionDB.DB()
     
+    # Récupération des tous les IDinscription
+    req = """SELECT IDinscription, IDindividu, IDactivite, IDcompte_payeur
+    FROM inscriptions;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    dictInscriptions = {}
+    for IDinscription, IDindividu, IDactivite, IDcompte_payeur in listeDonnees :
+        dictInscriptions[(IDindividu, IDactivite, IDcompte_payeur)] = IDinscription
+            
+    # Recherche des IDinscription NULL dans les consommations
+    req = """SELECT IDconso, IDindividu, IDactivite, IDcompte_payeur
+    FROM consommations
+    WHERE IDinscription IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    print "%d IDinscription NULL sont a corriger..." % len(listeDonnees)
     
+    listeModifications = []
+    for IDconso, IDindividu, IDactivite, IDcompte_payeur in listeDonnees :
+        if dictInscriptions.has_key((IDindividu, IDactivite, IDcompte_payeur)) :
+            IDinscription = dictInscriptions[(IDindividu, IDactivite, IDcompte_payeur)]
+            listeModifications.append((IDinscription, IDconso)) 
+            
+    # Enregistrement du IDinscription dans la consommation
+    if len(listeModifications) > 0 :
+        DB.Executermany(u"UPDATE consommations SET IDinscription=? WHERE IDconso=?", listeModifications, commit=False)
+        DB.Commit() 
+    
+    DB.Close() 
     
     
     
@@ -689,5 +721,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8623()
+    A8733()
     app.MainLoop()
