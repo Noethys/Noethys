@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from __future__ import unicode_literals
 import wx
 import datetime
 import os
