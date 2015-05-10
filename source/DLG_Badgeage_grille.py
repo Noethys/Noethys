@@ -232,6 +232,8 @@ class CTRL(wx.Panel):
             return u"Il n'existe aucune consommation à cette date et pour cette unité."
         if case.IDfacture != None :
             return u"Interdit de supprimer une consommation déjà facturée."
+        if case.etat in ("present", "absenti", "absentj") :
+            return u"Interdit de supprimer une consommation déjà pointée."
         case.OnClick(modeSilencieux=True)
         return True
 

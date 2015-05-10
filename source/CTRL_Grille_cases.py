@@ -793,7 +793,7 @@ class Case():
                         return IDunite
         return None
 
-    def ProtectionsModifSuppr(self, conso=None):
+    def ProtectionsModifSuppr(self, conso=None, modeSilencieux=False):
         """ Protections anti modif et suppression de conso """
         # Si la conso est dans une facture, on annule la suppression
         if conso.IDfacture != None :
@@ -810,21 +810,21 @@ class Case():
             return False
 
         # Si la conso est verrouillée, on annule l'action
-        if conso.verrouillage == 1 :
+        if conso.verrouillage == 1 and modeSilencieux == False :
             dlg = wx.MessageDialog(self.grid, u"Vous ne pouvez pas modifier une consommation verrouillée !", u"Consommation verrouillée", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Si la conso est "present", on annule l'action
-        if conso.etat == "present" :
+        if conso.etat == "present" and modeSilencieux == False :
             dlg = wx.MessageDialog(self.grid, u"Vous ne pouvez pas modifier une consommation pointée 'présent' !", u"Consommation verrouillée", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Si la conso est "absent", on annule l'action
-        if conso.etat == "absenti" or conso.etat == "absentj" :
+        if (conso.etat == "absenti" or conso.etat == "absentj") and modeSilencieux == False :
             dlg = wx.MessageDialog(self.grid, u"Vous ne pouvez pas supprimer une consommation pointée 'absent' !", u"Consommation verrouillée", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -840,7 +840,7 @@ class Case():
                 return False
 
         # Regarde si la prestation correspondante est déja payée
-        if self.grid.dictPrestations.has_key(conso.IDprestation) :
+        if self.grid.dictPrestations.has_key(conso.IDprestation) and modeSilencieux == False :
             montantPrestation = self.grid.dictPrestations[conso.IDprestation]["montant"]
             montantVentilation = self.grid.dictPrestations[conso.IDprestation]["montantVentilation"]
             if montantVentilation > 0.0 :
@@ -1024,7 +1024,7 @@ class CaseStandard(Case):
 
         # Protections anti modification et suppression
         conso = self.GetConso()
-        if conso != None and self.ProtectionsModifSuppr(conso) == False :
+        if conso != None and self.ProtectionsModifSuppr(conso, modeSilencieux) == False :
             return
         
         # Touches de raccourci
