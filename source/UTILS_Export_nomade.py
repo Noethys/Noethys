@@ -23,6 +23,7 @@ import random
 
 import UTILS_Cryptage_fichier
 import UTILS_Config
+import UTILS_Titulaires
 
 import DATA_Tables as TABLES
 
@@ -44,6 +45,11 @@ class Export():
                                             ("nom", "VARCHAR(100)", u"Nom de famille de la personne"),
                                             ("prenom", "VARCHAR(100)", u"Prénom de la personne"),
                                             ("photo", "BLOB", u"Photo de la personne"),
+                                            ],
+
+            "titulaires":[           ("IDtitulaires", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la ligne"),
+                                            ("IDfamille", "INTEGER", u"ID de la famille"),
+                                            ("nom", "VARCHAR(450)", u"Nom des titulaires"),
                                             ],
 
             "informations":[      ("IDinfo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la ligne"),
@@ -143,7 +149,6 @@ class Export():
                 ("type", "donnees"),
                 ]
             self.Enregistrer(dbdest, nomTable="parametres", listeChamps=["nom", "valeur"], listeDonnees=listeParametres)
-
             
             # Données du dictIndividus
             import UTILS_Infos_individus
@@ -182,6 +187,15 @@ class Export():
 
             self.Enregistrer(dbdest, nomTable="individus", listeChamps=["IDindividu", "IDcivilite", "nom", "prenom", "photo"], listeDonnees=listeDonnees)
             
+            # Données Titulaires de dossier
+            dictTitulaires = UTILS_Titulaires.GetTitulaires()
+            listeDonnees = []
+            for IDfamille, dictTemp in dictTitulaires.iteritems() :
+                nom = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+                listeDonnees.append((IDfamille, nom))
+            
+            self.Enregistrer(dbdest, nomTable="titulaires", listeChamps=["IDfamille", "nom"], listeDonnees=listeDonnees)
+
             # Données organisateur
             db = GestionDB.DB()
             req = """SELECT IDorganisateur, nom, logo FROM organisateur;"""
@@ -285,8 +299,9 @@ if __name__ == '__main__':
     app = wx.App(0)
     export = Export()
     nomFichier = export.Run() 
+    print "fini"
     # Envoi vers un répertoire
-    export.EnvoyerVersRepertoire(nomFichier) 
+##    export.EnvoyerVersRepertoire(nomFichier) 
 ##    export.EnvoyerVersFTP(nomFichier)
     app.MainLoop()
     
