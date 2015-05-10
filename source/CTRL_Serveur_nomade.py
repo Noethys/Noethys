@@ -69,7 +69,6 @@ class Echo(protocol.Protocol):
     log = None
     
     def EcritLog(self, texte=""):
-        print (texte,)
         if self.log != None :
             self.log.EcritLog(texte)
             

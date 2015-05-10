@@ -202,7 +202,11 @@ class Dialog(wx.Dialog):
         # Activation
         if envoi_factures != None :
             self.radio_activation_oui.SetValue(True)
-            IDindividu, categorie, adresse = envoi_factures.split(";")
+            temp = envoi_factures.split(";")
+            IDindividu = temp[0]
+            categorie = temp[1]
+            adresse = temp[2]
+            
             if IDindividu != "" :
                 self.radio_membre.SetValue(True)
                 self.ctrl_membre.SetAdresse(int(IDindividu), categorie)
@@ -232,6 +236,13 @@ class Dialog(wx.Dialog):
             else :
                 IDindividu, categorie = "", ""
                 adresse = self.ctrl_autre.GetValue()
+
+                if ";" in adresse :
+                    dlg = wx.MessageDialog(self, u"Vous ne pouvez pas utiliser de point-virgule (;) dans l'adresse !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    self.ctrl_autre.SetFocus()
+                    return
 
                 if adresse == "" :
                     dlg = wx.MessageDialog(self, u"Activation impossible !\n\nVous devez saisir une adresse Email.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
