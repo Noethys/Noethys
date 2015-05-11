@@ -26,13 +26,19 @@ from DLG_Synchronisation import AnalyserFichier
 
 PORT_DEFAUT = 8000
 
+class Erreur:
+    pass
+    
 try :
     from twisted.internet import wxreactor
     wxreactor.install()
     from twisted.internet import reactor, protocol
+    Protocol = protocol.Protocol
     IMPORT_TWISTED = True
-except :
+except Exception, err :
+    print "Erreur d'importation de Twisted : ", err
     IMPORT_TWISTED = False
+    Protocol = Erreur
     
     
 
@@ -64,7 +70,7 @@ class GenerationFichier(Thread):
 
 
 
-class Echo(protocol.Protocol):
+class Echo(Protocol):
     dictFichierReception = None
     log = None
     
@@ -175,6 +181,10 @@ class Echo(protocol.Protocol):
             
 
 def StartServer(log=None):
+    if IMPORT_TWISTED == False :
+        log.EcritLog(u"Erreur : Problème d'importation de Twisted")
+        return
+    
     factory = protocol.ServerFactory()
     factory.protocol = Echo
     factory.protocol.log = log
