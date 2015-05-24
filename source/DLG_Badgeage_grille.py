@@ -153,7 +153,7 @@ class CTRL(wx.Panel):
         case = self.GetCase(IDunite, date)
         return case.HasPlaceDisponible() 
         
-    def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None):
+    def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None, quantite=None):
         """ Crée ou modifie une conso pour l'unité indiquée """
         case = self.GetCase(IDunite, date)
         if case == None :
@@ -187,14 +187,16 @@ class CTRL(wx.Panel):
         # Si la conso n'existe pas déjà :
         if case.IsCaseDisponible(heure_debut, heure_fin) == True :
             if typeUnite == "Quantite" :
-                quantite = 1
+                quantiteTmp = 1
             else :
-                quantite = None
+                quantiteTmp = None
+            if quantite != None :
+                quantiteTmp = quantite
             if typeUnite == "Multihoraires" :
                 barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin))
                 case.ModifieEtat(barre.conso, etat)
             else :
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True)
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
                 case.ModifieEtat(None, etat)
 
 
@@ -211,11 +213,14 @@ class CTRL(wx.Panel):
             
             # Type Quantité
             if typeUnite == "Quantite" :
-                quantite = case.quantite
-                if case.quantite == None :
-                    quantite = 1
-                quantite += 1
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True)
+                quantiteTmp = case.quantite
+                if quantite != None :
+                    quantiteTmp = quantite
+                else :
+                    if quantiteTmp == None :
+                        quantiteTmp = 1
+                    quantiteTmp += 1
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
                 case.ModifieEtat(None, etat)
             
             if typeUnite == "Unitaire" :

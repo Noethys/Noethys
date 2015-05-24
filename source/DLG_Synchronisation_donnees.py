@@ -30,9 +30,9 @@ class Dialog(wx.Dialog):
 
         # Bandeau
         intro = u"Cliquez simplement sur le bouton Importer pour importer dans Noethys les données cochées."
-        titre = "Importation des données"
+        titre = u"Importation des données"
         self.SetTitle(titre)
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tablette.png")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Nomadhys.png")
 
         # Données
         self.box_donnees_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Données à importer")
@@ -268,7 +268,7 @@ class Dialog(wx.Dialog):
         # Si tous ont été traités avec succès
         if nbreOk == nbreTotal :
             archiver = True
-            
+        
         # Archivage
         if archiver == True :
             
@@ -280,12 +280,17 @@ class Dialog(wx.Dialog):
             
             DB = GestionDB.DB()
             for nomFichier in listeFichiers :
-                # Renommage des fichiers
-                os.rename("Sync/" + nomFichier, "Sync/" + nomFichier.replace(".dat", ".archive"))
-                # Mémorisation de l'archivage dans la base
-                nomFichierTemp = nomFichier.replace(".dat", "").replace(".archive", "")
-                ID_appareil = self.ctrl_donnees.dictIDappareil[nomFichierTemp]
-                IDarchive = DB.ReqInsert("nomade_archivage", [("nom_fichier", nomFichierTemp), ("ID_appareil", ID_appareil), ("date", datetime.date.today())])
+                # Renommage et archivage
+                if nomFichier.endswith(".archive") == False :
+                    # Renommage
+                    nomTemp = "Sync/" + nomFichier.replace(".dat", ".archive")
+                    if os.path.isfile(nomTemp) == True :
+                        os.remove(nomTemp)
+                    os.rename("Sync/" + nomFichier, nomTemp)
+                    # Mémorisation de l'archivage dans la base
+                    nomFichierTemp = nomFichier.replace(".dat", "").replace(".archive", "")
+                    ID_appareil = self.ctrl_donnees.dictIDappareil[nomFichierTemp]
+                    IDarchive = DB.ReqInsert("nomade_archivage", [("nom_fichier", nomFichierTemp), ("ID_appareil", ID_appareil), ("date", datetime.date.today())])
             DB.Close()
             
 
@@ -332,7 +337,7 @@ class Traitement(Thread):
                     if track.etat == "absentj" : mode, etat = "reservation", "absentj"
                     
                     if track.action == "ajouter" or track.action == "modifier" :
-                        resultat = self.parent.ctrl_grille.SaisieConso(IDunite=track.IDunite, mode=mode, etat=etat, heure_debut=track.heure_debut, heure_fin=track.heure_fin)
+                        resultat = self.parent.ctrl_grille.SaisieConso(IDunite=track.IDunite, mode=mode, etat=etat, heure_debut=track.heure_debut, heure_fin=track.heure_fin, quantite=track.quantite)
                     if track.action == "supprimer" :
                         resultat = self.parent.ctrl_grille.SupprimeConso(IDunite=track.IDunite, date=track.date)
                     

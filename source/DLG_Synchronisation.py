@@ -21,6 +21,7 @@ import zipfile
 
 import UTILS_Export_nomade
 import UTILS_Dates
+import UTILS_Parametres
 import FonctionsPerso
 
 import UTILS_Config
@@ -33,17 +34,16 @@ import OL_Synchronisation_fichiers
 
 
 
-def AnalyserFichier(nomFichier="", tailleFichier=None):
+def AnalyserFichier(nomFichier="", tailleFichier=None, typeTransfert=None):
     cheminFichier = "Sync/" + nomFichier
     listeAnomalies = []
-
-    print "Analyse du fichier : ", nomFichier
     
     # Vérification de la taille du fichier
     if tailleFichier != None :
         tailleFinaleFichier = os.path.getsize(cheminFichier)
         if tailleFichier != tailleFinaleFichier :
             listeAnomalies.append((nomFichier, u"Le fichier n'a pas été téléchargé en intégralité (%d/%d)" % (tailleFichier, tailleFinaleFichier)))
+            os.remove(cheminFichier)
             return False
         
     # Décryptage du fichier
@@ -51,7 +51,6 @@ def AnalyserFichier(nomFichier="", tailleFichier=None):
         nouveauCheminFichier = cheminFichier.replace(UTILS_Export_nomade.EXTENSION_CRYPTE, UTILS_Export_nomade.EXTENSION_DECRYPTE)
         mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_cryptage_mdp", defaut=""))
         resultat = UTILS_Cryptage_fichier.DecrypterFichier(cheminFichier, nouveauCheminFichier, mdp)
-        print "resultat decryptage =", resultat
         os.remove(cheminFichier)
     else :
         nouveauCheminFichier = cheminFichier
@@ -64,13 +63,13 @@ def AnalyserFichier(nomFichier="", tailleFichier=None):
     fichierZip = zipfile.ZipFile(nouveauCheminFichier, "r")
     buffer = fichierZip.read("database.dat")
     f = open(nouveauCheminFichier.replace(UTILS_Export_nomade.EXTENSION_DECRYPTE, ".dat"), "wb")
-    print "Ecriture du fichier ", nouveauCheminFichier.replace(UTILS_Export_nomade.EXTENSION_DECRYPTE, ".dat")
+    #print "Ecriture du fichier ", nouveauCheminFichier.replace(UTILS_Export_nomade.EXTENSION_DECRYPTE, ".dat")
     f.write(buffer)
     f.close()
     fichierZip.close()
     os.remove(nouveauCheminFichier)
         
-    print "listeAnomalies=", listeAnomalies
+    #print "listeAnomalies=", listeAnomalies
     
     return True
 
@@ -424,10 +423,10 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Choisissez une méthode de synchronisation (Serveur direct WIFI/Internet ou FTP ou Manuel) puis renseignez les paramètres de synchronisation. Cliquez sur le bouton 'Lire les données' pour importer les données."
+        intro = u"Vous pouvez ici synchroniser les données avec Nomadhys, l'application nomade pour Noethys. Choisissez une méthode de synchronisation (Serveur direct WIFI/Internet ou FTP ou Manuel) puis renseignez les paramètres. Cliquez sur le bouton 'Lire les données' pour importer les données."
         titre = u"Synchroniser Nomadhys"
         self.SetTitle(titre)
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tablette.png")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Nomadhys.png")
         
         # Paramètres
         self.box_parametres = wx.StaticBox(self, -1, u"Paramètres")
@@ -449,6 +448,8 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_googleplay = self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Telecharger_nomadhys.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_outils = self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Outils.png", wx.BITMAP_TYPE_ANY))
         self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()
@@ -460,6 +461,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLecture, self.bouton_lecture)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonGoogleplay, self.bouton_googleplay)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
@@ -469,6 +472,8 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.ImportationParametres()
         self.ctrl_mode.SetMode(UTILS_Config.GetParametre("synchro_mode_favori", defaut="ftp"))
         self.ctrl_fichiers.MAJ() 
+        
+        wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
         self.ctrl_mode.SetToolTipString(u"Sélectionnez le mode de transfert souhaité pour envoyer/recevoir des données manuellement")
@@ -478,6 +483,8 @@ class Dialog(wx.Dialog):
         self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste des fichiers à synchroniser")
         self.bouton_lecture.SetToolTipString(u"Cliquez ici pour lire le contenu des fichiers sélectionnés")
         self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
+        self.bouton_googleplay.SetToolTipString(u"Cliquez ici pour accéder à la page de téléchargement de Nomadhys sur Google Play")
+        self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder à des outils")
         self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
         self.SetMinSize((700, 700))
 
@@ -523,11 +530,13 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(box_donnees, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_googleplay, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
         self.SetSizer(grid_sizer_base)
@@ -544,7 +553,51 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event): 
         import UTILS_Aide
         UTILS_Aide.Aide("")
-
+    
+    def OnBoutonGoogleplay(self, event):
+        import webbrowser 
+        webbrowser.open("http://play.google.com/store/apps/details?id=org.nomadhys.nomadhys&hl=fr")
+        
+    def OnBoutonOutils(self, event):
+        menuPop = wx.Menu()
+        
+        item = wx.MenuItem(menuPop, 10, u"Purger le répertoire FTP", u"Supprimer uniquement les fichiers liés à ce fichier de données du répertoire FTP")
+        item.SetBitmap(wx.Bitmap("Images/16x16/Gomme.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.On_outils_purger_ftp, id=10)
+        
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+    
+    def On_outils_purger_ftp(self, event):
+        """ Supprime tous les fichiers du répertoire FTP """
+        hote = UTILS_Config.GetParametre("synchro_ftp_hote", defaut="")
+        identifiant = UTILS_Config.GetParametre("synchro_ftp_identifiant", defaut="")
+        mdp = base64.b64decode(UTILS_Config.GetParametre("synchro_ftp_mdp", defaut=""))
+        repertoire = UTILS_Config.GetParametre("synchro_ftp_repertoire", defaut="")
+        IDfichier = FonctionsPerso.GetIDfichier()
+        
+        nbreFichiersSupprimes = 0
+        try :
+            ftp = ftplib.FTP(hote, identifiant, mdp)
+            ftp.cwd(repertoire)
+            # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
+            for nomFichier in ftp.nlst() :
+                if IDfichier in nomFichier and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
+                    ftp.delete(nomFichier)
+                    nbreFichiersSupprimes += 1
+            ftp.quit()
+        except Exception, err :
+            print err
+            dlg = wx.MessageDialog(self, u"La connexion FTP n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation.", "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+        
+        dlg = wx.MessageDialog(self, u"%d fichiers ont été supprimés dans le répertoire FTP !" % nbreFichiersSupprimes, "Suppression ", wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+            
     def OnBoutonFermer(self, event):
         if self.ctrl_parametres.Validation() == False :
             return False
@@ -594,7 +647,7 @@ class Dialog(wx.Dialog):
             shutil.copyfile(chemin, "Sync/" + nomFichier)
             # Analyse du fichier
             dlgAttente = wx.BusyInfo(u"Analyse du fichier synchronisation...", self)
-            resultat = AnalyserFichier(nomFichier) 
+            resultat = AnalyserFichier(nomFichier, typeTransfert="manuel") 
             dlgAttente.Destroy() 
             del dlgAttente
             if resultat == True :
@@ -640,11 +693,21 @@ class Dialog(wx.Dialog):
         del dlgAttente
             
         # Analyse du fichier
+        ftp = ftplib.FTP(hote, identifiant, mdp)
+        ftp.cwd(repertoire)
+
         for nomFichier, tailleFichier in listeFichiersRecus :
+            
+            # Analyse du fichier
             dlgAttente = wx.BusyInfo(u"Analyse du fichier synchronisation...", self)
-            resultat = AnalyserFichier(nomFichier=nomFichier, tailleFichier=tailleFichier) 
+            resultat = AnalyserFichier(nomFichier=nomFichier, tailleFichier=tailleFichier, typeTransfert="ftp") 
             dlgAttente.Destroy() 
             del dlgAttente
+            
+            # Suppression du fichier dans le répertoire FTP
+            ftp.delete(nomFichier) 
+            
+        ftp.quit()
         
         # MAJ de la liste des fichiers
         self.ctrl_fichiers.MAJ()
@@ -655,6 +718,12 @@ class Dialog(wx.Dialog):
         
     def OnBoutonLecture(self, event):
         tracks = self.ctrl_fichiers.GetTracksCoches() 
+        if len(tracks) == 0 :
+            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun fichier de synchronisation à lire !", "Erreur ", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         listeFichiers = []
         for track in tracks :
             listeFichiers.append(track.nom_fichier)
@@ -690,8 +759,32 @@ class Dialog(wx.Dialog):
                 # Suppression
                 if nbreJours > synchro_archivage_delai :
                     os.remove("Sync/" + nomFichier)
-        
-        
+    
+    def AfficheAvertissement(self):
+        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="synchronisation_nomadhys", valeur=False) == True :
+            return
+
+        import DLG_Message_html
+        texte = u"""
+<CENTER><IMG SRC="Images/32x32/Information.png">
+<BR><BR>
+<FONT SIZE=2>
+<B>Avertissement</B>
+<BR><BR>
+Cette nouvelle fonctionnalité est expérimentale.
+<BR><BR>
+Il est conseillé de tester son efficacité et sa stabilité dans un fichier test avant de l'utiliser dans votre fichier de données. 
+<BR><BR>
+Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du forum de Noethys.
+</FONT>
+</CENTER>
+"""
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information", nePlusAfficher=True)
+        dlg.ShowModal()
+        nePlusAfficher = dlg.GetEtatNePlusAfficher()
+        dlg.Destroy()
+        if nePlusAfficher == True :
+            UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="synchronisation_nomadhys", valeur=nePlusAfficher)
         
 
 if __name__ == u"__main__":

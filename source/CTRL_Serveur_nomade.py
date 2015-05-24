@@ -133,15 +133,16 @@ class Echo(Protocol):
                 self.EcritLog(u"Réception en cours") 
                 self.log.SetImage("download")
                 return
-            
+        
         # Réception des données d'un fichier
-        self.dictFichierReception["fichier"].write(data)
-    
-        # Calcule de la taille de la partie telechargee
-        self.dictFichierReception["taille_actuelle"] += len(data)
-        pourcentage = int(100.0 * self.dictFichierReception["taille_actuelle"] / self.dictFichierReception["taille_totale"])
-        #self.EcritLog(u"Réception en cours...  " + str(pourcentage) + u" %")
-        self.log.SetGauge(pourcentage)
+        if self.dictFichierReception != None :
+            self.dictFichierReception["fichier"].write(data)
+        
+            # Calcule de la taille de la partie telechargee
+            self.dictFichierReception["taille_actuelle"] += len(data)
+            pourcentage = int(100.0 * self.dictFichierReception["taille_actuelle"] / self.dictFichierReception["taille_totale"])
+            #self.EcritLog(u"Réception en cours...  " + str(pourcentage) + u" %")
+            self.log.SetGauge(pourcentage)
         
     
     def IdentificationJSON(self, data):
@@ -185,27 +186,42 @@ def StartServer(log=None):
         log.EcritLog(u"Erreur : Problème d'importation de Twisted")
         return
     
-    factory = protocol.ServerFactory()
-    factory.protocol = Echo
-    factory.protocol.log = log
-    reactor.registerWxApp(wx.GetApp())
-    port = int(UTILS_Config.GetParametre("synchro_serveur_port", defaut=PORT_DEFAUT))
-    reactor.listenTCP(port, factory)
-    
-    ip_local = socket.gethostbyname(socket.gethostname())
-    log.EcritLog(u"IP locale : %s" % ip_local)
-    
-    ip_internet = json.loads(urlopen("http://jsonip.com").read())["ip"]
-    log.EcritLog(u"IP internet : %s" % ip_internet)
-
-    log.EcritLog(u"Serveur prêt sur le port %d" % port)
-    
-    log.SetImage("on")
-    reactor.run()
-
+    try :
+        factory = protocol.ServerFactory()
+        factory.protocol = Echo
+        factory.protocol.log = log
+        reactor.registerWxApp(wx.GetApp())
+        port = int(UTILS_Config.GetParametre("synchro_serveur_port", defaut=PORT_DEFAUT))
+        reactor.listenTCP(port, factory)
+        
+        # IP locale
+        #ip_local = socket.gethostbyname(socket.gethostname())
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('jsonip.com', 80))
+        ip_local = s.getsockname()[0]
+        s.close()
+        log.EcritLog(u"IP locale : %s" % ip_local)
+        
+        # IP internet
+        ip_internet = json.loads(urlopen("http://jsonip.com").read())["ip"]
+        log.EcritLog(u"IP internet : %s" % ip_internet)
+        
+        # Port
+        log.EcritLog(u"Serveur prêt sur le port %d" % port)
+        
+        log.SetImage("on")
+        reactor.run()
+    except Exception, err :
+        texte = u"Erreur dans le lancement du serveur Nomadhys : %s" % err
+        print texte
+        log.EcritLog(texte)
+        
 def StopServer():
-    reactor.stop()
-
+    try :
+        reactor.stop()
+    except Exception, err :
+        pass
+        
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Panel(wx.Panel):
