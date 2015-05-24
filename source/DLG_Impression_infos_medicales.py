@@ -625,7 +625,7 @@ class Dialog(wx.Dialog):
         
         # Initialisation du PDF
         nomDoc = "Temp/liste_informations_medicales_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(self.largeur_page, self.hauteur_page), topMargin=30, bottomMargin=30)
         story = []
         

@@ -41,7 +41,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
     HAUTEUR_PAGE = TAILLE_PAGE[1]
     
     # Initialisation du document
-    if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+    if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
     doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30, pagesize=TAILLE_PAGE, showBoundary=False)
     story = []
     dictChampsFusion = {}

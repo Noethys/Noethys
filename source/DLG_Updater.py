@@ -336,10 +336,10 @@ class Page_recherche(wx.Panel):
             # Une mise à jour a été trouvée !
             self.parent.versionFichier = self.versionFichier
             self.parent.fichierDest = "Updates/" + self.parent.versionFichier
-            if "win" in sys.platform : self.parent.fichierDest = self.parent.fichierDest.replace("/", "\\")
+            if sys.platform.startswith("win") : self.parent.fichierDest = self.parent.fichierDest.replace("/", "\\")
             # Vérifie qu'elle n'a pas déjà été téléchargée sur le disque dur
             fichierAverifier = self.parent.fichierDest+ "/" + self.parent.nomFichier
-            if "win" in sys.platform : fichierAverifier = fichierAverifier.replace("/", "\\")
+            if sys.platform.startswith("win") : fichierAverifier = fichierAverifier.replace("/", "\\")
             if os.path.isfile(fichierAverifier) == True :
                 tailleFichierAverifier = os.path.getsize(fichierAverifier)  
                 tailleFichierOrigin = self.parent.tailleFichier
@@ -736,7 +736,7 @@ class Page_installation(wx.Panel):
             self.journal.WriteText(u"> Sauvegarde des données locales :\n\n")
         
         fichierDest = self.parent.fichierDest + "/global_save.zip"
-        if "win" in sys.platform : fichierDest = fichierDest.replace("/", "\\")
+        if sys.platform.startswith("win") : fichierDest = fichierDest.replace("/", "\\")
         repApplication = os.getcwd()
         
         save = zipdirectory(self, self.journal, fichierDest, repApplication + "/Data")

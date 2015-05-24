@@ -541,7 +541,7 @@ class CTRL(HTL.HyperTreeList):
 
         # Initialisation du PDF
         nomDoc = "Temp/liste_transports_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeurPage, hauteurPage), topMargin=30, bottomMargin=30)
         story = []
         

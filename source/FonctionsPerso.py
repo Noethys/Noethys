@@ -1000,7 +1000,7 @@ def VideRepertoireUpdates(forcer=False):
         
 def ListeImprimantes():
     """ Recherche les imprimantes installées """
-    if "win" in sys.platform :
+    if sys.platform.startswith("win") :
         import win32print
         
     listeImprimantesLocales = []
@@ -1103,7 +1103,7 @@ def GetVersionLogiciel():
 def LanceFichierExterne(nomFichier) :
     """ Ouvre un fichier externe sous windows ou linux """
     nomSysteme = sys.platform
-    if "win" in nomSysteme : 
+    if nomSysteme.startswith("win") : 
         nomFichier = nomFichier.replace("/", "\\")
         os.startfile(nomFichier)
     if "linux" in nomSysteme : 
@@ -1238,7 +1238,7 @@ def Supprime_accent2(texte):
     return texte
 
 def OuvrirCalculatrice():
-    if "win" in sys.platform : LanceFichierExterne("calc.exe")
+    if sys.platform.startswith("win") : LanceFichierExterne("calc.exe")
     if "linux" in sys.platform : os.system("gcalctool")
 
 def RemplacerContenuFichier():

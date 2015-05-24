@@ -78,7 +78,7 @@ class PanelGraph(wx.Panel):
         from reportlab.lib.pagesizes import A4
         hauteur, largeur = A4
         cheminFichier = "Temp/grapheTemp.pdf"
-        if "win" in sys.platform : cheminFichier = cheminFichier.replace("/", "\\")
+        if sys.platform.startswith("win") : cheminFichier = cheminFichier.replace("/", "\\")
         c = canvasPDF.Canvas(cheminFichier, pagesize=(largeur, hauteur), pageCompression = 1)
         img = c.drawImage("Temp/grapheTemp.png", 0, 0, width=largeur, height=hauteur, preserveAspectRatio=True)
         c.save()

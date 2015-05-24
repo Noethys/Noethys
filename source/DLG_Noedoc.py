@@ -5106,7 +5106,7 @@ class Impression():
                     
         # -------- Initialisation du document ----------
         nomDoc = "Temp/DocumentPDF_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         canvas = CanvasPDF(nomDoc, pagesize=(self.taille_page[0]*mmPDF, self.taille_page[1]*mmPDF) )
         
         # Création des objets du fond

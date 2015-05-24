@@ -970,7 +970,7 @@ class Dialog(wx.Dialog):
         HAUTEUR_PAGE = defaultPageSize[0]
         LARGEUR_PAGE = defaultPageSize[1]
         nomDoc = "Temp/Etat_global_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=taillePage, topMargin=20, bottomMargin=20)
         story = []
         
