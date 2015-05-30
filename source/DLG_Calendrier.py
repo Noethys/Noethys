@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import CTRL_Calendrier
 
@@ -23,15 +25,15 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici consulter un simple calendrier qui affiche les périodes de vacances et les jours fériés. Le triangle rouge indique la date du jour. Vous pouvez permuter l'affichage annuel / mensuel en cliquant sur le bouton en haut à gauche."
-        titre = u"Calendrier"
+        intro = _(u"Vous pouvez ici consulter un simple calendrier qui affiche les périodes de vacances et les jours fériés. Le triangle rouge indique la date du jour. Vous pouvez permuter l'affichage annuel / mensuel en cliquant sur le bouton en haut à gauche.")
+        titre = _(u"Calendrier")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
         
         # Liste
         self.ctrl_calendrier = CTRL_Calendrier.CTRL(self, selectionInterdite=True, typeCalendrier="annuel")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -39,9 +41,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
     def __set_properties(self):
-        self.SetTitle(u"Calendrier")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Calendrier"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 600))
 
     def __do_layout(self):

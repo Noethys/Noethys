@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import UTILS_Titulaires
 import GestionDB
 import CTRL_Saisie_euros
@@ -38,7 +40,7 @@ class CTRL_Famille(wx.Choice):
         listeFamilles.sort()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "IDfamille" : 0, "nom" : u"Inconnue", "IDcompte_payeur" : 0 }
+        self.dictDonnees[0] = { "IDfamille" : 0, "nom" : _(u"Inconnue"), "IDcompte_payeur" : 0 }
         index = 1
         for nom, IDfamille, IDcompte_payeur in listeFamilles :
             self.dictDonnees[index] = { "IDfamille" : IDfamille, "nom " : nom, "IDcompte_payeur" : IDcompte_payeur}
@@ -70,26 +72,26 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent   
         
-##        self.label_intro = wx.StaticText(self, -1, u"Remarque : Les prélèvements manuels ne peuvent pas être réglés automatiquement.")
+##        self.label_intro = wx.StaticText(self, -1, _(u"Remarque : Les prélèvements manuels ne peuvent pas être réglés automatiquement."))
 ##        self.label_intro.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
 ##        self.label_intro.SetForegroundColour((100, 100, 100)) 
         
         # Famille
-        self.staticbox_famille_staticbox = wx.StaticBox(self, -1, u"Famille")
-        self.label_famille = wx.StaticText(self, -1, u"Titulaires :")
+        self.staticbox_famille_staticbox = wx.StaticBox(self, -1, _(u"Famille"))
+        self.label_famille = wx.StaticText(self, -1, _(u"Titulaires :"))
         self.ctrl_famille = CTRL_Famille(self)
         
         # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
-        self.label_libelle = wx.StaticText(self, -1, u"Libellé :")
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.label_libelle = wx.StaticText(self, -1, _(u"Libellé :"))
         self.ctrl_libelle = wx.TextCtrl(self, -1, u"")
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -103,13 +105,13 @@ class Dialog(wx.Dialog):
         self.ctrl_montant.SetMontant(montant)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un prélèvement manuel")
-        self.ctrl_famille.SetToolTipString(u"Sélectionnez la famille")
-        self.ctrl_libelle.SetToolTipString(u"Saisissez ici le libellé du prélèvement")
-        self.ctrl_montant.SetToolTipString(u"Saisissez ici le montant du prélèvement")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Saisie d'un prélèvement manuel"))
+        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez la famille"))
+        self.ctrl_libelle.SetToolTipString(_(u"Saisissez ici le libellé du prélèvement"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant du prélèvement"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -166,19 +168,19 @@ class Dialog(wx.Dialog):
     
     def OnBoutonOk(self, event): 
         if self.GetIDfamille() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une famille dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_famille.SetFocus()
             return
         if self.GetLibelle() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un libellé pour ce prélèvement !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un libellé pour ce prélèvement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_libelle.SetFocus()
             return
         if self.GetMontant() == None or self.GetMontant() == 0.0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant pour ce prélèvement !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant pour ce prélèvement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

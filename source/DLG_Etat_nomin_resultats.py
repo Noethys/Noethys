@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Etat_nomin_resultats
 
 
@@ -17,7 +19,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        self.label_intro = wx.StaticText(self, -1, u"Voici la liste des résultats. Vous pouvez maintenant imprimer cette liste ou l'exporter au format texte ou Ms Excel.")
+        self.label_intro = wx.StaticText(self, -1, _(u"Voici la liste des résultats. Vous pouvez maintenant imprimer cette liste ou l'exporter au format texte ou Ms Excel."))
         
         self.ctrl_listview = OL_Etat_nomin_resultats.ListView(self, id=-1, dictParametres=dictParametres, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
@@ -30,8 +32,8 @@ class Dialog(wx.Dialog):
         self.ctrl_totaux = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.ctrl_totaux.SetMinSize((-1, 80)) 
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -46,13 +48,13 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(u"Aperçu des résultats")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_export_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format texte")
-        self.bouton_export_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format MS Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Aperçu des résultats"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format texte"))
+        self.bouton_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format MS Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):
@@ -143,7 +145,7 @@ if __name__ == u"__main__":
             dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":trackInfo.label, "type":trackInfo.type, "categorie":trackInfo.categorie, "formule":trackInfo.formule, "titre":trackInfo.titre, "largeur":trackInfo.largeur}
         else :
             # Champ indisponible
-            dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":u"Non disponible", "type":None, "categorie":None, "titre":None, "formule":None}
+            dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":_(u"Non disponible"), "type":None, "categorie":None, "titre":None, "formule":None}
         listeChamps.append(OL_Etat_nomin_selections.Track(dictTemp))
         
     # Création des paramètres

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 
@@ -120,7 +122,7 @@ class CTRL_Classe(wx.Choice):
             saison = (date_debut, date_fin) 
             
             # Formatage du nom
-            nom = u"%s   (Du %s au %s)" % (nom, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+            nom = _(u"%s   (Du %s au %s)") % (nom, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
             
             # Formatage des niveaux
             listeNiveaux = []
@@ -253,25 +255,25 @@ class Dialog(wx.Dialog):
         self.dictNiveaux = self.ImportationNiveaux() 
         
         # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.label_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Classe
-        self.box_scolarite_staticbox = wx.StaticBox(self, -1, u"Classe")
-        self.label_ecole = wx.StaticText(self, -1, u"Ecole :")
+        self.box_scolarite_staticbox = wx.StaticBox(self, -1, _(u"Classe"))
+        self.label_ecole = wx.StaticText(self, -1, _(u"Ecole :"))
         self.ctrl_ecole = CTRL_Ecole(self)
-        self.label_classe = wx.StaticText(self, -1, u"Classe :")
+        self.label_classe = wx.StaticText(self, -1, _(u"Classe :"))
         self.ctrl_classe = CTRL_Classe(self)
-        self.label_niveau = wx.StaticText(self, -1, u"Niveau :")
+        self.label_niveau = wx.StaticText(self, -1, _(u"Niveau :"))
         self.ctrl_niveau = CTRL_Niveau(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -283,15 +285,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une étape de la scolarité")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de debut")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin")
-        self.ctrl_ecole.SetToolTipString(u"Sélectionnez une école")
-        self.ctrl_classe.SetToolTipString(u"Sélectionnez une classe")
-        self.ctrl_niveau.SetToolTipString(u"Sélectionnez un niveau scolaire")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une étape de la scolarité"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de debut"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
+        self.ctrl_ecole.SetToolTipString(_(u"Sélectionnez une école"))
+        self.ctrl_classe.SetToolTipString(_(u"Sélectionnez une classe"))
+        self.ctrl_niveau.SetToolTipString(_(u"Sélectionnez un niveau scolaire"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((500, 200))
 
     def __do_layout(self):
@@ -412,40 +414,40 @@ class Dialog(wx.Dialog):
         date_fin = self.GetDateFin() 
         
         if date_debut == None or self.ctrl_date_debut.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
         if date_fin == None or self.ctrl_date_fin.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, u"La date de début ne peut pas être supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
         if self.ctrl_ecole.GetEcole() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins une école !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une école !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_ecole.SetFocus()
             return
 
         if self.ctrl_classe.GetClasse() == None and self.ctrl_classe.IsEnabled() :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun classe. \nVoulez-vous quand même valider la saisie ?", u"Attention", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun classe. \nVoulez-vous quand même valider la saisie ?"), _(u"Attention"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 return
 
         if self.ctrl_niveau.GetNiveau() == None and self.ctrl_niveau.IsEnabled() :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun niveau scolaire. \nVoulez-vous quand même valider la saisie ?", u"Attention", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun niveau scolaire. \nVoulez-vous quand même valider la saisie ?"), _(u"Attention"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 return
 
@@ -456,7 +458,7 @@ class Dialog(wx.Dialog):
                 date_fin = DateEngFr(track.date_fin)
                 nomEcole = track.nomEcole
                 nomClasse = track.nomClasse
-                dlg = wx.MessageDialog(self, u"Vous ne pouvez pas effectuer cette inscription scolaire car\ncet individu est déjà inscrit sur une classe sur cette période :\n\nPériode : Du %s au %s\nEcole : %s\nClasse : %s" % (date_debut, date_fin, nomEcole, nomClasse), u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette inscription scolaire car\ncet individu est déjà inscrit sur une classe sur cette période :\n\nPériode : Du %s au %s\nEcole : %s\nClasse : %s") % (date_debut, date_fin, nomEcole, nomClasse), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

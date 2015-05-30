@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import os
 import FonctionsPerso
@@ -29,8 +31,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     u""" Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 u"""
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -82,11 +84,11 @@ class Choix_donateur(wx.Choice):
             
         nbreTitulaires = len(listeTitulaires)
         if nbreTitulaires == 0 : 
-            nomTitulaires = u"Pas de titulaires !"
+            nomTitulaires = _(u"Pas de titulaires !")
         if nbreTitulaires == 1 : 
             nomTitulaires = listeTitulaires[0][1]
         if nbreTitulaires == 2 : 
-            nomTitulaires = u"%s et %s" % (listeTitulaires[0][1], listeTitulaires[1][1])
+            nomTitulaires = _(u"%s et %s") % (listeTitulaires[0][1], listeTitulaires[1][1])
         if nbreTitulaires > 2 :
             nomTitulaires = ""
             for IDindividu, nomTitulaire in listeTitulaires[:-2] :
@@ -210,53 +212,53 @@ class Dialog(wx.Dialog):
         self.totalVentilation = 0.00
         
         # Bénéficiaire
-        self.staticbox_beneficiaire_staticbox = wx.StaticBox(self, -1, u"Bénéficiaire")
-        self.label_nom_beneficiaire = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_beneficiaire_staticbox = wx.StaticBox(self, -1, _(u"Bénéficiaire"))
+        self.label_nom_beneficiaire = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom_beneficiaire = wx.TextCtrl(self, -1, u"")
-        self.label_adresse_beneficiaire = wx.StaticText(self, -1, u"Adresse :")
+        self.label_adresse_beneficiaire = wx.StaticText(self, -1, _(u"Adresse :"))
         self.ctrl_adresse_beneficiaire = wx.TextCtrl(self, -1, u"")
-        self.label_objet = wx.StaticText(self, -1, u"Objet :")
+        self.label_objet = wx.StaticText(self, -1, _(u"Objet :"))
         self.ctrl_objet = wx.TextCtrl(self, -1, u"")
-        self.label_type = wx.StaticText(self, -1, u"Type :")
+        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.ctrl_type = wx.TextCtrl(self, -1, u"")
         
         # Donateur
-        self.staticbox_donateur_staticbox = wx.StaticBox(self, -1, u"Donateur")
-        self.label_nom_donateur = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_donateur_staticbox = wx.StaticBox(self, -1, _(u"Donateur"))
+        self.label_nom_donateur = wx.StaticText(self, -1, _(u"Nom :"))
         self.radio_nom_auto = wx.RadioButton(self, -1, u"", style=wx.RB_GROUP)
         self.ctrl_nom_auto = Choix_donateur(self)
-        self.radio_nom_autre = wx.RadioButton(self, -1, u"Autre :")
+        self.radio_nom_autre = wx.RadioButton(self, -1, _(u"Autre :"))
         self.ctrl_nom_autre = wx.TextCtrl(self, -1, u"")
-        self.label_adresse_donateur = wx.StaticText(self, -1, u"Adresse :")
+        self.label_adresse_donateur = wx.StaticText(self, -1, _(u"Adresse :"))
         self.ctr_adresse_donateur = wx.TextCtrl(self, -1, u"")
         
         # Versement
-        self.staticbox_versement_staticbox = wx.StaticBox(self, -1, u"Versement")
-        self.label_date_versement = wx.StaticText(self, -1, u"Date :")
+        self.staticbox_versement_staticbox = wx.StaticBox(self, -1, _(u"Versement"))
+        self.label_date_versement = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_versement = CTRL_Saisie_date.Date2(self)
-        self.label_mode_versement = wx.StaticText(self, -1, u"Mode :")
+        self.label_mode_versement = wx.StaticText(self, -1, _(u"Mode :"))
         self.radio_mode_auto = wx.RadioButton(self, -1, u"", style=wx.RB_GROUP)
         self.ctrl_mode_auto = CTRL_Mode(self)
-        self.radio_mode_autre = wx.RadioButton(self, -1, u"Autre :")
+        self.radio_mode_autre = wx.RadioButton(self, -1, _(u"Autre :"))
         self.ctrl_mode_autre = wx.TextCtrl(self, -1, u"")
         
         # Mémorisation des paramètres de l'organisme bénéficiaire
-        self.ctrl_memoriser_organisme = wx.CheckBox(self, -1, u"Mémoriser l'organisme bénéficiaire")
+        self.ctrl_memoriser_organisme = wx.CheckBox(self, -1, _(u"Mémoriser l'organisme bénéficiaire"))
         font = self.GetFont() 
         font.SetPointSize(7)
         self.ctrl_memoriser_organisme.SetFont(font)
         self.ctrl_memoriser_organisme.SetValue(True) 
         
         # Date édition
-        self.label_date_edition = wx.StaticText(self, -1, u"Date d'édition :")
+        self.label_date_edition = wx.StaticText(self, -1, _(u"Date d'édition :"))
         self.ctrl_date_edition = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_edition.SetDate(datetime.date.today())
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_email = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Envoyer_par_email.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -277,23 +279,23 @@ class Dialog(wx.Dialog):
         self.OnRadioMode(None)
 
     def __set_properties(self):
-        self.SetTitle(u"Edition d'un reçu Dons aux Oeuvres")
-        self.ctrl_memoriser_organisme.SetToolTipString(u"Cochez cette case pour ne pas avoir à re-saisir les données sur l'organisme la prochaine fois !")
-        self.ctrl_nom_beneficiaire.SetToolTipString(u"Saisissez ici le nom de l'organisme")
-        self.ctrl_adresse_beneficiaire.SetToolTipString(u"Saisissez ici l'adresse de l'organisme")
-        self.ctrl_objet.SetToolTipString(u"Saisissez ici l'objet de l'organisme")
-        self.ctrl_type.SetToolTipString(u"Saisissez ici le type d'oeuvre dont il s'agit")
-        self.ctrl_nom_auto.SetToolTipString(u"Sélectionnez un destinataire")
-        self.ctrl_nom_autre.SetToolTipString(u"Saisissez un nom de destinataire")
-        self.ctr_adresse_donateur.SetToolTipString(u"Saisissez ici l'adresse du destinataire")
-        self.ctrl_date_versement.SetToolTipString(u"Saisissez ici la date du versement")
-        self.ctrl_mode_auto.SetToolTipString(u"Sélectionnez ici le mode de versement")
-        self.ctrl_mode_autre.SetToolTipString(u"Saisissez ici un autre mode de versement")
-        self.ctrl_date_edition.SetToolTipString(u"Saisissez ici la date d'édition du document")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_email.SetToolTipString(u"Cliquez ici pour envoyer ce document par Email")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Edition d'un reçu Dons aux Oeuvres"))
+        self.ctrl_memoriser_organisme.SetToolTipString(_(u"Cochez cette case pour ne pas avoir à re-saisir les données sur l'organisme la prochaine fois !"))
+        self.ctrl_nom_beneficiaire.SetToolTipString(_(u"Saisissez ici le nom de l'organisme"))
+        self.ctrl_adresse_beneficiaire.SetToolTipString(_(u"Saisissez ici l'adresse de l'organisme"))
+        self.ctrl_objet.SetToolTipString(_(u"Saisissez ici l'objet de l'organisme"))
+        self.ctrl_type.SetToolTipString(_(u"Saisissez ici le type d'oeuvre dont il s'agit"))
+        self.ctrl_nom_auto.SetToolTipString(_(u"Sélectionnez un destinataire"))
+        self.ctrl_nom_autre.SetToolTipString(_(u"Saisissez un nom de destinataire"))
+        self.ctr_adresse_donateur.SetToolTipString(_(u"Saisissez ici l'adresse du destinataire"))
+        self.ctrl_date_versement.SetToolTipString(_(u"Saisissez ici la date du versement"))
+        self.ctrl_mode_auto.SetToolTipString(_(u"Sélectionnez ici le mode de versement"))
+        self.ctrl_mode_autre.SetToolTipString(_(u"Saisissez ici un autre mode de versement"))
+        self.ctrl_date_edition.SetToolTipString(_(u"Saisissez ici la date d'édition du document"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((550, 400))
 
     def __do_layout(self):
@@ -413,7 +415,7 @@ class Dialog(wx.Dialog):
 
         # Vérifie que la cotisation a été payée
         if self.totalVentilation < self.montant :
-            dlg = wx.MessageDialog(self, u"Cette cotisation n'a pas été réglée en intégralité.\n\nSouhaitez-vous quand même l'éditer ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette cotisation n'a pas été réglée en intégralité.\n\nSouhaitez-vous quand même l'éditer ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -706,7 +708,7 @@ class Impression():
         """, styleSheet['BodyText'])
         
         if dictDonnees["date_edition"] != u"" : 
-            date_edition = u"Le %s" % dictDonnees["date_edition"]
+            date_edition = _(u"Le %s") % dictDonnees["date_edition"]
         else:
             dictDonnees["date_edition"] = u""
         
@@ -755,7 +757,7 @@ class Impression():
         except Exception, err :
             print "Erreur dans ouverture PDF :", err
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

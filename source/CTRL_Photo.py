@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import Image
 import os
 import cStringIO
@@ -57,7 +59,7 @@ class CTRL_Photo(wx.StaticBitmap):
         self.IDindividu = IDindividu
         
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
-        self.SetToolTipString(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions photo")
+        self.SetToolTipString(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions photo"))
         
         self.Bind(wx.EVT_LEFT_DOWN, self.MenuPhoto)
         self.Bind(wx.EVT_RIGHT_DOWN, self.MenuPhoto)
@@ -83,14 +85,14 @@ class CTRL_Photo(wx.StaticBitmap):
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Importer une photo")
+        item = wx.MenuItem(menuPop, 10, _(u"Importer une photo"))
         bmp = wx.Bitmap("Images/16x16/Importer_photo.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Menu_Ajouter, id=10)
         
         # Item Capturer à partir d'une caméra
-        item = wx.MenuItem(menuPop, 20, u"Capturer une photo à partir d'une webcam")
+        item = wx.MenuItem(menuPop, 20, _(u"Capturer une photo à partir d'une webcam"))
         bmp = wx.Bitmap("Images/16x16/Webcam.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -99,7 +101,7 @@ class CTRL_Photo(wx.StaticBitmap):
         menuPop.AppendSeparator() 
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -109,7 +111,7 @@ class CTRL_Photo(wx.StaticBitmap):
 ##        menuPop.AppendSeparator()
 ##        
 ##         # Item Imprimer
-##        item = wx.MenuItem(menuPop, 40, u"Imprimer la photo")
+##        item = wx.MenuItem(menuPop, 40, _(u"Imprimer la photo"))
 ##        bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -134,7 +136,7 @@ class CTRL_Photo(wx.StaticBitmap):
         cheminDefaut = sp.GetDocumentsDir()
         # Ouverture dela fenêtre de dialogue
         dlg = wx.FileDialog(
-            self, message=u"Choisissez une photo",
+            self, message=_(u"Choisissez une photo"),
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
@@ -194,8 +196,8 @@ class CTRL_Photo(wx.StaticBitmap):
 
     def Menu_Supprimer(self, event):
         """ Suppression de la photo """
-        txtMessage = u"Souhaitez-vous vraiment supprimer cette photo ?"
-        dlgConfirm = wx.MessageDialog(self, txtMessage, u"Confirmation de suppression", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Souhaitez-vous vraiment supprimer cette photo ?")
+        dlgConfirm = wx.MessageDialog(self, txtMessage, _(u"Confirmation de suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:

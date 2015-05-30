@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Droits
 import wx.lib.agw.hyperlink as Hyperlink
@@ -17,59 +19,59 @@ import wx.lib.agw.hyperlink as Hyperlink
 
 LISTE_IMAGES = [
 
-    [u"Hommes", [
-        (u"Homme 1", "Homme1"),
-        (u"Homme 2", "Hommechic"),
-        (u"Pilote", "Hommepilote"),
-        (u"Barbare", "Barbare"),
-        (u"Cowboy", "Cowboy"),
-        (u"Marié", "Marie"),
-        (u"Père Noël", "Perenoel"),
-        (u"Ouvrier", "Ouvrier"),
-        (u"Garçon", "Garcon"),
+    [_(u"Hommes"), [
+        (_(u"Homme 1"), "Homme1"),
+        (_(u"Homme 2"), "Hommechic"),
+        (_(u"Pilote"), "Hommepilote"),
+        (_(u"Barbare"), "Barbare"),
+        (_(u"Cowboy"), "Cowboy"),
+        (_(u"Marié"), "Marie"),
+        (_(u"Père Noël"), "Perenoel"),
+        (_(u"Ouvrier"), "Ouvrier"),
+        (_(u"Garçon"), "Garcon"),
         ]],
         
-    [u"Femmes", [
-        (u"Femme 1", "Femme1"),
-        (u"Femme 2", "Femme2"),
-        (u"Femme 3", "Femme3"),
-        (u"Cowgirl", "Cowgirl"),
-        (u"Viking", "Viking"),
-        (u"Mariée", "Mariee"),
-        (u"Pilote", "Femmepilote"),
-        (u"Secrétaire", "Femmesecretaire"),
-        (u"Mère Noël", "Merenoel"),
-        (u"Ouvrière", "Ouvriere"),
-        (u"Fille", "Fille"),
+    [_(u"Femmes"), [
+        (_(u"Femme 1"), "Femme1"),
+        (_(u"Femme 2"), "Femme2"),
+        (_(u"Femme 3"), "Femme3"),
+        (_(u"Cowgirl"), "Cowgirl"),
+        (_(u"Viking"), "Viking"),
+        (_(u"Mariée"), "Mariee"),
+        (_(u"Pilote"), "Femmepilote"),
+        (_(u"Secrétaire"), "Femmesecretaire"),
+        (_(u"Mère Noël"), "Merenoel"),
+        (_(u"Ouvrière"), "Ouvriere"),
+        (_(u"Fille"), "Fille"),
         ]],
         
-    [u"Animaux", [
-        (u"Oiseau 1", "Oiseau1"),
-        (u"Oiseau 2", "Oiseau2"),
-        (u"Oiseau 3", "Oiseau3"),
-        (u"Poisson", "Poisson1"),
-        (u"Lion", "Lion"),
+    [_(u"Animaux"), [
+        (_(u"Oiseau 1"), "Oiseau1"),
+        (_(u"Oiseau 2"), "Oiseau2"),
+        (_(u"Oiseau 3"), "Oiseau3"),
+        (_(u"Poisson"), "Poisson1"),
+        (_(u"Lion"), "Lion"),
         ]],
 
-    [u"Sports", [
-        (u"Basket-ball", "Basket"),
-        (u"Rugby", "Rugby"),
-        (u"Tennis", "Tennis"),
-        (u"Foot-ball", "Foot"),
+    [_(u"Sports"), [
+        (_(u"Basket-ball"), "Basket"),
+        (_(u"Rugby"), "Rugby"),
+        (_(u"Tennis"), "Tennis"),
+        (_(u"Foot-ball"), "Foot"),
         ]],
 
-    [u"Abstrait", [
-        (u"Abstrait 1", "Abstrait1"),
-        (u"Abstrait 2", "Abstrait2"),
-        (u"Abstrait 3", "Abstrait3"),
-        (u"Abstrait 4", "Abstrait4"),
+    [_(u"Abstrait"), [
+        (_(u"Abstrait 1"), "Abstrait1"),
+        (_(u"Abstrait 2"), "Abstrait2"),
+        (_(u"Abstrait 3"), "Abstrait3"),
+        (_(u"Abstrait 4"), "Abstrait4"),
         ]],
 
-    [u"Divers", [
-        (u"Bonhomme de neige", "Bonhommedeneige"),
-        (u"Boussole", "Boussole"),
-        (u"Cadeau", "Cadeau"),
-        (u"Chine", "Chine"),
+    [_(u"Divers"), [
+        (_(u"Bonhomme de neige"), "Bonhommedeneige"),
+        (_(u"Boussole"), "Boussole"),
+        (_(u"Cadeau"), "Cadeau"),
+        (_(u"Chine"), "Chine"),
         ]],
 
     ]
@@ -109,7 +111,7 @@ class CTRL_Image(wx.StaticBitmap):
         self.SetMinSize(self.tailleImage) 
         self.SetSize(self.tailleImage) 
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
-        self.SetToolTipString(u"Cliquez sur le bouton droit de votre souris\npour sélectionner un avatar")
+        self.SetToolTipString(_(u"Cliquez sur le bouton droit de votre souris\npour sélectionner un avatar"))
         
         self.Bind(wx.EVT_LEFT_DOWN, self.ContextMenu)
         self.Bind(wx.EVT_RIGHT_DOWN, self.ContextMenu)
@@ -121,7 +123,7 @@ class CTRL_Image(wx.StaticBitmap):
         menuPop = wx.Menu()
         
         # Automatique
-        item = wx.MenuItem(menuPop, 999, u"Automatique (Défaut)")
+        item = wx.MenuItem(menuPop, 999, _(u"Automatique (Défaut)"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnItemMenu, id=999)
         
@@ -246,40 +248,40 @@ class Dialog(wx.Dialog):
         self.IDutilisateur = IDutilisateur
         
         # Identité
-        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, u"Identité")
-        self.label_sexe = wx.StaticText(self, -1, u"Sexe :")
-        self.ctrl_sexe = wx.Choice(self, -1, choices=[u"Homme", u"Femme"])
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
+        self.label_sexe = wx.StaticText(self, -1, _(u"Sexe :"))
+        self.ctrl_sexe = wx.Choice(self, -1, choices=[_(u"Homme"), _(u"Femme")])
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_prenom = wx.StaticText(self, -1, u"Prénom :")
+        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, u"")
         
         # Image
-        self.staticbox_image_staticbox = wx.StaticBox(self, -1, u"Avatar")
+        self.staticbox_image_staticbox = wx.StaticBox(self, -1, _(u"Avatar"))
         self.ctrl_image = CTRL_Image(self)
-        self.hyper_image = Hyperlien(self, label=u"Choisir un avatar", infobulle=u"Cliquez ici pour modifier l'avatar de l'utilisateur", URL="")
+        self.hyper_image = Hyperlien(self, label=_(u"Choisir un avatar"), infobulle=_(u"Cliquez ici pour modifier l'avatar de l'utilisateur"), URL="")
         
         # Accès
-        self.staticbox_acces_staticbox = wx.StaticBox(self, -1, u"Accès")
-        self.label_code = wx.StaticText(self, -1, u"Code :")
+        self.staticbox_acces_staticbox = wx.StaticBox(self, -1, _(u"Accès"))
+        self.label_code = wx.StaticText(self, -1, _(u"Code :"))
         self.ctrl_code = wx.TextCtrl(self, -1, u"")
-        self.label_actif = wx.StaticText(self, -1, u"Actif :")
+        self.label_actif = wx.StaticText(self, -1, _(u"Actif :"))
         self.ctrl_actif = wx.CheckBox(self, -1, u"")
         self.ctrl_actif.SetValue(True)
         
         # Droits
-        self.staticbox_droits_staticbox = wx.StaticBox(self, -1, u"Droits")
-        self.radio_droits_admin = wx.RadioButton(self, -1, u"Administrateur", style=wx.RB_GROUP)
-        self.radio_droits_modele = wx.RadioButton(self, -1, u"Le modèle de droits suivant :")
+        self.staticbox_droits_staticbox = wx.StaticBox(self, -1, _(u"Droits"))
+        self.radio_droits_admin = wx.RadioButton(self, -1, _(u"Administrateur"), style=wx.RB_GROUP)
+        self.radio_droits_modele = wx.RadioButton(self, -1, _(u"Le modèle de droits suivant :"))
         self.ctrl_modele_droits = CTRL_Modeles_droits(self)
-        self.radio_droits_perso = wx.RadioButton(self, -1, u"Les droits personnalisés suivants :")
+        self.radio_droits_perso = wx.RadioButton(self, -1, _(u"Les droits personnalisés suivants :"))
         self.ctrl_droits = CTRL_Droits.CTRL(self, IDutilisateur=self.IDutilisateur)
         self.ctrl_droits.MAJ()
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -291,26 +293,26 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDroits, self.radio_droits_perso)
         
         if self.IDutilisateur == None :
-            self.SetTitle(u"Saisie d'un utilisateur")
+            self.SetTitle(_(u"Saisie d'un utilisateur"))
         else:
-            self.SetTitle(u"Modification d'un utilisateur")
+            self.SetTitle(_(u"Modification d'un utilisateur"))
             self.Importation()
         
         self.OnRadioDroits(None)
 
     def __set_properties(self):
-        self.ctrl_sexe.SetToolTipString(u"Sélectionnez le sexe de l'utilisateur")
+        self.ctrl_sexe.SetToolTipString(_(u"Sélectionnez le sexe de l'utilisateur"))
         self.ctrl_sexe.SetSelection(0)
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de famille de l'utilisateur")
-        self.ctrl_prenom.SetToolTipString(u"Saisissez ici le prénom de l'utilisateur")
-        self.radio_droits_admin.SetToolTipString(u"Sélectionnez l'option 'Administrateur' pour donner tous les droits à cet utilisateur")
-        self.radio_droits_modele.SetToolTipString(u"Sélectionnez cette option pour attribuer un modèle de droits à cet utilisateur")
-        self.radio_droits_perso.SetToolTipString(u"Sélectionnez cette option pour attribuer des droits personnalisés à cet utilisateur")
-        self.ctrl_actif.SetToolTipString(u"Décochez cette case si l'utilisateur est inactif. L'utilisateur n'aura plus accès à ce fichier de données.")
-        self.ctrl_code.SetToolTipString(u"Saisissez ici le code d'accès personnel de l'individu")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de famille de l'utilisateur"))
+        self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prénom de l'utilisateur"))
+        self.radio_droits_admin.SetToolTipString(_(u"Sélectionnez l'option 'Administrateur' pour donner tous les droits à cet utilisateur"))
+        self.radio_droits_modele.SetToolTipString(_(u"Sélectionnez cette option pour attribuer un modèle de droits à cet utilisateur"))
+        self.radio_droits_perso.SetToolTipString(_(u"Sélectionnez cette option pour attribuer des droits personnalisés à cet utilisateur"))
+        self.ctrl_actif.SetToolTipString(_(u"Décochez cette case si l'utilisateur est inactif. L'utilisateur n'aura plus accès à ce fichier de données."))
+        self.ctrl_code.SetToolTipString(_(u"Saisissez ici le code d'accès personnel de l'individu"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((690, 750))
 
     def __do_layout(self):
@@ -402,14 +404,14 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         # Vérification des données
         if len(self.ctrl_nom.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         
         if len(self.ctrl_code.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un code d'accès personnel !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un code d'accès personnel !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code.SetFocus()
@@ -429,7 +431,7 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, u"Le code d'accès que vous avez saisi est déjà attribué !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le code d'accès que vous avez saisi est déjà attribué !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code.SetFocus()
@@ -445,7 +447,7 @@ class Dialog(wx.Dialog):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) == 0 :
-                dlg = wx.MessageDialog(self, u"Il doit rester au moins un administrateur dans le fichier !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Il doit rester au moins un administrateur dans le fichier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -453,7 +455,7 @@ class Dialog(wx.Dialog):
         # Droits
         if self.radio_droits_modele.GetValue() == True :
             if self.ctrl_modele_droits.GetID() == None :
-                dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun modèle de droits !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle de droits !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

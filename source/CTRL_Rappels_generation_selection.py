@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import datetime
@@ -20,8 +22,8 @@ import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", u"Euro")
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", u"Centime")
+MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
+MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
 import GestionDB
 import FonctionsPerso
@@ -99,12 +101,12 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( u"Famille/Individu", 200, wx.ALIGN_LEFT),
+            ( _(u"Famille/Individu"), 200, wx.ALIGN_LEFT),
             ( u"Du", 70, wx.ALIGN_CENTER),
-            ( u"Au", 70, wx.ALIGN_CENTER),
-            ( u"Retard", 60, wx.ALIGN_CENTRE),
-            ( u"Solde", 60, wx.ALIGN_RIGHT),
-            ( u"Document", 170, wx.ALIGN_LEFT),
+            ( _(u"Au"), 70, wx.ALIGN_CENTER),
+            ( _(u"Retard"), 60, wx.ALIGN_CENTRE),
+            ( _(u"Solde"), 60, wx.ALIGN_RIGHT),
+            ( _(u"Document"), 170, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -133,9 +135,9 @@ class CTRL(HTL.HyperTreeList):
 
     def AfficheNbreComptes(self, nbreComptes=0):
         if self.parent.GetName() == "DLG_Rappels_generation_selection" :
-            if nbreComptes == 0 : label = u"Aucune lettre de rappel sélectionnée"
-            elif nbreComptes == 1 : label = u"1 lettre de rappel sélectionnée"
-            else: label = u"%d lettres de rappel sélectionnées" % nbreComptes
+            if nbreComptes == 0 : label = _(u"Aucune lettre de rappel sélectionnée")
+            elif nbreComptes == 1 : label = _(u"1 lettre de rappel sélectionnée")
+            else: label = _(u"%d lettres de rappel sélectionnées") % nbreComptes
             self.parent.box_rappels_staticbox.SetLabel(label)
         
     def OnCheckItem(self, event):
@@ -206,12 +208,12 @@ class CTRL(HTL.HyperTreeList):
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.CocheTout() 
     
     def Remplissage(self):
-        dlgAttente = PBI.PyBusyInfo(u"Recherche des impayés en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des impayés en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         try :
@@ -226,7 +228,7 @@ class CTRL(HTL.HyperTreeList):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la recherche des rappels : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche des rappels : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -257,11 +259,11 @@ class CTRL(HTL.HyperTreeList):
             
             # Texte du retard
             if nbreJoursRetard < 31 :
-                texteRetard = u"%d jours" % nbreJoursRetard
+                texteRetard = _(u"%d jours") % nbreJoursRetard
             else :
                 nbreMois = nbreJoursRetard / 30
                 nbreJours = nbreJoursRetard - (nbreMois*30)
-                texteRetard = u"%d jours" % nbreJoursRetard
+                texteRetard = _(u"%d jours") % nbreJoursRetard
                 
             niveauCompte = self.AppendItem(self.root, nomSansCivilite, ct_type=1)
                         
@@ -270,7 +272,7 @@ class CTRL(HTL.HyperTreeList):
             self.SetItemText(niveauCompte, texteRetard, 3)
             self.SetItemText(niveauCompte, solde, 4)
             
-            ctrl_document = CTRL_document(self.GetMainWindow(), -1, branche=niveauCompte, IDcompte_payeur=IDcompte_payeur, nbreJoursRetard=nbreJoursRetard, infobulle=u"Sélectionnez un document")
+            ctrl_document = CTRL_document(self.GetMainWindow(), -1, branche=niveauCompte, IDcompte_payeur=IDcompte_payeur, nbreJoursRetard=nbreJoursRetard, infobulle=_(u"Sélectionnez un document"))
             self.SetItemWindow(niveauCompte, ctrl_document, 5)
             self.dictControles[IDcompte_payeur] = ctrl_document
 
@@ -305,7 +307,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Afficher un aperçu PDF")
+        item = wx.MenuItem(menuPop, 10, _(u"Afficher un aperçu PDF"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -319,13 +321,13 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune lettre dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         type = dictItem["type"]
         if type != "compte" : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune lettre dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -335,7 +337,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Vérifie qu'un texte a été attribué
         if dictDocument["IDtexte"] == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement attribuer un texte à cette lettre !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement attribuer un texte à cette lettre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -360,7 +362,7 @@ class CTRL(HTL.HyperTreeList):
             return False
                    
         # Fabrication du PDF
-        dlgAttente = PBI.PyBusyInfo(u"Création de l'aperçu au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Création de l'aperçu au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         try :
             UTILS_Impression_rappel.Impression({IDcompte_payeur : dictCompte}, dictOptions, IDmodele=dictOptions["IDmodele"])
@@ -368,7 +370,7 @@ class CTRL(HTL.HyperTreeList):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la lettre de rappel : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la lettre de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False

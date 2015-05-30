@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import CTRL_Bandeau
 
@@ -28,7 +30,7 @@ class Choix_famille(wx.Choice):
         self.listeDonnees = listeDonnees
         for dictTemp in listeDonnees :
             IDfamille = dictTemp["IDfamille"]
-            nom = u"Famille de %s" % dictTemp["nom"]
+            nom = _(u"Famille de %s") % dictTemp["nom"]
             self.listeNoms.append(nom)
         self.SetItems(self.listeNoms)
     
@@ -195,33 +197,33 @@ class Dialog(wx.Dialog):
         self.cp = cp
         self.ville = ville 
         
-        intro = u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs."
-        titre = u"Inscription à une activité"
+        intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs.")
+        titre = _(u"Inscription à une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
         self.ctrl_famille = Choix_famille(self)
         
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, u"1. Sélectionnez une activité")
+        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"1. Sélectionnez une activité"))
         self.ctrl_activites = ListBox(self, type="activites")
         self.ctrl_activites.SetMinSize((-1, 80))
         
-        self.ctrl_activites_valides = wx.CheckBox(self, -1, u"Afficher uniquement les activités ouvertes")
+        self.ctrl_activites_valides = wx.CheckBox(self, -1, _(u"Afficher uniquement les activités ouvertes"))
         self.ctrl_activites_valides.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL))
         self.ctrl_activites_valides.SetValue(True) 
         
-        self.staticbox_groupe_staticbox = wx.StaticBox(self, -1, u"2. Sélectionnez un groupe")
+        self.staticbox_groupe_staticbox = wx.StaticBox(self, -1, _(u"2. Sélectionnez un groupe"))
         self.ctrl_groupes = ListBox(self, type="groupes", IDcondition=None)
         self.ctrl_groupes.SetMinSize((-1, 80))
         
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, u"3. Sélectionnez une catégorie de tarif")
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"3. Sélectionnez une catégorie de tarif"))
         self.ctrl_categories = ListBox(self, type="categories", IDcondition=None, cp=cp, ville=ville)
         self.ctrl_categories.SetMinSize((-1, 80))
         
-        self.ctrl_parti = wx.CheckBox(self, -1, u"Est parti")
+        self.ctrl_parti = wx.CheckBox(self, -1, _(u"Est parti"))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -234,16 +236,16 @@ class Dialog(wx.Dialog):
         self.ctrl_activites.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(u"Inscription à une activité")
-        self.ctrl_famille.SetToolTipString(u"Sélectionnez une famille")
-        self.ctrl_activites.SetToolTipString(u"Sélectionnez une activité")
-        self.ctrl_activites_valides.SetToolTipString(u"Cochez cette case pour afficher uniquement les activités encore ouvertes à ce jour")
-        self.ctrl_groupes.SetToolTipString(u"Sélectionnez un groupe")
-        self.ctrl_parti.SetToolTipString(u"Cochez cette case si l'individu ne fréquente plus cette activité")
-        self.ctrl_categories.SetToolTipString(u"Sélectionnez une catégorie de tarif")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Inscription à une activité"))
+        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez une famille"))
+        self.ctrl_activites.SetToolTipString(_(u"Sélectionnez une activité"))
+        self.ctrl_activites_valides.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les activités encore ouvertes à ce jour"))
+        self.ctrl_groupes.SetToolTipString(_(u"Sélectionnez un groupe"))
+        self.ctrl_parti.SetToolTipString(_(u"Cochez cette case si l'individu ne fréquente plus cette activité"))
+        self.ctrl_categories.SetToolTipString(_(u"Sélectionnez une catégorie de tarif"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((380, 590))
         
     def __do_layout(self):
@@ -300,17 +302,17 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Vérification des données saisies
         if self.ctrl_activites.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_groupes.GetID() == None and len(self.ctrl_groupes.listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un groupe !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_categories.GetID() == None and len(self.ctrl_categories.listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une catégorie de tarifs !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie de tarifs !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -322,7 +324,7 @@ class Dialog(wx.Dialog):
         if nbre_inscrits_max != None and nbre_inscrits != None :
             nbrePlacesRestantes = nbre_inscrits_max - nbre_inscrits
             if nbrePlacesRestantes <= 0 :
-                dlg = wx.MessageDialog(None, u"Le nombre maximal d'inscrits autorisé pour cette activité a été atteint !\n\nSouhaitez-vous tout de même inscrire cet individu ?", u"Nbre d'inscrit maximal atteint", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(None, _(u"Le nombre maximal d'inscrits autorisé pour cette activité a été atteint !\n\nSouhaitez-vous tout de même inscrire cet individu ?"), _(u"Nbre d'inscrit maximal atteint"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
                 if reponse != wx.ID_YES :

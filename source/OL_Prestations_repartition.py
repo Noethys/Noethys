@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import locale
@@ -25,8 +27,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -298,23 +300,23 @@ class ListView(GroupListView):
         self.useExpansionColumn = True
         self.SetColumns([
             ColumnDefn(u"", "left", 0, "IDprestation", typeDonnee="entier"),
-            ColumnDefn(u"Date", "left", 160, "date", typeDonnee="date", stringConverter=FormateDate),
-##            ColumnDefn(u"Catégorie", "left", 100, "categorie"),
-            ColumnDefn(u"Individu", "left", 75, "prenomIndividu", typeDonnee="texte"),
-            ColumnDefn(u"Activité", "left", 55, "nomAbregeActivite", typeDonnee="texte"),
-            ColumnDefn(u"Label", "left", 155, "label", typeDonnee="texte"),
-            ColumnDefn(u"Montant", "right", 65, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Réglé", "right", 72, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(u"Déduc.", "right", 55, "montant_deduction", typeDonnee="montant", stringConverter=FormateMontant),
-##            ColumnDefn(u"Tarif", "left", 140, "nomTarif"),
-            ColumnDefn(u"Catégorie de tarif", "left", 100, "nomCategorieTarif", typeDonnee="texte"),
-            ColumnDefn(u"N° Facture", "left", 70, "label_facture", typeDonnee="texte"),
+            ColumnDefn(_(u"Date"), "left", 160, "date", typeDonnee="date", stringConverter=FormateDate),
+##            ColumnDefn(_(u"Catégorie"), "left", 100, "categorie"),
+            ColumnDefn(_(u"Individu"), "left", 75, "prenomIndividu", typeDonnee="texte"),
+            ColumnDefn(_(u"Activité"), "left", 55, "nomAbregeActivite", typeDonnee="texte"),
+            ColumnDefn(_(u"Label"), "left", 155, "label", typeDonnee="texte"),
+            ColumnDefn(_(u"Montant"), "right", 65, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Réglé"), "right", 72, "montant_ventilation", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"Déduc."), "right", 55, "montant_deduction", typeDonnee="montant", stringConverter=FormateMontant),
+##            ColumnDefn(_(u"Tarif"), "left", 140, "nomTarif"),
+            ColumnDefn(_(u"Catégorie de tarif"), "left", 100, "nomCategorieTarif", typeDonnee="texte"),
+            ColumnDefn(_(u"N° Facture"), "left", 70, "label_facture", typeDonnee="texte"),
         ])
 ##        self.SetShowGroups(False)
         self.CreateCheckStateColumn(0)
         self.SetShowItemCounts(False)
         self.SetSortColumn(self.columns[2])
-        self.SetEmptyListMsg(u"Aucune prestation")
+        self.SetEmptyListMsg(_(u"Aucune prestation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.rowFormatter = rowFormatter
         self.SetObjects(self.donnees)
@@ -397,14 +399,14 @@ class ListView(GroupListView):
 
         # Item Ajouter
         if self.IDfamille != None :
-            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -412,7 +414,7 @@ class ListView(GroupListView):
         if len(self.Selection()) == 0 : item.Enable(False)
 
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -422,26 +424,26 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
 
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheRien, id=80)
 
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -450,14 +452,14 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -468,21 +470,21 @@ class ListView(GroupListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des prestations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prestations"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des prestations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prestations"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des prestations")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prestations"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des prestations")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prestations"))
 
     def Ajouter(self, event):
         import DLG_Saisie_prestation
@@ -494,14 +496,14 @@ class ListView(GroupListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune prestation dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune prestation dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
         if track.categorie == "cotisation" :
-            dlg = wx.MessageDialog(self, u"Pour modifier la prestation d'une cotisation, allez directement dans la liste des cotisations !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Pour modifier la prestation d'une cotisation, allez directement dans la liste des cotisations !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -514,7 +516,7 @@ class ListView(GroupListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune prestation à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune prestation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -522,7 +524,7 @@ class ListView(GroupListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les %d prestations cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d prestations cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -531,7 +533,7 @@ class ListView(GroupListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la prestation n°%d ?" % listeSelections[0].IDprestation, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation n°%d ?") % listeSelections[0].IDprestation, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -545,14 +547,14 @@ class ListView(GroupListView):
             
             # Vérifie si ce n'est pas un forfait non supprimable
             if track.forfait == 2 :
-                dlg = wx.MessageDialog(self, u"La prestation n°%d est un forfait non supprimable !\n\n(Pour le supprimer, vous devez obligatoirement désinscrire l'individu de l'activité)" % track.IDprestation, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La prestation n°%d est un forfait non supprimable !\n\n(Pour le supprimer, vous devez obligatoirement désinscrire l'individu de l'activité)") % track.IDprestation, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
             
             # Vérifie qu'aucune facture n'y est rattachée
             if valide == True and track.IDfacture != None :
-                dlg = wx.MessageDialog(self, u"La prestation n°%d est déjà facturée. Vous ne pouvez donc pas la supprimer !" % track.IDprestation, u"Suppression impossible", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"La prestation n°%d est déjà facturée. Vous ne pouvez donc pas la supprimer !") % track.IDprestation, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
@@ -573,7 +575,7 @@ class ListView(GroupListView):
             nbreVerrouillees = 0
             
             if len(listeConsommations) > 0 and valide == True :
-                message = u"Attention, la prestation n°%d est rattachée aux %d consommation(s) suivantes :\n\n" % (track.IDprestation, len(listeConsommations))
+                message = _(u"Attention, la prestation n°%d est rattachée aux %d consommation(s) suivantes :\n\n") % (track.IDprestation, len(listeConsommations))
                 for IDconso, date, etat, IDunite, nomUnite, IDindividu, nomIndividu, prenomIndividu in listeConsommations :
                     listeIDconso.append(IDconso)
                     if etat == "present" :
@@ -583,13 +585,13 @@ class ListView(GroupListView):
                     if IDindividu == 0 or IDindividu == None :
                         individu = u""
                     else:
-                        individu = u"pour %s %s" % (nomIndividu, prenomIndividu)
-                    ligneTexte = u"   - Le %s : %s %s\n" % (dateFr, nomUnite, individu)
+                        individu = _(u"pour %s %s") % (nomIndividu, prenomIndividu)
+                    ligneTexte = _(u"   - Le %s : %s %s\n") % (dateFr, nomUnite, individu)
                     message += ligneTexte
-                message += u"\nSouhaitez-vous supprimer également ces consommations (conseillé) ?\n\n(Si vous répondez non, les consommations seront conservées dans le calendrier mais seront considérées comme gratuites."
+                message += _(u"\nSouhaitez-vous supprimer également ces consommations (conseillé) ?\n\n(Si vous répondez non, les consommations seront conservées dans le calendrier mais seront considérées comme gratuites.")
                 
                 # Demande confirmation pour supprimer les consommations associées
-                dlg = wx.MessageDialog(self, message, u"Suppression", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, message, _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
                 if reponse == wx.ID_CANCEL :
@@ -597,7 +599,7 @@ class ListView(GroupListView):
                 if reponse == wx.ID_YES :
                     if nbreVerrouillees > 0 :
                         # Annule la procédure d'annulation si des consommations sont déjà pointées sur 'présent' :
-                        dlg = wx.MessageDialog(self, u"La prestation %d est rattachée à %d consommation(s) déjà pointées.\nIl vous est donc impossible de le(s) supprimer !\n\nProcédure de suppression annulée." % (track.IDprestation, nbreVerrouillees), u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"La prestation %d est rattachée à %d consommation(s) déjà pointées.\nIl vous est donc impossible de le(s) supprimer !\n\nProcédure de suppression annulée.") % (track.IDprestation, nbreVerrouillees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         valide = False
@@ -613,7 +615,7 @@ class ListView(GroupListView):
             
             # Recherche s'il s'agit d'une prestation de frais de gestion pour un règlement
             if track.reglement_frais != None :
-                dlg = wx.MessageDialog(self, u"La prestation n°%d est rattachée au règlement n°%d en tant que frais de gestion de règlement.\n\nSouhaitez-vous vraiment supprimer cette prestation ?" % (track.IDprestation, track.reglement_frais), u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                dlg = wx.MessageDialog(self, _(u"La prestation n°%d est rattachée au règlement n°%d en tant que frais de gestion de règlement.\n\nSouhaitez-vous vraiment supprimer cette prestation ?") % (track.IDprestation, track.reglement_frais), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
                 reponse = dlg.ShowModal() 
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
@@ -632,7 +634,7 @@ class ListView(GroupListView):
         DB.Close() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"%d prestation(s) ont été supprimée(s) avec succès." % len(listeSuppressions), u"Suppression", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d prestation(s) ont été supprimée(s) avec succès.") % len(listeSuppressions), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -656,7 +658,7 @@ class ListView(GroupListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -676,7 +678,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

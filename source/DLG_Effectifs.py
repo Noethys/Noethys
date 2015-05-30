@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.aui as aui
 
 import DLG_Remplissage
@@ -23,17 +25,17 @@ class CTRL(aui.AuiNotebook):
         
         # CTRL Remplissage
         self.ctrl_remplissage = DLG_Remplissage.Panel(self)
-        self.AddPage(self.ctrl_remplissage, u"Consommations")
+        self.AddPage(self.ctrl_remplissage, _(u"Consommations"))
         try :
-            self.SetPageTooltip(0, u"Affiche l'état des consommations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page.")
+            self.SetPageTooltip(0, _(u"Affiche l'état des consommations. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
         except :
             pass
             
         # CTRL Inscriptions
         self.ctrl_nbre_inscrits = DLG_Nbre_inscrits.Panel(self)
-        self.AddPage(self.ctrl_nbre_inscrits, u"Inscriptions")
+        self.AddPage(self.ctrl_nbre_inscrits, _(u"Inscriptions"))
         try :
-            self.SetPageTooltip(1, u"Affiche l'état des inscriptions. \nVous pouvez glisser-déposer cet onglet pour déplacer la page.")
+            self.SetPageTooltip(1, _(u"Affiche l'état des inscriptions. \nVous pouvez glisser-déposer cet onglet pour déplacer la page."))
         except :
             pass
         

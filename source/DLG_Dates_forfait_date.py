@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import wx.grid as gridlib
 import wx.lib.mixins.gridlabelrenderer as glr
@@ -34,8 +36,8 @@ COULEUR_FERIE = "#828282"
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -264,14 +266,14 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         menuPop.AppendSeparator()
 
         # Item Copier
-        item = wx.MenuItem(menuPop, 2000+numLigne, u"Copier")
+        item = wx.MenuItem(menuPop, 2000+numLigne, _(u"Copier"))
         bmp = wx.Bitmap("Images/16x16/Copier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Copier, id=2000+numLigne)
         
         # Item Coller
-        item = wx.MenuItem(menuPop, 3000+numLigne, u"Coller")
+        item = wx.MenuItem(menuPop, 3000+numLigne, _(u"Coller"))
         bmp = wx.Bitmap("Images/16x16/Coller.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -282,7 +284,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         menuPop.AppendSeparator()
 
         # Item Reinitialiser
-        item = wx.MenuItem(menuPop, 4000+numLigne, u"Réinitialiser cette date")
+        item = wx.MenuItem(menuPop, 4000+numLigne, _(u"Réinitialiser cette date"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -332,14 +334,14 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             jours_scolaires, jours_vacances = dlg.GetJours() 
             feries = dlg.GetFeries()
             try :
-                dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant l'opération...", parent=None, title=u"Patientez...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+                dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'opération..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
                 wx.Yield() 
                 self.TraitementLot(mode, date, date_debut, date_fin, jours_scolaires, jours_vacances, feries)
                 del dlgAttente
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg2 = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans le traitement par lot des ouvertures : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg2 = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot des ouvertures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg2.ShowModal()
                 dlg2.Destroy()
         dlg.Destroy()
@@ -403,7 +405,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         numLigne = event.GetId() - 4000
         dateDD = self.listeLignesDates[numLigne]
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment réinitialiser les paramètres de la date du %s ?" % DateComplete(dateDD), u"Réinitialisation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser les paramètres de la date du %s ?") % DateComplete(dateDD), _(u"Réinitialisation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return
@@ -462,7 +464,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if IDunite1 in listeUnitesLigne and IDunite2 in listeUnitesLigne :
                             nomUnite1 = self.dictUnites[IDunite1]["nom"]
                             nomUnite2 = self.dictUnites[IDunite2]["nom"]
-                            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !" % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                             dlg.ShowModal()
                             dlg.Destroy()
                             return 
@@ -585,7 +587,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             listeGroupes.append(dictTemp)
         # Si aucun groupe :
         if len(listeGroupes) == 0 :
-            dictTemp = { "IDgroupe" : 0, "nom" : u"Sans groupe" }
+            dictTemp = { "IDgroupe" : 0, "nom" : _(u"Sans groupe") }
             listeGroupes.append(dictTemp)
         return listeGroupes
     
@@ -649,31 +651,31 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        intro = u"Cliquez sur les cases blanches pour sélectionner des combinaisons d'unités. <U>Important :</U> Cliquez avec le bouton droit de la souris sur les cases Dates pour utiliser le Copier-Coller ou utilisez la fonction de traitement par lot pour effectuer des saisies ou modifications encore plus rapides."
-        titre = u"Sélection de combinaisons d'unités"
+        intro = _(u"Cliquez sur les cases blanches pour sélectionner des combinaisons d'unités. <U>Important :</U> Cliquez avec le bouton droit de la souris sur les cases Dates pour utiliser le Copier-Coller ou utilisez la fonction de traitement par lot pour effectuer des saisies ou modifications encore plus rapides.")
+        titre = _(u"Sélection de combinaisons d'unités")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
         
         # Selection Mois
-        self.staticbox_mois_staticbox = wx.StaticBox(self, -1, u"Sélection du mois")
-        self.label_mois = wx.StaticText(self, -1, u"Mois :")
-        self.ctrl_mois = wx.Choice(self, -1, choices=[u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"])
+        self.staticbox_mois_staticbox = wx.StaticBox(self, -1, _(u"Sélection du mois"))
+        self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
         self.spin_mois = wx.SpinButton(self, -1, size=(18, 20),  style=wx.SP_VERTICAL)
         self.spin_mois.SetRange(-1, 1)
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, "", min=1977, max=2999)
         dateDuJour = datetime.date.today()
         self.ctrl_annee.SetValue(dateDuJour.year)
         self.ctrl_mois.SetSelection(dateDuJour.month-1)
         
         # Légende
-        self.staticbox_legende_staticbox = wx.StaticBox(self, -1, u"Légende")
+        self.staticbox_legende_staticbox = wx.StaticBox(self, -1, _(u"Légende"))
         self.listeLegende = [
-            { "label" : u"Sélections", "couleur" : COULEUR_SELECTION, "ctrl_label" : None, "ctrl_img" : None },
-            { "label" : u"Ouvert", "couleur" : COULEUR_OUVERTURE, "ctrl_label" : None, "ctrl_img" : None },
-            { "label" : u"Fermé", "couleur" : COULEUR_FERMETURE, "ctrl_label" : None, "ctrl_img" : None },
-            { "label" : u"Vacances", "couleur" : COULEUR_VACANCES, "ctrl_label" : None, "ctrl_img" : None },
-            { "label" : u"Férié", "couleur" : COULEUR_FERIE, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"Sélections"), "couleur" : COULEUR_SELECTION, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"Ouvert"), "couleur" : COULEUR_OUVERTURE, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"Fermé"), "couleur" : COULEUR_FERMETURE, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"Vacances"), "couleur" : COULEUR_VACANCES, "ctrl_label" : None, "ctrl_img" : None },
+            { "label" : _(u"Férié"), "couleur" : COULEUR_FERIE, "ctrl_label" : None, "ctrl_img" : None },
             ]
         index = 0
         for dictTemp in self.listeLegende :
@@ -684,13 +686,13 @@ class Dialog(wx.Dialog):
             index += 1
         
         # Calendrier
-        self.staticbox_calendrier_staticbox = wx.StaticBox(self, -1, u"Calendrier")
+        self.staticbox_calendrier_staticbox = wx.StaticBox(self, -1, _(u"Calendrier"))
         self.ctrl_calendrier = Calendrier(self, self.IDactivite, dictSelections, activeIncompatibilites)
                 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_saisie_lot = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Saisie_lot.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_saisie_lot = CTRL_Bouton_image.CTRL(self, texte=_(u"Saisie et suppression par lot"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -705,13 +707,13 @@ class Dialog(wx.Dialog):
         self.MAJCalendrier()
 
     def __set_properties(self):
-        self.ctrl_mois.SetToolTipString(u"Sélectionnez un mois")
+        self.ctrl_mois.SetToolTipString(_(u"Sélectionnez un mois"))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTipString(u"Sélectionnez une année")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_saisie_lot.SetToolTipString(u"Cliquez ici saisir ou supprimer un lot")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_annee.SetToolTipString(_(u"Sélectionnez une année"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_saisie_lot.SetToolTipString(_(u"Cliquez ici saisir ou supprimer un lot"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.ctrl_calendrier.SetMinSize((100, 100))
         self.SetMinSize((850, 700))
 

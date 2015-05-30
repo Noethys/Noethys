@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import FonctionsPerso
 import sys 
 from time import sleep 
@@ -105,7 +107,7 @@ class zipdirectory(Thread):
         zfile = zipfile.ZipFile(self.filezip,'w',compression=zipfile.ZIP_DEFLATED)
         _zipdirectory(zfile, self.pathzip)
         zfile.close()
-        self.journal.WriteText(str(self.nbreFichiers) + u" fichiers ont été sauvegardés avec succès.")
+        self.journal.WriteText(str(self.nbreFichiers) + _(u" fichiers ont été sauvegardés avec succès."))
         
         # Lance la suite de l'installation
         self.parent._Installation()
@@ -134,12 +136,12 @@ class Download(Thread):
         #print "Telechargement de la nouvelle version : etape 4"
 
     def _hook(self, nb_blocs, taille_bloc, taille_fichier):
-        #print u"Telecharge=", nb_blocs*taille_bloc, u"/ total=", taille_fichier
+        #print _(u"Telecharge="), nb_blocs*taille_bloc, _(u"/ total="), taille_fichier
         if nb_blocs*taille_bloc >= taille_fichier:
             #print "Le telechargement est termine !"
             self.succes = True
-            self.zoneTexte.SetLabel(u"Le téléchargement est terminé. Veuillez patienter...")
-            self.frameParente.SetTitle(u"Mises à jour Internet")
+            self.zoneTexte.SetLabel(_(u"Le téléchargement est terminé. Veuillez patienter..."))
+            self.frameParente.SetTitle(_(u"Mises à jour Internet"))
             raise Abort
         if self.stop: 
             raise Abort
@@ -148,16 +150,16 @@ class Download(Thread):
         #print "Telechargement de la nouvelle version : etape 6"
         if nb_blocs % 5 == 0 :
             if "linux" not in sys.platform :
-                texteInfo = u"Téléchargement en cours...  " + FormateTailleFichier(nb_blocs*taille_bloc)+" / "+FormateTailleFichier(taille_fichier)
+                texteInfo = _(u"Téléchargement en cours...  ") + FormateTailleFichier(nb_blocs*taille_bloc)+" / "+FormateTailleFichier(taille_fichier)
                 if texteInfo != self.zoneTexte.GetLabel() :
                     self.zoneTexte.SetLabel(texteInfo)
-                self.frameParente.SetTitle(AffichePourcentage(nb_blocs*taille_bloc, taille_fichier) + u" | Téléchargement d'une mise à jour")
+                self.frameParente.SetTitle(AffichePourcentage(nb_blocs*taille_bloc, taille_fichier) + _(u" | Téléchargement d'une mise à jour"))
 
     def run(self): 
         #print "Telechargement de la nouvelle version : etape 5"
         try: 
             if "linux" in sys.platform :
-                self.zoneTexte.SetLabel(u"Téléchargement en cours...")
+                self.zoneTexte.SetLabel(_(u"Téléchargement en cours..."))
             urllib.urlretrieve(self.fichierURL, self.fichierDest, self._hook) 
         except Abort, KeyBoardInterrupt: 
             #print 'Aborted ici !' 
@@ -187,7 +189,7 @@ class Page_recherche(wx.Panel):
         self.parent = parent
         
         # Création des widgets
-        texteIntro = u"Cliquez sur le bouton 'Rechercher' pour lancer la recherche."
+        texteIntro = _(u"Cliquez sur le bouton 'Rechercher' pour lancer la recherche.")
         self.label_introduction = wx.StaticText(self, -1, texteIntro) #FonctionsPerso.StaticWrapText(self, -1, texteIntro)
         self.gauge = wx.Gauge(self, -1)
         
@@ -197,9 +199,9 @@ class Page_recherche(wx.Panel):
         self.timer = wx.Timer(self)
                 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Rechercher.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Rechercher"), cheminImage="Images/32x32/Loupe.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -218,9 +220,9 @@ class Page_recherche(wx.Panel):
         self.gauge.Pulse()
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler et fermer"))
 
     def __do_layout(self):        
         # Sizer Boutons
@@ -273,7 +275,7 @@ class Page_recherche(wx.Panel):
 
     def Recherche(self):
         """ Recherche internet """
-        texteIntro = u"Recherche d'une mise à jour internet en cours..."
+        texteIntro = _(u"Recherche d'une mise à jour internet en cours...")
         self.label_introduction.SetLabel(texteIntro)
         
         # Active la gauge
@@ -323,12 +325,12 @@ class Page_recherche(wx.Panel):
         # Recherche terminée
         if etat == "erreur" :
             # Problème de recherche internet
-            self.label_introduction.SetLabel(u"Connexion au serveur de mise à jour impossible.")
+            self.label_introduction.SetLabel(_(u"Connexion au serveur de mise à jour impossible."))
             self.timer.Stop()
             self.Layout()
         if etat == "aucune" :
             # Aucune mise à jour n'a été trouvée
-            self.label_introduction.SetLabel(u"Vous disposez déjà de la dernière version du logiciel.")
+            self.label_introduction.SetLabel(_(u"Vous disposez déjà de la dernière version du logiciel."))
             self.timer.Stop()
             self.bouton_ok.Show(True)
             self.Layout()
@@ -345,12 +347,12 @@ class Page_recherche(wx.Panel):
                 tailleFichierOrigin = self.parent.tailleFichier
                 if tailleFichierAverifier == tailleFichierOrigin :
                     # Ok le fichier existe bien déjà
-                    texteIntro1 = u"La mise à jour " + self.versionFichier + u" a déjà été téléchargée précédemment."
+                    texteIntro1 = _(u"La mise à jour ") + self.versionFichier + _(u" a déjà été téléchargée précédemment.")
                     self.parent.page_fin_telechargement.label_introduction1.SetLabel(texteIntro1)
                     self.parent.Active_page("page_fin_telechargement")
             else:
                 # Sinon, on la télécharge...
-                texteIntro1 = u"La version " + self.versionFichier + " de Noethys est disponible (" + self.tailleFichier + ")."
+                texteIntro1 = _(u"La version ") + self.versionFichier + " de Noethys est disponible (" + self.tailleFichier + ")."
                 self.parent.page_disponible.label_introduction1.SetLabel(texteIntro1)
                 texteNouveautes = self.texteNouveautes
                 self.parent.page_disponible.textCtrl_nouveautes.SetValue(texteNouveautes.decode("iso-8859-15"))
@@ -369,14 +371,14 @@ class Page_disponible(wx.Panel):
         # Création des widgets
         texteIntro1 = ""
         self.label_introduction1 = wx.StaticText(self, -1, texteIntro1) # FonctionsPerso.StaticWrapText(self, -1, texteIntro1)
-        texteIntro2 = u"Souhaitez-vous la télécharger maintenant ?"
+        texteIntro2 = _(u"Souhaitez-vous la télécharger maintenant ?")
         self.label_introduction2 = wx.StaticText(self, -1, texteIntro2) # FonctionsPerso.StaticWrapText(self, -1, texteIntro2)
         self.textCtrl_nouveautes = wx.TextCtrl(self, -1,"", size=(-1, 50), style=wx.TE_MULTILINE)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Telecharger_L95.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Télécharger"), cheminImage="Images/32x32/Telecharger.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -386,9 +388,9 @@ class Page_disponible(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Onbouton_annuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler et fermer"))
 
     def __do_layout(self):        
         # Sizer Boutons
@@ -438,14 +440,14 @@ class Page_telechargement(wx.Panel):
         self.parent = parent
         
         # Création des widgets
-        texteIntro = u"Le téléchargement va commencer dans quelques instants..."
+        texteIntro = _(u"Le téléchargement va commencer dans quelques instants...")
         self.label_introduction = wx.StaticText(self, -1, texteIntro) # FonctionsPerso.StaticWrapText(self, -1, texteIntro)
         self.gauge = wx.Gauge(self, -1)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Telecharger_L95.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Télécharger"), cheminImage="Images/32x32/Telecharger.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         self.bouton_ok.Show(False)
         
         self.__set_properties()
@@ -456,9 +458,9 @@ class Page_telechargement(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Onbouton_annuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour lancer le téléchargement")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer le téléchargement"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler et fermer"))
 
     def __do_layout(self):        
         # Sizer Boutons
@@ -535,7 +537,7 @@ class Page_telechargement(wx.Panel):
             # Vidage du rep Updates
             FonctionsPerso.VideRepertoireUpdates(forcer=True)
             # Le téléchargement n'est pas complet, demande à l'utilisateur de recommencer
-            self.label_introduction.SetLabel(u"Le téléchargement n'est pas complet. Voulez-vous recommencer ?")
+            self.label_introduction.SetLabel(_(u"Le téléchargement n'est pas complet. Voulez-vous recommencer ?"))
             self.bouton_ok.Show(True)
             self.Layout()
         
@@ -564,14 +566,14 @@ class Page_telechargement(wx.Panel):
 
         if downloadEnCours:
             # Demande la confirmation de l'arrêt
-            dlgConfirm = wx.MessageDialog(self, u"Souhaitez-vous vraiment arrêter le téléchargement ?", u"Confirmation d'arrêt", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+            dlgConfirm = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment arrêter le téléchargement ?"), _(u"Confirmation d'arrêt"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
             reponse = dlgConfirm.ShowModal()
             dlgConfirm.Destroy()
             if reponse == wx.ID_NO:
                 return
             # Si le téléchargement est en cours, on le stoppe :
             self.downloader.abort()
-            self.label_introduction.SetLabel(u"Vous avez interrompu le téléchargement.")
+            self.label_introduction.SetLabel(_(u"Vous avez interrompu le téléchargement."))
             self.bouton_ok.Show(True)
         else:
             # Si le téléchargement n'est pas en cours, on ferme la fenêtre
@@ -590,15 +592,15 @@ class Page_fin_telechargement(wx.Panel):
         self.parent = parent
         
         # Création des widgets
-        texteIntro1 = u"La mise à jour a été téléchargée avec succès."
+        texteIntro1 = _(u"La mise à jour a été téléchargée avec succès.")
         self.label_introduction1 = wx.StaticText(self, -1, texteIntro1) # FonctionsPerso.StaticWrapText(self, -1, texteIntro1)
-        texteIntro2 = u"Souhaitez-vous l'installer maintenant ?"
+        texteIntro2 = _(u"Souhaitez-vous l'installer maintenant ?")
         self.label_introduction2 = wx.StaticText(self, -1, texteIntro2) # FonctionsPerso.StaticWrapText(self, -1, texteIntro2)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Installer_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Installer"), cheminImage="Images/32x32/Installation.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -608,9 +610,9 @@ class Page_fin_telechargement(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Onbouton_annuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler et fermer"))
 
     def __do_layout(self):        
         # Sizer Boutons
@@ -658,14 +660,14 @@ class Page_installation(wx.Panel):
         self.parent = parent
         
         # Création des widgets
-        texteIntro = u"Installation de la mise à jour en cours..."
+        texteIntro = _(u"Installation de la mise à jour en cours...")
         self.label_introduction = wx.StaticText(self, -1, texteIntro) # FonctionsPerso.StaticWrapText(self, -1, texteIntro)
         self.journal = wx.TextCtrl(self, -1,"", size=(-1, 10), style=wx.TE_MULTILINE)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Installer_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Installer"), cheminImage="Images/32x32/Installation.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -675,9 +677,9 @@ class Page_installation(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Onbouton_annuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler et fermer"))
 
     def __do_layout(self):        
         # Sizer Boutons
@@ -720,7 +722,7 @@ class Page_installation(wx.Panel):
         self.bouton_annuler.Enable(False)
         
         # Lancement de la sauvegarde
-##        dlg = wx.MessageDialog(self, u"Souhaitez-vous faire une sauvegarde de sécurité complète ?", u"Sauvegarde", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous faire une sauvegarde de sécurité complète ?"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
 ##        reponse = dlg.ShowModal()
 ##        dlg.Destroy()
 ##        if reponse == wx.ID_YES :
@@ -731,9 +733,9 @@ class Page_installation(wx.Panel):
         
     def _Sauvegarde(self):
         """ Procédure de sauvegarde globale du répertoire """
-        self.label_introduction.SetLabel(u"Sauvegarde des données locales en cours...")
+        self.label_introduction.SetLabel(_(u"Sauvegarde des données locales en cours..."))
         if "linux" not in sys.platform :
-            self.journal.WriteText(u"> Sauvegarde des données locales :\n\n")
+            self.journal.WriteText(_(u"> Sauvegarde des données locales :\n\n"))
         
         fichierDest = self.parent.fichierDest + "/global_save.zip"
         if sys.platform.startswith("win") : fichierDest = fichierDest.replace("/", "\\")
@@ -744,17 +746,17 @@ class Page_installation(wx.Panel):
         
     def _Installation(self):
         """ Procédure d'installation """
-        self.label_introduction.SetLabel(u"Chargement de l'installeur...")
-        self.journal.WriteText(u"\n\nInstalleur en cours de chargement. Veuillez patienter...")
+        self.label_introduction.SetLabel(_(u"Chargement de l'installeur..."))
+        self.journal.WriteText(_(u"\n\nInstalleur en cours de chargement. Veuillez patienter..."))
         
         # Lancement de l'installeur
         fichierMAJ = self.parent.fichierDest + "/" + self.parent.nomFichier
         if "linux" in sys.platform :
-            self.journal.WriteText(u"\n\nExtraction des fichiers. Veuillez patienter...")
+            self.journal.WriteText(_(u"\n\nExtraction des fichiers. Veuillez patienter..."))
             os.system("unzip -d Temp " + fichierMAJ)
-            self.journal.WriteText(u"\n\nCopie des fichiers. Veuillez patienter...")
+            self.journal.WriteText(_(u"\n\nCopie des fichiers. Veuillez patienter..."))
             os.system("cp -a Temp/Noethys-master/source/* .")
-            self.journal.WriteText(u"\n\nEffacement fichiers temporaires. Veuillez patienter...")
+            self.journal.WriteText(_(u"\n\nEffacement fichiers temporaires. Veuillez patienter..."))
             os.system("rm -rf Temp/Noethys-master")
         else :
             FonctionsPerso.LanceFichierExterne(fichierMAJ)
@@ -781,9 +783,9 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.installation = False
         
-        intro = u"Vous pouvez ici télécharger et installer une mise à jour pour Noethys. Ces mises à jour vous permettent bien-sûr de gagner en stabilité et en fonctionnalités."
-        titre = u"Mise à jour du logiciel"
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/telecharger.png")
+        intro = _(u"Vous pouvez ici télécharger et installer une mise à jour pour Noethys. Ces mises à jour vous permettent bien-sûr de gagner en stabilité et en fonctionnalités.")
+        titre = _(u"Mise à jour du logiciel")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Telecharger.png")
         
         self.page_active = ""
         

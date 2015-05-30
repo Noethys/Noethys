@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import sqlite3
 import datetime
@@ -35,32 +37,32 @@ class Export():
     def __init__(self):
         self.dictTables = {
 
-            "parametres":[      ("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID du paramètre"),
-                                            ("nom", "VARCHAR(400)", u"Nom du paramètre"),
-                                            ("valeur", "VARCHAR(400)", u"Valeur du paramètre"),
+            "parametres":[      ("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID du paramètre")),
+                                            ("nom", "VARCHAR(400)", _(u"Nom du paramètre")),
+                                            ("valeur", "VARCHAR(400)", _(u"Valeur du paramètre")),
                                             ],
 
-            "individus":[            ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la personne"),
-                                            ("IDcivilite", "INTEGER", u"Civilité de la personne"),
-                                            ("nom", "VARCHAR(100)", u"Nom de famille de la personne"),
-                                            ("prenom", "VARCHAR(100)", u"Prénom de la personne"),
-                                            ("photo", "BLOB", u"Photo de la personne"),
+            "individus":[            ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la personne")),
+                                            ("IDcivilite", "INTEGER", _(u"Civilité de la personne")),
+                                            ("nom", "VARCHAR(100)", _(u"Nom de famille de la personne")),
+                                            ("prenom", "VARCHAR(100)", _(u"Prénom de la personne")),
+                                            ("photo", "BLOB", _(u"Photo de la personne")),
                                             ],
 
-            "titulaires":[           ("IDtitulaires", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la ligne"),
-                                            ("IDfamille", "INTEGER", u"ID de la famille"),
-                                            ("nom", "VARCHAR(450)", u"Nom des titulaires"),
+            "titulaires":[           ("IDtitulaires", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la ligne")),
+                                            ("IDfamille", "INTEGER", _(u"ID de la famille")),
+                                            ("nom", "VARCHAR(450)", _(u"Nom des titulaires")),
                                             ],
 
-            "informations":[      ("IDinfo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la ligne"),
-                                            ("IDindividu", "INTEGER", u"ID de la personne"),
-                                            ("champ", "VARCHAR(500)", u"Nom du champ"),
-                                            ("valeur", "VARCHAR(500)", u"Valeur du champ"),
+            "informations":[      ("IDinfo", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la ligne")),
+                                            ("IDindividu", "INTEGER", _(u"ID de la personne")),
+                                            ("champ", "VARCHAR(500)", _(u"Nom du champ")),
+                                            ("valeur", "VARCHAR(500)", _(u"Valeur du champ")),
                                             ],
                                             
-            "organisateur":[      ("IDorganisateur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de l'organisateur"),
-                                            ("nom", "VARCHAR(200)", u"Nom de l'organisateur"),
-                                            ("logo", "BLOB", u"Logo de l'organisateur"),
+            "organisateur":[      ("IDorganisateur", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de l'organisateur")),
+                                            ("nom", "VARCHAR(200)", _(u"Nom de l'organisateur")),
+                                            ("logo", "BLOB", _(u"Logo de l'organisateur")),
                                             ],
 
             }
@@ -122,7 +124,7 @@ class Export():
         
         # Ouverture dlg d'attente
         if afficherDlgAttente == True :
-            dlgAttente = wx.BusyInfo(u"Génération du fichier de données...", None)
+            dlgAttente = wx.BusyInfo(_(u"Génération du fichier de données..."), None)
         
         try :
             
@@ -130,8 +132,8 @@ class Export():
 ##            codeUnique = ""
 ##            for x in range(2) :
 ##                codeUnique += random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-##            self.nomFichier = u"Temp/data_%s_%s%s" % (dictParametres["IDfichier"], dictParametres["horodatage"].replace("-", ""), codeUnique)
-            self.nomFichier = u"Temp/data_%s" % dictParametres["IDfichier"]
+##            self.nomFichier = _(u"Temp/data_%s_%s%s") % (dictParametres["IDfichier"], dictParametres["horodatage"].replace("-", ""), codeUnique)
+            self.nomFichier = _(u"Temp/data_%s") % dictParametres["IDfichier"]
 
             # Vérifie si le fichier existe déjà
             nomFichierTemp = self.nomFichier + ".dat"
@@ -241,7 +243,7 @@ class Export():
             if afficherDlgAttente == True :
                 dlgAttente.Destroy() 
                 del dlgAttente
-            dlg = wx.MessageDialog(None, u"Désolé, l'erreur suivante a été rencontrée : " + err, "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Désolé, l'erreur suivante a été rencontrée : ") + err, "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -253,8 +255,8 @@ class Export():
         
     def EnvoyerVersRepertoire(self, nomFichier=""):
         standardPath = wx.StandardPaths.Get()
-        wildcard = u"Fichiers de synchronisation Noethys (*%s, *%s)|*%s;*%s|Tous les fichiers (*.*)|*.*" % (EXTENSION_CRYPTE, EXTENSION_DECRYPTE, EXTENSION_CRYPTE, EXTENSION_DECRYPTE)
-        dlg = wx.FileDialog(None, message=u"Choisissez un emplacement", defaultDir=standardPath.GetDocumentsDir(),  defaultFile=os.path.basename(nomFichier), wildcard=wildcard, style=wx.SAVE)
+        wildcard = _(u"Fichiers de synchronisation Noethys (*%s, *%s)|*%s;*%s|Tous les fichiers (*.*)|*.*") % (EXTENSION_CRYPTE, EXTENSION_DECRYPTE, EXTENSION_CRYPTE, EXTENSION_DECRYPTE)
+        dlg = wx.FileDialog(None, message=_(u"Choisissez un emplacement"), defaultDir=standardPath.GetDocumentsDir(),  defaultFile=os.path.basename(nomFichier), wildcard=wildcard, style=wx.SAVE)
         chemin = None
         if dlg.ShowModal() == wx.ID_OK:
             chemin = dlg.GetPath()
@@ -270,7 +272,7 @@ class Export():
         repertoire = UTILS_Config.GetParametre("synchro_ftp_repertoire", defaut="")
         
         # Envoyer le fichier
-        dlgAttente = wx.BusyInfo(u"Envoi du fichier de données vers un répertoire FTP...", None)
+        dlgAttente = wx.BusyInfo(_(u"Envoi du fichier de données vers un répertoire FTP..."), None)
         try :
             ftp = ftplib.FTP(hote, identifiant, mdp)
             ftp.cwd(repertoire)
@@ -281,14 +283,14 @@ class Export():
         except Exception, err :
             dlgAttente.Destroy() 
             del dlgAttente
-            dlg = wx.MessageDialog(None, u"Le fichier n'a pas pu être envoyé !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation.", "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Le fichier n'a pas pu être envoyé !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         dlgAttente.Destroy() 
         del dlgAttente
-        dlg = wx.MessageDialog(None, u"Le fichier a été envoyé avec succès !", "Succès ", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"Le fichier a été envoyé avec succès !"), "Succès ", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True

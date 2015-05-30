@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import CTRL_Bandeau
@@ -28,8 +30,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -91,19 +93,19 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des dépôts bancaires. "
-        titre = u"Gestion des dépôts"
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des dépôts bancaires. ")
+        titre = _(u"Gestion des dépôts")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Banque.png")
         
         # Reglements disponibles
-        self.staticbox_reglements = wx.StaticBox(self, -1, u"Règlements disponibles")
+        self.staticbox_reglements = wx.StaticBox(self, -1, _(u"Règlements disponibles"))
         self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "selectionPossible" : False, "size" : (-1, 180) }) 
         self.ctrl_reglements = self.listviewAvecFooter1.GetListview()
         self.ctrl_reglements.SetMinSize((100, 150))
         self.MAJreglements() 
 
         # Dépôts
-        self.staticbox_depots = wx.StaticBox(self, -1, u"Dépôts")
+        self.staticbox_depots = wx.StaticBox(self, -1, _(u"Dépôts"))
         self.listviewAvecFooter2 = OL_Depots.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_depots = self.listviewAvecFooter2.GetListview()
         self.ctrl_depots.MAJ()
@@ -115,12 +117,12 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         
         # Options
-        self.check_images = wx.CheckBox(self, -1, u"Afficher les images des modes et émetteurs")
+        self.check_images = wx.CheckBox(self, -1, _(u"Afficher les images des modes et émetteurs"))
         self.check_images.SetValue(UTILS_Config.GetParametre("depots_afficher_images", defaut=True))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -133,14 +135,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(u"Gestion des dépôts")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un dépôt")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le dépôt sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le dépôt sélectionné dans la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste des dépôts affichés")
-        self.check_images.SetToolTipString(u"Cochez cette case pour afficher les images des modes et émetteurs dans chaque fenêtre du gestionnaire de dépôts")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Gestion des dépôts"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un dépôt"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le dépôt sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le dépôt sélectionné dans la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste des dépôts affichés"))
+        self.check_images.SetToolTipString(_(u"Cochez cette case pour afficher les images des modes et émetteurs dans chaque fenêtre du gestionnaire de dépôts"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):
@@ -210,7 +212,7 @@ class Dialog(wx.Dialog):
         tracks = self.GetTracks()
         self.ctrl_reglements.MAJ(tracks) 
         # Label de staticbox
-        self.staticbox_reglements.SetLabel(self.ctrl_reglements.GetLabelListe(u"règlements disponibles"))
+        self.staticbox_reglements.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"règlements disponibles")))
 
     def GetTracks(self):
         """ Récupération des données """
@@ -265,14 +267,14 @@ class Dialog(wx.Dialog):
         menuPop = wx.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)

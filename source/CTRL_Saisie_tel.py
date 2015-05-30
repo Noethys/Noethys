@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.masked as masked
 import UTILS_Config
 
@@ -20,7 +22,7 @@ class Tel(masked.TextCtrl):
         masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE, mask=self.mask)
         self.parent = parent
         self.SetMinSize((125, -1))
-        self.SetToolTipString(u"Saisissez un numéro de %s" % intitule)   
+        self.SetToolTipString(_(u"Saisissez un numéro de %s") % intitule)   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def OnKillFocus(self, event):
@@ -40,7 +42,7 @@ class Tel(masked.TextCtrl):
         posChiffres = [0, 1, 3, 4, 6, 7, 9, 10, 12, 13]
         for position in posChiffres:
             if text[position].isdigit() == False:
-                message = u"Le numéro que vous avez saisi ne semble pas valide."
+                message = _(u"Le numéro que vous avez saisi ne semble pas valide.")
                 return False, message
         return True, None
     

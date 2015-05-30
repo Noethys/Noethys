@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -65,23 +67,23 @@ class Dialog(wx.Dialog):
         self.IDcategorie = IDcategorie
         self.typeCategorie = typeCategorie
 
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.label_abrege = wx.StaticText(self, wx.ID_ANY, u"Abrégé :")
+        self.label_abrege = wx.StaticText(self, wx.ID_ANY, _(u"Abrégé :"))
         self.ctrl_abrege = wx.TextCtrl(self, wx.ID_ANY, u"")
 
-        self.label_compte = wx.StaticText(self, wx.ID_ANY, u"Compte :")
+        self.label_compte = wx.StaticText(self, wx.ID_ANY, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
         self.ctrl_compte.SetMinSize((400, -1))
-        self.bouton_comptes = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_comptes = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-        self.label_journal = wx.StaticText(self, wx.ID_ANY, u"Journal :")
+        self.label_journal = wx.StaticText(self, wx.ID_ANY, _(u"Journal :"))
         self.ctrl_journal = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -93,23 +95,23 @@ class Dialog(wx.Dialog):
 
         # Init contrôles
         if self.IDcategorie != None :
-            titre = u"Modification d'une catégorie"
+            titre = _(u"Modification d'une catégorie")
             self.Importation() 
         else :
-            titre = u"Saisie d'une catégorie"
-        if self.typeCategorie == "credit" : titre += u" de crédit"
-        if self.typeCategorie == "debit" : titre += u" de débit"
+            titre = _(u"Saisie d'une catégorie")
+        if self.typeCategorie == "credit" : titre += _(u" de crédit")
+        if self.typeCategorie == "debit" : titre += _(u" de débit")
         self.SetTitle(titre)
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez le nom de la catégorie")
-        self.ctrl_abrege.SetToolTipString(u"Saisissez le nom abrégé de la catégorie")
-        self.ctrl_compte.SetToolTipString(u"Sélectionnez un compte comptable")
-        self.bouton_comptes.SetToolTipString(u"Cliquez ici pour accéder à la gestion des comptes comptables")
-        self.ctrl_journal.SetToolTipString(u"Saisissez le code du journal")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de la catégorie"))
+        self.ctrl_abrege.SetToolTipString(_(u"Saisissez le nom abrégé de la catégorie"))
+        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez un compte comptable"))
+        self.bouton_comptes.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des comptes comptables"))
+        self.ctrl_journal.SetToolTipString(_(u"Saisissez le code du journal"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
@@ -181,14 +183,14 @@ class Dialog(wx.Dialog):
         
         # Validation des données saisies
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return False
 
         if abrege == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné le nom abrégé.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le nom abrégé.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -196,7 +198,7 @@ class Dialog(wx.Dialog):
                 return False
 
         if IDcompte == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné le compte comptable.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le compte comptable.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -204,7 +206,7 @@ class Dialog(wx.Dialog):
                 return False
 
         if journal == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné le code journal.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le code journal.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :

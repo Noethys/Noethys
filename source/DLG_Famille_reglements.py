@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Reglements 
 import GestionDB
 import wx.lib.agw.hyperlink as Hyperlink
@@ -50,7 +52,7 @@ class CTRL_Prelevement(wx.Panel):
         self.image_nonvalide = wx.Bitmap(u"Images/16x16/Interdit2.png", wx.BITMAP_TYPE_ANY)
 
         self.ctrl_image = wx.StaticBitmap(self, -1, self.image_nonvalide)
-        self.hyper_prelevement = Hyperlien(self, label=u"Prélèvement automatique", infobulle=u"Cliquez ici pour activer le prélèvement automatique et saisir les coordonnées bancaires de la famille", URL="prelevement")
+        self.hyper_prelevement = Hyperlien(self, label=_(u"Prélèvement automatique"), infobulle=_(u"Cliquez ici pour activer le prélèvement automatique et saisir les coordonnées bancaires de la famille"), URL="prelevement")
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -92,7 +94,7 @@ class CTRL_Recu(wx.Panel):
         self.image_nonvalide = wx.Bitmap(u"Images/16x16/Interdit2.png", wx.BITMAP_TYPE_ANY)
 
         self.ctrl_image = wx.StaticBitmap(self, -1, self.image_nonvalide)
-        self.hyper_prelevement = Hyperlien(self, label=u"Reçus par Email", infobulle=u"Cliquez ici pour activer l'envoi automatique par email des reçus de règlements", URL="recu")
+        self.hyper_prelevement = Hyperlien(self, label=_(u"Reçus par Email"), infobulle=_(u"Cliquez ici pour activer l'envoi automatique par email des reçus de règlements"), URL="recu")
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -104,8 +106,8 @@ class CTRL_Recu(wx.Panel):
     def OnClic(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_recu_email", "modifier") == False : return
         import DLG_Selection_email
-        intro = u"Sélectionnez ici l'adresse Email à laquelle envoyer les reçus de règlements. Noethys proposera ainsi juste après la saisie d'un règlement l'envoi du reçu correspondant."
-        titre = u"Activation de l'envoi des reçus par Email"
+        intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les reçus de règlements. Noethys proposera ainsi juste après la saisie d'un règlement l'envoi du reçu correspondant.")
+        titre = _(u"Activation de l'envoi des reçus par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_recus", intro=intro, titre=titre)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -133,7 +135,7 @@ class CTRL_Depot(wx.Panel):
         self.image_nonvalide = wx.Bitmap(u"Images/16x16/Interdit2.png", wx.BITMAP_TYPE_ANY)
 
         self.ctrl_image = wx.StaticBitmap(self, -1, self.image_nonvalide)
-        self.hyper_prelevement = Hyperlien(self, label=u"Avis de dépôt par Email", infobulle=u"Cliquez ici pour activer l'envoi automatique par email des avis de dépôt des règlements", URL="depot")
+        self.hyper_prelevement = Hyperlien(self, label=_(u"Avis de dépôt par Email"), infobulle=_(u"Cliquez ici pour activer l'envoi automatique par email des avis de dépôt des règlements"), URL="depot")
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -145,8 +147,8 @@ class CTRL_Depot(wx.Panel):
     def OnClic(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_depot_email", "modifier") == False : return
         import DLG_Selection_email
-        intro = u"Sélectionnez ici l'adresse Email à laquelle envoyer les avis de dépôt des règlements. Noethys enverra ainsi un avis de dépôt après la validation d'un dépôt de règlements."
-        titre = u"Activation de l'envoi des avis de dépôt par Email"
+        intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les avis de dépôt des règlements. Noethys enverra ainsi un avis de dépôt après la validation d'un dépôt de règlements.")
+        titre = _(u"Activation de l'envoi des avis de dépôt par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_depots", intro=intro, titre=titre)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -173,7 +175,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        self.staticbox_reglements = wx.StaticBox(self, -1, u"Règlements")
+        self.staticbox_reglements = wx.StaticBox(self, -1, _(u"Règlements"))
         
         # Recherche du IDcompte_payeur
         DB = GestionDB.DB()
@@ -214,11 +216,11 @@ class Panel(wx.Panel):
 ##        self.Bind(wx.EVT_BUTTON, self.OnBoutonRepartition, self.bouton_repartition)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir un règlement")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le règlement sélectionné")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le règlement sélectionné")
-        self.bouton_ventilationAuto.SetToolTipString(u"Cliquez ici pour accéder aux commandes de ventilation automatique")
-##        self.bouton_repartition.SetToolTipString(u"Cliquez ici pour afficher la ventilation détaillée")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un règlement"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le règlement sélectionné"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le règlement sélectionné"))
+        self.bouton_ventilationAuto.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes de ventilation automatique"))
+##        self.bouton_repartition.SetToolTipString(_(u"Cliquez ici pour afficher la ventilation détaillée"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -281,7 +283,7 @@ class Panel(wx.Panel):
         menuPop = wx.Menu()
         
         # Item Recu 
-        item = wx.MenuItem(menuPop, 10, u"Editer un reçu (PDF)")
+        item = wx.MenuItem(menuPop, 10, _(u"Editer un reçu (PDF)"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -291,14 +293,14 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -332,13 +334,13 @@ class Panel(wx.Panel):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 201, u"Ventiler automatiquement le règlement sélectionné")
+        item = wx.MenuItem(menuPop, 201, _(u"Ventiler automatiquement le règlement sélectionné"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_reglements.VentilationAuto, id=201)
         if noSelection == True : item.Enable(False)
 
-        item = wx.MenuItem(menuPop, 202, u"Ventiler automatiquement tous les règlements")
+        item = wx.MenuItem(menuPop, 202, _(u"Ventiler automatiquement tous les règlements"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_reglements.VentilationAuto, id=202)
@@ -387,7 +389,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

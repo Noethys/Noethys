@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import datetime
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -19,17 +21,17 @@ except: pass
 
 
 LISTE_DONNEES = [
-    (u"Présence", "Ok", 1),
-    (u"Absence justifiée", "absentj", 2),
-    (u"Absence injustifiée", "absenti", 3),
-    (u"Sans prestation", "Gratuit", 5),
-    (u"Réservation", "Reservation", 6),
-    (u"Attente", "Attente2", 7),
-    (u"Refus", "Refus", 8),
-    (u"Places disponibles", "Disponible", 9),
-    (u"Seuil d'alerte", "Seuil_alerte", 10),
-    (u"Complet", "Complet", 11),
-    (u"Forfait crédit", "Forfait_credit", 11),
+    (_(u"Présence"), "Ok", 1),
+    (_(u"Absence justifiée"), "absentj", 2),
+    (_(u"Absence injustifiée"), "absenti", 3),
+    (_(u"Sans prestation"), "Gratuit", 5),
+    (_(u"Réservation"), "Reservation", 6),
+    (_(u"Attente"), "Attente2", 7),
+    (_(u"Refus"), "Refus", 8),
+    (_(u"Places disponibles"), "Disponible", 9),
+    (_(u"Seuil d'alerte"), "Seuil_alerte", 10),
+    (_(u"Complet"), "Complet", 11),
+    (_(u"Forfait crédit"), "Forfait_credit", 11),
     ]
 
 
@@ -47,7 +49,7 @@ class ListView(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitModel()
         self.InitObjectListView()
-        self.SetToolTipString(u"Retrouvez ici la liste des codes couleurs et icônes utilisés dans la grille des consommations")
+        self.SetToolTipString(_(u"Retrouvez ici la liste des codes couleurs et icônes utilisés dans la grille des consommations"))
                         
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -77,12 +79,12 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
 ##            ColumnDefn(u"", "left", 0, "ordre"),
-            ColumnDefn(u"Label", 'left', 160, "label", imageGetter=GetImage, isSpaceFilling=True),
-##            ColumnDefn(u"Ordre", 'left', 0, "ordre"),
+            ColumnDefn(_(u"Label"), 'left', 160, "label", imageGetter=GetImage, isSpaceFilling=True),
+##            ColumnDefn(_(u"Ordre"), 'left', 0, "ordre"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune légende")
+        self.SetEmptyListMsg(_(u"Aucune légende"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -104,7 +106,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"OL légende grille des consommations")
+    frame_1 = MyFrame(None, -1, _(u"OL légende grille des consommations"))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

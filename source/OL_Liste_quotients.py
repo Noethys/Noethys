@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Titulaires
@@ -160,16 +162,16 @@ class ListView(FastObjectListView):
             return DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", 'left', 280, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Quotient", "left", 70, "quotient", typeDonnee="entier"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), 'left', 280, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Quotient"), "left", 70, "quotient", typeDonnee="entier"),
             ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Au", "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Observations", "left", 250, "observations", typeDonnee="texte"),
+            ColumnDefn(_(u"Au"), "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Observations"), "left", 250, "observations", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune famille")
+        self.SetEmptyListMsg(_(u"Aucune famille"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -180,7 +182,7 @@ class ListView(FastObjectListView):
         self.presents = presents
         self.familles = familles
         self.labelParametres = labelParametres
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
         attente.Destroy()
@@ -194,7 +196,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ouverture fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -203,14 +205,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -219,14 +221,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -237,14 +239,14 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         intro = self.labelParametres
-        total = u"> %s familles" % len(self.donnees)
+        total = _(u"> %s familles") % len(self.donnees)
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des quotients familiaux", intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -253,7 +255,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -272,11 +274,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des quotients familiaux")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des quotients familiaux"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des quotients familiaux")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des quotients familiaux"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -288,7 +290,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une information...")
+        self.SetDescriptiveText(_(u"Rechercher une information..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Bandeau
 import OL_Saisie_lot_inscriptions
@@ -64,35 +66,35 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez saisir ici un lot d'inscriptions. Sélectionnez les paramètres de l'inscription, cochez les individus à inscrire puis cliquez sur le bouton Ok. Utilisez la commande de Filtrage de liste pour effectuer une sélection rapide des individus."
-        titre = u"Saisir un lot d'inscriptions"
+        intro = _(u"Vous pouvez saisir ici un lot d'inscriptions. Sélectionnez les paramètres de l'inscription, cochez les individus à inscrire puis cliquez sur le bouton Ok. Utilisez la commande de Filtrage de liste pour effectuer une sélection rapide des individus.")
+        titre = _(u"Saisir un lot d'inscriptions")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
         # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres de l'inscription")
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de l'inscription"))
 
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Choix(self, id=999, mode="activites")
         self.ctrl_activite.SetMinSize((60, -1))
 
-        self.label_groupe = wx.StaticText(self, -1, u"Groupe :")
+        self.label_groupe = wx.StaticText(self, -1, _(u"Groupe :"))
         self.ctrl_groupe = CTRL_Choix(self, mode="groupes")
         self.ctrl_groupe.SetMinSize((150, -1))
 
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie de tarif :")
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie de tarif :"))
         self.ctrl_categorie = CTRL_Choix(self, mode="categories")
         self.ctrl_categorie.SetMinSize((150, -1))
                 
         # Liste
-        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, u"Individus à inscrire")
+        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus à inscrire"))
         
         self.ctrl_listview = OL_Saisie_lot_inscriptions.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_recherche = OL_Saisie_lot_inscriptions.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -107,9 +109,9 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour inscrire les individus cochés")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour inscrire les individus cochés"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((850, 700))
 
     def __do_layout(self):
@@ -193,19 +195,19 @@ class Dialog(wx.Dialog):
         nomCategorie = self.ctrl_categorie.GetStringSelection()
         
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner une activité dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une activité dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if IDgroupe == None :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner un groupe dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un groupe dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if IDcategorie_tarif == None :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner une catégorie de tarif dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une catégorie de tarif dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

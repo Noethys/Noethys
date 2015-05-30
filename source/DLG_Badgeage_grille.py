@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import CTRL_Grille
@@ -157,11 +159,11 @@ class CTRL(wx.Panel):
         """ Crée ou modifie une conso pour l'unité indiquée """
         case = self.GetCase(IDunite, date)
         if case == None :
-            return u"Cette case est inexistante."
+            return _(u"Cette case est inexistante.")
         
         # Vérifie que cette unité est ouverte
         if case.ouvert == False :
-            return u"Cette unité est fermée."
+            return _(u"Cette unité est fermée.")
 
         # Recherche Heures par défaut
         heure_debut_defaut = self.grille.dictUnites[IDunite]["heure_debut"]
@@ -173,13 +175,13 @@ class CTRL(wx.Panel):
 
         # Vérifie qu'il reste des places disponibles
         if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
-            return u"Il n'y a plus de place à cette date."
+            return _(u"Il n'y a plus de place à cette date.")
         
         # Vérifie la compatibilité avec les autres unités
         incompatibilite = case.VerifieCompatibilitesUnites()
         if incompatibilite != None :
             nomUniteIncompatible = self.grille.dictUnites[incompatibilite]["nom"]
-            return u"Action impossible car il existe déjà à cette date une réservation sur l'unité '%s'." %  nomUniteIncompatible
+            return _(u"Action impossible car il existe déjà à cette date une réservation sur l'unité '%s'.") %  nomUniteIncompatible
             
         # Définit le mode
         self.mode = mode
@@ -232,13 +234,13 @@ class CTRL(wx.Panel):
         """ Supprime la conso d'une unité donnée """
         case = self.GetCase(IDunite, date)
         if case == None : 
-            return u"Cette case est inexistante."
+            return _(u"Cette case est inexistante.")
         if case.etat == None :
-            return u"Il n'existe aucune consommation à cette date et pour cette unité."
+            return _(u"Il n'existe aucune consommation à cette date et pour cette unité.")
         if case.IDfacture != None :
-            return u"Interdit de supprimer une consommation déjà facturée."
+            return _(u"Interdit de supprimer une consommation déjà facturée.")
         if case.etat in ("present", "absenti", "absentj") :
-            return u"Interdit de supprimer une consommation déjà pointée."
+            return _(u"Interdit de supprimer une consommation déjà pointée.")
         case.OnClick(modeSilencieux=True)
         return True
 
@@ -246,10 +248,10 @@ class CTRL(wx.Panel):
         """ Modifie l'état de l'unité donnée """
         case = self.GetCase(IDunite, date)
         if case == None :
-            return u"Cette case est inexistante."
+            return _(u"Cette case est inexistante.")
         for conso in case.GetListeConso() :
             if conso.etat == None :
-                return u"Il n'existe aucune consommation à cette date et pour cette unité."
+                return _(u"Il n'existe aucune consommation à cette date et pour cette unité.")
             if conso.etat != etat :
                 case.ModifieEtat(None, etat)
         return True
@@ -257,7 +259,7 @@ class CTRL(wx.Panel):
     def ModifieMemo(self, date=None, texte=""):
         case = self.GetCase(date=date, memo=True)
         if case == None :
-            return u"La case mémo journalier est inexistante."
+            return _(u"La case mémo journalier est inexistante.")
         case.SetTexte(texte)
         return True        
         
@@ -279,10 +281,10 @@ class Dialog(wx.Dialog):
         self.ctrl = CTRL(self)
         
         # Boutons de test
-        bouton1 = wx.Button(self, -1, u"TEST 1 - fam 1 - Date unique")
-        bouton2 = wx.Button(self, -1, u"TEST 2 - fam 2- Plusieurs dates")
-        bouton3 = wx.Button(self, -1, u"TEST 3 - Sauvegarde ")
-        bouton4 = wx.Button(self, -1, u"TEST 4 - saisie conso")
+        bouton1 = wx.Button(self, -1, _(u"TEST 1 - fam 1 - Date unique"))
+        bouton2 = wx.Button(self, -1, _(u"TEST 2 - fam 2- Plusieurs dates"))
+        bouton3 = wx.Button(self, -1, _(u"TEST 3 - Sauvegarde "))
+        bouton4 = wx.Button(self, -1, _(u"TEST 4 - saisie conso"))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest1, bouton1)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest2, bouton2)

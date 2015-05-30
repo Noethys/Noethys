@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import wx.lib.agw.pybusyinfo as PBI
@@ -53,7 +55,7 @@ class CTRL_Ecole(wx.Choice):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            listeItems = [u"-- Toutes les écoles --"]
+            listeItems = [_(u"-- Toutes les écoles --")]
             self.dictEcoles = {0 : None}
             index = 1
             for IDecole, nom, rue, cp, ville in listeDonnees :
@@ -135,7 +137,7 @@ class CTRL_Classe(wx.Choice):
             saison = (date_debut, date_fin) 
             
             # Formatage du nom
-            nom = u"%s   (Du %s au %s)" % (nom, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+            nom = _(u"%s   (Du %s au %s)") % (nom, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
             
             # Formatage des niveaux
             listeNiveaux = []
@@ -161,7 +163,7 @@ class CTRL_Classe(wx.Choice):
         
         # Création des items de liste
         if len(listeClasses) > 0 :
-            listeItems = [u"-- Toutes les classes --"]
+            listeItems = [_(u"-- Toutes les classes --")]
             self.dictClasses = {0 : None}
             index = 1
             for listeOrdresNiveaux, nom, txtNiveaux, listeNiveaux, IDclasse in listeClasses :
@@ -249,7 +251,7 @@ class CTRL_Niveau(wx.Choice):
         
         # Affichage des items
         if len(listeTemp) > 0 :
-            listeItems = [u"-- Tous les niveaux --"]
+            listeItems = [_(u"-- Tous les niveaux --")]
             self.dictNiveaux = {0 : None}
             index = 1
             for ordreNiveau, nomNiveau, IDniveau in listeTemp :
@@ -289,29 +291,29 @@ class Dialog(wx.Dialog):
         self.dictNiveaux = self.ImportationNiveaux() 
         
         # Paramètres d'inscription
-        self.box_param_staticbox = wx.StaticBox(self, -1, u"Paramètres de l'inscription")
-        self.label_periode = wx.StaticText(self, -1, u"Période :")
+        self.box_param_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de l'inscription"))
+        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
         self.label_du = wx.StaticText(self, -1, u"du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self, activeCallback=False)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self, activeCallback=False)
-        self.label_niveau = wx.StaticText(self, -1, u"Niveau :")
+        self.label_niveau = wx.StaticText(self, -1, _(u"Niveau :"))
         self.ctrl_niveau = CTRL_Niveau(self)
 
         # Individus
-        self.box_individus_staticbox = wx.StaticBox(self, -1, u"Sélection des individus")
+        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
         
-        self.label_filtre_periode = wx.StaticText(self, -1, u"Période :")
+        self.label_filtre_periode = wx.StaticText(self, -1, _(u"Période :"))
         self.label_filtre_du = wx.StaticText(self, -1, u"du")
         self.ctrl_filtre_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_filtre_au = wx.StaticText(self, -1, u"au")
+        self.label_filtre_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_filtre_date_fin = CTRL_Saisie_date.Date2(self)
         
-        self.label_filtre_ecole = wx.StaticText(self, -1, u"Ecole :")
+        self.label_filtre_ecole = wx.StaticText(self, -1, _(u"Ecole :"))
         self.ctrl_filtre_ecole = CTRL_Ecole(self)
-        self.label_filtre_classe = wx.StaticText(self, -1, u"Classe :")
+        self.label_filtre_classe = wx.StaticText(self, -1, _(u"Classe :"))
         self.ctrl_filtre_classe = CTRL_Classe(self)
-        self.label_filtre_niveau = wx.StaticText(self, -1, u"Niveau :")
+        self.label_filtre_niveau = wx.StaticText(self, -1, _(u"Niveau :"))
         self.ctrl_filtre_niveau = CTRL_Niveau(self)
         
         self.ctrl_individus = OL_Inscriptions_scolaires_2.ListView(self, id=-1, name="OL_Inscriptions_scolaires_2", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -319,9 +321,9 @@ class Dialog(wx.Dialog):
         self.ctrl_recherche = OL_Inscriptions_scolaires_2.CTRL_Outils(self, listview=self.ctrl_individus, afficherCocher=True)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -334,19 +336,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Inscrire des individus")
-        self.ctrl_niveau.SetToolTipString(u"Sélectionnez ici le niveau scolaire")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de scolarisation")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de scolarisation")
-        self.ctrl_filtre_date_debut.SetToolTipString(u"Saisissez ici un filtre de période")
-        self.ctrl_filtre_date_fin.SetToolTipString(u"Saisissez ici un filtre de période")
-        self.ctrl_filtre_ecole.SetToolTipString(u"Vous pouvez sélectionner ici un filtre sur les écoles")
-        self.ctrl_filtre_classe.SetToolTipString(u"Vous pouvez sélectionner ici un filtre sur les classes")
-        self.ctrl_filtre_niveau.SetToolTipString(u"Vous pouvez sélectionner ici un filtre sur les niveaux scolaires")
-        self.ctrl_individus.SetToolTipString(u"Cochez les individus à inscrire")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Inscrire des individus"))
+        self.ctrl_niveau.SetToolTipString(_(u"Sélectionnez ici le niveau scolaire"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de scolarisation"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de scolarisation"))
+        self.ctrl_filtre_date_debut.SetToolTipString(_(u"Saisissez ici un filtre de période"))
+        self.ctrl_filtre_date_fin.SetToolTipString(_(u"Saisissez ici un filtre de période"))
+        self.ctrl_filtre_ecole.SetToolTipString(_(u"Vous pouvez sélectionner ici un filtre sur les écoles"))
+        self.ctrl_filtre_classe.SetToolTipString(_(u"Vous pouvez sélectionner ici un filtre sur les classes"))
+        self.ctrl_filtre_niveau.SetToolTipString(_(u"Vous pouvez sélectionner ici un filtre sur les niveaux scolaires"))
+        self.ctrl_individus.SetToolTipString(_(u"Cochez les individus à inscrire"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((660, 700))
 
     def __do_layout(self):
@@ -474,7 +476,7 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
     
     def SetNomClasse(self, nom=""):
-        self.SetTitle(u"Inscription d'individus dans la classe de %s" % nom)
+        self.SetTitle(_(u"Inscription d'individus dans la classe de %s") % nom)
         
     def SetDateDebut(self, date):
         self.ctrl_date_debut.SetDate(date)
@@ -496,41 +498,41 @@ class Dialog(wx.Dialog):
         
         # Vérification de la saisie
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
             return
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus() 
             return
 
         if IDniveau == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un niveau scolaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un niveau scolaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_niveau.SetFocus() 
             return
 
         if len(listeIndividus) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Demande de confirmation d'enregistrement
-        dlg = wx.MessageDialog(self, u"Confirmez-vous l'inscription de %d individus ?" % len(listeIndividus), u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous l'inscription de %d individus ?") % len(listeIndividus), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return
         dlg.Destroy()
         
         # Fenêtre d'attente
-        dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant la procédure d'inscription...", parent=None, title=u"Inscriptions scolaires", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la procédure d'inscription..."), parent=None, title=_(u"Inscriptions scolaires"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
 
         # Récupère infos pour historique
@@ -548,7 +550,7 @@ class Dialog(wx.Dialog):
         nomClasse = listeDonnees[0][1]
         date_debut_classe = listeDonnees[0][2]
         date_fin_classe = listeDonnees[0][3]
-        nomClasse = u"%s (Du %s au %s)" % (nomClasse, DateEngFr(date_debut_classe), DateEngFr(date_fin_classe))
+        nomClasse = _(u"%s (Du %s au %s)") % (nomClasse, DateEngFr(date_debut_classe), DateEngFr(date_fin_classe))
         nomNiveau = self.ctrl_niveau.GetStringSelection()
 
         # Init Sauvegarde
@@ -567,7 +569,7 @@ class Dialog(wx.Dialog):
                     nomEcole_temp = track.nomEcole
                     nomClasse_temp = track.nomClasse
                     nomIndividu_temp = u"%s %s" % (track.prenom, track.nom)
-                    listeProblemes.append(u"- %s (déjà dans la classe de %s du %s au %s)\n" % (nomIndividu_temp, nomClasse_temp, date_debut_temp, date_fin_temp))
+                    listeProblemes.append(_(u"- %s (déjà dans la classe de %s du %s au %s)\n") % (nomIndividu_temp, nomClasse_temp, date_debut_temp, date_fin_temp))
                     valide = False
                     break
             
@@ -590,7 +592,7 @@ class Dialog(wx.Dialog):
                     "IDindividu" : IDindividu,
                     "IDfamille" : None,
                     "IDcategorie" : 30, 
-                    "action" : u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
+                    "action" : _(u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
                     },])
         
         DB.Close()
@@ -599,10 +601,10 @@ class Dialog(wx.Dialog):
         
         # Informations
         if len(listeProblemes) > 0 :
-            message = u"%d inscriptions ont été enregistrées sauf pour les individus suivants :\n\n%s" % (nbreValides, "".join(listeProblemes))
+            message = _(u"%d inscriptions ont été enregistrées sauf pour les individus suivants :\n\n%s") % (nbreValides, "".join(listeProblemes))
         else:
-            message = u"%d inscriptions ont été enregistrées avec succès." % nbreValides
-        dlg = wx.MessageDialog(self, message, u"Information", wx.OK | wx.ICON_INFORMATION)
+            message = _(u"%d inscriptions ont été enregistrées avec succès.") % nbreValides
+        dlg = wx.MessageDialog(self, message, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
             

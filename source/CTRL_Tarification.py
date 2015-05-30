@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.agw.hyperlink as Hyperlink
 import datetime
@@ -85,18 +87,18 @@ class CTRL(HTL.HyperTreeList):
         self.AssignImageList(il)
         
         # Creation des colonnes
-        self.AddColumn(u"Prestations / Tarifs")
+        self.AddColumn(_(u"Prestations / Tarifs"))
         self.SetColumnWidth(0, 250)
-        self.AddColumn(u"Nom du tarif")
+        self.AddColumn(_(u"Nom du tarif"))
         self.SetColumnWidth(1, 230)
-        self.AddColumn(u"Catégories de tarifs")
+        self.AddColumn(_(u"Catégories de tarifs"))
         self.SetColumnWidth(2, 180)
-        self.AddColumn(u"Méthode de calcul")
+        self.AddColumn(_(u"Méthode de calcul"))
         self.SetColumnWidth(3, 230)
         self.SetMainColumn(0)
                                 
         # Création des branches
-        self.root = self.AddRoot(u"Tarifs")
+        self.root = self.AddRoot(_(u"Tarifs"))
         self.SetPyData(self.root, {"type" : "root", "ID" : None} )
         self.SetAGWWindowStyleFlag(wx.TR_COLUMN_LINES)
         
@@ -178,10 +180,10 @@ class CTRL(HTL.HyperTreeList):
                         date_debut = DateEngFr(dictTarifTemp["date_debut"])
                     else:
                         date_debut = u"?"
-                    label = u"A partir du %s" % date_debut
+                    label = _(u"A partir du %s") % date_debut
                     if dictTarifTemp["date_fin"] != None :
                         date_fin = DateEngFr(dictTarifTemp["date_fin"])
-                        label = u"Du %s au %s" % (date_debut, date_fin)
+                        label = _(u"Du %s au %s") % (date_debut, date_fin)
                         
                     brancheTarif = self.AppendItem(brancheNom, label)
                     self.SetPyData(brancheTarif, {"type" : "tarif", "ID" : IDtarif, "IDnom_tarif":IDnom_tarif})
@@ -217,7 +219,7 @@ class CTRL(HTL.HyperTreeList):
                         if dictValeurs["code"] == methode :
                             labelMethode = dictValeurs["label"]
                     if labelMethode == None :
-                        labelMethode = u"-- Aucune --"
+                        labelMethode = _(u"-- Aucune --")
                         
                     self.SetItemText(brancheTarif, labelMethode, 3)
 
@@ -243,7 +245,7 @@ class CTRL(HTL.HyperTreeList):
 
 ##        if type == "root" :
 ##            # Item Ajouter
-##            item = wx.MenuItem(menuPop, 10, u"Ajouter un catégorie de tarif")
+##            item = wx.MenuItem(menuPop, 10, _(u"Ajouter un catégorie de tarif"))
 ##            bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
@@ -251,27 +253,27 @@ class CTRL(HTL.HyperTreeList):
 
         if type == "root" :
             # Item Ajouter
-            item = wx.MenuItem(menuPop, 10, u"Ajouter un nom de prestation")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter un nom de prestation"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 ##            menuPop.AppendSeparator()
 ##            # Item Modifier
-##            item = wx.MenuItem(menuPop, 20, u"Modifier la catégorie de tarif")
+##            item = wx.MenuItem(menuPop, 20, _(u"Modifier la catégorie de tarif"))
 ##            bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
 ##            self.Bind(wx.EVT_MENU, self.Modifier, id=20)
 ##            # Item Supprimer
-##            item = wx.MenuItem(menuPop, 30, u"Supprimer la catégorie de tarif")
+##            item = wx.MenuItem(menuPop, 30, _(u"Supprimer la catégorie de tarif"))
 ##            bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
 ##            self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
 ##            menuPop.AppendSeparator()
 ##            # Item Dupliquer
-##            item = wx.MenuItem(menuPop, 40, u"Dupliquer cette catégorie de tarif")
+##            item = wx.MenuItem(menuPop, 40, _(u"Dupliquer cette catégorie de tarif"))
 ##            bmp = wx.Bitmap("Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
@@ -279,27 +281,27 @@ class CTRL(HTL.HyperTreeList):
             
         if type == "nom" :
             # Item Ajouter
-            item = wx.MenuItem(menuPop, 10, u"Ajouter un tarif pour cette prestation")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter un tarif pour cette prestation"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
             menuPop.AppendSeparator()
             # Item Modifier
-            item = wx.MenuItem(menuPop, 20, u"Modifier le nom de la prestation")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier le nom de la prestation"))
             bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier, id=20)
             # Item Supprimer
-            item = wx.MenuItem(menuPop, 30, u"Supprimer ce nom de prestation")
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer ce nom de prestation"))
             bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
             menuPop.AppendSeparator()
             # Item Dupliquer
-            item = wx.MenuItem(menuPop, 40, u"Dupliquer ce nom de prestation")
+            item = wx.MenuItem(menuPop, 40, _(u"Dupliquer ce nom de prestation"))
             bmp = wx.Bitmap("Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -307,20 +309,20 @@ class CTRL(HTL.HyperTreeList):
             
         if type == "tarif" :
             # Item Modifier
-            item = wx.MenuItem(menuPop, 20, u"Modifier ce tarif")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier ce tarif"))
             bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier, id=20)
             # Item Supprimer
-            item = wx.MenuItem(menuPop, 30, u"Supprimer ce tarif")
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer ce tarif"))
             bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
             menuPop.AppendSeparator()
             # Item Dupliquer
-            item = wx.MenuItem(menuPop, 40, u"Dupliquer ce tarif")
+            item = wx.MenuItem(menuPop, 40, _(u"Dupliquer ce tarif"))
             bmp = wx.Bitmap("Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -401,11 +403,11 @@ class CTRL(HTL.HyperTreeList):
 ##        listeDonnees = DB.ResultatReq()
 ##        DB.Close()
 ##        if len(listeDonnees) > 0 :
-##            dlg = wx.MessageDialog(self, u"Il est impossible de supprimer une catégorie qui comporte au moins un tarif !", u"Suppression impossible", wx.OK | wx.ICON_INFORMATION)
+##            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une catégorie qui comporte au moins un tarif !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
-##        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette catégorie ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
 ##        if dlg.ShowModal() == wx.ID_YES :
 ##            DB = GestionDB.DB()
 ##            DB.ReqDEL("categories_tarifs", "IDcategorie_tarif", IDcategorie_tarif)
@@ -416,7 +418,7 @@ class CTRL(HTL.HyperTreeList):
 ##
 ##    def DupliquerCategorie(self, IDcategorie_tarif):
 ##        IDcategorie_tarif_modele = IDcategorie_tarif
-##        dlg = wx.MessageDialog(self, u"Souhaitez-vous dupliquer également les tarifs et paramétrages de cette catégorie ?", u"Duplication", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer également les tarifs et paramétrages de cette catégorie ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
 ##        reponse = dlg.ShowModal() 
 ##        if reponse == wx.ID_YES :
 ##            dupliqueEnfants = True
@@ -436,7 +438,7 @@ class CTRL(HTL.HyperTreeList):
 ##        nom = listeCategories[0][1]
 ##        listeDonnees = [
 ##            ("IDactivite", IDactivite),
-##            ("nom", u"Copie de %s" % nom),
+##            ("nom", _(u"Copie de %s") % nom),
 ##            ]
 ##        IDcategorie_tarif_nouveau = DB.ReqInsert("categories_tarifs", listeDonnees)
 ##        
@@ -473,11 +475,11 @@ class CTRL(HTL.HyperTreeList):
 ##        self.ModifierCategorie(IDcategorie_tarif=IDcategorie_tarif_nouveau)
 
     def AjouterNom(self):
-        dlg = wx.TextEntryDialog(self, u"Saisissez le nouveau nom de prestation :", u"Saisie d'un nouveau nom de prestation", u"")
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nouveau nom de prestation :"), _(u"Saisie d'un nouveau nom de prestation"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
-                dlg2 = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg2.ShowModal()
                 dlg2.Destroy()
                 dlg.Destroy()
@@ -504,11 +506,11 @@ class CTRL(HTL.HyperTreeList):
         if len(listeDonnees) == 0 : return
         nom = listeDonnees[0][0]
         DB.Close()
-        dlg = wx.TextEntryDialog(self, u"Modifiez le nom de la prestation :", u"Modification d'un nom de prestation", nom)
+        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom de la prestation :"), _(u"Modification d'un nom de prestation"), nom)
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
-                dlg = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -527,11 +529,11 @@ class CTRL(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, u"Il est impossible de supprimer un tarif qui comporte au moins un paramétrage !", u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer un tarif qui comporte au moins un paramétrage !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce tarif ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce tarif ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("noms_tarifs", "IDnom_tarif", IDnom_tarif)
@@ -562,12 +564,12 @@ class CTRL(HTL.HyperTreeList):
         DB.Close()
         nbrePrestations = len(listePrestations)
         if nbrePrestations > 0 :
-            dlg = wx.MessageDialog(self, u"Ce tarif a déjà été attribué à %d prestations.\nIl est donc impossible de le supprimer !" % nbrePrestations, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce tarif a déjà été attribué à %d prestations.\nIl est donc impossible de le supprimer !") % nbrePrestations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce tarif ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce tarif ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("tarifs", "IDtarif", IDtarif)
@@ -581,7 +583,7 @@ class CTRL(HTL.HyperTreeList):
     def DupliquerNom(self, IDnom_tarif, nomTarif):
         """ Duplication d'un nom de tarif """
         IDnom_tarif_modele = IDnom_tarif
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous dupliquer également les tarifs ?", u"Duplication", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer également les tarifs ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         if reponse == wx.ID_YES :
             dupliqueEnfants = True
@@ -594,7 +596,7 @@ class CTRL(HTL.HyperTreeList):
         DB = GestionDB.DB()
 
         # Duplication des noms de tarifs
-        newIDnom_tarif = DB.Dupliquer(nomTable="noms_tarifs", nomChampCle="IDnom_tarif", conditions="IDnom_tarif=%d" % IDnom_tarif, dictModifications={"nom":u"Copie de %s" % nomTarif})
+        newIDnom_tarif = DB.Dupliquer(nomTable="noms_tarifs", nomChampCle="IDnom_tarif", conditions="IDnom_tarif=%d" % IDnom_tarif, dictModifications={"nom":_(u"Copie de %s") % nomTarif})
         
         # Duplication des tarif
         if dupliqueEnfants == True :

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Tarification
 import OL_Categories_tarifs
 
@@ -26,7 +28,7 @@ class Panel(wx.Panel):
         self.IDactivite = IDactivite
 
         # Catégories de tarifs
-        self.staticbox_categories_staticbox = wx.StaticBox(self, -1, u"Catégories de tarifs")
+        self.staticbox_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories de tarifs"))
         self.ctrl_categories = OL_Categories_tarifs.ListView(self, id=-1, IDactivite=IDactivite, name="OL_categories", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_categories.MAJ() 
 
@@ -35,7 +37,7 @@ class Panel(wx.Panel):
         self.bouton_supprimer_categorie = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
         # Tarifs
-        self.staticbox_tarifs_staticbox = wx.StaticBox(self, -1, u"Tarifs")
+        self.staticbox_tarifs_staticbox = wx.StaticBox(self, -1, _(u"Tarifs"))
         self.ctrl_tarification = CTRL_Tarification.CTRL(self, IDactivite=self.IDactivite)
         self.ctrl_tarification.MAJ() 
 
@@ -57,14 +59,14 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonDupliquerTarif, self.bouton_dupliquer_tarif)
         
     def __set_properties(self):
-        self.ctrl_tarification.SetToolTipString(u"Calendrier des tarifs et du nombre de places")
-        self.bouton_ajouter_categorie.SetToolTipString(u"Cliquez ici pour ajouter une catégorie de tarif")
-        self.bouton_modifier_categorie.SetToolTipString(u"Cliquez ici pour modifier la catégorie sélectionnés")
-        self.bouton_supprimer_categorie.SetToolTipString(u"Cliquez ici pour supprimer la catégorie sélectionnée")
-        self.bouton_ajouter_tarif.SetToolTipString(u"Cliquez ici pour ajouter un nom de prestation ou un tarif")
-        self.bouton_modifier_tarif.SetToolTipString(u"Cliquez ici pour modifier l'item sélectionné")
-        self.bouton_supprimer_tarif.SetToolTipString(u"Cliquez ici pour supprimer l'item sélectionné")
-        self.bouton_dupliquer_tarif.SetToolTipString(u"Cliquez ici pour dupliquer l'item sélectionné")
+        self.ctrl_tarification.SetToolTipString(_(u"Calendrier des tarifs et du nombre de places"))
+        self.bouton_ajouter_categorie.SetToolTipString(_(u"Cliquez ici pour ajouter une catégorie de tarif"))
+        self.bouton_modifier_categorie.SetToolTipString(_(u"Cliquez ici pour modifier la catégorie sélectionnés"))
+        self.bouton_supprimer_categorie.SetToolTipString(_(u"Cliquez ici pour supprimer la catégorie sélectionnée"))
+        self.bouton_ajouter_tarif.SetToolTipString(_(u"Cliquez ici pour ajouter un nom de prestation ou un tarif"))
+        self.bouton_modifier_tarif.SetToolTipString(_(u"Cliquez ici pour modifier l'item sélectionné"))
+        self.bouton_supprimer_tarif.SetToolTipString(_(u"Cliquez ici pour supprimer l'item sélectionné"))
+        self.bouton_dupliquer_tarif.SetToolTipString(_(u"Cliquez ici pour dupliquer l'item sélectionné"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -154,7 +156,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

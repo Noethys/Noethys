@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -19,15 +21,15 @@ class Dialog(wx.Dialog):
         self.IDanalytique = IDanalytique
         self.defaut = defaut
 
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.label_abrege = wx.StaticText(self, wx.ID_ANY, u"Abrégé :")
+        self.label_abrege = wx.StaticText(self, wx.ID_ANY, _(u"Abrégé :"))
         self.ctrl_abrege = wx.TextCtrl(self, wx.ID_ANY, u"")
 
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -38,17 +40,17 @@ class Dialog(wx.Dialog):
 
         # Init contrôles
         if self.IDanalytique != None :
-            self.SetTitle(u"Modification d'un poste analytique")
+            self.SetTitle(_(u"Modification d'un poste analytique"))
             self.Importation() 
         else :
-            self.SetTitle(u"Saisie d'un poste analytique")
+            self.SetTitle(_(u"Saisie d'un poste analytique"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez le nom du poste")
-        self.ctrl_abrege.SetToolTipString(u"Saisissez le nom abrégé du poste (en majuscules)")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom du poste"))
+        self.ctrl_abrege.SetToolTipString(_(u"Saisissez le nom abrégé du poste (en majuscules)"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
@@ -97,14 +99,14 @@ class Dialog(wx.Dialog):
         
         # Validation des données saisies
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return False
 
         if abrege == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom abrégé !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom abrégé !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_abrege.SetFocus()

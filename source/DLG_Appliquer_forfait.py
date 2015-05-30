@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.lib.agw.hypertreelist as HTL
 
@@ -24,8 +26,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -302,7 +304,7 @@ class Forfaits():
                                     texteDatesPrises = u""
                                     for datePrise in listeDatesPrises :
                                         texteDatesPrises += u"   > %s\n" % DateComplete(datePrise)
-                                    dlg = wx.MessageDialog(None, u"Il est impossible de saisir le forfait ! \n\nDes consommations existent déjà sur les dates suivantes :\n\n%s" % texteDatesPrises, "Erreur", wx.OK | wx.ICON_ERROR)
+                                    dlg = wx.MessageDialog(None, _(u"Il est impossible de saisir le forfait ! \n\nDes consommations existent déjà sur les dates suivantes :\n\n%s") % texteDatesPrises, "Erreur", wx.OK | wx.ICON_ERROR)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return False
@@ -643,11 +645,11 @@ class CTRL(HTL.HyperTreeList):
         self.AssignImageList(il)
         
         # Création des colonnes
-        self.AddColumn(u"Individu/Activité/Prestation")
+        self.AddColumn(_(u"Individu/Activité/Prestation"))
         self.SetColumnWidth(0, 380)
         self.SetColumnAlignment(0, wx.ALIGN_LEFT)
         
-        self.AddColumn(u"Période du forfait")
+        self.AddColumn(_(u"Période du forfait"))
         self.SetColumnWidth(1, 320)
         self.SetColumnAlignment(1, wx.ALIGN_LEFT)
         
@@ -680,7 +682,7 @@ class CTRL(HTL.HyperTreeList):
     
     def Remplissage(self):        
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         # Récupération des forfaits
         f = Forfaits(self.IDfamille, self.listeActivites, self.listeIndividus, self.saisieManuelle, self.saisieAuto)
@@ -749,7 +751,7 @@ class CTRL(HTL.HyperTreeList):
                             else :
                                 date_debut_forfait, date_fin_forfait = "?", "?"
                                 
-                            label = u"Du %s au %s" % (date_debut_forfait, date_fin_forfait)
+                            label = _(u"Du %s au %s") % (date_debut_forfait, date_fin_forfait)
                             self.SetItemText(niveau3, label, 1)
 
         
@@ -768,18 +770,18 @@ class Dialog(wx.Dialog):
         self.listeActivites = listeActivites
         self.listeIndividus = listeIndividus
         
-        intro = u"Vous pouvez ici appliquer un forfait daté. Ceux-ci peuvent être paramétrés dans la tarification. Sélectionnez un forfait pour l'individu et l'activité de votre choix puis cliquez sur Ok ou double-cliquez sur la ligne souhaitée."
-        titre = u"Appliquer un forfait daté"
+        intro = _(u"Vous pouvez ici appliquer un forfait daté. Ceux-ci peuvent être paramétrés dans la tarification. Sélectionnez un forfait pour l'individu et l'activité de votre choix puis cliquez sur Ok ou double-cliquez sur la ligne souhaitée.")
+        titre = _(u"Appliquer un forfait daté")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Forfait.png")
         self.SetTitle(titre)
 
-        self.staticbox_forfaits = wx.StaticBox(self, -1, u"Sélection d'un forfait")
+        self.staticbox_forfaits = wx.StaticBox(self, -1, _(u"Sélection d'un forfait"))
         self.ctrl_forfaits = CTRL(self, IDfamille, listeActivites, listeIndividus, saisieManuelle=True, saisieAuto=False)
         self.ctrl_forfaits.MAJ()
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -788,10 +790,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_forfaits.SetToolTipString(u"Double-cliquez sur un forfait pour l'appliquer")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_forfaits.SetToolTipString(_(u"Double-cliquez sur un forfait pour l'appliquer"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 600))
 
     def __do_layout(self):
@@ -824,7 +826,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         IDtarif = self.ctrl_forfaits.GetIDtarif() 
         if IDtarif == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun forfait à appliquer !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun forfait à appliquer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

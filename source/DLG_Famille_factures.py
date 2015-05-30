@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Factures 
 import GestionDB 
 import wx.lib.agw.hyperlink as Hyperlink
@@ -51,7 +53,7 @@ class CTRL_Email(wx.Panel):
         self.image_nonvalide = wx.Bitmap(u"Images/16x16/Interdit2.png", wx.BITMAP_TYPE_ANY)
 
         self.ctrl_image = wx.StaticBitmap(self, -1, self.image_nonvalide)
-        self.hyper_prelevement = Hyperlien(self, label=u"Envoi des factures par Email", infobulle=u"Cliquez ici pour activer l'envoi des factures par Email", URL="email")
+        self.hyper_prelevement = Hyperlien(self, label=_(u"Envoi des factures par Email"), infobulle=_(u"Cliquez ici pour activer l'envoi des factures par Email"), URL="email")
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -62,8 +64,8 @@ class CTRL_Email(wx.Panel):
                 
     def OnClic(self):
         import DLG_Selection_email
-        intro = u"Sélectionnez ici l'adresse Email à laquelle envoyer les factures."
-        titre = u"Activation de l'envoi des factures par Email"
+        intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les factures.")
+        titre = _(u"Activation de l'envoi des factures par Email")
         dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_factures", intro=intro, titre=titre)
         dlg.ShowModal() 
         dlg.Destroy()
@@ -93,7 +95,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        self.staticbox_factures = wx.StaticBox(self, -1, u"Factures")
+        self.staticbox_factures = wx.StaticBox(self, -1, _(u"Factures"))
         
         # Recherche du IDcompte_payeur
         DB = GestionDB.DB()
@@ -132,10 +134,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonEmail, self.bouton_email)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer une facture pour cette famille")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la facture sélectionnée")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour rééditer la facture sélectionnée (PDF)")
-        self.bouton_email.SetToolTipString(u"Cliquez ici pour envoyer la facture sélectionnée par Email")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une facture pour cette famille"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la facture sélectionnée"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour rééditer la facture sélectionnée (PDF)"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer la facture sélectionnée par Email"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -178,7 +180,7 @@ class Panel(wx.Panel):
         import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(self.IDcompte_payeur)
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?", u"Ventilation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -209,7 +211,7 @@ class Panel(wx.Panel):
         menuPop = wx.Menu()
     
         # Item Rééditer facture
-        item = wx.MenuItem(menuPop, 10, u"Aperçu PDF de la facture")
+        item = wx.MenuItem(menuPop, 10, _(u"Aperçu PDF de la facture"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -219,14 +221,14 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression de la liste")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression de la liste"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer la liste")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer la liste"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -287,7 +289,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

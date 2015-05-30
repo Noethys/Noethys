@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 
@@ -105,7 +107,7 @@ class CTRL(HTL.HyperTreeList):
         # Si groupe unique
         for IDactivite in self.listeActivites :
             if self.dictGroupeTmp.has_key(IDactivite) == False :
-                self.dictGroupeTmp[IDactivite] = [(0, u"Groupe unique"),]
+                self.dictGroupeTmp[IDactivite] = [(0, _(u"Groupe unique")),]
         
         # Récupération des unités de remplissage
         self.dictUnitesRemplissageTemp = {}
@@ -121,7 +123,7 @@ class CTRL(HTL.HyperTreeList):
             
         # Préparation des colonnes
         listeColonnes = [
-            ( u"Groupe", 150, wx.ALIGN_LEFT),
+            ( _(u"Groupe"), 150, wx.ALIGN_LEFT),
             ]
         listeNbreUnites = []
         for IDactivite in self.listeActivites :
@@ -147,7 +149,7 @@ class CTRL(HTL.HyperTreeList):
             numColonne += 1
         
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches
         for IDactivite in self.listeActivites :
@@ -181,7 +183,7 @@ class CTRL(HTL.HyperTreeList):
                 self.SetPyData(groupe, IDgroupe)
                                         
             # Ligne TOTAL
-            total = self.AppendItem(activite, u"Total")
+            total = self.AppendItem(activite, _(u"Total"))
             self.dictBranches["totaux"][IDactivite] = total
             self.SetPyData(total, None)
             self.SetItemTextColour(total, wx.RED)

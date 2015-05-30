@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import Image
 import os
 import cStringIO
@@ -96,7 +98,7 @@ class CTRL(wx.StaticBitmap):
         
         # Ouverture dela fenêtre de dialogue
         dlg = wx.FileDialog(
-            self, message=u"Choisissez une image",
+            self, message=_(u"Choisissez une image"),
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
@@ -133,13 +135,13 @@ class CTRL(wx.StaticBitmap):
     def Supprimer(self, sauvegarder=True):
         """ Suppression de l'image """
         if self.modeDefaut == True :
-            dlg = wx.MessageDialog(self, u"Aucune image n'est enregistrée !", u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucune image n'est enregistrée !"), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
             
-        txtMessage = u"Souhaitez-vous vraiment supprimer cette image ?"
-        dlgConfirm = wx.MessageDialog(self, txtMessage, u"Confirmation de suppression", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Souhaitez-vous vraiment supprimer cette image ?")
+        dlgConfirm = wx.MessageDialog(self, txtMessage, _(u"Confirmation de suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:

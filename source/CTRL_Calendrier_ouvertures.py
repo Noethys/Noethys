@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
@@ -30,7 +32,7 @@ class Calendrier(HTL.HyperTreeList):
         UTILS_Linux.AdaptePolice(self)
 
         # Création de la colonne principale
-        self.AddColumn(u"Périodes / Groupes")
+        self.AddColumn(_(u"Périodes / Groupes"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 190)
 
@@ -87,20 +89,20 @@ class Calendrier(HTL.HyperTreeList):
             numColonne += 1
         
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
 
         # Création des branches
         listeAnnees = self.dictDonnees.keys()
         listeAnnees.sort()
         for annee in listeAnnees :
             # Année
-            label = u"Année %d" % annee
+            label = _(u"Année %d") % annee
             if dictTotaux.has_key(annee) :
                 total = len(dictTotaux[annee]["toutes"])
                 if total == 1 :
-                    label = u"Année %d (1 date)" % annee
+                    label = _(u"Année %d (1 date)") % annee
                 else :
-                    label = u"Année %d (%d dates)" % (annee, total)
+                    label = _(u"Année %d (%d dates)") % (annee, total)
 
             dictMois = self.dictDonnees[annee]
             branche1 = self.AppendItem(self.root, label)
@@ -112,7 +114,7 @@ class Calendrier(HTL.HyperTreeList):
                 
                 # Mois
                 dictGroupes = self.dictDonnees[annee][mois]
-                listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+                listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
                 branche2 = self.AppendItem(branche1, listeMois[mois-1])
                 
                 # tri des groupes
@@ -132,9 +134,9 @@ class Calendrier(HTL.HyperTreeList):
                         if dictColonnes.has_key(IDunite) :
                             numColonne = dictColonnes[IDunite]
                             if nbreOuvertures == 1 :
-                                texte = u"1 date"
+                                texte = _(u"1 date")
                             else:
-                                texte = u"%s dates" % nbreOuvertures
+                                texte = _(u"%s dates") % nbreOuvertures
                             self.SetItemText(branche3, texte, numColonne)
                         
                         # Totaux par année
@@ -142,9 +144,9 @@ class Calendrier(HTL.HyperTreeList):
                             if dictTotaux[annee]["unites"].has_key(IDunite) :
                                 total = len(dictTotaux[annee]["unites"][IDunite])
                                 if total == 1 : 
-                                    label = u"1 date"
+                                    label = _(u"1 date")
                                 else :
-                                    label = u"%d dates" % total
+                                    label = _(u"%d dates") % total
                                 self.SetItemText(branche1, label, numColonne)
 
                     self.Expand(branche3)
@@ -212,7 +214,7 @@ class Calendrier(HTL.HyperTreeList):
         dictGroupes = {}
         for IDgroupe, nom, ordre in listeDonnees :
             dictGroupes[IDgroupe] = {"nom":nom, "ordre":ordre}
-        dictGroupes[0] = {"nom":u"Sans groupe", "ordre":0}
+        dictGroupes[0] = {"nom":_(u"Sans groupe"), "ordre":0}
         return dictGroupes
     
     def GetListeVacances(self):

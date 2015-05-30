@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import socket
 import base64
 
@@ -101,9 +103,9 @@ class CTRL_Conditions(wx.Panel) :
         
         # Jour
         self.liste_jours = ("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")
-        self.box_jour_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Jour")
-        self.check_jour = wx.CheckBox(self, wx.ID_ANY, u"Si le jour est parmi les jours cochés :")
-        self.label_jours_scolaire = wx.StaticText(self, wx.ID_ANY, u"Sem. scolaires : ")
+        self.box_jour_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Jour"))
+        self.check_jour = wx.CheckBox(self, wx.ID_ANY, _(u"Si le jour est parmi les jours cochés :"))
+        self.label_jours_scolaire = wx.StaticText(self, wx.ID_ANY, _(u"Sem. scolaires : "))
         self.check_scolaire_lundi = wx.CheckBox(self, wx.ID_ANY, u"L")
         self.check_scolaire_mardi = wx.CheckBox(self, wx.ID_ANY, u"M")
         self.check_scolaire_mercredi = wx.CheckBox(self, wx.ID_ANY, u"M")
@@ -111,7 +113,7 @@ class CTRL_Conditions(wx.Panel) :
         self.check_scolaire_vendredi = wx.CheckBox(self, wx.ID_ANY, u"V")
         self.check_scolaire_samedi = wx.CheckBox(self, wx.ID_ANY, u"S")
         self.check_scolaire_dimanche = wx.CheckBox(self, wx.ID_ANY, u"D")
-        self.label_jours_vacances = wx.StaticText(self, wx.ID_ANY, u"Sem. vacances : ")
+        self.label_jours_vacances = wx.StaticText(self, wx.ID_ANY, _(u"Sem. vacances : "))
         self.check_vacances_lundi = wx.CheckBox(self, wx.ID_ANY, u"L")
         self.check_vacances_mardi = wx.CheckBox(self, wx.ID_ANY, u"M")
         self.check_vacances_mercredi = wx.CheckBox(self, wx.ID_ANY, u"M")
@@ -121,29 +123,29 @@ class CTRL_Conditions(wx.Panel) :
         self.check_vacances_dimanche = wx.CheckBox(self, wx.ID_ANY, u"D")
         
         # Heure
-        self.box_heure_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Heure")
-        self.check_heure = wx.CheckBox(self, wx.ID_ANY, u"Si l'heure est comprise entre")
+        self.box_heure_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Heure"))
+        self.check_heure = wx.CheckBox(self, wx.ID_ANY, _(u"Si l'heure est comprise entre"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
-        self.label_heure_et = wx.StaticText(self, wx.ID_ANY, u"et")
+        self.label_heure_et = wx.StaticText(self, wx.ID_ANY, _(u"et"))
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
 
         # Poste
-        self.box_poste_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Poste")
-        self.check_poste = wx.CheckBox(self, wx.ID_ANY, u"Si le poste est :")
+        self.box_poste_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Poste"))
+        self.check_poste = wx.CheckBox(self, wx.ID_ANY, _(u"Si le poste est :"))
         try :
-            labelPoste = u"Ce poste (%s)" % socket.gethostname().decode("iso-8859-15")
+            labelPoste = _(u"Ce poste (%s)") % socket.gethostname().decode("iso-8859-15")
         except :
-            labelPoste = u"Ce poste"
+            labelPoste = _(u"Ce poste")
         self.radio_poste_1 = wx.RadioButton(self, wx.ID_ANY, labelPoste, style=wx.RB_GROUP)
-        self.radio_poste_2 = wx.RadioButton(self, wx.ID_ANY, u"Parmi les postes suivants :")
+        self.radio_poste_2 = wx.RadioButton(self, wx.ID_ANY, _(u"Parmi les postes suivants :"))
         self.ctrl_postes = wx.TextCtrl(self, wx.ID_ANY, u"")#, style=wx.TE_MULTILINE)
 
         # Dernière sauvegarde
-        self.box_derniere_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Dernière sauvegarde")
-        self.check_derniere = wx.CheckBox(self, wx.ID_ANY, u"Si dernière sauv. date de plus de")
-        self.listeDelais = [(1, u"1 jour"), ]
+        self.box_derniere_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Dernière sauvegarde"))
+        self.check_derniere = wx.CheckBox(self, wx.ID_ANY, _(u"Si dernière sauv. date de plus de"))
+        self.listeDelais = [(1, _(u"1 jour")), ]
         for x in range(2, 31) :
-            self.listeDelais.append((x, u"%d jours" % x))
+            self.listeDelais.append((x, _(u"%d jours") % x))
         listeLabels = []
         for valeur, label in self.listeDelais :
             listeLabels.append(label)
@@ -151,10 +153,10 @@ class CTRL_Conditions(wx.Panel) :
         self.ctrl_derniere.SetSelection(0)
         
         # Utilisateur
-        self.box_utilisateur_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Utilisateur")
-        self.check_utilisateur = wx.CheckBox(self, wx.ID_ANY, u"Si l'utilisateur est :")
-        self.radio_utilisateur_1 = wx.RadioButton(self, wx.ID_ANY, u"Moi (%s)" % self.GetUtilisateur()[1], style=wx.RB_GROUP)
-        self.radio_utilisateur_2 = wx.RadioButton(self, wx.ID_ANY, u"Parmi les utilisateurs cochés :")
+        self.box_utilisateur_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Utilisateur"))
+        self.check_utilisateur = wx.CheckBox(self, wx.ID_ANY, _(u"Si l'utilisateur est :"))
+        self.radio_utilisateur_1 = wx.RadioButton(self, wx.ID_ANY, _(u"Moi (%s)") % self.GetUtilisateur()[1], style=wx.RB_GROUP)
+        self.radio_utilisateur_2 = wx.RadioButton(self, wx.ID_ANY, _(u"Parmi les utilisateurs cochés :"))
         self.ctrl_utilisateurs = CTRL_Utilisateurs(self)
 
         self.__set_properties()
@@ -180,34 +182,34 @@ class CTRL_Conditions(wx.Panel) :
 
 
     def __set_properties(self):
-        self.check_jour.SetToolTipString(u"Cochez cette case pour activer une condition de jour")
-        self.check_scolaire_lundi.SetToolTipString(u"Lundi")
-        self.check_scolaire_mardi.SetToolTipString(u"Mardi")
-        self.check_scolaire_mercredi.SetToolTipString(u"Mercredi")
-        self.check_scolaire_jeudi.SetToolTipString(u"Jeudi")
-        self.check_scolaire_vendredi.SetToolTipString(u"Vendredi")
-        self.check_scolaire_samedi.SetToolTipString(u"Samedi")
-        self.check_scolaire_dimanche.SetToolTipString(u"Dimanche")
-        self.check_vacances_lundi.SetToolTipString(u"Lundi")
-        self.check_vacances_mardi.SetToolTipString(u"Mardi")
-        self.check_vacances_mercredi.SetToolTipString(u"Mercredi")
-        self.check_vacances_jeudi.SetToolTipString(u"Jeudi")
-        self.check_vacances_vendredi.SetToolTipString(u"Vendredi")
-        self.check_vacances_samedi.SetToolTipString(u"Samedi")
-        self.check_vacances_dimanche.SetToolTipString(u"Dimanche")
-        self.check_heure.SetToolTipString(u"Cochez cette case pour activer une condition d'heure")
-        self.ctrl_heure_debut.SetToolTipString(u"Saisissez une heure minimale")
-        self.ctrl_heure_fin.SetToolTipString(u"Saisissez une heure maximale")
-        self.check_poste.SetToolTipString(u"Cochez cette case pour activer une condition de poste")
-        self.radio_poste_1.SetToolTipString(u"Uniquement pour ce poste")
-        self.radio_poste_2.SetToolTipString(u"Uniquement parmi une liste de postes cochés")
-        self.ctrl_postes.SetToolTipString(u"Saisissez les noms de poste du réseau séparés par des points-virgules (;)")
-        self.check_derniere.SetToolTipString(u"Cochez cette case pour activer une condition de délai")
-        self.ctrl_derniere.SetToolTipString(u"Sélectionnez un délai")
-        self.check_utilisateur.SetToolTipString(u"Cochez cette case pour activer une condition d'utilisateur")
-        self.radio_utilisateur_1.SetToolTipString(u"Uniquement cet utilisateur")
-        self.radio_utilisateur_2.SetToolTipString(u"Uniquement parmi une liste d'utilisateurs cochés")
-        self.ctrl_utilisateurs.SetToolTipString(u"Cochez les utilisateurs")
+        self.check_jour.SetToolTipString(_(u"Cochez cette case pour activer une condition de jour"))
+        self.check_scolaire_lundi.SetToolTipString(_(u"Lundi"))
+        self.check_scolaire_mardi.SetToolTipString(_(u"Mardi"))
+        self.check_scolaire_mercredi.SetToolTipString(_(u"Mercredi"))
+        self.check_scolaire_jeudi.SetToolTipString(_(u"Jeudi"))
+        self.check_scolaire_vendredi.SetToolTipString(_(u"Vendredi"))
+        self.check_scolaire_samedi.SetToolTipString(_(u"Samedi"))
+        self.check_scolaire_dimanche.SetToolTipString(_(u"Dimanche"))
+        self.check_vacances_lundi.SetToolTipString(_(u"Lundi"))
+        self.check_vacances_mardi.SetToolTipString(_(u"Mardi"))
+        self.check_vacances_mercredi.SetToolTipString(_(u"Mercredi"))
+        self.check_vacances_jeudi.SetToolTipString(_(u"Jeudi"))
+        self.check_vacances_vendredi.SetToolTipString(_(u"Vendredi"))
+        self.check_vacances_samedi.SetToolTipString(_(u"Samedi"))
+        self.check_vacances_dimanche.SetToolTipString(_(u"Dimanche"))
+        self.check_heure.SetToolTipString(_(u"Cochez cette case pour activer une condition d'heure"))
+        self.ctrl_heure_debut.SetToolTipString(_(u"Saisissez une heure minimale"))
+        self.ctrl_heure_fin.SetToolTipString(_(u"Saisissez une heure maximale"))
+        self.check_poste.SetToolTipString(_(u"Cochez cette case pour activer une condition de poste"))
+        self.radio_poste_1.SetToolTipString(_(u"Uniquement pour ce poste"))
+        self.radio_poste_2.SetToolTipString(_(u"Uniquement parmi une liste de postes cochés"))
+        self.ctrl_postes.SetToolTipString(_(u"Saisissez les noms de poste du réseau séparés par des points-virgules (;)"))
+        self.check_derniere.SetToolTipString(_(u"Cochez cette case pour activer une condition de délai"))
+        self.ctrl_derniere.SetToolTipString(_(u"Sélectionnez un délai"))
+        self.check_utilisateur.SetToolTipString(_(u"Cochez cette case pour activer une condition d'utilisateur"))
+        self.radio_utilisateur_1.SetToolTipString(_(u"Uniquement cet utilisateur"))
+        self.radio_utilisateur_2.SetToolTipString(_(u"Uniquement parmi une liste d'utilisateurs cochés"))
+        self.ctrl_utilisateurs.SetToolTipString(_(u"Cochez les utilisateurs"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(1, 2, 10, 10)
@@ -393,7 +395,7 @@ class CTRL_Conditions(wx.Panel) :
             else:
                 nomUtilisateur = u"n°%d" % self.IDutilisateur
         else:
-            nomUtilisateur = u"Utilisateur inconnu"
+            nomUtilisateur = _(u"Utilisateur inconnu")
         return IDutilisateur, nomUtilisateur
 
     def GetDonnees(self):
@@ -405,7 +407,7 @@ class CTRL_Conditions(wx.Panel) :
             jours_scolaires = ConvertListeEnChaine(self.GetJours("scolaire"))
             jours_vacances = ConvertListeEnChaine(self.GetJours("vacances"))
             if jours_scolaires == None and jours_vacances == None :
-                dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'jour' mais vous n'avez coché aucun jour !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'jour' mais vous n'avez coché aucun jour !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -417,7 +419,7 @@ class CTRL_Conditions(wx.Panel) :
             heure_min = self.ctrl_heure_debut.GetHeure()
             heure_max = self.ctrl_heure_fin.GetHeure()
             if heure_min == None or heure_max == None :
-                dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'heure' mais les heures saisies ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'heure' mais les heures saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -431,7 +433,7 @@ class CTRL_Conditions(wx.Panel) :
             if self.radio_poste_2.GetValue() == True :
                 poste = self.ctrl_postes.GetValue() 
                 if poste == "" :
-                    dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'poste' mais sans saisir de noms de postes !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'poste' mais sans saisir de noms de postes !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -449,7 +451,7 @@ class CTRL_Conditions(wx.Panel) :
             if self.radio_utilisateur_2.GetValue() == True :
                 listeUtilisateurs = self.ctrl_utilisateurs.GetIDcoches()
                 if len(listeUtilisateurs) == 0 :
-                    dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'utilisateur' mais sans cocher d'utilisateurs dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'utilisateur' mais sans cocher d'utilisateurs dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -530,16 +532,16 @@ class CTRL_Options(wx.Panel) :
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         
         # Interface
-        self.box_interface_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Interface utilisateur")
-        self.check_demander = wx.CheckBox(self, wx.ID_ANY, u"Demander à l'utilisateur la confirmation du lancement de la sauvegarde")
+        self.box_interface_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Interface utilisateur"))
+        self.check_demander = wx.CheckBox(self, wx.ID_ANY, _(u"Demander à l'utilisateur la confirmation du lancement de la sauvegarde"))
         self.check_demander.SetValue(True)
-        self.check_confirmation = wx.CheckBox(self, wx.ID_ANY, u"Afficher un message de confirmation si sauvegarde réussie")
-        self.check_interface = wx.CheckBox(self, wx.ID_ANY, u"Afficher l'interface du module de sauvegarde")
+        self.check_confirmation = wx.CheckBox(self, wx.ID_ANY, _(u"Afficher un message de confirmation si sauvegarde réussie"))
+        self.check_interface = wx.CheckBox(self, wx.ID_ANY, _(u"Afficher l'interface du module de sauvegarde"))
 
         # Suppression
-        self.box_suppression_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Sauvegardes obsolètes")
-        self.check_suppression = wx.CheckBox(self, wx.ID_ANY, u"Supprimer les sauvegardes présentes dans le répertoire datant de plus de")
-        self.listeAnciennete = [(2, u"2 jours"), (5, u"5 jours"), (7, u"1 semaine"), (14, u"2 semaines"), (21, u"3 semaines"), (30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (180, u"6 mois"), (365, u"1 année"), (730, u"2 années"), (1095, u"3 années"),]
+        self.box_suppression_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sauvegardes obsolètes"))
+        self.check_suppression = wx.CheckBox(self, wx.ID_ANY, _(u"Supprimer les sauvegardes présentes dans le répertoire datant de plus de"))
+        self.listeAnciennete = [(2, _(u"2 jours")), (5, _(u"5 jours")), (7, _(u"1 semaine")), (14, _(u"2 semaines")), (21, _(u"3 semaines")), (30, _(u"1 mois")), (60, _(u"2 mois")), (90, _(u"3 mois")), (180, _(u"6 mois")), (365, _(u"1 année")), (730, _(u"2 années")), (1095, _(u"3 années")),]
         listeLabels = []
         for nbre, label in self.listeAnciennete :
             listeLabels.append(label)
@@ -554,11 +556,11 @@ class CTRL_Options(wx.Panel) :
         self.OnCheckSuppression(None) 
         
     def __set_properties(self):
-        self.check_demander.SetToolTipString(u"Noethys affichera une boîte de dialogue proposant la sauvegarde. A défaut, la sauvegarde sera réalisée automatiquement sans demander l'avis de l'utilisateur.")
-        self.check_interface.SetToolTipString(u"Pour afficher l'interface utilisateur avant la sauvegarde afin de permettre à l'utilisateur de modifier certains paramètres.")
-        self.check_confirmation.SetToolTipString(u"Pour afficher un message de confirmation si la sauvegarde a été réussie.")
-        self.check_suppression.SetToolTipString(u"Cochez cette case pour activer la suppression automatique des sauvegardes les plus anciennes")
-        self.ctrl_suppression.SetToolTipString(u"Sélectionnez l'ancienneté des sauvegardes à supprimer")
+        self.check_demander.SetToolTipString(_(u"Noethys affichera une boîte de dialogue proposant la sauvegarde. A défaut, la sauvegarde sera réalisée automatiquement sans demander l'avis de l'utilisateur."))
+        self.check_interface.SetToolTipString(_(u"Pour afficher l'interface utilisateur avant la sauvegarde afin de permettre à l'utilisateur de modifier certains paramètres."))
+        self.check_confirmation.SetToolTipString(_(u"Pour afficher un message de confirmation si la sauvegarde a été réussie."))
+        self.check_suppression.SetToolTipString(_(u"Cochez cette case pour activer la suppression automatique des sauvegardes les plus anciennes"))
+        self.ctrl_suppression.SetToolTipString(_(u"Sélectionnez l'ancienneté des sauvegardes à supprimer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
@@ -634,9 +636,9 @@ class CTRL_Parametres(wx.Notebook):
         self.dictPages = {}
         
         listePages = [
-            (u"sauvegarde", u"Sauvegarde", DLG_Sauvegarde.CTRL_Parametres(self, labelControleNom=u"Préfixe"), "Sauvegarder_param.png"),
-            (u"conditions", u"Conditions", CTRL_Conditions(self), "Cocher.png"),
-            (u"options", u"Options", CTRL_Options(self), "Options.png"),
+            (_(u"sauvegarde"), _(u"Sauvegarde"), DLG_Sauvegarde.CTRL_Parametres(self, labelControleNom=_(u"Préfixe")), "Sauvegarder_param.png"),
+            (_(u"conditions"), _(u"Conditions"), CTRL_Conditions(self), "Cocher.png"),
+            (_(u"options"), _(u"Options"), CTRL_Options(self), "Options.png"),
             ]
             
         # ImageList pour le NoteBook
@@ -682,20 +684,20 @@ class Dialog(wx.Dialog):
         self.IDsauvegarde = IDsauvegarde
 
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, u"Généralites")
-        self.label_nom = wx.StaticText(self, -1, u"Nom de la procédure :")
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom de la procédure :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_observations = wx.StaticText(self, -1, u"Observations :")
+        self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -707,17 +709,17 @@ class Dialog(wx.Dialog):
         # Init contrôles
         if self.IDsauvegarde != None :
             self.Importation() 
-            self.SetTitle(u"Modification d'une procédure de sauvegarde automatique")
+            self.SetTitle(_(u"Modification d'une procédure de sauvegarde automatique"))
         else:
             self.ctrl_parametres.GetPageAvecCode("sauvegarde").ctrl_nom.SetValue("Noethys")
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une procédure de sauvegarde automatique")
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour cette procédure de sauvegarde (Ex : 'Ma sauvegarde 1')")
-        self.ctrl_observations.SetToolTipString(u"Vous pouvez saisir des observations [Optionnel]")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une procédure de sauvegarde automatique"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette procédure de sauvegarde (Ex : 'Ma sauvegarde 1')"))
+        self.ctrl_observations.SetToolTipString(_(u"Vous pouvez saisir des observations [Optionnel]"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
@@ -798,7 +800,7 @@ class Dialog(wx.Dialog):
         
         nom = self.ctrl_nom.GetValue() 
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un nom pour cette procédure de sauvegarde !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour cette procédure de sauvegarde !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus() 

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -50,7 +52,7 @@ class Track(object):
         self.IDfacture = donnees["IDfacture"]
         
         if self.labelPrestation != None and self.montantPrestation != None and self.montantInitialPrestation != None :
-            self.textePrestation = u"%s (initial : %.2f %s - final : %.2f %s)" % (self.labelPrestation, self.montantInitialPrestation, SYMBOLE, self.montantPrestation, SYMBOLE)
+            self.textePrestation = _(u"%s (initial : %.2f %s - final : %.2f %s)") % (self.labelPrestation, self.montantInitialPrestation, SYMBOLE, self.montantPrestation, SYMBOLE)
         else:
             self.textePrestation = u""
         
@@ -182,28 +184,28 @@ class ListView(FastObjectListView):
         
         def FormateFacture(IDfacture):
             if IDfacture == None :
-                return u"Non"
+                return _(u"Non")
             else :
-                return u"Oui"
+                return _(u"Oui")
             
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDdeduction", typeDonnee="entier"),
-            ColumnDefn(u"Date", 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
-            ColumnDefn(u"Famille", 'left', 160, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Individu", 'left', 140, "nomComplet", typeDonnee="texte"), 
-            ColumnDefn(u"Label déduction", 'left', 220, "label", typeDonnee="texte"), 
-            ColumnDefn(u"Montant", 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
-            ColumnDefn(u"Label prestation", 'left', 150, "labelPrestation", typeDonnee="texte"), 
-            ColumnDefn(u"Date prestation", 'left', 90, "datePrestation", typeDonnee="date", stringConverter=FormateDateCourt), 
-            ColumnDefn(u"Activité", 'left', 70, "abregeActivite", typeDonnee="texte"), 
-            ColumnDefn(u"Montant initial", 'right', 90, "montantInitialPrestation", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Montant final", 'right', 90, "montantPrestation", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Facturé", 'left', 60, "IDfacture", typeDonnee="texte", stringConverter=FormateFacture),
+            ColumnDefn(_(u"ID"), "left", 0, "IDdeduction", typeDonnee="entier"),
+            ColumnDefn(_(u"Date"), 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
+            ColumnDefn(_(u"Famille"), 'left', 160, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Individu"), 'left', 140, "nomComplet", typeDonnee="texte"), 
+            ColumnDefn(_(u"Label déduction"), 'left', 220, "label", typeDonnee="texte"), 
+            ColumnDefn(_(u"Montant"), 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
+            ColumnDefn(_(u"Label prestation"), 'left', 150, "labelPrestation", typeDonnee="texte"), 
+            ColumnDefn(_(u"Date prestation"), 'left', 90, "datePrestation", typeDonnee="date", stringConverter=FormateDateCourt), 
+            ColumnDefn(_(u"Activité"), 'left', 70, "abregeActivite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Montant initial"), 'right', 90, "montantInitialPrestation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Montant final"), 'right', 90, "montantPrestation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Facturé"), 'left', 60, "IDfacture", typeDonnee="texte", stringConverter=FormateFacture),
             ]
 
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune déduction")
+        self.SetEmptyListMsg(_(u"Aucune déduction"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -244,7 +246,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -252,7 +254,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -262,14 +264,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -278,14 +280,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -297,28 +299,28 @@ class ListView(FastObjectListView):
     def Apercu(self, event=None):
         import UTILS_Printer
         intro = self.labelParametres
-        total = u"%d déductions" % len(self.donnees)
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des déductions", intro=intro, total=total, format="A", orientation=wx.LANDSCAPE)
+        total = _(u"%d déductions") % len(self.donnees)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des déductions"), intro=intro, total=total, format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event=None):
         import UTILS_Printer
         intro = self.labelParametres
-        total = u"%d déductions" % len(self.donnees)
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des déductions", intro=intro, total=total, format="A", orientation=wx.LANDSCAPE)
+        total = _(u"%d déductions") % len(self.donnees)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des déductions"), intro=intro, total=total, format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des déductions")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des déductions"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des déductions")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des déductions"))
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune déduction à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune déduction à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -346,7 +348,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -354,7 +356,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les %d déductions cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d déductions cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -363,7 +365,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la déduction n°%d ?" % listeSelections[0].IDdeduction, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la déduction n°%d ?") % listeSelections[0].IDdeduction, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -375,7 +377,7 @@ class ListView(FastObjectListView):
             if track.IDfacture != None :
                 nbreFactures += 1
         if nbreFactures > 0 :
-            dlg = wx.MessageDialog(self, u"Suppression impossible : %d déductions sont associées à des prestations déjà facturées !" % nbreFactures, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Suppression impossible : %d déductions sont associées à des prestations déjà facturées !") % nbreFactures, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False                
@@ -407,7 +409,7 @@ class ListView(FastObjectListView):
             else : conditionSuppressions = str(tuple(listeSupprVentilations))
             DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppressions)
         if len(listeModifications) > 0 :
-            DB.Executermany(u"UPDATE prestations SET montant=? WHERE IDprestation=?", listeModifications, commit=False)
+            DB.Executermany(_(u"UPDATE prestations SET montant=? WHERE IDprestation=?"), listeModifications, commit=False)
         DB.Commit()
         DB.Close() 
 
@@ -433,7 +435,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

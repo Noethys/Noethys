@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -40,13 +42,13 @@ class Track(object):
             if dictModeles.has_key(IDmodele) :
                 self.texteDroits = dictModeles[IDmodele]
             else :
-                self.texteDroits = u"Modèle de droits inconnu"
+                self.texteDroits = _(u"Modèle de droits inconnu")
 
         elif self.profil == "perso" :
-            self.texteDroits = u"Droits personnalisés"
+            self.texteDroits = _(u"Droits personnalisés")
         
         else :
-            self.texteDroits = u"Administrateur"
+            self.texteDroits = _(u"Administrateur")
         
         # Image
         if self.nomImage == None or self.nomImage == "Automatique" :
@@ -138,14 +140,14 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             
             ColumnDefn(u"", 'left', 22, "IDutilisateur", typeDonnee="entier", imageGetter=GetImageAvatar),
-            ColumnDefn(u"Nom", 'left', 150, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Prénom", 'left', 150, "prenom", typeDonnee="texte"),
-            ColumnDefn(u"Actif", "left", 60, "texteActif", typeDonnee="texte", imageGetter=GetImageActif),
-            ColumnDefn(u"Droits", 'left', 200, "texteDroits", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 150, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Prénom"), 'left', 150, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Actif"), "left", 60, "texteActif", typeDonnee="texte", imageGetter=GetImageActif),
+            ColumnDefn(_(u"Droits"), 'left', 200, "texteDroits", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun utilisateur")
+        self.SetEmptyListMsg(_(u"Aucun utilisateur"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -180,7 +182,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -189,7 +191,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -197,7 +199,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -207,7 +209,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Historique
-        item = wx.MenuItem(menuPop, 60, u"Historique")
+        item = wx.MenuItem(menuPop, 60, _(u"Historique"))
         bmp = wx.Bitmap("Images/16x16/Horloge3.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -217,14 +219,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -235,12 +237,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des utilisateurs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des utilisateurs"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des utilisateurs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des utilisateurs"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
@@ -254,7 +256,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun utilisateur à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun utilisateur à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -268,7 +270,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun utilisateur à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun utilisateur à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -287,7 +289,7 @@ class ListView(FastObjectListView):
         nbreConso = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreConso > 0 :
-            dlg = wx.MessageDialog(self, u"Cet utilisateur a déjà été attribué à %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreConso, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet utilisateur a déjà été attribué à %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreConso, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -302,7 +304,7 @@ class ListView(FastObjectListView):
         nbreReglements = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreReglements > 0 :
-            dlg = wx.MessageDialog(self, u"Cet utilisateur a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreReglements, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet utilisateur a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreReglements, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -314,13 +316,13 @@ class ListView(FastObjectListView):
                 if track.profil == "administrateur" and track.IDutilisateur != IDutilisateur : 
                     nbreAdmin += 1
             if nbreAdmin == 0 :
-                dlg = wx.MessageDialog(self, u"Vous ne pouvez pas supprimer le seul administrateur !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer le seul administrateur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
         # Suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cet utilisateur ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet utilisateur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("utilisateurs", "IDutilisateur", IDutilisateur)
@@ -332,7 +334,7 @@ class ListView(FastObjectListView):
     def Historique(self, event):
         """ Affiche l'historique de l'utilisateur """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun utilisateur dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun utilisateur dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -351,7 +353,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un utilisateur...")
+        self.SetDescriptiveText(_(u"Rechercher un utilisateur..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

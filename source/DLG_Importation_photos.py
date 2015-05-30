@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import GestionDB
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
@@ -82,13 +84,13 @@ class ListView(FastObjectListView):
             return track.index 
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDinscription"),
-            ColumnDefn(u"Photo", 'center', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
-            ColumnDefn(u"Individu", 'center', 100, "nomIndividu", isSpaceFilling=True),
+            ColumnDefn(_(u"ID"), "left", 0, "IDinscription"),
+            ColumnDefn(_(u"Photo"), 'center', TAILLE_IMAGE[0]+1, "", imageGetter=GetImage),
+            ColumnDefn(_(u"Individu"), 'center', 100, "nomIndividu", isSpaceFilling=True),
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun visage détecté")
+        self.SetEmptyListMsg(_(u"Aucun visage détecté"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -115,7 +117,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune photo à identifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune photo à identifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -146,10 +148,10 @@ class DLG_Rechercher_individu(wx.Dialog):
         self.ctrl_listview.MAJ() 
         self.ctrl_recherche = OL_Individus_grille_ajouter.CTRL_Outils(self, listview=self.ctrl_listview)
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
-        self.SetTitle(u"Identifier un individu")
+        self.SetTitle(_(u"Identifier un individu"))
         self.SetMinSize((550, 460))
         
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -189,7 +191,7 @@ class DLG_Rechercher_individu(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.GetDonnees() == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -204,21 +206,21 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.nom_fichier = None
         
-        intro = u"Vous pouvez ici importer un lot de photos individuelles depuis une photo de groupe. Chargez la photo et Noethys se chargera de détecter les visages. Vous devrez ensuite identifier chaque photo : Double-cliquez sur une photo pour l'associer à un individu. Cliquez sur Enregistrer pour terminer."
-        titre = u"Importer des photos individuelles"
+        intro = _(u"Vous pouvez ici importer un lot de photos individuelles depuis une photo de groupe. Chargez la photo et Noethys se chargera de détecter les visages. Vous devrez ensuite identifier chaque photo : Double-cliquez sur une photo pour l'associer à un individu. Cliquez sur Enregistrer pour terminer.")
+        titre = _(u"Importer des photos individuelles")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Photos.png")
         
         self.ctrl_image = wx.StaticBitmap(self, -1, bitmap=wx.NullBitmap, size=TAILLE_IMAGE_ORIGINALE, style=wx.SUNKEN_BORDER)
-        self.bouton_image = wx.Button(self, -1, u"Charger une image")
-        self.bouton_sauvegarder = wx.Button(self, -1, u"Enregistrer les photos identifiées")
-        self.label_infos = wx.StaticText(self, -1, u"Cliquez le bouton Charger\npour rechercher la photo de\ngroupe à analyser.", style=wx.ALIGN_CENTER)
+        self.bouton_image = wx.Button(self, -1, _(u"Charger une image"))
+        self.bouton_sauvegarder = wx.Button(self, -1, _(u"Enregistrer les photos identifiées"))
+        self.label_infos = wx.StaticText(self, -1, _(u"Cliquez le bouton Charger\npour rechercher la photo de\ngroupe à analyser."), style=wx.ALIGN_CENTER)
 
         self.ctrl_listview = ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ() 
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -230,10 +232,10 @@ class Dialog(wx.Dialog):
         self.AnalysePhoto() 
 
     def __set_properties(self):
-        self.bouton_image.SetToolTipString(u"Cliquez ici pour charger une image")
-        self.bouton_sauvegarder.SetToolTipString(u"Cliquez ici pour enregistrer les images identifiées dans les fiches individuelles correspondantes")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_image.SetToolTipString(_(u"Cliquez ici pour charger une image"))
+        self.bouton_sauvegarder.SetToolTipString(_(u"Cliquez ici pour enregistrer les images identifiées dans les fiches individuelles correspondantes"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((820, 650))
 
     def __do_layout(self):
@@ -291,7 +293,7 @@ class Dialog(wx.Dialog):
         """ Charger un fichier """
         nbreIdentifiees = len(self.GetPhotosIdentifiees())
         if nbreIdentifiees > 0 :
-            dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment charger une nouvelle image ?\n\nAttention, les %d photo(s) identifiée(s) non enregistrées seront annulées." % nbreIdentifiees, u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment charger une nouvelle image ?\n\nAttention, les %d photo(s) identifiée(s) non enregistrées seront annulées.") % nbreIdentifiees, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -301,7 +303,7 @@ class Dialog(wx.Dialog):
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            self, message=u"Choisissez une image",
+            self, message=_(u"Choisissez une image"),
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
@@ -331,10 +333,10 @@ class Dialog(wx.Dialog):
             self.AfficheImageOriginale(img.ConvertToBitmap())
             return False
         
-        self.label_infos.SetLabel(u"Analyse de l'image en cours...")
+        self.label_infos.SetLabel(_(u"Analyse de l'image en cours..."))
         self.Layout()
         
-        dlgAttente = PBI.PyBusyInfo(u"Analyse de l'image en cours...", parent=self, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Analyse de l'image en cours..."), parent=self, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         cascade = cv2.CascadeClassifier('Outils/haarcascade_frontalface_alt2.xml')
@@ -370,7 +372,7 @@ class Dialog(wx.Dialog):
         self.AfficheImageOriginale(bmp)
         
         # MAJ Label_infos
-        texte = u"Noethys a détecté %d visages.\n\nDouble-cliquez sur les lignes\nde la liste pour les associer\nà des individus." % len(listePhotos)
+        texte = _(u"Noethys a détecté %d visages.\n\nDouble-cliquez sur les lignes\nde la liste pour les associer\nà des individus.") % len(listePhotos)
         self.label_infos.SetLabel(texte)
         self.Layout()
         
@@ -400,14 +402,14 @@ class Dialog(wx.Dialog):
         """ Enregistre les photos identifiées """
         tracks = self.GetPhotosIdentifiees()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez identifié aucune photo dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez identifié aucune photo dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         DB = GestionDB.DB(suffixe="PHOTOS")
         if DB.echec == 1 : 
-            dlg = wx.MessageDialog(self, u"La base de données PHOTOS n'a pas été trouvée !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La base de données PHOTOS n'a pas été trouvée !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -436,7 +438,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         
         # Message de confirmation
-        dlg = wx.MessageDialog(self, u"Les %d photos identifiées ont été enregistrées avec succès dans les fiches individuelles !" % len(tracks), u"Confirmation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Les %d photos identifiées ont été enregistrées avec succès dans les fiches individuelles !") % len(tracks), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

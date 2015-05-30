@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import wx.lib.masked as masked
 import wx.html as html
@@ -113,28 +115,28 @@ class Dialog(wx.Dialog):
         self.derniereValidation = (None, None)
 
         # Bandeau
-        titre = u"Enregistrement"
-        intro = u"Vous pouvez saisir ici votre code d'enregistrement personnel afin d'activer votre abonnement Classic ou Premium. Effectuez ce paramétrage sur chacun de vos postes."
+        titre = _(u"Enregistrement")
+        intro = _(u"Vous pouvez saisir ici votre code d'enregistrement personnel afin d'activer votre abonnement Classic ou Premium. Effectuez ce paramétrage sur chacun de vos postes.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Cle.png")
         
         # Saisie code
-        self.staticbox_code_staticbox = wx.StaticBox(self, -1, u"Code d'enregistrement")
-        self.label_identifiant = wx.StaticText(self, -1, u"Identifiant :")
+        self.staticbox_code_staticbox = wx.StaticBox(self, -1, _(u"Code d'enregistrement"))
+        self.label_identifiant = wx.StaticText(self, -1, _(u"Identifiant :"))
         self.ctrl_identifiant = wx.TextCtrl(self, -1, "")
-        self.label_code = wx.StaticText(self, -1, u"Code :")
+        self.label_code = wx.StaticText(self, -1, _(u"Code :"))
         self.ctrl_code = masked.TextCtrl(self, -1, "", mask="AAAA-AAAA-AAAA-AAAA-AAAA", formatcodes="F!")
         self.ctrl_code.SetMinSize((190, -1))
-        self.bouton_validite = wx.Button(self, -1, u"Vérifier la validité")
+        self.bouton_validite = wx.Button(self, -1, _(u"Vérifier la validité"))
         self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap("Images/16x16/absenti.png", wx.BITMAP_TYPE_ANY))
-        self.label_validite = wx.StaticText(self, -1, u"Veuillez saisir un code.")
+        self.label_validite = wx.StaticText(self, -1, _(u"Veuillez saisir un code."))
         
         # HTML
         self.ctrl_html = MyHtml(self, texte=TEXTE, hauteur=30)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -162,11 +164,11 @@ class Dialog(wx.Dialog):
             
 
     def __set_properties(self):
-        self.ctrl_identifiant.SetToolTipString(u"Saisissez votre identifiant")
-        self.ctrl_code.SetToolTipString(u"Saisissez votre code d'enregistrement")
-        self.bouton_validite.SetToolTipString(u"Cliquez ici pour vérifier la validité de votre code d'enregistrement")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_identifiant.SetToolTipString(_(u"Saisissez votre identifiant"))
+        self.ctrl_code.SetToolTipString(_(u"Saisissez votre code d'enregistrement"))
+        self.bouton_validite.SetToolTipString(_(u"Cliquez ici pour vérifier la validité de votre code d'enregistrement"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((460, 600))
 
     def __do_layout(self):
@@ -217,13 +219,13 @@ class Dialog(wx.Dialog):
         # Vérifie la saisie
         identifiant = self.ctrl_identifiant.GetValue()
         if len(identifiant) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun identifiant !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun identifiant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_identifiant.SetFocus()
             return
         if " " in identifiant :
-            dlg = wx.MessageDialog(self, u"L'identifiant saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'identifiant saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_identifiant.SetFocus()
@@ -231,7 +233,7 @@ class Dialog(wx.Dialog):
 
         code = self.ctrl_code.GetValue()
         if " " in code :
-            dlg = wx.MessageDialog(self, u"Le code saisi n'est pas complet !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le code saisi n'est pas complet !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code.SetFocus()
@@ -243,7 +245,7 @@ class Dialog(wx.Dialog):
     
     def VerifieEtat(self, identifiant="", code=""):
         """ Vérifie la validité du code en ligne """
-        dlgAttente = PBI.PyBusyInfo(u"Vérification du code en cours...", parent=None, title=u"Veuillez patienter", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Vérification du code en cours..."), parent=None, title=_(u"Veuillez patienter"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         try :
@@ -269,18 +271,18 @@ class Dialog(wx.Dialog):
         
         # Affiche l'état
         if date == None :
-            texte = u"Vous n'avez saisi aucun code valide"
+            texte = _(u"Vous n'avez saisi aucun code valide")
             image = "pasok"
         else :
             nbreJoursRestants =  (date - datetime.date.today()).days
             if nbreJoursRestants < 0 :
-                texte = u"Votre licence est périmée depuis le %s" % DateEngFr(str(date))
+                texte = _(u"Votre licence est périmée depuis le %s") % DateEngFr(str(date))
                 image = "pasok"
             elif nbreJoursRestants <= 30 :
-                texte = u"Votre licence est valide jusqu'au %s (%d jours restants)" % (DateEngFr(str(date)), nbreJoursRestants)
+                texte = _(u"Votre licence est valide jusqu'au %s (%d jours restants)") % (DateEngFr(str(date)), nbreJoursRestants)
                 image = "attention"
             else :
-                texte = u"Votre licence est valide jusqu'au %s" % DateEngFr(str(date))
+                texte = _(u"Votre licence est valide jusqu'au %s") % DateEngFr(str(date))
                 image = "ok"
             
         self.AfficheEtatValidite(texte, image)
@@ -313,7 +315,7 @@ class Dialog(wx.Dialog):
         
         # Vérification des codes
         if identifiant != None and code != None and self.derniereValidation != (identifiant, code) and "impossible" not in self.label_validite.GetLabel() :
-            dlg = wx.MessageDialog(self, u"Vous avez modifié votre saisie depuis la dernière vérification.\n\nVeuillez vérifier maintenant la validité du code en cliquant sur le bouton 'Vérifier la validité' !", u"Validation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez modifié votre saisie depuis la dernière vérification.\n\nVeuillez vérifier maintenant la validité du code en cliquant sur le bouton 'Vérifier la validité' !"), _(u"Validation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

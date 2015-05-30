@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 
@@ -50,7 +52,7 @@ class Track(object):
             self.IDfamille = donnees["IDfamille"]
             self.nomUnite = dictUnites[self.IDunite]
             self.nomIndividu = dictIndividus[self.IDindividu]
-            self.detail = u"%s %s le %s pour %s" % (self.action.capitalize(), self.nomUnite, UTILS_Dates.DateDDEnFr(self.date), self.nomIndividu)
+            self.detail = _(u"%s %s le %s pour %s") % (self.action.capitalize(), self.nomUnite, UTILS_Dates.DateDDEnFr(self.date), self.nomIndividu)
 
         # Consommations
         if self.categorie == "memo_journee" :
@@ -61,7 +63,7 @@ class Track(object):
             self.date = donnees["date"]
             self.texte = donnees["texte"]
             self.nomIndividu = dictIndividus[self.IDindividu]
-            self.detail = u"%s le %s pour %s le texte '%s'" % (self.action.capitalize(), UTILS_Dates.DateDDEnFr(self.date), self.nomIndividu, self.texte)
+            self.detail = _(u"%s le %s pour %s le texte '%s'") % (self.action.capitalize(), UTILS_Dates.DateDDEnFr(self.date), self.nomIndividu, self.texte)
     
     
     
@@ -217,19 +219,19 @@ class ListView(GroupListView):
             return texte.capitalize() 
         
         def FormateCategorie(categorie):
-            if categorie == "consommation" : return u"Consommation"
-            if categorie == "memo_journee" : return u"Mémo journalier"
+            if categorie == "consommation" : return _(u"Consommation")
+            if categorie == "memo_journee" : return _(u"Mémo journalier")
             return "?"
         
         liste_Colonnes = [
-            ColumnDefn(u"Horodatage", "left", 130, "horodatage", typeDonnee="texte", stringConverter=FormateHorodatage),
-            ColumnDefn(u"Statut", "left", 50, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
-            ColumnDefn(u"Catégorie", "left", 120, "categorie", typeDonnee="texte", stringConverter=FormateCategorie),
-            ColumnDefn(u"Action", "left", 100, "action", typeDonnee="texte", stringConverter=Capitalize),
-            ColumnDefn(u"Individu", "left", 150, "nomIndividu", typeDonnee="texte"),
-            ColumnDefn(u"Détail", "left", 300, "detail", typeDonnee="texte"),
-            ColumnDefn(u"Appareil (ID)", "left", 130, "appareil", typeDonnee="texte"),
-            ColumnDefn(u"Nom du fichier", "left", 290, "nomFichier", typeDonnee="texte"),
+            ColumnDefn(_(u"Horodatage"), "left", 130, "horodatage", typeDonnee="texte", stringConverter=FormateHorodatage),
+            ColumnDefn(_(u"Statut"), "left", 50, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
+            ColumnDefn(_(u"Catégorie"), "left", 120, "categorie", typeDonnee="texte", stringConverter=FormateCategorie),
+            ColumnDefn(_(u"Action"), "left", 100, "action", typeDonnee="texte", stringConverter=Capitalize),
+            ColumnDefn(_(u"Individu"), "left", 150, "nomIndividu", typeDonnee="texte"),
+            ColumnDefn(_(u"Détail"), "left", 300, "detail", typeDonnee="texte"),
+            ColumnDefn(_(u"Appareil (ID)"), "left", 130, "appareil", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom du fichier"), "left", 290, "nomFichier", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -241,7 +243,7 @@ class ListView(GroupListView):
         self.useExpansionColumn = False
         self.showItemCounts = False
 
-        self.SetEmptyListMsg(u"Aucune action")
+        self.SetEmptyListMsg(_(u"Aucune action"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -260,14 +262,14 @@ class ListView(GroupListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -276,14 +278,14 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -294,21 +296,21 @@ class ListView(GroupListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des données à synchroniser", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des données à synchroniser"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des données à synchroniser", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des données à synchroniser"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des données à synchroniser")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des données à synchroniser"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des données à synchroniser")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des données à synchroniser"))
     
     def GetTracksCoches(self):
         return self.GetCheckedObjects()

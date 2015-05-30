@@ -8,22 +8,24 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Dates
 from dateutil import relativedelta
 
 
-ERREUR1 = u"Le mandat n'a pas été utilisé durant plus de 36 mois. Il faut donc refaire un nouveau mandat."
-ERREUR2 = u"Ce mandat ponctuel a déjà été utilisé une fois. Il faut refaire un nouveau mandat."
+ERREUR1 = _(u"Le mandat n'a pas été utilisé durant plus de 36 mois. Il faut donc refaire un nouveau mandat.")
+ERREUR2 = _(u"Ce mandat ponctuel a déjà été utilisé une fois. Il faut refaire un nouveau mandat.")
 
 LISTE_SEQUENCES = [
-    (u"Automatique", "auto"),
-    (u"Prélèvement ponctuel (OOFF)", "OOFF"),
-    (u"Premier prélèvement d'une série (FRST)", "FRST"),
-    (u"Prélèvement suivant d'une série (RCUR)", "RCUR"), 
-    (u"Dernier prélèvement d'une série (FNAL)", "FNAL"),
+    (_(u"Automatique"), "auto"),
+    (_(u"Prélèvement ponctuel (OOFF)"), "OOFF"),
+    (_(u"Premier prélèvement d'une série (FRST)"), "FRST"),
+    (_(u"Prélèvement suivant d'une série (RCUR)"), "RCUR"), 
+    (_(u"Dernier prélèvement d'une série (FNAL)"), "FNAL"),
     ]
 
 

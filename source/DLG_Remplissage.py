@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import os
 import CTRL_Remplissage
@@ -39,15 +41,15 @@ class ToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, *args, **kwds)
         
         # Boutons
-        self.AddLabelTool(ID_MODE_PLACES_INITIALES, u"Places max.", wx.Bitmap("Images/32x32/Places_max.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Afficher le nombre de places maximal initial", "")
-        self.AddLabelTool(ID_MODE_PLACES_PRISES, u"Places prises", wx.Bitmap("Images/32x32/Places_prises.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Afficher le nombre de places prises", "")
-        self.AddLabelTool(ID_MODE_PLACES_RESTANTES, u"Places dispo.", wx.Bitmap("Images/32x32/Places_dispo.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Afficher le nombre de places restantes", "")
-        self.AddLabelTool(ID_MODE_PLACES_ATTENTE, u"Places attente", wx.Bitmap("Images/32x32/Places_attente.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Afficher le nombre de places en attente", "")
+        self.AddLabelTool(ID_MODE_PLACES_INITIALES, _(u"Places max."), wx.Bitmap("Images/32x32/Places_max.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places maximal initial"), "")
+        self.AddLabelTool(ID_MODE_PLACES_PRISES, _(u"Places prises"), wx.Bitmap("Images/32x32/Places_prises.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places prises"), "")
+        self.AddLabelTool(ID_MODE_PLACES_RESTANTES, _(u"Places dispo."), wx.Bitmap("Images/32x32/Places_dispo.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places restantes"), "")
+        self.AddLabelTool(ID_MODE_PLACES_ATTENTE, _(u"Places attente"), wx.Bitmap("Images/32x32/Places_attente.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places en attente"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_LISTE_ATTENTE, u"Liste d'attente", wx.Bitmap("Images/32x32/Liste_attente.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Afficher la liste d'attente", "")
+        self.AddLabelTool(ID_LISTE_ATTENTE, _(u"Liste d'attente"), wx.Bitmap("Images/32x32/Liste_attente.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher la liste d'attente"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_PARAMETRES, u"Paramètres", wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Sélectionner les paramètres d'affichage", "")
-        self.AddLabelTool(ID_OUTILS, u"Outils", wx.Bitmap("Images/32x32/Configuration.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Outils", "")
+        self.AddLabelTool(ID_PARAMETRES, _(u"Paramètres"), wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Sélectionner les paramètres d'affichage"), "")
+        self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap("Images/32x32/Configuration.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
         
         # Binds
         self.Bind(wx.EVT_TOOL, self.Mode_places_initiales, id=ID_MODE_PLACES_INITIALES)
@@ -122,38 +124,38 @@ class ToolBar(wx.ToolBar):
         # Création du menu Outils
         menuPop = wx.Menu()
             
-        item = wx.MenuItem(menuPop, ID_APERCU, u"Aperçu avant impression", u"Imprimer la liste des effectifs affichée")
+        item = wx.MenuItem(menuPop, ID_APERCU, _(u"Aperçu avant impression"), _(u"Imprimer la liste des effectifs affichée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=ID_APERCU)
         
-        item = wx.MenuItem(menuPop, ID_IMPRIMER, u"Imprimer", u"Imprimer la liste des effectifs affichée")
+        item = wx.MenuItem(menuPop, ID_IMPRIMER, _(u"Imprimer"), _(u"Imprimer la liste des effectifs affichée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=ID_IMPRIMER)
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_EXPORT_TEXTE, u"Exporter au format Texte", u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, ID_EXPORT_TEXTE, _(u"Exporter au format Texte"), _(u"Exporter au format Texte"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.GetParent().ctrl_remplissage.ExportTexte, id=ID_EXPORT_TEXTE)
         
-        item = wx.MenuItem(menuPop, ID_EXPORT_EXCEL, u"Exporter au format Excel", u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, ID_EXPORT_EXCEL, _(u"Exporter au format Excel"), _(u"Exporter au format Excel"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.GetParent().ctrl_remplissage.ExportExcel, id=ID_EXPORT_EXCEL)
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_ACTUALISER, u"Actualiser", u"Actualiser l'affichage")
+        item = wx.MenuItem(menuPop, ID_ACTUALISER, _(u"Actualiser"), _(u"Actualiser l'affichage"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Actualiser, id=ID_ACTUALISER)
 
         menuPop.AppendSeparator()
         
-        item = wx.MenuItem(menuPop, ID_AIDE, u"Aide", u"Aide")
+        item = wx.MenuItem(menuPop, ID_AIDE, _(u"Aide"), _(u"Aide"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Aide.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Aide, id=ID_AIDE)

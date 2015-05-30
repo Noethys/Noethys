@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -30,37 +32,37 @@ def GetCondition(filtre="", choix="", criteres=""):
     
     # TEXTE
     if filtre == "texte" :
-        if choix == "EGAL" : description = u"Est égal à '%s'" % criteres
-        if choix == "DIFFERENT" : description = u"Est différent de '%s'" % criteres
-        if choix == "CONTIENT" : description = u"Contient '%s'" % criteres
-        if choix == "CONTIENTPAS" : description = u"Ne contient pas '%s'" % criteres
-        if choix == "VIDE" : description = u"Est vide"
-        if choix == "PASVIDE" : description = u"N'est pas vide"
+        if choix == "EGAL" : description = _(u"Est égal à '%s'") % criteres
+        if choix == "DIFFERENT" : description = _(u"Est différent de '%s'") % criteres
+        if choix == "CONTIENT" : description = _(u"Contient '%s'") % criteres
+        if choix == "CONTIENTPAS" : description = _(u"Ne contient pas '%s'") % criteres
+        if choix == "VIDE" : description = _(u"Est vide")
+        if choix == "PASVIDE" : description = _(u"N'est pas vide")
     
     # ENTIER
     if filtre == "entier" :
-        if choix == "EGAL" : description = u"Est égal à '%s'" % criteres
-        if choix == "DIFFERENT" : description = u"Est différent de '%s'" % criteres
-        if choix == "SUP" : description = u"Est supérieur à '%s'" % criteres
-        if choix == "SUPEGAL" : description = u"Est supérieur ou égal à '%s'" % criteres
-        if choix == "INF" : description = u"Est inférieur à '%s'" % criteres
-        if choix == "INFEGAL" : description = u"Est inférieur ou égal à '%s'" % criteres
-        if choix == "COMPRIS" : description = u"Est compris entre '%s' et '%s'" % (criteres.split(";")[0], criteres.split(";")[1])
+        if choix == "EGAL" : description = _(u"Est égal à '%s'") % criteres
+        if choix == "DIFFERENT" : description = _(u"Est différent de '%s'") % criteres
+        if choix == "SUP" : description = _(u"Est supérieur à '%s'") % criteres
+        if choix == "SUPEGAL" : description = _(u"Est supérieur ou égal à '%s'") % criteres
+        if choix == "INF" : description = _(u"Est inférieur à '%s'") % criteres
+        if choix == "INFEGAL" : description = _(u"Est inférieur ou égal à '%s'") % criteres
+        if choix == "COMPRIS" : description = _(u"Est compris entre '%s' et '%s'") % (criteres.split(";")[0], criteres.split(";")[1])
 
     # DATE
     if filtre == "date" :
-        if choix == "EGAL" : description = u"Est égal au '%s'" % DateEngFr(criteres)
-        if choix == "DIFFERENT" : description = u"Est différent du '%s'" % DateEngFr(criteres)
-        if choix == "SUP" : description = u"Est supérieur au '%s'" % DateEngFr(criteres)
-        if choix == "SUPEGAL" : description = u"Est supérieur ou égal au '%s'" % DateEngFr(criteres)
-        if choix == "INF" : description = u"Est inférieur au '%s'" % DateEngFr(criteres)
-        if choix == "INFEGAL" : description = u"Est inférieur ou égal au '%s'" % DateEngFr(criteres)
-        if choix == "COMPRIS" : description = u"Est compris entre le '%s' et le '%s'" % (DateEngFr(criteres.split(";")[0]), DateEngFr(criteres.split(";")[1]))
+        if choix == "EGAL" : description = _(u"Est égal au '%s'") % DateEngFr(criteres)
+        if choix == "DIFFERENT" : description = _(u"Est différent du '%s'") % DateEngFr(criteres)
+        if choix == "SUP" : description = _(u"Est supérieur au '%s'") % DateEngFr(criteres)
+        if choix == "SUPEGAL" : description = _(u"Est supérieur ou égal au '%s'") % DateEngFr(criteres)
+        if choix == "INF" : description = _(u"Est inférieur au '%s'") % DateEngFr(criteres)
+        if choix == "INFEGAL" : description = _(u"Est inférieur ou égal au '%s'") % DateEngFr(criteres)
+        if choix == "COMPRIS" : description = _(u"Est compris entre le '%s' et le '%s'") % (DateEngFr(criteres.split(";")[0]), DateEngFr(criteres.split(";")[1]))
 
     # COCHE
     if filtre == "coche" :
-        if choix == "COCHE" : description = u"Est 'oui'"
-        if choix == "DECOCHE" : description = u"Est 'non'"
+        if choix == "COCHE" : description = _(u"Est 'oui'")
+        if choix == "DECOCHE" : description = _(u"Est 'non'")
 
     # CHOIX
     if filtre == "choix" :
@@ -70,7 +72,7 @@ def GetCondition(filtre="", choix="", criteres=""):
             IDchoix = int(IDchoix)
             if DICT_CHOIX.has_key(IDchoix) :
                 listeLabelsChoix.append("'%s'" % DICT_CHOIX[IDchoix]["label"])
-        description = u"Doit être %s" % u" ou ".join(listeLabelsChoix)
+        description = _(u"Doit être %s") % _(u" ou ").join(listeLabelsChoix)
 
     return description
 
@@ -180,13 +182,13 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfiltre"),
-            ColumnDefn(u"Question", "left", 120, "label"), 
-            ColumnDefn(u"Condition", 'left', 165, "condition", isSpaceFilling=True),
+            ColumnDefn(_(u"ID"), "left", 0, "IDfiltre"),
+            ColumnDefn(_(u"Question"), "left", 120, "label"), 
+            ColumnDefn(_(u"Condition"), 'left', 165, "condition", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun filtre")
+        self.SetEmptyListMsg(_(u"Aucun filtre"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -221,7 +223,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -230,7 +232,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -238,7 +240,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -248,14 +250,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -264,14 +266,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -282,21 +284,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des filtres", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des filtres"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des filtres", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des filtres"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des filtres")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des filtres"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des filtres")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des filtres"))
 
     def Ajouter(self, event):
         # Ouverture de la fenêtre de saisie
@@ -312,7 +314,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun filtre à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -331,12 +333,12 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun filtre à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce filtre ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce filtre ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listeDonnees.pop(self.dictTracks[track])
             self.MAJ()
@@ -351,7 +353,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un filtre...")
+        self.SetDescriptiveText(_(u"Rechercher un filtre..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

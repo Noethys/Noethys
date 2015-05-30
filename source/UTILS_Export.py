@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import sys
@@ -71,7 +73,7 @@ def GetValeursGrid(grid=None):
 def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeValeurs=None, autoriseSelections=True):
     """ Export de la liste au format texte """
     if (listview != None and len(listview.donnees) == 0) or (grid != None and (grid.GetNumberRows() == 0 or grid.GetNumberCols() == 0)):
-        dlg = wx.MessageDialog(None, u"Il n'y a aucune donnée dans la liste !", "Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Il n'y a aucune donnée dans la liste !"), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
@@ -101,7 +103,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
     sp = wx.StandardPaths.Get()
     cheminDefaut = sp.GetDocumentsDir()
     dlg = wx.FileDialog(
-        None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+        None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
         defaultFile = nomFichier, 
         wildcard = wildcard, 
         style = wx.SAVE
@@ -116,7 +118,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
     
     # Le fichier de destination existe déjà :
     if os.path.isfile(cheminFichier) == True :
-        dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_NO :
             return False
             dlg.Destroy()
@@ -152,8 +154,8 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
     f.close()
     
     # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-    txtMessage = u"Le fichier Texte a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?"
-    dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+    txtMessage = _(u"Le fichier Texte a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+    dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
     reponse = dlgConfirm.ShowModal()
     dlgConfirm.Destroy()
     if reponse == wx.ID_NO:
@@ -165,14 +167,14 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
 # -------------------------------------------------------------------------------------------------------------------------------
 
 
-def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, listeValeurs=None, autoriseSelections=True):
+def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None, listeValeurs=None, autoriseSelections=True):
     """ Export de la liste au format Excel """
     # Plus de sélection pour éviter les bugs !!!!
     autoriseSelections = False 
     
     # Vérifie si données bien présentes
     if (listview != None and len(listview.donnees) == 0) or (grid != None and (grid.GetNumberRows() == 0 or grid.GetNumberCols() == 0)):
-        dlg = wx.MessageDialog(None, u"Il n'y a aucune donnée dans la liste !", "Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Il n'y a aucune donnée dans la liste !"), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
@@ -202,7 +204,7 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
     sp = wx.StandardPaths.Get()
     cheminDefaut = sp.GetDocumentsDir()
     dlg = wx.FileDialog(
-        None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+        None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
         defaultFile = nomFichier, 
         wildcard = wildcard, 
         style = wx.SAVE
@@ -217,7 +219,7 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
     
     # Le fichier de destination existe déjà :
     if os.path.isfile(cheminFichier) == True :
-        dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_NO :
             return False
             dlg.Destroy()
@@ -371,14 +373,14 @@ def ExportExcel(listview=None, grid=None, titre=u"Liste", listeColonnes=None, li
     try :
         wb.save(cheminFichier)
     except :
-        dlg = wx.MessageDialog(None, u"Il est impossible d'enregistrer le fichier Excel. Veuillez vérifier que ce fichier n'est pas déjà ouvert en arrière-plan.", "Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Il est impossible d'enregistrer le fichier Excel. Veuillez vérifier que ce fichier n'est pas déjà ouvert en arrière-plan."), "Erreur", wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
     
     # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-    txtMessage = u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?"
-    dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+    txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+    dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
     reponse = dlgConfirm.ShowModal()
     dlgConfirm.Destroy()
     if reponse == wx.ID_NO:

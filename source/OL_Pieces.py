@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import UTILS_Historique
@@ -64,11 +66,11 @@ class Track(object):
         self.individu_nomComplet = ""
         if parent.IDfamille != None and self.public != "famille" :
             self.individu_nomComplet = u"%s %s" % (self.individu_prenom, self.individu_nom)
-            self.nom += u" de " + self.individu_nomComplet
+            self.nom += _(u" de ") + self.individu_nomComplet
         
         # Nom des titulaires de famille
         if self.IDfamille != None :
-            self.nomTitulaires = u"IDfamille n°%d" % self.IDfamille
+            self.nomTitulaires = _(u"IDfamille n°%d") % self.IDfamille
             if parent.dictFamillesRattachees != None :
                 if parent.dictFamillesRattachees.has_key(self.IDfamille) :
                     self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
@@ -212,7 +214,7 @@ class ListView(FastObjectListView):
         
         def FormateDate(dateStr):
             if dateStr == "" : return ""
-            if dateStr == "2999-01-01" : return u"Illimitée"
+            if dateStr == "2999-01-01" : return _(u"Illimitée")
             date = str(datetime.date(year=int(dateStr[:4]), month=int(dateStr[5:7]), day=int(dateStr[8:10])))
             text = str(date[8:10]) + "/" + str(date[5:7]) + "/" + str(date[:4])
             return text
@@ -231,40 +233,40 @@ class ListView(FastObjectListView):
             # Si On est dans une fiche INDIVIDU
             if self.nbreFamilles < 2 :
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 190, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(_(u"Nom de la pièce"), 'left', 190, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
-                    ColumnDefn(u"Famille", 'left', 150, "nomTitulaires", typeDonnee="texte"),
+                    ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(_(u"Nom de la pièce"), 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"Famille"), 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
         else :
             # Si On est dans une fiche FAMILLE
             if self.nbreFamilles < 2 :
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 340, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(_(u"Nom de la pièce"), 'left', 340, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
                     ]
             else:
                 liste_Colonnes = [
-                    ColumnDefn(u"ID", "left", 0, "IDpiece", typeDonnee="entier"),
+                    ColumnDefn(_(u"ID"), "left", 0, "IDpiece", typeDonnee="entier"),
                     ColumnDefn(u"Du", "left", 85, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"au", "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-                    ColumnDefn(u"Nom de la pièce", 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
-                    ColumnDefn(u"Famille", 'left', 150, "nomTitulaires", typeDonnee="texte"),
+                    ColumnDefn(_(u"au"), "left", 85, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
+                    ColumnDefn(_(u"Nom de la pièce"), 'left', 165, "nom", typeDonnee="texte", imageGetter=GetImageDocument, isSpaceFilling=True),
+                    ColumnDefn(_(u"Famille"), 'left', 150, "nomTitulaires", typeDonnee="texte"),
                     ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune pièce")
+        self.SetEmptyListMsg(_(u"Aucune pièce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -304,7 +306,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -313,7 +315,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -321,7 +323,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -331,14 +333,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -347,14 +349,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -365,21 +367,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des pièces", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des pièces", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des pièces")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pièces"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des pièces")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pièces"))
 
     def AjoutExpress(self, IDfamille=None, IDtype_piece=None, IDindividu=None):
         if IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_pieces", "creer") == False : return
@@ -392,7 +394,7 @@ class ListView(FastObjectListView):
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, u"Pour saisir une pièce, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !", u"Saisie de pièce impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour saisir une pièce, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !"), _(u"Saisie de pièce impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -419,7 +421,7 @@ class ListView(FastObjectListView):
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, u"Pour saisir une pièce, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !", u"Saisie de pièce impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour saisir une pièce, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !"), _(u"Saisie de pièce impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -438,7 +440,7 @@ class ListView(FastObjectListView):
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pieces", "modifier") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune pièce à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -455,7 +457,7 @@ class ListView(FastObjectListView):
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_pieces", "supprimer") == False : return
 
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune pièce à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -463,7 +465,7 @@ class ListView(FastObjectListView):
         nomPiece = self.Selection()[0].nom
         IDindividu = self.Selection()[0].IDindividu
         IDfamille = self.Selection()[0].IDfamille
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette pièce ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette pièce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             # Suppression de la pièce
             DB = GestionDB.DB()
@@ -478,7 +480,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 17, 
-                "action" : u"Suppression de la pièce ID%d '%s'" % (IDpiece, nomPiece),
+                "action" : _(u"Suppression de la pièce ID%d '%s'") % (IDpiece, nomPiece),
                 },])
                 
             # Actualisation de l'affichage
@@ -495,7 +497,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une pièce...")
+        self.SetDescriptiveText(_(u"Rechercher une pièce..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

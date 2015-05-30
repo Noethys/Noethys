@@ -8,7 +8,11 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
+import os
+import shelve
 import CTRL_Bandeau
 
 import GestionDB
@@ -16,18 +20,84 @@ import UTILS_Config
 import UTILS_Utilisateurs
 
 
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+
+class Langue(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.listeLangues = [u"Français (par défaut)",]
+        self.listeCodes = [None,]
+        
+        # Recherche des langues disponibles
+        listeFichiers = os.listdir("Lang/") 
+        for nomFichier in listeFichiers :
+            code, extension = nomFichier.split(".")
+            fichier = shelve.open("Lang/" + nomFichier, "r")
+            dictInfos = fichier["###INFOS###"]
+            nom = dictInfos["nom_langue"]
+            code = dictInfos["code_langue"]
+            fichier.close()
+            
+            if code not in self.listeCodes :
+                self.listeCodes.append(code)
+                self.listeLangues.append(nom)
+        
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Langue interface*"))
+        self.label_langue = wx.StaticText(self, -1, _(u"Langue :"))
+        self.ctrl_langue = wx.Choice(self, -1, choices=self.listeLangues)
+
+        self.__set_properties()
+        self.__do_layout()
+        
+        self.ctrl_langue.SetSelection(0)
+        self.Importation() 
+
+    def __set_properties(self):
+        self.ctrl_langue.SetToolTipString(_(u"Sélectionnez la langue de l'interface parmi les langues disponibles dans la liste. Redémarrez le logiciel pour appliquer la modification."))
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_langue, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_langue, 1, wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(1)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+    
+    def Importation(self):
+        code = UTILS_Config.GetParametre("langue_interface", None)
+        index = 0
+        for codeTemp in self.listeCodes :
+            if codeTemp == code :
+                self.ctrl_langue.SetSelection(index)
+            index += 1
+            
+    def Validation(self):
+        return True
+    
+    def Sauvegarde(self):
+        code = self.listeCodes[self.ctrl_langue.GetSelection()]
+        UTILS_Config.SetParametre("langue_interface", code)
+
+
+
+# ------------------------------------------------------------------------------------------------------------------------
+
 class Monnaie(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Monnaie*")
-        self.label_singulier = wx.StaticText(self, -1, u"Nom (singulier) :")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Monnaie*"))
+        self.label_singulier = wx.StaticText(self, -1, _(u"Nom (singulier) :"))
         self.ctrl_singulier = wx.TextCtrl(self, -1, "")
-        self.label_division = wx.StaticText(self, -1, u"Unité divisionnaire :")
+        self.label_division = wx.StaticText(self, -1, _(u"Unité divisionnaire :"))
         self.ctrl_division = wx.TextCtrl(self, -1, "")
-        self.label_pluriel = wx.StaticText(self, -1, u"Nom (pluriel) :")
+        self.label_pluriel = wx.StaticText(self, -1, _(u"Nom (pluriel) :"))
         self.ctrl_pluriel = wx.TextCtrl(self, -1, "")
-        self.label_symbole = wx.StaticText(self, -1, u"Symbole :")
+        self.label_symbole = wx.StaticText(self, -1, _(u"Symbole :"))
         self.ctrl_symbole = wx.TextCtrl(self, -1, "")
 
         self.__set_properties()
@@ -36,9 +106,9 @@ class Monnaie(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_singulier.SetToolTipString(u"'Euro' par défaut (au singulier)")
-        self.ctrl_division.SetToolTipString(u"'Centime' par défaut (au singulier)")
-        self.ctrl_pluriel.SetToolTipString(u"'Euros' par défaut (au pluriel)")
+        self.ctrl_singulier.SetToolTipString(_(u"'Euro' par défaut (au singulier)"))
+        self.ctrl_division.SetToolTipString(_(u"'Centime' par défaut (au singulier)"))
+        self.ctrl_pluriel.SetToolTipString(_(u"'Euros' par défaut (au pluriel)"))
         self.ctrl_symbole.SetMinSize((60, -1))
         self.ctrl_symbole.SetToolTipString(u"'¤' par défaut")
 
@@ -61,15 +131,15 @@ class Monnaie(wx.Panel):
         staticbox.Fit(self)
     
     def Importation(self):
-        self.ctrl_singulier.SetValue(UTILS_Config.GetParametre("monnaie_singulier", u"Euro"))
-        self.ctrl_pluriel.SetValue(UTILS_Config.GetParametre("monnaie_pluriel", u"Euros"))
-        self.ctrl_division.SetValue(UTILS_Config.GetParametre("monnaie_division", u"Centime"))
+        self.ctrl_singulier.SetValue(UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro")))
+        self.ctrl_pluriel.SetValue(UTILS_Config.GetParametre("monnaie_pluriel", _(u"Euros")))
+        self.ctrl_division.SetValue(UTILS_Config.GetParametre("monnaie_division", _(u"Centime")))
         self.ctrl_symbole.SetValue(UTILS_Config.GetParametre("monnaie_symbole", u"¤"))
     
     def Validation(self):
         singulier = self.ctrl_singulier.GetValue() 
         if len(singulier) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une monnaie (singulier) !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une monnaie (singulier) !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_singulier.SetFocus()
@@ -77,7 +147,7 @@ class Monnaie(wx.Panel):
         
         pluriel = self.ctrl_pluriel.GetValue() 
         if len(pluriel) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une monnaie (pluriel) !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une monnaie (pluriel) !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_pluriel.SetFocus()
@@ -85,7 +155,7 @@ class Monnaie(wx.Panel):
 
         division = self.ctrl_division.GetValue() 
         if len(division) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une monnaie (division) !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une monnaie (division) !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_division.SetFocus()
@@ -93,7 +163,7 @@ class Monnaie(wx.Panel):
 
         symbole = self.ctrl_symbole.GetValue() 
         if len(symbole) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un symbole pour la monnaie !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un symbole pour la monnaie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_symbole.SetFocus()
@@ -119,9 +189,9 @@ class Telephones(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Numéros de téléphone")
-        self.radio_france = wx.RadioButton(self, -1, u"Format français", style = wx.RB_GROUP)
-        self.radio_libre = wx.RadioButton(self, -1, u"Format libre")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Numéros de téléphone"))
+        self.radio_france = wx.RadioButton(self, -1, _(u"Format français"), style = wx.RB_GROUP)
+        self.radio_libre = wx.RadioButton(self, -1, _(u"Format libre"))
 
         self.__set_properties()
         self.__do_layout()
@@ -129,8 +199,8 @@ class Telephones(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.radio_france.SetToolTipString(u"Format français")
-        self.radio_libre.SetToolTipString(u"Format libre")
+        self.radio_france.SetToolTipString(_(u"Format français"))
+        self.radio_libre.SetToolTipString(_(u"Format libre"))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -164,9 +234,9 @@ class Codes_postaux(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Codes postaux")
-        self.radio_france = wx.RadioButton(self, -1, u"Format français", style = wx.RB_GROUP)
-        self.radio_libre = wx.RadioButton(self, -1, u"Format libre")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Codes postaux"))
+        self.radio_france = wx.RadioButton(self, -1, _(u"Format français"), style = wx.RB_GROUP)
+        self.radio_libre = wx.RadioButton(self, -1, _(u"Format libre"))
 
         self.__set_properties()
         self.__do_layout()
@@ -174,8 +244,8 @@ class Codes_postaux(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.radio_france.SetToolTipString(u"Format français")
-        self.radio_libre.SetToolTipString(u"Format libre")
+        self.radio_france.SetToolTipString(_(u"Format français"))
+        self.radio_libre.SetToolTipString(_(u"Format libre"))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -209,8 +279,8 @@ class Adresses(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Adresses")
-        self.check_autoComplete = wx.CheckBox(self, -1, u"Auto-complétion des villes et codes postaux")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Adresses"))
+        self.check_autoComplete = wx.CheckBox(self, -1, _(u"Auto-complétion des villes et codes postaux"))
 
         self.__set_properties()
         self.__do_layout()
@@ -218,7 +288,7 @@ class Adresses(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check_autoComplete.SetToolTipString(u"Activation de l'auto-complétion")
+        self.check_autoComplete.SetToolTipString(_(u"Activation de l'auto-complétion"))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -244,8 +314,8 @@ class Rapport_bugs(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Rapports de bugs")
-        self.check = wx.CheckBox(self, -1, u"Affichage du rapport de bugs lorsqu'une erreur est rencontrée")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Rapports de bugs"))
+        self.check = wx.CheckBox(self, -1, _(u"Affichage du rapport de bugs lorsqu'une erreur est rencontrée"))
 
         self.__set_properties()
         self.__do_layout()
@@ -253,7 +323,7 @@ class Rapport_bugs(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check.SetToolTipString(u"Affichage du rapport de bugs lorsqu'une erreur est rencontrée")
+        self.check.SetToolTipString(_(u"Affichage du rapport de bugs lorsqu'une erreur est rencontrée"))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -279,8 +349,8 @@ class Propose_maj(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Mises à jour internet")
-        self.check = wx.CheckBox(self, -1, u"Propose le téléchargement des mises à jour à l'ouverture du logiciel")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Mises à jour internet"))
+        self.check = wx.CheckBox(self, -1, _(u"Propose le téléchargement des mises à jour à l'ouverture du logiciel"))
 
         self.__set_properties()
         self.__do_layout()
@@ -288,7 +358,7 @@ class Propose_maj(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check.SetToolTipString(u"Propose le téléchargement des mises à jour à l'ouverture du logiciel")
+        self.check.SetToolTipString(_(u"Propose le téléchargement des mises à jour à l'ouverture du logiciel"))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -314,11 +384,11 @@ class DerniersFichiers(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Liste des derniers fichiers ouverts")
-        self.label_nbre = wx.StaticText(self, -1, u"Nombre de fichiers affichés :")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Liste des derniers fichiers ouverts"))
+        self.label_nbre = wx.StaticText(self, -1, _(u"Nombre de fichiers affichés :"))
         self.ctrl_nbre = wx.SpinCtrl(self, -1)
         self.ctrl_nbre.SetRange(1, 20)
-        self.bouton_purge = wx.Button(self, -1, u"Purger la liste")
+        self.bouton_purge = wx.Button(self, -1, _(u"Purger la liste"))
 
         self.__set_properties()
         self.__do_layout()
@@ -328,8 +398,8 @@ class DerniersFichiers(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_nbre.SetToolTipString(u"Saisissez ici le nombre de fichiers à afficher dans la liste des fichiers ouverts")
-        self.bouton_purge.SetToolTipString(u"Cliquez ici pour purger la liste des derniers fichiers ouverts")
+        self.ctrl_nbre.SetToolTipString(_(u"Saisissez ici le nombre de fichiers à afficher dans la liste des fichiers ouverts"))
+        self.bouton_purge.SetToolTipString(_(u"Cliquez ici pour purger la liste des derniers fichiers ouverts"))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -352,7 +422,10 @@ class DerniersFichiers(wx.Panel):
         nbre = self.ctrl_nbre.GetValue()
         UTILS_Config.SetParametre("nbre_derniers_fichiers", nbre)
         topWindow = wx.GetApp().GetTopWindow()
-        topWindow.PurgeListeDerniersFichiers(nbre)
+        try :
+            topWindow.PurgeListeDerniersFichiers(nbre)
+        except :
+            pass
 
     def OnBoutonPurge(self, event):
         topWindow = wx.GetApp().GetTopWindow()
@@ -385,11 +458,12 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        intro = u"Vous pouvez modifier ici les paramètres de base du logiciel. Ces paramètres seront mémorisés uniquement sur cet ordinateur. "
-        titre = u"Préférences"
+        intro = _(u"Vous pouvez modifier ici les paramètres de base du logiciel. Ces paramètres seront mémorisés uniquement sur cet ordinateur. ")
+        titre = _(u"Préférences")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
         # Contenu
+        self.ctrl_langue = Langue(self)
         self.ctrl_monnaie = Monnaie(self)
         self.ctrl_telephones = Telephones(self)
         self.ctrl_codesPostaux = Codes_postaux(self)
@@ -399,12 +473,12 @@ class Dialog(wx.Dialog):
         self.ctrl_derniers_fichiers = DerniersFichiers(self)
 
         # Redémarrage
-        self.label_redemarrage = wx.StaticText(self, -1, u"* Le changement sera effectif au redémarrage du logiciel")
+        self.label_redemarrage = wx.StaticText(self, -1, _(u"* Le changement sera effectif au redémarrage du logiciel"))
         self.label_redemarrage.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
                 
         self.__set_properties()
         self.__do_layout()
@@ -414,15 +488,16 @@ class Dialog(wx.Dialog):
 
         
     def __set_properties(self):
-        self.SetTitle(u"Préférences")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider la saisie")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Préférences"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=12, cols=1, vgap=10, hgap=10)
         
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.ctrl_langue, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.Add(self.ctrl_monnaie, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.Add(self.ctrl_telephones, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.Add(self.ctrl_codesPostaux, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
@@ -432,7 +507,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_derniers_fichiers, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Ligne vide pour agrandir la fenêtre
-        grid_sizer_base.Add( (20, 100), 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+##        grid_sizer_base.Add( (20, 20), 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
         
@@ -448,7 +523,7 @@ class Dialog(wx.Dialog):
         
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        self.SetMinSize((400, 300))
+##        self.SetMinSize((400, 300))
         
         self.Layout()
         self.CenterOnScreen()
@@ -461,6 +536,7 @@ class Dialog(wx.Dialog):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_preferences", "modifier") == False : return
         
         # Validation des données
+        if self.ctrl_langue.Validation() == False : return
         if self.ctrl_monnaie.Validation() == False : return
         if self.ctrl_telephones.Validation() == False : return
         if self.ctrl_codesPostaux.Validation() == False : return
@@ -470,6 +546,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_derniers_fichiers.Validation() == False : return
         
         # Sauvegarde
+        self.ctrl_langue.Sauvegarde()
         self.ctrl_monnaie.Sauvegarde()
         self.ctrl_telephones.Sauvegarde()
         self.ctrl_codesPostaux.Sauvegarde()

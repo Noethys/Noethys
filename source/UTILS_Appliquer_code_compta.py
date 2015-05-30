@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.pybusyinfo as PBI
 
 import GestionDB
@@ -48,7 +50,7 @@ def Appliquer():
             dictPrestations[label] = []
         dictPrestations[label].append(IDprestation)
     
-    dlg = wx.MultiChoiceDialog(None, u"Sélectionnez les prestations à modifier :", u"Selection des prestations", dictPrestations.keys())
+    dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez les prestations à modifier :"), _(u"Selection des prestations"), dictPrestations.keys())
     dlg.SetSize((500, 400))
     if dlg.ShowModal() == wx.ID_OK :
         selections = dlg.GetSelections()
@@ -59,7 +61,7 @@ def Appliquer():
         return
 
     # Choix du code comptable
-    dlg = wx.TextEntryDialog(None, u"Quel code comptable souhaitez-vous appliquer ?", u"Sélection d'un code comptable", "")
+    dlg = wx.TextEntryDialog(None, _(u"Quel code comptable souhaitez-vous appliquer ?"), _(u"Sélection d'un code comptable"), "")
     if dlg.ShowModal() == wx.ID_OK:
         code_compta = dlg.GetValue()
         dlg.Destroy()
@@ -71,14 +73,14 @@ def Appliquer():
     nbrePrestations = 0
     for label in selectionsLabels :
         nbrePrestations += len(dictPrestations[label])
-    dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment appliquer le code comptable '%s' aux %d prestations sélectionnées ?\n\n(PS : Cette modification n'aura aucun impact sur les montants facturés)" % (code_compta, nbrePrestations), u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment appliquer le code comptable '%s' aux %d prestations sélectionnées ?\n\n(PS : Cette modification n'aura aucun impact sur les montants facturés)") % (code_compta, nbrePrestations), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         return
     dlg.Destroy()
     
     # Application
-    dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter...", parent=None, title=u"Traitement en cours", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+    dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter..."), parent=None, title=_(u"Traitement en cours"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
     wx.Yield() 
     DB = GestionDB.DB()
     for label, listePrestations in dictPrestations.iteritems() :
@@ -89,7 +91,7 @@ def Appliquer():
     del dlgAttente
     
     # Fin du traitement
-    dlg = wx.MessageDialog(None, u"Le traitement s'est terminé avec succès !", u"Fin", wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Le traitement s'est terminé avec succès !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
 

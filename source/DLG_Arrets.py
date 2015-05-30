@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Arrets
 import GestionDB
@@ -17,12 +19,12 @@ try: import psyco; psyco.full()
 except: pass
 
 DICT_CATEGORIES = {
-    "bus" : {"singulier":u"arrêt de bus", "pluriel":u"arrêts de bus", "image":"Bus"},
-    "car" : {"singulier":u"arrêt de cars", "pluriel":u"arrêts de cars", "image":"Car"},
-    "navette" : {"singulier":u"arrêt de navettes", "pluriel":u"arrêts de navettes", "image":"Navette"},
-    "bateau" : {"singulier":u"arrêt maritime", "pluriel":u"arrêts maritimes", "image":"Bateau"},
-    "metro" : {"singulier":u"arrêt de métros", "pluriel":u"arrêts de métro", "image":"Metro"},
-    "pedibus" : {"singulier":u"arrêt de pédibus", "pluriel":u"arrêts de pédibus", "image":"Pedibus"},
+    "bus" : {"singulier":_(u"arrêt de bus"), "pluriel":_(u"arrêts de bus"), "image":"Bus"},
+    "car" : {"singulier":_(u"arrêt de cars"), "pluriel":_(u"arrêts de cars"), "image":"Car"},
+    "navette" : {"singulier":_(u"arrêt de navettes"), "pluriel":_(u"arrêts de navettes"), "image":"Navette"},
+    "bateau" : {"singulier":_(u"arrêt maritime"), "pluriel":_(u"arrêts maritimes"), "image":"Bateau"},
+    "metro" : {"singulier":_(u"arrêt de métros"), "pluriel":_(u"arrêts de métro"), "image":"Metro"},
+    "pedibus" : {"singulier":_(u"arrêt de pédibus"), "pluriel":_(u"arrêts de pédibus"), "image":"Pedibus"},
     }
 
 
@@ -84,19 +86,19 @@ class Dialog(wx.Dialog):
         self.nomImage = DICT_CATEGORIES[self.categorie]["image"]
         
         # Affichage des textes d'intro
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des %s." % self.categoriePluriel
-        titre = u"Gestion des %s" % self.categoriePluriel
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des %s.") % self.categoriePluriel
+        titre = _(u"Gestion des %s") % self.categoriePluriel
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/%s.png" % self.nomImage)
         
         # Ligne
-        self.staticbox_ligne_staticbox = wx.StaticBox(self, -1, u"Ligne")
-        self.label_ligne = wx.StaticText(self, -1, u"Ligne :")
+        self.staticbox_ligne_staticbox = wx.StaticBox(self, -1, _(u"Ligne"))
+        self.label_ligne = wx.StaticText(self, -1, _(u"Ligne :"))
         self.ctrl_ligne = CTRL_Choix_ligne(self, self.categorie)
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Arrêts
-        self.staticbox_arrets_staticbox = wx.StaticBox(self, -1, u"Arrêts")
+        self.staticbox_arrets_staticbox = wx.StaticBox(self, -1, _(u"Arrêts"))
         self.ctrl_arrets = OL_Arrets.ListView(self, id=-1, categorie=self.categorie, IDligne=0, categorieSingulier=self.categorieSingulier, categoriePluriel=self.categoriePluriel, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -106,8 +108,8 @@ class Dialog(wx.Dialog):
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -126,15 +128,15 @@ class Dialog(wx.Dialog):
         self.OnChoixLigne(None)
 
     def __set_properties(self):
-        self.ctrl_ligne.SetToolTipString(u"Sélectionnez ici une ligne")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer un nouvel arrêt")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'arrêt sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'arrêt sélectionné dans la liste")
-        self.bouton_monter.SetToolTipString(u"Cliquez ici pour monter l'arrêt sélectionné dans la liste")
-        self.bouton_descendre.SetToolTipString(u"Cliquez ici pour descendre l'arrêt sélectionné dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_gestion.SetToolTipString(u"Cliquez ici pour accéder à la gestion des lignes")
+        self.ctrl_ligne.SetToolTipString(_(u"Sélectionnez ici une ligne"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer un nouvel arrêt"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'arrêt sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'arrêt sélectionné dans la liste"))
+        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter l'arrêt sélectionné dans la liste"))
+        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre l'arrêt sélectionné dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des lignes"))
         self.SetMinSize((650, 700))
 
     def __do_layout(self):

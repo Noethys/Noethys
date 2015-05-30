@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import CTRL_Bandeau
@@ -39,8 +41,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -49,8 +51,8 @@ def DateEngEnDateDD(dateEng):
 
 def Purger():
     """ Purge de l'archivage """
-    texte = u"La purge des archives de badgeages imprtés vous permet de réduire la taille de la base de données. Il est conseillé d'y procéder une fois que vous n'avez plus besoin des archives (soit quelques mois après).\n\nCommencez par sélectionner une date maximale de badgeage."
-    dlg = wx.MessageDialog(None, texte, u"Purge du journal de badgeage", wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
+    texte = _(u"La purge des archives de badgeages imprtés vous permet de réduire la taille de la base de données. Il est conseillé d'y procéder une fois que vous n'avez plus besoin des archives (soit quelques mois après).\n\nCommencez par sélectionner une date maximale de badgeage.")
+    dlg = wx.MessageDialog(None, texte, _(u"Purge du journal de badgeage"), wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
     reponse = dlg.ShowModal()
     dlg.Destroy()
     if reponse != wx.ID_OK:
@@ -67,7 +69,7 @@ def Purger():
         return False
     
     # Demande de confirmation
-    dlg = wx.MessageDialog(None, u"Confirmez-vous la purge des archives de badgeage jusqu'au %s inclus ?" % DateEngFr(str(date)), u"Purge des archives de badgeage", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(None, _(u"Confirmez-vous la purge des archives de badgeage jusqu'au %s inclus ?") % DateEngFr(str(date)), _(u"Purge des archives de badgeage"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
     reponse = dlg.ShowModal()
     dlg.Destroy()
     if reponse != wx.ID_YES:
@@ -81,7 +83,7 @@ def Purger():
     DB.Close() 
     
     # Fin
-    dlg = wx.MessageDialog(None, u"Purge des archives de badgeage terminée.", u"Information", wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Purge des archives de badgeage terminée."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
 
@@ -138,14 +140,14 @@ class CTRL_Donnees(FastObjectListView):
             return DateComplete(dateDD)
             
         liste_Colonnes = [
-            ColumnDefn(u"Code-barres", 'center', 135, "codebarres"),
-            ColumnDefn(u"Date", 'center', 200, "date", stringConverter=FormateDate),
-            ColumnDefn(u"Heure", 'center', 80, "heure"),
+            ColumnDefn(_(u"Code-barres"), 'center', 135, "codebarres"),
+            ColumnDefn(_(u"Date"), 'center', 200, "date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Heure"), 'center', 80, "heure"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune donnée")
+        self.SetEmptyListMsg(_(u"Aucune donnée"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -174,14 +176,14 @@ class CTRL_Donnees(FastObjectListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -190,14 +192,14 @@ class CTRL_Donnees(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Export Texte
-        item = wx.MenuItem(menuPop, 60, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 60, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Export Excel
-        item = wx.MenuItem(menuPop, 70, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 70, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -208,21 +210,21 @@ class CTRL_Donnees(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des données", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des données"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des données", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des données"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des données")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des données"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des données")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des données"))
 
 
 # ---------------------------------------------------------------------------------------------------------------------------
@@ -276,8 +278,8 @@ class CTRL_Choix_appareil(wx.Choice):
     
     def MAJ(self):
         listeDonnees = [
-            ("cs1504", u"Symbol CS1504"),
-            ("cs1504", u"Opticon OPN-2001"),
+            ("cs1504", _(u"Symbol CS1504")),
+            ("cs1504", _(u"Opticon OPN-2001")),
             ]
         listeItems = []
         self.dictDonnees = {}
@@ -318,24 +320,24 @@ ID_REGLER_HEURE = wx.NewId()
 class Page_scanner(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.label_port = wx.StaticText(self, -1, u"Port :")
+        self.label_port = wx.StaticText(self, -1, _(u"Port :"))
         self.ctrl_port = CTRL_Choix_port(self)
-        self.check_vider = wx.CheckBox(self, -1, u"Vider après importation")
-        self.bouton_outils = wx.Button(self, -1, u"Outils")
-        self.label_appareil = wx.StaticText(self, -1, u"Modèle :")
+        self.check_vider = wx.CheckBox(self, -1, _(u"Vider après importation"))
+        self.bouton_outils = wx.Button(self, -1, _(u"Outils"))
+        self.label_appareil = wx.StaticText(self, -1, _(u"Modèle :"))
         self.ctrl_appareil = CTRL_Choix_appareil(self)
-        self.check_heure_auto = wx.CheckBox(self, -1, u"Réglage de l'heure auto.")
+        self.check_heure_auto = wx.CheckBox(self, -1, _(u"Réglage de l'heure auto."))
         self.check_heure_auto.SetValue(True) 
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         
         # Propriétés
-        self.ctrl_port.SetToolTipString(u"Sélectionnez le port sur lequel est branché le scanner")
-        self.check_vider.SetToolTipString(u"Cochez cette case pour vider l'appareil après l'importation")
-        self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder aux commandes spéciales du scanner")
-        self.ctrl_appareil.SetToolTipString(u"Sélectionnez le nom du scanner")
-        self.check_heure_auto.SetToolTipString(u"Cochez cette case pour que le réglage de l'heure de l'appareil soit automatique")
+        self.ctrl_port.SetToolTipString(_(u"Sélectionnez le port sur lequel est branché le scanner"))
+        self.check_vider.SetToolTipString(_(u"Cochez cette case pour vider l'appareil après l'importation"))
+        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes spéciales du scanner"))
+        self.ctrl_appareil.SetToolTipString(_(u"Sélectionnez le nom du scanner"))
+        self.check_heure_auto.SetToolTipString(_(u"Cochez cette case pour que le réglage de l'heure de l'appareil soit automatique"))
 
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -367,10 +369,10 @@ class Page_scanner(wx.Panel):
         # Création du menu Outils
         menuPop = wx.Menu()
         
-        menuPop.AppendItem(wx.MenuItem(menuPop, ID_VIDER_MEMOIRE, u"Vider la mémoire", u"Vider la mémoire du scanner"))
+        menuPop.AppendItem(wx.MenuItem(menuPop, ID_VIDER_MEMOIRE, _(u"Vider la mémoire"), _(u"Vider la mémoire du scanner")))
         self.Bind(wx.EVT_MENU, self.OnOutil, id=ID_VIDER_MEMOIRE)
         
-        menuPop.AppendItem(wx.MenuItem(menuPop, ID_REGLER_HEURE, u"Régler l'horloge du scanner", u"Régler l'horloge du scanner"))
+        menuPop.AppendItem(wx.MenuItem(menuPop, ID_REGLER_HEURE, _(u"Régler l'horloge du scanner"), _(u"Régler l'horloge du scanner")))
         self.Bind(wx.EVT_MENU, self.OnOutil, id=ID_REGLER_HEURE)
         
         self.PopupMenu(menuPop)
@@ -416,7 +418,7 @@ class Page_scanner(wx.Panel):
             listeBarcodes = scanner.get_barcodes()
         except Exception, err:
             print "Erreur de lecture du scanner :", err
-            dlg = wx.MessageDialog(self, u"Noethys n'arrive pas à lire les données du scanner. Essayez de le déconnecter et le reconnecter...\n\nErreur : %s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à lire les données du scanner. Essayez de le déconnecter et le reconnecter...\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             scanner.close() 
@@ -431,7 +433,7 @@ class Page_scanner(wx.Panel):
                 listeDonnees.append((codebarres, date, heure))
             except Exception, err:
                 print "Erreur de lecture du code-barres %d :" % index+1, err
-                dlg = wx.MessageDialog(None, u"Erreur de lecture du code-barres %d : %s\n\nVoulez-vous quand-même continuer ?" % (index+1, err), u"Erreur", wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(None, _(u"Erreur de lecture du code-barres %d : %s\n\nVoulez-vous quand-même continuer ?") % (index+1, err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                 if dlg.ShowModal() != wx.ID_YES :
                     dlg.Destroy()
                     return False
@@ -453,14 +455,14 @@ class Page_scanner(wx.Panel):
         """ Connexion au scanner """
         port = self.ctrl_port.GetID() 
         if port == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un port dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un port dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         appareil = self.ctrl_appareil.GetID() 
         if appareil == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un appareil dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un appareil dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -471,7 +473,7 @@ class Page_scanner(wx.Panel):
                 scanner = UTILS_CS1504.CS1504(port)
                 scanner.interrogate()
             except Exception, err:
-                dlg = wx.MessageDialog(self, u"Noethys n'arrive pas à se connecter à l'appareil.", u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à se connecter à l'appareil."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -489,18 +491,18 @@ class Page_scanner(wx.Panel):
         try :
             scanner.set_time()
         except Exception, err:
-            dlg = wx.MessageDialog(self, u"Noethys n'arrive pas à se régler l'heure du scanner.\n\nErreur : %s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à se régler l'heure du scanner.\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
     def ViderMemoire(self, scanner=None):
-        dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment vider la mémoire du scanner ?", u"Vider le scanner", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment vider la mémoire du scanner ?"), _(u"Vider le scanner"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES :
             try :
                 scanner.clear_barcodes()
             except Exception, err:
-                dlg = wx.MessageDialog(self, u"Noethys n'arrive pas à vider l'appareil.\n\nErreur : %s" % err, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Noethys n'arrive pas à vider l'appareil.\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
         dlg.Destroy()
@@ -515,16 +517,16 @@ class Page_scanner(wx.Panel):
 class Page_excel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.label_fichier = wx.StaticText(self, -1, u"Fichier :")
-        wildcard = u"Fichiers Excel (*.xls)|*.xls|All files (*.*)|*.*"
+        self.label_fichier = wx.StaticText(self, -1, _(u"Fichier :"))
+        wildcard = _(u"Fichiers Excel (*.xls)|*.xls|All files (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=u"Sélectionner", toolTip=u"Cliquez ici pour sélectionner un fichier de données", dialogTitle=u"Sélectionner un fichier", fileMask=wildcard, startDirectory=cheminDefaut)
-        self.label_infos = wx.StaticText(self, -1, u"Versions acceptées : 2003, 2002, XP, 2000, 97, 95, 5.0, 4.0, 3.0.")
+        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier de données"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
+        self.label_infos = wx.StaticText(self, -1, _(u"Versions acceptées : 2003, 2002, XP, 2000, 97, 95, 5.0, 4.0, 3.0."))
         self.label_infos.SetForegroundColour((130, 130, 130))
         
         # Propriétés
-        self.ctrl_fichier.SetToolTipString(u"Sélectionnez le fichier source")
+        self.ctrl_fichier.SetToolTipString(_(u"Sélectionnez le fichier source"))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -542,12 +544,12 @@ class Page_excel(wx.Panel):
         """ Lecture des données """
         nomFichier = self.ctrl_fichier.GetValue()
         if len(nomFichier) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un fichier de données à importer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un fichier de données à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if os.path.isfile(nomFichier) == False :
-            dlg = wx.MessageDialog(self, u"L'emplacement fichier que vous avez saisi n'existe pas !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'emplacement fichier que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -556,7 +558,7 @@ class Page_excel(wx.Panel):
         try :
             classeur = xlrd.open_workbook(nomFichier)
         except :
-            dlg = wx.MessageDialog(self, u"Le fichier Excel ne semble pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le fichier Excel ne semble pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -568,7 +570,7 @@ class Page_excel(wx.Panel):
             feuille = classeur.sheet_by_index(0)
         else :
             # Demande la feuille à ouvrir
-            dlg = wx.SingleChoiceDialog(None, u"Veuillez sélectionner la feuille du classeur qui comporte les données à importer :", u"Sélection d'une feuille", feuilles, wx.CHOICEDLG_STYLE)
+            dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner la feuille du classeur qui comporte les données à importer :"), _(u"Sélection d'une feuille"), feuilles, wx.CHOICEDLG_STYLE)
             if dlg.ShowModal() == wx.ID_OK:
                 feuille = classeur.sheet_by_index(dlg.GetSelection())
             dlg.Destroy()
@@ -589,7 +591,7 @@ class Page_excel(wx.Panel):
                 listeDonnees.append((codebarres, date, heure))
         except Exception, err :
             listeDonnees = []
-            dlg = wx.MessageDialog(self, u"Noethys n'a pas réussi à lire les données !\n\nErreur : %s.\n\nNotez que les colonnes du fichier Excel doivent être les suivantes : 1. Code-barres 2. Date, 3. Heure." % err, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à lire les données !\n\nErreur : %s.\n\nNotez que les colonnes du fichier Excel doivent être les suivantes : 1. Code-barres 2. Date, 3. Heure.") % err, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -602,23 +604,23 @@ class Page_excel(wx.Panel):
 class Page_csv(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.label_fichier = wx.StaticText(self, -1, u"Fichier :")
-        wildcard = u"Fichiers CSV ou TXT|*.csv;*.txt|Tous les fichiers (*.*)|*.*"
+        self.label_fichier = wx.StaticText(self, -1, _(u"Fichier :"))
+        wildcard = _(u"Fichiers CSV ou TXT|*.csv;*.txt|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=u"Sélectionner", toolTip=u"Cliquez ici pour sélectionner un fichier de données", dialogTitle=u"Sélectionner un fichier", fileMask=wildcard, startDirectory=cheminDefaut)
-        self.label_delimiteur = wx.StaticText(self, -1, u"Délimiteur :")
-        self.ctrl_delimiteur = wx.Choice(self, -1, choices=[u"Virgule (,)", u"Point-virgule (;)", u"Tabulation"])
+        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier de données"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
+        self.label_delimiteur = wx.StaticText(self, -1, _(u"Délimiteur :"))
+        self.ctrl_delimiteur = wx.Choice(self, -1, choices=[_(u"Virgule (,)"), _(u"Point-virgule (;)"), _(u"Tabulation")])
         self.listeDelimiteurs = [",", ";", "\t"]
         
-        self.label_format = wx.StaticText(self, -1, u"Format :")
+        self.label_format = wx.StaticText(self, -1, _(u"Format :"))
         self.ctrl_format = wx.TextCtrl(self, -1, "")
         
         # Propriétés
-        self.ctrl_fichier.SetToolTipString(u"Sélectionnez le fichier source")
-        self.ctrl_delimiteur.SetToolTipString(u"Sélectionnez le symbole délimiteur des champs")
+        self.ctrl_fichier.SetToolTipString(_(u"Sélectionnez le fichier source"))
+        self.ctrl_delimiteur.SetToolTipString(_(u"Sélectionnez le symbole délimiteur des champs"))
         self.ctrl_delimiteur.SetSelection(1)
-        self.ctrl_format.SetToolTipString(u"Saisissez le format de la ligne de la source : \n\n- CODE : Code-barre\n- AAAA : Année\n- MM : Mois\n- JJ : Jour\n- HH : Heures\n- MN : Minutes\n- SS : Secondes\n- X : Autre\n\nExemple : 'CODE;AAAA-MM-JJ HH:MN:SS;' \n")
+        self.ctrl_format.SetToolTipString(_(u"Saisissez le format de la ligne de la source : \n\n- CODE : Code-barre\n- AAAA : Année\n- MM : Mois\n- JJ : Jour\n- HH : Heures\n- MN : Minutes\n- SS : Secondes\n- X : Autre\n\nExemple : 'CODE;AAAA-MM-JJ HH:MN:SS;' \n"))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -649,19 +651,19 @@ class Page_csv(wx.Panel):
         """ Lecture des données """
         nomFichier = self.ctrl_fichier.GetValue()
         if len(nomFichier) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un fichier de données à importer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un fichier de données à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if os.path.isfile(nomFichier) == False :
-            dlg = wx.MessageDialog(self, u"L'emplacement fichier que vous avez saisi n'existe pas !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'emplacement fichier que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         selectionDelimiteur = self.ctrl_delimiteur.GetSelection() 
         if selectionDelimiteur == -1 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un symbole délimiteur pour ce fichier !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un symbole délimiteur pour ce fichier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -669,17 +671,17 @@ class Page_csv(wx.Panel):
 
         format = self.ctrl_format.GetValue()
         if len(format) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un format !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un format !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Décodage du format
-        champs = [ ("AAAA", u"l'année"), ("MM", u"le mois"), ("JJ", u"le jour"), ("CODE", u"le code-barres"), ("HH", u"les heures"), ("MN", u"les minutes") ]
+        champs = [ ("AAAA", _(u"l'année")), ("MM", _(u"le mois")), ("JJ", _(u"le jour")), ("CODE", _(u"le code-barres")), ("HH", _(u"les heures")), ("MN", _(u"les minutes")) ]
         dictFormat = {}
         for code, label in champs :
             if code not in format :
-                dlg = wx.MessageDialog(self, u"Le format doit obligatoirement comporter l'expression '%s' afin d'identifier %s dans les lignes !" % (code, label), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le format doit obligatoirement comporter l'expression '%s' afin d'identifier %s dans les lignes !") % (code, label), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -697,7 +699,7 @@ class Page_csv(wx.Panel):
         try :
             fichier = csv.reader(open(nomFichier,"rb"), encoding="iso-8859-15", delimiter=delimiteur)
         except :
-            dlg = wx.MessageDialog(self, u"Le fichier CSV ne semble pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le fichier CSV ne semble pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False        
@@ -726,7 +728,7 @@ class Page_csv(wx.Panel):
                 listeDonnees.append((codebarres, date, heure))
         except Exception, err :
             listeDonnees = []
-            dlg = wx.MessageDialog(self, u"Noethys n'a pas réussi à lire les données !\n\nVérifiez peut-être le format de la ligne.\n\nErreur : %s" % err, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à lire les données !\n\nVérifiez peut-être le format de la ligne.\n\nErreur : %s") % err, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -743,9 +745,9 @@ class Page_csv(wx.Panel):
 class Page_archives(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.label_date_archivage = wx.StaticText(self, -1, u"Date de l'archivage :")
+        self.label_date_archivage = wx.StaticText(self, -1, _(u"Date de l'archivage :"))
         self.ctrl_date_archivage = CTRL_Saisie_date.Date2(self)
-        self.label_date_badgeage = wx.StaticText(self, -1, u"Date du badgeage :")
+        self.label_date_badgeage = wx.StaticText(self, -1, _(u"Date du badgeage :"))
         self.ctrl_date_badgeage = CTRL_Saisie_date.Date2(self)
                 
         # Layout
@@ -797,10 +799,10 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
 
         self.listePages = [
-            (u"scanner", u"Scanner à mémoire", u"Page_scanner(self)", "Scanner_memoire.png"),
-            (u"excel", u"Fichier Excel", u"Page_excel(self)", "Excel.png"),
-            (u"csv", u"Fichier CSV", u"Page_csv(self)", "Facture.png"),
-            (u"archives", u"Archives", u"Page_archives(self)", "Database.png"),
+            (_(u"scanner"), _(u"Scanner à mémoire"), _(u"Page_scanner(self)"), "Scanner_memoire.png"),
+            (_(u"excel"), _(u"Fichier Excel"), _(u"Page_excel(self)"), "Excel.png"),
+            (_(u"csv"), _(u"Fichier CSV"), _(u"Page_csv(self)"), "Facture.png"),
+            (_(u"archives"), _(u"Archives"), _(u"Page_archives(self)"), "Database.png"),
             ]
             
         # ImageList pour le NoteBook
@@ -838,14 +840,14 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Pour importer des badgeages, commencez par sélectionner une source, cliquez sur le bouton 'Lire les données' puis sur le bouton 'Importer' pour importer les données cochées."
-        titre = u"Importation de badgeages"
+        intro = _(u"Pour importer des badgeages, commencez par sélectionner une source, cliquez sur le bouton 'Lire les données' puis sur le bouton 'Importer' pour importer les données cochées.")
+        titre = _(u"Importation de badgeages")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Badgeage.png")
         
         # Source
-        self.box_source_staticbox = wx.StaticBox(self, -1, u"Source des données")
-        self.box_donnees_staticbox = wx.StaticBox(self, -1, u"Données")
+        self.box_source_staticbox = wx.StaticBox(self, -1, _(u"Source des données"))
+        self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
         self.ctrl_source = Notebook(self)
         self.bouton_lire = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Lire_source_badgeage.png", wx.BITMAP_TYPE_ANY))
 
@@ -855,17 +857,17 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Facture.png", wx.BITMAP_TYPE_ANY))
-        self.check_archiver = wx.CheckBox(self, -1, u"Archiver les données avant importation")
+        self.check_archiver = wx.CheckBox(self, -1, _(u"Archiver les données avant importation"))
         self.check_archiver.SetValue(True)
         
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Importer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer"), cheminImage="Images/32x32/Fleche_bas.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -883,15 +885,15 @@ class Dialog(wx.Dialog):
         self.ctrl_donnees.MAJ() 
 
     def __set_properties(self):
-        self.bouton_lire.SetToolTipString(u"Cliquer ici pour lire la source des données")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu avant impression de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour faire un export Excel de la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour faire un export Texte de la liste")
-        self.check_archiver.SetToolTipString(u"Cochez cette case pour archiver les données")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour lancer l'importation")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_lire.SetToolTipString(_(u"Cliquer ici pour lire la source des données"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour faire un export Excel de la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour faire un export Texte de la liste"))
+        self.check_archiver.SetToolTipString(_(u"Cochez cette case pour archiver les données"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer l'importation"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((570, 700))
 
     def __do_layout(self):
@@ -1010,10 +1012,10 @@ class Dialog(wx.Dialog):
         DB.Close() 
         
         # Confirmation
-        texte = u"%d codes-barres ont été archivés avec succès." % len(listeTracksValides)
+        texte = _(u"%d codes-barres ont été archivés avec succès.") % len(listeTracksValides)
         if len(listeTracksNonValides) > 0 :
-            texte += u"\n\nMais %d codes-barres déjà archivés ont été exclus." % len(listeTracksNonValides)
-        dlg = wx.MessageDialog(self, texte, u"Confirmation", wx.OK | wx.ICON_INFORMATION)
+            texte += _(u"\n\nMais %d codes-barres déjà archivés ont été exclus.") % len(listeTracksNonValides)
+        dlg = wx.MessageDialog(self, texte, _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -1023,7 +1025,7 @@ class Dialog(wx.Dialog):
         # Récupération des données à importer sous forme de tracks
         listeTracks = self.ctrl_donnees.GetTracksCoches() 
         if len(listeTracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune donnée à importer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune donnée à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

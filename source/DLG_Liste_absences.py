@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import CTRL_Bandeau
@@ -25,24 +27,24 @@ class Parametres(wx.Panel):
         self.parent = parent
         
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.label_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, -1, u"Au")
+        self.label_au = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Affichage
-        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, u"Affichage")
-        self.ctrl_affichage = wx.Choice(self, -1, choices=[u"Absences injustifiées", u"Absences justifiées"])
+        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage"))
+        self.ctrl_affichage = wx.Choice(self, -1, choices=[_(u"Absences injustifiées"), _(u"Absences justifiées")])
         self.ctrl_affichage.SetSelection(0) 
         
         # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites.SetMinSize((-1, 90))
         
         # Boutons afficher
-        self.bouton_afficher = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_afficher = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_afficher.SetMinSize((-1, 50)) 
 
         self.__set_properties()
@@ -51,7 +53,7 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAfficher, self.bouton_afficher)
 
     def __set_properties(self):
-        self.bouton_afficher.SetToolTipString(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés")
+        self.bouton_afficher.SetToolTipString(_(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -91,7 +93,7 @@ class Parametres(wx.Panel):
         # Vérifie période de référence
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, u"La date de début de période ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -99,34 +101,34 @@ class Parametres(wx.Panel):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, u"La date de fin de période ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
-        listeParametres.append(u"Période du %s au %s" % (UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin)))
+        listeParametres.append(_(u"Période du %s au %s") % (UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin)))
 
         # Vérifie les activités sélectionnées
         listeActivites = self.ctrl_activites.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         activites = ", ".join(self.ctrl_activites.GetLabelActivites())
         if activites == "" : 
-            activites = u"Aucune"
-        listeParametres.append(u"Activités : %s" % activites)
+            activites = _(u"Aucune")
+        listeParametres.append(_(u"Activités : %s") % activites)
                 
         # Affichage
         if self.ctrl_affichage.GetSelection() == 0 :
             affichage = "absenti"
-            listeParametres.append(u"Uniquement les absences injustifiées")
+            listeParametres.append(_(u"Uniquement les absences injustifiées"))
         else :
             affichage = "absentj"
-            listeParametres.append(u"Uniquement les absences justifiées")
+            listeParametres.append(_(u"Uniquement les absences justifiées"))
         
         labelParametres = " | ".join(listeParametres)
         
@@ -143,8 +145,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici afficher la liste des absences injustifiées ou justifiées pour la période et les activités souhaitées. Sélectionnez un ou plusieurs groupes d'activités ou certaines activités en particulier avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Note : La colonne 'Nbre' indique le nombre de dates concernées."
-        titre = u"Liste des absences"
+        intro = _(u"Vous pouvez ici afficher la liste des absences injustifiées ou justifiées pour la période et les activités souhaitées. Sélectionnez un ou plusieurs groupes d'activités ou certaines activités en particulier avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Note : La colonne 'Nbre' indique le nombre de dates concernées.")
+        titre = _(u"Liste des absences")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Absenti.png")
         
@@ -156,8 +158,8 @@ class Dialog(wx.Dialog):
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -170,10 +172,10 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):

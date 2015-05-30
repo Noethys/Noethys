@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Prelevements
 
@@ -21,29 +23,29 @@ class Dialog(wx.Dialog):
         self.defaut = defaut
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, u"Généralités")
-        self.label_nom = wx.StaticText(self, -1, u"Intitulé :")
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Intitulé :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_numero = wx.StaticText(self, -1, u"Numéro :")
+        self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         
         # Infos complémentaires
-        self.box_infos_staticbox = wx.StaticBox(self, -1, u"Infos complémentaires")
-        self.label_info = wx.StaticText(self, -1, u"(Ces informations sont uniquement nécessaires pour les prélèvements automatiques)")
-        self.label_raison = wx.StaticText(self, -1, u"Raison sociale :")
+        self.box_infos_staticbox = wx.StaticBox(self, -1, _(u"Infos complémentaires"))
+        self.label_info = wx.StaticText(self, -1, _(u"(Ces informations sont uniquement nécessaires pour les prélèvements automatiques)"))
+        self.label_raison = wx.StaticText(self, -1, _(u"Raison sociale :"))
         self.ctrl_raison = wx.TextCtrl(self, -1, u"")
         
-        self.label_etab = wx.StaticText(self, -1, u"N° Etab. :")
+        self.label_etab = wx.StaticText(self, -1, _(u"N° Etab. :"))
         self.ctrl_etab = wx.TextCtrl(self, -1, u"")
-        self.label_guichet = wx.StaticText(self, -1, u"N° Guichet :")
+        self.label_guichet = wx.StaticText(self, -1, _(u"N° Guichet :"))
         self.ctrl_guichet = wx.TextCtrl(self, -1, u"")
         
-        self.label_cle_rib = wx.StaticText(self, -1, u"Clé RIB :")
+        self.label_cle_rib = wx.StaticText(self, -1, _(u"Clé RIB :"))
         self.ctrl_cle_rib = wx.TextCtrl(self, -1, u"")
-        self.label_cle_iban = wx.StaticText(self, -1, u"Clé IBAN :")
-        self.ctrl_cle_iban = wx.TextCtrl(self, -1, u"FR76")
+        self.label_cle_iban = wx.StaticText(self, -1, _(u"Clé IBAN :"))
+        self.ctrl_cle_iban = wx.TextCtrl(self, -1, _(u"FR76"))
                 
-        self.label_iban = wx.StaticText(self, -1, u"N° IBAN :")
+        self.label_iban = wx.StaticText(self, -1, _(u"N° IBAN :"))
         self.ctrl_iban = wx.TextCtrl(self, -1, u"")
         self.ctrl_iban.Enable(False) 
 
@@ -51,18 +53,18 @@ class Dialog(wx.Dialog):
         self.image_nonvalide = wx.Bitmap(u"Images/16x16/Interdit2.png", wx.BITMAP_TYPE_ANY)
         self.ctrl_controle_iban = wx.StaticBitmap(self, -1, self.image_nonvalide)
 
-        self.label_bic = wx.StaticText(self, -1, u"N° BIC :")
+        self.label_bic = wx.StaticText(self, -1, _(u"N° BIC :"))
         self.ctrl_bic = wx.TextCtrl(self, -1, u"")
         
-        self.label_nne = wx.StaticText(self, -1, u"N° NNE :")
+        self.label_nne = wx.StaticText(self, -1, _(u"N° NNE :"))
         self.ctrl_nne = wx.TextCtrl(self, -1, u"")
-        self.label_ics = wx.StaticText(self, -1, u"N° ICS :")
+        self.label_ics = wx.StaticText(self, -1, _(u"N° ICS :"))
         self.ctrl_ics = wx.TextCtrl(self, -1, u"")
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -82,27 +84,27 @@ class Dialog(wx.Dialog):
         self.MAJ_IBAN() 
         
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un compte bancaire")
+        self.SetTitle(_(u"Saisie d'un compte bancaire"))
         
         self.ctrl_numero.SetMinSize((200, -1))
         self.label_info.SetForegroundColour(wx.Colour(180, 180, 180))
         self.label_info.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, u""))
         
-        self.ctrl_nom.SetToolTipString(u"Saisissez un intitulé pour ce compte (Ex : 'Compte crèche')")
-        self.ctrl_numero.SetToolTipString(u"Saisissez le numéro de compte")
-        self.ctrl_raison.SetToolTipString(u"Saisissez la raison sociale de l'organisme (Ex : 'Centre social'")
-        self.ctrl_etab.SetToolTipString(u"Saisissez le code établissement du compte")
-        self.ctrl_guichet.SetToolTipString(u"Saisissez le code guichet du compte")
-        self.ctrl_cle_rib.SetToolTipString(u"Saisissez la clé RIB du compte")
-        self.ctrl_cle_iban.SetToolTipString(u"Saisissez la clé IBAN du compte (FR76 pour la France)")
-        self.ctrl_bic.SetToolTipString(u"Saisissez le numéro BIC du compte")
-        self.ctrl_iban.SetToolTipString(u"Saisissez le numéro IBAN du compte")
-        self.ctrl_controle_iban.SetToolTipString(u"Une coche verte apparaît si les coordonnées bancaires sont valides")
-        self.ctrl_nne.SetToolTipString(u"Saisissez le code NNE de l'organisme (pour les prélèvements automatiques NATIONAUX)")
-        self.ctrl_ics.SetToolTipString(u"Saisissez le code ICS de l'organisme (pour les prélèvements automatiques SEPA)")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un intitulé pour ce compte (Ex : 'Compte crèche')"))
+        self.ctrl_numero.SetToolTipString(_(u"Saisissez le numéro de compte"))
+        self.ctrl_raison.SetToolTipString(_(u"Saisissez la raison sociale de l'organisme (Ex : 'Centre social'"))
+        self.ctrl_etab.SetToolTipString(_(u"Saisissez le code établissement du compte"))
+        self.ctrl_guichet.SetToolTipString(_(u"Saisissez le code guichet du compte"))
+        self.ctrl_cle_rib.SetToolTipString(_(u"Saisissez la clé RIB du compte"))
+        self.ctrl_cle_iban.SetToolTipString(_(u"Saisissez la clé IBAN du compte (FR76 pour la France)"))
+        self.ctrl_bic.SetToolTipString(_(u"Saisissez le numéro BIC du compte"))
+        self.ctrl_iban.SetToolTipString(_(u"Saisissez le numéro IBAN du compte"))
+        self.ctrl_controle_iban.SetToolTipString(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides"))
+        self.ctrl_nne.SetToolTipString(_(u"Saisissez le code NNE de l'organisme (pour les prélèvements automatiques NATIONAUX)"))
+        self.ctrl_ics.SetToolTipString(_(u"Saisissez le code ICS de l'organisme (pour les prélèvements automatiques SEPA)"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -227,14 +229,14 @@ class Dialog(wx.Dialog):
         
         # Validation des données saisies
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour ce compte !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce compte !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return False
 
         if numero == "" :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas saisir de numéro de compte ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro de compte ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

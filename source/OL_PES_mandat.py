@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
@@ -195,24 +197,24 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateType(statut):
-            if statut == "manuel" : return u"Manuel"
-            if statut == "facture" : return u"Facture"
+            if statut == "manuel" : return _(u"Manuel")
+            if statut == "facture" : return _(u"Facture")
             return ""
 
         def FormateStatut(statut):
-            if statut == "valide" : return u"Valide"
-            if statut == "refus" : return u"Refus"
-            if statut == "attente" : return u"Attente"
+            if statut == "valide" : return _(u"Valide")
+            if statut == "refus" : return _(u"Refus")
+            if statut == "attente" : return _(u"Attente")
 
         def FormateReglement(reglement):
             if reglement == True :
-                return u"Oui"
+                return _(u"Oui")
             else:
                 return u""
 
         def FormatePrelevement(prelevement):
             if prelevement == 1 :
-                return u"Oui"
+                return _(u"Oui")
             else:
                 return u""
 
@@ -223,27 +225,27 @@ class ListView(FastObjectListView):
                 return self.imgRefus
             
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDprelevement", typeDonnee="entier"),
-            ColumnDefn(u"Date Prélèv.", 'left', 80, "datePrelevement", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Nom bordereau", 'left', 150, "nomLot", typeDonnee="texte"),
-##            ColumnDefn(u"Famille", 'left', 230, "titulaires"),
-##            ColumnDefn(u"Type", 'left', 70, "type", stringConverter=FormateType),
-            ColumnDefn(u"Libellé", 'left', 110, "libelle", typeDonnee="texte"),
-            ColumnDefn(u"Montant", 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Statut", 'left', 80, "prelevement_statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(u"Règlement", 'left', 70, "reglement", typeDonnee="montant", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(u"Séquence", 'left', 70, "prelevement_sequence", typeDonnee="texte"),
-            ColumnDefn(u"IBAN", 'left', 190, "prelevement_iban", typeDonnee="texte"),
-            ColumnDefn(u"BIC", 'left', 100, "prelevement_bic", typeDonnee="texte"),
-            ColumnDefn(u"Titulaire compte bancaire", 'left', 160, "prelevement_titulaire", typeDonnee="texte"),
-            ColumnDefn(u"Ref. mandat", 'left', 90, "prelevement_rum", typeDonnee="texte"),
-            ColumnDefn(u"Date mandat", 'left', 80, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Titulaire Hélios", 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
-            ColumnDefn(u"Adresse", 'left', 220, "titulaireAdresse", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDprelevement", typeDonnee="entier"),
+            ColumnDefn(_(u"Date Prélèv."), 'left', 80, "datePrelevement", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Nom bordereau"), 'left', 150, "nomLot", typeDonnee="texte"),
+##            ColumnDefn(_(u"Famille"), 'left', 230, "titulaires"),
+##            ColumnDefn(_(u"Type"), 'left', 70, "type", stringConverter=FormateType),
+            ColumnDefn(_(u"Libellé"), 'left', 110, "libelle", typeDonnee="texte"),
+            ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Statut"), 'left', 80, "prelevement_statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
+            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="montant", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"Séquence"), 'left', 70, "prelevement_sequence", typeDonnee="texte"),
+            ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
+            ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
+            ColumnDefn(_(u"Titulaire compte bancaire"), 'left', 160, "prelevement_titulaire", typeDonnee="texte"),
+            ColumnDefn(_(u"Ref. mandat"), 'left', 90, "prelevement_rum", typeDonnee="texte"),
+            ColumnDefn(_(u"Date mandat"), 'left', 80, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Titulaire Hélios"), 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
+            ColumnDefn(_(u"Adresse"), 'left', 220, "titulaireAdresse", typeDonnee="texte"),
             ]
             
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun prélèvement")
+        self.SetEmptyListMsg(_(u"Aucun prélèvement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -262,14 +264,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -278,14 +280,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -296,14 +298,14 @@ class ListView(FastObjectListView):
 
     def Impression(self):
         # Récupère l'intitulé du compte
-        txtIntro = u"Liste des prélèvements"
+        txtIntro = _(u"Liste des prélèvements")
         # Récupère le total
         total = 0.0
         for track in self.donnees :
             total += track.montant
         txtTotal = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des prélèvements", intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des prélèvements"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
         return prt
         
     def Apercu(self, event=None):
@@ -314,11 +316,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des prélèvements PES ORMC")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des prélèvements PES ORMC"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des prélèvements PES ORMC")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des prélèvements PES ORMC"))
         
 
 
@@ -332,7 +334,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements
@@ -378,7 +380,7 @@ class MyFrame(wx.Frame):
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         
-        self.bouton_test = wx.Button(panel, -1, u"Bouton test")
+        self.bouton_test = wx.Button(panel, -1, _(u"Bouton test"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

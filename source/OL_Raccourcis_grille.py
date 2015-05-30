@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import datetime
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -19,12 +21,12 @@ except: pass
 
 
 LISTE_DONNEES = [
-    (u"Présent", "Touche_p", 1),
-    (u"Absence justifiée", "Touche_j", 2),
-    (u"Absence injustifiée", "Touche_i", 3),
-    (u"Pointage en attente", "Touche_a", 4),
-    (u"Copie dernière conso", "Touche_c", 5),
-    (u"Suppression conso", "Touche_s", 6),
+    (_(u"Présent"), "Touche_p", 1),
+    (_(u"Absence justifiée"), "Touche_j", 2),
+    (_(u"Absence injustifiée"), "Touche_i", 3),
+    (_(u"Pointage en attente"), "Touche_a", 4),
+    (_(u"Copie dernière conso"), "Touche_c", 5),
+    (_(u"Suppression conso"), "Touche_s", 6),
     ]
 
 
@@ -42,7 +44,7 @@ class ListView(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitModel()
         self.InitObjectListView()
-        self.SetToolTipString(u"Retrouvez ici la liste des raccourcis clavier que vous pouvez utilisez dans la grille des consommations. Conservez la touche appuyée puis cliquez sur une case de la grille.")
+        self.SetToolTipString(_(u"Retrouvez ici la liste des raccourcis clavier que vous pouvez utilisez dans la grille des consommations. Conservez la touche appuyée puis cliquez sur une case de la grille."))
 
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -72,12 +74,12 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
 ##            ColumnDefn(u"", "left", 0, ""),
-            ColumnDefn(u"Label", 'left', 160, "label", imageGetter=GetImage, isSpaceFilling=True),
-##            ColumnDefn(u"Ordre", 'left', 0, "ordre"),
+            ColumnDefn(_(u"Label"), 'left', 160, "label", imageGetter=GetImage, isSpaceFilling=True),
+##            ColumnDefn(_(u"Ordre"), 'left', 0, "ordre"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune touche raccourci")
+        self.SetEmptyListMsg(_(u"Aucune touche raccourci"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -99,7 +101,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"OL légende grille des consommations")
+    frame_1 = MyFrame(None, -1, _(u"OL légende grille des consommations"))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

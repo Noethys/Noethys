@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
@@ -154,7 +156,7 @@ class CorrigerHeuresConso(Anomalie):
         individu = self.kwds["individu"]
         
         if heure_debut != None : 
-            dlg = wx.TextEntryDialog(None, u"Corrigez l'heure de début de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)" % (date.strftime("%d/%m/%Y"), individu), u"Correction d'une heure", heure_debut)
+            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de début de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), heure_debut)
             if dlg.ShowModal() == wx.ID_OK:
                 DB.ReqMAJ("consommations", [("heure_debut", dlg.GetValue()),], "IDconso", IDconso)
                 self.corrige = True
@@ -163,7 +165,7 @@ class CorrigerHeuresConso(Anomalie):
             dlg.Destroy()
         
         if heure_fin != None : 
-            dlg = wx.TextEntryDialog(None, u"Corrigez l'heure de fin de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)" % (date.strftime("%d/%m/%Y"), individu), u"Correction d'une heure", heure_fin)
+            dlg = wx.TextEntryDialog(None, _(u"Corrigez l'heure de fin de la consommation du %s de %s :\n\n(Obligatoirement au format HH:MM)") % (date.strftime("%d/%m/%Y"), individu), _(u"Correction d'une heure"), heure_fin)
             if dlg.ShowModal() == wx.ID_OK:
                 DB.ReqMAJ("consommations", [("heure_fin", dlg.GetValue()),], "IDconso", IDconso)
                 self.corrige = True
@@ -219,7 +221,7 @@ class Depannage():
             
             if len(listeDonnees) > 0 :
                 for anomalie in listeDonnees :
-                    texteCorrection = u"<A HREF='http://www.noethys.com'>Correction proposée : %s</A>" % labelCorrection
+                    texteCorrection = _(u"<A HREF='http://www.noethys.com'>Correction proposée : %s</A>") % labelCorrection
                     texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Images/16x16/Interdit2.png'>&nbsp;%s. %s<BR>" % (anomalie.label, texteCorrection)
             else :
                     texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Images/16x16/Ok4.png'>&nbsp;Aucune anomalie détectée...<BR>"
@@ -241,9 +243,9 @@ class Depannage():
 
     def RechercheDonnees(self):        
         self.listeResultats = []
-        EcritStatusbar(u"Recherche d'anomalies en cours...   Veuillez patientez...")
+        EcritStatusbar(_(u"Recherche d'anomalies en cours...   Veuillez patientez..."))
         try :
-            dlgAttente = PBI.PyBusyInfo(u"Recherche d'anomalies en cours...", parent=self.parent, title=u"Merci de patienter", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Recherche d'anomalies en cours..."), parent=self.parent, title=_(u"Merci de patienter"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
         except :
             dlgAttente = None
@@ -275,8 +277,8 @@ class Depannage():
         EcritStatusbar("")
         
     def InscriptionsSansIndividus(self):
-        labelProbleme = u"Inscriptions sans individus associés"
-        labelCorrection = u"Supprimer l'inscription"
+        labelProbleme = _(u"Inscriptions sans individus associés")
+        labelCorrection = _(u"Supprimer l'inscription")
         req = """SELECT IDinscription, inscriptions.IDactivite, activites.nom, inscriptions.date_inscription, inscriptions.IDindividu 
         FROM inscriptions 
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu 
@@ -286,13 +288,13 @@ class Depannage():
         listePrestations = self.DB.ResultatReq()
         listeTemp = []
         for IDinscription, IDactivite, nomActivite, dateInscription, IDindividu in listePrestations :
-            label = u"Individu ID%d inscrit le %s à l'activité %s" % (IDindividu, UTILS_Dates.DateEngFr(dateInscription), nomActivite)
+            label = _(u"Individu ID%d inscrit le %s à l'activité %s") % (IDindividu, UTILS_Dates.DateEngFr(dateInscription), nomActivite)
             listeTemp.append(InscriptionsSansIndividus(label=label, IDinscription=IDinscription, IDindividu=IDindividu))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def CotisationsSansIndividus(self):
-        labelProbleme = u"Cotisations sans individus associés"
-        labelCorrection = u"Supprimer la cotisation"
+        labelProbleme = _(u"Cotisations sans individus associés")
+        labelCorrection = _(u"Supprimer la cotisation")
         req = """SELECT IDcotisation, types_cotisations.nom, unites_cotisations.nom, cotisations.date_saisie, cotisations.IDindividu, cotisations.IDprestation
         FROM cotisations 
         LEFT JOIN individus ON individus.IDindividu = cotisations.IDindividu 
@@ -303,13 +305,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDcotisation, nomType, nomUnite, dateSaisie, IDindividu, IDprestation in listeDonnees :
-            label = u"Cotisation ID%d de type '%s - %s' saisie le %s pour l'individu ID%d" % (IDcotisation, nomType, nomUnite, UTILS_Dates.DateEngFr(dateSaisie), IDindividu)
+            label = _(u"Cotisation ID%d de type '%s - %s' saisie le %s pour l'individu ID%d") % (IDcotisation, nomType, nomUnite, UTILS_Dates.DateEngFr(dateSaisie), IDindividu)
             listeTemp.append(CotisationsSansIndividus(label=label, IDcotisation=IDcotisation, IDindividu=IDindividu, IDprestation=IDprestation))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def CotisationsSansFamilles(self):
-        labelProbleme = u"Cotisations sans familles associées"
-        labelCorrection = u"Supprimer la cotisation"
+        labelProbleme = _(u"Cotisations sans familles associées")
+        labelCorrection = _(u"Supprimer la cotisation")
         req = """SELECT IDcotisation, types_cotisations.nom, unites_cotisations.nom, cotisations.date_saisie, cotisations.IDfamille, cotisations.IDprestation
         FROM cotisations 
         LEFT JOIN familles ON familles.IDfamille = cotisations.IDfamille
@@ -320,13 +322,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDcotisation, nomType, nomUnite, dateSaisie, IDfamille, IDprestation in listeDonnees :
-            label = u"Cotisation ID%d de type '%s - %s' saisie le %s pour la famille ID%d" % (IDcotisation, nomType, nomUnite, UTILS_Dates.DateEngFr(dateSaisie), IDfamille)
+            label = _(u"Cotisation ID%d de type '%s - %s' saisie le %s pour la famille ID%d") % (IDcotisation, nomType, nomUnite, UTILS_Dates.DateEngFr(dateSaisie), IDfamille)
             listeTemp.append(CotisationsSansFamilles(label=label, IDcotisation=IDcotisation, IDfamille=IDfamille, IDprestation=IDprestation))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def PrestationsSansFamilles(self):
-        labelProbleme = u"Prestations sans familles associées"
-        labelCorrection = u"Supprimer la prestation"
+        labelProbleme = _(u"Prestations sans familles associées")
+        labelCorrection = _(u"Supprimer la prestation")
         req = """SELECT IDprestation, date, label, prestations.IDfamille
         FROM prestations 
         LEFT JOIN familles ON familles.IDfamille = prestations.IDfamille
@@ -335,13 +337,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDprestation, date, label, IDfamille in listeDonnees :
-            label = u"Prestation ID%d '%s' saisie le %s pour la famille ID%d" % (IDprestation, label, UTILS_Dates.DateEngFr(date), IDfamille)
+            label = _(u"Prestation ID%d '%s' saisie le %s pour la famille ID%d") % (IDprestation, label, UTILS_Dates.DateEngFr(date), IDfamille)
             listeTemp.append(PrestationsSansFamilles(label=label, IDprestation=IDprestation, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def VentilationsSansPrestations(self):
-        labelProbleme = u"Ventilations sans prestations associées"
-        labelCorrection = u"Supprimer la ventilation"
+        labelProbleme = _(u"Ventilations sans prestations associées")
+        labelCorrection = _(u"Supprimer la ventilation")
         req = """SELECT IDventilation, ventilation.IDprestation, IDreglement, comptes_payeurs.IDfamille
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation 
@@ -351,13 +353,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDventilation, IDprestation, IDreglement, IDfamille in listeDonnees :
-            label = u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d" % (IDventilation, IDprestation, IDreglement, IDfamille)
+            label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
             listeTemp.append(VentilationsSansPrestations(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def VentilationsSansReglements(self):
-        labelProbleme = u"Ventilations sans règlements associés"
-        labelCorrection = u"Supprimer la ventilation"
+        labelProbleme = _(u"Ventilations sans règlements associés")
+        labelCorrection = _(u"Supprimer la ventilation")
         req = """SELECT IDventilation, IDprestation, ventilation.IDreglement, comptes_payeurs.IDfamille
         FROM ventilation
         LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
@@ -367,13 +369,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDventilation, IDprestation, IDreglement, IDfamille in listeDonnees :
-            label = u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d" % (IDventilation, IDprestation, IDreglement, IDfamille)
+            label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
             listeTemp.append(VentilationsSansReglements(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def IndividusIncomplets(self):
-        labelProbleme = u"Fiches individuelles tronquées"
-        labelCorrection = u"Modifier la civilité et/ou le nom de famille"
+        labelProbleme = _(u"Fiches individuelles tronquées")
+        labelCorrection = _(u"Modifier la civilité et/ou le nom de famille")
         req = """SELECT IDindividu, IDcivilite, nom, prenom
         FROM individus 
         WHERE IDcivilite IS NULL OR nom IS NULL;"""
@@ -381,13 +383,13 @@ class Depannage():
         listeIndividus = self.DB.ResultatReq()
         listeTemp = []
         for IDindividu, IDcivilite, nom, prenom in listeIndividus :
-            label = u"Individu ID%d (%s %s)" % (IDindividu, nom, prenom)
+            label = _(u"Individu ID%d (%s %s)") % (IDindividu, nom, prenom)
             listeTemp.append(IndividusIncomplets(label=label, IDindividu=IDindividu, IDcivilite=IDcivilite, nom=nom))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def FamillesIncompletes(self):
-        labelProbleme = u"Fiches familles tronquées"
-        labelCorrection = u"Réparer la fiche famille"
+        labelProbleme = _(u"Fiches familles tronquées")
+        labelCorrection = _(u"Réparer la fiche famille")
         req = """SELECT IDfamille, IDcompte_payeur
         FROM familles 
         WHERE IDcompte_payeur IS NULL;"""
@@ -395,13 +397,13 @@ class Depannage():
         listeFamilles = self.DB.ResultatReq()
         listeTemp = []
         for IDfamille, IDcompte_payeur in listeFamilles :
-            label = u"Famille ID%d" % IDfamille
+            label = _(u"Famille ID%d") % IDfamille
             listeTemp.append(FamillesIncompletes(label=label, IDfamille=IDfamille))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def InscriptionsIncompletes(self):
-        labelProbleme = u"Inscriptions tronquées"
-        labelCorrection = u"Réparer la table des inscriptions"
+        labelProbleme = _(u"Inscriptions tronquées")
+        labelCorrection = _(u"Réparer la table des inscriptions")
         req = """SELECT IDinscription, IDfamille, IDindividu, IDcompte_payeur
         FROM inscriptions 
         WHERE IDcompte_payeur IS NULL;"""
@@ -409,13 +411,13 @@ class Depannage():
         listeInscriptions = self.DB.ResultatReq()
         listeTemp = []
         for IDinscription, IDfamille, IDindividu, IDcompte_payeur in listeInscriptions :
-            label = u"Inscription ID%d (Famille ID%d Individu ID%d)" % (IDinscription, IDfamille, IDindividu)
+            label = _(u"Inscription ID%d (Famille ID%d Individu ID%d)") % (IDinscription, IDfamille, IDindividu)
             listeTemp.append(InscriptionsIncompletes(label=label, IDinscription=IDinscription, IDfamille=IDfamille, IDcompte_payeur=IDcompte_payeur))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def ConsommationsIncompletes(self):
-        labelProbleme = u"Consommations tronquées"
-        labelCorrection = u"Réparer la table des consommations"
+        labelProbleme = _(u"Consommations tronquées")
+        labelCorrection = _(u"Réparer la table des consommations")
         req = """SELECT IDconso, consommations.IDindividu, consommations.IDinscription, inscriptions.IDcompte_payeur
         FROM consommations 
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
@@ -424,13 +426,13 @@ class Depannage():
         listeInscriptions = self.DB.ResultatReq()
         listeTemp = []
         for IDconso, IDinscription, IDindividu, IDcompte_payeur in listeInscriptions :
-            label = u"Conso ID%d (IDinscription ID%d Individu ID%d)" % (IDconso, IDinscription, IDindividu)
+            label = _(u"Conso ID%d (IDinscription ID%d Individu ID%d)") % (IDconso, IDinscription, IDindividu)
             listeTemp.append(ConsommationsIncompletes(label=label, IDconso=IDconso, IDcompte_payeur=IDcompte_payeur))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def FacturesErronees(self):
-        labelProbleme = u"Factures erronées"
-        labelCorrection = u"Recalculer le montant des factures"
+        labelProbleme = _(u"Factures erronées")
+        labelCorrection = _(u"Recalculer le montant des factures")
         # Recherche des factures
         req = """SELECT factures.IDfacture, factures.numero, factures.IDcompte_payeur, comptes_payeurs.IDfamille,
         factures.total, factures.regle, factures.solde
@@ -466,22 +468,22 @@ class Depannage():
             if montantTotalPrestations != FloatToDecimal(totalFacture) :
                 # Si la facture n'a pas de famille rattachée
                 if IDfamille == None : 
-                    label = u"Facture ID%d : Famille inconnue" % IDfacture
+                    label = _(u"Facture ID%d : Famille inconnue") % IDfacture
                     listeTemp.append(FacturesAsupprimer(label=label, IDfacture=IDfacture))
                 elif len(listePrestationsFacture) == 0 :
-                    label = u"Facture ID%d : Aucune prestation correspondante" % IDfacture
+                    label = _(u"Facture ID%d : Aucune prestation correspondante") % IDfacture
                     listeTemp.append(FacturesAsupprimer(label=label, IDfacture=IDfacture))
                 elif montantTotalPrestations == FloatToDecimal(0.0) :
-                    label = u"Facture ID%d : Montant de la facture égal à 0" % IDfacture
+                    label = _(u"Facture ID%d : Montant de la facture égal à 0") % IDfacture
                     listeTemp.append(FacturesAsupprimer(label=label, IDfacture=IDfacture))
                 else :
-                    label = u"Facture ID%d : Total à recalculer" % IDfacture
+                    label = _(u"Facture ID%d : Total à recalculer") % IDfacture
                     listeTemp.append(FacturesRecalcul(label=label, IDfacture=IDfacture, totalFacture=totalFacture, regleFacture=regleFacture, soldeFacture=soldeFacture, montantTotalPrestations=montantTotalPrestations))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def ConsommationsErronees(self):
-        labelProbleme = u"Consommations erronées"
-        labelCorrection = u"Réparer la table des consommations"
+        labelProbleme = _(u"Consommations erronées")
+        labelCorrection = _(u"Réparer la table des consommations")
         req = """SELECT IDconso, date, heure_debut, heure_fin, individus.nom, individus.prenom
         FROM consommations
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
@@ -506,17 +508,17 @@ class Depannage():
             if prenomIndividu != None : individu += " " + prenomIndividu
             if heure_debut != None :
                 if ValidationHeure(heure_debut) == False :
-                    label = u"Conso ID%d de %s : Heure de début de consommation erronée ('%s')" % (IDconso, individu, heure_debut)
+                    label = _(u"Conso ID%d de %s : Heure de début de consommation erronée ('%s')") % (IDconso, individu, heure_debut)
                     listeTemp.append(CorrigerHeuresConso(label=label, IDconso=IDconso, date=date, individu=individu, heure_debut=heure_debut, heure_fin=None))
             if heure_fin != None :
                 if ValidationHeure(heure_fin) == False :
-                    label = u"Conso ID%d de %s : Heure de fin de consommation erronée ('%s')" % (IDconso, individu, heure_fin)
+                    label = _(u"Conso ID%d de %s : Heure de fin de consommation erronée ('%s')") % (IDconso, individu, heure_fin)
                     listeTemp.append(CorrigerHeuresConso(label=label, IDconso=IDconso, date=date, individu=individu, heure_debut=None, heure_fin=heure_fin))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def LiensTronques(self):
-        labelProbleme = u"Liens sans individus associés"
-        labelCorrection = u"Supprimer le lien dans la base"
+        labelProbleme = _(u"Liens sans individus associés")
+        labelCorrection = _(u"Supprimer le lien dans la base")
 
         req = """SELECT IDlien, IDindividu_sujet
         FROM liens 
@@ -535,13 +537,13 @@ class Depannage():
         listeTemp = []
         for liste in (listeSujets, listeObjets) :
             for IDlien, IDindividu in liste :
-                label = u"Lien ID%d (Individu ID%d)" % (IDlien, IDindividu)
+                label = _(u"Lien ID%d (Individu ID%d)") % (IDlien, IDindividu)
                 listeTemp.append(LiensTronques(label=label, IDlien=IDlien, IDindividu=IDindividu))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
 
     def RattachementsTronques(self):
-        labelProbleme = u"Rattachements sans individus associés"
-        labelCorrection = u"Supprimer le rattachement dans la base"
+        labelProbleme = _(u"Rattachements sans individus associés")
+        labelCorrection = _(u"Supprimer le rattachement dans la base")
         req = """SELECT IDrattachement, rattachements.IDindividu, IDfamille
         FROM rattachements 
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
@@ -550,13 +552,13 @@ class Depannage():
         listeDonnees = self.DB.ResultatReq()
         listeTemp = []
         for IDrattachement, IDindividu, IDfamille in listeDonnees :
-            label = u"Rattachement ID%d (Famille ID%d - Individu ID%d)" % (IDrattachement, IDfamille, IDindividu)
+            label = _(u"Rattachement ID%d (Famille ID%d - Individu ID%d)") % (IDrattachement, IDfamille, IDindividu)
             listeTemp.append(RattachementsTronques(label=label, IDrattachement=IDrattachement, IDfamille=IDfamille, IDindividu=IDindividu))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
     
     def LiensErrones(self):
-        labelProbleme = u"Liens de parenté erronés"
-        labelCorrection = u"Supprimer les liens erronés"
+        labelProbleme = _(u"Liens de parenté erronés")
+        labelCorrection = _(u"Supprimer les liens erronés")
         req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable, IDautorisation
         FROM liens
         ORDER BY IDlien;"""
@@ -588,13 +590,13 @@ class Depannage():
         listeTemp = []
         for IDfamille in listeIDfamille :
             listeIDlien = dictLiensASupprimer[IDfamille]
-            label = u"Famille ID%d : %d liens erronés" % (IDfamille, len(listeIDlien))
+            label = _(u"Famille ID%d : %d liens erronés") % (IDfamille, len(listeIDlien))
             listeTemp.append(LiensErrones(label=label, IDfamille=IDfamille, listeIDlien=listeIDlien))
         self.listeResultats.append((labelProbleme, labelCorrection, listeTemp))
         
     def VentilationExcessive(self):
-        labelProbleme = u"Ventilations excessives"
-        labelCorrection = u"Supprimer la ventilation excessive"
+        labelProbleme = _(u"Ventilations excessives")
+        labelCorrection = _(u"Supprimer la ventilation excessive")
         req = """SELECT IDventilation, ventilation.IDcompte_payeur, IDreglement, IDprestation, comptes_payeurs.IDfamille
         FROM ventilation
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = ventilation.IDcompte_payeur;"""
@@ -605,7 +607,7 @@ class Depannage():
         for IDventilation, IDcompte_payeur, IDreglement, IDprestation, IDfamille in listeDonnees :
             key = (IDcompte_payeur, IDreglement, IDprestation)
             if dictTemp.has_key(key) :
-                label = u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d" % (IDventilation, IDprestation, IDreglement, IDfamille)
+                label = _(u"Ventilation ID%d pour la prestation ID%d et le règlement ID%d pour la famille ID%d") % (IDventilation, IDprestation, IDreglement, IDfamille)
                 listeTemp.append(VentilationsExcessives(label=label, IDventilation=IDventilation, IDprestation=IDprestation, IDreglement=IDreglement, IDfamille=IDfamille))
             else :
                 dictTemp[key] = IDventilation

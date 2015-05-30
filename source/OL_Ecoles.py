@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -109,19 +111,19 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDecole", typeDonnee="entier"),
-            ColumnDefn(u"Nom", 'left', 250, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Rue", "left", 140, "rue", typeDonnee="texte"),
-            ColumnDefn(u"C.P.", "left", 45, "cp", typeDonnee="texte"),
-            ColumnDefn(u"Ville", "left", 110, "ville", typeDonnee="texte"),
-            ColumnDefn(u"Tél.", "left", 100, "tel", typeDonnee="texte"),
-            ColumnDefn(u"Fax.", "left", 100, "fax", typeDonnee="texte"),
-            ColumnDefn(u"Email", "left", 100, "mail", typeDonnee="texte"),
-            ColumnDefn(u"Secteurs", "left", 250, "txtSecteurs", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDecole", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), 'left', 250, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Rue"), "left", 140, "rue", typeDonnee="texte"),
+            ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
+            ColumnDefn(_(u"Ville"), "left", 110, "ville", typeDonnee="texte"),
+            ColumnDefn(_(u"Tél."), "left", 100, "tel", typeDonnee="texte"),
+            ColumnDefn(_(u"Fax."), "left", 100, "fax", typeDonnee="texte"),
+            ColumnDefn(_(u"Email"), "left", 100, "mail", typeDonnee="texte"),
+            ColumnDefn(_(u"Secteurs"), "left", 250, "txtSecteurs", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune école")
+        self.SetEmptyListMsg(_(u"Aucune école"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -156,7 +158,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -165,7 +167,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -173,7 +175,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -183,14 +185,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -201,12 +203,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des écoles", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des écoles"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des écoles", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des écoles"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -242,14 +244,14 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_ecoles", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune école à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune école à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import DLG_Saisie_ecole
         IDecole = self.Selection()[0].IDecole
         dlg = DLG_Saisie_ecole.Dialog(self)
-        dlg.SetTitle(u"Modification d'une école")
+        dlg.SetTitle(_(u"Modification d'une école"))
         dlg.SetNom(self.Selection()[0].nom)
         dlg.SetRue(self.Selection()[0].rue)
         dlg.SetCp(self.Selection()[0].cp)
@@ -286,7 +288,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_ecoles", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune école dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune école dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -302,7 +304,7 @@ class ListView(FastObjectListView):
         nbreClasses = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreClasses > 0 :
-            dlg = wx.MessageDialog(self, u"Cette école a déjà été rattachée à %d classes.\nVous ne pouvez donc la supprimer." % nbreClasses, u"Avertissement", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette école a déjà été rattachée à %d classes.\nVous ne pouvez donc la supprimer.") % nbreClasses, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -317,13 +319,13 @@ class ListView(FastObjectListView):
         nbreIndividus = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreIndividus > 0 :
-            dlg = wx.MessageDialog(self, u"Cette école a déjà été attribuée à %d individus.\nVous ne pouvez donc la supprimer." % nbreIndividus, u"Avertissement", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette école a déjà été attribuée à %d individus.\nVous ne pouvez donc la supprimer.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette école ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette école ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("ecoles", "IDecole", IDecole)
@@ -341,7 +343,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une école...")
+        self.SetDescriptiveText(_(u"Rechercher une école..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

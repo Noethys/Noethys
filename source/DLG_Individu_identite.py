@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.masked as masked
 
 import GestionDB
@@ -30,7 +32,7 @@ class Sieste(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=[]) 
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez le type de sieste nécessaire pour cet individu")
+        self.SetToolTipString(_(u"Sélectionnez le type de sieste nécessaire pour cet individu"))
         self.MAJ() 
     
     def MAJ(self):
@@ -45,8 +47,8 @@ class Sieste(wx.Choice):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        self.dictDonnees = { 0 : (None, u"Ne fait pas la sieste") }
-        listeNoms = [ u"Ne fait pas la sieste"]
+        self.dictDonnees = { 0 : (None, _(u"Ne fait pas la sieste")) }
+        listeNoms = [ _(u"Ne fait pas la sieste")]
         index = 1
         for IDtype_sieste, nom in listeDonnees :
             listeNoms.append(nom)
@@ -79,43 +81,43 @@ class Panel_identite(wx.Panel):
         self.majEffectuee = False
         
         # Identité
-        self.staticbox_etatcivil_staticbox = wx.StaticBox(self, -1, u"Etat-civil")
-        self.label_civilite = wx.StaticText(self, -1, u"Civilité/genre :")
+        self.staticbox_etatcivil_staticbox = wx.StaticBox(self, -1, _(u"Etat-civil"))
+        self.label_civilite = wx.StaticText(self, -1, _(u"Civilité/genre :"))
         self.ctrl_civilite = CTRL_Saisie_civilite.Civilite(self)
-        self.label_nomjfille = wx.StaticText(self, -1, u"Nom de jeune fille :")
+        self.label_nomjfille = wx.StaticText(self, -1, _(u"Nom de jeune fille :"))
         self.ctrl_nomjfille = wx.TextCtrl(self, -1, u"")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.label_prenom = wx.StaticText(self, -1, u"Prénom :")
+        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "")
-        self.label_numsecu = wx.StaticText(self, -1, u"Num. sécu. :")
+        self.label_numsecu = wx.StaticText(self, -1, _(u"Num. sécu. :"))
         self.ctrl_numsecu = CTRL_Saisie_numSecu.NumSecu(self)
-        self.label_nationalite = wx.StaticText(self, -1, u"Nationalité :")
+        self.label_nationalite = wx.StaticText(self, -1, _(u"Nationalité :"))
         self.ctrl_nationalite = CTRL_Saisie_pays.SaisiePays(self, mode="nationalite")
         
         # Naissance
-        self.staticbox_naiss_staticbox = wx.StaticBox(self, -1, u"Naissance")
-        self.label_datenaiss = wx.StaticText(self, -1, u"Date :")
+        self.staticbox_naiss_staticbox = wx.StaticBox(self, -1, _(u"Naissance"))
+        self.label_datenaiss = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_datenaiss = CTRL_Saisie_date.Date(self)
         self.ctrl_age = wx.TextCtrl(self, -1, "", style=wx.TE_CENTRE, size=(46,-1))
-        self.label_paysnaiss = wx.StaticText(self, -1, u"Pays de naissance :")
+        self.label_paysnaiss = wx.StaticText(self, -1, _(u"Pays de naissance :"))
         self.ctrl_paysnaiss = CTRL_Saisie_pays.SaisiePays(self, mode="pays")
-        self.label_lieunaiss = wx.StaticText(self, -1, u"Lieu | C.P. :")
+        self.label_lieunaiss = wx.StaticText(self, -1, _(u"Lieu | C.P. :"))
         self.ctrl_adressenaiss = CTRL_Saisie_adresse.Adresse(self)
         
         # Décès
-        self.staticbox_deces = wx.StaticBox(self, -1, u"Décès")
+        self.staticbox_deces = wx.StaticBox(self, -1, _(u"Décès"))
         self.ctrl_deces = wx.CheckBox(self, -1, u"")
-        self.label_deces = wx.StaticText(self, -1, u"Année :")
+        self.label_deces = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee_deces = wx.TextCtrl(self, -1, u"")
         
         # Sieste
-        self.staticbox_sieste = wx.StaticBox(self, -1, u"Sieste")
+        self.staticbox_sieste = wx.StaticBox(self, -1, _(u"Sieste"))
         self.ctrl_sieste = Sieste(self)
         self.bouton_sieste = wx.Button(self, -1, "...", size=(20, 20))
         
         # Mémo
-        self.staticbox_memo = wx.StaticBox(self, -1, u"Mémo")
+        self.staticbox_memo = wx.StaticBox(self, -1, _(u"Mémo"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
         self.__set_properties()
@@ -139,22 +141,22 @@ class Panel_identite(wx.Panel):
         self.ctrl_paysnaiss.SetValue(IDpays=73)
         
     def __set_properties(self):
-        self.ctrl_nomjfille.SetToolTipString(u"Saisissez ici le nom de jeune fille de l'individu")
+        self.ctrl_nomjfille.SetToolTipString(_(u"Saisissez ici le nom de jeune fille de l'individu"))
         self.ctrl_nomjfille.Enable(False)
         self.label_nomjfille.Enable(False)
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de l'individu")
-        self.ctrl_prenom.SetToolTipString(u"Saisissez ici le prénom de l'individu")
-        self.ctrl_datenaiss.SetToolTipString(u"Saisissez ici la date de naissance de l'individu")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'individu"))
+        self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prénom de l'individu"))
+        self.ctrl_datenaiss.SetToolTipString(_(u"Saisissez ici la date de naissance de l'individu"))
         self.ctrl_datenaiss.SetMinSize((95, -1))
         self.ctrl_age.SetMinSize((60, -1))
-        self.ctrl_age.SetToolTipString(u"Age de l'individu")
+        self.ctrl_age.SetToolTipString(_(u"Age de l'individu"))
         self.ctrl_age.Enable(False)
-        self.ctrl_deces.SetToolTipString(u"Cochez cette case si l'individu est décédé")
-        self.ctrl_annee_deces.SetToolTipString(u"Saisissez ici l'année de décès de l'individu")
+        self.ctrl_deces.SetToolTipString(_(u"Cochez cette case si l'individu est décédé"))
+        self.ctrl_annee_deces.SetToolTipString(_(u"Saisissez ici l'année de décès de l'individu"))
         self.ctrl_annee_deces.SetMinSize((40, -1))
-        self.ctrl_sieste.SetToolTipString(u"Sélectionnez ici un type de sieste pour cet individu")
-        self.bouton_sieste.SetToolTipString(u"Cliquez ici pour accéder à la fenêtre de gestion des types de sieste")
-        self.ctrl_memo.SetToolTipString(u"Saisissez ici les informations de votre choix concernant cet individu")
+        self.ctrl_sieste.SetToolTipString(_(u"Sélectionnez ici un type de sieste pour cet individu"))
+        self.bouton_sieste.SetToolTipString(_(u"Cliquez ici pour accéder à la fenêtre de gestion des types de sieste"))
+        self.ctrl_memo.SetToolTipString(_(u"Saisissez ici les informations de votre choix concernant cet individu"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -262,11 +264,11 @@ class Panel_identite(wx.Panel):
             if len(nom) != 0 : 
                 nom = nom.upper()
             else:
-                nom = u"NOM"
+                nom = _(u"NOM")
             if len(prenom) > 0 : 
                 prenom = prenom[:1].upper() + prenom[1:]
             else:
-                prenom = u"Prénom"
+                prenom = _(u"Prénom")
             self.Set_Header(nomLigne="nom", texte=u"%s, %s" % (nom, prenom))
         if event != None :
             event.Skip() 
@@ -293,14 +295,14 @@ class Panel_identite(wx.Panel):
         dateFR = self.ctrl_datenaiss.GetDate(FR=True)
         texte = u""
         if dateFR == None : 
-            texte = u"Date et lieu de naissance inconnus"
+            texte = _(u"Date et lieu de naissance inconnus")
             self.ctrl_age.SetValue(u"")
         else:
             age = self.ctrl_datenaiss.GetAge()
             sexe = self.ctrl_civilite.GetSexe()
-            if sexe == "M" : texte = u"Né le %s (%d ans)" % (dateFR, age)
-            if sexe == "F" : texte = u"Née le %s (%d ans)" % (dateFR, age)
-            if age != None : self.ctrl_age.SetValue(u"%d ans" % age)
+            if sexe == "M" : texte = _(u"Né le %s (%d ans)") % (dateFR, age)
+            if sexe == "F" : texte = _(u"Née le %s (%d ans)") % (dateFR, age)
+            if age != None : self.ctrl_age.SetValue(_(u"%d ans") % age)
         self.Set_Header(nomLigne="datenaiss", texte=texte)
         if event != None : event.Skip() 
         
@@ -438,21 +440,21 @@ class Panel_identite(wx.Panel):
         """ Validation des données avant Sauvegarde """
         # Vérification de la civilité
         if self.ctrl_civilite.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une civilité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une civilité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Vérification du nom
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Vérification de la civilité
         if self.ctrl_civilite.GetRubrique() != "AUTRE" and self.ctrl_prenom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un prénom !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un prénom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -463,12 +465,12 @@ class Panel_identite(wx.Panel):
                 try :
                     annee_deces = int(self.ctrl_annee_deces.GetValue())
                 except :
-                    dlg = wx.MessageDialog(self, u"L'année de décès que vous avez saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'année de décès que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
                 if annee_deces < 1500 or annee_deces > 3000 :
-                    dlg = wx.MessageDialog(self, u"L'année de décès que vous avez saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'année de décès que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False

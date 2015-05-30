@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import copy
 import GestionDB
@@ -57,15 +59,15 @@ class Renderer_gauge(object):
         # Dessin du texte
         mdc.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
         if self.nbrePlacesPrises == 1 :
-            texte = u"1 inscrit"
+            texte = _(u"1 inscrit")
         else :
-            texte = u"%d inscrits" % self.nbrePlacesPrises
+            texte = _(u"%d inscrits") % self.nbrePlacesPrises
         if self.nbrePlacesAttente > 0 :
-            texte += u" + %d en attente" % self.nbrePlacesAttente
+            texte += _(u" + %d en attente") % self.nbrePlacesAttente
         if self.nbrePlacesDispo > 0 :
-            texte += u" / %d places" % self.nbrePlacesDispo
+            texte += _(u" / %d places") % self.nbrePlacesDispo
         else :
-            texte += u" / places illimitées"
+            texte += _(u" / places illimitées")
         textWidth, dummy = mdc.GetTextExtent(texte)
         mdc.SetTextForeground(COULEUR_TEXTE)
         x = rect.width/2 - textWidth/2
@@ -142,8 +144,8 @@ class CTRL(ULC.UltimateListCtrl):
         self.SetBackgroundColour(self.couleurFond)
         
         # Création des colonnes
-        self.InsertColumn(0, u"Nom de l'activité", width=200, format=ULC.ULC_FORMAT_RIGHT)
-        self.InsertColumn(1, u"Nbre inscrits", width=200, format=ULC.ULC_FORMAT_CENTRE)
+        self.InsertColumn(0, _(u"Nom de l'activité"), width=200, format=ULC.ULC_FORMAT_RIGHT)
+        self.InsertColumn(1, _(u"Nbre inscrits"), width=200, format=ULC.ULC_FORMAT_CENTRE)
         
         # Binds        
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
@@ -213,7 +215,7 @@ class CTRL(ULC.UltimateListCtrl):
         for IDactivite, nom, abrege, nbre_inscrits_max, nbre_inscrits in listeDonnees :
             if nbre_inscrits_max == None : nbre_inscrits_max = 0
             if nbre_inscrits == None : nbre_inscrits = 0
-            if nom == None : nom = u"Sans nom !"
+            if nom == None : nom = _(u"Sans nom !")
             listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "nbrePlacesDispo" : nbre_inscrits_max, "nbrePlacesPrises" : nbre_inscrits, "nbrePlacesAttente" : 0}) # nbrePlacesAttente à coder plus tard
         
         # Pour éviter l'actualisation de l'affichage si aucune modification des données
@@ -281,9 +283,9 @@ class Panel(wx.Panel):
         
         # Commandes
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        self.bouton_parametres.SetToolTipString(u"Cliquez ici pour modifier les paramètres d'affichage")
+        self.bouton_parametres.SetToolTipString(_(u"Cliquez ici pour modifier les paramètres d'affichage"))
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
-        self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder aux outils")
+        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
 
         self.__do_layout()
         
@@ -319,14 +321,14 @@ class Panel(wx.Panel):
         menuPop = wx.Menu()
 
         # Item Actualiser
-        item = wx.MenuItem(menuPop, 10, u"Actualiser")
+        item = wx.MenuItem(menuPop, 10, _(u"Actualiser"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Actualiser, id=10)
 
         menuPop.AppendSeparator()
         
-        item = wx.MenuItem(menuPop, 20, u"Aide", u"Aide")
+        item = wx.MenuItem(menuPop, 20, _(u"Aide"), _(u"Aide"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Aide.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Aide, id=20)

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import os
 import datetime
@@ -34,19 +36,19 @@ DICT_CIVILITES = DATA_Civilites.GetDictCivilites()
 
 
 LISTE_STYLES = [
-    {"code" : "crystal", "label" : u"Crystal"},
+    {"code" : "crystal", "label" : _(u"Crystal")},
     ]
     
 LISTE_THEMES = [
-    {"code" : "defaut", "label" : u"Défaut", "image" : "Theme_defaut.png", "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
-    {"code" : "newyork", "label" : u"New-York", "image" : "Theme_newyork.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
-    {"code" : "ocean", "label" : u"Océan", "image" : "Theme_ocean.jpg", "dlg" : {"couleurClaire" : wx.Colour(229, 195, 149), "couleurFoncee" : wx.Colour(2, 134, 183)}, },
-    {"code" : "bleu", "label" : u"Bleu métal", "image" : "Theme_bleu.jpg", "dlg" : {"couleurClaire" : wx.Colour(164, 182, 193), "couleurFoncee" : wx.Colour(63, 79, 94)}, },
-    {"code" : "vert", "label" : u"Vert pomme", "image" : "Theme_vert.jpg", "dlg" : {"couleurClaire" : wx.Colour(212, 238, 115), "couleurFoncee" : wx.Colour(71, 85, 24)}, },
-    {"code" : "sommets", "label" : u"Sommets enneigés", "image" : "Theme_sommets.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
-    {"code" : "hiver", "label" : u"Ciel d'hiver ", "image" : "Theme_hiver.jpg", "dlg" : {"couleurClaire" : wx.Colour(111, 151, 255), "couleurFoncee" : wx.Colour(36, 67, 148)}, },
-    {"code" : "noel", "label" : u"Noël ", "image" : "Theme_noel.jpg", "dlg" : {"couleurClaire" : wx.Colour(255, 98, 89), "couleurFoncee" : wx.Colour(120, 7, 15)}, },
-    {"code" : "personnalise", "label" : u"Personnalisé", "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
+    {"code" : "defaut", "label" : _(u"Défaut"), "image" : "Theme_defaut.png", "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
+    {"code" : "newyork", "label" : _(u"New-York"), "image" : "Theme_newyork.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
+    {"code" : "ocean", "label" : _(u"Océan"), "image" : "Theme_ocean.jpg", "dlg" : {"couleurClaire" : wx.Colour(229, 195, 149), "couleurFoncee" : wx.Colour(2, 134, 183)}, },
+    {"code" : "bleu", "label" : _(u"Bleu métal"), "image" : "Theme_bleu.jpg", "dlg" : {"couleurClaire" : wx.Colour(164, 182, 193), "couleurFoncee" : wx.Colour(63, 79, 94)}, },
+    {"code" : "vert", "label" : _(u"Vert pomme"), "image" : "Theme_vert.jpg", "dlg" : {"couleurClaire" : wx.Colour(212, 238, 115), "couleurFoncee" : wx.Colour(71, 85, 24)}, },
+    {"code" : "sommets", "label" : _(u"Sommets enneigés"), "image" : "Theme_sommets.jpg", "dlg" : {"couleurClaire" : wx.Colour(186, 186, 186), "couleurFoncee" : wx.Colour(60, 60, 60)}, },
+    {"code" : "hiver", "label" : _(u"Ciel d'hiver "), "image" : "Theme_hiver.jpg", "dlg" : {"couleurClaire" : wx.Colour(111, 151, 255), "couleurFoncee" : wx.Colour(36, 67, 148)}, },
+    {"code" : "noel", "label" : _(u"Noël "), "image" : "Theme_noel.jpg", "dlg" : {"couleurClaire" : wx.Colour(255, 98, 89), "couleurFoncee" : wx.Colour(120, 7, 15)}, },
+    {"code" : "personnalise", "label" : _(u"Personnalisé"), "dlg" : {"couleurClaire" : wx.Colour(206, 196, 190), "couleurFoncee" : wx.Colour(169, 156, 146)}, },
     ]
 
 
@@ -76,8 +78,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -305,7 +307,7 @@ class CTRL_Interface(wx.Panel):
         """ Changement de date automatique """
         if self.date != datetime.date.today() :
             self.date = datetime.date.today()
-            self.log.AjouterAction(action=u"Changement de date automatique : %s" % DateEngFr(str(self.date)))
+            self.log.AjouterAction(action=_(u"Changement de date automatique : %s") % DateEngFr(str(self.date)))
     
     def StopTimer(self):
         if self.timer != None :
@@ -503,9 +505,9 @@ class CTRL_Interface(wx.Panel):
         # Demande de confirmation de l'identité
         if self.dictProcedure["parametres"]["confirmation"] == 1 and self.importationManuelle == False :
             if self.dictProcedure["parametres"]["tutoiement"] == 1 :
-                message = u"Confirmes-tu être %s %s ?" % (prenom, nom)
+                message = _(u"Confirmes-tu être %s %s ?") % (prenom, nom)
             else :
-                message = u"Confirmez-vous être %s %s ?" % (prenom, nom)
+                message = _(u"Confirmez-vous être %s %s ?") % (prenom, nom)
             dlg = DIALOGUES.DLG_Question(self, message=message, icone="question")
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -514,7 +516,7 @@ class CTRL_Interface(wx.Panel):
                 return
 
         # Envoi de l'info d'identification vers le log
-        self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=u"Identification de %s (ID%d)" % (nomIndividu, IDindividu), resultat=True)
+        self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Identification de %s (ID%d)") % (nomIndividu, IDindividu), resultat=True)
         
         # Lancement des actions
         for dictAction in self.dictProcedure["actions"] :
@@ -693,15 +695,15 @@ class CTRL_Interface(wx.Panel):
         
         if len(listeIDfamille) == 0 :
             # Individu pas inscrit à cette activité
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Individu non inscrit à l'activité")
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Individu non inscrit à l'activité"))
             if self.infosIndividus.RechercheIndividu(IDindividu)["genre"] == "F" :
                 feminin = "e"
             else :
                 feminin = ""
             if self.dictProcedure["parametres"]["tutoiement"] == 1 :
-                message = u"Tu n'es pas inscrit%s à l'activité '%s' !" % (feminin, dictActivite["nom"])
+                message = _(u"Tu n'es pas inscrit%s à l'activité '%s' !") % (feminin, dictActivite["nom"])
             else :
-                message = u"Vous n'êtes pas inscrit%s à l'activité '%s' !" % (feminin, dictActivite["nom"])
+                message = _(u"Vous n'êtes pas inscrit%s à l'activité '%s' !") % (feminin, dictActivite["nom"])
             DIALOGUES.DLG_Message(self, message=message, icone="erreur")
             return False, False
         
@@ -710,15 +712,15 @@ class CTRL_Interface(wx.Panel):
             listeNomsTitulaires = []
             for IDfamille, IDgroupe in listeIDfamille :
                 listeNomsTitulaires.append(self.infosIndividus.GetNomsTitulaires(IDfamille))
-            dlg = DIALOGUES.DLG_Choix(self, message=u"Sur quel dossier faut-il facturer l'activité '%s' ?" % dictActivite["nom"], listeItems=listeNomsTitulaires, multiSelection=False)
+            dlg = DIALOGUES.DLG_Choix(self, message=_(u"Sur quel dossier faut-il facturer l'activité '%s' ?") % dictActivite["nom"], listeItems=listeNomsTitulaires, multiSelection=False)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
                 index = dlg.GetSelections()[0]
                 IDfamille, IDgroupe = listeIDfamille[index]
-                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=u"Choix d'une famille à facturer sur l'activité '%s' : %s." % (dictActivite["nom"], listeNomsTitulaires[index]), resultat=True)
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Choix d'une famille à facturer sur l'activité '%s' : %s.") % (dictActivite["nom"], listeNomsTitulaires[index]), resultat=True)
             else :
-                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=u"Choix d'une famille à facturer sur l'activité '%s'." % dictActivite["nom"], resultat=u"Annulation lors du choix de la famille rattachée.")
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=_(u"Choix d'une famille à facturer sur l'activité '%s'.") % dictActivite["nom"], resultat=_(u"Annulation lors du choix de la famille rattachée."))
                 return False, False
 
         else :
@@ -742,7 +744,7 @@ class CTRL_Interface(wx.Panel):
         # Récupération des infos sur l'activité et sur l'individu
         dictActivite, dictUnites, listeOuvertures, dictGroupes = GetInfosActivite(IDactivite, date) 
         nomIndividu = u"%s %s" % (self.infosIndividus.RechercheIndividu(IDindividu)["nom"], self.infosIndividus.RechercheIndividu(IDindividu)["prenom"])
-        nomAction = u"Enregistrement d'une consommation '%s'" % dictUnites[IDunite]["nom"]
+        nomAction = _(u"Enregistrement d'une consommation '%s'") % dictUnites[IDunite]["nom"]
         
         # Recherche si l'individu est bien inscrit à l'activité
         IDfamille, IDgroupe = self.RechercheInscription(IDindividu, nomIndividu, IDactivite, dictActivite, nomAction)
@@ -751,7 +753,7 @@ class CTRL_Interface(wx.Panel):
         
         # Recherche si l'unité est ouverte pour ce groupe à cette date
         if (IDunite, IDgroupe) not in listeOuvertures :
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Unité '%s' fermée le %s" % (dictUnites[IDunite]["nom"], DateEngFr(str(date))))
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Unité '%s' fermée le %s") % (dictUnites[IDunite]["nom"], DateEngFr(str(date))))
             return False
         
         # Initialisation de la grille des conso
@@ -760,10 +762,10 @@ class CTRL_Interface(wx.Panel):
         # Si demande début ou fin
         if demande == 1 :
             if self.dictProcedure["parametres"]["tutoiement"] == 1 :
-                texte = u"Est-ce que tu arrives ? Ou est-ce que tu pars ?"
+                texte = _(u"Est-ce que tu arrives ? Ou est-ce que tu pars ?")
             else :
-                texte = u"Est-ce que vous arrivez ? Ou est-ce que vous partez ?"
-            listeChoix = [u"J'arrive", u"Je pars"]
+                texte = _(u"Est-ce que vous arrivez ? Ou est-ce que vous partez ?")
+            listeChoix = [_(u"J'arrive"), _(u"Je pars")]
             dlg = DIALOGUES.DLG_Choix(self, message=texte, listeItems=listeChoix, multiSelection=False)
             reponse = dlg.ShowModal()
             dlg.Destroy()
@@ -859,7 +861,7 @@ class CTRL_Interface(wx.Panel):
         elif dateTmp == "prochaine_ouverture" :
             dateTmp = self.RechercheProchaineOuverture(IDactivite, date)
             if dateTmp == None :
-                self.log.AjouterAction(action=u"Réservation de consommations", resultat=u"Pas d'ouvertures futures pour cette activité")
+                self.log.AjouterAction(action=_(u"Réservation de consommations"), resultat=_(u"Pas d'ouvertures futures pour cette activité"))
                 return False
         else :
             return False
@@ -867,7 +869,7 @@ class CTRL_Interface(wx.Panel):
         # Récupération des infos sur l'activité et sur l'individu
         dictActivite, dictUnites, listeOuvertures, dictGroupes = GetInfosActivite(IDactivite, dateTmp) 
         nomIndividu = u"%s %s" % (self.infosIndividus.RechercheIndividu(IDindividu)["nom"], self.infosIndividus.RechercheIndividu(IDindividu)["prenom"])
-        nomAction = u"Réservation de consommations '%s'" % dictActivite["nom"]
+        nomAction = _(u"Réservation de consommations '%s'") % dictActivite["nom"]
         
         # Recherche si l'individu est bien inscrit à l'activité
         IDfamille, IDgroupe = self.RechercheInscription(IDindividu, nomIndividu, IDactivite, dictActivite, nomAction)
@@ -880,7 +882,7 @@ class CTRL_Interface(wx.Panel):
             if (IDunite, IDgroupe) in listeOuvertures :
                 listeUnitesOuvertes.append(IDunite)
         if len(listeUnitesOuvertes) == 0 :
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Aucune unité ouverte le %s" % DateEngFr(str(dateTmp)))
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Aucune unité ouverte le %s") % DateEngFr(str(dateTmp)))
             return False
         
         # Proposition à l'individu
@@ -910,7 +912,7 @@ class CTRL_Interface(wx.Panel):
                     listeUnitesChoisies.append(listeUnitesOuvertes[index])
                 self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=True)
             else :
-                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Annulation par l'individu")
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Annulation par l'individu"))
                 return False
             
         # Initialisation de la grille des conso
@@ -924,9 +926,9 @@ class CTRL_Interface(wx.Panel):
                 listeUnitesCompletes.append(dictUnites[IDunite][nom]) 
                     
         if len(listeUnitesCompletes) > 0 :
-            texte = u"Désolé mais il est possible qu'il n'y ait plus de places. Contactez un responsable."
+            texte = _(u"Désolé mais il est possible qu'il n'y ait plus de places. Contactez un responsable.")
             DIALOGUES.DLG_Message(self, message=texte, icone="exclamation")
-            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Plus de places sur les unités %s" % u", ".join(listeUnitesCompletes))
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=_(u"Plus de places sur les unités %s") % u", ".join(listeUnitesCompletes))
             return False
             
         # Saisie de la consommation
@@ -948,7 +950,7 @@ class CTRL_Interface(wx.Panel):
         for track in self.importationManuelle :
             IDindividu = self.IdentificationCodebarre(track.codebarres)
             if IDindividu == None :
-                self.log.AjouterAction(individu="", IDindividu=None, action=u"Identification d'un code-barres", resultat=u"Code-barres inconnu ('%s')" % track.codebarres)
+                self.log.AjouterAction(individu="", IDindividu=None, action=_(u"Identification d'un code-barres"), resultat=_(u"Code-barres inconnu ('%s')") % track.codebarres)
             else :
                 self.Procedure(IDindividu, track.date, track.heure)
 
@@ -968,10 +970,10 @@ class Dialog(wx.Dialog):
         # Création d'une dlg d'attente durant l'initialisation
         try :
             if importationManuelle == False :
-                texte = u"Veuillez patienter durant l'initialisation de l'interface de badgeage..."
+                texte = _(u"Veuillez patienter durant l'initialisation de l'interface de badgeage...")
             else :
-                texte = u"Veuillez patienter durant l'importation des badgeages..."
-            dlgAttente = PBI.PyBusyInfo(texte, parent=None, title=u"Initialisation", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+                texte = _(u"Veuillez patienter durant l'importation des badgeages...")
+            dlgAttente = PBI.PyBusyInfo(texte, parent=None, title=_(u"Initialisation"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             
             if wx.GetKeyState(307) == True :
@@ -1004,7 +1006,7 @@ class Dialog(wx.Dialog):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans l'initialisation de l'interface de badgeage : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans l'initialisation de l'interface de badgeage : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.Destroy()

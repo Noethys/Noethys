@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
@@ -142,25 +144,25 @@ class Track(object):
         listeProblemes = []
         
         if self.titulaire_helios in (None, "") : 
-            listeProblemes.append(u"Titulaire Hélios manquant")
+            listeProblemes.append(_(u"Titulaire Hélios manquant"))
         else :
             if self.titulaireRue in (None, "") or self.titulaireCP in (None, "") or self.titulaireVille in (None, "") : 
-                listeProblemes.append(u"Adresse du titulaire Hélios incomplète")
+                listeProblemes.append(_(u"Adresse du titulaire Hélios incomplète"))
         
         if self.prelevement == 1 :
             if self.prelevement_iban in (None, "") or self.prelevement_bic in (None, "") or self.prelevement_titulaire in (None, "") :
-                listeProblemes.append(u"Coordonnées bancaires incomplètes")
+                listeProblemes.append(_(u"Coordonnées bancaires incomplètes"))
             if self.prelevement_rum in (None, "") or self.prelevement_IDmandat in (None, "") or self.prelevement_date_mandat in (None, "") :
-                listeProblemes.append(u"Mandat SEPA manquant")
+                listeProblemes.append(_(u"Mandat SEPA manquant"))
             if self.prelevement_sequence in (None, "") :
-                listeProblemes.append(u"Séquence SEPA non renseignée")
+                listeProblemes.append(_(u"Séquence SEPA non renseignée"))
         
         if len(listeProblemes) > 0 :
             self.analysePiece = False
             self.analysePieceTexte = u", ".join(listeProblemes)
         else :
             self.analysePiece = True
-            self.analysePieceTexte = u"Pièce valide"
+            self.analysePieceTexte = _(u"Pièce valide")
 
 def GetDictAutresDonnees():
     DB = GestionDB.DB()
@@ -291,24 +293,24 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateType(statut):
-            if statut == "manuel" : return u"Manuel"
-            if statut == "facture" : return u"Facture"
+            if statut == "manuel" : return _(u"Manuel")
+            if statut == "facture" : return _(u"Facture")
             return ""
 
         def FormateStatut(statut):
-            if statut == "valide" : return u"Valide"
-            if statut == "refus" : return u"Refus"
-            if statut == "attente" : return u"Attente"
+            if statut == "valide" : return _(u"Valide")
+            if statut == "refus" : return _(u"Refus")
+            if statut == "attente" : return _(u"Attente")
 
         def FormateReglement(reglement):
             if reglement == True :
-                return u"Oui"
+                return _(u"Oui")
             else:
                 return u""
 
         def FormatePrelevement(prelevement):
             if prelevement == 1 :
-                return u"Oui"
+                return _(u"Oui")
             else:
                 return u""
 
@@ -325,34 +327,34 @@ class ListView(FastObjectListView):
                 return self.imgRefus
             
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDprelevement", typeDonnee="entier"),
-            ColumnDefn(u"Analyse pièce", 'left', 120, "analysePieceTexte", typeDonnee="texte", imageGetter=GetImageAnalysePiece),
-            ColumnDefn(u"Famille", 'left', 230, "titulaires", typeDonnee="texte"),
-##            ColumnDefn(u"Type", 'left', 70, "type", stringConverter=FormateType),
-            ColumnDefn(u"Libellé", 'left', 110, "libelle", typeDonnee="texte"),
-            ColumnDefn(u"Montant", 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Statut", 'left', 80, "prelevement_statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
-            ColumnDefn(u"Règlement", 'left', 70, "reglement", typeDonnee="texte", stringConverter=FormateReglement, imageGetter=GetImageReglement),
-            ColumnDefn(u"Prélèvt", 'left', 55, "prelevement", typeDonnee="texte", stringConverter=FormatePrelevement, imageGetter=GetImagePrelevement),
-            ColumnDefn(u"Séquence", 'left', 70, "prelevement_sequence", typeDonnee="texte"),
-            ColumnDefn(u"IBAN", 'left', 190, "prelevement_iban", typeDonnee="texte"),
-            ColumnDefn(u"BIC", 'left', 100, "prelevement_bic", typeDonnee="texte"),
-            ColumnDefn(u"Titulaire compte bancaire", 'left', 160, "prelevement_titulaire", typeDonnee="texte"),
-            ColumnDefn(u"Ref. mandat", 'left', 90, "prelevement_rum", typeDonnee="texte"),
-            ColumnDefn(u"Date mandat", 'left', 80, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Titulaire Hélios", 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
-            ColumnDefn(u"Adresse", 'left', 220, "titulaireAdresse", typeDonnee="texte"),
-            ColumnDefn(u"ID Tiers", 'left', 70, "idtiers_helios", typeDonnee="texte"),
-            ColumnDefn(u"Type IDTiers", 'left', 70, "natidtiers_helios", typeDonnee="texte"),
-            ColumnDefn(u"Ref. Tiers", 'left', 70, "reftiers_helios", typeDonnee="texte"),
-            ColumnDefn(u"Cat. Tiers", 'left', 70, "cattiers_helios", typeDonnee="texte"),
-            ColumnDefn(u"Nat. Jur.", 'left', 70, "natjur_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDprelevement", typeDonnee="entier"),
+            ColumnDefn(_(u"Analyse pièce"), 'left', 120, "analysePieceTexte", typeDonnee="texte", imageGetter=GetImageAnalysePiece),
+            ColumnDefn(_(u"Famille"), 'left', 230, "titulaires", typeDonnee="texte"),
+##            ColumnDefn(_(u"Type"), 'left', 70, "type", stringConverter=FormateType),
+            ColumnDefn(_(u"Libellé"), 'left', 110, "libelle", typeDonnee="texte"),
+            ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Statut"), 'left', 80, "prelevement_statut", typeDonnee="texte", stringConverter=FormateStatut, imageGetter=GetImageStatut),
+            ColumnDefn(_(u"Règlement"), 'left', 70, "reglement", typeDonnee="texte", stringConverter=FormateReglement, imageGetter=GetImageReglement),
+            ColumnDefn(_(u"Prélèvt"), 'left', 55, "prelevement", typeDonnee="texte", stringConverter=FormatePrelevement, imageGetter=GetImagePrelevement),
+            ColumnDefn(_(u"Séquence"), 'left', 70, "prelevement_sequence", typeDonnee="texte"),
+            ColumnDefn(_(u"IBAN"), 'left', 190, "prelevement_iban", typeDonnee="texte"),
+            ColumnDefn(_(u"BIC"), 'left', 100, "prelevement_bic", typeDonnee="texte"),
+            ColumnDefn(_(u"Titulaire compte bancaire"), 'left', 160, "prelevement_titulaire", typeDonnee="texte"),
+            ColumnDefn(_(u"Ref. mandat"), 'left', 90, "prelevement_rum", typeDonnee="texte"),
+            ColumnDefn(_(u"Date mandat"), 'left', 80, "prelevement_date_mandat", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Titulaire Hélios"), 'left', 150, "titulaireNomComplet", typeDonnee="texte"),
+            ColumnDefn(_(u"Adresse"), 'left', 220, "titulaireAdresse", typeDonnee="texte"),
+            ColumnDefn(_(u"ID Tiers"), 'left', 70, "idtiers_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"Type IDTiers"), 'left', 70, "natidtiers_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"Ref. Tiers"), 'left', 70, "reftiers_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"Cat. Tiers"), 'left', 70, "cattiers_helios", typeDonnee="texte"),
+            ColumnDefn(_(u"Nat. Jur."), 'left', 70, "natjur_helios", typeDonnee="texte"),
             ]
         
 
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune pièce")
+        self.SetEmptyListMsg(_(u"Aucune pièce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -382,14 +384,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Saisie manuelle
-##        item = wx.MenuItem(menuPop, 10, u"Ajouter un prélèvement manuel")
+##        item = wx.MenuItem(menuPop, 10, _(u"Ajouter un prélèvement manuel"))
 ##        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
 ##        self.Bind(wx.EVT_MENU, self.Saisie_manuelle, id=10)
 
         # Item Saisie de factures
-        item = wx.MenuItem(menuPop, 11, u"Ajouter une ou plusieurs factures")
+        item = wx.MenuItem(menuPop, 11, _(u"Ajouter une ou plusieurs factures"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -398,7 +400,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -406,7 +408,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
                 
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Retirer")
+        item = wx.MenuItem(menuPop, 30, _(u"Retirer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -415,14 +417,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -431,14 +433,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -456,7 +458,7 @@ class ListView(FastObjectListView):
             total += track.montant
         txtTotal = self.GetTexteTotaux().replace("<B>", "").replace("</B>", "")
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des pièces du bordereau", intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces du bordereau"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
         return prt
         
     def Apercu(self, event=None):
@@ -467,11 +469,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des pièces du bordereau")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pièces du bordereau"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des pièces du bordereau")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pièces du bordereau"))
         
     def Saisie_manuelle(self, event=None):
         """ Saisie manuelle """
@@ -494,7 +496,7 @@ class ListView(FastObjectListView):
     def Saisie_factures(self, event=None):
         """ Saisie de factures """
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas effectuer cette action car le lot est verrouillé !", u"Verrouillage", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -534,8 +536,8 @@ class ListView(FastObjectListView):
                 if dictTitulaires.has_key(track.IDfamille) :
                     nomTitulaires = dictTitulaires[track.IDfamille]["titulairesSansCivilite"]
                 else :
-                    nomTitulaires = u"Titulaires inconnus"
-                listeMandatsNonValides.append(u"Facture n°%s de la famille %s" % (track.numero, nomTitulaires))
+                    nomTitulaires = _(u"Titulaires inconnus")
+                listeMandatsNonValides.append(_(u"Facture n°%s de la famille %s") % (track.numero, nomTitulaires))
 
                 prelevement = 0
                 prelevement_iban = ""
@@ -576,7 +578,7 @@ class ListView(FastObjectListView):
                 "prelevement" : prelevement, "prelevement_iban" : prelevement_iban, "prelevement_bic" : prelevement_bic, 
                 "prelevement_IDmandat" : prelevement_IDmandat, "prelevement_rum" : prelevement_rum, "prelevement_date_mandat" : prelevement_mandat_date,
                 "prelevement_titulaire" : prelevement_titulaire, "type" : "facture", "IDfacture" : track.IDfacture, "prelevement_sequence" : prelevement_sequence,
-                "libelle" : u"FACT%06d" % track.numero, "montant" : montant, "prelevement_statut" : "attente", "IDlot" : self.IDlot, "etat" : "ajout", "IDreglement" : None, "dateReglement" : None, 
+                "libelle" : _(u"FACT%06d") % track.numero, "montant" : montant, "prelevement_statut" : "attente", "IDlot" : self.IDlot, "etat" : "ajout", "IDreglement" : None, "dateReglement" : None, 
                 "IDdepot" : None, "IDcompte_payeur" : track.IDcompte_payeur, "titulaire_helios" : track.titulaire_helios, "numero" : track.numero, "dictAutresDonnees" : dictTempAutresDonnees,
                 }
             
@@ -584,9 +586,9 @@ class ListView(FastObjectListView):
                 listeNewTracks.append(Track(dictTemp, dictTitulaires, self.dictIndividus))
         
 ##        if len(listeMandatsNonValides) > 0 :
-##            message1 = u"Les factures suivantes n'ont pas été intégrées car les mandats des familles sont indisponibles ou non valides :"
+##            message1 = _(u"Les factures suivantes n'ont pas été intégrées car les mandats des familles sont indisponibles ou non valides :")
 ##            message2 = "\n".join(listeMandatsNonValides)
-##            dlg = dialogs.MultiMessageDialog(self, message1, caption=u"Avertissement", msg2=message2, style = wx.ICON_EXCLAMATION |wx.OK, icon=None, btnLabels={wx.ID_OK : u"Ok"})
+##            dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Avertissement"), msg2=message2, style = wx.ICON_EXCLAMATION |wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Ok")})
 ##            reponse = dlg.ShowModal() 
 ##            dlg.Destroy() 
 
@@ -595,12 +597,12 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas effectuer cette action car le lot est verrouillé !", u"Verrouillage", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune pièce à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -615,13 +617,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if self.GetParent().GetVerrouillage() == True :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas effectuer cette action car le lot est verrouillé !", u"Verrouillage", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas effectuer cette action car le lot est verrouillé !"), _(u"Verrouillage"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune pièce à retirer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce à retirer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -629,7 +631,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment retirer les %d pièces cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer les %d pièces cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -638,7 +640,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment retirer la pièce sélectionnée ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer la pièce sélectionnée ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -650,7 +652,7 @@ class ListView(FastObjectListView):
             if track.IDdepot != None :
                 listeDepots.append(track)
         if len(listeDepots) > 0 :
-            dlg = wx.MessageDialog(self, u"Suppression interdite car %d pièce(s) de la sélection ont déjà un règlement attribué à un dépôt de règlement !" % len(listeDepots), u"Remarque", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Suppression interdite car %d pièce(s) de la sélection ont déjà un règlement attribué à un dépôt de règlement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -709,7 +711,7 @@ class ListView(FastObjectListView):
         self.MAJtotaux() 
         
         if len(listeDepots) > 0 :
-            dlg = wx.MessageDialog(self, u"Notez que Noethys n'a pas procédé changement de statut de %d pièce(s) car le règlement correspondant appartient déjà à un dépôt de règlement !" % len(listeDepots), u"Remarque", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procédé changement de statut de %d pièce(s) car le règlement correspondant appartient déjà à un dépôt de règlement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -742,13 +744,13 @@ class ListView(FastObjectListView):
                         self.RefreshObject(track)
 
         if len(listeAnomalies) > 0 :
-            dlg = wx.MessageDialog(self, u"Notez que Noethys n'a pas procédé au règlement de %d pièce(s) en raison de leur statut 'Refus'." % len(listeAnomalies), u"Remarque", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procédé au règlement de %d pièce(s) en raison de leur statut 'Refus'.") % len(listeAnomalies), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if len(listeDepots) > 0 :
-            dlg = wx.MessageDialog(self, u"Notez que Noethys n'a pas procédé à la suppression de %d pièce(s) car le règlement correspondant appartient déjà à un dépôt de règlement !" % len(listeDepots), u"Remarque", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que Noethys n'a pas procédé à la suppression de %d pièce(s) car le règlement correspondant appartient déjà à un dépôt de règlement !") % len(listeDepots), _(u"Remarque"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -764,9 +766,9 @@ class ListView(FastObjectListView):
             montant += track.montant
         # Label de staticbox
         if nbre > 1 :
-            texte = u"pièces"
+            texte = _(u"pièces")
         else :
-            texte = u"pièce"
+            texte = _(u"pièce")
         label = u"%d %s (%.2f %s)" % (nbre, texte, montant, SYMBOLE)
         return label          
 
@@ -804,27 +806,27 @@ class ListView(FastObjectListView):
             
         # Création du texte
         if nbreTotal == 0 :
-            texte = u"<B>Aucune pièce   </B>"
+            texte = _(u"<B>Aucune pièce   </B>")
         elif nbreTotal == 1 :
-            texte = u"<B>%d pièce (%.2f %s) : </B>" % (nbreTotal, montantTotal, SYMBOLE)
+            texte = _(u"<B>%d pièce (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         else :
-            texte = u"<B>%d pièces (%.2f %s) : </B>" % (nbreTotal, montantTotal, SYMBOLE)
+            texte = _(u"<B>%d pièces (%.2f %s) : </B>") % (nbreTotal, montantTotal, SYMBOLE)
         
         for key in ("attente", "valide", "refus", "regle", "pasregle") :
             if dictDetails.has_key(key) :
                 dictDetail = dictDetails[key]
                 if dictDetail["nbre"] == 1 :
-                    if key == "attente" : label = u"en attente"
-                    if key == "valide" : label = u"validé"
-                    if key == "refus" : label = u"refusé"
-                    if key == "regle" : label = u"réglé"
-                    if key == "pasregle" : label = u"non réglé"
+                    if key == "attente" : label = _(u"en attente")
+                    if key == "valide" : label = _(u"validé")
+                    if key == "refus" : label = _(u"refusé")
+                    if key == "regle" : label = _(u"réglé")
+                    if key == "pasregle" : label = _(u"non réglé")
                 else :
-                    if key == "attente" : label = u"en attente"
-                    if key == "valide" : label = u"validés"
-                    if key == "refus" : label = u"refusés"
-                    if key == "regle" : label = u"réglés"
-                    if key == "pasregle" : label = u"non réglés"
+                    if key == "attente" : label = _(u"en attente")
+                    if key == "valide" : label = _(u"validés")
+                    if key == "refus" : label = _(u"refusés")
+                    if key == "regle" : label = _(u"réglés")
+                    if key == "pasregle" : label = _(u"non réglés")
                 texteDetail = u"%d %s (%.2f %s), " % (dictDetail["nbre"], label, dictDetail["montant"], SYMBOLE)
                 texte += texteDetail
         if len(dictDetails) > 0 :
@@ -1014,7 +1016,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements
@@ -1069,7 +1071,7 @@ class MyFrame(wx.Frame):
         tracks = GetTracks(IDmandat=6)
         self.myOlv.MAJ(tracks=tracks) 
         
-        self.bouton_test = wx.Button(panel, -1, u"Bouton test")
+        self.bouton_test = wx.Button(panel, -1, _(u"Bouton test"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

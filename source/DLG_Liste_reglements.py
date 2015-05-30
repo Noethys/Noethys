@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Reglements
 import GestionDB
@@ -28,7 +30,7 @@ class CTRL_Compte(wx.Choice):
         self.SetID(None)
     
     def SetListeDonnees(self):
-        self.listeNoms = [u"Tous"]
+        self.listeNoms = [_(u"Tous")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDcompte, nom, numero
@@ -75,7 +77,7 @@ class CTRL_Modes(wx.Choice):
         self.SetID(None)
     
     def SetListeDonnees(self):
-        self.listeNoms = [u"Tous"]
+        self.listeNoms = [_(u"Tous")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDmode, label
@@ -113,7 +115,7 @@ class CTRL_Annee(wx.Choice):
         self.SetListeDonnees() 
     
     def SetListeDonnees(self):
-        self.listeNoms = [u"Toutes"]
+        self.listeNoms = [_(u"Toutes")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDreglement, date
@@ -160,31 +162,31 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter la liste complète des règlements saisis dans le logiciel."
-        titre = u"Liste des règlements"
+        intro = _(u"Vous pouvez ici consulter la liste complète des règlements saisis dans le logiciel.")
+        titre = _(u"Liste des règlements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Reglement.png")
 
         # Paramètres
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Filtres")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
 
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = CTRL_Annee(self)
         self.ctrl_annee.SetMinSize((60, -1))
         
-        self.label_compte = wx.StaticText(self, -1, u"Compte :")
+        self.label_compte = wx.StaticText(self, -1, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
         self.ctrl_compte.SetMinSize((120, -1))
 
-        self.label_mode = wx.StaticText(self, -1, u"Mode :")
+        self.label_mode = wx.StaticText(self, -1, _(u"Mode :"))
         self.ctrl_mode = CTRL_Modes(self)
         self.ctrl_mode.SetMinSize((120, -1))
 
-        self.label_tri = wx.StaticText(self, -1, u"Tri :")
-        self.ctrl_tri = wx.Choice(self, -1, choices = (u"Ordre de saisie", u"Date", u"Mode de règlement", u"Emetteur", u"Numéro de pièce", u"Nom de payeur", "Montant"))
+        self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Nom de payeur"), "Montant"))
         self.ctrl_tri.Select(1) 
         
-        self.label_ordre = wx.StaticText(self, -1, u"Ordre :")
-        self.ctrl_ordre = wx.Choice(self, -1, choices = (u"Ascendant", u"Descendant"))
+        self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
+        self.ctrl_ordre = wx.Choice(self, -1, choices = (_(u"Ascendant"), _(u"Descendant")))
         self.ctrl_ordre.Select(0) 
         
         # Liste
@@ -200,8 +202,8 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -226,19 +228,19 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Liste des règlements")
-        self.ctrl_compte.SetToolTipString(u"Sélectionnez un filtre de compte")
-        self.ctrl_mode.SetToolTipString(u"Sélectionnez un filtre de mode de règlement")
-        self.ctrl_tri.SetToolTipString(u"Sélectionnez le critère de tri")
-        self.ctrl_ordre.SetToolTipString(u"Sélectionnez l'ordre de tri")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le règlement sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le règlement sélectionné dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Liste des règlements"))
+        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez un filtre de compte"))
+        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez un filtre de mode de règlement"))
+        self.ctrl_tri.SetToolTipString(_(u"Sélectionnez le critère de tri"))
+        self.ctrl_ordre.SetToolTipString(_(u"Sélectionnez l'ordre de tri"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le règlement sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le règlement sélectionné dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):

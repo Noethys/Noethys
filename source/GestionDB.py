@@ -8,9 +8,11 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import sys
 import sqlite3
 import wx
+import CTRL_Bouton_image
 import os
 
 try :
@@ -159,7 +161,7 @@ class DB:
         for table in dicoDB:
             # Affichage dans la StatusBar
             if fenetreParente != None :
-                fenetreParente.SetStatusText(u"Création de la table de données %s..." % table)
+                fenetreParente.SetStatusText(_(u"Création de la table de données %s...") % table)
             req = "CREATE TABLE %s (" % table
             pk = ""
             for descr in dicoDB[table]:
@@ -207,7 +209,7 @@ class DB:
         try:
             self.cursor.execute(req)
         except Exception, err:
-            print u"Requete SQL incorrecte :\n%s\nErreur detectee:\n%s" % (req, err)
+            print _(u"Requete SQL incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
             return 0
         else:
             return 1
@@ -354,7 +356,7 @@ class DB:
             self.cursor.execute(req, tuple(valeurs))
             self.Commit()
         except Exception, err:
-            print u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s" % (req, err)
+            print _(u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
         
     def ReqDEL(self, nomTable, nomChampID, ID):
         """ Suppression d'un enregistrement """
@@ -363,7 +365,7 @@ class DB:
             self.cursor.execute(req)
             self.Commit()
         except Exception, err:
-            print u"Requete sql de suppression incorrecte :\n%s\nErreur detectee:\n%s" % (req, err)
+            print _(u"Requete sql de suppression incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
         
     def Modifier(self, table, ID, champs, valeurs, dicoDB):
         # champs et valeurs sont des tuples
@@ -392,7 +394,7 @@ class DB:
         """ Dulpliquer un enregistrement d'une table :
              Ex : nomTable="modeles", nomChampCle="IDmodele", ID=22,
              conditions = "IDmodele=12 AND IDtruc>34",
-             dictModifications={"nom" : u"Copie de modele", etc...}
+             dictModifications={"nom" : _(u"Copie de modele"), etc...}
              renvoieCorrespondance = renvoie un dict de type {ancienID : newID, etc...}
              IDmanuel = Attribue le IDprécédent de la table + 1 (pour parer au bug de la table tarifs_ligne
         """
@@ -1606,7 +1608,7 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         # Vérifie la connexion au réseau
         if dictResultats["connexion"][0] == False :
             erreur = dictResultats["connexion"][1]
-            dlg = wx.MessageDialog(None, u"La connexion au réseau MySQL est impossible. \n\nErreur : %s" % erreur, "Erreur de connexion", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"La connexion au réseau MySQL est impossible. \n\nErreur : %s") % erreur, "Erreur de connexion", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             print "connexion reseau MySQL impossible."
@@ -1614,25 +1616,25 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if dictResultats["fichier"][0] == True :
-            dlg = wx.MessageDialog(None, u"Le fichier existe déjà.", "Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), "Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             print "le nom existe deja."
             return False
         
         # Création de la base de données
-        if fenetreParente != None : fenetreParente.SetStatusText(u"Conversion du fichier en cours... Création du fichier réseau...")
+        if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création du fichier réseau..."))
         db = DB(suffixe=suffixe, nomFichier=nouveauFichier, modeCreation=True)
         if db.echec == 1 :
             erreur = db.erreur
-            dlg = wx.MessageDialog(None, u"Erreur dans la création du fichier.\n\nErreur : %s" % erreur, u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Erreur dans la création du fichier.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         print "  > Nouveau fichier reseau %s cree..." % suffixe
         
         # Création des tables
-        if fenetreParente != None : fenetreParente.SetStatusText(u"Conversion du fichier en cours... Création des tables de données %s..." % suffixe)
+        if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création des tables de données %s...") % suffixe)
         db.CreationTables(dicoDB=dictTables)
         print "  > Nouvelles tables %s creees..." % suffixe
         
@@ -1641,7 +1643,7 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         index = 1
         for nomTable in listeTables :
             print "  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables))
-            if fenetreParente != None : fenetreParente.SetStatusText(u"Conversion du fichier en cours... Importation de la table %d sur %s..." % (index, len(listeTables)))
+            if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
             db.Importation_table(nomTable, nomFichierActif)
             print "     -> ok"
             index += 1
@@ -1662,25 +1664,25 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if os.path.isfile(nouveauNom)  == True :
-            dlg = wx.MessageDialog(None, u"Le fichier existe déjà.", "Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), "Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             print "le nom existe deja."
             return False
         
         # Création de la base de données
-        if fenetreParente != None : fenetreParente.SetStatusText(u"Conversion du fichier en cours... Création du fichier local...")
+        if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création du fichier local..."))
         db = DB(suffixe=suffixe, nomFichier=nouveauFichier, modeCreation=True)
         if db.echec == 1 :
             erreur = db.erreur
-            dlg = wx.MessageDialog(None, u"Erreur dans la création du fichier.\n\nErreur : %s" % erreur, u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Erreur dans la création du fichier.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         print "  > Nouveau fichier local %s cree..." % suffixe
         
         # Création des tables
-        if fenetreParente != None : fenetreParente.SetStatusText(u"Conversion du fichier en cours... Création des tables de données %s..." % suffixe)
+        if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Création des tables de données %s...") % suffixe)
         db.CreationTables(dicoDB=dictTables)
         print "  > Nouvelles tables %s creees..." % suffixe
         
@@ -1689,7 +1691,7 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
         index = 1
         for nomTable in listeTables :
             print "  > Importation de la table '%s' (%d/%d)" % (nomTable, index, len(listeTables))
-            if fenetreParente != None : fenetreParente.SetStatusText(u"Conversion du fichier en cours... Importation de la table %d sur %s..." % (index, len(listeTables)))
+            if fenetreParente != None : fenetreParente.SetStatusText(_(u"Conversion du fichier en cours... Importation de la table %d sur %s...") % (index, len(listeTables)))
             db.Importation_table_reseau(nomTable, u"%s_%s" % (nomFichier, suffixe), dictTables)
             print "     -> ok"
             index += 1
@@ -1733,7 +1735,7 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
                 cursor.execute("USE %s;" % nomFichier)
                 dictResultats["fichier"] =  (True, None)
             else:
-                dictResultats["fichier"] =  (False, u"Accès au fichier impossible.")
+                dictResultats["fichier"] =  (False, _(u"Accès au fichier impossible."))
         except Exception, err :
             dictResultats["fichier"] =  (False, err)
     
@@ -1761,31 +1763,31 @@ def ImporterFichierDonnees() :
 def CreationBaseAnnonces():
     """ Création de la base de données sqlite pour les Annonces """
     DB_DATA_ANNONCES = {
-            "annonces_aleatoires":[             ("IDannonce", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Annonce"),
-                                                            ("image", "VARCHAR(200)", u"Nom de l'image"),
-                                                            ("titre", "VARCHAR(300)", u"Titre"),
-                                                            ("texte_html", "VARCHAR(500)", u"Texte HTML"),
-                                                            ("texte_xml", "VARCHAR(500)", u"texte XML"),
+            "annonces_aleatoires":[             ("IDannonce", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID Annonce")),
+                                                            ("image", "VARCHAR(200)", _(u"Nom de l'image")),
+                                                            ("titre", "VARCHAR(300)", _(u"Titre")),
+                                                            ("texte_html", "VARCHAR(500)", _(u"Texte HTML")),
+                                                            ("texte_xml", "VARCHAR(500)", _(u"texte XML")),
                                                             ],
 
-            "annonces_dates":[                   ("IDannonce", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Annonce"),
-                                                            ("date_debut", "DATE", u"Date de début"),
-                                                            ("date_fin", "DATE", u"Date de fin"),
-                                                            ("image", "VARCHAR(200)", u"Nom de l'image"),
-                                                            ("titre", "VARCHAR(300)", u"Titre"),
-                                                            ("texte_html", "VARCHAR(500)", u"Texte HTML"),
-                                                            ("texte_xml", "VARCHAR(500)", u"texte XML"),
+            "annonces_dates":[                   ("IDannonce", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID Annonce")),
+                                                            ("date_debut", "DATE", _(u"Date de début")),
+                                                            ("date_fin", "DATE", _(u"Date de fin")),
+                                                            ("image", "VARCHAR(200)", _(u"Nom de l'image")),
+                                                            ("titre", "VARCHAR(300)", _(u"Titre")),
+                                                            ("texte_html", "VARCHAR(500)", _(u"Texte HTML")),
+                                                            ("texte_xml", "VARCHAR(500)", _(u"texte XML")),
                                                             ],
 
-            "annonces_periodes":[              ("IDannonce", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Annonce"),
-                                                            ("jour_debut", "INTEGER", u"Jour début"),
-                                                            ("mois_debut", "INTEGER", u"Mois début"),
-                                                            ("jour_fin", "INTEGER", u"Jour fin"),
-                                                            ("mois_fin", "INTEGER", u"Mois fin"),
-                                                            ("image", "VARCHAR(200)", u"Nom de l'image"),
-                                                            ("titre", "VARCHAR(300)", u"Titre"),
-                                                            ("texte_html", "VARCHAR(500)", u"Texte HTML"),
-                                                            ("texte_xml", "VARCHAR(500)", u"texte XML"),
+            "annonces_periodes":[              ("IDannonce", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID Annonce")),
+                                                            ("jour_debut", "INTEGER", _(u"Jour début")),
+                                                            ("mois_debut", "INTEGER", _(u"Mois début")),
+                                                            ("jour_fin", "INTEGER", _(u"Jour fin")),
+                                                            ("mois_fin", "INTEGER", _(u"Mois fin")),
+                                                            ("image", "VARCHAR(200)", _(u"Nom de l'image")),
+                                                            ("titre", "VARCHAR(300)", _(u"Titre")),
+                                                            ("texte_html", "VARCHAR(500)", _(u"Texte HTML")),
+                                                            ("texte_xml", "VARCHAR(500)", _(u"texte XML")),
                                                             ],
 
         }

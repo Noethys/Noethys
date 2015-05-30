@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.gizmos as gizmos
 
 import FonctionsPerso
@@ -16,7 +18,7 @@ import GestionDB
 
 
 CATEGORIES = [
-    {"code" : "badgeage_enregistrer", "label" : u"Badgeage - Enregistrement d'une consommation", "motscles" : ["{ID_INDIVIDU}",  "{NOM_INDIVIDU}", "{NOM_ACTIVITE}", "{NOM_UNITE}", "{NOM_GROUPE}", "{DATE}",  "{HEURE}", "{ACTION}"] },
+    {"code" : "badgeage_enregistrer", "label" : _(u"Badgeage - Enregistrement d'une consommation"), "motscles" : ["{ID_INDIVIDU}",  "{NOM_INDIVIDU}", "{NOM_ACTIVITE}", "{NOM_UNITE}", "{NOM_GROUPE}", "{DATE}",  "{HEURE}", "{ACTION}"] },
     ] # Code, label, mots-clés
 
 
@@ -31,7 +33,7 @@ class CTRL_Imprimante(wx.Choice):
     
     def MAJ(self):
         import UTILS_Ticket
-        listeItems = [u"Imprimante par défaut",]
+        listeItems = [_(u"Imprimante par défaut"),]
         try :
             listeImprimantes = UTILS_Ticket.GetListeImprimantes()
             for nom in listeImprimantes :
@@ -63,23 +65,23 @@ class Dialog(wx.Dialog):
         self.defaut = 0   
         
         # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, u"Généralités")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_description = wx.StaticText(self, -1, u"Description :")
+        self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.label_taille = wx.StaticText(self, -1, u"Taille de police :")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.label_taille = wx.StaticText(self, -1, _(u"Taille de police :"))
         self.ctrl_taille = wx.SpinCtrl(self, -1, "", size=(60, -1))
         self.ctrl_taille.SetRange(1, 200)
         self.ctrl_taille.SetValue(15)
-        self.label_interligne = wx.StaticText(self, -1, u"Interligne :")
+        self.label_interligne = wx.StaticText(self, -1, _(u"Interligne :"))
         self.ctrl_interligne = wx.SpinCtrl(self, -1, "", size=(60, -1))
         self.ctrl_interligne.SetRange(1, 200)
         self.ctrl_interligne.SetValue(5)
-        self.label_imprimante = wx.StaticText(self, -1, u"Imprimante :")
+        self.label_imprimante = wx.StaticText(self, -1, _(u"Imprimante :"))
         self.ctrl_imprimante = CTRL_Imprimante(self)
 
         # Mots-clés
@@ -88,24 +90,24 @@ class Dialog(wx.Dialog):
             if dictCategorie["code"] == self.categorie : 
                 self.listeMotsCles = dictCategorie["motscles"]
 
-        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, u"Mots-clés disponibles")
+        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles"))
         self.ctrl_motscles = wx.ListBox(self, -1, choices=self.listeMotsCles, style=wx.SIMPLE_BORDER)
         self.ctrl_motscles.SetBackgroundColour("#F0FBED")
                 
         # texte
-        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, u"Ticket")
-        self.ctrl_editeur = gizmos.EditableListBox(self, -1, u"Saisissez ci-dessous les lignes à imprimer sur le ticket")
-        self.ctrl_editeur.GetDelButton().SetToolTipString(u"Supprimer la ligne sélectionnée")
-        self.ctrl_editeur.GetDownButton().SetToolTipString(u"Descendre la ligne sélectionnée")
-        self.ctrl_editeur.GetUpButton().SetToolTipString(u"Monter la ligne sélectionnée")
-        self.ctrl_editeur.GetEditButton().SetToolTipString(u"Editer la ligne sélectionnée")
-        self.ctrl_editeur.GetNewButton().SetToolTipString(u"Insérer une nouvelle ligne")
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Ticket"))
+        self.ctrl_editeur = gizmos.EditableListBox(self, -1, _(u"Saisissez ci-dessous les lignes à imprimer sur le ticket"))
+        self.ctrl_editeur.GetDelButton().SetToolTipString(_(u"Supprimer la ligne sélectionnée"))
+        self.ctrl_editeur.GetDownButton().SetToolTipString(_(u"Descendre la ligne sélectionnée"))
+        self.ctrl_editeur.GetUpButton().SetToolTipString(_(u"Monter la ligne sélectionnée"))
+        self.ctrl_editeur.GetEditButton().SetToolTipString(_(u"Editer la ligne sélectionnée"))
+        self.ctrl_editeur.GetNewButton().SetToolTipString(_(u"Insérer une nouvelle ligne"))
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_apercu= wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Imprimer_ticket_test.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer un ticket de test"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -117,22 +119,22 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDmodele != None :
-            self.SetTitle(u"Modification d'un modèle de ticket")
+            self.SetTitle(_(u"Modification d'un modèle de ticket"))
             self.Importation()
         else:
-            self.SetTitle(u"Saisie d'un modèle de ticket")
+            self.SetTitle(_(u"Saisie d'un modèle de ticket"))
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce modèle")
-        self.ctrl_description.SetToolTipString(u"Saisissez une description pour ce modèle")
-        self.ctrl_taille.SetToolTipString(u"Sélectionnez une taille de police")
-        self.ctrl_interligne.SetToolTipString(u"Sélectionnez la hauteur d'interligne")
-        self.ctrl_imprimante.SetToolTipString(u"Sélectionnez l'imprimante à utiliser")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour imprimer une page de test")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle"))
+        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour ce modèle"))
+        self.ctrl_taille.SetToolTipString(_(u"Sélectionnez une taille de police"))
+        self.ctrl_interligne.SetToolTipString(_(u"Sélectionnez la hauteur d'interligne"))
+        self.ctrl_imprimante.SetToolTipString(_(u"Sélectionnez l'imprimante à utiliser"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour imprimer une page de test"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((700, 580))
 
     def __do_layout(self):
@@ -218,7 +220,7 @@ class Dialog(wx.Dialog):
         # Vérification des données
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour ce modèle !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -227,7 +229,7 @@ class Dialog(wx.Dialog):
         # Description
         description = self.ctrl_description.GetValue()
         if description == "" :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir saisir de description pour ce modèle ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de description pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -236,7 +238,7 @@ class Dialog(wx.Dialog):
         # Récupération du texte
         listeLignes = self.ctrl_editeur.GetStrings() 
         if len(listeLignes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une ligne !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une ligne !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_editeur.SetFocus()
@@ -297,7 +299,7 @@ class Dialog(wx.Dialog):
         """ Impression d'un ticket test """
         listeLignes = self.ctrl_editeur.GetStrings() 
         if len(listeLignes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une ligne !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une ligne !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_editeur.SetFocus()
@@ -309,7 +311,7 @@ class Dialog(wx.Dialog):
         
         try :
             import UTILS_Ticket
-            UTILS_Ticket.Impression(lignes=listeLignes, imprimante=imprimante, titre=u"Ticket", nomPolice="Arial", taillePolice=taillePolice, interligne=interligne)
+            UTILS_Ticket.Impression(lignes=listeLignes, imprimante=imprimante, titre=_(u"Ticket"), nomPolice="Arial", taillePolice=taillePolice, interligne=interligne)
         except Exception, erreur :
             print Exception, erreur
         

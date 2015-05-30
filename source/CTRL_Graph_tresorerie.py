@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 from dateutil import relativedelta
 
@@ -43,16 +45,16 @@ class CTRL_Affichage(wx.Choice):
     
     def GetListeDonnees(self):
         listeOptions = [
-            ("actuellement", u"Actuellement"),
-            ("7_prochains_jours", u"7 prochains jours"),
-            ("14_prochains_jours", u"14 prochains jours"),
-            ("30_prochains_jours", u"30 prochains jours"),
-            ("90_prochains_jours", u"90 prochains jours"),
-            ("6_prochains_mois", u"6 prochains mois"),
-            ("12 prochains_mois", u"12 prochains mois"),
-            ("mois_actuel", u"Mois actuel"),
-            ("annee_actuelle", u"Année actuelle"),
-            ("personnalise", u"Personnalisé"),
+            ("actuellement", _(u"Actuellement")),
+            ("7_prochains_jours", _(u"7 prochains jours")),
+            ("14_prochains_jours", _(u"14 prochains jours")),
+            ("30_prochains_jours", _(u"30 prochains jours")),
+            ("90_prochains_jours", _(u"90 prochains jours")),
+            ("6_prochains_mois", _(u"6 prochains mois")),
+            ("12 prochains_mois", _(u"12 prochains mois")),
+            ("mois_actuel", _(u"Mois actuel")),
+            ("annee_actuelle", _(u"Année actuelle")),
+            ("personnalise", _(u"Personnalisé")),
             ]
         listeItems = []
         self.dictDonnees = {}
@@ -228,7 +230,7 @@ class CTRL(wx.Panel):
 ##            ax.set_xlim([min(listeDates), max(listeDates)])      
             ax.set_xlim([self.date_debut, self.date_fin])      
 
-        ax.fill_between(listeDates, 0, listeValeurs, facecolor='blue', alpha=0.5, label=u"Trésorerie")
+        ax.fill_between(listeDates, 0, listeValeurs, facecolor='blue', alpha=0.5, label=_(u"Trésorerie"))
         
         self.figure.autofmt_xdate()
 
@@ -273,7 +275,7 @@ class CTRL(wx.Panel):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Comparatif du nombre de familles", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Comparatif du nombre de familles"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         self.figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
@@ -320,7 +322,7 @@ class CTRL2():
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Comparatif du nombre de familles", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Comparatif du nombre de familles"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
@@ -341,7 +343,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ() 
-        bouton = wx.Button(panel, -1, u"Test")
+        bouton = wx.Button(panel, -1, _(u"Test"))
         self.Bind(wx.EVT_BUTTON, self.OnBouton, bouton)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.EXPAND, 4)

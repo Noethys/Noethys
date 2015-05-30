@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import wx.grid as gridlib
 import wx.lib.mixins.gridlabelrenderer as glr
@@ -20,134 +22,134 @@ import textwrap
 
 LISTE_CATEGORIES = [
 
-    u"Gestion des fichiers",
-    { "label" : u"Fichier de données", "code" : "fichier_fichier", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Sauvegarde manuelle", "code" : "fichier_sauvegarde_manuelle", "actions" : ["creer",], "restriction" : False },
-    { "label" : u"Restauration de sauvegarde", "code" : "fichier_restauration", "actions" : ["creer",], "restriction" : False },
-    { "label" : u"Sauvegardes automatiques", "code" : "fichier_sauvegardes_auto", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Conversions local/réseau", "code" : "fichier_conversions", "actions" : ["creer",], "restriction" : False },
+    _(u"Gestion des fichiers"),
+    { "label" : _(u"Fichier de données"), "code" : "fichier_fichier", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Sauvegarde manuelle"), "code" : "fichier_sauvegarde_manuelle", "actions" : ["creer",], "restriction" : False },
+    { "label" : _(u"Restauration de sauvegarde"), "code" : "fichier_restauration", "actions" : ["creer",], "restriction" : False },
+    { "label" : _(u"Sauvegardes automatiques"), "code" : "fichier_sauvegardes_auto", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Conversions local/réseau"), "code" : "fichier_conversions", "actions" : ["creer",], "restriction" : False },
 
-    u"Paramétrage",
-    { "label" : u"Préférences", "code" : "parametrage_preferences", "actions" : ["consulter", "modifier"], "restriction" : False },
-    { "label" : u"Enregistrement", "code" : "parametrage_enregistrement", "actions" : ["consulter", "modifier"], "restriction" : False },
-    { "label" : u"Utilisateurs", "code" : "parametrage_utilisateurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modèles de droits", "code" : "parametrage_modeles_droits", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Utilisateurs réseau", "code" : "parametrage_utilisateurs_reseau", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Organisateur", "code" : "parametrage_organisateur", "actions" : ["consulter", "modifier"], "restriction" : False },
-    { "label" : u"Comptes bancaires", "code" : "parametrage_comptes_bancaires", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Groupes d'activités", "code" : "parametrage_groupes_activites", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Activités", "code" : "parametrage_activites", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : True },
-    { "label" : u"Modèles de documents", "code" : "parametrage_modeles_docs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modèles d'Emails", "code" : "parametrage_modeles_emails", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modèles de tickets", "code" : "parametrage_modeles_tickets", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modèles de plannings", "code" : "parametrage_modeles_plannings", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modèles de contrats", "code" : "parametrage_modeles_contrats", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Procédures de badgeage", "code" : "parametrage_procedures_badgeage", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Synthèse vocale", "code" : "parametrage_vocal", "actions" : ["consulter", "modifier"], "restriction" : False },
-    { "label" : u"Catégories de messages", "code" : "parametrage_categories_messages", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Types de pièces", "code" : "parametrage_types_pieces", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Catégories sociopro.", "code" : "parametrage_categories_travail", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Villes et codes postaux", "code" : "parametrage_villes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Secteurs géographiques", "code" : "parametrage_secteurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Types de sieste", "code" : "parametrage_types_siestes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Vacances", "code" : "parametrage_vacances", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Jours fériés", "code" : "parametrage_feries", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Maladies", "code" : "parametrage_maladies", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Vaccins", "code" : "parametrage_vaccins", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Médecins", "code" : "parametrage_medecins", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Restaurateurs", "code" : "parametrage_restaurateurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modes de règlements", "code" : "parametrage_modes_reglements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Emetteurs de règlements", "code" : "parametrage_emetteurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Etablissements bancaires", "code" : "parametrage_banques", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Lots de factures", "code" : "parametrage_lots_factures", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Lots de rappels", "code" : "parametrage_lots_rappels", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Régimes sociaux", "code" : "parametrage_regimes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Caisses", "code" : "parametrage_caisses", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Modèles d'aides journalières", "code" : "parametrage_modeles_aides", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Types de cotisations", "code" : "parametrage_types_cotisations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Adresses d'expédition d'Emails", "code" : "parametrage_emails_exp", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Listes de diffusion", "code" : "parametrage_listes_diffusion", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Questionnaires", "code" : "parametrage_questionnaires", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Niveaux scolaires", "code" : "parametrage_niveaux_scolaires", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Ecoles", "code" : "parametrage_ecoles", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Classes", "code" : "parametrage_classes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Compagnies de transports", "code" : "parametrage_compagnies", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Lieux de transports", "code" : "parametrage_lieux", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Lignes de transports", "code" : "parametrage_lignes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Arrêts de transports", "code" : "parametrage_arrets", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    _(u"Paramétrage"),
+    { "label" : _(u"Préférences"), "code" : "parametrage_preferences", "actions" : ["consulter", "modifier"], "restriction" : False },
+    { "label" : _(u"Enregistrement"), "code" : "parametrage_enregistrement", "actions" : ["consulter", "modifier"], "restriction" : False },
+    { "label" : _(u"Utilisateurs"), "code" : "parametrage_utilisateurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modèles de droits"), "code" : "parametrage_modeles_droits", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Utilisateurs réseau"), "code" : "parametrage_utilisateurs_reseau", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Organisateur"), "code" : "parametrage_organisateur", "actions" : ["consulter", "modifier"], "restriction" : False },
+    { "label" : _(u"Comptes bancaires"), "code" : "parametrage_comptes_bancaires", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Groupes d'activités"), "code" : "parametrage_groupes_activites", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Activités"), "code" : "parametrage_activites", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : True },
+    { "label" : _(u"Modèles de documents"), "code" : "parametrage_modeles_docs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modèles d'Emails"), "code" : "parametrage_modeles_emails", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modèles de tickets"), "code" : "parametrage_modeles_tickets", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modèles de plannings"), "code" : "parametrage_modeles_plannings", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modèles de contrats"), "code" : "parametrage_modeles_contrats", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Procédures de badgeage"), "code" : "parametrage_procedures_badgeage", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Synthèse vocale"), "code" : "parametrage_vocal", "actions" : ["consulter", "modifier"], "restriction" : False },
+    { "label" : _(u"Catégories de messages"), "code" : "parametrage_categories_messages", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Types de pièces"), "code" : "parametrage_types_pieces", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Catégories sociopro."), "code" : "parametrage_categories_travail", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Villes et codes postaux"), "code" : "parametrage_villes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Secteurs géographiques"), "code" : "parametrage_secteurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Types de sieste"), "code" : "parametrage_types_siestes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Vacances"), "code" : "parametrage_vacances", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Jours fériés"), "code" : "parametrage_feries", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Maladies"), "code" : "parametrage_maladies", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Vaccins"), "code" : "parametrage_vaccins", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Médecins"), "code" : "parametrage_medecins", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Restaurateurs"), "code" : "parametrage_restaurateurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modes de règlements"), "code" : "parametrage_modes_reglements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Emetteurs de règlements"), "code" : "parametrage_emetteurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Etablissements bancaires"), "code" : "parametrage_banques", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Lots de factures"), "code" : "parametrage_lots_factures", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Lots de rappels"), "code" : "parametrage_lots_rappels", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Régimes sociaux"), "code" : "parametrage_regimes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Caisses"), "code" : "parametrage_caisses", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Modèles d'aides journalières"), "code" : "parametrage_modeles_aides", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Types de cotisations"), "code" : "parametrage_types_cotisations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Adresses d'expédition d'Emails"), "code" : "parametrage_emails_exp", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Listes de diffusion"), "code" : "parametrage_listes_diffusion", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Questionnaires"), "code" : "parametrage_questionnaires", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Niveaux scolaires"), "code" : "parametrage_niveaux_scolaires", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Ecoles"), "code" : "parametrage_ecoles", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Classes"), "code" : "parametrage_classes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Compagnies de transports"), "code" : "parametrage_compagnies", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Lieux de transports"), "code" : "parametrage_lieux", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Lignes de transports"), "code" : "parametrage_lignes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Arrêts de transports"), "code" : "parametrage_arrets", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     
-    u"Outils",
-    { "label" : u"Statistiques", "code" : "outils_stats", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Editeur d'Emails", "code" : "outils_editeur_emails", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Messages", "code" : "outils_messages", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Historique", "code" : "outils_historique", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Utilitaires administrateur", "code" : "outils_utilitaires", "actions" : ["consulter",], "restriction" : False },
+    _(u"Outils"),
+    { "label" : _(u"Statistiques"), "code" : "outils_stats", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Editeur d'Emails"), "code" : "outils_editeur_emails", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Messages"), "code" : "outils_messages", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Historique"), "code" : "outils_historique", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Utilitaires administrateur"), "code" : "outils_utilitaires", "actions" : ["consulter",], "restriction" : False },
     
-    u"Gestion des consommations",
-    { "label" : u"Consommations", "code" : "consommations_conso", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : True },
+    _(u"Gestion des consommations"),
+    { "label" : _(u"Consommations"), "code" : "consommations_conso", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : True },
     
-    u"Gestion des familles",
-    { "label" : u"Fiche familiale", "code" : "familles_fiche", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Messages", "code" : "familles_messages", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Questionnaires", "code" : "familles_questionnaires", "actions" : ["consulter", "modifier",], "restriction" : False },
-    { "label" : u"Pièces", "code" : "familles_pieces", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Cotisations", "code" : "familles_cotisations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Aides journalières", "code" : "familles_aides", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Caisse", "code" : "familles_caisse", "actions" : ["consulter", "modifier",], "restriction" : False },
-    { "label" : u"Quotients familiaux", "code" : "familles_quotients", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Prestations", "code" : "familles_prestations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Factures", "code" : "familles_factures", "actions" : ["consulter", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Param. factures par Email", "code" : "familles_factures_email", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Règlements", "code" : "familles_reglements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Param. prélèvement", "code" : "familles_prelevement", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Mandats SEPA", "code" : "familles_mandats", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Param. reçu par Email", "code" : "familles_recu_email", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Param. avis dépôt par Email", "code" : "familles_depot_email", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Compte internet", "code" : "familles_compte_internet", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Relevé des prestations", "code" : "familles_releve_prestations", "actions" : ["creer",], "restriction" : False },
-    { "label" : u"Attestation de présence", "code" : "familles_attestation_presences", "actions" : ["creer",], "restriction" : False },
-    { "label" : u"Lettre de rappel", "code" : "familles_lettre_rappel", "actions" : ["creer",], "restriction" : False },
-    { "label" : u"Historique", "code" : "familles_historique", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Chronologie", "code" : "familles_chronologie", "actions" : ["consulter",], "restriction" : False },
+    _(u"Gestion des familles"),
+    { "label" : _(u"Fiche familiale"), "code" : "familles_fiche", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Messages"), "code" : "familles_messages", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Questionnaires"), "code" : "familles_questionnaires", "actions" : ["consulter", "modifier",], "restriction" : False },
+    { "label" : _(u"Pièces"), "code" : "familles_pieces", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Cotisations"), "code" : "familles_cotisations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Aides journalières"), "code" : "familles_aides", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Caisse"), "code" : "familles_caisse", "actions" : ["consulter", "modifier",], "restriction" : False },
+    { "label" : _(u"Quotients familiaux"), "code" : "familles_quotients", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Prestations"), "code" : "familles_prestations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Factures"), "code" : "familles_factures", "actions" : ["consulter", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Param. factures par Email"), "code" : "familles_factures_email", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Règlements"), "code" : "familles_reglements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Param. prélèvement"), "code" : "familles_prelevement", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Mandats SEPA"), "code" : "familles_mandats", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Param. reçu par Email"), "code" : "familles_recu_email", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Param. avis dépôt par Email"), "code" : "familles_depot_email", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Compte internet"), "code" : "familles_compte_internet", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Relevé des prestations"), "code" : "familles_releve_prestations", "actions" : ["creer",], "restriction" : False },
+    { "label" : _(u"Attestation de présence"), "code" : "familles_attestation_presences", "actions" : ["creer",], "restriction" : False },
+    { "label" : _(u"Lettre de rappel"), "code" : "familles_lettre_rappel", "actions" : ["creer",], "restriction" : False },
+    { "label" : _(u"Historique"), "code" : "familles_historique", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Chronologie"), "code" : "familles_chronologie", "actions" : ["consulter",], "restriction" : False },
 
-    u"Gestion des individus",
-    { "label" : u"Fiche individuelle", "code" : "individus_fiche", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Photo", "code" : "individus_photo", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Messages", "code" : "individus_messages", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Identité", "code" : "individus_identite", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Liens", "code" : "individus_liens", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Questionnaires", "code" : "individus_questionnaires", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Coordonnées", "code" : "individus_coordonnees", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Inscriptions", "code" : "individus_inscriptions", "actions" : ["modifier", "creer", "supprimer"], "restriction" : True },
-    { "label" : u"Scolarité", "code" : "individus_scolarite", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Pièces", "code" : "individus_pieces", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Cotisations", "code" : "individus_cotisations", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Transports", "code" : "individus_transports", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Transports programmés", "code" : "individus_prog_transports", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Vaccins", "code" : "individus_vaccins", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Informations médicales", "code" : "individus_pb_sante", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Médecin traitant", "code" : "individus_medecin", "actions" : ["modifier",], "restriction" : False },
-    { "label" : u"Historique", "code" : "individus_historique", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Chronologie", "code" : "individus_chronologie", "actions" : ["consulter",], "restriction" : False },
+    _(u"Gestion des individus"),
+    { "label" : _(u"Fiche individuelle"), "code" : "individus_fiche", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Photo"), "code" : "individus_photo", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Messages"), "code" : "individus_messages", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Identité"), "code" : "individus_identite", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Liens"), "code" : "individus_liens", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Questionnaires"), "code" : "individus_questionnaires", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Coordonnées"), "code" : "individus_coordonnees", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Inscriptions"), "code" : "individus_inscriptions", "actions" : ["modifier", "creer", "supprimer"], "restriction" : True },
+    { "label" : _(u"Scolarité"), "code" : "individus_scolarite", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Pièces"), "code" : "individus_pieces", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Cotisations"), "code" : "individus_cotisations", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Transports"), "code" : "individus_transports", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Transports programmés"), "code" : "individus_prog_transports", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Vaccins"), "code" : "individus_vaccins", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Informations médicales"), "code" : "individus_pb_sante", "actions" : ["modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Médecin traitant"), "code" : "individus_medecin", "actions" : ["modifier",], "restriction" : False },
+    { "label" : _(u"Historique"), "code" : "individus_historique", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Chronologie"), "code" : "individus_chronologie", "actions" : ["consulter",], "restriction" : False },
 
-    u"Gestion de la facturation",
-    { "label" : u"Vérification ventilation", "code" : "facturation_ventilation", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Factures", "code" : "facturation_factures", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
-    { "label" : u"Rappels", "code" : "facturation_rappels", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
-    { "label" : u"Attestations", "code" : "facturation_attestations", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
-    { "label" : u"Prélèvements auto.", "code" : "facturation_prelevements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Export Hélios", "code" : "facturation_helios", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
-    { "label" : u"Solder impayés", "code" : "facturation_solder_impayes", "actions" : ["creer",], "restriction" : False },
+    _(u"Gestion de la facturation"),
+    { "label" : _(u"Vérification ventilation"), "code" : "facturation_ventilation", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Factures"), "code" : "facturation_factures", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
+    { "label" : _(u"Rappels"), "code" : "facturation_rappels", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
+    { "label" : _(u"Attestations"), "code" : "facturation_attestations", "actions" : ["consulter", "creer", "supprimer"], "restriction" : True },
+    { "label" : _(u"Prélèvements auto."), "code" : "facturation_prelevements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Export Hélios"), "code" : "facturation_helios", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Solder impayés"), "code" : "facturation_solder_impayes", "actions" : ["creer",], "restriction" : False },
 
-    u"Gestion des cotisations",
-    { "label" : u"Liste des cotisations", "code" : "cotisations_liste", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Cotisations manquantes", "code" : "cotisations_manquantes", "actions" : ["consulter", ], "restriction" : False },
-    { "label" : u"Dépôts de cotisations", "code" : "cotisations_depots", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    _(u"Gestion des cotisations"),
+    { "label" : _(u"Liste des cotisations"), "code" : "cotisations_liste", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Cotisations manquantes"), "code" : "cotisations_manquantes", "actions" : ["consulter", ], "restriction" : False },
+    { "label" : _(u"Dépôts de cotisations"), "code" : "cotisations_depots", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
 
-    u"Gestion des règlements",
-    { "label" : u"Liste des reçus", "code" : "reglements_recus", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Liste des règlements", "code" : "reglements_liste", "actions" : ["consulter",], "restriction" : False },
-    { "label" : u"Dépôts de règlements", "code" : "reglements_depots", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    _(u"Gestion des règlements"),
+    { "label" : _(u"Liste des reçus"), "code" : "reglements_recus", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Liste des règlements"), "code" : "reglements_liste", "actions" : ["consulter",], "restriction" : False },
+    { "label" : _(u"Dépôts de règlements"), "code" : "reglements_depots", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     
     ]
 
@@ -161,10 +163,10 @@ LISTE_CATEGORIES = [
 
 LISTE_ACTIONS = [
     
-    { "label" : u"Consulter", "code" : "consulter"},
-    { "label" : u"Modifier", "code" : "modifier"},
-    { "label" : u"Créer", "code" : "creer"},
-    { "label" : u"Supprimer", "code" : "supprimer"},
+    { "label" : _(u"Consulter"), "code" : "consulter"},
+    { "label" : _(u"Modifier"), "code" : "modifier"},
+    { "label" : _(u"Créer"), "code" : "creer"},
+    { "label" : _(u"Supprimer"), "code" : "supprimer"},
 
     ]
 
@@ -277,23 +279,23 @@ class Case():
         dictDonnees["bmp"] = self.renderer.bmp
         # Texte
         texte = ""
-        if self.dictAction["code"] == "consulter" : texte = u"Consultation"
-        if self.dictAction["code"] == "modifier" : texte = u"Modification"
-        if self.dictAction["code"] == "creer" : texte = u"Création"
-        if self.dictAction["code"] == "supprimer" : texte = u"Suppression"
+        if self.dictAction["code"] == "consulter" : texte = _(u"Consultation")
+        if self.dictAction["code"] == "modifier" : texte = _(u"Modification")
+        if self.dictAction["code"] == "creer" : texte = _(u"Création")
+        if self.dictAction["code"] == "supprimer" : texte = _(u"Suppression")
         
-        if self.etat == "autorisation" : texte += u" autorisée"
-        if self.etat == "interdiction" : texte += u" interdite"
+        if self.etat == "autorisation" : texte += _(u" autorisée")
+        if self.etat == "interdiction" : texte += _(u" interdite")
         if self.etat.startswith("restriction") : 
             code = self.etat.replace("restriction_", "")
             mode, listeID = code.split(":")
             listeID = [int(x) for x in listeID.split(";")]
             labelRestriction = self.grid.GetNomsActivites(mode, listeID)
-            texte += u" autorisée mais restreinte %s" % labelRestriction
+            texte += _(u" autorisée mais restreinte %s") % labelRestriction
 
         dictDonnees["texte"] = "\n".join(textwrap.wrap(texte, 50)) + u"\n\n\n"
         # Pied
-        dictDonnees["pied"] = u"Cliquez sur le bouton droit pour afficher le menu contextuel"
+        dictDonnees["pied"] = _(u"Cliquez sur le bouton droit pour afficher le menu contextuel")
         # Couleur
         dictDonnees["couleur"] = self.renderer.couleurFond
         return dictDonnees
@@ -349,7 +351,7 @@ class RendererCase(gridlib.PyGridCellRenderer):
 ##        dc.SetFont(attr.GetFont())
 ##        hAlign, vAlign = grid.GetCellAlignment(row, col)
 ##        if self.case.etat.startswith("restriction") :
-##            texte = u"Uniquement pour le centre de loisirs"
+##            texte = _(u"Uniquement pour le centre de loisirs")
 ##            texte = self.AdapteTailleTexte(dc, texte, rect[2]-6)
 ##            largeur, hauteur = dc.GetTextExtent(texte)
 ##            x = rect[0] + ((rect[2] - largeur) / 2.0)
@@ -474,17 +476,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if self.dictGroupesActivites.has_key(ID) :
                     listeNoms.append(self.dictGroupesActivites[ID])
             if len(listeNoms) == 0 : texte = u""
-            if len(listeNoms) == 1 : texte = u"au groupe d'activités %s" % listeNoms[0]
-            if len(listeNoms) == 2 : texte = u"aux groupes d'activités %s et %s" % (listeNoms[0], listeNoms[1])
-            if len(listeNoms) > 2 : texte = u"aux groupes d'activités %s et %s" % (", ".join(listeNoms[:-1]), listeNoms[-1])
+            if len(listeNoms) == 1 : texte = _(u"au groupe d'activités %s") % listeNoms[0]
+            if len(listeNoms) == 2 : texte = _(u"aux groupes d'activités %s et %s") % (listeNoms[0], listeNoms[1])
+            if len(listeNoms) > 2 : texte = _(u"aux groupes d'activités %s et %s") % (", ".join(listeNoms[:-1]), listeNoms[-1])
         if mode == "activites" :
             for ID in listeID :
                 if self.dictActivites.has_key(ID) :
                     listeNoms.append(self.dictActivites[ID])
             if len(listeNoms) == 0 : texte = u""
             if len(listeNoms) == 1 : texte = u"à l'activité %s" % listeNoms[0]
-            if len(listeNoms) == 2 : texte = u"aux activités %s et %s" % (listeNoms[0], listeNoms[1])
-            if len(listeNoms) > 2 : texte = u"aux activités %s et %s" % (", ".join(listeNoms[:-1]), listeNoms[-1])
+            if len(listeNoms) == 2 : texte = _(u"aux activités %s et %s") % (listeNoms[0], listeNoms[1])
+            if len(listeNoms) > 2 : texte = _(u"aux activités %s et %s") % (", ".join(listeNoms[:-1]), listeNoms[-1])
         return texte
     
     def Importation(self):
@@ -715,18 +717,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         menuPop.AppendSeparator()
         
         listeItems = [
-            (100, u"Autoriser"),
-            (200, u"Interdire"),
-            (300, u"Restreindre"),
+            (100, _(u"Autoriser")),
+            (200, _(u"Interdire")),
+            (300, _(u"Restreindre")),
             ]
             
         listeSousItems = [
-            (1, u"La case", u"Uniquement sur la case", "Images/16x16/Tableau_case.png"),
-            (2, u"Toute la ligne", u"Sur toute la ligne", "Images/16x16/Tableau_ligne.png"),
-            (3, u"Toute la colonne", u"Sur toute la colonne", "Images/16x16/Tableau_colonne.png"),
-            (4, u"Tout le tableau", u"Sur toutes les lignes du tableau", "Images/16x16/Tableau_zone.png"),
-            (5, u"Toutes les cases du groupe '%s'" % nomGroupe, u"Sur toutes les cases du groupe '%s'" % nomGroupe, "Images/16x16/Tableau_zone.png"),
-            (6, u"Toute la colonne du groupe '%s'" % nomGroupe, u"Sur toute la colonne du groupe '%s'" % nomGroupe, "Images/16x16/Tableau_colonne.png"),
+            (1, _(u"La case"), _(u"Uniquement sur la case"), "Images/16x16/Tableau_case.png"),
+            (2, _(u"Toute la ligne"), _(u"Sur toute la ligne"), "Images/16x16/Tableau_ligne.png"),
+            (3, _(u"Toute la colonne"), _(u"Sur toute la colonne"), "Images/16x16/Tableau_colonne.png"),
+            (4, _(u"Tout le tableau"), _(u"Sur toutes les lignes du tableau"), "Images/16x16/Tableau_zone.png"),
+            (5, _(u"Toutes les cases du groupe '%s'") % nomGroupe, _(u"Sur toutes les cases du groupe '%s'") % nomGroupe, "Images/16x16/Tableau_zone.png"),
+            (6, _(u"Toute la colonne du groupe '%s'") % nomGroupe, _(u"Sur toute la colonne du groupe '%s'") % nomGroupe, "Images/16x16/Tableau_colonne.png"),
             ]           
 
         for IDitem, labelItem in listeItems :
@@ -919,17 +921,17 @@ class DLG_Restrictions(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, u"Vous pouvez sélectionner des activités ou des groupes d'activités :")
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez sélectionner des activités ou des groupes d'activités :"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         # Propriétés
-        self.SetTitle(u"Appliquer des restrictions")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Appliquer des restrictions"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((500, 500))
         
         # Layout
@@ -989,7 +991,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ() 
-        self.bouton1 = wx.Button(panel, -1, u"Test")
+        self.bouton1 = wx.Button(panel, -1, _(u"Test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.bouton1, 0, wx.ALL|wx.EXPAND, 4)

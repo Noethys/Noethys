@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import time
 
 import CTRL_Bandeau
@@ -27,18 +29,18 @@ class Dialog(wx.Dialog):
         self.heure_max = heure_max
         
         if nouveau == True :
-            intro = u"Vous pouvez saisir ici une consommation horaire. Cliquez sur le bouton Horloge pour insérer l'heure actuelle."
-            titre = u"Saisie d'un horaire"
+            intro = _(u"Vous pouvez saisir ici une consommation horaire. Cliquez sur le bouton Horloge pour insérer l'heure actuelle.")
+            titre = _(u"Saisie d'un horaire")
         else:
-            intro = u"Vous pouvez modifier ici une consommation horaire. Cliquez sur le bouton Horloge pour insérer l'heure actuelle."
-            titre = u"Modification d'un horaire"
+            intro = _(u"Vous pouvez modifier ici une consommation horaire. Cliquez sur le bouton Horloge pour insérer l'heure actuelle.")
+            titre = _(u"Modification d'un horaire")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Horloge2.png")
 
         fontLabel = wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial')
         fontHeure = wx.Font(22, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial')
         
-        self.label_heure_debut = wx.StaticText(self, -1, u"De")
+        self.label_heure_debut = wx.StaticText(self, -1, _(u"De"))
         self.label_heure_debut.SetFont(fontLabel)
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self, style=wx.TE_PROCESS_ENTER|wx.TE_CENTER)
         self.ctrl_heure_debut.SetFont(fontHeure)
@@ -52,9 +54,9 @@ class Dialog(wx.Dialog):
         self.ctrl_heure_fin.SetMinSize((100, 40))
         self.bouton_heure_fin_now = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Horloge3.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nouveau == True :
             self.bouton_supprimer.Enable(False)
@@ -70,11 +72,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk, self.ctrl_heure_fin)
 
     def __set_properties(self):
-        self.bouton_heure_debut_now.SetToolTipString(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de début")
-        self.bouton_heure_fin_now.SetToolTipString(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de fin")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer cette consommation")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_heure_debut_now.SetToolTipString(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de début"))
+        self.bouton_heure_fin_now.SetToolTipString(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de fin"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer cette consommation"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((350, 110))
         
     def __do_layout(self):
@@ -124,35 +126,35 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Vérification des données saisies
         if self.ctrl_heure_debut.GetHeure() == None or self.ctrl_heure_debut.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une heure de début valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_debut.SetFocus()
             return
         if self.ctrl_heure_fin.GetHeure() == None or self.ctrl_heure_fin.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une heure de fin valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de fin valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_fin.SetFocus()
             return
         if self.ctrl_heure_debut.GetHeure() > self.ctrl_heure_fin.GetHeure() :
-            dlg = wx.MessageDialog(self, u"L'heure de début ne peut pas être supérieure à l'heure de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure de début ne peut pas être supérieure à l'heure de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_heure_debut.GetHeure() == self.ctrl_heure_fin.GetHeure() :
-            dlg = wx.MessageDialog(self, u"L'heure de début ne peut pas être égale à l'heure de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure de début ne peut pas être égale à l'heure de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 ##        if self.heure_min != None and self.ctrl_heure_debut.GetHeure() < self.heure_min :
-##            dlg = wx.MessageDialog(self, u"L'heure de début ne peut pas être inférieure à %s !" % self.heure_min, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"L'heure de début ne peut pas être inférieure à %s !") % self.heure_min, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            self.ctrl_heure_debut.SetFocus()
 ##            return
 ##        if self.heure_max != None and self.ctrl_heure_fin.GetHeure() < self.heure_max :
-##            dlg = wx.MessageDialog(self, u"L'heure de fin ne peut pas être supérieure à %s !" % self.heure_max, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"L'heure de fin ne peut pas être supérieure à %s !") % self.heure_max, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            self.ctrl_heure_fin.SetFocus()

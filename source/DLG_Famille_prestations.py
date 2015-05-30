@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Prestations 
 import wx.lib.agw.hyperlink as Hyperlink
 import UTILS_Utilisateurs
@@ -42,7 +44,7 @@ class Hyperlien_regroupement(Hyperlink.HyperLinkCtrl):
         self.listeChoix = listeChoix
         
     def OnLeftLink(self, event):
-        dlg = wx.SingleChoiceDialog(self, u"Choisissez un item dans la liste :", u"Choix", self.listeChoix, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(self, _(u"Choisissez un item dans la liste :"), _(u"Choix"), self.listeChoix, wx.CHOICEDLG_STYLE)
         if self.indexChoixDefaut != None and self.indexChoixDefaut < len(self.listeChoix) :
             dlg.SetSelection(self.indexChoixDefaut)
         if dlg.ShowModal() == wx.ID_OK:
@@ -87,9 +89,9 @@ class Hyperlien_periodes(Hyperlink.HyperLinkCtrl):
             listePeriodes = dlg.GetListePeriodes()
             # Label
             if listePeriodes == None :
-                self.SetLabel(u"Toutes les périodes")
+                self.SetLabel(_(u"Toutes les périodes"))
             else:
-                self.SetLabel(u"Sélection")
+                self.SetLabel(_(u"Sélection"))
             # MAJ
             self.parent.ctrl_prestations.SetListePeriodes(listePeriodes)
 ##            self.parent.MAJtotal()
@@ -135,7 +137,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         listeItems = [self.labelDefaut,]
         for label, ID in self.listeChoix :
             listeItems.append(label)
-        dlg = wx.SingleChoiceDialog(self, u"Choisissez un filtre dans la liste suivante :", u"Filtrer la liste", listeItems, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(self, _(u"Choisissez un filtre dans la liste suivante :"), _(u"Filtrer la liste"), listeItems, wx.CHOICEDLG_STYLE)
         if self.indexChoixDefaut != None and self.indexChoixDefaut < len(self.listeChoix) :
             dlg.SetSelection(self.indexChoixDefaut)
         if dlg.ShowModal() == wx.ID_OK:
@@ -166,7 +168,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        self.staticbox_prestations = wx.StaticBox(self, -1, u"Prestations")
+        self.staticbox_prestations = wx.StaticBox(self, -1, _(u"Prestations"))
         
         # OL Prestations
         self.listviewAvecFooter = OL_Prestations.ListviewAvecFooter(self, kwargs={"IDfamille" : IDfamille}) 
@@ -175,21 +177,21 @@ class Panel(wx.Panel):
         self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
 
         # Options d'affichage hyperliens
-##        self.ctrl_regroupement = wx.CheckBox(self, -1, u"Regrouper par ")
+##        self.ctrl_regroupement = wx.CheckBox(self, -1, _(u"Regrouper par "))
 ##        self.ctrl_regroupement.SetValue(False)
-##        self.hyper_regroupement = Hyperlien_regroupement(self, label=u"Date", infobulle=u"Cliquez ici pour choisir une catégorie de regroupement", URL="regroupement", listeChoix=[], indexChoixDefaut=None)
+##        self.hyper_regroupement = Hyperlien_regroupement(self, label=_(u"Date"), infobulle=_(u"Cliquez ici pour choisir une catégorie de regroupement"), URL="regroupement", listeChoix=[], indexChoixDefaut=None)
 ##        self.hyper_regroupement.Enable(False)
 ##        
-##        self.label_filtres_1 = wx.StaticText(self, -1, u"Afficher ")
-##        self.hyper_periodes = Hyperlien_periodes(self, label=u"Toutes les périodes", infobulle=u"Cliquez ici pour filtrer les périodes", URL="periodes")
+##        self.label_filtres_1 = wx.StaticText(self, -1, _(u"Afficher "))
+##        self.hyper_periodes = Hyperlien_periodes(self, label=_(u"Toutes les périodes"), infobulle=_(u"Cliquez ici pour filtrer les périodes"), URL="periodes")
 ##        self.label_filtres_2 = wx.StaticText(self, -1, u" | ")
-##        self.hyper_individus = Hyperlien(self, label=u"Tous les individus", infobulle=u"Cliquez ici pour filtrer les individus", URL="individus", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Tous les individus", champFiltre="prestations.IDindividu")
+##        self.hyper_individus = Hyperlien(self, label=_(u"Tous les individus"), infobulle=_(u"Cliquez ici pour filtrer les individus"), URL="individus", listeChoix=[], indexChoixDefaut=None, labelDefaut=_(u"Tous les individus"), champFiltre="prestations.IDindividu")
 ##        self.label_filtres_3 = wx.StaticText(self, -1, u" | ")
-##        self.hyper_activites = Hyperlien(self, label=u"Toutes les activités", infobulle=u"Cliquez ici pour fitrer les activités", URL="activites", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les activités", champFiltre="prestations.IDactivite")
+##        self.hyper_activites = Hyperlien(self, label=_(u"Toutes les activités"), infobulle=_(u"Cliquez ici pour fitrer les activités"), URL="activites", listeChoix=[], indexChoixDefaut=None, labelDefaut=_(u"Toutes les activités"), champFiltre="prestations.IDactivite")
 ##        self.label_filtres_4 = wx.StaticText(self, -1, u" | ")
-##        self.hyper_factures = Hyperlien(self, label=u"Toutes les factures", infobulle=u"Cliquez ici pour filtrer les factures", URL="factures", listeChoix=[], indexChoixDefaut=None, labelDefaut=u"Toutes les factures", champFiltre="prestations.IDfacture")
+##        self.hyper_factures = Hyperlien(self, label=_(u"Toutes les factures"), infobulle=_(u"Cliquez ici pour filtrer les factures"), URL="factures", listeChoix=[], indexChoixDefaut=None, labelDefaut=_(u"Toutes les factures"), champFiltre="prestations.IDfacture")
 ##        
-##        self.ctrl_total = wx.StaticText(self, -1, u"Total = 0.00 %s" % SYMBOLE)
+##        self.ctrl_total = wx.StaticText(self, -1, _(u"Total = 0.00 %s") % SYMBOLE)
 ##        self.ctrl_total.Show(False)
         
         # Commandes boutons
@@ -206,9 +208,9 @@ class Panel(wx.Panel):
 ##        self.Bind(wx.EVT_CHECKBOX, self.OnCheckRegroupement, self.ctrl_regroupement)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir une prestation")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la prestation sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la prestation sélectionnée")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une prestation"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la prestation sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la prestation sélectionnée"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -279,14 +281,14 @@ class Panel(wx.Panel):
         menuPop = wx.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -325,7 +327,7 @@ class Panel(wx.Panel):
         self.Refresh() 
         
     def MAJtotal(self):
-        self.ctrl_total.SetLabel(u"Total : %.2f %s" % (self.ctrl_prestations.GetTotal(), SYMBOLE))
+        self.ctrl_total.SetLabel(_(u"Total : %.2f %s") % (self.ctrl_prestations.GetTotal(), SYMBOLE))
             
     def ValidationData(self):
         """ Return True si les données sont valides et pretes à être sauvegardées """
@@ -355,7 +357,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,14 +8,16 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import DATA_Serveurs_fai
 
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDadresse=None):
-        wx.Dialog.__init__(self, parent, -1, title=u"Saisie d'une adresse Email")
+        wx.Dialog.__init__(self, parent, -1, title=_(u"Saisie d'une adresse Email"))
         self.IDadresse = IDadresse
         self.defaut = False
         
@@ -25,29 +27,29 @@ class Dialog(wx.Dialog):
         for fai, smtp, port, ssl in self.listeServeurs :
             listeServeursChoices.append(fai)
         
-        self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, u"Adresse de messagerie")
-        self.static_sizer_serveur_staticbox = wx.StaticBox(self, -1, u"Serveur de messagerie")
-        self.label_intro = wx.StaticText(self, -1, u"Choisissez le serveur de messagerie dans la liste qui correspond à votre\nadresse de messagerie.")
+        self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse de messagerie"))
+        self.static_sizer_serveur_staticbox = wx.StaticBox(self, -1, _(u"Serveur de messagerie"))
+        self.label_intro = wx.StaticText(self, -1, _(u"Choisissez le serveur de messagerie dans la liste qui correspond à votre\nadresse de messagerie."))
         self.radio_predefini = wx.RadioButton(self, -1, "")
-        self.label_predefini = wx.StaticText(self, -1, u"Serveur prédéfini :")
+        self.label_predefini = wx.StaticText(self, -1, _(u"Serveur prédéfini :"))
         self.ctrl_predefinis = wx.Choice(self, -1, choices=listeServeursChoices)
         self.radio_personnalise = wx.RadioButton(self, -1, "")
-        self.label_personnalise = wx.StaticText(self, -1, u"Serveur personnalisé :")
-        self.label_smtp = wx.StaticText(self, -1, u"Serveur SMTP :")
+        self.label_personnalise = wx.StaticText(self, -1, _(u"Serveur personnalisé :"))
+        self.label_smtp = wx.StaticText(self, -1, _(u"Serveur SMTP :"))
         self.ctrl_smtp = wx.TextCtrl(self, -1, "")
-        self.label_port = wx.StaticText(self, -1, u"Numéro de port :")
+        self.label_port = wx.StaticText(self, -1, _(u"Numéro de port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, "")
-        self.label_ssl = wx.StaticText(self, -1, u"Connexion SSL :")
+        self.label_ssl = wx.StaticText(self, -1, _(u"Connexion SSL :"))
         self.ctrl_ssl = wx.CheckBox(self, -1, "")
-        self.label_adresse = wx.StaticText(self, -1, u"Adresse :")
+        self.label_adresse = wx.StaticText(self, -1, _(u"Adresse :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
-        self.label_mdp = wx.StaticText(self, -1, u"Mot de passe :")
+        self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         self.ctrl_mdp.Enable(False)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -66,18 +68,18 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.radio_predefini.SetToolTipString(u"Cliquez ici pour sélectionner un serveur prédéfini dans la liste")
+        self.radio_predefini.SetToolTipString(_(u"Cliquez ici pour sélectionner un serveur prédéfini dans la liste"))
         self.ctrl_predefinis.SetMinSize((200, -1))
-        self.radio_personnalise.SetToolTipString(u"Cliquez ici pour saisir manuellement les caractéristiques du serveur de messagerie")
-        self.ctrl_smtp.SetToolTipString(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)")
+        self.radio_personnalise.SetToolTipString(_(u"Cliquez ici pour saisir manuellement les caractéristiques du serveur de messagerie"))
+        self.ctrl_smtp.SetToolTipString(_(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)"))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTipString(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)")
-        self.ctrl_ssl.SetToolTipString(u"Cliquez ici sur le serveur de messagerie utilise une connexion securisée SSL")
-        self.ctrl_adresse.SetToolTipString(u"Saisissez ici votre adresse mail")
-        self.ctrl_mdp.SetToolTipString(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour accéder à l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler la saisie")
+        self.ctrl_port.SetToolTipString(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)"))
+        self.ctrl_ssl.SetToolTipString(_(u"Cliquez ici sur le serveur de messagerie utilise une connexion securisée SSL"))
+        self.ctrl_adresse.SetToolTipString(_(u"Saisissez ici votre adresse mail"))
+        self.ctrl_mdp.SetToolTipString(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour accéder à l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -228,14 +230,14 @@ class Dialog(wx.Dialog):
         
             # Validation du serveur prédéfini
             if self.ctrl_predefinis.GetSelection() == -1 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun serveur de messagerie dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun serveur de messagerie dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
             # Validation du serveur prédéfini
             if self.ctrl_adresse.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une adresse de messagerie.", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une adresse de messagerie."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -243,7 +245,7 @@ class Dialog(wx.Dialog):
             # Validation du mot de passe
             if self.listeServeurs[self.ctrl_predefinis.GetSelection()][3] == True :
                 if self.ctrl_mdp.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, u"Vous n'avez omis de saisir le mot de passe de votre messagerie", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -251,7 +253,7 @@ class Dialog(wx.Dialog):
         else:
             
             if self.ctrl_smtp.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"Vous n'avez omis de saisir le nom du serveur SMTP", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le nom du serveur SMTP"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -260,7 +262,7 @@ class Dialog(wx.Dialog):
                 try :
                     test = int(self.ctrl_port.GetValue())
                 except :
-                    dlg = wx.MessageDialog(self, u"Le numéro de port que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Le numéro de port que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
@@ -268,7 +270,7 @@ class Dialog(wx.Dialog):
             # Validation du mot de passe
             if self.ctrl_ssl.GetValue() == True :
                 if self.ctrl_mdp.GetValue() == "" :
-                    dlg = wx.MessageDialog(self, u"Vous n'avez omis de saisir le mot de passe de votre messagerie", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return

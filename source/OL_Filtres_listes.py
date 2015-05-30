@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import UTILS_Dates
@@ -25,47 +27,47 @@ def GetCondition(titre="", typeDonnee="", choix="", criteres=""):
     
     # TEXTE
     if typeDonnee == "texte" :
-        if choix == "EGAL" : description = u"'%s' est égal à '%s'" % (titre, criteres)
-        if choix == "DIFFERENT" : description = u"'%s' est différent de '%s'" % (titre, criteres)
-        if choix == "CONTIENT" : description = u"'%s' contient '%s'" % (titre, criteres)
-        if choix == "CONTIENTPAS" : description = u"'%s' ne contient pas '%s'" % (titre, criteres)
-        if choix == "VIDE" : description = u"'%s' est vide" % titre
-        if choix == "PASVIDE" : description = u"'%s' n'est pas vide" % titre
+        if choix == "EGAL" : description = _(u"'%s' est égal à '%s'") % (titre, criteres)
+        if choix == "DIFFERENT" : description = _(u"'%s' est différent de '%s'") % (titre, criteres)
+        if choix == "CONTIENT" : description = _(u"'%s' contient '%s'") % (titre, criteres)
+        if choix == "CONTIENTPAS" : description = _(u"'%s' ne contient pas '%s'") % (titre, criteres)
+        if choix == "VIDE" : description = _(u"'%s' est vide") % titre
+        if choix == "PASVIDE" : description = _(u"'%s' n'est pas vide") % titre
     
     # ENTIER
     if typeDonnee == "entier" :
-        if choix == "EGAL" : description = u"'%s' est égal à '%s'" % (titre, criteres)
-        if choix == "DIFFERENT" : description = u"'%s' est différent de '%s'" % (titre, criteres)
-        if choix == "SUP" : description = u"'%s' est supérieur à '%s'" % (titre, criteres)
-        if choix == "SUPEGAL" : description = u"'%s' est supérieur ou égal à '%s'" % (titre, criteres)
-        if choix == "INF" : description = u"'%s' est inférieur à '%s'" % (titre, criteres)
-        if choix == "INFEGAL" : description = u"'%s' est inférieur ou égal à '%s'"  % (titre, criteres)
-        if choix == "COMPRIS" : description = u"'%s' est compris entre '%s' et '%s'" % (titre, criteres.split(";")[0], criteres.split(";")[1])
+        if choix == "EGAL" : description = _(u"'%s' est égal à '%s'") % (titre, criteres)
+        if choix == "DIFFERENT" : description = _(u"'%s' est différent de '%s'") % (titre, criteres)
+        if choix == "SUP" : description = _(u"'%s' est supérieur à '%s'") % (titre, criteres)
+        if choix == "SUPEGAL" : description = _(u"'%s' est supérieur ou égal à '%s'") % (titre, criteres)
+        if choix == "INF" : description = _(u"'%s' est inférieur à '%s'") % (titre, criteres)
+        if choix == "INFEGAL" : description = _(u"'%s' est inférieur ou égal à '%s'")  % (titre, criteres)
+        if choix == "COMPRIS" : description = _(u"'%s' est compris entre '%s' et '%s'") % (titre, criteres.split(";")[0], criteres.split(";")[1])
 
     # MONTANT
     if typeDonnee == "montant" :
-        if choix == "EGAL" : description = u"'%s' est égal à %.2f %s" % (titre, float(criteres), SYMBOLE)
-        if choix == "DIFFERENT" : description = u"'%s' est différent de %.2f %s" % (titre, float(criteres), SYMBOLE)
-        if choix == "SUP" : description = u"'%s' est supérieur à %.2f %s" % (titre, float(criteres), SYMBOLE)
-        if choix == "SUPEGAL" : description = u"'%s' est supérieur ou égal à %.2f %s" % (titre, float(criteres), SYMBOLE)
-        if choix == "INF" : description = u"'%s' est inférieur à %.2f %s" % (titre, float(criteres), SYMBOLE)
-        if choix == "INFEGAL" : description = u"'%s' est inférieur ou égal à %.2f %s" % (titre, float(criteres), SYMBOLE)
-        if choix == "COMPRIS" : description = u"'%s' est compris entre %.2f %s et %.2f %s" % (titre, float(criteres.split(";")[0]), SYMBOLE, float(criteres.split(";")[1]), SYMBOLE)
+        if choix == "EGAL" : description = _(u"'%s' est égal à %.2f %s") % (titre, float(criteres), SYMBOLE)
+        if choix == "DIFFERENT" : description = _(u"'%s' est différent de %.2f %s") % (titre, float(criteres), SYMBOLE)
+        if choix == "SUP" : description = _(u"'%s' est supérieur à %.2f %s") % (titre, float(criteres), SYMBOLE)
+        if choix == "SUPEGAL" : description = _(u"'%s' est supérieur ou égal à %.2f %s") % (titre, float(criteres), SYMBOLE)
+        if choix == "INF" : description = _(u"'%s' est inférieur à %.2f %s") % (titre, float(criteres), SYMBOLE)
+        if choix == "INFEGAL" : description = _(u"'%s' est inférieur ou égal à %.2f %s") % (titre, float(criteres), SYMBOLE)
+        if choix == "COMPRIS" : description = _(u"'%s' est compris entre %.2f %s et %.2f %s") % (titre, float(criteres.split(";")[0]), SYMBOLE, float(criteres.split(";")[1]), SYMBOLE)
 
     # DATE
     if typeDonnee == "date" :
-        if choix == "EGAL" : description = u"'%s' est égal au '%s'" % (titre, UTILS_Dates.DateEngFr(criteres))
-        if choix == "DIFFERENT" : description = u"'%s' est différent du '%s'" % (titre, UTILS_Dates.DateEngFr(criteres))
-        if choix == "SUP" : description = u"'%s' est supérieur au '%s'" % (titre, UTILS_Dates.DateEngFr(criteres))
-        if choix == "SUPEGAL" : description = u"'%s' est supérieur ou égal au '%s'" % (titre, UTILS_Dates.DateEngFr(criteres))
-        if choix == "INF" : description = u"'%s' est inférieur au '%s'" % (titre, UTILS_Dates.DateEngFr(criteres))
-        if choix == "INFEGAL" : description = u"'%s' est inférieur ou égal au '%s'" % (titre, UTILS_Dates.DateEngFr(criteres))
-        if choix == "COMPRIS" : description = u"'%s' est compris entre le '%s' et le '%s'" % (titre, UTILS_Dates.DateEngFr(criteres.split(";")[0]), UTILS_Dates.DateEngFr(criteres.split(";")[1]))
+        if choix == "EGAL" : description = _(u"'%s' est égal au '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
+        if choix == "DIFFERENT" : description = _(u"'%s' est différent du '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
+        if choix == "SUP" : description = _(u"'%s' est supérieur au '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
+        if choix == "SUPEGAL" : description = _(u"'%s' est supérieur ou égal au '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
+        if choix == "INF" : description = _(u"'%s' est inférieur au '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
+        if choix == "INFEGAL" : description = _(u"'%s' est inférieur ou égal au '%s'") % (titre, UTILS_Dates.DateEngFr(criteres))
+        if choix == "COMPRIS" : description = _(u"'%s' est compris entre le '%s' et le '%s'") % (titre, UTILS_Dates.DateEngFr(criteres.split(";")[0]), UTILS_Dates.DateEngFr(criteres.split(";")[1]))
 
     # INSCRITS
     if typeDonnee == "inscrits" :
-        if choix == "INSCRITS" : description = u"L'individu est inscrit sur les activités sélectionnées"
-        if choix == "PRESENTS" : description = u"L'individu est inscrit sur les activités sélectionnées et présent entre le %s et le %s" % (UTILS_Dates.DateDDEnFr(criteres["date_debut"]), UTILS_Dates.DateDDEnFr(criteres["date_fin"]))
+        if choix == "INSCRITS" : description = _(u"L'individu est inscrit sur les activités sélectionnées")
+        if choix == "PRESENTS" : description = _(u"L'individu est inscrit sur les activités sélectionnées et présent entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(criteres["date_debut"]), UTILS_Dates.DateDDEnFr(criteres["date_fin"]))
         
     return description
 
@@ -144,11 +146,11 @@ class ListView(FastObjectListView):
         
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, ""),
-            ColumnDefn(u"Condition", 'left', 165, "condition", isSpaceFilling=True),
+            ColumnDefn(_(u"Condition"), 'left', 165, "condition", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun filtre")
+        self.SetEmptyListMsg(_(u"Aucun filtre"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -183,7 +185,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -192,7 +194,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -200,7 +202,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -222,7 +224,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun filtre à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -239,12 +241,12 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun filtre à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun filtre à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce filtre ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce filtre ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listeFiltres.pop(track.index)
             self.MAJ()
@@ -262,7 +264,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un filtre...")
+        self.SetDescriptiveText(_(u"Rechercher un filtre..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

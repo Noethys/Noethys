@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Cotisations_manquantes
@@ -71,13 +73,13 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", 'left', 200, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Cotisations manquantes", "left", 500, "cotisations", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), 'left', 200, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Cotisations manquantes"), "left", 500, "cotisations", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune cotisation manquante")
+        self.SetEmptyListMsg(_(u"Aucune cotisation manquante"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -100,14 +102,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -116,14 +118,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -134,7 +136,7 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -144,9 +146,9 @@ class ListView(FastObjectListView):
         for track in self.donnees :
             nbreFamilles += 1
             if len(track.cotisations) > 0 : nbreCotisationsManquantes += 1
-        txtTotal = u"%d familles | %d cotisations manquantes" % (nbreFamilles, nbreCotisationsManquantes)
+        txtTotal = _(u"%d familles | %d cotisations manquantes") % (nbreFamilles, nbreCotisationsManquantes)
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des cotisations manquantes", intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des cotisations manquantes"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -160,11 +162,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des cotisations manquantes")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des cotisations manquantes"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des cotisations manquantes")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des cotisations manquantes"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -176,7 +178,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une cotisation manquante...")
+        self.SetDescriptiveText(_(u"Rechercher une cotisation manquante..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

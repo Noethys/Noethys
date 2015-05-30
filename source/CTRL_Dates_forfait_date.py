@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import copy
@@ -36,8 +38,8 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( u"Groupe/Date", 200, wx.ALIGN_LEFT),
-            ( u"Combinaisons d'unités", 280, wx.ALIGN_LEFT),
+            ( _(u"Groupe/Date"), 200, wx.ALIGN_LEFT),
+            ( _(u"Combinaisons d'unités"), 280, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -58,7 +60,7 @@ class CTRL(HTL.HyperTreeList):
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 
     def ImportationInitiale(self):
@@ -141,12 +143,12 @@ class CTRL(HTL.HyperTreeList):
         for dictCombi in self.listeDonnees :
             IDgroupe = dictCombi["IDgroupe"]
             if IDgroupe == None :
-                nomGroupe = u"Tous les groupes"
+                nomGroupe = _(u"Tous les groupes")
             else :
                 if self.dictGroupes.has_key(IDgroupe) :
                     nomGroupe = self.dictGroupes[IDgroupe]["nom"]
                 else :
-                    nomGroupe = u"Groupe inconnu"
+                    nomGroupe = _(u"Groupe inconnu")
             groupe = (nomGroupe, IDgroupe)
             if dictTemp.has_key(groupe) == False :
                 dictTemp[groupe] = []
@@ -301,8 +303,8 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
                 
         self.ctrl = CTRL(panel, IDactivite=1, IDtarif=1)
-        self.bouton1 = wx.Button(panel, -1, u"Modifier")
-        self.bouton2 = wx.Button(panel, -1, u"Sauvegarder")
+        self.bouton1 = wx.Button(panel, -1, _(u"Modifier"))
+        self.bouton2 = wx.Button(panel, -1, _(u"Sauvegarder"))
 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)

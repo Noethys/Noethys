@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import copy
@@ -19,8 +21,8 @@ import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", u"Euro")
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", u"Centime")
+MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
+MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
 import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
@@ -192,7 +194,7 @@ class Facturation():
                     "{SOLDE_LETTRES}" : UTILS_Conversion.trad(-solde, MONNAIE_SINGULIER, MONNAIE_DIVISION),
                     "select" : True,
                     "num_codeBarre" :  "%07d" % numero,
-                    "numero" : u"Rappel n°%07d" % numero,
+                    "numero" : _(u"Rappel n°%07d") % numero,
                     "{CODEBARRES_NUM_RAPPEL}" : "F%06d" % numero,
 
                     "date_min" : UTILS_Dates.DateEngEnDateDD(date_min),
@@ -230,7 +232,7 @@ class Facturation():
 
     def GetDonneesImpression(self, listeRappels=[]):
         """ Impression des factures """
-        dlgAttente = PBI.PyBusyInfo(u"Recherche des données de facturation...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données de facturation..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         # Récupère les données de la facture
@@ -290,7 +292,7 @@ class Facturation():
                 "{SOLDE_LETTRES}" : UTILS_Conversion.trad(-solde, MONNAIE_SINGULIER, MONNAIE_DIVISION),
                 "select" : True,
                 "num_codeBarre" :  "%07d" % numero,
-                "numero" : u"Rappel n°%07d" % numero,
+                "numero" : _(u"Rappel n°%07d") % numero,
                 "{CODEBARRES_NUM_RAPPEL}" : "F%06d" % numero,
 
                 "date_min" : date_min,
@@ -369,7 +371,7 @@ class Facturation():
         # Récupération des paramètres d'affichage
         if dictOptions == None :
             if afficherDoc == False :
-                dlg = DLG_Apercu_rappel.Dialog(None, titre=u"Sélection des paramètres de la lettre de rappel", intro=u"Sélectionnez ici les paramètres d'affichage du rappel à envoyer par Email.")
+                dlg = DLG_Apercu_rappel.Dialog(None, titre=_(u"Sélection des paramètres de la lettre de rappel"), intro=_(u"Sélectionnez ici les paramètres d'affichage du rappel à envoyer par Email."))
                 dlg.bouton_ok.SetBitmapLabel(wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
             else :
                 dlg = DLG_Apercu_rappel.Dialog(None)
@@ -383,7 +385,7 @@ class Facturation():
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = PBI.PyBusyInfo(u"Génération des lettres de rappel à l'unité au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Génération des lettres de rappel à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             try :
                 index = 0
@@ -391,10 +393,10 @@ class Facturation():
                     if dictRappel["select"] == True :
                         num_rappel = dictRappel["num_rappel"]
                         nomTitulaires = self.Supprime_accent(dictRappel["nomSansCivilite"])
-                        nomFichier = u"Lettre de rappel %d - %s" % (num_rappel, nomTitulaires)
+                        nomFichier = _(u"Lettre de rappel %d - %s") % (num_rappel, nomTitulaires)
                         cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
                         dictComptesTemp = {IDrappel : dictRappel}
-                        self.EcritStatusbar(u"Edition de la lettre de rappel %d/%d : %s" % (index, len(dictRappel), nomFichier))
+                        self.EcritStatusbar(_(u"Edition de la lettre de rappel %d/%d : %s") % (index, len(dictRappel), nomFichier))
                         UTILS_Impression_rappel.Impression(dictComptesTemp, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=False, nomFichier=cheminFichier)
                         dictPieces[IDrappel] = cheminFichier
                         index += 1
@@ -404,7 +406,7 @@ class Facturation():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -424,9 +426,9 @@ class Facturation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = PBI.PyBusyInfo(u"Création du PDF des lettres de rappel...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des lettres de rappel..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
-            self.EcritStatusbar(u"Création du PDF des lettres de rappel en cours... veuillez patienter...")
+            self.EcritStatusbar(_(u"Création du PDF des lettres de rappel en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_rappel.Impression(dictRappels, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -434,7 +436,7 @@ class Facturation():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

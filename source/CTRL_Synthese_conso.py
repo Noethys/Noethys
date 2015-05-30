@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 """
 IMPORTANT :
 J'ai rajoute la ligne 101 de gridlabelrenderer.py dans wxPython mixins :
@@ -15,6 +16,7 @@ if rows == [-1] : return
 """
 
 import wx
+import CTRL_Bouton_image
 import wx.grid as gridlib
 import wx.lib.wordwrap as wordwrap
 import Outils.gridlabelrenderer as glr
@@ -30,11 +32,11 @@ import UTILS_Organisateur
 import UTILS_Infos_individus
 import wx.lib.agw.pybusyinfo as PBI
 
-LISTE_MOIS = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + LISTE_MOIS[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -165,14 +167,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # init grid
         try :
-            dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant la recherche des données...", parent=None, title=u"Calcul en cours", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la recherche des données..."), parent=None, title=_(u"Calcul en cours"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             self.InitGrid() 
             del dlgAttente
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la recherche des données de la synthèse des consommations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche des données de la synthèse des consommations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -284,7 +286,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 regroupement = None
             
             if regroupement in ("", None) :
-                regroupement = u"- non renseigné -"
+                regroupement = _(u"- non renseigné -")
 
             # Quantité
             if quantite == None :
@@ -408,7 +410,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Colonne Total
         self.AppendCols(1)
         self.SetColSize(index, largeur_colonne)
-        self.SetColLabelValue(index, u"TOTAL")
+        self.SetColLabelValue(index, _(u"TOTAL"))
         dictColonnes["total"] = index
 
         # Création des lignes
@@ -436,7 +438,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Ligne Total
         self.AppendRows(1)
-        self.SetRowLabelValue(index, u"TOTAL")
+        self.SetRowLabelValue(index, _(u"TOTAL"))
         self.SetRowSize(index, 30)
         dictLignes["total"] = index
         
@@ -488,7 +490,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def Apercu(self):
         """ Impression tableau de données """
         if self.GetNumberRows() == 0 or self.GetNumberCols() == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a rien à imprimer !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a rien à imprimer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -575,7 +577,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         largeurContenu = largeur - (tailleMarge*2)
         largeursColonnes = ( (largeurContenu-100, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (u"Synthèse des consommations", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"Synthèse des consommations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -604,11 +606,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(grid=self, titre=u"Synthèse des consommations")
+        UTILS_Export.ExportTexte(grid=self, titre=_(u"Synthèse des consommations"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(grid=self, titre=u"Synthèse des consommations")
+        UTILS_Export.ExportExcel(grid=self, titre=_(u"Synthèse des consommations"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

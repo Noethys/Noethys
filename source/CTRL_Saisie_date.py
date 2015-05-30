@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import wx.lib.masked as masked
 import datetime
@@ -139,17 +141,17 @@ class Date(masked.TextCtrl):
         """Ouverture du menu contextuel """
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, ID_AUJOURDHUI, u"Aujourd'hui")
+        item = wx.MenuItem(menuPop, ID_AUJOURDHUI, _(u"Aujourd'hui"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Date_actuelle.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnActionMenu, id=ID_AUJOURDHUI)
 
-        item = wx.MenuItem(menuPop, ID_HIER, u"Hier")
+        item = wx.MenuItem(menuPop, ID_HIER, _(u"Hier"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Date_precedente.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnActionMenu, id=ID_HIER)
 
-        item = wx.MenuItem(menuPop, ID_DEMAIN, u"Demain")
+        item = wx.MenuItem(menuPop, ID_DEMAIN, _(u"Demain"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Date_suivante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnActionMenu, id=ID_DEMAIN)
@@ -157,32 +159,32 @@ class Date(masked.TextCtrl):
         menuPop.AppendSeparator()
         
         listeFonctions = [
-            (ID_SEMAINE_ACTUELLE, u"Semaine actuelle"),
-            (ID_SEMAINE_PRECEDENTE, u"Semaine précédente"),
-            (ID_SEMAINE_SUIVANTE, u"Semaine suivante"),
+            (ID_SEMAINE_ACTUELLE, _(u"Semaine actuelle")),
+            (ID_SEMAINE_PRECEDENTE, _(u"Semaine précédente")),
+            (ID_SEMAINE_SUIVANTE, _(u"Semaine suivante")),
             (None, None),
-            (ID_MOIS_ACTUEL, u"Mois actuel"),
-            (ID_MOIS_PRECEDENT, u"Mois précédent"),
-            (ID_MOIS_SUIVANT, u"Mois suivant"),
+            (ID_MOIS_ACTUEL, _(u"Mois actuel")),
+            (ID_MOIS_PRECEDENT, _(u"Mois précédent")),
+            (ID_MOIS_SUIVANT, _(u"Mois suivant")),
             (None, None),
-            (ID_ANNEE_ACTUELLE, u"Année actuelle"),
-            (ID_ANNEE_PRECEDENTE, u"Année précédente"),
-            (ID_ANNEE_SUIVANTE, u"Année suivante"),
+            (ID_ANNEE_ACTUELLE, _(u"Année actuelle")),
+            (ID_ANNEE_PRECEDENTE, _(u"Année précédente")),
+            (ID_ANNEE_SUIVANTE, _(u"Année suivante")),
             ]
         for id, label in listeFonctions :
             if id == None :
                 menuPop.AppendSeparator()
             else :
                 sousMenu = wx.Menu()
-                sousMenu.AppendItem(wx.MenuItem(menuPop, id+1, u"Date de début"))
+                sousMenu.AppendItem(wx.MenuItem(menuPop, id+1, _(u"Date de début")))
                 self.Bind(wx.EVT_MENU, self.OnActionMenu, id=id+1)
-                sousMenu.AppendItem(wx.MenuItem(menuPop, id+2, u"Date de fin"))
+                sousMenu.AppendItem(wx.MenuItem(menuPop, id+2, _(u"Date de fin")))
                 self.Bind(wx.EVT_MENU, self.OnActionMenu, id=id+2)
                 item = menuPop.AppendMenu(id, label, sousMenu)
         
         menuPop.AppendSeparator()
         
-        item = wx.MenuItem(menuPop, ID_AIDE, u"Aide")
+        item = wx.MenuItem(menuPop, ID_AIDE, _(u"Aide"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Aide.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OnActionMenu, id=ID_AIDE)
@@ -277,41 +279,41 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
     listeErreurs = []
     # On vérifie si les cases ne sont pas vides
     if texte[0] == " " or texte[1] == " ":
-        listeErreurs.append(u"le jour")
+        listeErreurs.append(_(u"le jour"))
     if texte[3] == " " or texte[4] == " ":
-        listeErreurs.append(u"le mois")
+        listeErreurs.append(_(u"le mois"))
     if texte[6] == " " or texte[7] == " " or texte[8] == " " or texte[9] == " ":
-        listeErreurs.append(u"l'année")
+        listeErreurs.append(_(u"l'année"))
     
     if texte != "  /  /    ":
 
         # On vérifie que les chiffres existent
-        if u"le jour" not in listeErreurs:
+        if _(u"le jour") not in listeErreurs:
             jour = int(texte[:2])
             if jour == 0 or jour > 31:
-                listeErreurs.append(u"le jour")
+                listeErreurs.append(_(u"le jour"))
 
-        if u"le mois" not in listeErreurs:
+        if _(u"le mois") not in listeErreurs:
             mois = int(texte[3:5])
             if mois == 0 or mois > 12:
-                listeErreurs.append(u"le mois")
+                listeErreurs.append(_(u"le mois"))
                 
-        if u"l'année" not in listeErreurs:
+        if _(u"l'année") not in listeErreurs:
             annee = int(texte[6:10])
             if annee < 1900 or annee > 2999:
-                listeErreurs.append(u"l'année")
+                listeErreurs.append(_(u"l'année"))
               
         # Affichage du message d'erreur
         
         if len(listeErreurs) != 0:
             # Message en cas de date incomplète
             if len(listeErreurs) == 1:
-                message = u"Une incohérence a été détectée dans " + listeErreurs[0]
+                message = _(u"Une incohérence a été détectée dans ") + listeErreurs[0]
             if len(listeErreurs) == 2:
-                message = u"Des incohérences ont été détectées dans " + listeErreurs[0] + " et " + listeErreurs[1]
+                message = _(u"Des incohérences ont été détectées dans ") + listeErreurs[0] + " et " + listeErreurs[1]
             if len(listeErreurs) == 3:
-                message = u"Des incohérences ont été détectées dans " + listeErreurs[0]  + ", " + listeErreurs[1]  + " et " + listeErreurs[2]
-            message = message + u" de la date que vous venez de saisir. Veuillez la vérifier."
+                message = _(u"Des incohérences ont été détectées dans ") + listeErreurs[0]  + ", " + listeErreurs[1]  + " et " + listeErreurs[2]
+            message = message + _(u" de la date que vous venez de saisir. Veuillez la vérifier.")
             
             if avecMessages == True :
                 wx.MessageBox(message, "Erreur de date")
@@ -323,12 +325,12 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
             date_sel = int(str(texte[6:10]) + str(texte[3:5]) + str(texte[:2]))
 
             if date_sel < date_min:
-                message = u"La date que vous venez de saisir semble trop ancienne. Veuillez la vérifier."
+                message = _(u"La date que vous venez de saisir semble trop ancienne. Veuillez la vérifier.")
                 if avecMessages == True :
                     wx.MessageBox(message, "Erreur de date")
                 return False
             if date_sel > date_max:
-                message = u"La date que vous venez de saisir semble trop élevée. Veuillez la vérifier."
+                message = _(u"La date que vous venez de saisir semble trop élevée. Veuillez la vérifier.")
                 if avecMessages == True :
                     wx.MessageBox(message, "Erreur de date")
                 return False
@@ -337,7 +339,7 @@ def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages
             try :
                 dateDD = datetime.date(year=int(texte[6:10]), month=int(texte[3:5]), day=int(texte[:2]))
             except :
-                message = u"La date que vous venez de saisir ne semble pas valide !"
+                message = _(u"La date que vous venez de saisir ne semble pas valide !")
                 if avecMessages == True :
                     wx.MessageBox(message, "Erreur de date")
                 return False
@@ -359,7 +361,7 @@ class Date2(wx.Panel):
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_calendrier)
-        self.bouton_calendrier.SetToolTipString(u"Cliquez ici pour sélectionner la date dans le calendrier")
+        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour sélectionner la date dans le calendrier"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)

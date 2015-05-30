@@ -26,6 +26,7 @@ The class FileTimeline implements the Timeline interface.
 """
 
 import wx
+import CTRL_Bouton_image
 
 import re
 import codecs
@@ -216,9 +217,9 @@ class TimelinePerso(Timeline):
 ##            heure_fin = HeureStrEnTime(heure_fin)
 ##            dateDebut = datetime.datetime(date.year, date.month, date.day, heure_debut.hour, heure_debut.minute, heure_debut.second)
 ##            dateFin = datetime.datetime(date.year, date.month, date.day, heure_fin.hour, heure_fin.minute, heure_fin.second)
-##            texte = u"IDindividu %d" % IDindividu
+##            texte = _(u"IDindividu %d") % IDindividu
 ##            categorie = None
-##            description = u"IDunite%d - IDgroupe%d" % (IDunite, IDgroupe)
+##            description = _(u"IDunite%d - IDgroupe%d") % (IDunite, IDgroupe)
 ##            icon = None
 ##            
 ##            evt = Event(dateDebut, dateFin, texte, categorie)
@@ -257,7 +258,7 @@ class TimelinePerso(Timeline):
                     dateDebut = datetime.datetime(date.year, date.month, date.day, 9, 0, 0)
                     texte = u"%s %s" % (prenom, nom)
                     categorie = None
-                    description = u"%s a %d ans" % (prenom, age)
+                    description = _(u"%s a %d ans") % (prenom, age)
                     icon = None
                     
                     evt = Event(dateDebut, dateDebut, texte, categorie)
@@ -275,15 +276,15 @@ class TimelinePerso(Timeline):
 ##        self.preferred_period = TimePeriod(dateDebut, dateFin)
 ##        
 ##        # Importation d'une catégorie
-##        catExemple = Category(u"Catégorie Exemple", (0, 255, 0), True)
+##        catExemple = Category(_(u"Catégorie Exemple"), (0, 255, 0), True)
 ##        self.categories.append(catExemple)
 ##        
 ##        # Importation d'un Event
 ##        dateDebut = datetime.datetime(2011, 8, 12, 9, 52, 0)
 ##        dateFin = datetime.datetime(2011, 8, 12, 9, 52, 0)
-##        texte = u"Evènement 1"
+##        texte = _(u"Evènement 1")
 ##        categorie = catExemple
-##        description = u"Ceci est la description de l'event 1"
+##        description = _(u"Ceci est la description de l'event 1")
 ##        icon = wx.Bitmap("Images/32x32/Anniversaire.png", wx.BITMAP_TYPE_ANY)
 ##        
 ##        # Mémorisation de l'event

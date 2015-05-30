@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.agw.hyperlink as Hyperlink
 import datetime
@@ -40,8 +42,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -49,7 +51,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -139,7 +141,7 @@ class Track(object):
         self.nomCategorieTarif = donnees["nomCategorieTarif"]
         self.IDfacture = donnees["IDfacture"]
         if self.IDfacture == None or self.IDfacture == "" :
-            self.label_facture = u"Non facturé"
+            self.label_facture = _(u"Non facturé")
         else:
             num_facture = donnees["num_facture"]
             date_facture = donnees["date_facture"]
@@ -249,7 +251,7 @@ class CTRL_Total(wx.Panel):
                 
         # Contrôle montant
         self.ctrl_montant = wx.StaticText(self, -1, u"")
-##        self.ctrl_montant.SetToolTipString(u"Montant déjà ventilé")
+##        self.ctrl_montant.SetToolTipString(_(u"Montant déjà ventilé"))
         self.ctrl_montant.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
         
         # Layout
@@ -293,7 +295,7 @@ class CTRL_Checkbox(wx.Panel):
         self.imgAttention = wx.Bitmap("Images/16x16/Attention.png", wx.BITMAP_TYPE_PNG)
         self.imgNul = wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG)
         self.ctrl_image = wx.StaticBitmap(self, -1, self.imgNul)
-        self.ctrl_image.SetToolTipString(u"Etat de la ventilation pour cette prestation")
+        self.ctrl_image.SetToolTipString(_(u"Etat de la ventilation pour cette prestation"))
 
         # Checkbox
         self.cb = wx.CheckBox(self, id=-1, label=label) 
@@ -356,7 +358,7 @@ class CTRL_Montant_prestation(wx.Panel):
                 
         # Contrôle montant
         self.ctrl_montant = wx.StaticText(self, -1, u"%.2f %s " % (montantPrestation, SYMBOLE))
-        self.ctrl_montant.SetToolTipString(u"Montant de la prestation")
+        self.ctrl_montant.SetToolTipString(_(u"Montant de la prestation"))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
@@ -387,7 +389,7 @@ class CTRL_Ventilation_totale(wx.Panel):
                 
         # Contrôle montant
         self.ctrl_montant = wx.StaticText(self, -1, u"0.00 %s" % SYMBOLE)
-        self.ctrl_montant.SetToolTipString(u"Montant déjà ventilé")
+        self.ctrl_montant.SetToolTipString(_(u"Montant déjà ventilé"))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
@@ -430,7 +432,7 @@ class CTRL_Ventilation_actuelle(wx.Panel):
         # Contrôle montant
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, size=(55, -1))
         self.ctrl_montant.SetValue("")
-        self.ctrl_montant.SetToolTipString(u"Cliquez ici pour modifier manuellement le montant ventilé")
+        self.ctrl_montant.SetToolTipString(_(u"Cliquez ici pour modifier manuellement le montant ventilé"))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
@@ -490,13 +492,13 @@ class CTRL_Ventilation(HTL.HyperTreeList):
         
         # Création des colonnes
         listeColonnes = [
-            ( u"Date", 225, wx.ALIGN_LEFT),
-            ( u"Individu", 95, wx.ALIGN_LEFT),
-            ( u"Intitulé", 185, wx.ALIGN_LEFT),
-            ( u"N° Facture", 75, wx.ALIGN_CENTRE),
-            ( u"Montant", 60, wx.ALIGN_LEFT),
-            ( u"A ventiler", 62, wx.ALIGN_LEFT),
-            ( u"Ventilé", 60, wx.ALIGN_LEFT),
+            ( _(u"Date"), 225, wx.ALIGN_LEFT),
+            ( _(u"Individu"), 95, wx.ALIGN_LEFT),
+            ( _(u"Intitulé"), 185, wx.ALIGN_LEFT),
+            ( _(u"N° Facture"), 75, wx.ALIGN_CENTRE),
+            ( _(u"Montant"), 60, wx.ALIGN_LEFT),
+            ( _(u"A ventiler"), 62, wx.ALIGN_LEFT),
+            ( _(u"Ventilé"), 60, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -574,8 +576,8 @@ class CTRL_Ventilation(HTL.HyperTreeList):
 ##        print "nbre prestations =", len(listeTracks)
         maxPrestationsAffichables = 300
         if len(listeTracks) > maxPrestationsAffichables :
-            message = u"Avertissement\n\nCette famille a %d prestations impayées alors que cette fonctionnalité peut actuellement planter lorsqu'elle en affiche plus de %d (Un correctif sera proposé ultérieurement). \n\nSouhaitez-vous afficher uniquement les %d premières prestations de la liste ?" % (len(listeTracks), maxPrestationsAffichables, maxPrestationsAffichables)
-            dlg = wx.MessageDialog(None, message, u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
+            message = _(u"Avertissement\n\nCette famille a %d prestations impayées alors que cette fonctionnalité peut actuellement planter lorsqu'elle en affiche plus de %d (Un correctif sera proposé ultérieurement). \n\nSouhaitez-vous afficher uniquement les %d premières prestations de la liste ?") % (len(listeTracks), maxPrestationsAffichables, maxPrestationsAffichables)
+            dlg = wx.MessageDialog(None, message, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_YES :
                 listeTracks = listeTracks[:maxPrestationsAffichables]
             dlg.Destroy()
@@ -625,7 +627,7 @@ class CTRL_Ventilation(HTL.HyperTreeList):
         self.Freeze()
         self.DeleteAllItems()
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.Thaw() 
         self.MAJbarreInfos()
@@ -641,7 +643,7 @@ class CTRL_Ventilation(HTL.HyperTreeList):
             if self.KeyRegroupement == "individu" : 
                 key = track.IDindividu
                 if key == 0 or key == None :
-                    label = u"Prestations familiales"
+                    label = _(u"Prestations familiales")
                 else:
                     label = track.nomCompletIndividu
             if self.KeyRegroupement == "facture" : 
@@ -826,19 +828,19 @@ class CTRL(wx.Panel):
             self.SetFont(defaultFont)
 
         # Regroupement
-        self.label_regroupement = wx.StaticText(self, -1, u"Regrouper par :")
-        self.radio_periode = wx.RadioButton(self, -1, u"Mois", style = wx.RB_GROUP)
-        self.radio_facture = wx.RadioButton(self, -1, u"Facture")
-        self.radio_individu = wx.RadioButton(self, -1, u"Individu")
-        self.radio_date = wx.RadioButton(self, -1, u"Date")
+        self.label_regroupement = wx.StaticText(self, -1, _(u"Regrouper par :"))
+        self.radio_periode = wx.RadioButton(self, -1, _(u"Mois"), style = wx.RB_GROUP)
+        self.radio_facture = wx.RadioButton(self, -1, _(u"Facture"))
+        self.radio_individu = wx.RadioButton(self, -1, _(u"Individu"))
+        self.radio_date = wx.RadioButton(self, -1, _(u"Date"))
         
         # Commandes rapides
-        self.label_hyperliens_1 = wx.StaticText(self, -1, u"Ventiler ")
-        self.hyper_automatique = Hyperlien(self, label=u"automatiquement", infobulle=u"Cliquez ici pour ventiler automatiquement le crédit restant", URL="automatique")
+        self.label_hyperliens_1 = wx.StaticText(self, -1, _(u"Ventiler "))
+        self.hyper_automatique = Hyperlien(self, label=_(u"automatiquement"), infobulle=_(u"Cliquez ici pour ventiler automatiquement le crédit restant"), URL="automatique")
         self.label_hyperliens_2 = wx.StaticText(self, -1, u" | ")
-        self.hyper_tout = Hyperlien(self, label=u"tout", infobulle=u"Cliquez ici pour tout ventiler", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"tout"), infobulle=_(u"Cliquez ici pour tout ventiler"), URL="tout")
         self.label_hyperliens_3 = wx.StaticText(self, -1, u" | ")
-        self.hyper_rien = Hyperlien(self, label=u"rien", infobulle=u"Cliquez ici pour ne rien ventiler", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"rien"), infobulle=_(u"Cliquez ici pour ne rien ventiler"), URL="rien")
         
         # Liste de la ventilation
         self.ctrl_ventilation = CTRL_Ventilation(self, IDcompte_payeur, IDreglement)
@@ -849,7 +851,7 @@ class CTRL(wx.Panel):
         self.imgAddition = wx.Bitmap("Images/16x16/Addition.png", wx.BITMAP_TYPE_PNG)
         self.ctrl_image = wx.StaticBitmap(self, -1, self.imgAddition)
         
-        self.ctrl_info = wx.StaticText(self, -1, u"Vous pouvez encore ventiler 30.90 ¤")
+        self.ctrl_info = wx.StaticText(self, -1, _(u"Vous pouvez encore ventiler 30.90 ¤"))
         self.ctrl_info.SetFont(wx.Font(10, wx.SWISS, wx.NORMAL, wx.BOLD))
         
         self.__do_layout()
@@ -918,19 +920,19 @@ class CTRL(wx.Panel):
         if self.montant_reglement == FloatToDecimal(0.0) :
             self.validation = "erreur"
             self.ctrl_image.SetBitmap(self.imgErreur)
-            self.ctrl_info.SetLabel(u"Vous devez déjà saisir un montant pour ce règlement !")
+            self.ctrl_info.SetLabel(_(u"Vous devez déjà saisir un montant pour ce règlement !"))
             return
 
 ##        if self.montant_reglement < FloatToDecimal(0.0) :
 ##            self.validation = "ok"
 ##            self.ctrl_image.SetBitmap(self.imgOk)
-##            self.ctrl_info.SetLabel(u"Ventilation non obligatoire")
+##            self.ctrl_info.SetLabel(_(u"Ventilation non obligatoire"))
 ##            return
 
         if erreur == True :
             self.validation = "erreur"
             self.ctrl_image.SetBitmap(self.imgErreur)
-            self.ctrl_info.SetLabel(u"Vous avez saisi un montant non valide !")
+            self.ctrl_info.SetLabel(_(u"Vous avez saisi un montant non valide !"))
             return
         
         creditAVentiler = FloatToDecimal(self.montant_reglement) - FloatToDecimal(self.total_ventilation)
@@ -942,13 +944,13 @@ class CTRL(wx.Panel):
         # Recherche de l'état
         if creditAVentiler == FloatToDecimal(0.0) :
             self.validation = "ok"
-            label = u"Le règlement a été correctement ventilé !"
+            label = _(u"Le règlement a été correctement ventilé !")
         elif creditAVentiler > FloatToDecimal(0.0) :
             self.validation = "addition"
-            label = u"Vous devez encore ventiler %.2f %s !" % (creditAVentiler, SYMBOLE)
+            label = _(u"Vous devez encore ventiler %.2f %s !") % (creditAVentiler, SYMBOLE)
         elif creditAVentiler < FloatToDecimal(0.0) :
             self.validation = "trop"
-            label = u"Vous avez ventilé %.2f %s en trop !" % (-creditAVentiler, SYMBOLE)
+            label = _(u"Vous avez ventilé %.2f %s en trop !") % (-creditAVentiler, SYMBOLE)
         # Affiche l'image
         if self.validation == "ok" : self.ctrl_image.SetBitmap(self.imgOk)
         if self.validation == "addition" : self.ctrl_image.SetBitmap(self.imgAddition)
@@ -967,18 +969,18 @@ class CTRL(wx.Panel):
             if creditAVentiler > totalRestePrestationsAVentiler :
                 creditAVentiler = totalRestePrestationsAVentiler
             if creditAVentiler > FloatToDecimal(0.0) :
-                dlg = wx.MessageDialog(self, u"Vous devez encore ventiler %.2f %s.\n\nEtes-vous sûr de quand même vouloir valider et fermer ?" % (creditAVentiler, SYMBOLE), u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez encore ventiler %.2f %s.\n\nEtes-vous sûr de quand même vouloir valider et fermer ?") % (creditAVentiler, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
                     return False
         if self.validation == "trop" :
-            dlg = wx.MessageDialog(self, u"Vous avez ventilé %.2f %s en trop !" % (-creditAVentiler, SYMBOLE), u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous avez ventilé %.2f %s en trop !") % (-creditAVentiler, SYMBOLE), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if self.validation == "erreur" :
-            dlg = wx.MessageDialog(self, u"La ventilation n'est pas valide. Veuillez la vérifier...", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La ventilation n'est pas valide. Veuillez la vérifier..."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1012,7 +1014,7 @@ class CTRL(wx.Panel):
         # Vérifie qu'il n'y a pas de prestations négatives
         for track in self.ctrl_ventilation.listeTracks :
             if FloatToDecimal(track.montant) < FloatToDecimal(0.0) :
-                dlg = wx.MessageDialog(None, u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle.", u"Information", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1020,12 +1022,12 @@ class CTRL(wx.Panel):
         totalVentilation = FloatToDecimal(self.ctrl_ventilation.GetTotalVentile())
         resteVentilation = self.montant_reglement - totalVentilation
         if self.montant_reglement == FloatToDecimal(0.0) :
-            dlg = wx.MessageDialog(self, u"Vous avez déjà saisir un montant pour ce règlement !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous avez déjà saisir un montant pour ce règlement !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if resteVentilation <= FloatToDecimal(0.0) :
-            dlg = wx.MessageDialog(self, u"Vous avez déjà ventilé tout le crédit disponible !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous avez déjà ventilé tout le crédit disponible !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1067,7 +1069,7 @@ class MyFrame(wx.Frame):
         self.ctrl.SetMontantReglement(8.00)
         self.ctrl.MAJ() 
     
-        self.bouton_test = wx.Button(panel, -1, u"Bouton de test")
+        self.bouton_test = wx.Button(panel, -1, _(u"Bouton de test"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

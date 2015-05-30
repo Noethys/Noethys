@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os, sys
 import time
 import datetime
@@ -40,7 +42,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
         self.dernierRFID = None
         self.delai = 0
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
                 
         self.SetCancelBitmap(wx.Bitmap("Images/Badgeage/Remove_32x32.png", wx.BITMAP_TYPE_PNG))
@@ -108,7 +110,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
                         if IDindividu != None :
                             self.ValidationIdentification(IDindividu, mode="RFID")
                         else :
-                            DIALOGUES.DLG_Message(self.interface, message=u"Ce numéro de badge RFID n'est pas répertorié !", icone="erreur")
+                            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge RFID n'est pas répertorié !"), icone="erreur")
                             self.Start() 
             except Exception, err :
                 #print err
@@ -151,7 +153,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
         try :
             IDindividu = int(txtSearch)
         except :
-            DIALOGUES.DLG_Message(self.interface, message=u"Ce numéro de badge ne semble pas valide !", icone="erreur")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge ne semble pas valide !"), icone="erreur")
             return False
         self.ValidationIdentification(IDindividu, mode="CLAVIER")
         
@@ -212,7 +214,7 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
         # Lancement de la procédure si IDindividu correct
         resultat = self.interface.ValidationIdentification(IDindividu)
         if resultat == False :
-            DIALOGUES.DLG_Message(self.interface, message=u"Ce numéro de badge n'existe pas !", icone="erreur")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge n'existe pas !"), icone="erreur")
             return False
         else :
             self.interface.Procedure(IDindividu)
@@ -257,7 +259,7 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
             self.dictPhotos[IDindividu] = img
         self.AssignImageList(il, wx.IMAGE_LIST_SMALL)
         
-        self.InsertColumn(0, u"Nom de l'individu", width=400, format=ULC.ULC_FORMAT_LEFT)
+        self.InsertColumn(0, _(u"Nom de l'individu"), width=400, format=ULC.ULC_FORMAT_LEFT)
         
         # Création des items
         index = 0
@@ -313,14 +315,14 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
     def Valider(self, event=None):
         selections = self.GetSelections()
         if len(selections) == 0 :
-            DIALOGUES.DLG_Message(self.interface, message=u"Vous devez d'abord sélectionner un individu dans la liste !", icone="exclamation")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Vous devez d'abord sélectionner un individu dans la liste !"), icone="exclamation")
             return
         index, IDindividu = selections[0]
         
         # Lancement de la procédure si IDindividu correct
         resultat = self.interface.ValidationIdentification(IDindividu)
         if resultat == False :
-            DIALOGUES.DLG_Message(self.interface, message=u"Ce numéro de badge n'existe pas !", icone="erreur")
+            DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge n'existe pas !"), icone="erreur")
             return False
         else :
             self.Reset() 
@@ -336,7 +338,7 @@ class CTRL_Importation(wx.Panel):
         self.interface = interface
         
         # Contrôles
-        self.boutonTest = wx.Button(self, -1, u"Test")
+        self.boutonTest = wx.Button(self, -1, _(u"Test"))
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.boutonTest)

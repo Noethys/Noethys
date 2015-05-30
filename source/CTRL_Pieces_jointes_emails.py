@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import GestionDB
 
@@ -94,14 +96,14 @@ class CTRL(ULC.UltimateListCtrl):
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -121,7 +123,7 @@ class CTRL(ULC.UltimateListCtrl):
         # Demande l'emplacement du fichier à joindre
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=u"Veuillez sélectionner le ou les fichiers à joindre", defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
+        dlg = wx.FileDialog(self, message=_(u"Veuillez sélectionner le ou les fichiers à joindre"), defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
         if dlg.ShowModal() == wx.ID_OK:
             chemins = dlg.GetPaths()
         else:
@@ -132,7 +134,7 @@ class CTRL(ULC.UltimateListCtrl):
             
             for dictFichier in self.listePieces :
                 if fichier == dictFichier["nom"] :
-                    dlg = wx.MessageDialog(self, u"Le fichier '%s' est déjà dans la liste !" % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+                    dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est déjà dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
                     dlg.ShowModal()
                     dlg.Destroy()
                     valide = False
@@ -146,13 +148,13 @@ class CTRL(ULC.UltimateListCtrl):
 
     def Supprimer(self, event):
         if self.GetSelectedItemCount() == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune pièce jointe à enlever de la liste !", "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce jointe à enlever de la liste !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
         index = self.GetFirstSelected()
         if self.listePieces[index]["obligatoire"] == True :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas désélectionner cette pièce !", "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas désélectionner cette pièce !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -177,7 +179,7 @@ class MyFrame(wx.Frame):
         listePieces = []
         for x in range(0, 1) :
             listePieces.append(
-                {"nom":u"Facture", "extension":"pdf", "taille":None, "obligatoire":True},
+                {"nom":_(u"Facture"), "extension":"pdf", "taille":None, "obligatoire":True},
                 )
 
         self.ctrl = CTRL(panel, listePieces=listePieces)

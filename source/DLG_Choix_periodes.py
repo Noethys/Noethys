@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Grille_periode
             
 
@@ -18,13 +20,13 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Périodes
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, u"Sélectionnez une ou plusieurs périodes")
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Sélectionnez une ou plusieurs périodes"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)            
-        self.ctrl_toutes = wx.CheckBox(self, -1, u"Toutes les périodes")
+        self.ctrl_toutes = wx.CheckBox(self, -1, _(u"Toutes les périodes"))
         
         # Boutons de commandes 
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout() 
@@ -37,9 +39,9 @@ class Dialog(wx.Dialog):
             self.ctrl_periodes.SetDictDonnees(dictDonnees)
 
     def __set_properties(self):
-        self.SetTitle(u"Sélection de périodes")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Sélection de périodes"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((350, 420))
 
     def __do_layout(self):

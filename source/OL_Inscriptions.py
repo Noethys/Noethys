@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import cStringIO
 import datetime
@@ -59,7 +61,7 @@ class Track(object):
 ##        self.bmp = self.GetImage()
 
         # Nom des titulaires de famille
-        self.nomTitulaires = u"IDfamille n°%d" % self.IDfamille
+        self.nomTitulaires = _(u"IDfamille n°%d") % self.IDfamille
         if parent.dictFamillesRattachees != None :
             if parent.dictFamillesRattachees.has_key(self.IDfamille) : 
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
@@ -200,27 +202,27 @@ class ListView(FastObjectListView):
 
         if self.nbreFamilles > 1 :
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDinscription", typeDonnee="entier"),
+                ColumnDefn(_(u"ID"), "left", 0, "IDinscription", typeDonnee="entier"),
 ##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
-                ColumnDefn(u"Date", 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
-                ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
-                ColumnDefn(u"Groupe", 'left', 80, "nom_groupe", typeDonnee="texte"),
-                ColumnDefn(u"Catégorie de tarifs", 'left', 110, "nom_categorie", typeDonnee="texte"),
-                ColumnDefn(u"Famille", 'left', 110, "nomTitulaires", typeDonnee="texte"),
+                ColumnDefn(_(u"Date"), 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
+                ColumnDefn(_(u"Nom de l'activité"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+                ColumnDefn(_(u"Groupe"), 'left', 80, "nom_groupe", typeDonnee="texte"),
+                ColumnDefn(_(u"Catégorie de tarifs"), 'left', 110, "nom_categorie", typeDonnee="texte"),
+                ColumnDefn(_(u"Famille"), 'left', 110, "nomTitulaires", typeDonnee="texte"),
                 ]
         else:
             liste_Colonnes = [
-                ColumnDefn(u"ID", "left", 0, "IDinscription", typeDonnee="entier"),
+                ColumnDefn(_(u"ID"), "left", 0, "IDinscription", typeDonnee="entier"),
 ##                ColumnDefn(u"", 'left', TAILLE_IMAGE[0]+1, "", imageGetter=GetLogo),
-                ColumnDefn(u"Date", 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
-                ColumnDefn(u"Nom de l'activité", 'left', 160, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
-                ColumnDefn(u"Groupe", 'left', 100, "nom_groupe", typeDonnee="texte"),
-                ColumnDefn(u"Catégorie de tarifs", 'left', 140, "nom_categorie", typeDonnee="texte"),
+                ColumnDefn(_(u"Date"), 'center', 70, "date_inscription", typeDonnee="date", stringConverter=DateEngFr),
+                ColumnDefn(_(u"Nom de l'activité"), 'left', 160, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+                ColumnDefn(_(u"Groupe"), 'left', 100, "nom_groupe", typeDonnee="texte"),
+                ColumnDefn(_(u"Catégorie de tarifs"), 'left', 140, "nom_categorie", typeDonnee="texte"),
                 ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune activité")
+        self.SetEmptyListMsg(_(u"Aucune activité"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -256,14 +258,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -271,7 +273,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -281,7 +283,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Editer Confirmation d'inscription
-        item = wx.MenuItem(menuPop, 60, u"Editer une confirmation d'inscription (PDF)")
+        item = wx.MenuItem(menuPop, 60, _(u"Editer une confirmation d'inscription (PDF)"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -291,14 +293,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -307,14 +309,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -325,21 +327,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des inscriptions", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des inscriptions"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des inscriptions", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des inscriptions"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des inscriptions")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des inscriptions"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des inscriptions")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des inscriptions"))
 
     def Ajouter(self, event):
         # Recherche si l'individu est rattaché à d'autres familles
@@ -352,7 +354,7 @@ class ListView(FastObjectListView):
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, u"Pour être inscrit à une activité, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !", u"Inscription impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour être inscrit à une activité, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !"), _(u"Inscription impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -373,7 +375,7 @@ class ListView(FastObjectListView):
                 IDfamille = listeFamille[0]
             else:
                 # On demande à quelle famille rattacher cette inscription
-                dlg = wx.SingleChoiceDialog(self, u"Cet individu est rattaché à %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?" % len(listeNoms), u"Rattachements multiples", listeNoms, wx.CHOICEDLG_STYLE)
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 if dlg.ShowModal() == wx.ID_OK:
                     indexSelection = dlg.GetSelection()
                     IDfamille = listeFamille[indexSelection]
@@ -413,7 +415,7 @@ class ListView(FastObjectListView):
             # Vérifie que l'individu n'est pas déjà inscrit à cette activite
             for inscription in self.donnees :
                 if inscription.IDactivite == IDactivite and inscription.IDfamille == IDfamille :
-                    dlg2 = wx.MessageDialog(self, u"Cet individu est déjà inscrit à l'activité '%s' !" % inscription.nom_activite, u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+                    dlg2 = wx.MessageDialog(self, _(u"Cet individu est déjà inscrit à l'activité '%s' !") % inscription.nom_activite, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg2.ShowModal()
                     dlg2.Destroy()
                     dlg.Destroy()
@@ -439,7 +441,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 18, 
-                "action" : u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'" % (nomActivite, nomGroupe, nomCategorie)
+                "action" : _(u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
                 },])
             
             # Actualise l'affichage
@@ -454,7 +456,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -506,7 +508,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 20, 
-                "action" : u"Modification de l'inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'" % (nomActivite, nomGroupe, nomCategorie)
+                "action" : _(u"Modification de l'inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
                 },])
 
             # Actualise l'affichage
@@ -515,7 +517,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -539,7 +541,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeConso = DB.ResultatReq()     
         if len(listeConso) > 0 :
-            dlg = wx.MessageDialog(self, u"Il existe déjà %d consommations enregistrées sur cette inscription. \n\nIl est donc impossible de la supprimer !" % len(listeConso), u"Annulation impossible", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il existe déjà %d consommations enregistrées sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listeConso), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -562,7 +564,7 @@ class ListView(FastObjectListView):
                 if IDprestation not in listePrestationsNormales : 
                     listePrestationsNormales.append(IDprestation)
         if len(listePrestations) - len(listePrestationsForfait) > 0 :
-            dlg = wx.MessageDialog(self, u"Il existe déjà %d prestations enregistrées sur cette inscription. \n\nIl est donc impossible de la supprimer !" % len(listePrestations), u"Annulation impossible", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il existe déjà %d prestations enregistrées sur cette inscription. \n\nIl est donc impossible de la supprimer !") % len(listePrestations), _(u"Annulation impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -572,9 +574,9 @@ class ListView(FastObjectListView):
 
         # Demande de confirmation
         if len(listePrestationsForfait) == 0 : texteForfait = u""
-        elif len(listePrestationsForfait) == 1 : texteForfait = u"\n\n(La prestation associée sera également supprimée)"
-        else : texteForfait = u"\n\n(Les %d prestations associées seront également supprimées)" % len(listePrestationsForfait)
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette inscription ?%s" % texteForfait, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        elif len(listePrestationsForfait) == 1 : texteForfait = _(u"\n\n(La prestation associée sera également supprimée)")
+        else : texteForfait = _(u"\n\n(Les %d prestations associées seront également supprimées)") % len(listePrestationsForfait)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette inscription ?%s") % texteForfait, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDinscription = self.Selection()[0].IDinscription
             DB = GestionDB.DB()
@@ -592,7 +594,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 19, 
-                "action" : u"Suppression de l'inscription à l'activité '%s'" % nomActivite
+                "action" : _(u"Suppression de l'inscription à l'activité '%s'") % nomActivite
                 },])
                 
             # Actualise l'affichage
@@ -623,7 +625,7 @@ class ListView(FastObjectListView):
 
     def EditerConfirmation(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -644,7 +646,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une inscription...")
+        self.SetDescriptiveText(_(u"Rechercher une inscription..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

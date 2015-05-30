@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import FonctionsPerso
 import webbrowser
 
@@ -20,15 +22,15 @@ class DLG_Financement(wx.Dialog):
         self.image_fond = wx.Bitmap(u"Images/Special/Financement.png", wx.BITMAP_TYPE_ANY)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/En_savoir_plus.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Bon_commande.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"En savoir plus"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Bon de commande"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         # Propriétés
-        self.SetTitle(u"Programme de financement de Noethys")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour en savoir plus sur le programme de financement")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Programme de financement de Noethys"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour en savoir plus sur le programme de financement"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         
         # Calcule les espaces du sizer
         largeurImage, hauteurImage = self.image_fond.GetSize() 
@@ -87,7 +89,7 @@ class DLG_Financement(wx.Dialog):
         try :
             FonctionsPerso.LanceFichierExterne("Images/Special/Bon_commande.pdf")
         except :
-            dlg = wx.MessageDialog(None, u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 

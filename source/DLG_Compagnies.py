@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Compagnies
 
@@ -17,14 +19,14 @@ except: pass
 
 
 DICT_CATEGORIES = {
-    "bus" : {"singulier":u"compagnie de bus", "pluriel":u"compagnies de bus", "image":"Bus"},
-    "car" : {"singulier":u"compagnie de cars", "pluriel":u"compagnies de cars", "image":"Car"},
-    "navette" : {"singulier":u"compagnie de navettes", "pluriel":u"compagnies de navettes", "image":"Navette"},
-    "taxi" : {"singulier":u"compagnie de taxis", "pluriel":u"compagnies de taxis", "image":"Taxi"},
-    "avion" : {"singulier":u"compagnie aérienne", "pluriel":u"compagnies aériennes", "image":"Avion"},
-    "bateau" : {"singulier":u"compagnie maritime", "pluriel":u"compagnies maritimes", "image":"Bateau"},
-    "train" : {"singulier":u"compagnie ferroviaire", "pluriel":u"compagnies ferroviaires", "image":"Train"},
-    "metro" : {"singulier":u"compagnie de métros", "pluriel":u"compagnies de métro", "image":"Metro"},
+    "bus" : {"singulier":_(u"compagnie de bus"), "pluriel":_(u"compagnies de bus"), "image":"Bus"},
+    "car" : {"singulier":_(u"compagnie de cars"), "pluriel":_(u"compagnies de cars"), "image":"Car"},
+    "navette" : {"singulier":_(u"compagnie de navettes"), "pluriel":_(u"compagnies de navettes"), "image":"Navette"},
+    "taxi" : {"singulier":_(u"compagnie de taxis"), "pluriel":_(u"compagnies de taxis"), "image":"Taxi"},
+    "avion" : {"singulier":_(u"compagnie aérienne"), "pluriel":_(u"compagnies aériennes"), "image":"Avion"},
+    "bateau" : {"singulier":_(u"compagnie maritime"), "pluriel":_(u"compagnies maritimes"), "image":"Bateau"},
+    "train" : {"singulier":_(u"compagnie ferroviaire"), "pluriel":_(u"compagnies ferroviaires"), "image":"Train"},
+    "metro" : {"singulier":_(u"compagnie de métros"), "pluriel":_(u"compagnies de métro"), "image":"Metro"},
     }
 
 
@@ -43,12 +45,12 @@ class Dialog(wx.Dialog):
         
         # Affichage des textes d'intro
         if self.mode == "selection" :
-            intro = u"Vous pouvez ici sélectionner une %s. Double-cliquez sur une ligne pour effectuer rapidement la sélection." % self.categorieSingulier
-            titre = u"Sélection d'une %s" % self.categorieSingulier
+            intro = _(u"Vous pouvez ici sélectionner une %s. Double-cliquez sur une ligne pour effectuer rapidement la sélection.") % self.categorieSingulier
+            titre = _(u"Sélection d'une %s") % self.categorieSingulier
             
         else:
-            intro = u"Vous pouvez ici saisir, modifier ou supprimer des %s." % self.categoriePluriel
-            titre = u"Gestion des %s" % self.categoriePluriel
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des %s.") % self.categoriePluriel
+            titre = _(u"Gestion des %s") % self.categoriePluriel
         self.SetTitle(titre)
         
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/%s.png" % self.nomImage)
@@ -59,14 +61,14 @@ class Dialog(wx.Dialog):
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         
         if self.mode == "selection" :
             imgFermer = "Images/BoutonsImages/Annuler_L72.png"
         else:
             imgFermer = "Images/BoutonsImages/Fermer_L72.png"
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(imgFermer, wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         if self.mode != "selection" :
             self.bouton_ok.Show(False)
             
@@ -80,12 +82,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une %s" % self.categorieSingulier)
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la %s sélectionnée dans la liste" % self.categorieSingulier)
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la %s sélectionnée dans la liste" % self.categorieSingulier)
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une %s") % self.categorieSingulier)
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la %s sélectionnée dans la liste") % self.categorieSingulier)
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la %s sélectionnée dans la liste") % self.categorieSingulier)
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
         self.SetMinSize((880, 600))
 
     def __do_layout(self):
@@ -139,7 +141,7 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDcompagnie = self.GetIDcompagnie()
         if IDcompagnie == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune compagnie dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune compagnie dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

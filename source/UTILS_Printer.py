@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import copy
 from ObjectListView import ReportFormat
@@ -29,30 +31,30 @@ class PreviewControlBar(wx.PyPreviewControlBar):
         self.preview.SetZoom(zoomDefaut)
         
         # Impression
-        self.staticbox_impression_staticbox = wx.StaticBox(self, -1, u"Impression")
+        self.staticbox_impression_staticbox = wx.StaticBox(self, -1, _(u"Impression"))
         self.bouton_imprimer = wx.BitmapButton(self, wx.ID_PREVIEW_PRINT, wx.Bitmap("Images/32x32/Imprimante.png", wx.BITMAP_TYPE_ANY), size=(80, -1))
         
         # Impression rapide
-        self.staticbox_rapide_staticbox = wx.StaticBox(self, -1, u"Impression rapide")
+        self.staticbox_rapide_staticbox = wx.StaticBox(self, -1, _(u"Impression rapide"))
         self.bouton_rapide_x1 = wx.BitmapButton(self, -1, wx.Bitmap("Images/32x32/Imprimer-x1.png", wx.BITMAP_TYPE_ANY))
         self.bouton_rapide_x2 = wx.BitmapButton(self, -1, wx.Bitmap("Images/32x32/Imprimer-x2.png", wx.BITMAP_TYPE_ANY))
 
         # Navigation
-        self.staticbox_navigation_staticbox = wx.StaticBox(self, -1, u"Navigation")
+        self.staticbox_navigation_staticbox = wx.StaticBox(self, -1, _(u"Navigation"))
         self.bouton_premier = wx.BitmapButton(self, wx.ID_PREVIEW_FIRST, wx.Bitmap("Images/32x32/Premier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_precedent = wx.BitmapButton(self, wx.ID_PREVIEW_PREVIOUS, wx.Bitmap("Images/32x32/Precedent.png", wx.BITMAP_TYPE_ANY))
         self.bouton_suivant = wx.BitmapButton(self, wx.ID_PREVIEW_NEXT, wx.Bitmap("Images/32x32/Suivant.png", wx.BITMAP_TYPE_ANY))
         self.bouton_dernier = wx.BitmapButton(self, wx.ID_PREVIEW_LAST, wx.Bitmap("Images/32x32/Dernier.png", wx.BITMAP_TYPE_ANY))
 
         # Zoom
-        self.staticbox_zoom_staticbox = wx.StaticBox(self, -1, u"Zoom")
+        self.staticbox_zoom_staticbox = wx.StaticBox(self, -1, _(u"Zoom"))
         self.bouton_zoom_moins = wx.BitmapButton(self, -1, wx.Bitmap("Images/32x32/zoom_moins.png", wx.BITMAP_TYPE_ANY))
         self.ctrl_zoom = wx.Slider(self, -1, zoomDefaut, 1, 200, style=wx.SL_HORIZONTAL)
         self.ctrl_zoom.SetTickFreq(5, 1)
         self.bouton_zoom_plus = wx.BitmapButton(self, -1, wx.Bitmap("Images/32x32/zoom_plus.png", wx.BITMAP_TYPE_ANY))
 
         # Fermer
-        self.staticbox_fermer_staticbox = wx.StaticBox(self, -1, u"Fermer")
+        self.staticbox_fermer_staticbox = wx.StaticBox(self, -1, _(u"Fermer"))
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_PREVIEW_CLOSE, wx.Bitmap("Images/32x32/Fermer.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()
@@ -66,17 +68,17 @@ class PreviewControlBar(wx.PyPreviewControlBar):
         self.Bind(wx.EVT_BUTTON, self.OnZoomPlus, self.bouton_zoom_plus)
 
     def __set_properties(self):
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour afficher l'impression")
-        self.bouton_rapide_x1.SetToolTipString(u"Cliquez ici pour lancer une impression rapide en 1 exemplaire")
-        self.bouton_rapide_x2.SetToolTipString(u"Cliquez ici pour lancer une impression rapide en 2 exemplaires")
-        self.bouton_premier.SetToolTipString(u"Cliquez ici pour accéder à la première page")
-        self.bouton_precedent.SetToolTipString(u"Cliquez ici pour accéder à la page précédente")
-        self.bouton_suivant.SetToolTipString(u"Cliquez ici pour accéder à la page suivante")
-        self.bouton_dernier.SetToolTipString(u"Cliquez ici pour accéder à la dernière page")
-        self.bouton_zoom_moins.SetToolTipString(u"Cliquez ici pour faire un zoom arrière")
-        self.ctrl_zoom.SetToolTipString(u"Déplacez la règlette pour zoomer")
-        self.bouton_zoom_plus.SetToolTipString(u"Cliquez ici pour faire un zoom avant")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer l'aperçu")
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour afficher l'impression"))
+        self.bouton_rapide_x1.SetToolTipString(_(u"Cliquez ici pour lancer une impression rapide en 1 exemplaire"))
+        self.bouton_rapide_x2.SetToolTipString(_(u"Cliquez ici pour lancer une impression rapide en 2 exemplaires"))
+        self.bouton_premier.SetToolTipString(_(u"Cliquez ici pour accéder à la première page"))
+        self.bouton_precedent.SetToolTipString(_(u"Cliquez ici pour accéder à la page précédente"))
+        self.bouton_suivant.SetToolTipString(_(u"Cliquez ici pour accéder à la page suivante"))
+        self.bouton_dernier.SetToolTipString(_(u"Cliquez ici pour accéder à la dernière page"))
+        self.bouton_zoom_moins.SetToolTipString(_(u"Cliquez ici pour faire un zoom arrière"))
+        self.ctrl_zoom.SetToolTipString(_(u"Déplacez la règlette pour zoomer"))
+        self.bouton_zoom_plus.SetToolTipString(_(u"Cliquez ici pour faire un zoom avant"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer l'aperçu"))
 
     def __do_layout(self):
         grid_sizer_base = wx.GridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -161,7 +163,7 @@ class PreviewControlBar(wx.PyPreviewControlBar):
         
     
 class PreviewFrame(wx.PyPreviewFrame):
-    def __init__(self, preview, parent, title=u"Aperçu avant impression", orientation=wx.PORTRAIT):
+    def __init__(self, preview, parent, title=_(u"Aperçu avant impression"), orientation=wx.PORTRAIT):
         wx.PyPreviewFrame.__init__(self, preview, parent, title)
         self.preview = preview
         self.orientation = orientation
@@ -341,7 +343,7 @@ class ObjectListViewPrinter():
 ##        preview_window = PreviewFrame(printPreview, None, self.titre, self.orientation)
         printPreview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
-        preview_window = wx.PreviewFrame(printPreview, None, u"Aperçu avant impression")
+        preview_window = wx.PreviewFrame(printPreview, None, _(u"Aperçu avant impression"))
         preview_window.Initialize()
         preview_window.MakeModal(False)
         preview_window.SetPosition(frame.GetPosition())

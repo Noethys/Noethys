@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.lib.agw.flatnotebook as FNB
 import copy
@@ -149,8 +151,8 @@ class CTRL_Caisses(wx.CheckListBox):
         self.SetListeChoix()
     
     def Importation(self):
-        listeCaisses = [(u"Caisse non spécifiée", 0),]
-        dictCaisses = {"nom":u"Caisse non spécifiée", "IDcaisse":0}
+        listeCaisses = [(_(u"Caisse non spécifiée"), 0),]
+        dictCaisses = {"nom":_(u"Caisse non spécifiée"), "IDcaisse":0}
 
         DB = GestionDB.DB()
         req = """SELECT IDcaisse, nom
@@ -221,11 +223,11 @@ class CTRL_Periodes(wx.Panel):
         self.SetBackgroundColour((255, 255, 255))
         
         # Périodes scolaires
-        self.label_periodes_scolaires = wx.StaticText(self, -1,u"> Périodes scolaires :")
+        self.label_periodes_scolaires = wx.StaticText(self, -1,_(u"> Périodes scolaires :"))
         self.CreationCaseJours("scolaire")
         
         # Périodes de vacances
-        self.label_periodes_vacances = wx.StaticText(self, -1,u"> Périodes de vacances :")
+        self.label_periodes_vacances = wx.StaticText(self, -1,_(u"> Périodes de vacances :"))
         self.CreationCaseJours("vacances")
         
         # Layout
@@ -297,7 +299,7 @@ class Page_Groupes(wx.Panel):
         self.IDtarif = IDtarif
 
         # Groupes
-        self.check_groupes = wx.CheckBox(self, -1, u"Uniquement pour les groupes cochés :")
+        self.check_groupes = wx.CheckBox(self, -1, _(u"Uniquement pour les groupes cochés :"))
         self.ctrl_groupes = CTRL_Groupes(self, IDactivite)
 
         self.__set_properties()
@@ -310,7 +312,7 @@ class Page_Groupes(wx.Panel):
         self.OnCheckGroupes(None)
 
     def __set_properties(self):
-        self.check_groupes.SetToolTipString(u"Cochez cette case si vous souhaitez appliquer un filtre de groupe")
+        self.check_groupes.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de groupe"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -348,7 +350,7 @@ class Page_Groupes(wx.Panel):
         # Vérifie les groupes
         if self.check_groupes.GetValue() == True :
             if len(self.ctrl_groupes.GetIDcoches()) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucun groupe !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucun groupe !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -365,7 +367,7 @@ class Page_Cotisations(wx.Panel):
         self.IDtarif = IDtarif
 
         # Cotisations
-        self.check_cotisations = wx.CheckBox(self, -1, u"Uniquement si au moins une des cotisations cochées est à jour :")
+        self.check_cotisations = wx.CheckBox(self, -1, _(u"Uniquement si au moins une des cotisations cochées est à jour :"))
         self.ctrl_cotisations = CTRL_Cotisations(self)
         self.ctrl_cotisations.SetMinSize((150, 50))
 
@@ -379,7 +381,7 @@ class Page_Cotisations(wx.Panel):
         self.OnCheckCotisations(None)
 
     def __set_properties(self):
-        self.check_cotisations.SetToolTipString(u"Cochez cette case pour appliquer ce tarif uniquement lorsque une des cotisations cochées est à jour")
+        self.check_cotisations.SetToolTipString(_(u"Cochez cette case pour appliquer ce tarif uniquement lorsque une des cotisations cochées est à jour"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -431,7 +433,7 @@ class Page_Questionnaires(wx.Panel):
         self.listeInitialeFiltres = [] 
         
         # Cotisations
-        self.check_filtres = wx.CheckBox(self, -1, u"Uniquement selon les filtres suivants :")
+        self.check_filtres = wx.CheckBox(self, -1, _(u"Uniquement selon les filtres suivants :"))
         self.ctrl_filtres = OL_Filtres_questionnaire.ListView(self, listeDonnees=[], id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_filtres.SetMinSize((150, 50))
 
@@ -452,10 +454,10 @@ class Page_Questionnaires(wx.Panel):
         self.OnCheckFiltres(None)
 
     def __set_properties(self):
-        self.check_filtres.SetToolTipString(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels ou familiaux")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un filtre")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le filtre sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste")
+        self.check_filtres.SetToolTipString(_(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels ou familiaux"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un filtre"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -513,7 +515,7 @@ class Page_Questionnaires(wx.Panel):
     def Validation(self):
         # Vérifie les filtres
         if self.check_filtres.GetValue() == True and len(self.GetFiltres()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'Filtres de questionnaire' mais sans saisir de filtre !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'Filtres de questionnaire' mais sans saisir de filtre !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -528,7 +530,7 @@ class Page_Caisses(wx.Panel):
         self.parent = parent
 
         # Caisses
-        self.check_caisses = wx.CheckBox(self, -1, u"Uniquement pour les caisses cochées :")
+        self.check_caisses = wx.CheckBox(self, -1, _(u"Uniquement pour les caisses cochées :"))
         self.ctrl_caisses = CTRL_Caisses(self)
 
         self.__set_properties()
@@ -541,7 +543,7 @@ class Page_Caisses(wx.Panel):
         self.OnCheckCaisses(None)
 
     def __set_properties(self):
-        self.check_caisses.SetToolTipString(u"Cochez cette case si vous souhaitez appliquer un filtre de caisses")
+        self.check_caisses.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de caisses"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -579,7 +581,7 @@ class Page_Caisses(wx.Panel):
         # Vérifie les caisses
         if self.check_caisses.GetValue() == True :
             if len(self.ctrl_caisses.GetIDcoches()) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune caisse !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune caisse !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -594,7 +596,7 @@ class Page_Periodes(wx.Panel):
         self.parent = parent
 
         # Caisses
-        self.check_periodes = wx.CheckBox(self, -1, u"Uniquement sur les jours cochés :")
+        self.check_periodes = wx.CheckBox(self, -1, _(u"Uniquement sur les jours cochés :"))
         self.ctrl_periodes = CTRL_Periodes(self)
 
         self.__set_properties()
@@ -607,7 +609,7 @@ class Page_Periodes(wx.Panel):
         self.OnCheckPeriodes(None)
 
     def __set_properties(self):
-        self.check_periodes.SetToolTipString(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes")
+        self.check_periodes.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -645,7 +647,7 @@ class Page_Periodes(wx.Panel):
         if self.check_periodes.GetValue() == True :
             jours_scolaires, jours_vacances = self.GetPeriodes()
             if jours_scolaires == None and jours_vacances == None :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucun jour !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucun jour !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -695,11 +697,11 @@ class Panel(wx.Panel):
     def CreationPages(self):
         """ Création des pages du notebook """
         self.listePages = [
-            {"index" : 0, "code" : "groupes", "ctrl" : Page_Groupes(self, self.IDactivite, self.IDtarif), "label" : u"Groupes"},
-            {"index" : 1, "code" : "cotisations", "ctrl" : Page_Cotisations(self, self.IDactivite, self.IDtarif), "label" : u"Cotisations"},
-            {"index" : 2, "code" : "questionnaires", "ctrl" : Page_Questionnaires(self, self.IDactivite, self.IDtarif), "label" : u"Questionnaires"},
-            {"index" : 3, "code" : "caisses", "ctrl" : Page_Caisses(self,), "label" : u"Caisses"},
-            {"index" : 4, "code" : "periodes", "ctrl" : Page_Periodes(self,), "label" : u"Périodes"},
+            {"index" : 0, "code" : "groupes", "ctrl" : Page_Groupes(self, self.IDactivite, self.IDtarif), "label" : _(u"Groupes")},
+            {"index" : 1, "code" : "cotisations", "ctrl" : Page_Cotisations(self, self.IDactivite, self.IDtarif), "label" : _(u"Cotisations")},
+            {"index" : 2, "code" : "questionnaires", "ctrl" : Page_Questionnaires(self, self.IDactivite, self.IDtarif), "label" : _(u"Questionnaires")},
+            {"index" : 3, "code" : "caisses", "ctrl" : Page_Caisses(self,), "label" : _(u"Caisses")},
+            {"index" : 4, "code" : "periodes", "ctrl" : Page_Periodes(self,), "label" : _(u"Périodes")},
             ]
         
         self.dictPages = {}
@@ -767,7 +769,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

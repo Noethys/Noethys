@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -70,33 +72,33 @@ class Dialog(wx.Dialog):
         self.parent = parent  
 
         # Bandeau
-        intro = u"Vous pouvez ici afficher la liste des pièces fournies. Commencez par sélectionner le type de pièce à afficher puis cochez la case 'valide' si vous souhaitez afficher uniquement les pièces valides à une date précise."
-        titre = u"Liste des pièces fournies"
+        intro = _(u"Vous pouvez ici afficher la liste des pièces fournies. Commencez par sélectionner le type de pièce à afficher puis cochez la case 'valide' si vous souhaitez afficher uniquement les pièces valides à une date précise.")
+        titre = _(u"Liste des pièces fournies")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Piece.png")
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Paramètres")
-        self.label_piece = wx.StaticText(self, wx.ID_ANY, u"Pièce :")
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        self.label_piece = wx.StaticText(self, wx.ID_ANY, _(u"Pièce :"))
         self.ctrl_piece = CTRL_Piece(self)
-        self.ctrl_valide = wx.CheckBox(self, wx.ID_ANY, u"Uniquement si valide au :")
+        self.ctrl_valide = wx.CheckBox(self, wx.ID_ANY, _(u"Uniquement si valide au :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
-        self.bouton_actualiser = wx.Button(self, wx.ID_ANY, u"Actualiser la liste")
+        self.bouton_actualiser = wx.Button(self, wx.ID_ANY, _(u"Actualiser la liste"))
         
         # Liste
         self.ctrl_donnees = OL_Pieces_fournies.ListView(self, id=-1, name="OL_pieces_fournies", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_donnees.MAJ() 
         
-        self.bouton_apercu = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_excel = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_texte = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.ctrl_recherche = OL_Pieces_fournies.CTRL_Outils(self, listview=self.ctrl_donnees)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -116,16 +118,16 @@ class Dialog(wx.Dialog):
         self.OnPieceValide(None)
 
     def __set_properties(self):
-        self.ctrl_piece.SetToolTipString(u"Sélectionnez une pièce dans la liste")
-        self.ctrl_valide.SetToolTipString(u"Cochez cette case pour afficher uniquement les pièces valides à la date choisie")
-        self.ctrl_date.SetToolTipString(u"Choisissez la date à laquelle les pièces doivent être valides")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste en fonction des paramètres sélectionnés")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_piece.SetToolTipString(_(u"Sélectionnez une pièce dans la liste"))
+        self.ctrl_valide.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les pièces valides à la date choisie"))
+        self.ctrl_date.SetToolTipString(_(u"Choisissez la date à laquelle les pièces doivent être valides"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste en fonction des paramètres sélectionnés"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((750, 650))
 
     def __do_layout(self):
@@ -193,7 +195,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_valide.GetValue() == True :
             date_reference = self.ctrl_date.GetDate() 
             if date_reference == None :
-                dlg = wx.MessageDialog(self, u"Vous devez renseigner une date de référence !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez renseigner une date de référence !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date.SetFocus() 

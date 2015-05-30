@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -93,7 +95,7 @@ class ListView(FastObjectListView):
                 dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":trackInfo.label, "type":trackInfo.type, "categorie":trackInfo.categorie, "formule":trackInfo.formule, "titre":trackInfo.titre, "largeur":trackInfo.largeur}
             else :
                 # Champ indisponible
-                dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":u"Non disponible", "type":None, "categorie":None, "titre":None, "formule":None}
+                dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":_(u"Non disponible"), "type":None, "categorie":None, "titre":None, "formule":None}
             listeListeView.append(Track(dictTemp))
 
         return listeListeView
@@ -110,14 +112,14 @@ class ListView(FastObjectListView):
         self.AddNamedImages("indisponible", wx.Bitmap("Images/16x16/Interdit2.png", wx.BITMAP_TYPE_PNG))
         
         def GetImageCode(track):
-            if track.categorie == u"Individu" : return "individu"
-            if track.categorie == u"Famille" : return "famille"
-            if track.type == u"NBRE_UNITE" : return "unite"
-            if track.type == u"TEMPS_UNITE" : return "temps"
-            if track.type == u"MONTANT_PRESTATION" : return "euro"
-            if track.type == u"NBRE_AIDES" : return "unite"
-            if track.type == u"MONTANT_AIDES" : return "euro"
-            if track.type == u"PERSO" : return "perso"
+            if track.categorie == _(u"Individu") : return "individu"
+            if track.categorie == _(u"Famille") : return "famille"
+            if track.type == _(u"NBRE_UNITE") : return "unite"
+            if track.type == _(u"TEMPS_UNITE") : return "temps"
+            if track.type == _(u"MONTANT_PRESTATION") : return "euro"
+            if track.type == _(u"NBRE_AIDES") : return "unite"
+            if track.type == _(u"MONTANT_AIDES") : return "euro"
+            if track.type == _(u"PERSO") : return "perso"
             if track.type == None : return "indisponible"
             return None
 
@@ -133,14 +135,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDselection"),
-            ColumnDefn(u"Ordre", "left", 0, "ordre"),
-            ColumnDefn(u"Code", "left", 200, "code", imageGetter=GetImageCode), 
-            ColumnDefn(u"Description", 'left', 250, "label", isSpaceFilling=True),
+            ColumnDefn(_(u"ID"), "left", 0, "IDselection"),
+            ColumnDefn(_(u"Ordre"), "left", 0, "ordre"),
+            ColumnDefn(_(u"Code"), "left", 200, "code", imageGetter=GetImageCode), 
+            ColumnDefn(_(u"Description"), 'left', 250, "label", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun champ")
+        self.SetEmptyListMsg(_(u"Aucun champ"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -169,7 +171,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier la liste")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier la liste"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -178,7 +180,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 60, u"Déplacer vers le haut")
+        item = wx.MenuItem(menuPop, 60, _(u"Déplacer vers le haut"))
         bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -186,7 +188,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 70, u"Déplacer vers le bas")
+        item = wx.MenuItem(menuPop, 70, _(u"Déplacer vers le bas"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -196,14 +198,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -212,14 +214,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -230,21 +232,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des champs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des champs"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des champs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des champs"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des champs")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des champs"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des champs")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des champs"))
     
     def GetTracksSelections(self):
         """ Retourne la liste tracks sélectionnés """
@@ -298,7 +300,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun champ dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -319,7 +321,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun champ dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -349,7 +351,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un champ...")
+        self.SetDescriptiveText(_(u"Rechercher un champ..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Scolarite
 
 
@@ -21,7 +23,7 @@ class Panel(wx.Panel):
         self.dictFamillesRattachees = dictFamillesRattachees
         
         # scolarite
-        self.staticbox_scolarite = wx.StaticBox(self, -1, u"Scolarité")
+        self.staticbox_scolarite = wx.StaticBox(self, -1, _(u"Scolarité"))
         self.ctrl_scolarite = OL_Scolarite.ListView(self, IDindividu=IDindividu, id=-1, name="OL_scolarite", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_scolarite.SetMinSize((20, 20)) 
         self.ctrl_recherche = OL_Scolarite.CTRL_Outils(self, listview=self.ctrl_scolarite)
@@ -38,9 +40,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour inscrire l'individu dans une classe")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'inscription sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'inscription sélectionnée")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour inscrire l'individu dans une classe"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'inscription sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'inscription sélectionnée"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -126,7 +128,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

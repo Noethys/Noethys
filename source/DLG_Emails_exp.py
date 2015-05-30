@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.mixins.listctrl  as  listmix
 import GestionDB
 import datetime
@@ -21,8 +23,8 @@ class Panel(wx.Panel):
     def __init__(self, parent, ID=-1):
         wx.Panel.__init__(self, parent, ID, style=wx.TAB_TRAVERSAL, name="config_adresses_mail")
         
-        intro = u"Vous pouvez ici créer, modifier ou supprimer les adresses d'expéditions d'Emails. Celles-ci sont obligatoires pour pouvoir envoyer des Emails à partir du système de messagerie intégré à Noethys."
-        titre = u"Gestion des adresses d'expédition d'Emails"
+        intro = _(u"Vous pouvez ici créer, modifier ou supprimer les adresses d'expéditions d'Emails. Celles-ci sont obligatoires pour pouvoir envoyer des Emails à partir du système de messagerie intégré à Noethys.")
+        titre = _(u"Gestion des adresses d'expédition d'Emails")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
         
         self.listCtrl = ListCtrl(self)
@@ -45,10 +47,10 @@ class Panel(wx.Panel):
         self.bouton_supprimer.Enable(False)
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer une nouvelle adresse d'expéditeur")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'adresse sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'adresse sélectionnée dans la liste")
-        self.bouton_defaut.SetToolTipString(u"Cliquez ici pour définir l'adresse sélectionnée dans la liste comme adresse par défaut")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une nouvelle adresse d'expéditeur"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'adresse sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'adresse sélectionnée dans la liste"))
+        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir l'adresse sélectionnée dans la liste comme adresse par défaut"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -93,7 +95,7 @@ class Panel(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emails_exp", "modifier") == False : return
         index = self.listCtrl.GetFirstSelected()
         if index == -1:
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une adresse à modifier dans la liste.", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une adresse à modifier dans la liste."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -112,7 +114,7 @@ class Panel(wx.Panel):
 
         # Vérifie qu'un item a bien été sélectionné
         if index == -1:
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une adresse à supprimer dans la liste.", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une adresse à supprimer dans la liste."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -121,8 +123,8 @@ class Panel(wx.Panel):
         Adresse = self.listCtrl.GetItem(index, 1).GetText()
         
         # Demande de confirmation
-        txtMessage = unicode((u"Voulez-vous vraiment supprimer cette adresse ? \n\n> " + Adresse))
-        dlgConfirm = wx.MessageDialog(self, txtMessage, u"Confirmation de suppression", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = unicode((_(u"Voulez-vous vraiment supprimer cette adresse ? \n\n> ") + Adresse))
+        dlgConfirm = wx.MessageDialog(self, txtMessage, _(u"Confirmation de suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
@@ -167,7 +169,7 @@ class Panel(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_emails_exp", "modifier") == False : return
         index = self.listCtrl.GetFirstSelected()
         if index == -1:
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune adresse dans la liste.", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune adresse dans la liste."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -235,15 +237,15 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         self.nbreColonnes = 6
         self.InsertColumn(0, u"")
         self.SetColumnWidth(0, 20)
-        self.InsertColumn(1, u"Adresse")
+        self.InsertColumn(1, _(u"Adresse"))
         self.SetColumnWidth(1, 150)
-        self.InsertColumn(2, u"Serveur SMTP")
+        self.InsertColumn(2, _(u"Serveur SMTP"))
         self.SetColumnWidth(2, 150) 
-        self.InsertColumn(3, u"Port")
+        self.InsertColumn(3, _(u"Port"))
         self.SetColumnWidth(3, 50) 
-        self.InsertColumn(4, u"Defaut")
+        self.InsertColumn(4, _(u"Defaut"))
         self.SetColumnWidth(4, 0) 
-        self.InsertColumn(5, u"Connexion SSL")
+        self.InsertColumn(5, _(u"Connexion SSL"))
         self.SetColumnWidth(5, 100) 
         
 
@@ -325,16 +327,16 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         # SSL
         if col == 5 : 
             if valeur == "1" : 
-                valeur = u"Oui"
+                valeur = _(u"Oui")
             else:
-                valeur = u"Non"
+                valeur = _(u"Non")
     
         # Adresse par défaut
         if col == 4 : 
             if valeur == 1 : 
-                valeur = u"Oui"
+                valeur = _(u"Oui")
             else:
-                valeur = u"Non"
+                valeur = _(u"Non")
             
         return valeur
 
@@ -390,7 +392,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -399,14 +401,14 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Menu_Modifier, id=20)
 
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -415,7 +417,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         menuPop.AppendSeparator()
 
         # Item Défaut
-        item = wx.MenuItem(menuPop, 40, u"Définir comme adresse par défaut")
+        item = wx.MenuItem(menuPop, 40, _(u"Définir comme adresse par défaut"))
         bmp = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -444,8 +446,8 @@ class Dialog(wx.Dialog):
 
         self.panel_contenu = Panel(self)
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -454,9 +456,9 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(u"Gestion des adresses d'expédition d'Emails")
+        self.SetTitle(_(u"Gestion des adresses d'expédition d'Emails"))
         self.bouton_aide.SetToolTipString("Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((650, 480))
 
     def __do_layout(self):

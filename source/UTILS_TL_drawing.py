@@ -23,6 +23,7 @@ drawing.
 
 
 import wx
+import CTRL_Bouton_image
 import logging
 
 from UTILS_TL_data import div_timedeltas

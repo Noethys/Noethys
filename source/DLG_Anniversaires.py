@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -52,16 +54,16 @@ except: pass
 
 DICT_CIVILITES = Civilites.GetDictCivilites()
 LARGEUR_COLONNE = 158
-LISTE_NOMS_MOIS = [u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
+LISTE_NOMS_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
 IMAGE_FOND = None
 
 THEMES = {
-    u"Plage de cailloux" : "Images/Special/Cailloux.jpg",
-    u"Gouttes d'eau" : "Images/Special/Eau.jpg",
-    u"Feuille d'été" : "Images/Special/Feuille.jpg",
-    u"Ballet de lignes" : "Images/Special/Lignes.jpg",
-    u"Montgolfières" : "Images/Special/Montgolfiere.jpg",
-    u"Mosaïque" : "Images/Special/Mosaique.jpg",
+    _(u"Plage de cailloux") : "Images/Special/Cailloux.jpg",
+    _(u"Gouttes d'eau") : "Images/Special/Eau.jpg",
+    _(u"Feuille d'été") : "Images/Special/Feuille.jpg",
+    _(u"Ballet de lignes") : "Images/Special/Lignes.jpg",
+    _(u"Montgolfières") : "Images/Special/Montgolfiere.jpg",
+    _(u"Mosaïque") : "Images/Special/Mosaique.jpg",
     }
 
 
@@ -142,38 +144,38 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici imprimer la liste des anniversaires des individus inscrits sur les activités cochées et présents sur la période donnée. Il est possible d'inclure un thème graphique et les photos individuelles."
-        titre = u"Liste des anniversaires"
+        intro = _(u"Vous pouvez ici imprimer la liste des anniversaires des individus inscrits sur les activités cochées et présents sur la période donnée. Il est possible d'inclure un thème graphique et les photos individuelles.")
+        titre = _(u"Liste des anniversaires")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Anniversaire.png")
         
         # Périodes
-        self.box_periodes_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.box_periodes_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)
         self.ctrl_periodes.SetMinSize((200, 150))
 
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options")
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
         self.check_photos = wx.CheckBox(self, -1, u"")
         self.check_photos.SetValue(True)
-        self.label_photos = wx.StaticText(self, -1, u"Afficher les photos :")
-        self.ctrl_photos = wx.Choice(self, -1, choices=[u"Petite taille", u"Moyenne taille", u"Grande taille"])
+        self.label_photos = wx.StaticText(self, -1, _(u"Afficher les photos :"))
+        self.ctrl_photos = wx.Choice(self, -1, choices=[_(u"Petite taille"), _(u"Moyenne taille"), _(u"Grande taille")])
         self.ctrl_photos.SetSelection(1)
 
         self.check_theme = wx.CheckBox(self, -1, u"")
         self.check_theme.SetValue(True)
-        self.label_theme = wx.StaticText(self, -1, u"Inclure le thème :")
+        self.label_theme = wx.StaticText(self, -1, _(u"Inclure le thème :"))
         self.ctrl_theme = wx.Choice(self, -1, choices=THEMES.keys())
-        self.ctrl_theme.SetStringSelection(u"Feuille d'été")
+        self.ctrl_theme.SetStringSelection(_(u"Feuille d'été"))
         
         # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -189,14 +191,14 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetFocus() 
 
     def __set_properties(self):
-        self.SetTitle(u"Liste des anniversaires")
-        self.check_photos.SetToolTipString(u"Cochez cette case pour utiliser un thème graphique")
-        self.ctrl_photos.SetToolTipString(u"Selectionnez ici le thème souhaité")
-        self.check_photos.SetToolTipString(u"Cochez cette case pour afficher les photos des individus")
-        self.ctrl_photos.SetToolTipString(u"Selectionnez ici la taille des photos")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher la liste au format PDF")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Liste des anniversaires"))
+        self.check_photos.SetToolTipString(_(u"Cochez cette case pour utiliser un thème graphique"))
+        self.ctrl_photos.SetToolTipString(_(u"Selectionnez ici le thème souhaité"))
+        self.check_photos.SetToolTipString(_(u"Cochez cette case pour afficher les photos des individus"))
+        self.ctrl_photos.SetToolTipString(_(u"Selectionnez ici la taille des photos"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher la liste au format PDF"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((520, 460))
 
     def __do_layout(self):
@@ -314,7 +316,7 @@ class Dialog(wx.Dialog):
         else : conditionActivites = str(tuple(listeActivites))
                                     
         # Récupération des individus grâce à leurs consommations
-        self.EcritStatusBar(u"Recherche des individus...")
+        self.EcritStatusBar(_(u"Recherche des individus..."))
         DB = GestionDB.DB() 
         req = """SELECT individus.IDindividu, IDcivilite, nom, prenom, date_naiss
         FROM consommations 
@@ -328,7 +330,7 @@ class Dialog(wx.Dialog):
         listeIndividus = DB.ResultatReq()
         DB.Close() 
         if len(listeIndividus) == 0 :
-            dlg = wx.MessageDialog(self, u"Aucun individu n'a été trouvé avec les paramètres spécifiés !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Aucun individu n'a été trouvé avec les paramètres spécifiés !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.EcritStatusBar(u"")
@@ -339,7 +341,7 @@ class Dialog(wx.Dialog):
         
         dictAnniversaires = {} 
         
-        self.EcritStatusBar(u"Recherche des dates de naissance...")
+        self.EcritStatusBar(_(u"Recherche des dates de naissance..."))
         for IDindividu, IDcivilite, nom, prenom, date_naiss in listeIndividus :
             if date_naiss != None : 
                 date_naiss = DateEngEnDateDD(date_naiss)
@@ -372,7 +374,7 @@ class Dialog(wx.Dialog):
         if self.check_photos.GetValue() == True :
             index = 0
             for IDindividu in listeIDindividus :
-                self.EcritStatusBar(u"Recherche des photos... %d/%d" % (index, len(listeIDindividus)))
+                self.EcritStatusBar(_(u"Recherche des photos... %d/%d") % (index, len(listeIDindividus)))
                 IDcivilite = dictIndividus[IDindividu]["IDcivilite"]
                 nomFichier = "Images/128x128/%s" % DICT_CIVILITES[IDcivilite]["nomImage"]
                 IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
@@ -386,7 +388,7 @@ class Dialog(wx.Dialog):
                 index += 1
             
         # ---------------- Création du PDF -------------------
-        self.EcritStatusBar(u"Création du PDF...") 
+        self.EcritStatusBar(_(u"Création du PDF...")) 
         
         # Initialisation du PDF
         nomDoc = "Temp/anniversaires_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")

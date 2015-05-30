@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import GestionDB
 import datetime
 
@@ -93,7 +94,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
         if publicPiece == "famille" or IDindividu == None :
             label = nomPiece
         else:
-            label = u"%s de %s" % (nomPiece, prenom)
+            label = _(u"%s de %s") % (nomPiece, prenom)
                     
         if dictPiecesFournies.has_key( (IDfamilleTemp, IDtype_piece, IDindividu) ) :
             date_debut, date_fin = dictPiecesFournies[(IDfamilleTemp, IDtype_piece, IDindividu)]
@@ -126,7 +127,7 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
         if IDfamille != None and titulaires.has_key(IDfamille) :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
         else :
-            nomTitulaires = u"Aucun titulaire"
+            nomTitulaires = _(u"Aucun titulaire")
         listePieces = []
         for piece in dictTemp :
             if piece[6] != "ok" :

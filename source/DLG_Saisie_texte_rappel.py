@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.colourselect as csel
 import wx.richtext as rt
 import sys
@@ -64,25 +66,25 @@ class BarreOutils(wx.ToolBar):
                 self.Bind(wx.EVT_UPDATE_UI, updateUI, item)
                 
         # Boutons
-        doBind( self.AddTool(ID_ALIGNER_GAUCHE, wx.Bitmap("Images/Teamword/aligner_gauche.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Aligner à gauche"), self.parent.OnAlignLeft, self.parent.OnUpdateAlignLeft)
-        doBind( self.AddTool(ID_ALIGNER_CENTRE, wx.Bitmap("Images/Teamword/aligner_centre.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Centrer"), self.parent.OnAlignCenter, self.parent.OnUpdateAlignCenter)
-        doBind( self.AddTool(ID_ALIGNER_DROIT, wx.Bitmap("Images/Teamword/aligner_droit.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Aligner à droite"), self.parent.OnAlignRight, self.parent.OnUpdateAlignRight)
+        doBind( self.AddTool(ID_ALIGNER_GAUCHE, wx.Bitmap("Images/Teamword/aligner_gauche.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Aligner à gauche")), self.parent.OnAlignLeft, self.parent.OnUpdateAlignLeft)
+        doBind( self.AddTool(ID_ALIGNER_CENTRE, wx.Bitmap("Images/Teamword/aligner_centre.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Centrer")), self.parent.OnAlignCenter, self.parent.OnUpdateAlignCenter)
+        doBind( self.AddTool(ID_ALIGNER_DROIT, wx.Bitmap("Images/Teamword/aligner_droit.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Aligner à droite")), self.parent.OnAlignRight, self.parent.OnUpdateAlignRight)
         self.AddSeparator()
-        doBind( self.AddTool(ID_GRAS, wx.Bitmap("Images/Teamword/gras.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Gras"), self.parent.OnBold, self.parent.OnUpdateBold)
-        doBind( self.AddTool(ID_ITALIQUE, wx.Bitmap("Images/Teamword/italique.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Italique"), self.parent.OnItalic, self.parent.OnUpdateItalic)
-        doBind( self.AddTool(ID_SOULIGNE, wx.Bitmap("Images/Teamword/souligne.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Souligné"), self.parent.OnUnderline, self.parent.OnUpdateUnderline)
+        doBind( self.AddTool(ID_GRAS, wx.Bitmap("Images/Teamword/gras.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Gras")), self.parent.OnBold, self.parent.OnUpdateBold)
+        doBind( self.AddTool(ID_ITALIQUE, wx.Bitmap("Images/Teamword/italique.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Italique")), self.parent.OnItalic, self.parent.OnUpdateItalic)
+        doBind( self.AddTool(ID_SOULIGNE, wx.Bitmap("Images/Teamword/souligne.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Souligné")), self.parent.OnUnderline, self.parent.OnUpdateUnderline)
         self.AddSeparator()
-##        doBind( self.AddTool(ID_COULEUR_POLICE, wx.Bitmap("Images/Teamword/police_couleur.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Couleur de la police"), self.parent.OnColour)
+##        doBind( self.AddTool(ID_COULEUR_POLICE, wx.Bitmap("Images/Teamword/police_couleur.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Couleur de la police")), self.parent.OnColour)
 ##        self.AddSeparator()
-        doBind( self.AddTool(wx.ID_UNDO, wx.Bitmap("Images/Teamword/annuler.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Annuler"), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_REDO, wx.Bitmap("Images/Teamword/repeter.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Répéter"), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_UNDO, wx.Bitmap("Images/Teamword/annuler.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Annuler")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_REDO, wx.Bitmap("Images/Teamword/repeter.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Répéter")), self.parent.ForwardEvent, self.parent.ForwardEvent)
         self.AddSeparator()
-        doBind( self.AddTool(wx.ID_CUT, wx.Bitmap("Images/Teamword/couper.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Couper"), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_COPY, wx.Bitmap("Images/Teamword/copier.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Copier"), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_PASTE, wx.Bitmap("Images/Teamword/coller.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Coller"), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_CUT, wx.Bitmap("Images/Teamword/couper.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Couper")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_COPY, wx.Bitmap("Images/Teamword/copier.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Copier")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_PASTE, wx.Bitmap("Images/Teamword/coller.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Coller")), self.parent.ForwardEvent, self.parent.ForwardEvent)
 ##        self.AddSeparator()
-##        doBind( self.AddTool(ID_RETRAIT_GAUCHE, wx.Bitmap("Images/Teamword/retrait_gauche.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Diminuer le retrait"), self.parent.OnIndentLess)
-##        doBind( self.AddTool(ID_RETRAIT_DROIT, wx.Bitmap("Images/Teamword/retrait_droit.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Augmenter le retrait"), self.parent.OnIndentMore)
+##        doBind( self.AddTool(ID_RETRAIT_GAUCHE, wx.Bitmap("Images/Teamword/retrait_gauche.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Diminuer le retrait")), self.parent.OnIndentLess)
+##        doBind( self.AddTool(ID_RETRAIT_DROIT, wx.Bitmap("Images/Teamword/retrait_droit.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Augmenter le retrait")), self.parent.OnIndentMore)
 
 
         self.SetToolBitmapSize((16, 16))
@@ -106,42 +108,42 @@ class Dialog(wx.Dialog):
         for motCle, code in MOTSCLES :
             self.listeMotsCles.append(motCle)
         
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, u"Généralites")
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
         
         # Nom
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Couleur
-        self.label_couleur = wx.StaticText(self, -1, u"Couleur :")
+        self.label_couleur = wx.StaticText(self, -1, _(u"Couleur :"))
         self.ctrl_couleur = csel.ColourSelect(self, -1, "", self.couleur, size = (40, 22))
         
         # Attribution
         self.ctrl_attribution = wx.CheckBox(self, -1, u"")
-        self.label_attribution_1 = wx.StaticText(self, -1, u"Attribuer par défaut lorsque le nombre de jours de retard est entre")
+        self.label_attribution_1 = wx.StaticText(self, -1, _(u"Attribuer par défaut lorsque le nombre de jours de retard est entre"))
         self.ctrl_retard_min = wx.SpinCtrl(self, -1, u"", min=0, max=9000)
-        self.label_attribution_2 = wx.StaticText(self, -1, u"et")
+        self.label_attribution_2 = wx.StaticText(self, -1, _(u"et"))
         self.ctrl_retard_max = wx.SpinCtrl(self, -1, u"", min=0, max=9000)
         
         # Mots-clés
-        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, u"Mots-clés disponibles")
+        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles"))
         self.ctrl_motscles = wx.ListBox(self, -1, choices=self.listeMotsCles, style=wx.SIMPLE_BORDER)
         self.ctrl_motscles.SetBackgroundColour("#F0FBED")
         
         # Titre
-        self.label_titre = wx.StaticText(self, -1, u"Titre :")
+        self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, u"")
         
         # texte
-        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, u"Texte")
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Texte"))
         self.barre_outils = BarreOutils(self)
         self.AddRTCHandlers()
         self.ctrl_texte = MyRichTextCtrl(self)
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -155,24 +157,24 @@ class Dialog(wx.Dialog):
         
         if self.IDtexte != None :
             self.Importation()
-            self.SetTitle(u"Modification d'un texte de rappel")
+            self.SetTitle(_(u"Modification d'un texte de rappel"))
         else:
-            self.SetTitle(u"Saisie d'un texte de rappel")
+            self.SetTitle(_(u"Saisie d'un texte de rappel"))
         
         # Init contrôles
         self.OnCheckAttribution(None)
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce texte")
-        self.ctrl_titre.SetToolTipString(u"Saisissez le titre qui apparaîtra en entête du document")
-        self.ctrl_couleur.SetToolTipString(u"Sélectionnez une couleur")
-        self.ctrl_attribution.SetToolTipString(u"Cochez cette case pour que ce texte soit automatiquement attribué en fonction du nombre de jours de retard du paiement")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce texte"))
+        self.ctrl_titre.SetToolTipString(_(u"Saisissez le titre qui apparaîtra en entête du document"))
+        self.ctrl_couleur.SetToolTipString(_(u"Sélectionnez une couleur"))
+        self.ctrl_attribution.SetToolTipString(_(u"Cochez cette case pour que ce texte soit automatiquement attribué en fonction du nombre de jours de retard du paiement"))
         self.ctrl_retard_min.SetMinSize((60, -1))
         self.ctrl_retard_max.SetMinSize((60, -1))
-        self.ctrl_motscles.SetToolTipString(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades).")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_motscles.SetToolTipString(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades)."))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((580, 500))
 
     def __do_layout(self):
@@ -375,7 +377,7 @@ class Dialog(wx.Dialog):
 
     def OnFont(self, evt):
         if not self.ctrl_texte.HasSelection():
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner un texte.", u"Police", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un texte."), _(u"Police"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -529,14 +531,14 @@ class Dialog(wx.Dialog):
         # Vérification des données
         label = self.ctrl_nom.GetValue()
         if label == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return        
         
         if self.couleur == (255, 255, 255):
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une couleur en cliquant sur le bouton couleur !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une couleur en cliquant sur le bouton couleur !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_couleur.SetFocus()
@@ -547,7 +549,7 @@ class Dialog(wx.Dialog):
             retard_min = self.ctrl_retard_min.GetValue()
             retard_max = self.ctrl_retard_max.GetValue()
             if retard_min >= retard_max :
-                dlg = wx.MessageDialog(self, u"Les conditions d'attribution par défaut semblent erronées !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Les conditions d'attribution par défaut semblent erronées !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return   
@@ -557,7 +559,7 @@ class Dialog(wx.Dialog):
         
         titre = self.ctrl_titre.GetValue()
         if titre == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un titre !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_titre.SetFocus()
@@ -568,7 +570,7 @@ class Dialog(wx.Dialog):
         texteXML = self.SaveTexte()
         textePDF = self.HtmlEnReportlab(self.GetHtmlText())
         if len(texteStr) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un texte !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_texte.SetFocus()

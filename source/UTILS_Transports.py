@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import GestionDB
 
 
@@ -70,7 +71,7 @@ class AnalyseLocalisation():
         # Analyse des localisations
         code = texte.split(";")[0]
         if code == "DOMI" :
-            return u"Domicile"
+            return _(u"Domicile")
         if code == "ECOL" :
             IDecole = int(texte.split(";")[1])
             if self.dict_ecoles.has_key(IDecole):

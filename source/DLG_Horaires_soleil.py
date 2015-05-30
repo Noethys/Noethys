@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import datetime
 import CTRL_Saisie_adresse
@@ -20,7 +22,7 @@ import calendar
 def DateDDEnDateFR(dateDD):
     """ Transforme une datetime.date en date complète FR """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     return listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
 
 
@@ -30,26 +32,26 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        titre = u"Horaires du soleil"
-        intro = u"Cette fonctionnalité permet d'afficher les heures de lever et de coucher du soleil d'une ville sur un mois donné. Cette fonction utilise la géolocalisation GPS de la ville et un agorithme intégré de calcul de la position du soleil."
+        titre = _(u"Horaires du soleil")
+        intro = _(u"Cette fonctionnalité permet d'afficher les heures de lever et de coucher du soleil d'une ville sur un mois donné. Cette fonction utilise la géolocalisation GPS de la ville et un agorithme intégré de calcul de la position du soleil.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Soleil.png")
         
         # Paramètres
-        self.box_ville_staticbox = wx.StaticBox(self, -1, u"Ville")
-        self.radio_ville = wx.RadioButton(self, -1, u"Selon une ville :", style=wx.RB_GROUP)
-        self.label_ville = wx.StaticText(self, -1, u"CP :")
+        self.box_ville_staticbox = wx.StaticBox(self, -1, _(u"Ville"))
+        self.radio_ville = wx.RadioButton(self, -1, _(u"Selon une ville :"), style=wx.RB_GROUP)
+        self.label_ville = wx.StaticText(self, -1, _(u"CP :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.radio_gps = wx.RadioButton(self, -1, u"Selon une position GPS :")
-        self.label_lat = wx.StaticText(self, -1, u"Lat. :")
+        self.radio_gps = wx.RadioButton(self, -1, _(u"Selon une position GPS :"))
+        self.label_lat = wx.StaticText(self, -1, _(u"Lat. :"))
         self.ctrl_lat = wx.TextCtrl(self, -1, u"")
-        self.label_long = wx.StaticText(self, -1, u"Long. :")
+        self.label_long = wx.StaticText(self, -1, _(u"Long. :"))
         self.ctrl_long = wx.TextCtrl(self, -1, u"")
         
-        self.box_mois_staticbox = wx.StaticBox(self, -1, u"Mois")
-        self.label_mois = wx.StaticText(self, -1, u"Mois :")
-        self.ctrl_mois = wx.Choice(self, -1, choices=[u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"])
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.box_mois_staticbox = wx.StaticBox(self, -1, _(u"Mois"))
+        self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
+        self.ctrl_mois = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = wx.SpinCtrl(self, -1, u"", min=1970, max=2999)
         
         dateDuJour = datetime.date.today() 
@@ -57,14 +59,14 @@ class Dialog(wx.Dialog):
         self.ctrl_annee.SetValue(dateDuJour.year)
         
         # Bouton actualiser
-        self.bouton_actualiser = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
         
         # Résultats
         self.ctrl_resultats = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -89,9 +91,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_annee.SetMinSize((80, -1))
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste en fonction des paramètres")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste en fonction des paramètres"))
         self.SetMinSize((-1, 700))
 
     def __do_layout(self):
@@ -189,14 +191,14 @@ class Dialog(wx.Dialog):
             cp = self.ctrl_ville.GetValueCP()
             ville = self.ctrl_ville.GetValueVille()
             if cp == "" or cp == None or ville == "" or ville == None :
-                dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné correctement la ville !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné correctement la ville !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             # recherche GPS
             dictGPS = UTILS_Gps.GPS(cp=cp, ville=ville, pays="France")
             if dictGPS == None : 
-                dlg = wx.MessageDialog(self, u"Les coordonnées GPS n'ont pas été détectées !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Les coordonnées GPS n'ont pas été détectées !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -208,7 +210,7 @@ class Dialog(wx.Dialog):
             lat = self.ctrl_lat.GetValue()
             long = self.ctrl_long.GetValue()
             if lat == "" or lat == None or long == "" or long == None :
-                dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné correctement les coordonnées GPS !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné correctement les coordonnées GPS !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

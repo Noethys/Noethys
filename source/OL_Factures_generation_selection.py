@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import time
@@ -70,7 +72,7 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         # Récupération des données
-        dlgAttente = PBI.PyBusyInfo(u"Recherche des prestations à facturer en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des prestations à facturer en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         try :
@@ -86,7 +88,7 @@ class ListView(FastObjectListView):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la recherche de factures : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la recherche de factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -141,17 +143,17 @@ class ListView(FastObjectListView):
         # Paramètres ListView
         self.useExpansionColumn = True
         self.SetColumns([
-            ColumnDefn(u"IDfamille", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", "left", 250, "nomSansCivilite", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Total période", "right", 85, "total", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Déjà réglé", "right", 85, "ventilation", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Dû période", "right", 85, "du_periode", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuPeriode),
-            ColumnDefn(u"Report", "right", 85, "total_reports", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Dû total", "right", 85, "du_total", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuTotal),
+            ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), "left", 250, "nomSansCivilite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Total période"), "right", 85, "total", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Déjà réglé"), "right", 85, "ventilation", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Dû période"), "right", 85, "du_periode", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuPeriode),
+            ColumnDefn(_(u"Report"), "right", 85, "total_reports", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Dû total"), "right", 85, "du_total", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuTotal),
         ])
         self.CreateCheckStateColumn(0)
         self.SetSortColumn(self.columns[1])
-        self.SetEmptyListMsg(u"Aucune facture à générer")
+        self.SetEmptyListMsg(_(u"Aucune facture à générer"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
     
@@ -175,7 +177,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 5, u"Afficher un aperçu PDF")
+        item = wx.MenuItem(menuPop, 5, _(u"Afficher un aperçu PDF"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -185,14 +187,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheListeTout, id=70)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
         bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -201,14 +203,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -217,14 +219,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -235,21 +237,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des factures à générer", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures à générer"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des factures à générer", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures à générer"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des factures à générer")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des factures à générer"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des factures à générer")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des factures à générer"))
         
     def GetTracksCoches(self):
         return self.GetCheckedObjects()
@@ -261,9 +263,9 @@ class ListView(FastObjectListView):
     def AfficheNbreComptes(self, nbreComptes=0):
         grandParent = self.GetGrandParent()
         if grandParent.GetName() == "DLG_Factures_generation_selection" :
-            if nbreComptes == 0 : label = u"Aucune facture sélectionnée"
-            elif nbreComptes == 1 : label = u"1 facture sélectionnée"
-            else: label = u"%d factures sélectionnées" % nbreComptes
+            if nbreComptes == 0 : label = _(u"Aucune facture sélectionnée")
+            elif nbreComptes == 1 : label = _(u"1 facture sélectionnée")
+            else: label = _(u"%d factures sélectionnées") % nbreComptes
             grandParent.box_factures_staticbox.SetLabel(label)
 
     def OnCheck(self, track):
@@ -271,7 +273,7 @@ class ListView(FastObjectListView):
 
     def AfficherApercu(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -292,7 +294,7 @@ class ListView(FastObjectListView):
             return False
                    
         # Fabrication du PDF
-        dlgAttente = PBI.PyBusyInfo(u"Création de l'aperçu au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Création de l'aperçu au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         try :
             UTILS_Impression_facture.Impression({IDcompte_payeur : dictCompte}, dictOptions, IDmodele=dictOptions["IDmodele"])
@@ -300,7 +302,7 @@ class ListView(FastObjectListView):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la facture : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la facture : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -315,7 +317,7 @@ class ListView(FastObjectListView):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nomSansCivilite" : {"mode" : "nombre", "singulier" : u"facture", "pluriel" : u"factures", "alignement" : wx.ALIGN_CENTER},
+            "nomSansCivilite" : {"mode" : "nombre", "singulier" : _(u"facture"), "pluriel" : _(u"factures"), "alignement" : wx.ALIGN_CENTER},
             "total" : {"mode" : "total"},
             "ventilation" : {"mode" : "total"},
             "du_periode" : {"mode" : "total"},

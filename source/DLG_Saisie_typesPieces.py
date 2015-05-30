@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Saisie_date
 
@@ -17,34 +19,34 @@ class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent      
-        self.SetTitle(u"Saisie d'un type de pièce")  
+        self.SetTitle(_(u"Saisie d'un type de pièce"))  
         
-        self.sizer_nom_staticbox = wx.StaticBox(self, -1, u"Caractéristiques")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.sizer_nom_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.label_public = wx.StaticText(self, -1, u"Public :")
+        self.label_public = wx.StaticText(self, -1, _(u"Public :"))
         self.ctrl_public = wx.Choice(self, -1, (100, -1), choices = ("Individu", "Famille"))
         self.ctrl_rattachement = wx.CheckBox(self, -1, u"")
-        self.label_rattachement = wx.StaticText(self, -1, u"Cochez cette case si, lorsqu'un individu est rattaché à plusieurs \nfamilles, cette pièce est valable pour toutes les familles rattachée.")
+        self.label_rattachement = wx.StaticText(self, -1, _(u"Cochez cette case si, lorsqu'un individu est rattaché à plusieurs \nfamilles, cette pièce est valable pour toutes les familles rattachée."))
         
-        self.sizer_duree_staticbox = wx.StaticBox(self, -1, u"Validité par défaut")
+        self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"Validité par défaut"))
         
-        self.radio_duree_1 = wx.RadioButton(self, -1, u"Validité illimitée", style=wx.RB_GROUP)
+        self.radio_duree_1 = wx.RadioButton(self, -1, _(u"Validité illimitée"), style=wx.RB_GROUP)
         
-        self.radio_duree_2 = wx.RadioButton(self, -1, u"La durée suivante : ")
-        self.label_jours = wx.StaticText(self, -1, u"Jours :")
+        self.radio_duree_2 = wx.RadioButton(self, -1, _(u"La durée suivante : "))
+        self.label_jours = wx.StaticText(self, -1, _(u"Jours :"))
         self.spin_jours = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.label_mois = wx.StaticText(self, -1, u"Mois :")
+        self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.spin_mois = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.label_annees = wx.StaticText(self, -1, u"Années :")
+        self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
         self.spin_annees = wx.SpinCtrl(self, -1, "", min=0, max=100)
         
-        self.radio_duree_3 = wx.RadioButton(self, -1, u"La date suivante : ")
+        self.radio_duree_3 = wx.RadioButton(self, -1, _(u"La date suivante : "))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -61,17 +63,17 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici un nom de pièce. Par exemple : 'Fiche sanitaire'")
-        self.ctrl_public.SetToolTipString(u"Sélectionnez le public auquel cette pièce s'adresse")
-        self.radio_duree_1.SetToolTipString(u"Sélectionnez 'Illimitée' si la pièce est valable à vie")
-        self.radio_duree_2.SetToolTipString(u"Sélectionnez 'Durée' si vous souhaitez définir une durée de validité pour cette pièce")
-        self.radio_duree_3.SetToolTipString(u"Sélectionnez 'Date' si la pièce n'est valable que jusqu'à une date précise")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom de pièce. Par exemple : 'Fiche sanitaire'"))
+        self.ctrl_public.SetToolTipString(_(u"Sélectionnez le public auquel cette pièce s'adresse"))
+        self.radio_duree_1.SetToolTipString(_(u"Sélectionnez 'Illimitée' si la pièce est valable à vie"))
+        self.radio_duree_2.SetToolTipString(_(u"Sélectionnez 'Durée' si vous souhaitez définir une durée de validité pour cette pièce"))
+        self.radio_duree_3.SetToolTipString(_(u"Sélectionnez 'Date' si la pièce n'est valable que jusqu'à une date précise"))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((440, 340))
 
     def __do_layout(self):
@@ -166,14 +168,14 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Vérification des données saisies
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement donner un nom à cette pièce !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom à cette pièce !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         
         if self.ctrl_public.GetSelection() == -1 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner le public !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner le public !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_public.SetFocus()
@@ -185,14 +187,14 @@ class Dialog(wx.Dialog):
         date = self.ctrl_date.GetDate() 
 
         if jours == 0 and mois == 0 and annees == 0 and self.radio_duree_2.GetValue() == True:
-            dlg = wx.MessageDialog(self, u"Vous avez sélectionné une durée de pièce limitée. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'années.", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné une durée de pièce limitée. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'années."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.spin_jours.SetFocus()
             return
 
         if date == None and self.radio_duree_3.GetValue() == True:
-            dlg = wx.MessageDialog(self, u"La date de fin de validité n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()

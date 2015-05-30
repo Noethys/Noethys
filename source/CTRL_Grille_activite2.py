@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC
@@ -160,7 +162,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
                         item.SetWindow(choice)
                         self.SetItem(item)
                     else:
-                        self.SetStringItem(index, indexCol, label=u"Groupe unique")
+                        self.SetStringItem(index, indexCol, label=_(u"Groupe unique"))
                 else:
                     # Si pas d'inscription pour cette activite : Coloration de la case en gris
                     self.SetStringItem(index, indexCol, label=u"")
@@ -281,7 +283,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        self.data = []
 ##        self.dictIndividus = dictIndividus
 ##        self.dictActivites = dictActivites
-##        self.SetToolTipString(u"Cochez les activités à afficher")
+##        self.SetToolTipString(_(u"Cochez les activités à afficher"))
 ##        self.listeActivites = []
 ##        # Binds
 ##        self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
@@ -349,15 +351,15 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        wx.Panel.__init__(self, parent, -1)
 ##        self.parent = parent
 ##        
-##        self.label_mode = wx.StaticText(self, -1, u"Mode de saisie :")
-##        self.radio_reservation = wx.RadioButton(self, -1, u"Réservation", style = wx.RB_GROUP )
-##        self.radio_attente = wx.RadioButton(self, -1, u"Attente" )
-##        self.radio_refus = wx.RadioButton(self, -1, u"Refus" )
+##        self.label_mode = wx.StaticText(self, -1, _(u"Mode de saisie :"))
+##        self.radio_reservation = wx.RadioButton(self, -1, _(u"Réservation"), style = wx.RB_GROUP )
+##        self.radio_attente = wx.RadioButton(self, -1, _(u"Attente") )
+##        self.radio_refus = wx.RadioButton(self, -1, _(u"Refus") )
 ##        self.radio_reservation.SetValue(True)
 ##        
-##        self.radio_reservation.SetToolTipString(u"Le mode Réservation permet de saisir une réservation")
-##        self.radio_attente.SetToolTipString(u"Le mode Attente permet de saisir une place sur liste d'attente")
-##        self.radio_refus.SetToolTipString(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")
+##        self.radio_reservation.SetToolTipString(_(u"Le mode Réservation permet de saisir une réservation"))
+##        self.radio_attente.SetToolTipString(_(u"Le mode Attente permet de saisir une place sur liste d'attente"))
+##        self.radio_refus.SetToolTipString(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique"))
 ##        
 ##        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
 ##        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)
@@ -418,7 +420,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -144,7 +146,7 @@ def VerificationDroitsUtilisateurActuel(categorie="", action="", IDactivite="", 
 def AfficheDLGInterdiction():
     import wx.lib.dialogs as dialogs
     image = wx.Bitmap("Images/32x32/Droits.png", wx.BITMAP_TYPE_ANY)
-    dlg = dialogs.MultiMessageDialog(None, u"Votre profil utilisateur ne vous permet pas d'accéder à cette fonctionnalité !", caption=u"Accès non autorisé", style=wx.ICON_ERROR | wx.OK, icon=image, btnLabels={wx.ID_OK : u"Ok"})
+    dlg = dialogs.MultiMessageDialog(None, _(u"Votre profil utilisateur ne vous permet pas d'accéder à cette fonctionnalité !"), caption=_(u"Accès non autorisé"), style=wx.ICON_ERROR | wx.OK, icon=image, btnLabels={wx.ID_OK : _(u"Ok")})
     dlg.ShowModal() 
     dlg.Destroy() 
     

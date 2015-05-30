@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import UTILS_Utilisateurs
@@ -20,7 +22,7 @@ from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 def FormatDuree(validite):
     # Illimitée
     if validite == None or validite == "j0-m0-a0" :
-        return u"Illimitée"
+        return _(u"Illimitée")
     
     # Durée
     if validite != None and validite.startswith("j") :
@@ -32,19 +34,19 @@ def FormatDuree(validite):
 
         listItems = []
         if jours == 1:
-            textJours = u"%d jour" % jours
+            textJours = _(u"%d jour") % jours
             listItems.append(textJours)
         if jours > 1:
-            textJours = u"%d jours" % jours
+            textJours = _(u"%d jours") % jours
             listItems.append(textJours)
         if mois > 0:
-            textMois = u"%d mois" % mois
+            textMois = _(u"%d mois") % mois
             listItems.append(textMois)
         if annees == 1:
-            textAnnees = u"%d année" % annees
+            textAnnees = _(u"%d année") % annees
             listItems.append(textAnnees)
         if annees > 1:
-            textAnnees = u"%d années" % annees
+            textAnnees = _(u"%d années") % annees
             listItems.append(textAnnees)
 
         nbreItems = len(listItems)
@@ -57,7 +59,7 @@ def FormatDuree(validite):
 
     # Date
     if validite != None and validite.startswith("d") :
-        return u"Jusqu'au %s" % UTILS_Dates.DateEngFr(validite[1:])
+        return _(u"Jusqu'au %s") % UTILS_Dates.DateEngFr(validite[1:])
 
 
 
@@ -71,7 +73,7 @@ class Track(object):
         self.txt_duree_validite = FormatDuree(self.duree_validite)
         self.valide_rattachement = donnees[4]
         if self.valide_rattachement == 1 :
-            self.txt_rattachement = u"Oui"
+            self.txt_rattachement = _(u"Oui")
         else:
             self.txt_rattachement = ""
         
@@ -128,15 +130,15 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtype_piece", typeDonnee="entier"),
-            ColumnDefn(u"Nom de la pièce", 'left', 220, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Public", "left", 70, "txt_public", typeDonnee="texte"), 
-            ColumnDefn(u"Validité", "left", 140, "txt_duree_validite", typeDonnee="texte"), 
-            ColumnDefn(u"Rattachement valide", "left", 120, "txt_rattachement", typeDonnee="texte"), 
+            ColumnDefn(_(u"ID"), "left", 0, "IDtype_piece", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom de la pièce"), 'left', 220, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Public"), "left", 70, "txt_public", typeDonnee="texte"), 
+            ColumnDefn(_(u"Validité"), "left", 140, "txt_duree_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Rattachement valide"), "left", 120, "txt_rattachement", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun type de pièce")
+        self.SetEmptyListMsg(_(u"Aucun type de pièce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -171,7 +173,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -180,7 +182,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -188,7 +190,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -198,14 +200,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -216,12 +218,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des types de pièces", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de pièces"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des types de pièces", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de pièces"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -245,7 +247,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_pieces", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun type de pièce dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun type de pièce dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -276,7 +278,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_pieces", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun type de pièce dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun type de pièce dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -292,7 +294,7 @@ class ListView(FastObjectListView):
         nbrePieces = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbrePieces > 0 :
-            dlg = wx.MessageDialog(self, u"Ce type de pièce a déjà été attribué à %d pièce(s).\n\nVous ne pouvez donc pas le supprimer !" % nbrePieces, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de pièce a déjà été attribué à %d pièce(s).\n\nVous ne pouvez donc pas le supprimer !") % nbrePieces, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -307,13 +309,13 @@ class ListView(FastObjectListView):
         nbreActivites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreActivites > 0 :
-            dlg = wx.MessageDialog(self, u"Ce type de pièce a déjà été attribué comme pièce obligatoire à %d activité(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreActivites, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce type de pièce a déjà été attribué comme pièce obligatoire à %d activité(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreActivites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce type de pièce ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce type de pièce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("types_pieces", "IDtype_piece", IDtype_piece)
@@ -333,7 +335,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un type de pièce...")
+        self.SetDescriptiveText(_(u"Rechercher un type de pièce..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Saisie_adresse
@@ -20,26 +22,26 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent      
         
-        self.staticbox_adresse_staticbox = wx.StaticBox(self, -1, u"Adresse")
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, u"Coordonnées")
-        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, u"Identité")
+        self.staticbox_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse"))
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
         
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.label_prenom = wx.StaticText(self, -1, u"Prénom :")
+        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "")
-        self.label_rue = wx.StaticText(self, -1, u"Rue :")
+        self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, "")
-        self.label_cp = wx.StaticText(self, -1, u"C.P. :")
+        self.label_cp = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, u"Tél. Cabinet :")
-        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=u"cabinet")
-        self.label_mobile = wx.StaticText(self, -1, u"Tél. Mobile :")
-        self.ctrl_mobile = CTRL_Saisie_tel.Tel(self, intitule=u"mobile")
+        self.label_tel = wx.StaticText(self, -1, _(u"Tél. Cabinet :"))
+        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"cabinet"))
+        self.label_mobile = wx.StaticText(self, -1, _(u"Tél. Mobile :"))
+        self.ctrl_mobile = CTRL_Saisie_tel.Tel(self, intitule=_(u"mobile"))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -49,15 +51,15 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocusNom)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un médecin")
-        self.ctrl_nom.SetToolTipString(u"Saisissez le nom de famille du médecin")
-        self.ctrl_prenom.SetToolTipString(u"Saisissez le prénom du médecin")
-        self.ctrl_rue.SetToolTipString(u"Saisissez la rue du cabinet du médecin")
-        self.ctrl_tel.SetToolTipString(u"Saisissez le numéro de téléphone du cabinet")
-        self.ctrl_mobile.SetToolTipString(u"Saisissez le numéro de mobile du médecin")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Saisie d'un médecin"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de famille du médecin"))
+        self.ctrl_prenom.SetToolTipString(_(u"Saisissez le prénom du médecin"))
+        self.ctrl_rue.SetToolTipString(_(u"Saisissez la rue du cabinet du médecin"))
+        self.ctrl_tel.SetToolTipString(_(u"Saisissez le numéro de téléphone du cabinet"))
+        self.ctrl_mobile.SetToolTipString(_(u"Saisissez le numéro de mobile du médecin"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -149,7 +151,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event):
         if self.GetNom() == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun nom !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()

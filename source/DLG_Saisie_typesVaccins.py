@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -52,27 +54,27 @@ class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent      
-        self.SetTitle(u"Saisie d'un vaccin")  
+        self.SetTitle(_(u"Saisie d'un vaccin"))  
         
-        self.sizer_nom_staticbox = wx.StaticBox(self, -1, u"1. Nom du vaccin")
-        self.sizer_duree_staticbox = wx.StaticBox(self, -1, u"2. Durée de validité")
-        self.sizer_maladies_staticbox = wx.StaticBox(self, -1, u"3. Maladies associées")
+        self.sizer_nom_staticbox = wx.StaticBox(self, -1, _(u"1. Nom du vaccin"))
+        self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"2. Durée de validité"))
+        self.sizer_maladies_staticbox = wx.StaticBox(self, -1, _(u"3. Maladies associées"))
         
         self.label_nom = wx.StaticText(self, -1, "Nom :")
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        self.radio_duree_1 = wx.RadioButton(self, -1, u"Validité illimitée", style=wx.RB_GROUP)
-        self.radio_duree_2 = wx.RadioButton(self, -1, u"Validité limitée : ")
-        self.label_jours = wx.StaticText(self, -1, u"Jours :")
+        self.radio_duree_1 = wx.RadioButton(self, -1, _(u"Validité illimitée"), style=wx.RB_GROUP)
+        self.radio_duree_2 = wx.RadioButton(self, -1, _(u"Validité limitée : "))
+        self.label_jours = wx.StaticText(self, -1, _(u"Jours :"))
         self.spin_jours = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.label_mois = wx.StaticText(self, -1, u"Mois :")
+        self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.spin_mois = wx.SpinCtrl(self, -1, "", min=0, max=100)
-        self.label_annees = wx.StaticText(self, -1, u"Années :")
+        self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
         self.spin_annees = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.ctrl_maladies = CheckListBox(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -88,15 +90,15 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici un nom de vaccin. Par exemple : 'DT Polio'")
-        self.radio_duree_1.SetToolTipString(u"Sélectionnez 'Illimitée' si le vaccin est valable à vie")
-        self.radio_duree_2.SetToolTipString(u"Sélectionnez 'Limitée' si vous pouvez définir une durée pour ce vaccin")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom de vaccin. Par exemple : 'DT Polio'"))
+        self.radio_duree_1.SetToolTipString(_(u"Sélectionnez 'Illimitée' si le vaccin est valable à vie"))
+        self.radio_duree_2.SetToolTipString(_(u"Sélectionnez 'Limitée' si vous pouvez définir une durée pour ce vaccin"))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((400, 550))
 
     def __do_layout(self):
@@ -182,7 +184,7 @@ class Dialog(wx.Dialog):
         # Vérification des données saisies
         textNom = self.ctrl_nom.GetValue()
         if textNom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement donner un nom à ce vaccin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom à ce vaccin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -193,14 +195,14 @@ class Dialog(wx.Dialog):
         annees = int(self.spin_annees.GetValue())
 
         if jours == 0 and mois == 0 and annees == 0 and self.radio_duree_2.GetValue() == True:
-            dlg = wx.MessageDialog(self, u"Vous avez sélectionné une durée de validité limitée. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'années.", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné une durée de validité limitée. \nVous devez donc saisir un nombre de jours et/ou de mois et/ou d'années."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.spin_jours.SetFocus()
             return
         
         if self.ctrl_maladies.GetIDcoches() == 0:
-            dlg = wx.MessageDialog(self, u"Vous devez associer des maladies à ce vaccin", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez associer des maladies à ce vaccin"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

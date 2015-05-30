@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 
 
@@ -75,7 +77,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl1 = CTRL(panel)
-        self.ctrl1.SetItems([u"Bonjour", u"Maison", u"Voiture"])
+        self.ctrl1.SetItems([_(u"Bonjour"), _(u"Maison"), _(u"Voiture")])
         self.ctrl2 = CTRL(panel)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl1, 0, wx.ALL|wx.EXPAND, 4)

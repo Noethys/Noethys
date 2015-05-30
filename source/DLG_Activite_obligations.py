@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hyperlink as Hyperlink
 
 import GestionDB
@@ -342,31 +344,31 @@ class Panel(wx.Panel):
         self.IDactivite = IDactivite
         
         # Pièces
-        self.staticbox_pieces_staticbox = wx.StaticBox(self, -1, u"Pièces à fournir")
+        self.staticbox_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces à fournir"))
         self.ctrl_pieces = CheckListBoxPieces(self, IDactivite=IDactivite)
         self.ctrl_pieces.SetMinSize((-1, 55))
         self.ctrl_pieces.MAJ()
-        self.hyper_pieces = Hyperlien(self, label=u"Accéder au paramétrage des pièces", infobulle=u"Cliquez ici pour accéder au paramétrage des pièces", URL="pieces")
+        self.hyper_pieces = Hyperlien(self, label=_(u"Accéder au paramétrage des pièces"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des pièces"), URL="pieces")
         
         # Cotisations
-        self.staticbox_cotisations_staticbox = wx.StaticBox(self, -1, u"Cotisations")
-        self.ctrl_check_cotisations = wx.CheckBox(self, -1, u"L'individu inscrit doit avoir à jour au moins l'une des cotisations suivantes :")
+        self.staticbox_cotisations_staticbox = wx.StaticBox(self, -1, _(u"Cotisations"))
+        self.ctrl_check_cotisations = wx.CheckBox(self, -1, _(u"L'individu inscrit doit avoir à jour au moins l'une des cotisations suivantes :"))
         self.ctrl_cotisations = CheckListBoxCotisations(self, IDactivite=IDactivite)
         self.ctrl_cotisations.SetMinSize((-1, 55))
         self.ctrl_cotisations.MAJ()
-        self.hyper_cotisations = Hyperlien(self, label=u"Accéder au paramétrage des cotisations", infobulle=u"Cliquez ici pour accéder au paramétrage des cotisations", URL="cotisations")
+        self.hyper_cotisations = Hyperlien(self, label=_(u"Accéder au paramétrage des cotisations"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des cotisations"), URL="cotisations")
 
         # Vaccins
-        self.staticbox_vaccins_staticbox = wx.StaticBox(self, -1, u"Vaccins obligatoires")
-        self.ctrl_vaccins = wx.CheckBox(self, -1, u"L'individu inscrit doit avoir ses vaccins à jour")
-        self.label_vaccins_1 = wx.StaticText(self, -1, u"(Accéder au paramètrage ")
-        self.hyper_vaccins = Hyperlien(self, label=u"des vaccins", infobulle=u"Cliquez ici pour accéder au paramétrage des vaccins", URL="vaccins")
-        self.label_vaccins_2 = wx.StaticText(self, -1, u" et ")
-        self.hyper_maladies = Hyperlien(self, label=u"des maladies", infobulle=u"Cliquez ici pour accéder au paramétrage des maladies", URL="maladies")
+        self.staticbox_vaccins_staticbox = wx.StaticBox(self, -1, _(u"Vaccins obligatoires"))
+        self.ctrl_vaccins = wx.CheckBox(self, -1, _(u"L'individu inscrit doit avoir ses vaccins à jour"))
+        self.label_vaccins_1 = wx.StaticText(self, -1, _(u"(Accéder au paramètrage "))
+        self.hyper_vaccins = Hyperlien(self, label=_(u"des vaccins"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des vaccins"), URL="vaccins")
+        self.label_vaccins_2 = wx.StaticText(self, -1, _(u" et "))
+        self.hyper_maladies = Hyperlien(self, label=_(u"des maladies"), infobulle=_(u"Cliquez ici pour accéder au paramétrage des maladies"), URL="maladies")
         self.label_vaccins_3 = wx.StaticText(self, -1, u")")
         
         # Infos
-        self.staticbox_infos_staticbox = wx.StaticBox(self, -1, u"Informations à renseigner")
+        self.staticbox_infos_staticbox = wx.StaticBox(self, -1, _(u"Informations à renseigner"))
         self.ctrl_infos = CheckListBoxRenseignements(self, IDactivite=IDactivite)
         self.ctrl_infos.SetMinSize((50, 50))
         self.ctrl_infos.MAJ()
@@ -385,10 +387,10 @@ class Panel(wx.Panel):
             
 
     def __set_properties(self):
-        self.ctrl_pieces.SetToolTipString(u"Cochez les pièces que l'individu inscrit à cette activité doit fournir")
-        self.ctrl_vaccins.SetToolTipString(u"Cochez cette case si l'individu inscrit à cette activité doit obligatoirement justifier de ses vaccins à jour")
-        self.ctrl_infos.SetToolTipString(u"Cochez les informations que l'individu inscrit à cette activité doit obligatoirement renseigner dans son dossier")
-        self.ctrl_cotisations.SetToolTipString(u"Cochez les cotisations que l'individu inscrit à cette activité doit avoir à jour (au moins l'une d'elle)")
+        self.ctrl_pieces.SetToolTipString(_(u"Cochez les pièces que l'individu inscrit à cette activité doit fournir"))
+        self.ctrl_vaccins.SetToolTipString(_(u"Cochez cette case si l'individu inscrit à cette activité doit obligatoirement justifier de ses vaccins à jour"))
+        self.ctrl_infos.SetToolTipString(_(u"Cochez les informations que l'individu inscrit à cette activité doit obligatoirement renseigner dans son dossier"))
+        self.ctrl_cotisations.SetToolTipString(_(u"Cochez les cotisations que l'individu inscrit à cette activité doit avoir à jour (au moins l'une d'elle)"))
         self.ctrl_pieces.SetMinSize((-1, 90))
         
     def __do_layout(self):
@@ -472,7 +474,7 @@ class Panel(wx.Panel):
         # Vérifie qu'une cotisation au moins a été cochée
         if self.ctrl_check_cotisations.GetValue() == True :
             if len(self.ctrl_cotisations.GetIDcoches()) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous avez coché 'Cotisation obligatoire' mais sans cocher de cotisation dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez coché 'Cotisation obligatoire' mais sans cocher de cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -521,7 +523,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

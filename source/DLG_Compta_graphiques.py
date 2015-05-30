@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import datetime
@@ -36,15 +38,15 @@ except Exception, err :
 
 
 LISTE_MODELES = [
-    {"code" : "repartition_categories_debit_tresorerie", "label" : u"Répartition des opérations de trésorerie au débit", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit_tresorerie", "label" : u"Répartition des opérations de trésorerie au crédit", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_debit_budgetaires", "label" : u"Répartition des opérations budgétaires au débit", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit_budgetaires", "label" : u"Répartition des opérations budgétaires au crédit", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_debit_tresorerie_budgetaires", "label" : u"Répartition des opérations de trésorerie + budgétaires au débit", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit_tresorerie_budgetaires", "label" : u"Répartition des opérations de trésorerie + budgétaires au crédit", "image" : "Repartition.png"},
-    {"code" : "tiers_debit", "label" : u"Dépenses par tiers", "image" : "Barres.png"},
-    {"code" : "tiers_credit", "label" : u"Recettes par tiers", "image" : "Barres.png"},
-    #{"code" : "repartition_depenses", "label" : u"Graphique 3", "image" : "Courbes2.png"},
+    {"code" : "repartition_categories_debit_tresorerie", "label" : _(u"Répartition des opérations de trésorerie au débit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie", "label" : _(u"Répartition des opérations de trésorerie au crédit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_budgetaires", "label" : _(u"Répartition des opérations budgétaires au débit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_budgetaires", "label" : _(u"Répartition des opérations budgétaires au crédit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_tresorerie_budgetaires", "label" : _(u"Répartition des opérations de trésorerie + budgétaires au débit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie_budgetaires", "label" : _(u"Répartition des opérations de trésorerie + budgétaires au crédit"), "image" : "Repartition.png"},
+    {"code" : "tiers_debit", "label" : _(u"Dépenses par tiers"), "image" : "Barres.png"},
+    {"code" : "tiers_credit", "label" : _(u"Recettes par tiers"), "image" : "Barres.png"},
+    #{"code" : "repartition_depenses", "label" : _(u"Graphique 3"), "image" : "Courbes2.png"},
     ]
 
 
@@ -105,7 +107,7 @@ class CTRL_Exercice(wx.Choice):
         self.SetID(self.IDdefaut)
     
     def GetListeDonnees(self):
-        listeItems = [u"Tous les exercices",]
+        listeItems = [_(u"Tous les exercices"),]
         self.dictDonnees = { 0 : {"ID":None, "date_debut":None, "date_fin":None}, }
         DB = GestionDB.DB()
         req = """SELECT IDexercice, nom, date_debut, date_fin, defaut
@@ -160,7 +162,7 @@ class CTRL_Analytique(wx.Choice):
         self.SetID(self.IDdefaut)
     
     def GetListeDonnees(self):
-        listeItems = [u"Tous les postes analytiques",]
+        listeItems = [_(u"Tous les postes analytiques"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         DB = GestionDB.DB()
         req = """SELECT IDanalytique, nom, abrege, defaut
@@ -221,7 +223,7 @@ class CTRL_Graphique(wx.Panel):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 10, u"Afficher les valeurs", u"Afficher les valeurs", wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, 10, _(u"Afficher les valeurs"), _(u"Afficher les valeurs"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_afficher_valeurs, id=10)
         if self.afficher_valeurs == True : item.Check(True)
@@ -463,8 +465,8 @@ class CTRL_Graphique(wx.Panel):
 ##        opacity = 0.4
 ##        
 ##        ax = self.figure.add_subplot(111)
-##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=u"Réel")
-##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=u"Budgété")
+##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"Réel"))
+##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"Budgété"))
 ##
 ##        # Formatage des montants sur y
 ##        majorFormatter = FormatStrFormatter(SYMBOLE + u" %d")
@@ -492,8 +494,8 @@ class CTRL_Graphique(wx.Panel):
         opacity = 0.4
         
         ax = self.figure.add_subplot(111)
-        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=u"Réel")
-        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=u"Budgété")
+        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"Réel"))
+        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"Budgété"))
 
         # Formatage des montants sur x
         majorFormatter = FormatStrFormatter(u"%d " + SYMBOLE)
@@ -543,32 +545,32 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent 
 
-        intro = u"Sélectionnez un modèle de graphique dans la liste proposée puis ajustez les paramètres si besoin."
-        titre = u"Graphiques"
+        intro = _(u"Sélectionnez un modèle de graphique dans la liste proposée puis ajustez les paramètres si besoin.")
+        titre = _(u"Graphiques")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
 
         # Modèle
-        self.box_modele_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Modèle")
+        self.box_modele_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Modèle"))
         self.ctrl_modele = CTRL_Modele(self)
         self.ctrl_modele.SetMinSize((400, -1))
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Paramètres")
-        self.label_exercice = wx.StaticText(self, wx.ID_ANY, u"Exercice :")
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        self.label_exercice = wx.StaticText(self, wx.ID_ANY, _(u"Exercice :"))
         self.ctrl_exercice = CTRL_Exercice(self)
-        self.label_analytique = wx.StaticText(self, wx.ID_ANY, u"Analytique :")
+        self.label_analytique = wx.StaticText(self, wx.ID_ANY, _(u"Analytique :"))
         self.ctrl_analytique = CTRL_Analytique(self)
         
         # Graphique
         self.box_graphique_staticbox = wx.StaticBox(self, wx.ID_ANY, "Graphique")
         self.ctrl_graphique = CTRL_Graphique(self)
-        self.bouton_zoom = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_options = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_zoom = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_options = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -586,13 +588,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez un modèle de graphique")
-        self.ctrl_exercice.SetToolTipString(u"Sélectionnez un exercice")
-        self.ctrl_analytique.SetToolTipString(u"Sélectionnez un poste analytique")
-        self.bouton_zoom.SetToolTipString(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique")
-        self.bouton_options.SetToolTipString(u"Cliquez ici pour accéder aux options du graphique")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de graphique"))
+        self.ctrl_exercice.SetToolTipString(_(u"Sélectionnez un exercice"))
+        self.ctrl_analytique.SetToolTipString(_(u"Sélectionnez un poste analytique"))
+        self.bouton_zoom.SetToolTipString(_(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options du graphique"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):

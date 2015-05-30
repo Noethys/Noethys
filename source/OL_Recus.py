@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import locale
@@ -29,8 +31,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -52,7 +54,7 @@ class Track(object):
         if parent.titulaires.has_key(self.IDfamille) :
             self.nomsTitulaires =  parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
         else :
-            self.nomsTitulaires = u"Famille inconnue"
+            self.nomsTitulaires = _(u"Famille inconnue")
 
 
 class ListView(FastObjectListView):
@@ -148,13 +150,13 @@ class ListView(FastObjectListView):
         # Version pour liste reçus
         self.SetColumns([
             ColumnDefn(u"", "left", 0, "IDrecu", typeDonnee="entier"),
-            ColumnDefn(u"Date", "left", 70, "date_edition", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Numéro", "centre", 60, "numero", typeDonnee="entier", stringConverter=FormateNumero), 
-            ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"IDreglement", "centre", 75, "IDreglement", typeDonnee="entier"),
+            ColumnDefn(_(u"Date"), "left", 70, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Numéro"), "centre", 60, "numero", typeDonnee="entier", stringConverter=FormateNumero), 
+            ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"IDreglement"), "centre", 75, "IDreglement", typeDonnee="entier"),
         ])
         self.SetSortColumn(self.columns[1])
-        self.SetEmptyListMsg(u"Aucun reçu de règlement")
+        self.SetEmptyListMsg(_(u"Aucun reçu de règlement"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.rowFormatter = rowFormatter
         self.SetObjects(self.donnees)
@@ -194,14 +196,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
 ##        # Item Ajouter
-##        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+##        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
 ##        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
 ##        self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 ##
 ##        # Item Modifier
-##        item = wx.MenuItem(menuPop, 20, u"Modifier")
+##        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
 ##        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -209,7 +211,7 @@ class ListView(FastObjectListView):
 ##        if len(self.Selection()) == 0 : item.Enable(False)
 
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -219,7 +221,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
 ##        # Item Rééditer la facture
-##        item = wx.MenuItem(menuPop, 60, u"Rééditer la facture (PDF)")
+##        item = wx.MenuItem(menuPop, 60, _(u"Rééditer la facture (PDF)"))
 ##        bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -228,14 +230,14 @@ class ListView(FastObjectListView):
 ##        menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -244,14 +246,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -262,7 +264,7 @@ class ListView(FastObjectListView):
     
 ##    def Reedition(self, event):
 ##        if len(self.Selection()) == 0 :
-##            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à rééditer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à rééditer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -272,25 +274,25 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des reçus de règlements", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des reçus de règlements"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des reçus de règlements", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des reçus de règlements"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des reçus de règlements")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des reçus de règlements"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des reçus de règlements")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des reçus de règlements"))
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune reçu à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune reçu à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -298,7 +300,7 @@ class ListView(FastObjectListView):
         numero = self.Selection()[0].numero
                 
         # Demande la confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer le reçu n°%d ?" % numero, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer le reçu n°%d ?") % numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -313,14 +315,14 @@ class ListView(FastObjectListView):
         self.MAJ() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Reçu supprimé !", u"Suppression", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Reçu supprimé !"), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -341,7 +343,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un reçu de règlement...")
+        self.SetDescriptiveText(_(u"Rechercher un reçu de règlement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

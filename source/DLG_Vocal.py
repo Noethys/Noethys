@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 import CTRL_Bandeau
 import UTILS_Vocal
@@ -37,7 +39,7 @@ class MyHtml(html.HtmlWindow):
         texte = u"""
         <FONT SIZE=-1>
         <CENTER>
-            <IMG SRC="Images/32x32/telecharger.png">
+            <IMG SRC="Images/32x32/Telecharger.png">
             <BR><BR>
             <B>Téléchargement de la voix française</B>
             <BR><BR>
@@ -60,7 +62,7 @@ class MyHtml(html.HtmlWindow):
         </FONT>
         """
         import DLG_Message_html
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Télécharger la voix française", size=(360, 500))
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Télécharger la voix française"), size=(360, 500))
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -136,14 +138,14 @@ class Dialog(wx.Dialog):
         self.vocal = UTILS_Vocal.Vocal() 
         
         # Bandeau
-        intro = u"Vous pouvez paramétrer et tester ici la synthèse vocale utilisée par Noethys. Attention, si ce n'est pas déjà fait, téléchargez dès à présent la voix française ci-dessous !"
-        titre = u"Synthèse vocale"
+        intro = _(u"Vous pouvez paramétrer et tester ici la synthèse vocale utilisée par Noethys. Attention, si ce n'est pas déjà fait, téléchargez dès à présent la voix française ci-dessous !")
+        titre = _(u"Synthèse vocale")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Vocal.png")
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres de la voix")
-        self.label_voix = wx.StaticText(self, -1, u"Voix actuelle :")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de la voix"))
+        self.label_voix = wx.StaticText(self, -1, _(u"Voix actuelle :"))
         self.ctrl_voix = CTRL_Voix(self, vocal=self.vocal)
         
         # Avertissement
@@ -151,7 +153,7 @@ class Dialog(wx.Dialog):
         self.MAJAvertissement() 
         
         # Corrections
-        self.box_corrections_staticbox = wx.StaticBox(self, -1, u"Corrections phoniques")
+        self.box_corrections_staticbox = wx.StaticBox(self, -1, _(u"Corrections phoniques"))
         self.ctrl_corrections = OL_Corrections_phoniques.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_corrections.MAJ() 
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -159,13 +161,13 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
         # Test
-        self.box_test_staticbox = wx.StaticBox(self, -1, u"Test")
+        self.box_test_staticbox = wx.StaticBox(self, -1, _(u"Test"))
         self.ctrl_test = wx.TextCtrl(self, -1, u"")
 
         # Boutons
         self.bouton_test = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Vocal.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -185,14 +187,14 @@ class Dialog(wx.Dialog):
             
 
     def __set_properties(self):
-        self.ctrl_voix.SetToolTipString(u"Sélectionnez une voix dans la liste")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une correction phonique. Exemple : Créez une correction 'Kévin'->'Kévine' pour que le moteur vocal lise correctement le son 'in'.")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la correction sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la correction sélectionnée")
-        self.ctrl_test.SetToolTipString(u"Tapez un texte à lire")
-        self.bouton_test.SetToolTipString(u"Cliquez ici pour lire le texte saisi")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_voix.SetToolTipString(_(u"Sélectionnez une voix dans la liste"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une correction phonique. Exemple : Créez une correction 'Kévin'->'Kévine' pour que le moteur vocal lise correctement le son 'in'."))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la correction sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la correction sélectionnée"))
+        self.ctrl_test.SetToolTipString(_(u"Tapez un texte à lire"))
+        self.bouton_test.SetToolTipString(_(u"Cliquez ici pour lire le texte saisi"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((550, 650))
 
     def __do_layout(self):
@@ -298,7 +300,7 @@ class Dialog(wx.Dialog):
         """ Test vocal """
         texte = self.ctrl_test.GetValue()
         if len(texte) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun texte à lire !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun texte à lire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_test.SetFocus() 

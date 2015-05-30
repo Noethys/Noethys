@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 
@@ -31,8 +33,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -40,7 +42,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -58,7 +60,7 @@ class Track(object):
         self.date_fin = DateEngEnDateDD(donnees[6])
         self.date_debut_str = DateEngFr(donnees[5])
         self.date_fin_str = DateEngFr(donnees[6])
-        self.periodeComplete = u"Du %s au %s" % (self.date_debut_str, self.date_fin_str)
+        self.periodeComplete = _(u"Du %s au %s") % (self.date_debut_str, self.date_fin_str)
         self.IDcaisse = donnees[7]
         self.nom_caisse = donnees[8]
         if self.nom_caisse == None :
@@ -72,14 +74,14 @@ class Track(object):
         if self.nbre_deductions == None : self.nbre_deductions = 0
         
         if self.montant_max != None :
-            self.texte_montant_max = u"%.2f %s (%.2f %s max)" % (self.total_deductions, SYMBOLE, self.montant_max, SYMBOLE)
+            self.texte_montant_max = _(u"%.2f %s (%.2f %s max)") % (self.total_deductions, SYMBOLE, self.montant_max, SYMBOLE)
         else:
             self.texte_montant_max = u"%.2f %s" % (self.total_deductions, SYMBOLE)
             
         if self.nbre_dates_max != None :
-            self.texte_dates_max = u"%d dates (%d dates max)" % (self.nbre_deductions, self.nbre_dates_max)
+            self.texte_dates_max = _(u"%d dates (%d dates max)") % (self.nbre_deductions, self.nbre_dates_max)
         else:
-            self.texte_dates_max = u"%d dates" % self.nbre_deductions
+            self.texte_dates_max = _(u"%d dates") % self.nbre_deductions
         
         # Encore valide ?
         dateJour = datetime.date.today()
@@ -118,13 +120,13 @@ class CTRL(HTL.HyperTreeList):
 
         # Création des colonnes
         listeColonnes = [
-            ( u"Période de validité", 180, wx.ALIGN_LEFT),
-            ( u"Nom", 130, wx.ALIGN_LEFT),
-            ( u"Activité", 70, wx.ALIGN_LEFT),
-            ( u"Caisse", 100, wx.ALIGN_LEFT),
-            ( u"Bénéficiaires", 120, wx.ALIGN_LEFT),
-            ( u"Total des déductions", 150, wx.ALIGN_LEFT),
-            ( u"Nbre de dates", 130, wx.ALIGN_LEFT),
+            ( _(u"Période de validité"), 180, wx.ALIGN_LEFT),
+            ( _(u"Nom"), 130, wx.ALIGN_LEFT),
+            ( _(u"Activité"), 70, wx.ALIGN_LEFT),
+            ( _(u"Caisse"), 100, wx.ALIGN_LEFT),
+            ( _(u"Bénéficiaires"), 120, wx.ALIGN_LEFT),
+            ( _(u"Total des déductions"), 150, wx.ALIGN_LEFT),
+            ( _(u"Nbre de dates"), 130, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -200,7 +202,7 @@ class CTRL(HTL.HyperTreeList):
 ##        self.Freeze()
         self.DeleteAllItems()
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 ##        self.Thaw() 
 

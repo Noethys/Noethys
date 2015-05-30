@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -81,14 +83,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDgroupe"),
-            ColumnDefn(u"Ordre", "left", 0, "ordre"),
-            ColumnDefn(u"Nom", 'left', 300, "nom", isSpaceFilling=True),
-            ColumnDefn(u"Abrégé", 'left', 160, "abrege"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDgroupe"),
+            ColumnDefn(_(u"Ordre"), "left", 0, "ordre"),
+            ColumnDefn(_(u"Nom"), 'left', 300, "nom", isSpaceFilling=True),
+            ColumnDefn(_(u"Abrégé"), 'left', 160, "abrege"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun groupe")
+        self.SetEmptyListMsg(_(u"Aucun groupe"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -124,7 +126,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -133,7 +135,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -141,7 +143,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -151,7 +153,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 60, u"Déplacer vers le haut")
+        item = wx.MenuItem(menuPop, 60, _(u"Déplacer vers le haut"))
         bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -159,7 +161,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 70, u"Déplacer vers le bas")
+        item = wx.MenuItem(menuPop, 70, _(u"Déplacer vers le bas"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -169,14 +171,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -187,12 +189,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des groupes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des groupes"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des groupes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des groupes"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -219,7 +221,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun groupe à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -241,7 +243,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun groupe à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -257,7 +259,7 @@ class ListView(FastObjectListView):
         nbreUnites = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreUnites > 0 :
-            dlg = wx.MessageDialog(self, u"Ce groupe a déjà été attribué à %d unité(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !" % nbreUnites, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a déjà été attribué à %d unité(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -272,7 +274,7 @@ class ListView(FastObjectListView):
         nbreOuvertures = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreOuvertures > 0 :
-            dlg = wx.MessageDialog(self, u"Ce groupe a déjà été attribué à %d ouverture(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreOuvertures, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a déjà été attribué à %d ouverture(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreOuvertures, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -287,7 +289,7 @@ class ListView(FastObjectListView):
 ##        nbreRemplissages = int(DB.ResultatReq()[0][0])
 ##        DB.Close()
 ##        if nbreRemplissages > 0 :
-##            dlg = wx.MessageDialog(self, u"Ce groupe a déjà été attribué à %d remplissage(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreRemplissages, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Ce groupe a déjà été attribué à %d remplissage(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreRemplissages, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -302,7 +304,7 @@ class ListView(FastObjectListView):
         nbreInscriptions = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreInscriptions > 0 :
-            dlg = wx.MessageDialog(self, u"Ce groupe a déjà été attribué à %d inscription(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreInscriptions, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a déjà été attribué à %d inscription(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreInscriptions, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -317,7 +319,7 @@ class ListView(FastObjectListView):
         nbreConsommations = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreConsommations > 0 :
-            dlg = wx.MessageDialog(self, u"Ce groupe a déjà été attribué à %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreConsommations, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a déjà été attribué à %d consommation(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreConsommations, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -338,13 +340,13 @@ class ListView(FastObjectListView):
                     if int(IDgroupeTemp) == IDgroupe :
                         nbreTarifs += 1
         if nbreTarifs > 0 :
-            dlg = wx.MessageDialog(self, u"Ce groupe a déjà été attribué à %d tarif(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreTarifs, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce groupe a déjà été attribué à %d tarif(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreTarifs, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce groupe ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce groupe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("groupes", "IDgroupe", IDgroupe)
@@ -367,7 +369,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun groupe dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -388,7 +390,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun groupe dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -415,28 +417,28 @@ class Saisie(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
         if nom != None :
             self.ctrl_nom.SetValue(nom)
             
-        self.label_abrege = wx.StaticText(self, -1, u"Abrégé :")
+        self.label_abrege = wx.StaticText(self, -1, _(u"Abrégé :"))
         self.ctrl_abrege = wx.TextCtrl(self, -1, "")
         if abrege !=None :
             self.ctrl_abrege.SetValue(abrege)
             
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nom == None :
-            self.SetTitle(u"Saisie d'un groupe")
+            self.SetTitle(_(u"Saisie d'un groupe"))
         else:
-            self.SetTitle(u"Modification d'un groupe")
+            self.SetTitle(_(u"Modification d'un groupe"))
         self.SetMinSize((500, -1))
         
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici l'intitulé du groupe (Ex : '3-6 ans', 'Grands'...)")
-        self.ctrl_abrege.SetToolTipString(u"Saisissez ici le nom abrégé du groupe (Ex : '3-6', 'GRANDS'...")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici l'intitulé du groupe (Ex : '3-6 ans', 'Grands'...)"))
+        self.ctrl_abrege.SetToolTipString(_(u"Saisissez ici le nom abrégé du groupe (Ex : '3-6', 'GRANDS'..."))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -472,13 +474,13 @@ class Saisie(wx.Dialog):
         nom = self.ctrl_nom.GetValue()
         abrege = self.ctrl_abrege.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom de groupe !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de groupe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         if abrege == "" :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir saisir de nom abrégé pour ce groupe ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de nom abrégé pour ce groupe ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

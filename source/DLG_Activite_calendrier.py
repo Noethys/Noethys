@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Calendrier_ouvertures
 
 import GestionDB
@@ -25,7 +27,7 @@ class Panel(wx.Panel):
         self.IDactivite = IDactivite
                 
         # Ouvertures
-        self.staticbox_ouvertures_staticbox = wx.StaticBox(self, -1, u"Calendrier des ouvertures")
+        self.staticbox_ouvertures_staticbox = wx.StaticBox(self, -1, _(u"Calendrier des ouvertures"))
         self.ctrl_ouvertures = CTRL_Calendrier_ouvertures.Calendrier(self, IDactivite=self.IDactivite)
         self.ctrl_ouvertures.Initialisation() 
         self.bouton_ouvertures_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -36,8 +38,8 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOuvertures_Modifier, self.bouton_ouvertures_modifier)
 
     def __set_properties(self):
-        self.ctrl_ouvertures.SetToolTipString(u"Calendrier des ouvertures et du nombre de places")
-        self.bouton_ouvertures_modifier.SetToolTipString(u"Cliquez ici pour modifier le calendrier des ouvertures et du nombre de places")
+        self.ctrl_ouvertures.SetToolTipString(_(u"Calendrier des ouvertures et du nombre de places"))
+        self.bouton_ouvertures_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le calendrier des ouvertures et du nombre de places"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -88,7 +90,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

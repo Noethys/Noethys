@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html
 import cStringIO
 import Image
@@ -28,7 +30,7 @@ except: pass
 
 COULEUR_VERT_POMME = (151, 253, 79)
 COULEUR_BLEU_CIEL = (174, 212, 253)
-LISTE_NOMS_MOIS = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+LISTE_NOMS_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
 
 
 def DateEngEnDateDD(dateEng):
@@ -159,7 +161,7 @@ def GetInfosActivites(DB=None, listeActivites=[]):
     if len(listeActivites) == 0 : conditionActivites = "()"
     elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
     else : conditionActivites = str(tuple(listeActivites))
-    req = u"SELECT IDactivite, nom, abrege, date_debut, date_fin FROM activites WHERE IDactivite IN %s ORDER BY date_debut;" % conditionActivites
+    req = _(u"SELECT IDactivite, nom, abrege, date_debut, date_fin FROM activites WHERE IDactivite IN %s ORDER BY date_debut;") % conditionActivites
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     listeInfosActivites = []
@@ -201,7 +203,7 @@ def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=
     # Vacances
     if dictPeriode["type"] == "vacances" :
         vacances = dictPeriode["vacances"]
-        req = u"SELECT nom, annee, date_debut, date_fin FROM vacances ORDER BY date_debut;"
+        req = _(u"SELECT nom, annee, date_debut, date_fin FROM vacances ORDER BY date_debut;")
         DB.ExecuterReq(req)
         listeVacances = DB.ResultatReq()
         for nom, annee, date_debut, date_fin in listeVacances :
@@ -228,7 +230,7 @@ def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=
         for annee in range(date_min.year, date_max.year+1) :
             date_debut = datetime.date(annee, 1, 1)
             date_fin = datetime.date(annee, 12, 31)
-            label = u"Année %d" % annee
+            label = _(u"Année %d") % annee
             dictTemp = {"annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":label}
             listePeriodes.append(dictTemp)
 
@@ -241,7 +243,7 @@ def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=
         for annee in range(date_min.year, date_max.year+1) :
             date_debut_temp = datetime.date(annee, date_debut.month, date_debut.day)
             date_fin_temp = datetime.date(annee, date_fin.month, date_fin.day)
-            label = u"Du %s au %s" % (DateEngFr(str(date_debut_temp)), DateEngFr(str(date_fin_temp)))
+            label = _(u"Du %s au %s") % (DateEngFr(str(date_debut_temp)), DateEngFr(str(date_fin_temp)))
             dictTemp = {"date_debut":date_debut_temp, "date_fin":date_fin_temp, "label":label}
             listePeriodes.append(dictTemp)
 
@@ -328,17 +330,17 @@ class HTML():
             
             # Label de la période
             if self.dictParametres["mode"] == "inscrits" :
-                labelPeriode = u"Aucune période spécifique"
+                labelPeriode = _(u"Aucune période spécifique")
             else:
                 date_debut = DateEngFr(str(self.dictParametres["periode"]["date_debut"]))
                 date_fin = DateEngFr(str(self.dictParametres["periode"]["date_fin"]))
-                labelPeriode = u"Période du %s au %s" % (date_debut, date_fin)
+                labelPeriode = _(u"Période du %s au %s") % (date_debut, date_fin)
             
             # Label des activités
             listeLabels = []
             for IDactivite in self.dictParametres["listeActivites"] :
                 listeLabels.append((self.dictParametres["dictActivites"][IDactivite]))
-            labelActivites = u"Activités : " + u", ".join(listeLabels)
+            labelActivites = _(u"Activités : ") + u", ".join(listeLabels)
             
             # Titre
             html += u"""<CENTER><TABLE bgcolor="%s" CELLSPACING=1 BORDER=0 COLS=1 WIDTH="100%%">
@@ -528,16 +530,16 @@ class Graphe(Objet):
 
 ##LISTE_DONNEES = [
 ##
-##    {"nom" : u"Individus", "code" : "individus", "image" : None, "visible" : True, "pages" : [
+##    {"nom" : _(u"Individus"), "code" : "individus", "image" : None, "visible" : True, "pages" : [
 ##    
-##            {"nom" : u"Nombre", "code" : "nombre", "image" : None, "visible" : True, "objets" : [
+##            {"nom" : _(u"Nombre"), "code" : "nombre", "image" : None, "visible" : True, "objets" : [
 ##                    Texte_nombre_individus(),
 ##                    Tableau_nombre_individus(),
 ##                    Graphe_repartition_genre(),
 ##                    Graphe_test_2(),
 ##                    ]},
 ##
-##            {"nom" : u"Nouveaux", "code" : "nouveaux", "image" : None, "visible" : True, "objets" : [
+##            {"nom" : _(u"Nouveaux"), "code" : "nouveaux", "image" : None, "visible" : True, "objets" : [
 ##                    Graphe_repartition_genre(),
 ##                    Graphe_test_2(),
 ##                    Texte_nombre_individus(),

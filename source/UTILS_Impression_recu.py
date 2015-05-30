@@ -8,18 +8,20 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import os
 import FonctionsPerso
 import UTILS_Conversion
 import UTILS_Dates
 import wx
+import CTRL_Bouton_image
 
 import DLG_Noedoc
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", u"Euro")
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", u"Centime")
+MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
+MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
@@ -113,7 +115,7 @@ class Impression():
         # ------------------- TITRE -----------------
         dataTableau = []
         largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
-        dataTableau.append((u"Reçu de règlement",))
+        dataTableau.append((_(u"Reçu de règlement"),))
         dataTableau.append((u"",))
         style = TableStyle([
                 ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
@@ -156,13 +158,13 @@ class Impression():
                                   fontName="Helvetica-Bold",
                                   fontSize=9,
                                 )
-        dataTableau.append( (u"Caractéristiques du règlement", "") )
+        dataTableau.append( (_(u"Caractéristiques du règlement"), "") )
         montantEnLettres = UTILS_Conversion.trad(DICT_VALEURS["montant"], MONNAIE_SINGULIER, MONNAIE_DIVISION).strip() 
-        dataTableau.append( (u"Montant du règlement :", Paragraph(montantEnLettres.capitalize(), paraStyle) ) )
-        dataTableau.append( (u"Mode de règlement :", Paragraph(DICT_VALEURS["nomMode"], paraStyle) ) )
-        dataTableau.append( (u"Nom du payeur :", Paragraph(DICT_VALEURS["nomPayeur"], paraStyle) ) )
-        if DICT_VALEURS["nomEmetteur"] != None : dataTableau.append( (u"Nom de l'émetteur :", Paragraph(DICT_VALEURS["nomEmetteur"], paraStyle) ) )
-        if DICT_VALEURS["numPiece"] not in ("", None) : dataTableau.append( (u"Numéro de pièce :", Paragraph(DICT_VALEURS["numPiece"], paraStyle) ) )
+        dataTableau.append( (_(u"Montant du règlement :"), Paragraph(montantEnLettres.capitalize(), paraStyle) ) )
+        dataTableau.append( (_(u"Mode de règlement :"), Paragraph(DICT_VALEURS["nomMode"], paraStyle) ) )
+        dataTableau.append( (_(u"Nom du payeur :"), Paragraph(DICT_VALEURS["nomPayeur"], paraStyle) ) )
+        if DICT_VALEURS["nomEmetteur"] != None : dataTableau.append( (_(u"Nom de l'émetteur :"), Paragraph(DICT_VALEURS["nomEmetteur"], paraStyle) ) )
+        if DICT_VALEURS["numPiece"] not in ("", None) : dataTableau.append( (_(u"Numéro de pièce :"), Paragraph(DICT_VALEURS["numPiece"], paraStyle) ) )
         
         style = TableStyle([
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
@@ -186,11 +188,11 @@ class Impression():
         if len(listePrestations) > 0 :
             
             story.append(Spacer(0,20))
-            textePrestations = u"En paiement des prestations suivantes :"
+            textePrestations = _(u"En paiement des prestations suivantes :")
             story.append(Paragraph(u"<i>%s</i>" % textePrestations, paraStyleIntro))
             story.append(Spacer(0,20))
 
-            dataTableau = [(u"Date", u"Activité", u"Individu", u"Intitulé", u"Part utilisée"),]
+            dataTableau = [(_(u"Date"), _(u"Activité"), _(u"Individu"), _(u"Intitulé"), _(u"Part utilisée")),]
             largeursColonnes = [50, 95, 70, 135, 50]
 
             paraStyle = ParagraphStyle(name="detail",
@@ -242,7 +244,7 @@ class Impression():
         except Exception, err :
             print "Erreur dans ouverture PDF :", err
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

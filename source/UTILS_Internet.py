@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import GestionDB
 
 import UTILS_CryptageMD5
@@ -28,7 +29,7 @@ def DateEngEnDateDD(dateEng):
 def DateDDEnDateFR(dateDD):
     """ Transforme une datetime.date en date complète FR """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     return listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
 
 
@@ -144,7 +145,7 @@ def UploadCalendrier():
 
     nbrePeriodes = len(listePeriodes)
     
-    etat = u"> %d périodes mises en ligne" % nbrePeriodes
+    etat = _(u"> %d périodes mises en ligne") % nbrePeriodes
     return etat
     
     
@@ -159,7 +160,7 @@ def ImporteFichierReservations():
     f.close()
     
     if len(txtPresences) < 2 :
-        etat =  u"> Aucune présence a télécharger."
+        etat =  _(u"> Aucune présence a télécharger.")
         return etat
     
     listeReservations = []
@@ -250,7 +251,7 @@ def ImporteFichierReservations():
     DB.commit()
     DB.close()
     
-    etat = u"> %d réservations trouvées / %d réservations enregistrées dans la base" % (nbreReservations, nbreEnregistrements)
+    etat = _(u"> %d réservations trouvées / %d réservations enregistrées dans la base") % (nbreReservations, nbreEnregistrements)
     return etat
 
 
@@ -328,7 +329,7 @@ def UploadFichierIdentites():
 
     nbreIdentites = len(listeIdentites)
     
-    etat =  u"> %d identités mises en ligne" % nbreIdentites
+    etat =  _(u"> %d identités mises en ligne") % nbreIdentites
     return etat
     
 def GetInfosPieces():
@@ -380,7 +381,7 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
             nomTypePiece = valeurs[0]
             attribution = valeurs[1]
             
-            if attribution == "famille" and nomTypePiece == u"Cotisation annuelle" :
+            if attribution == "famille" and nomTypePiece == _(u"Cotisation annuelle") :
                 etat = "pasok"
                 # Recherche d'une cotisation valide
                 for IDcotisation, date_debut, date_fin in listeCotisationsFournies :
@@ -392,7 +393,7 @@ def GetPiecesAFournir(dictPieces, dictCotisations, dictTypesPieces, dictEnfants,
                 if etat == "pasok" :
                     listeDonnees.append( "%d0" % IDtypePiece )
                 
-            if attribution == "famille" and nomTypePiece != u"Cotisation annuelle" :
+            if attribution == "famille" and nomTypePiece != _(u"Cotisation annuelle") :
                 etat = "pasok"
                 # Recherche d'une pièce de type famille
                 for IDpiece, IDenfant, IDtype, date_debut, date_fin in listePiecesFournies :

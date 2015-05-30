@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_heure
 import CTRL_Ultrachoice
@@ -36,7 +38,7 @@ class CTRL_Restaurateur(wx.Choice):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        listeItems = [ u"-------- Aucun --------", ]
+        listeItems = [ _(u"-------- Aucun --------"), ]
         self.dictDonnees = { 0 : { "ID" : None } }
         index = 1
         for IDrestaurateur, nom in listeDonnees :
@@ -71,7 +73,7 @@ class CTRL_Raccourci(wx.Choice):
     def GetListeDonnees(self):
         listeTouches = Touches.LISTE_TOUCHES
         dictTouches = Touches.DICT_TOUCHES
-        listeItems = [ u"------------- Aucune touche de raccourci -------------", ]
+        listeItems = [ _(u"------------- Aucune touche de raccourci -------------"), ]
         self.dictDonnees = { 0 : { "code" : None } }
         index = 1
         for code in listeTouches :
@@ -96,10 +98,10 @@ class CTRL_Raccourci(wx.Choice):
 class CTRL_Type(CTRL_Ultrachoice.CTRL):
     def __init__(self, parent):
         donnees=[ 
-            {"label" : u"Standard", "description" : u"Pour saisir une conso simple par case", "image" : wx.Bitmap(u"Images/Special/Unite_standard.png", wx.BITMAP_TYPE_ANY)},
-            {"label" : u"Horaire", "description" : u"Pour saisir un horaire dans chaque case", "image" : wx.Bitmap(u"Images/Special/Unite_horaire.png", wx.BITMAP_TYPE_ANY)},
-            {"label" : u"Multi-horaires", "description" : u"Pour saisir plusieurs conso horaires par case", "image" : wx.Bitmap(u"Images/Special/Unite_multihoraires.png", wx.BITMAP_TYPE_ANY)},
-            {"label" : u"Quantité", "description" : u"Pour attribuer une quantité à une conso", "image" : wx.Bitmap(u"Images/Special/Unite_quantite.png", wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Standard"), "description" : _(u"Pour saisir une conso simple par case"), "image" : wx.Bitmap(u"Images/Special/Unite_standard.png", wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Horaire"), "description" : _(u"Pour saisir un horaire dans chaque case"), "image" : wx.Bitmap(u"Images/Special/Unite_horaire.png", wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Multi-horaires"), "description" : _(u"Pour saisir plusieurs conso horaires par case"), "image" : wx.Bitmap(u"Images/Special/Unite_multihoraires.png", wx.BITMAP_TYPE_ANY)},
+            {"label" : _(u"Quantité"), "description" : _(u"Pour attribuer une quantité à une conso"), "image" : wx.Bitmap(u"Images/Special/Unite_quantite.png", wx.BITMAP_TYPE_ANY)},
             ]
         CTRL_Ultrachoice.CTRL.__init__(self, parent, donnees=donnees) 
         self.parent = parent
@@ -313,54 +315,54 @@ class Dialog(wx.Dialog):
         self.typeUnite = None
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"Nom de l'unité")
-        self.label_nom = wx.StaticText(self, -1, u"Nom complet :")
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unité"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom complet :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_abrege = wx.StaticText(self, -1, u"Nom abrégé :")
+        self.label_abrege = wx.StaticText(self, -1, _(u"Nom abrégé :"))
         self.ctrl_abrege = wx.TextCtrl(self, -1, u"")
         
         # Caractéristiques
-        self.staticbox_caract_staticbox = wx.StaticBox(self, -1, u"Caractéristiques")
-        self.label_type = wx.StaticText(self, -1, u"Type d'unité :")
+        self.staticbox_caract_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        self.label_type = wx.StaticText(self, -1, _(u"Type d'unité :"))
         self.ctrl_type = CTRL_Type(self)
 
-        self.label_horaires = wx.StaticText(self, -1, u"Amplitude horaire :")
+        self.label_horaires = wx.StaticText(self, -1, _(u"Amplitude horaire :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
-        self.ctrl_heure_debut_fixe = wx.CheckBox(self, -1, u"Fixe")
+        self.ctrl_heure_debut_fixe = wx.CheckBox(self, -1, _(u"Fixe"))
         self.label_a = wx.StaticText(self, -1, u"à")
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
-        self.ctrl_heure_fin_fixe = wx.CheckBox(self, -1, u"Fixe")
+        self.ctrl_heure_fin_fixe = wx.CheckBox(self, -1, _(u"Fixe"))
         
-        self.label_groupes = wx.StaticText(self, -1, u"Groupes :")
-        self.radio_groupes_tous = wx.RadioButton(self, -1, u"Tous les groupes", style=wx.RB_GROUP)
-        self.radio_groupes_suivants = wx.RadioButton(self, -1, u"Uniquement les groupes suivants :")
+        self.label_groupes = wx.StaticText(self, -1, _(u"Groupes :"))
+        self.radio_groupes_tous = wx.RadioButton(self, -1, _(u"Tous les groupes"), style=wx.RB_GROUP)
+        self.radio_groupes_suivants = wx.RadioButton(self, -1, _(u"Uniquement les groupes suivants :"))
         self.ctrl_groupes = CheckListBoxGroupes(self, self.IDactivite, self.IDunite)
         self.ctrl_groupes.MAJ() 
         
-        self.label_repas = wx.StaticText(self, -1, u"Repas :")
-        self.ctrl_repas = wx.CheckBox(self, -1, u"Repas inclus")
-        self.label_restaurateur = wx.StaticText(self, -1, u"Restaurateur :")
+        self.label_repas = wx.StaticText(self, -1, _(u"Repas :"))
+        self.ctrl_repas = wx.CheckBox(self, -1, _(u"Repas inclus"))
+        self.label_restaurateur = wx.StaticText(self, -1, _(u"Restaurateur :"))
         self.ctrl_restaurateur = CTRL_Restaurateur(self)
         self.bouton_restaurateur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-        self.label_incompat = wx.StaticText(self, -1, u"Incompatibilités :")
+        self.label_incompat = wx.StaticText(self, -1, _(u"Incompatibilités :"))
         self.ctrl_incompat = CheckListBoxIncompat(self, self.IDactivite, self.IDunite)
         self.ctrl_incompat.MAJ() 
         
-        self.label_raccourci = wx.StaticText(self, -1, u"Touche raccourci :")
+        self.label_raccourci = wx.StaticText(self, -1, _(u"Touche raccourci :"))
         self.ctrl_raccourci = CTRL_Raccourci(self)
         
         # Validité
-        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, u"Validité")
-        self.radio_illimitee = wx.RadioButton(self, -1, u"Durant la période de validité de l'activité", style=wx.RB_GROUP)
+        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Validité"))
+        self.radio_illimitee = wx.RadioButton(self, -1, _(u"Durant la période de validité de l'activité"), style=wx.RB_GROUP)
         self.radio_limitee = wx.RadioButton(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -382,30 +384,30 @@ class Dialog(wx.Dialog):
         self.OnRadioValidite(None)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une unité")
+        self.SetTitle(_(u"Saisie d'une unité"))
         self.SetSize((650, -1))
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom complet de l'unité")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom complet de l'unité"))
         self.ctrl_abrege.SetMinSize((80, -1))
-        self.ctrl_abrege.SetToolTipString(u"Saisissez ici le nom abrégé de l'unité")
-        self.ctrl_type.SetToolTipString(u"Sélectionnez un type d'unité")
-        self.ctrl_heure_debut.SetToolTipString(u"Saisissez l'heure minimale (Ex : 08:30)")
-        self.ctrl_heure_fin.SetToolTipString(u"Saisissez l'heure maximale (Ex : 09:30)")
-        self.ctrl_heure_debut_fixe.SetToolTipString(u"Cochez cette case si l'heure de début est obligatoirement celle-ci")
-        self.ctrl_heure_fin_fixe.SetToolTipString(u"Cochez cette case si l'heure de fin est obligatoirement celle-ci")
-        self.radio_groupes_tous.SetToolTipString(u"Cochez ici pour que tous les groupes bénéficient de cette unité")
-        self.radio_groupes_suivants.SetToolTipString(u"Cochez ici pour sélectionner certains groupes")
-        self.ctrl_repas.SetToolTipString(u"Cochez cette case si cette unité est ou comporte un repas")
-        self.ctrl_restaurateur.SetToolTipString(u"Selectionnez un restaurateur")
-        self.bouton_restaurateur.SetToolTipString(u"Cliquez ici pour accéder à la gestion des restaurateurs")
-        self.ctrl_incompat.SetToolTipString(u"Cochez les unités qui sont incompatibles avec cette unité")
-        self.radio_illimitee.SetToolTipString(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité")
-        self.radio_limitee.SetToolTipString(u"Cliquez ici pour définir une période de validité précise")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez une date de fin")
-        self.ctrl_raccourci.SetToolTipString(u"La touche de raccourci est utile dans la grille de saisie des \nconsommations : Lorsque cette touche est maintenue enfoncée,\nune consommation de cette unité est automatiquement créée.")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_abrege.SetToolTipString(_(u"Saisissez ici le nom abrégé de l'unité"))
+        self.ctrl_type.SetToolTipString(_(u"Sélectionnez un type d'unité"))
+        self.ctrl_heure_debut.SetToolTipString(_(u"Saisissez l'heure minimale (Ex : 08:30)"))
+        self.ctrl_heure_fin.SetToolTipString(_(u"Saisissez l'heure maximale (Ex : 09:30)"))
+        self.ctrl_heure_debut_fixe.SetToolTipString(_(u"Cochez cette case si l'heure de début est obligatoirement celle-ci"))
+        self.ctrl_heure_fin_fixe.SetToolTipString(_(u"Cochez cette case si l'heure de fin est obligatoirement celle-ci"))
+        self.radio_groupes_tous.SetToolTipString(_(u"Cochez ici pour que tous les groupes bénéficient de cette unité"))
+        self.radio_groupes_suivants.SetToolTipString(_(u"Cochez ici pour sélectionner certains groupes"))
+        self.ctrl_repas.SetToolTipString(_(u"Cochez cette case si cette unité est ou comporte un repas"))
+        self.ctrl_restaurateur.SetToolTipString(_(u"Selectionnez un restaurateur"))
+        self.bouton_restaurateur.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des restaurateurs"))
+        self.ctrl_incompat.SetToolTipString(_(u"Cochez les unités qui sont incompatibles avec cette unité"))
+        self.radio_illimitee.SetToolTipString(_(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité"))
+        self.radio_limitee.SetToolTipString(_(u"Cliquez ici pour définir une période de validité précise"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
+        self.ctrl_raccourci.SetToolTipString(_(u"La touche de raccourci est utile dans la grille de saisie des \nconsommations : Lorsque cette touche est maintenue enfoncée,\nune consommation de cette unité est automatiquement créée."))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
 
     def __do_layout(self):
@@ -541,8 +543,8 @@ class Dialog(wx.Dialog):
             listeDates.sort() 
             
             if len(listeDates) > 0 and self.typeUnite == "Multihoraires" and self.ctrl_type.GetType() != "Multihoraires" :
-                periode = u"entre le %s et le %s" % (UTILS_Dates.DateDDEnFr(listeDates[0]), UTILS_Dates.DateDDEnFr(listeDates[-1]))
-                dlg = wx.MessageDialog(self, u"Des consommations multiples ont déjà été saisies sur %d dates (%s) !\n\nIl est donc impossible de convertir cette unité multihoraire en un autre type d'unité." % (len(listeDates), periode), u"Erreur", wx.OK | wx.ICON_ERROR)
+                periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDates[0]), UTILS_Dates.DateDDEnFr(listeDates[-1]))
+                dlg = wx.MessageDialog(self, _(u"Des consommations multiples ont déjà été saisies sur %d dates (%s) !\n\nIl est donc impossible de convertir cette unité multihoraire en un autre type d'unité.") % (len(listeDates), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -558,13 +560,13 @@ class Dialog(wx.Dialog):
         # Nom
         nom = self.ctrl_nom.GetValue() 
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         abrege = self.ctrl_abrege.GetValue()
         if abrege == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom abrégé !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom abrégé !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -580,21 +582,21 @@ class Dialog(wx.Dialog):
         heure_fin = self.ctrl_heure_fin.GetHeure()
 
         if heure_debut != None and self.ctrl_heure_debut.Validation() == False :
-            dlg = wx.MessageDialog(self, u"L'heure de début n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure de début n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_debut.SetFocus() 
             return False
 
         if heure_fin != None and self.ctrl_heure_fin.Validation() == False :
-            dlg = wx.MessageDialog(self, u"L'heure de fin n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'heure de fin n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_fin.SetFocus() 
             return False
         
         if type == "Multihoraires" and (heure_debut == None or heure_fin == False) :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement spécifier une heure de début et une heure de fin pour les unités de type 'Multihoraire' !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement spécifier une heure de début et une heure de fin pour les unités de type 'Multihoraire' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -606,13 +608,13 @@ class Dialog(wx.Dialog):
         else:
             date_debut = self.ctrl_date_debut.GetDate()
             if date_debut == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de validité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de validité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             date_fin = self.ctrl_date_fin.GetDate()
             if date_fin == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de validité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import datetime
@@ -150,23 +152,23 @@ class Dialog(wx.Dialog):
         self.IDbudget = IDbudget
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, u"Période :")
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Période :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.label_observations = wx.StaticText(self, wx.ID_ANY, u"Notes :")
+        self.label_observations = wx.StaticText(self, wx.ID_ANY, _(u"Notes :"))
         self.ctrl_observations = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
         self.ctrl_observations.SetMinSize((270, -1))
         
         # Postes analytiques
-        self.box_analytiques_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Postes analytiques")
+        self.box_analytiques_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Postes analytiques"))
         self.ctrl_analytiques = CTRL_Analytiques(self)
 
         # Catégories
-        self.box_categories_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Catégories budgétaires")
+        self.box_categories_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Catégories budgétaires"))
         self.notebook = wx.Notebook(self, -1, style=wx.BK_BOTTOM)
         
         self.ctrl_categories_debit = Panel_OL(self.notebook, "debit")
@@ -174,17 +176,17 @@ class Dialog(wx.Dialog):
 
 ##        self.ctrl_categories_debit = OL_Categories_budgetaires.ListView(self.notebook, id=-1, typeCategorie="debit", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 ##        self.ctrl_categories_credit = OL_Categories_budgetaires.ListView(self.notebook, id=-1, typeCategorie="credit", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.notebook.AddPage(self.ctrl_categories_debit, u"Débit")
-        self.notebook.AddPage(self.ctrl_categories_credit, u"Crédit")
+        self.notebook.AddPage(self.ctrl_categories_debit, _(u"Débit"))
+        self.notebook.AddPage(self.ctrl_categories_credit, _(u"Crédit"))
         
-        self.bouton_ajouter_categories = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier_categories = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_supprimer_categories = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ajouter_categories = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier_categories = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer_categories = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -200,9 +202,9 @@ class Dialog(wx.Dialog):
         # Importation de l'opération
         if self.IDbudget != None :
             self.Importation()
-            titre = u"Modification d'un budget"
+            titre = _(u"Modification d'un budget")
         else :
-            titre = u"Saisie d'un budget"
+            titre = _(u"Saisie d'un budget")
         self.SetTitle(titre)
         
         # Importation des catégories
@@ -222,16 +224,16 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce budget (Ex : Année 2015)")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de la période à budgéter")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de la période à budgéter")
-        self.ctrl_observations.SetToolTipString(u"Saisissez des observations")
-        self.bouton_ajouter_categories.SetToolTipString(u"Cliquez ici pour ajouter une catégorie budgétaire")
-        self.bouton_modifier_categories.SetToolTipString(u"Cliquez ici pour modifier la catégorie budgétaire sélectionnée")
-        self.bouton_supprimer_categories.SetToolTipString(u"Cliquez ici pour supprimer la catégorie budgétaire sélectionnée")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce budget (Ex : Année 2015)"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période à budgéter"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période à budgéter"))
+        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations"))
+        self.bouton_ajouter_categories.SetToolTipString(_(u"Cliquez ici pour ajouter une catégorie budgétaire"))
+        self.bouton_modifier_categories.SetToolTipString(_(u"Cliquez ici pour modifier la catégorie budgétaire sélectionnée"))
+        self.bouton_supprimer_categories.SetToolTipString(_(u"Cliquez ici pour supprimer la catégorie budgétaire sélectionnée"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((700, 620))
 
     def __do_layout(self):
@@ -369,35 +371,35 @@ class Dialog(wx.Dialog):
         tracksCategoriesCredit = self.ctrl_categories_credit.ctrl.GetTracks() 
 
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour ce budget !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return False
 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de période pour ce budget !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de période pour ce budget !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période pour ce budget !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début de période !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if analytiques == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement cocher au moins un poste analytique !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un poste analytique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

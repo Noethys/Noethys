@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -27,7 +29,7 @@ class CTRL_Periode(wx.Panel):
         # Contrôles
         self.label_date_debut = wx.StaticText(self, -1, u"Du :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"Au :")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"Au :"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         # Layout
         grid_sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -44,13 +46,13 @@ class CTRL_Periode(wx.Panel):
     
     def Validation(self):
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de validité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de validité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut
             return False
         if self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de validité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut
@@ -243,8 +245,8 @@ class CTRL_Caisses(wx.CheckListBox):
         self.SetListeChoix()
     
     def Importation(self):
-        listeCaisses = [(u"Caisse non spécifiée", 0),]
-        dictCaisses = {"nom":u"Caisse non spécifiée", "IDcaisse":0}
+        listeCaisses = [(_(u"Caisse non spécifiée"), 0),]
+        dictCaisses = {"nom":_(u"Caisse non spécifiée"), "IDcaisse":0}
 
         DB = GestionDB.DB()
         req = """SELECT IDcaisse, nom
@@ -304,16 +306,16 @@ class CTRL_Age(wx.Panel):
         wx.Panel.__init__(self, parent, -1)
         self.parent = parent
 
-        self.radio_tous = wx.RadioButton(self, -1, u"Tous les individus", style=wx.RB_GROUP)
-        self.radio_dates = wx.RadioButton(self, -1, u"Nés entre le")
+        self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les individus"), style=wx.RB_GROUP)
+        self.radio_dates = wx.RadioButton(self, -1, _(u"Nés entre le"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
-        self.label_separation1 = wx.StaticText(self, -1, u"et le")
+        self.label_separation1 = wx.StaticText(self, -1, _(u"et le"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
-        self.radio_age = wx.RadioButton(self, -1, u"Age entre")
+        self.radio_age = wx.RadioButton(self, -1, _(u"Age entre"))
         self.ctrl_age_min = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.ctrl_age_min.SetMinSize((60, -1))
 
-        self.label_separation2 = wx.StaticText(self, -1, u"et")
+        self.label_separation2 = wx.StaticText(self, -1, _(u"et"))
         self.ctrl_age_max = wx.SpinCtrl(self, -1, "", min=0, max=100)
         self.ctrl_age_max.SetMinSize((60, -1))
 
@@ -352,7 +354,7 @@ class CTRL_Age(wx.Panel):
     def Validation(self):
         if self.radio_dates.GetValue() == True :
             if self.ctrl_date_debut.GetDate() == None or self.ctrl_date_fin.GetDate() == None :
-                dlg = wx.MessageDialog(self, u"L'intervalle de dates de naissance semble incorrect !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"L'intervalle de dates de naissance semble incorrect !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -378,12 +380,12 @@ class CTRL_QF(wx.Panel):
         self.parent = parent
         
         # Contrôles
-        self.radio_tous = wx.RadioButton(self, -1, u"Tous les quotients", style=wx.RB_GROUP)
-        self.radio_sans = wx.RadioButton(self, -1, u"Sans quotient")
-        self.radio_qf = wx.RadioButton(self, -1, u"Entre")
+        self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les quotients"), style=wx.RB_GROUP)
+        self.radio_sans = wx.RadioButton(self, -1, _(u"Sans quotient"))
+        self.radio_qf = wx.RadioButton(self, -1, _(u"Entre"))
         self.ctrl_qf_min = wx.SpinCtrl(self, -1, "", min=0, max=99999)
         self.ctrl_qf_min.SetMinSize((70, -1))
-        self.label_separation = wx.StaticText(self, -1, u"et")
+        self.label_separation = wx.StaticText(self, -1, _(u"et"))
         self.ctrl_qf_max = wx.SpinCtrl(self, -1, "", min=0, max=99999)
         self.ctrl_qf_max.SetMinSize((70, -1))
         
@@ -478,47 +480,47 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Commencez par créer un profil de liste afin de constituer une liste de champs persistante. Vous pouvez sélectionner les champs prédéfinis ou paramétrer des champs personnalisés en fonction de vos besoins. Sélectionnez enfin des paramètres conditionnels avant de lancer la création de la liste de données."
-        titre = u"Etat nominatif des consommations"
+        intro = _(u"Commencez par créer un profil de liste afin de constituer une liste de champs persistante. Vous pouvez sélectionner les champs prédéfinis ou paramétrer des champs personnalisés en fonction de vos besoins. Sélectionnez enfin des paramètres conditionnels avant de lancer la création de la liste de données.")
+        titre = _(u"Etat nominatif des consommations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tableaux.png")
         
         # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_periode = CTRL_Periode(self)
         
         # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites.SetMinSize((240, -1))
 
         # Groupes
-        self.box_groupes_staticbox = wx.StaticBox(self, -1, u"Groupes")
+        self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
 
         # Age
-        self.box_age_staticbox = wx.StaticBox(self, -1, u"Age")
+        self.box_age_staticbox = wx.StaticBox(self, -1, _(u"Age"))
         self.ctrl_age = CTRL_Age(self)
 
         # Caisse
-        self.box_caisses_staticbox = wx.StaticBox(self, -1, u"Caisses")
+        self.box_caisses_staticbox = wx.StaticBox(self, -1, _(u"Caisses"))
         self.ctrl_caisses = CTRL_Caisses(self)
 
         # QF
-        self.box_qf_staticbox = wx.StaticBox(self, -1, u"Quotient familial")
+        self.box_qf_staticbox = wx.StaticBox(self, -1, _(u"Quotient familial"))
         self.ctrl_qf = CTRL_QF(self)
         
         # Catégories de tarifs
-        self.box_categories_staticbox = wx.StaticBox(self, -1, u"Catégories de tarifs")
+        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories de tarifs"))
         self.ctrl_categories = CTRL_Categories(self)
         
         # Champs
-        self.box_champs_staticbox = wx.StaticBox(self, -1, u"Champs")
+        self.box_champs_staticbox = wx.StaticBox(self, -1, _(u"Champs"))
         
-        self.label_profil = wx.StaticText(self, -1, u"Profil :")
+        self.label_profil = wx.StaticText(self, -1, _(u"Profil :"))
         self.ctrl_profil = CTRL_Profil(self)
         self.bouton_profils = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-        self.label_champs = wx.StaticText(self, -1, u"Champs :")
+        self.label_champs = wx.StaticText(self, -1, _(u"Champs :"))
         self.ctrl_champs = OL_Etat_nomin_selections.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -526,9 +528,9 @@ class Dialog(wx.Dialog):
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -548,14 +550,14 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
-        self.ctrl_profil.SetToolTipString(u"Selectionnez un profil de liste")
-        self.bouton_profils.SetToolTipString(u"Cliquez ici pour accéder à la gestion des profils")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la liste des champs")
-        self.bouton_monter.SetToolTipString(u"Cliquez ici pour monter le champ sélectionné")
-        self.bouton_descendre.SetToolTipString(u"Cliquez ici pour descendre le champ sélectionné")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher les resultats")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_profil.SetToolTipString(_(u"Selectionnez un profil de liste"))
+        self.bouton_profils.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des profils"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la liste des champs"))
+        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter le champ sélectionné"))
+        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre le champ sélectionné"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher les resultats"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):
@@ -732,7 +734,7 @@ class Dialog(wx.Dialog):
         # Récupération des activités
         listeActivites = self.ctrl_activites.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -741,7 +743,7 @@ class Dialog(wx.Dialog):
         # Récupération des groupes
         listeGroupes = self.ctrl_groupes.GetIDcoches()
         if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun groupe !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -750,7 +752,7 @@ class Dialog(wx.Dialog):
         # Récupération des catégories de tarifs
         listeCategories = self.ctrl_categories.GetIDcoches()
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune catégorie de tarif !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune catégorie de tarif !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -772,7 +774,7 @@ class Dialog(wx.Dialog):
         # Récupération des champs sélectionnés
         listeChamps = self.ctrl_champs.GetTracksSelections()
         if len(listeChamps) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun champ !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -784,8 +786,8 @@ class Dialog(wx.Dialog):
             if champ.type == None :
                 listeChampsIndisponibles.append(champ.code)
         if len(listeChampsIndisponibles) > 0 :
-            message = u"Attention, les %d champs suivants ne sont pas disponibles avec les activités sélectionnées : %s. Ils seront donc exclus des résultats.\n\nSouhaitez-vous quand même continuer ?" % (len(listeChampsIndisponibles), ", ".join(listeChampsIndisponibles))
-            dlg = wx.MessageDialog(self, message, u"Avertissement", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            message = _(u"Attention, les %d champs suivants ne sont pas disponibles avec les activités sélectionnées : %s. Ils seront donc exclus des résultats.\n\nSouhaitez-vous quand même continuer ?") % (len(listeChampsIndisponibles), ", ".join(listeChampsIndisponibles))
+            dlg = wx.MessageDialog(self, message, _(u"Avertissement"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -821,7 +823,7 @@ D'autre part, cette fonctionnalité peut être ardue à appréhender en raison de se
 </FONT>
 </CENTER>
 """
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information", nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
         dlg.Destroy()

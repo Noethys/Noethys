@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 """
 Traduction d'un nombre en texte.
 Réalisation : Michel Claveau    http://mclaveau.com
@@ -93,7 +94,7 @@ def trad(nb, unite="euro", decim="centime"):
     z3=(nb-z1)*100
     z2=int(round(z3,0))
     if z1==0:
-        ch=u"zéro"
+        ch=_(u"zéro")
     else:
         ch=tradn(abs(z1))
     if z1>1 or z1<-1:

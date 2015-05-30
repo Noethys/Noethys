@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import locale
@@ -422,17 +424,17 @@ class ListView(FastObjectListView):
         
         dictColonnes = {
             "IDfacture" : ColumnDefn(u"", "left", 0, "IDfacture", typeDonnee="entier"),
-            "date" : ColumnDefn(u"Date", "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            "date" : ColumnDefn(_(u"Date"), "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
             "numero" : ColumnDefn(u"N°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
-            "famille" : ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
-            "date_debut" : ColumnDefn(u"Date début", "centre", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
-            "date_fin" : ColumnDefn(u"Date fin", "centre", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            "total" : ColumnDefn(u"Total", "right", 65, "total", typeDonnee="montant", stringConverter=FormateMontant),
-            "regle" : ColumnDefn(u"Réglé", "right", 65, "regle", typeDonnee="montant", stringConverter=FormateMontant),
-            "solde" : ColumnDefn(u"Solde", "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
-            "solde_actuel" : ColumnDefn(u"Solde actuel", "right", 90, "soldeActuel", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageSoldeActuel),
-            "date_echeance" : ColumnDefn(u"Echéance", "centre", 80, "date_echeance", typeDonnee="date", stringConverter=FormateDate),
-            "nom_lot" : ColumnDefn(u"Lot", "left", 150, "nomLot", typeDonnee="texte"),
+            "famille" : ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            "date_debut" : ColumnDefn(_(u"Date début"), "centre", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
+            "date_fin" : ColumnDefn(_(u"Date fin"), "centre", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            "total" : ColumnDefn(_(u"Total"), "right", 65, "total", typeDonnee="montant", stringConverter=FormateMontant),
+            "regle" : ColumnDefn(_(u"Réglé"), "right", 65, "regle", typeDonnee="montant", stringConverter=FormateMontant),
+            "solde" : ColumnDefn(_(u"Solde"), "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
+            "solde_actuel" : ColumnDefn(_(u"Solde actuel"), "right", 90, "soldeActuel", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageSoldeActuel),
+            "date_echeance" : ColumnDefn(_(u"Echéance"), "centre", 80, "date_echeance", typeDonnee="date", stringConverter=FormateDate),
+            "nom_lot" : ColumnDefn(_(u"Lot"), "left", 150, "nomLot", typeDonnee="texte"),
             "prelevement" : ColumnDefn(u"P", "left", 20, "", imageGetter=GetImagePrelevement),
             "email" : ColumnDefn(u"E", "left", 20, "", imageGetter=GetImageEmail),
             }
@@ -454,7 +456,7 @@ class ListView(FastObjectListView):
             if self.checkColonne == True : tri += 1
             self.SetSortColumn(self.columns[tri])
 
-        self.SetEmptyListMsg(u"Aucune facture")
+        self.SetEmptyListMsg(_(u"Aucune facture"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
             
@@ -495,14 +497,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Rééditer la facture
-        item = wx.MenuItem(menuPop, 60, u"Aperçu PDF de la facture")
+        item = wx.MenuItem(menuPop, 60, _(u"Aperçu PDF de la facture"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Reedition, id=60)
 
         # Item Envoyer la facture par Email
-        item = wx.MenuItem(menuPop, 90, u"Envoyer la facture par Email")
+        item = wx.MenuItem(menuPop, 90, _(u"Envoyer la facture par Email"))
         bmp = wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -511,7 +513,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -523,13 +525,13 @@ class ListView(FastObjectListView):
         if self.checkColonne == True :
             
             # Item Tout cocher
-            item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+            item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
             # Item Tout décocher
-            item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+            item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheRien, id=80)
@@ -537,14 +539,14 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -553,14 +555,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -571,7 +573,7 @@ class ListView(FastObjectListView):
     
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à imprimer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -583,7 +585,7 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la facture par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à envoyer par Email !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -604,10 +606,10 @@ class ListView(FastObjectListView):
         return dictChampsFusion[IDfacture]
     
     def GetTextesImpression(self):
-        total = u"%d factures. " % len(self.donnees)
+        total = _(u"%d factures. ") % len(self.donnees)
         if self.filtres != None :
             from DLG_Filtres_factures import GetTexteFiltres 
-            intro = total + u"Filtres de sélection : %s" % GetTexteFiltres(self.filtres)
+            intro = total + _(u"Filtres de sélection : %s") % GetTexteFiltres(self.filtres)
         else :
             intro = None
         return intro, total
@@ -615,22 +617,22 @@ class ListView(FastObjectListView):
     def Apercu(self, event=None):
         import UTILS_Printer
         txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des factures", intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event=None):
         import UTILS_Printer
         txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des factures", intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des factures"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des factures")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des factures"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des factures")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des factures"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -657,7 +659,7 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur == None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "supprimer") == False : return
         
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -665,7 +667,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les %d factures cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d factures cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -674,7 +676,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la facture n°%d ?" % listeSelections[0].numero, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la facture n°%d ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -691,14 +693,14 @@ class ListView(FastObjectListView):
         self.MAJ() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"%d facture(s) supprimée(s) avec succès." % len(listeSelections), u"Suppression", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d facture(s) supprimée(s) avec succès.") % len(listeSelections), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -720,7 +722,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une facture...")
+        self.SetDescriptiveText(_(u"Rechercher une facture..."))
         self.ShowSearchButton(True)
         
         if listview != None :
@@ -760,7 +762,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "date_edition" : {"mode" : "nombre", "singulier" : u"facture", "pluriel" : u"factures", "alignement" : wx.ALIGN_CENTER},
+            "date_edition" : {"mode" : "nombre", "singulier" : _(u"facture"), "pluriel" : _(u"factures"), "alignement" : wx.ALIGN_CENTER},
             "total" : {"mode" : "total"},
             "regle" : {"mode" : "total"},
             "solde" : {"mode" : "total"},

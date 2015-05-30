@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import CTRL_Saisie_date
@@ -129,46 +131,46 @@ class Dialog(wx.Dialog):
         self.IDoperation = IDoperation
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_date = wx.StaticText(self, wx.ID_ANY, u"Date :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_date = wx.StaticText(self, wx.ID_ANY, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
-        self.label_libelle = wx.StaticText(self, wx.ID_ANY, u"Libellé :")
+        self.label_libelle = wx.StaticText(self, wx.ID_ANY, _(u"Libellé :"))
         self.ctrl_libelle = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_tiers = wx.StaticText(self, wx.ID_ANY, u"Tiers :")
+        self.label_tiers = wx.StaticText(self, wx.ID_ANY, _(u"Tiers :"))
         self.ctrl_tiers = CTRL_Tiers(self)
-        self.label_mode = wx.StaticText(self, wx.ID_ANY, u"Mode :")
+        self.label_mode = wx.StaticText(self, wx.ID_ANY, _(u"Mode :"))
         self.ctrl_mode = CTRL_Mode(self)
-        self.label_num_cheque = wx.StaticText(self, wx.ID_ANY, u"N° Chq. :")
+        self.label_num_cheque = wx.StaticText(self, wx.ID_ANY, _(u"N° Chq. :"))
         self.ctrl_num_cheque = wx.TextCtrl(self, wx.ID_ANY, u"")
         self.ctrl_num_cheque.Enable(False) 
         
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Options")
-        self.label_releve = wx.StaticText(self, wx.ID_ANY, u"Relevé :")
+        self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
+        self.label_releve = wx.StaticText(self, wx.ID_ANY, _(u"Relevé :"))
         self.ctrl_releve = CTRL_Saisie_releve_bancaire.CTRL(self, IDcompte_bancaire=self.IDcompte_bancaire, afficherBouton=False)
-        self.label_num_piece = wx.StaticText(self, wx.ID_ANY, u"N° Pièce :")
+        self.label_num_piece = wx.StaticText(self, wx.ID_ANY, _(u"N° Pièce :"))
         self.ctrl_num_piece = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_observations = wx.StaticText(self, wx.ID_ANY, u"Notes :")
+        self.label_observations = wx.StaticText(self, wx.ID_ANY, _(u"Notes :"))
         self.ctrl_observations = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
         self.ctrl_observations.SetMinSize((200, -1))
 
         # Ventilation
-        self.box_ventilation_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Ventilation")
+        self.box_ventilation_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Ventilation"))
         self.listviewAvecFooter = OL_Ventilation_operation.ListviewAvecFooter(self, kwargs={"typeOperation" : self.typeOperation}) 
         self.ctrl_ventilation = self.listviewAvecFooter.GetListview()
         
-        self.bouton_ajouter_ventilation = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier_ventilation = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_supprimer_ventilation = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ajouter_ventilation = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier_ventilation = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer_ventilation = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
-        self.bouton_tiers = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_mode = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_tiers = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_mode = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()
         self.__do_layout()
@@ -189,11 +191,11 @@ class Dialog(wx.Dialog):
         # Importation de l'opération
         if self.IDoperation != None :
             self.Importation()
-            titre = u"Modification d'une opération"
+            titre = _(u"Modification d'une opération")
         else :
-            titre = u"Saisie d'une opération"
-        if self.typeOperation == "credit" : titre += u" au crédit"
-        if self.typeOperation == "debit" : titre += u" au débit"
+            titre = _(u"Saisie d'une opération")
+        if self.typeOperation == "credit" : titre += _(u" au crédit")
+        if self.typeOperation == "debit" : titre += _(u" au débit")
         self.SetTitle(titre)
         
         # Importation de la ventilation
@@ -209,21 +211,21 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(u"Saisissez la date de l'opération")
-        self.ctrl_libelle.SetToolTipString(u"Saisissez un libellé")
-        self.ctrl_tiers.SetToolTipString(u"Sélectionnez un tiers")
-        self.bouton_tiers.SetToolTipString(u"Cliquez ici pour accéder à la gestion des tiers")
-        self.ctrl_mode.SetToolTipString(u"Sélectionnez un mode")
-        self.bouton_mode.SetToolTipString(u"Cliquez ici pour accéder à la gestion des modes")
-        self.ctrl_num_cheque.SetToolTipString(u"Saisissez le numéro de chèque")
-        self.ctrl_observations.SetToolTipString(u"Saisissez des observations")
-        self.ctrl_num_piece.SetToolTipString(u"Saisissez le numéro de pièce")
-        self.bouton_ajouter_ventilation.SetToolTipString(u"Cliquez ici pour ajouter une ventilation")
-        self.bouton_modifier_ventilation.SetToolTipString(u"Cliquez ici pour modifier la ventilation sélectionnée")
-        self.bouton_supprimer_ventilation.SetToolTipString(u"Cliquez ici pour supprimer la ventilation sélectionnée")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de l'opération"))
+        self.ctrl_libelle.SetToolTipString(_(u"Saisissez un libellé"))
+        self.ctrl_tiers.SetToolTipString(_(u"Sélectionnez un tiers"))
+        self.bouton_tiers.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des tiers"))
+        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez un mode"))
+        self.bouton_mode.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modes"))
+        self.ctrl_num_cheque.SetToolTipString(_(u"Saisissez le numéro de chèque"))
+        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations"))
+        self.ctrl_num_piece.SetToolTipString(_(u"Saisissez le numéro de pièce"))
+        self.bouton_ajouter_ventilation.SetToolTipString(_(u"Cliquez ici pour ajouter une ventilation"))
+        self.bouton_modifier_ventilation.SetToolTipString(_(u"Cliquez ici pour modifier la ventilation sélectionnée"))
+        self.bouton_supprimer_ventilation.SetToolTipString(_(u"Cliquez ici pour supprimer la ventilation sélectionnée"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((750, 520))
 
     def __do_layout(self):
@@ -428,21 +430,21 @@ class Dialog(wx.Dialog):
         
         # Validation des données saisies
         if date == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
 
         if libelle == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un libellé pour cette opération !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un libellé pour cette opération !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_libelle.SetFocus()
             return False
 
         if IDtiers == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné le tiers.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le tiers.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -450,7 +452,7 @@ class Dialog(wx.Dialog):
                 return False
 
         if IDmode == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné le mode.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le mode.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -459,7 +461,7 @@ class Dialog(wx.Dialog):
 
         if self.ctrl_num_cheque.IsEnabled() :
             if num_piece == "" :
-                dlg = wx.MessageDialog(self, u"Vous n'avez pas renseigné le numéro de chèque.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez pas renseigné le numéro de chèque.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -473,7 +475,7 @@ class Dialog(wx.Dialog):
             totalVentilation += track.montant
 
         if totalVentilation == 0.0 :
-            dlg = wx.MessageDialog(self, u"Le montant de cette opération est de 0.00 ¤.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le montant de cette opération est de 0.00 ¤.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :

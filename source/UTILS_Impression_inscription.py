@@ -8,18 +8,20 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import os
 import FonctionsPerso
 import UTILS_Conversion
 import UTILS_Dates
 import wx
+import CTRL_Bouton_image
 
 import DLG_Noedoc
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", u"Euro")
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", u"Centime")
+MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
+MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
 from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 from reportlab.platypus import Paragraph, Spacer, Table, TableStyle, PageBreak
@@ -109,7 +111,7 @@ class Impression():
                 # ------------------- TITRE -----------------
                 dataTableau = []
                 largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
-                dataTableau.append((u"Confirmation d'inscription",))
+                dataTableau.append((_(u"Confirmation d'inscription"),))
                 dataTableau.append((u"",))
                 style = TableStyle([
                         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
@@ -150,11 +152,11 @@ class Impression():
                                           fontName="Helvetica-Bold",
                                           fontSize=9,
                                         )
-                dataTableau.append( (u"Nom", Paragraph(DICT_VALEURS["{INDIVIDU_NOM}"], paraStyle)) )
-                dataTableau.append( (u"Prénom", Paragraph(DICT_VALEURS["{INDIVIDU_PRENOM}"], paraStyle)) )
-                dataTableau.append( (u"Activité", Paragraph(DICT_VALEURS["{ACTIVITE_NOM_LONG}"], paraStyle)) )
-                dataTableau.append( (u"Groupe", Paragraph(DICT_VALEURS["{GROUPE_NOM_LONG}"], paraStyle)) )
-                dataTableau.append( (u"Catégorie", Paragraph(DICT_VALEURS["{NOM_CATEGORIE_TARIF}"], paraStyle)) )
+                dataTableau.append( (_(u"Nom"), Paragraph(DICT_VALEURS["{INDIVIDU_NOM}"], paraStyle)) )
+                dataTableau.append( (_(u"Prénom"), Paragraph(DICT_VALEURS["{INDIVIDU_PRENOM}"], paraStyle)) )
+                dataTableau.append( (_(u"Activité"), Paragraph(DICT_VALEURS["{ACTIVITE_NOM_LONG}"], paraStyle)) )
+                dataTableau.append( (_(u"Groupe"), Paragraph(DICT_VALEURS["{GROUPE_NOM_LONG}"], paraStyle)) )
+                dataTableau.append( (_(u"Catégorie"), Paragraph(DICT_VALEURS["{NOM_CATEGORIE_TARIF}"], paraStyle)) )
 
                 
                 style = TableStyle([
@@ -177,7 +179,7 @@ class Impression():
         except Exception, err :
             print "Erreur dans ouverture PDF :", err
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

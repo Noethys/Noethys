@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.masked as masked
 import sqlite3
 import sys
@@ -110,7 +112,7 @@ class TextCtrlCp(masked.TextCtrl):
         # Code postal introuvable
         if nbreReponses == 0:
             if textCode.strip() != '':
-                dlg = wx.MessageDialog(self, u"Ce code postal n'est pas répertorié dans la base de données. \nVérifiez que vous n'avez pas fait d'erreur de saisie.", "Information", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Ce code postal n'est pas répertorié dans la base de données. \nVérifiez que vous n'avez pas fait d'erreur de saisie."), "Information", wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
             event.Skip()
@@ -134,10 +136,10 @@ class TextCtrlCp(masked.TextCtrl):
     def ChoixVilles(self, cp, listeReponses):
         """ Boîte de dialogue pour donner le choix entre plusieurs villes possédant un code postal identique """
         resultat = ""
-        titre = u"Sélection d'une ville"
+        titre = _(u"Sélection d'une ville")
         nbreReponses = len(listeReponses)
         listeReponses.sort()
-        message = str(nbreReponses) + u" villes possèdent le code postal " + str(cp) + u". Double-cliquez sur\nle nom d'une ville pour la sélectionner :"
+        message = str(nbreReponses) + _(u" villes possèdent le code postal ") + str(cp) + _(u". Double-cliquez sur\nle nom d'une ville pour la sélectionner :")
         dlg = wx.SingleChoiceDialog(self, message, titre, listeReponses, wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             resultat = dlg.GetStringSelection()
@@ -148,16 +150,16 @@ class TextCtrlCp(masked.TextCtrl):
         """ Créé une info-bulle pour les cp et villes pour indiquer les régions et départements """
         cp = self.GetValue()
         if cp == "" or cp == "     " :
-            controle.SetToolTipString(u"Saisissez un code postal")
+            controle.SetToolTipString(_(u"Saisissez un code postal"))
         else:
             try :
                 num_dep = cp[:2]
                 nomDepartement, num_region = self.dictDepartements[num_dep]
                 nomRegion = self.dictRegions[num_region]
-                texte = u"Département : %s (%s)\nRégion : %s" % (nomDepartement, num_dep, nomRegion)
+                texte = _(u"Département : %s (%s)\nRégion : %s") % (nomDepartement, num_dep, nomRegion)
                 self.SetToolTipString(texte)
             except :
-                self.SetToolTipString(u"Le code postal saisi ne figure pas dans la base de données")
+                self.SetToolTipString(_(u"Le code postal saisi ne figure pas dans la base de données"))
 
 
 class TextCtrlVille(wx.TextCtrl):
@@ -203,7 +205,7 @@ class TextCtrlVille(wx.TextCtrl):
 
         # Si la ville saisie n'existe pas
         if nbreCodes == 0:
-            dlg = wx.MessageDialog(self, u"Cette ville n'est pas répertoriée dans la base de données. \nVérifiez que vous n'avez pas fait d'erreur de saisie.", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette ville n'est pas répertoriée dans la base de données. \nVérifiez que vous n'avez pas fait d'erreur de saisie."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         
@@ -243,10 +245,10 @@ class TextCtrlVille(wx.TextCtrl):
     def ChoixCodes(self, ville, listeReponses):
         """ Boîte de dialogue pour donner le choix entre plusieurs villes possédant le même nom """
         resultat = ""
-        titre = u"Sélection d'une ville"
+        titre = _(u"Sélection d'une ville")
         nbreReponses = len(listeReponses)
         listeReponses.sort()
-        message = str(nbreReponses) + u" villes portent le nom " + str(ville) + u". Double-cliquez sur\nle code postal d'une ville pour la sélectionner :"
+        message = str(nbreReponses) + _(u" villes portent le nom ") + str(ville) + _(u". Double-cliquez sur\nle code postal d'une ville pour la sélectionner :")
         dlg = wx.SingleChoiceDialog(self, message, titre, listeReponses, wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             resultat = dlg.GetStringSelection()
@@ -264,7 +266,7 @@ class Adresse(wx.Panel):
         mask_cp = UTILS_Config.GetParametre("mask_cp", "#####")
         
         self.ctrl_cp = TextCtrlCp(self, value="", listeVilles=self.listeVilles, activeAutoComplete=activeAutoComplete, size=(55, -1), style=wx.TE_CENTRE, mask=mask_cp) 
-        self.label_ville = wx.StaticText(self, -1, u"Ville :")
+        self.label_ville = wx.StaticText(self, -1, _(u"Ville :"))
         self.ctrl_ville = TextCtrlVille(self, value="", ctrlCp=self.ctrl_cp, listeVilles=self.listeVilles, listeNomsVilles=self.listeNomsVilles, activeAutoComplete=activeAutoComplete)
         self.ctrl_cp.ctrlVille = self.ctrl_ville
         self.bouton_options = wx.Button(self, -1, "...", size=(20, 20))
@@ -280,9 +282,9 @@ class Adresse(wx.Panel):
 
     def __set_properties(self):
         self.ctrl_cp.SetMinSize((50, -1))
-        self.ctrl_cp.SetToolTipString(u"Saisissez ici le code postal de la ville")
-        self.ctrl_ville.SetToolTipString(u"Saisissez ici le nom de la ville")
-        self.bouton_options.SetToolTipString(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non présente dans la base\nde données du logiciel")
+        self.ctrl_cp.SetToolTipString(_(u"Saisissez ici le code postal de la ville"))
+        self.ctrl_ville.SetToolTipString(_(u"Saisissez ici le nom de la ville"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non présente dans la base\nde données du logiciel"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)

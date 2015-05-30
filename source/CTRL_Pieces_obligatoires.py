@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
@@ -49,7 +51,7 @@ class CTRL(HTL.HyperTreeList):
         self.dictItems = {}
 
         # Création des colonnes
-        self.AddColumn(u"Pièces à fournir")
+        self.AddColumn(_(u"Pièces à fournir"))
         self.SetColumnWidth(0, largeurColonne)
         self.SetColumnAlignment(0, wx.ALIGN_LEFT)
                 
@@ -81,7 +83,7 @@ class CTRL(HTL.HyperTreeList):
         if donnees["type"] != "piece" : return
         # Si la pièce est valide, on annule
         if donnees["valide"] != "pasok" :
-            dlg = wx.MessageDialog(self, u"Une pièce valide existe déjà !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Une pièce valide existe déjà !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -243,7 +245,7 @@ class CTRL(HTL.HyperTreeList):
             dictPieces[IDfamille].sort()
         
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches
         for IDfamille, valeurs in dictPieces.iteritems() :
@@ -251,12 +253,12 @@ class CTRL(HTL.HyperTreeList):
             # Niveau 1 : Titulaires des familles
             if nbreFamilles > 1 :
                 if IDfamille == None :
-                    label = u"Pièces indépendantes"
+                    label = _(u"Pièces indépendantes")
                 else:
                     if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
                         label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
                     else:
-                        label = u"IDfamille=%d" % IDfamille
+                        label = _(u"IDfamille=%d") % IDfamille
                 niveau1 = self.AppendItem(self.root, label)
                 self.SetPyData(niveau1, {"type":"famille", "IDfamille":IDfamille} )
                 self.SetItemBold(niveau1, True)
@@ -268,7 +270,7 @@ class CTRL(HTL.HyperTreeList):
                 if publicPiece == "famille" or self.IDindividu != None :
                     label = nomPiece
                 else:
-                    label = u"%s de %s" % (nomPiece, prenom)
+                    label = _(u"%s de %s") % (nomPiece, prenom)
                 niveau2 = self.AppendItem(niveau1, label)
                 self.SetPyData(niveau2, {"type":"piece", "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide, "nomPiece":nomPiece} )
                 self.dictItems[(IDfamille, IDtype_piece, IDindividu)] = niveau2

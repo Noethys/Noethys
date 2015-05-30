@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import GestionDB
 import CTRL_Image_mode
@@ -152,24 +154,24 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des émetteurs de règlements. Commencez toujours par sélectionner un mode de règlement dans la liste déroulante puis utilisez les boutons de commande de la liste des émetteurs."
-        titre = u"Gestion des émetteurs de règlements"
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des émetteurs de règlements. Commencez toujours par sélectionner un mode de règlement dans la liste déroulante puis utilisez les boutons de commande de la liste des émetteurs.")
+        titre = _(u"Gestion des émetteurs de règlements")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Mode_reglement.png")
         
         # Mode
-        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, u"Mode de règlement")
-        self.label_mode = wx.StaticText(self, -1, u"Mode de règlement :")
+        self.staticbox_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de règlement"))
+        self.label_mode = wx.StaticText(self, -1, _(u"Mode de règlement :"))
         self.ctrl_mode = CTRL_Mode(self)
         
         # Emetteurs
-        self.staticbox_emetteurs_staticbox = wx.StaticBox(self, -1, u"Emetteurs")
+        self.staticbox_emetteurs_staticbox = wx.StaticBox(self, -1, _(u"Emetteurs"))
         self.ctrl_emetteurs = OL_Emetteurs.ListView(self, id=-1, name="OL_Emetteurs", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
-        self.boutons_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.boutons_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -185,12 +187,12 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_mode.SetToolTipString(u"Sélectionnez ici un mode de règlement")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un émetteur à ce mode de règlement")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'émetteur sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'émetteur sélectionné dans la liste")
-        self.boutons_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer la fenetre")
+        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez ici un mode de règlement"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un émetteur à ce mode de règlement"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'émetteur sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'émetteur sélectionné dans la liste"))
+        self.boutons_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer la fenetre"))
         self.SetMinSize((600, 640))
 
     def __do_layout(self):

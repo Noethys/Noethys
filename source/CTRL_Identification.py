@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 
@@ -98,7 +100,7 @@ class MyFrame(wx.Frame):
 # --------------------------- DLG de saisie de mot de passe ----------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, id=-1, title=u"Identification", listeUtilisateurs=[], nomFichier=None):
+    def __init__(self, parent, id=-1, title=_(u"Identification"), listeUtilisateurs=[], nomFichier=None):
         wx.Dialog.__init__(self, parent, id, title, name="DLG_mdp")
         self.parent = parent
         self.listeUtilisateurs = listeUtilisateurs
@@ -106,20 +108,20 @@ class Dialog(wx.Dialog):
         self.dictUtilisateur = None
         
         if self.nomFichier != None :
-            self.SetTitle(u"Ouverture du fichier %s" % self.nomFichier)
+            self.SetTitle(_(u"Ouverture du fichier %s") % self.nomFichier)
             
         self.staticbox = wx.StaticBox(self, -1, "")
-        self.label = wx.StaticText(self, -1, u"Veuillez saisir votre code d'identification personnel :")
+        self.label = wx.StaticText(self, -1, _(u"Veuillez saisir votre code d'identification personnel :"))
         self.ctrl_mdp = CTRL(self, listeUtilisateurs=self.listeUtilisateurs, modeDLG=True)
         
         # Texte pour rappeller mot de passe du fichier Exemple
-        self.label_exemple = wx.StaticText(self, -1, u"Le mot de passe des fichiers exemples est 'aze'")
+        self.label_exemple = wx.StaticText(self, -1, _(u"Le mot de passe des fichiers exemples est 'aze'"))
         self.label_exemple.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
         self.label_exemple.SetForegroundColour((130, 130, 130))
         if nomFichier == None or nomFichier.startswith("EXEMPLE_") == False :
             self.label_exemple.Show(False)
         
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -127,7 +129,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mdp.SetFocus() 
         
     def __set_properties(self):
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.ctrl_mdp.SetMinSize((300, -1))
 
     def __do_layout(self):

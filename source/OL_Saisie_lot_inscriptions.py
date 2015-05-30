@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.dialogs as dialogs
 import GestionDB
 import UTILS_Dates
@@ -108,7 +110,7 @@ class ListView(FastObjectListView):
         
         def FormateAge(age):
             if age == None : return ""
-            return u"%d ans" % age
+            return _(u"%d ans") % age
         
         def FormateInscrit(inscrit):
             if inscrit == "oui" :
@@ -117,22 +119,22 @@ class ListView(FastObjectListView):
                 return ""
             
         liste_Colonnes = [
-            ColumnDefn(u"IDindividu", "left", 0, "IDindividu", typeDonnee="entier"),
-            ColumnDefn(u"Inscrit", 'left', 50, "inscrit", typeDonnee="texte", stringConverter=FormateInscrit),
-            ColumnDefn(u"Nom", 'left', 120, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Prénom", "left", 120, "prenom", typeDonnee="texte"),
-            ColumnDefn(u"Date naiss.", "left", 80, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Age", "left", 60, "age", typeDonnee="entier", stringConverter=FormateAge),
-            ColumnDefn(u"Famille", "left", 280, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Rue", "left", 200, "rue", typeDonnee="texte"),
-            ColumnDefn(u"CP", "left", 50, "cp", typeDonnee="texte"),
-            ColumnDefn(u"Ville", "left", 150, "ville", typeDonnee="texte"),
-            ColumnDefn(u"Secteur", "left", 150, "nomSecteur", typeDonnee="texte"),
+            ColumnDefn(_(u"IDindividu"), "left", 0, "IDindividu", typeDonnee="entier"),
+            ColumnDefn(_(u"Inscrit"), 'left', 50, "inscrit", typeDonnee="texte", stringConverter=FormateInscrit),
+            ColumnDefn(_(u"Nom"), 'left', 120, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Prénom"), "left", 120, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Date naiss."), "left", 80, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Age"), "left", 60, "age", typeDonnee="entier", stringConverter=FormateAge),
+            ColumnDefn(_(u"Famille"), "left", 280, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Rue"), "left", 200, "rue", typeDonnee="texte"),
+            ColumnDefn(_(u"CP"), "left", 50, "cp", typeDonnee="texte"),
+            ColumnDefn(_(u"Ville"), "left", 150, "ville", typeDonnee="texte"),
+            ColumnDefn(_(u"Secteur"), "left", 150, "nomSecteur", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucun individu")
+        self.SetEmptyListMsg(_(u"Aucun individu"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[3])
         self.SetObjects(self.donnees)
@@ -150,14 +152,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -166,14 +168,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -184,21 +186,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des individus à inscrire", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus à inscrire"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des individus à inscrire", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus à inscrire"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des individus à inscrire")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des individus à inscrire"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des individus à inscrire")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des individus à inscrire"))
     
     def SetIDactivite(self, IDactivite=None):
         self.IDactivite = IDactivite
@@ -216,18 +218,18 @@ class ListView(FastObjectListView):
         """ Lance la procédure d'inscription """
         tracks = self.GetCheckedObjects() 
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment inscrire %d individus à l'activité '%s' ?" % (len(tracks), nomActivite), u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment inscrire %d individus à l'activité '%s' ?") % (len(tracks), nomActivite), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy() 
         if reponse  != wx.ID_YES :
             return
         
-        dlgprogress = wx.ProgressDialog(u"Veuillez patienter", u"Lancement de la procédure...", maximum=len(tracks), parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de la procédure..."), maximum=len(tracks), parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         
         listeAnomalies = []
         listeValidees = []
@@ -239,11 +241,11 @@ class ListView(FastObjectListView):
             else :
                 nomIndividu = u"%s %s" % (track.nom, track.prenom)
             
-            keepGoing, skip = dlgprogress.Update(index, u"[%d/%d] Inscription de %s..." % (index, len(tracks), nomIndividu))
+            keepGoing, skip = dlgprogress.Update(index, _(u"[%d/%d] Inscription de %s...") % (index, len(tracks), nomIndividu))
             
             # Vérifie si individu déjà inscrit
             if track.inscrit == "oui" :
-                listeAnomalies.append(u"%s (Famille de %s) : Individu déjà inscrit" % (nomIndividu, track.nomTitulaires))
+                listeAnomalies.append(_(u"%s (Famille de %s) : Individu déjà inscrit") % (nomIndividu, track.nomTitulaires))
                 index += 1
                 
             else :
@@ -267,7 +269,7 @@ class ListView(FastObjectListView):
                     "IDindividu" : track.IDindividu,
                     "IDfamille" : track.IDfamille,
                     "IDcategorie" : 18, 
-                    "action" : u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'" % (nomActivite, nomGroupe, nomCategorie)
+                    "action" : _(u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
                     },])
                 
                 # Saisie de forfaits auto
@@ -293,13 +295,13 @@ class ListView(FastObjectListView):
         
         # Messages de fin
         if len(listeAnomalies) > 0 :
-            message1 = u"%d inscriptions ont été créées avec succès mais les %d anomalies suivantes ont été trouvées :" % (len(listeValidees), len(listeAnomalies))
+            message1 = _(u"%d inscriptions ont été créées avec succès mais les %d anomalies suivantes ont été trouvées :") % (len(listeValidees), len(listeAnomalies))
             message2 = u"\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption = u"Inscription", msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : u"Ok"})
+            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Inscription"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
         else :
-            dlg = wx.MessageDialog(self, u"%d inscriptions ont été créées avec succès !" % len(listeValidees), u"Fin", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"%d inscriptions ont été créées avec succès !") % len(listeValidees), _(u"Fin"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
 

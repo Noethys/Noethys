@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import os
 import sys
@@ -38,11 +40,11 @@ def GetTexteNoms(listeNoms=[]):
     nbreIndividus = len(listeNoms)
     if nbreIndividus == 0 : texteNoms = u""
     if nbreIndividus == 1 : texteNoms = listeNoms[0]
-    if nbreIndividus == 2 : texteNoms = u"%s et %s" % (listeNoms[0], listeNoms[1])
+    if nbreIndividus == 2 : texteNoms = _(u"%s et %s") % (listeNoms[0], listeNoms[1])
     if nbreIndividus > 2 :
         for texteNom in listeNoms[:-2] :
             texteNoms += u"%s, " % texteNom
-        texteNoms += u"%s et %s" % (listeNoms[-2], listeNoms[-1])
+        texteNoms += _(u"%s et %s") % (listeNoms[-2], listeNoms[-1])
     return texteNoms
 
 def Supprime_accent(texte):
@@ -159,23 +161,23 @@ class Dialog(wx.Dialog):
         self.donnees = {}
         
         # Attestations
-        self.staticbox_attestations_staticbox = wx.StaticBox(self, -1, u"Attestations à créer")
+        self.staticbox_attestations_staticbox = wx.StaticBox(self, -1, _(u"Attestations à créer"))
         self.ctrl_attestations = CTRL_Attestations_selection.CTRL(self, date_debut=self.date_debut, date_fin=self.date_fin, dateNaiss=self.dateNaiss, listeActivites=self.listeActivites, listePrestations=self.listePrestations)
         
-        self.hyper_payes = Hyperlien(self, label=u"Sélectionner uniquement les payés", infobulle=u"Cliquez ici pour sélectionner uniquement les payés", URL="payes")
+        self.hyper_payes = Hyperlien(self, label=_(u"Sélectionner uniquement les payés"), infobulle=_(u"Cliquez ici pour sélectionner uniquement les payés"), URL="payes")
         self.label_separation_1 = wx.StaticText(self, -1, u"|")
-        self.hyper_tout = Hyperlien(self, label=u"Tout sélectionner", infobulle=u"Cliquez ici pour tout sélectionner", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Cliquez ici pour tout sélectionner"), URL="tout")
         self.label_separation_2 = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout désélectionner", infobulle=u"Cliquez ici pour tout désélectionner", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout désélectionner"), infobulle=_(u"Cliquez ici pour tout désélectionner"), URL="rien")
 
         # Options des documents
         self.ctrl_parametres = CTRL_Attestations_options.CTRL(self, listeActivites=listeActivites)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_liste = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Imprimer_liste.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_liste = CTRL_Bouton_image.CTRL(self, texte=_(u"Liste"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListe, self.bouton_liste)
@@ -190,11 +192,11 @@ class Dialog(wx.Dialog):
         self.ctrl_attestations.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(u"Sélection des attestations à éditer")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_liste.SetToolTipString(u"Cliquez ici pour imprimer la liste affichée")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour créer l'aperçu des attestations (PDF)")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Sélection des attestations à éditer"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_liste.SetToolTipString(_(u"Cliquez ici pour imprimer la liste affichée"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour créer l'aperçu des attestations (PDF)"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((600, 650))
 
     def __do_layout(self):
@@ -284,7 +286,7 @@ class Dialog(wx.Dialog):
         # Récupération du signataire
         infosSignataire = self.ctrl_parametres.ctrl_parametres.GetInfosSignataire() 
         if infosSignataire == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun signataire !", u"Annulation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -294,7 +296,7 @@ class Dialog(wx.Dialog):
     
         # Si aucune attestation à créer
         if len(dictComptes) == 0 : 
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune attestation à créer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune attestation à créer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -315,17 +317,17 @@ class Dialog(wx.Dialog):
         # Création des PDF à l'unité
         repertoire = dictOptions["repertoire_copie"]
         if repertoire not in (None, "") :
-            dlgAttente = PBI.PyBusyInfo(u"Génération des attestations à l'unité au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Génération des attestations à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             try :
                 index = 0
                 for IDcompte_payeur, dictCompte in dictComptes.iteritems() :
                     IDattestation = dictCompte["num_attestation"]
                     nomTitulaires = Supprime_accent(dictCompte["nomSansCivilite"])
-                    nomFichier = u"Attestation %d - %s" % (IDattestation, nomTitulaires)
+                    nomFichier = _(u"Attestation %d - %s") % (IDattestation, nomTitulaires)
                     cheminFichier = u"%s/%s.pdf" % (repertoire, nomFichier)
                     dictComptesTemp = {IDcompte_payeur : dictCompte}
-                    self.EcritStatusbar(u"Génération de l'attestation %d/%d : %s" % (index, len(dictComptes), nomFichier))
+                    self.EcritStatusbar(_(u"Génération de l'attestation %d/%d : %s") % (index, len(dictComptes), nomFichier))
                     UTILS_Impression_facture.Impression(dictComptesTemp, dictOptions, IDmodele=dictOptions["IDmodele"], mode="attestation", ouverture=False, nomFichier=cheminFichier)
                     index += 1
                 self.EcritStatusbar("")
@@ -333,15 +335,15 @@ class Dialog(wx.Dialog):
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
         # Fabrication du PDF global
-        dlgAttente = PBI.PyBusyInfo(u"Génération du lot d'attestations au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Génération du lot d'attestations au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
-        self.EcritStatusbar(u"Génération du lot d'attestations de rappel en cours... veuillez patienter...")
+        self.EcritStatusbar(_(u"Génération du lot d'attestations de rappel en cours... veuillez patienter..."))
         try :
             UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"], mode="attestation")
             self.EcritStatusbar("")
@@ -349,7 +351,7 @@ class Dialog(wx.Dialog):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la génération des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -360,13 +362,13 @@ class Dialog(wx.Dialog):
     def Sauvegarder(self):
         """ Sauvegarde des attestations """
         # Demande la confirmation de sauvegarde
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous mémoriser les attestations ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)", u"Sauvegarde", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser les attestations ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
-        dlgAttente = PBI.PyBusyInfo(u"Sauvegarde des attestations en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Sauvegarde des attestations en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
 
         DB = GestionDB.DB()
@@ -417,7 +419,7 @@ class Dialog(wx.Dialog):
                     UTILS_Historique.InsertActions([{
                             "IDfamille" : IDfamille,
                             "IDcategorie" : 27, 
-                            "action" : u"Edition d'une attestation de présence pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤" % (DateEngFr(str(self.date_debut)), DateEngFr(str(self.date_fin)), total, solde),
+                            "action" : _(u"Edition d'une attestation de présence pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤") % (DateEngFr(str(self.date_debut)), DateEngFr(str(self.date_fin)), total, solde),
                             },])
 
             DB.Close() 
@@ -427,7 +429,7 @@ class Dialog(wx.Dialog):
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la sauvegarde des attestations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la sauvegarde des attestations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -447,9 +449,9 @@ if __name__ == "__main__":
         dateNaiss = None,
         listeActivites = [1, 2, 3, 4, 5],
         listePrestations = [
-            {"commentaire" : u"", "IDactivite" : 1, "label" : u"Journée avec repas"},
-            {"commentaire" : u"", "IDactivite" : 1, "label" : u"Demi-journée avec repas"},
-            {"commentaire" : u"", "IDactivite" : 1, "label" : u"Demi-journée"},
+            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Journée avec repas")},
+            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Demi-journée avec repas")},
+            {"commentaire" : u"", "IDactivite" : 1, "label" : _(u"Demi-journée")},
             ],
         )
     app.SetTopWindow(dialog_1)

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
 import socket
@@ -56,8 +58,8 @@ class Sauvegarde_auto():
             # Demande de confirmation
             if valide == True and dictSauvegarde["option_demander"] == "1" :
                 image = wx.Bitmap("Images/48x48/Sauvegarder.png", wx.BITMAP_TYPE_ANY)
-                message1 = u"Souhaitez-vous lancer la procédure de sauvegarde '%s' ?" % dictSauvegarde["nom"]
-                dlg = dialogs.MultiMessageDialog(self.parent, message1, caption=u"Sauvegarde automatique", msg2=None, style = wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=image, btnLabels={wx.ID_YES : u"Oui", wx.ID_NO : u"Non", wx.ID_CANCEL : u"Annuler"})
+                message1 = _(u"Souhaitez-vous lancer la procédure de sauvegarde '%s' ?") % dictSauvegarde["nom"]
+                dlg = dialogs.MultiMessageDialog(self.parent, message1, caption=_(u"Sauvegarde automatique"), msg2=None, style = wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=image, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_NO : _(u"Non"), wx.ID_CANCEL : _(u"Annuler")})
                 reponse = dlg.ShowModal() 
                 dlg.Destroy() 
                 if reponse == wx.ID_NO :
@@ -78,12 +80,12 @@ class Sauvegarde_auto():
                 resultat = self.Sauvegarde(dictSauvegarde)
                 
                 if resultat == True and dictSauvegarde["option_confirmation"] == "1" :
-                    dlg = wx.MessageDialog(self.parent, u"La procédure de sauvegarde '%s' s'est terminée avec succès." % dictSauvegarde["nom"], u"Sauvegarde", wx.OK | wx.ICON_INFORMATION)
+                    dlg = wx.MessageDialog(self.parent, _(u"La procédure de sauvegarde '%s' s'est terminée avec succès.") % dictSauvegarde["nom"], _(u"Sauvegarde"), wx.OK | wx.ICON_INFORMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
 
                 if resultat == False :
-                    dlg = wx.MessageDialog(self.parent, u"Echec de la procédure de sauvegarde '%s' !" % dictSauvegarde["nom"], u"Annulation", wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self.parent, _(u"Echec de la procédure de sauvegarde '%s' !") % dictSauvegarde["nom"], _(u"Annulation"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return wx.ID_CANCEL
@@ -258,7 +260,7 @@ class Sauvegarde_auto():
     def GetDictConnexion(self):
         # Demande les paramètres de connexion
         import DLG_Saisie_param_reseau
-        intro = u"Pour accéder à la liste des fichiers réseau disponibles, un accès MySQL \nest nécessaire. Veuillez saisir vos paramètres de connexion réseau :"
+        intro = _(u"Pour accéder à la liste des fichiers réseau disponibles, un accès MySQL \nest nécessaire. Veuillez saisir vos paramètres de connexion réseau :")
         dlg = DLG_Saisie_param_reseau.Dialog(self.parent, intro=intro)
         if dlg.ShowModal() == wx.ID_OK:
             dictValeurs = dlg.GetDictValeurs()
@@ -269,7 +271,7 @@ class Sauvegarde_auto():
         # Vérifie si la connexion est bonne
         resultat = DLG_Saisie_param_reseau.TestConnexion(dictValeurs)
         if resultat == False :
-            dlg = wx.MessageDialog(self.parent, u"Echec du test de connexion.\n\nLes paramètres ne semblent pas exacts !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self.parent, _(u"Echec du test de connexion.\n\nLes paramètres ne semblent pas exacts !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -287,8 +289,8 @@ class Sauvegarde_auto():
         
         try :
             image = wx.Bitmap("Images/48x48/Sauvegarder.png", wx.BITMAP_TYPE_ANY)
-            message1 = u"Vous n'avez paramétré aucune sauvegarde automatique.\n\nSouhaitez-vous le faire maintenant ?"
-            dlg = dialogs.MultiMessageDialog(self.parent, message1, caption=u"Rappel de sauvegarde", msg2=None, style = wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=image, btnLabels={wx.ID_YES : u"Oui", wx.ID_NO : u"Ne plus rappeler", wx.ID_CANCEL : u"Pas maintenant"})
+            message1 = _(u"Vous n'avez paramétré aucune sauvegarde automatique.\n\nSouhaitez-vous le faire maintenant ?")
+            dlg = dialogs.MultiMessageDialog(self.parent, message1, caption=_(u"Rappel de sauvegarde"), msg2=None, style = wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=image, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_NO : _(u"Ne plus rappeler"), wx.ID_CANCEL : _(u"Pas maintenant")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
         except :

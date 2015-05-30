@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -230,11 +232,11 @@ class CTRL_Presents(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_presents", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.radio_inscrits = wx.RadioButton(self, -1, u"Toutes les prestations", style=wx.RB_GROUP)
-        self.radio_presents = wx.RadioButton(self, -1, u"Uniquement les prestations")
+        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Toutes les prestations"), style=wx.RB_GROUP)
+        self.radio_presents = wx.RadioButton(self, -1, _(u"Uniquement les prestations"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"Au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
         self.__set_properties()
@@ -246,8 +248,8 @@ class CTRL_Presents(wx.Panel):
         self.OnRadio(None)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici une date de fin")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici une date de fin"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -284,7 +286,7 @@ class CTRL_Presents(wx.Panel):
             # Uniquement les présents
             date_debut = self.ctrl_date_debut.GetDate()
             if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-                dlg = wx.MessageDialog(self, u"La date de début ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de début ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
@@ -292,14 +294,14 @@ class CTRL_Presents(wx.Panel):
             
             date_fin = self.ctrl_date_fin.GetDate()
             if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-                dlg = wx.MessageDialog(self, u"La date de fin ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
             
             if date_debut > date_fin :
-                dlg = wx.MessageDialog(self, u"La date de début est supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -316,26 +318,26 @@ class Parametres(wx.Panel):
         self.listview = listview
         
         # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activite = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activite.SetMinSize((240, -1))
         
         # Groupes
-        self.box_groupes_staticbox = wx.StaticBox(self, -1, u"Groupes")
+        self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((-1, 50))
         
         # Catégories
-        self.box_categories_staticbox = wx.StaticBox(self, -1, u"Catégories")
+        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories"))
         self.ctrl_categories = CTRL_Categories(self)
         self.ctrl_categories.SetMinSize((-1, 50))
         
         # Présents
-        self.staticbox_presents_staticbox = wx.StaticBox(self, -1, u"Prestations")
+        self.staticbox_presents_staticbox = wx.StaticBox(self, -1, _(u"Prestations"))
         self.ctrl_presents = CTRL_Presents(self)
         
         # Actualiser
-        self.bouton_actualiser = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -343,10 +345,10 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTipString(u"Sélectionnez une activité")
-        self.ctrl_groupes.SetToolTipString(u"Cochez les groupes à afficher")
-        self.ctrl_categories.SetToolTipString(u"Cochez les catégories à afficher")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste")
+        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
+        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes à afficher"))
+        self.ctrl_categories.SetToolTipString(_(u"Cochez les catégories à afficher"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -388,21 +390,21 @@ class Parametres(wx.Panel):
         # Récupération des paramètres
         listeActivites = self.ctrl_activite.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         listeGroupes = self.ctrl_groupes.GetListeGroupes()
         if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un groupe !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         listeCategories = self.ctrl_categories.GetListeCategories()
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins une catégorie !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -425,8 +427,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter et imprimer la liste des soldes individuels pour les activités et la période de votre choix. Sélectionnez vos paramètres avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel."
-        titre = u"Liste des soldes individuels"
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des soldes individuels pour les activités et la période de votre choix. Sélectionnez vos paramètres avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
+        titre = _(u"Liste des soldes individuels")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
 
@@ -441,8 +443,8 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -458,13 +460,13 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ() 
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):

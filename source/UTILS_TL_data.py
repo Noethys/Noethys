@@ -34,6 +34,7 @@ import os.path
 import locale
 
 import wx
+import CTRL_Bouton_image
 
 
 # To save computation power (used by `delta_to_microseconds`)

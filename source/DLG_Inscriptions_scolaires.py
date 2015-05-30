@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import CTRL_Classes
 import OL_Inscriptions_scolaires
@@ -74,20 +76,20 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        intro = u"Vous pouvez ici consulter la liste des inscriptions scolaires par classe. La liste des inscrits peut être imprimée ou exportée. Pour inscrire un ou plusieurs individus, sélectionnez une classe dans la liste de gauche puis cliquez sur le bouton Ajouter. Cette fonction est particulièrement utile à la rentrée pour inscrire tous les enfants d'une classe dans la classe suivante."
-        titre = u"Inscriptions scolaires"
+        intro = _(u"Vous pouvez ici consulter la liste des inscriptions scolaires par classe. La liste des inscrits peut être imprimée ou exportée. Pour inscrire un ou plusieurs individus, sélectionnez une classe dans la liste de gauche puis cliquez sur le bouton Ajouter. Cette fonction est particulièrement utile à la rentrée pour inscrire tous les enfants d'une classe dans la classe suivante.")
+        titre = _(u"Inscriptions scolaires")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Classe.png")
         
         # Classes
-        self.box_classes_staticbox = wx.StaticBox(self, -1, u"Classes")
+        self.box_classes_staticbox = wx.StaticBox(self, -1, _(u"Classes"))
         self.ctrl_ecole = CTRL_Ecole(self)
         self.ctrl_classes = CTRL_Classes.CTRL(self, modeSelection=True)
         self.ctrl_classes.MAJ() 
         self.ctrl_classes.SetMinSize((300, -1))
         
         # Inscrits
-        self.box_inscrits_staticbox = wx.StaticBox(self, -1, u"Aucun inscrit")
+        self.box_inscrits_staticbox = wx.StaticBox(self, -1, _(u"Aucun inscrit"))
         self.ctrl_inscrits = OL_Inscriptions_scolaires.ListView(self, id=-1, name="OL_Inscriptions_scolaires", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_inscrits.MAJ() 
         
@@ -100,8 +102,8 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -119,13 +121,13 @@ class Dialog(wx.Dialog):
         self.OnChoixEcole(None)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour inscrire un ou plusieurs individus")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'inscription sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'inscription sélectionnée")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un apercu avant impression")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste des inscrits")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour inscrire un ou plusieurs individus"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'inscription sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'inscription sélectionnée"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un apercu avant impression"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste des inscrits"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((990, 700))
 
     def __do_layout(self):
@@ -181,9 +183,9 @@ class Dialog(wx.Dialog):
         self.ActiveControles() 
     
     def SetLabelBoxInscrits(self, nbre=0):
-        if nbre == 0 : label = u"Aucun inscrit"
-        elif nbre == 1 : label = u"1 inscrit"
-        else : label = u"%d inscrits" % nbre
+        if nbre == 0 : label = _(u"Aucun inscrit")
+        elif nbre == 1 : label = _(u"1 inscrit")
+        else : label = _(u"%d inscrits") % nbre
         self.box_inscrits_staticbox.SetLabel(label)
     
     def ActiveControles(self):

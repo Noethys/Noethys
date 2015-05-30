@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.customtreectrl as CT
 
 try: import psyco; psyco.full()
@@ -21,7 +23,7 @@ class CTRL_Objets(CT.CustomTreeCtrl):
         CT.CustomTreeCtrl.__init__(self, parent, id, pos, size, style)
         self.parent = parent
         self.liste_objets = liste_objets
-        self.root = self.AddRoot(u"Objets")
+        self.root = self.AddRoot(_(u"Objets"))
         
         self.SetBackgroundColour(wx.WHITE)
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_VARIABLE_ROW_HEIGHT | CT.TR_AUTO_CHECK_PARENT | CT.TR_AUTO_CHECK_CHILD)
@@ -49,7 +51,7 @@ class CTRL_Objets(CT.CustomTreeCtrl):
     
     def MAJ(self):
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Objets")
+        self.root = self.AddRoot(_(u"Objets"))
         
         for dictRubrique in self.liste_objets :
             # Rubriques

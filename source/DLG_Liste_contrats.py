@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Bandeau
 import OL_Contrats
@@ -25,7 +27,7 @@ class CTRL_Annee(wx.Choice):
         self.SetListeDonnees() 
     
     def SetListeDonnees(self):
-        self.listeNoms = [u"Toutes"]
+        self.listeNoms = [_(u"Toutes")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDcontrat, date_debut, date_fin
@@ -78,7 +80,7 @@ class CTRL_Activite(wx.Choice):
         self.SetListeDonnees() 
     
     def SetListeDonnees(self):
-        self.listeLabels = [u"Toutes"]
+        self.listeLabels = [_(u"Toutes")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
@@ -118,18 +120,18 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter la liste complète des contrats générés dans le logiciel. Les commandes proposées vous permettent de modifier, supprimer ou imprimer des contrats. Pour supprimer un lot de contrats, cochez-les et utilisez le bouton Supprimer."
-        titre = u"Liste des contrats"
+        intro = _(u"Vous pouvez ici consulter la liste complète des contrats générés dans le logiciel. Les commandes proposées vous permettent de modifier, supprimer ou imprimer des contrats. Pour supprimer un lot de contrats, cochez-les et utilisez le bouton Supprimer.")
+        titre = _(u"Liste des contrats")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Contrat.png")
 
         # Paramètres
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Filtres")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
 
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = CTRL_Annee(self)
         self.ctrl_annee.SetMinSize((60, -1))
 
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Activite(self)
         self.ctrl_activite.SetMinSize((200, -1))
                 
@@ -146,8 +148,8 @@ class Dialog(wx.Dialog):
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -166,14 +168,14 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.MAJ)
 
     def __set_properties(self):
-        self.SetTitle(u"Liste des contrats")
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche famille de la prestation sélectionnée dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu avant impression de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer directement la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la prestation sélectionnée dans la liste")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la prestation sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Liste des contrats"))
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille de la prestation sélectionnée dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer directement la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la prestation sélectionnée dans la liste"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la prestation sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):
@@ -244,7 +246,7 @@ class Dialog(wx.Dialog):
             listeFiltres.append("inscriptions.IDactivite=%d" % IDactivite)
         
         # MAJ de la liste
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.ctrl_listview.listeFiltres = listeFiltres
         self.ctrl_listview.MAJ() 
         attente.Destroy()

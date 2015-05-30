@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.pybusyinfo as PBI
 
 import GestionDB
@@ -48,7 +50,7 @@ def Appliquer():
             dictPrestations[label] = []
         dictPrestations[label].append(IDprestation)
     
-    dlg = wx.MultiChoiceDialog(None, u"Sélectionnez les prestations à modifier :", u"Selection des prestations", dictPrestations.keys())
+    dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez les prestations à modifier :"), _(u"Selection des prestations"), dictPrestations.keys())
     dlg.SetSize((500, 400))
     if dlg.ShowModal() == wx.ID_OK :
         selections = dlg.GetSelections()
@@ -59,7 +61,7 @@ def Appliquer():
         return
 
     # Choix du taux
-    dlg = wx.TextEntryDialog(None, u"Quel taux souhaitez-vous appliquer ?", u"Sélection du taux de TVA", "0.00")
+    dlg = wx.TextEntryDialog(None, _(u"Quel taux souhaitez-vous appliquer ?"), _(u"Sélection du taux de TVA"), "0.00")
     if dlg.ShowModal() == wx.ID_OK:
         tva = dlg.GetValue()
         dlg.Destroy()
@@ -70,7 +72,7 @@ def Appliquer():
     try :
         tva = float(tva)
     except :
-        dlg = wx.MessageDialog(None, u"Le taux saisi ne semble pas correct !", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Le taux saisi ne semble pas correct !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
@@ -79,14 +81,14 @@ def Appliquer():
     nbrePrestations = 0
     for label in selectionsLabels :
         nbrePrestations += len(dictPrestations[label])
-    dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment appliquer un taux de tva de %.2f %% aux %d prestations sélectionnées ?\n\n(PS : Cette modification n'aura aucun impact sur les montants facturés)" % (tva, nbrePrestations), u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment appliquer un taux de tva de %.2f %% aux %d prestations sélectionnées ?\n\n(PS : Cette modification n'aura aucun impact sur les montants facturés)") % (tva, nbrePrestations), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         return
     dlg.Destroy()
     
     # Application
-    dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter...", parent=None, title=u"Traitement en cours", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+    dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter..."), parent=None, title=_(u"Traitement en cours"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
     wx.Yield() 
     DB = GestionDB.DB()
     for label, listePrestations in dictPrestations.iteritems() :
@@ -97,7 +99,7 @@ def Appliquer():
     del dlgAttente
     
     # Fin du traitement
-    dlg = wx.MessageDialog(None, u"Le traitement s'est terminé avec succès !", u"Fin", wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Le traitement s'est terminé avec succès !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
 

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Saisie_euros
@@ -118,28 +120,28 @@ class Dialog(wx.Dialog):
         self.typeOperation = typeOperation 
         self.IDoperation_budgetaire = IDoperation_budgetaire
 
-        self.label_date_budget = wx.StaticText(self, wx.ID_ANY, u"Date budget :")
+        self.label_date_budget = wx.StaticText(self, wx.ID_ANY, _(u"Date budget :"))
         self.ctrl_date_budget = CTRL_Saisie_date.Date2(self)
         
-        self.label_analytique = wx.StaticText(self, wx.ID_ANY, u"Analytique :")
+        self.label_analytique = wx.StaticText(self, wx.ID_ANY, _(u"Analytique :"))
         self.ctrl_analytique = CTRL_Analytique(self)
         self.ctrl_analytique.SetMinSize((300, -1))
         
-        self.label_categorie = wx.StaticText(self, wx.ID_ANY, u"Catégorie :")
+        self.label_categorie = wx.StaticText(self, wx.ID_ANY, _(u"Catégorie :"))
         self.ctrl_categorie = CTRL_Categorie(self, typeOperation=typeOperation)
         
-        self.label_libelle = wx.StaticText(self, wx.ID_ANY, u"Libellé :")
+        self.label_libelle = wx.StaticText(self, wx.ID_ANY, _(u"Libellé :"))
         self.ctrl_libelle = wx.TextCtrl(self, wx.ID_ANY, u"")
         
-        self.label_montant = wx.StaticText(self, wx.ID_ANY, u"Montant :")
+        self.label_montant = wx.StaticText(self, wx.ID_ANY, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
         
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
-        self.bouton_analytiques = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_categories = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_analytiques = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_categories = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 
         self.__set_properties()
         self.__do_layout()
@@ -151,9 +153,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
         if self.typeOperation == "credit" : 
-            titre = u"Ventilation d'une opération budgétaire au crédit"
+            titre = _(u"Ventilation d'une opération budgétaire au crédit")
         elif self.typeOperation == "debit" : 
-            titre = u"Ventilation d'une opération budgétaire au débit"
+            titre = _(u"Ventilation d'une opération budgétaire au débit")
         else :
             titre = u""
         self.SetTitle(titre)
@@ -162,16 +164,16 @@ class Dialog(wx.Dialog):
             self.Importation()
 
     def __set_properties(self):
-        self.ctrl_date_budget.SetToolTipString(u"Saisissez la date d'impact budgétaire")
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez une catégorie")
-        self.bouton_categories.SetToolTipString(u"Cliquez ici pour accéder à la gestion des catégories")
-        self.ctrl_analytique.SetToolTipString(u"Sélectionnez un poste analytique")
-        self.bouton_analytiques.SetToolTipString(u"Cliquez ici pour accéder à la gestion des postes analytiques")
-        self.ctrl_libelle.SetToolTipString(u"Saisissez un libellé (Optionnel)")
-        self.ctrl_montant.SetToolTipString(u"Saisissez un montant")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_date_budget.SetToolTipString(_(u"Saisissez la date d'impact budgétaire"))
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez une catégorie"))
+        self.bouton_categories.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des catégories"))
+        self.ctrl_analytique.SetToolTipString(_(u"Sélectionnez un poste analytique"))
+        self.bouton_analytiques.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des postes analytiques"))
+        self.ctrl_libelle.SetToolTipString(_(u"Saisissez un libellé (Optionnel)"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez un montant"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
@@ -277,28 +279,28 @@ class Dialog(wx.Dialog):
         montant = self.ctrl_montant.GetMontant()
         
         if date_budget == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date d'impact budgétaire !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date d'impact budgétaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_budget.SetFocus()
             return False
         
         if IDanalytique == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un code analytique !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un code analytique !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_analytique.SetFocus()
             return False
         
         if IDcategorie == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une catégorie !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_categorie.SetFocus()
             return False
 
         if montant == 0.0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

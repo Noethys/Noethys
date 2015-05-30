@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import UTILS_Parametres
 import datetime
@@ -103,8 +105,8 @@ class ListView(FastObjectListView):
         
         def FormateDate(date):
             """ Transforme le format "aaaa-mm-jj" en "mercredi 12 septembre 2008" """
-            listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
-            listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
+            listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+            listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
             jour = date.day
             mois = date.month
             annee = date.year
@@ -113,16 +115,16 @@ class ListView(FastObjectListView):
             return texte   
             
         liste_Colonnes = [
-            ColumnDefn(u"Année", 'left', 50, "annee"),
-            ColumnDefn(u"Nom", "left", 120, "nom"), 
-            ColumnDefn(u"Date de début", "left", 190, "date_debut", stringConverter=FormateDate), 
-            ColumnDefn(u"Date de fin", "left", 190, "date_fin", stringConverter=FormateDate), 
+            ColumnDefn(_(u"Année"), 'left', 50, "annee"),
+            ColumnDefn(_(u"Nom"), "left", 120, "nom"), 
+            ColumnDefn(_(u"Date de début"), "left", 190, "date_debut", stringConverter=FormateDate), 
+            ColumnDefn(_(u"Date de fin"), "left", 190, "date_fin", stringConverter=FormateDate), 
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
         
-        self.SetEmptyListMsg(u"Aucune période de vacances")
+        self.SetEmptyListMsg(_(u"Aucune période de vacances"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[3])
         self.SetObjects(self.donnees)
@@ -154,9 +156,9 @@ class ListView(FastObjectListView):
                 nbre += 1
         
         # Texte de label
-        if nbre == 0 : texte = u"Noethys n'a aucune suggestion d'importation..."
-        elif nbre == 1 : texte = u"Noethys vous suggère d'importer 1 période de vacances..."
-        else : texte = u"Noethys vous suggère d'importer %d périodes de vacances..." % nbre
+        if nbre == 0 : texte = _(u"Noethys n'a aucune suggestion d'importation...")
+        elif nbre == 1 : texte = _(u"Noethys vous suggère d'importer 1 période de vacances...")
+        else : texte = _(u"Noethys vous suggère d'importer %d périodes de vacances...") % nbre
         self.SetLabelPeriodes(texte)
 
     def GetTracksCoches(self):
@@ -209,33 +211,33 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici importer des périodes de vacances depuis le site internet de l'Education Nationale. Sélectionnez votre zone géographique et cochez les périodes à importer."
-        titre = u"Importation de périodes de vacances"
+        intro = _(u"Vous pouvez ici importer des périodes de vacances depuis le site internet de l'Education Nationale. Sélectionnez votre zone géographique et cochez les périodes à importer.")
+        titre = _(u"Importation de périodes de vacances")
         self.SetTitle(titre)
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/telecharger.png")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Telecharger.png")
         
         # Zone
-        self.box_zone_staticbox = wx.StaticBox(self, -1, u"1. Sélectionnez votre zone")
-        self.label_zone = wx.StaticText(self, -1, u"Zone géographique :")
+        self.box_zone_staticbox = wx.StaticBox(self, -1, _(u"1. Sélectionnez votre zone"))
+        self.label_zone = wx.StaticText(self, -1, _(u"Zone géographique :"))
         self.ctrl_zone = wx.Choice(self, -1, choices=[u"Zone A", u"Zone B", u"Zone C"])
-        self.hyper_zone = Hyperlien(self, label=u"Rechercher la zone de l'organisateur sur internet", infobulle=u"Cliquez ici pour rechercher la zone de l'organisateur sur internet", URL="zone")
+        self.hyper_zone = Hyperlien(self, label=_(u"Rechercher la zone de l'organisateur sur internet"), infobulle=_(u"Cliquez ici pour rechercher la zone de l'organisateur sur internet"), URL="zone")
         
         # Périodes
-        self.box_periodes_staticbox = wx.StaticBox(self, -1, u"2. Cochez les périodes à importer")
-        self.label_periodes = wx.StaticText(self, -1, u"Sélectionnez une zone...")
+        self.box_periodes_staticbox = wx.StaticBox(self, -1, _(u"2. Cochez les périodes à importer"))
+        self.label_periodes = wx.StaticText(self, -1, _(u"Sélectionnez une zone..."))
         self.label_periodes.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD))
                 
         self.ctrl_periodes = ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
-        self.hyper_tout = Hyperlien(self, label=u"Tout sélectionner", infobulle=u"Cliquez ici pour tout sélectionner", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Cliquez ici pour tout sélectionner"), URL="tout")
         self.label_separation_1 = wx.StaticText(self, -1, u" | ")
-        self.hyper_rien = Hyperlien(self, label=u"Tout désélectionner", infobulle=u"Cliquez ici pour tout désélectionner", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout désélectionner"), infobulle=_(u"Cliquez ici pour tout désélectionner"), URL="rien")
         self.label_separation_2 = wx.StaticText(self, -1, u" | ")
-        self.hyper_suggestions = Hyperlien(self, label=u"Sélectionner les suggestions", infobulle=u"Cliquez ici pour sélectionner uniquement les suggestions", URL="suggestions")
+        self.hyper_suggestions = Hyperlien(self, label=_(u"Sélectionner les suggestions"), infobulle=_(u"Cliquez ici pour sélectionner uniquement les suggestions"), URL="suggestions")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Importer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer"), cheminImage="Images/32x32/Fleche_bas.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -252,10 +254,10 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_zone.SetToolTipString(u"Sélectionnez une zone")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour importer les périodes sélectionnées")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_zone.SetToolTipString(_(u"Sélectionnez une zone"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour importer les périodes sélectionnées"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((670, 680))
 
     def __do_layout(self):
@@ -322,7 +324,7 @@ class Dialog(wx.Dialog):
         
         # Validation
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune période à importer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune période à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -378,13 +380,13 @@ class Dialog(wx.Dialog):
         except :
             zone = None
         if zone == None :
-            dlg = wx.MessageDialog(self, u"Désolé, Noethys n'a pas réussi à trouver la zone scolaire de l'organisateur sur internet !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, Noethys n'a pas réussi à trouver la zone scolaire de l'organisateur sur internet !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         self.SetZone(zone) 
-        dlg = wx.MessageDialog(self, u"La ville de l'organisateur (%s) est située dans la zone %s." % (ville, zone), u"Zone scolaire", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"La ville de l'organisateur (%s) est située dans la zone %s.") % (ville, zone), _(u"Zone scolaire"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

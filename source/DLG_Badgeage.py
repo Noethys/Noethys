@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -111,26 +113,26 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici effectuer des procédures de badgeage. Commencez par sélectionner la procédure souhaitée dans la liste pour cliquez sur le bouton 'Ok' pour lancer la procédure. Vous pourrez interrompre celle-ci en appuyant sur CTRL+SHIFT+Q."
-        titre = u"Badgeage"
+        intro = _(u"Vous pouvez ici effectuer des procédures de badgeage. Commencez par sélectionner la procédure souhaitée dans la liste pour cliquez sur le bouton 'Ok' pour lancer la procédure. Vous pourrez interrompre celle-ci en appuyant sur CTRL+SHIFT+Q.")
+        titre = _(u"Badgeage")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Badgeage.png")
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         
-        self.label_procedure = wx.StaticText(self, -1, u"Procédure :")
+        self.label_procedure = wx.StaticText(self, -1, _(u"Procédure :"))
         self.ctrl_procedure = CTRL_Procedure(self)
         self.bouton_procedures = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
         
-        self.check_dateauto = wx.CheckBox(self, -1, u"Date auto.")
+        self.check_dateauto = wx.CheckBox(self, -1, _(u"Date auto."))
 
         # Log
-        self.box_log_staticbox = wx.StaticBox(self, -1, u"Journal")
+        self.box_log_staticbox = wx.StaticBox(self, -1, _(u"Journal"))
         
         self.ctrl_log = OL_Badgeage_log.ListView(self, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_VRULES)
         self.log = self.ctrl_log
@@ -140,16 +142,16 @@ class Dialog(wx.Dialog):
         self.bouton_log_excel = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         self.bouton_log_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Texte.png", wx.BITMAP_TYPE_ANY))
         
-        self.hyper_journal = Hyperlien(self, label=u"Consulter l'historique du journal", infobulle=u"Cliquez ici pour consulter l'historique du journal", URL="historique")
+        self.hyper_journal = Hyperlien(self, label=_(u"Consulter l'historique du journal"), infobulle=_(u"Cliquez ici pour consulter l'historique du journal"), URL="historique")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_purger = Hyperlien(self, label=u"Purger l'historique", infobulle=u"Cliquez ici pour purger l'historique du journal", URL="purger")
+        self.hyper_purger = Hyperlien(self, label=_(u"Purger l'historique"), infobulle=_(u"Cliquez ici pour purger l'historique du journal"), URL="purger")
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_vocal = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Synthese_vocale.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_importation = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Importer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Commencer_badgeage.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_vocal = CTRL_Bouton_image.CTRL(self, texte=_(u"Configuration de la synthèse vocale"), cheminImage="Images/32x32/Vocal.png")
+        self.bouton_importation = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer"), cheminImage="Images/32x32/Fleche_bas.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Commencer le badgeage"), cheminImage="Images/32x32/Badgeage.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -171,20 +173,20 @@ class Dialog(wx.Dialog):
         
         
     def __set_properties(self):
-        self.ctrl_procedure.SetToolTipString(u"Sélectionnez une procédure")
-        self.bouton_procedures.SetToolTipString(u"Cliquez ici pour accéder à la gestion des procédures")
-        self.ctrl_date.SetToolTipString(u"Sélectionnez une date (Par défaut la date du jour)")
-        self.check_dateauto.SetToolTipString(u"Cochez cette case pour que Noethys sélectionne automatiquement la date du jour (A minuit, la date changera automatiquement)")
-        self.bouton_log_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression")
-        self.bouton_log_imprimer.SetToolTipString(u"Cliquez ici pour imprimer")
-        self.bouton_log_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_log_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_vocal.SetToolTipString(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale")
-        self.bouton_importation.SetToolTipString(u"Cliquez ici pour importer des badgeages manuellement")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour lancer la procédure de badgeage en temps réél")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.SetMinSize((800, 700))
+        self.ctrl_procedure.SetToolTipString(_(u"Sélectionnez une procédure"))
+        self.bouton_procedures.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des procédures"))
+        self.ctrl_date.SetToolTipString(_(u"Sélectionnez une date (Par défaut la date du jour)"))
+        self.check_dateauto.SetToolTipString(_(u"Cochez cette case pour que Noethys sélectionne automatiquement la date du jour (A minuit, la date changera automatiquement)"))
+        self.bouton_log_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression"))
+        self.bouton_log_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer"))
+        self.bouton_log_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_log_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_vocal.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale"))
+        self.bouton_importation.SetToolTipString(_(u"Cliquez ici pour importer des badgeages manuellement"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la procédure de badgeage en temps réél"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.SetMinSize((850, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -313,7 +315,7 @@ class Dialog(wx.Dialog):
         # Validation des données
         IDprocedure = self.ctrl_procedure.GetID() 
         if IDprocedure == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une procédure !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une procédure !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_procedure.SetFocus()
@@ -321,14 +323,14 @@ class Dialog(wx.Dialog):
         
         date = self.ctrl_date.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
         
         if date != datetime.date.today() :
-            dlg = wx.MessageDialog(self, u"Vous avez sélectionné une date différente d'aujourd'hui. Confirmez-vous ce choix ?", u"Date", wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné une date différente d'aujourd'hui. Confirmez-vous ce choix ?"), _(u"Date"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES:
@@ -338,14 +340,14 @@ class Dialog(wx.Dialog):
         try :
             vocal = UTILS_Vocal.Vocal() 
             if vocal.VerifieSiVirginieInstallee() == False :
-                dlg = wx.MessageDialog(self, u"Attention, la voix française n'est pas installée sur votre ordinateur.\n\nSouhaitez-vous l'installer maintenant (Conseillé) ?", u"Synthèse vocale", wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Attention, la voix française n'est pas installée sur votre ordinateur.\n\nSouhaitez-vous l'installer maintenant (Conseillé) ?"), _(u"Synthèse vocale"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse == wx.ID_YES:
                     self.OnBoutonVocal(None)
             else :
                 if vocal.VerifieSiVirginieDefaut() == False :
-                    dlg = wx.MessageDialog(self, u"Attention, la voix française est bien installée sur votre ordinateur mais n'a pas été sélectionnée comme voix par défaut.\n\nSouhaitez-vous le faire maintenant (conseillé) ?", u"Synthèse vocale", wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Attention, la voix française est bien installée sur votre ordinateur mais n'a pas été sélectionnée comme voix par défaut.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Synthèse vocale"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                     reponse = dlg.ShowModal()
                     dlg.Destroy()
                     if reponse == wx.ID_YES:
@@ -355,11 +357,11 @@ class Dialog(wx.Dialog):
         
         # Envoi l'info de lancement au log
         nomProcedure = self.ctrl_procedure.GetNom() 
-        self.log.AjouterAction(action=u"Lancement de la procédure '%s'" % nomProcedure)
+        self.log.AjouterAction(action=_(u"Lancement de la procédure '%s'") % nomProcedure)
         
         # Rappel de la combinaison de touches pour quitter la fenêtre
         if importationManuelle == False and modeDebug == False :
-            dlg = wx.MessageDialog(self, u"Appuyez sur CTRL+SHIFT+Q pour\nquitter l'interface de badgeage.", u"Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Appuyez sur CTRL+SHIFT+Q pour\nquitter l'interface de badgeage."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         
@@ -378,7 +380,7 @@ class Dialog(wx.Dialog):
             pass
 
         # Envoi l'info de l'arrêt au log
-        self.log.AjouterAction(action=u"Arrêt de la procédure '%s'" % nomProcedure)
+        self.log.AjouterAction(action=_(u"Arrêt de la procédure '%s'") % nomProcedure)
     
     def OnBoutonImportation(self, event):
         """ Importation de badgeages """
@@ -387,7 +389,7 @@ class Dialog(wx.Dialog):
         IDprocedure = self.ctrl_procedure.GetID() 
 
         if IDprocedure == None : 
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une procédure de badgeage !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une procédure de badgeage !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -420,18 +422,18 @@ class Dialog(wx.Dialog):
                 nbreMessages += 1
                     
             if action_demande == "1" : 
-                dlg = wx.MessageDialog(self, u"Une des actions de cette procédure contient une question de type 'Heure de début ou heure de fin ?' incompatible avec le processus d'importation.", u"Information", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Une des actions de cette procédure contient une question de type 'Heure de début ou heure de fin ?' incompatible avec le processus d'importation."), _(u"Information"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
     
         if nbreMessages > 0 : 
-            dlg = wx.MessageDialog(self, u"Notez que les messages ou questions programmées dans les actions ne seront pas prises en compte (%d actions)." % nbreMessages, u"Remarque", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que les messages ou questions programmées dans les actions ne seront pas prises en compte (%d actions).") % nbreMessages, _(u"Remarque"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment importer les %d badgeages sélectionnés avec la procédure '%s' ?" % (len(listeDonnees), nomProcedure), u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment importer les %d badgeages sélectionnés avec la procédure '%s' ?") % (len(listeDonnees), nomProcedure), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return
@@ -463,7 +465,7 @@ Vous pouvez découvrir un petit aperçu des nombreuses possibilités offertes par c
 </FONT>
 </CENTER>
 """
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information", nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
         dlg.Destroy()

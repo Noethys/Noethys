@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import GestionDB
 
 import DATA_Civilites as Civilites
@@ -95,13 +96,13 @@ def GetTitulaires(listeIDfamille=[]):
             if nbreTitulaires == 2 : 
                 if listeTitulaires[0]["nom"] == listeTitulaires[1]["nom"] :
                     nomsTitulaires = {
-                        "sansCivilite" : u"%s %s et %s" % (listeTitulaires[0]["nom"], listeTitulaires[0]["prenom"], listeTitulaires[1]["prenom"]),
-                        "avecCivilite" : u"%s %s et %s" % (listeTitulaires[0]["nom"], listeTitulaires[0]["prenom"], listeTitulaires[1]["prenom"]),
+                        "sansCivilite" : _(u"%s %s et %s") % (listeTitulaires[0]["nom"], listeTitulaires[0]["prenom"], listeTitulaires[1]["prenom"]),
+                        "avecCivilite" : _(u"%s %s et %s") % (listeTitulaires[0]["nom"], listeTitulaires[0]["prenom"], listeTitulaires[1]["prenom"]),
                         }
                 else:
                     nomsTitulaires = {
-                    "sansCivilite" : u"%s et %s" % (listeTitulaires[0]["nomSansCivilite"], listeTitulaires[1]["nomSansCivilite"]),
-                    "avecCivilite" : u"%s et %s" % (listeTitulaires[0]["nomAvecCivilite"], listeTitulaires[1]["nomAvecCivilite"]),
+                    "sansCivilite" : _(u"%s et %s") % (listeTitulaires[0]["nomSansCivilite"], listeTitulaires[1]["nomSansCivilite"]),
+                    "avecCivilite" : _(u"%s et %s") % (listeTitulaires[0]["nomAvecCivilite"], listeTitulaires[1]["nomAvecCivilite"]),
                     }
             if nbreTitulaires > 2 :
                 nomsSansCivilite = u""
@@ -109,8 +110,8 @@ def GetTitulaires(listeIDfamille=[]):
                 for dictTemp in listeTitulaires[:-2] :
                     nomsAvecCivilite += u"%s, " % dictTemp["nomAvecCivilite"]
                     nomsSansCivilite += u"%s, " % dictTemp["nomSansCivilite"]
-                nomsAvecCivilite += u"%s et %s" % (listeTitulaires[-2]["nomAvecCivilite"], listeTitulaires[-1]["nomAvecCivilite"])
-                nomsSansCivilite += u"%s et %s" % (listeTitulaires[-2]["nomSansCivilite"], listeTitulaires[-1]["nomSansCivilite"])
+                nomsAvecCivilite += _(u"%s et %s") % (listeTitulaires[-2]["nomAvecCivilite"], listeTitulaires[-1]["nomAvecCivilite"])
+                nomsSansCivilite += _(u"%s et %s") % (listeTitulaires[-2]["nomSansCivilite"], listeTitulaires[-1]["nomSansCivilite"])
                 nomsTitulaires = {
                     "sansCivilite" : nomsSansCivilite,
                     "avecCivilite" : nomsAvecCivilite,
@@ -148,8 +149,8 @@ def GetTitulaires(listeIDfamille=[]):
         
         else:
             # Définit les noms des titulaires
-            dictFamilles[IDfamille]["titulairesAvecCivilite"] = u"Sans titulaires"
-            dictFamilles[IDfamille]["titulairesSansCivilite"] = u"Sans titulaires"
+            dictFamilles[IDfamille]["titulairesAvecCivilite"] = _(u"Sans titulaires")
+            dictFamilles[IDfamille]["titulairesSansCivilite"] = _(u"Sans titulaires")
             dictFamilles[IDfamille]["listeTitulaires"] = []
             dictFamilles[IDfamille]["adresse"] = {"rue":"", "cp":"", "ville":"", "IDsecteur":None, "nomSecteur":""}
             dictFamilles[IDfamille]["listeMails"] = []

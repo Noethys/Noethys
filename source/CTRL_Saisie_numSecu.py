@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.masked as masked
 
     
@@ -76,7 +78,7 @@ class NumSecu(wx.Panel):
         if validation == False :
             self.image_numsecu.SetBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
             if self.remplissageEnCours == False and avecMessagesErreur == True:
-                wx.MessageBox(message, u"Numéro de sécurité sociale erroné")
+                wx.MessageBox(message, _(u"Numéro de sécurité sociale erroné"))
             
         # Pas de num sécu saisi
         if validation == None : 
@@ -102,18 +104,18 @@ class NumSecu(wx.Panel):
         if nbreChiffres == 0 :
             return None, ""
         if nbreChiffres < 15 :
-            message = u"Il manque " + str(15 - nbreChiffres) + u" chiffre(s) au numéro de sécurité sociale que vous venez de saisir. Veuillez le vérifier."
+            message = _(u"Il manque ") + str(15 - nbreChiffres) + _(u" chiffre(s) au numéro de sécurité sociale que vous venez de saisir. Veuillez le vérifier.")
             return False, message
         if nbreChiffres == 15:
             
             # Vérification avec la civilite
             if sexe == "M" :
                 if int(texteSansEsp[0]) != 1:
-                    message = u"Le numéro de sécurité sociale ne correspond pas à la civilité de la personne (le premier chiffre devrait être 1)."
+                    message = _(u"Le numéro de sécurité sociale ne correspond pas à la civilité de la personne (le premier chiffre devrait être 1).")
                     return False, message
             if sexe == "F" :
                 if int(texteSansEsp[0]) != 2:
-                    message = u"Le numéro de sécurité sociale ne correspond pas à la civilité de la personne (le premier chiffre devrait être 2)."
+                    message = _(u"Le numéro de sécurité sociale ne correspond pas à la civilité de la personne (le premier chiffre devrait être 2).")
                     return False, message
                     
             # Vérification avec la date de naissance
@@ -122,24 +124,24 @@ class NumSecu(wx.Panel):
                 annee = str(date_naiss[8:10])
 
                 if annee != str(texteSansEsp[1:3]):
-                    message = u"Le numéro de sécurité sociale ne correspond pas à l'année de naissance de la personne."
+                    message = _(u"Le numéro de sécurité sociale ne correspond pas à l'année de naissance de la personne.")
                     return False, message
                 elif mois != str(texteSansEsp[3:5]):
-                    message = u"Le numéro de sécurité sociale ne correspond pas au mois de naissance de la personne."
+                    message = _(u"Le numéro de sécurité sociale ne correspond pas au mois de naissance de la personne.")
                     return False, message
                         
             # Vérification avec le département de naissance
             if cp_naiss != u"     " and cp_naiss != None :
                 dep = cp_naiss[0:2]
                 if str(dep) != str(texteSansEsp[5:7]):
-                    message = u"Le numéro de sécurité sociale ne correspond pas au lieu de naissance de la personne."
+                    message = _(u"Le numéro de sécurité sociale ne correspond pas au lieu de naissance de la personne.")
                     return False, message
             
             # Vérification de la clé
             cle = int((texteSansEsp[13:15]))
             cle_calculee = 97 - (int(texteSansEsp[:13]) % 97)
             if cle != cle_calculee :
-                message = u"La clé du numéro de sécurité sociale ne semble pas cohérente. \nD'après mes calculs, la bonne clé devrait être %02d. \n\nVeuillez vérifier votre saisie..." % cle_calculee
+                message = _(u"La clé du numéro de sécurité sociale ne semble pas cohérente. \nD'après mes calculs, la bonne clé devrait être %02d. \n\nVeuillez vérifier votre saisie...") % cle_calculee
                 return False, message
             
             # Le num de sécu est ok
@@ -156,7 +158,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = NumSecu(panel)
-        self.bouton = wx.Button(panel, -1, u"Test")
+        self.bouton = wx.Button(panel, -1, _(u"Test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.bouton, 0, wx.ALL|wx.EXPAND, 4)

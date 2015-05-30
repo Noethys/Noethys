@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Modeles_droits
 
@@ -19,8 +21,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des modèles de droits."
-        titre = u"Gestion des modèles de droits"
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des modèles de droits.")
+        titre = _(u"Gestion des modèles de droits")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Droits.png")
         self.ctrl_listview = OL_Modeles_droits.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -33,8 +35,8 @@ class Dialog(wx.Dialog):
         self.bouton_dupliquer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_defaut = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -47,13 +49,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un modèle")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le modèle sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le modèle sélectionné dans la liste")
-        self.bouton_dupliquer.SetToolTipString(u"Cliquez ici pour dupliquer le modèle sélectionné dans la liste")
-        self.bouton_defaut.SetToolTipString(u"Cliquez ici pour définir le modèle sélectionné comme celui par défaut")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un modèle"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le modèle sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le modèle sélectionné dans la liste"))
+        self.bouton_dupliquer.SetToolTipString(_(u"Cliquez ici pour dupliquer le modèle sélectionné dans la liste"))
+        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir le modèle sélectionné comme celui par défaut"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((700, 550))
 
     def __do_layout(self):

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_heure
 import UTILS_Parametres
@@ -22,10 +24,10 @@ from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 
 
 LISTE_SEMAINES = [
-    (1, u"Toutes les semaines"),
-    (2, u"Une semaine sur deux"),
-    (3, u"Une semaine sur trois"),
-    (4, u"Une semaine sur quatre"),
+    (1, _(u"Toutes les semaines")),
+    (2, _(u"Une semaine sur deux")),
+    (3, _(u"Une semaine sur trois")),
+    (4, _(u"Une semaine sur quatre")),
     ]
 
 
@@ -129,7 +131,7 @@ class CTRL_Horaire(wx.Panel):
         self.SetBackgroundColour((255, 255, 255))
                 
         # Contrôles
-        self.label_heure_debut = wx.StaticText(self, -1, u"Horaire :")
+        self.label_heure_debut = wx.StaticText(self, -1, _(u"Horaire :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.label_heure_fin = wx.StaticText(self, -1, u"à")
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
@@ -181,13 +183,13 @@ class CTRL_Horaire(wx.Panel):
         heure_debut = self.GetHeureDebut() 
         heure_fin = self.GetHeureFin() 
         if heure_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une heure de début pour l'unité '%s' !" % self.labelUnite, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de début pour l'unité '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_debut.SetFocus() 
             return False
         if heure_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une heure de fin pour l'unité '%s' !" % self.labelUnite, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de fin pour l'unité '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_fin.SetFocus() 
@@ -220,7 +222,7 @@ class CTRL_Quantite(wx.Panel):
         self.SetBackgroundColour((255, 255, 255))
                 
         # Contrôles
-        self.label_quantite = wx.StaticText(self, -1, u"Quantité :")
+        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "1", min=1, max=500, size=(70, -1))
 
         # Layout
@@ -268,7 +270,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.EnableSelectionVista(True)
         
         # Création des colonnes
-        self.AddColumn(u"Unités")
+        self.AddColumn(_(u"Unités"))
         self.SetColumnWidth(0, 300)
 
         # Binds
@@ -294,7 +296,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         """ Met à jour (redessine) tout le contrôle """
         self.MAJenCours = True
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
 
@@ -386,7 +388,7 @@ class CTRL_Unites(HTL.HyperTreeList):
     def RetirerHoraires(self, niveauUnite=None, ctrl=None, item=None):
         data = self.GetPyData(niveauUnite)
         if len(data["controles"]) == 1 :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas retirer le dernier horaire !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas retirer le dernier horaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -454,24 +456,24 @@ class Dialog(wx.Dialog):
         self.IDactivite = IDactivite
         
         # Jours
-        self.box_jours_staticbox = wx.StaticBox(self, -1, u"Conditions")
-        self.label_scolaires = wx.StaticText(self, -1, u"Scolaires :")
+        self.box_jours_staticbox = wx.StaticBox(self, -1, _(u"Conditions"))
+        self.label_scolaires = wx.StaticText(self, -1, _(u"Scolaires :"))
         self.ctrl_scolaires = CTRL_Jours(self, "scolaires")
-        self.label_vacances = wx.StaticText(self, -1, u"Vacances :")
+        self.label_vacances = wx.StaticText(self, -1, _(u"Vacances :"))
         self.ctrl_vacances = CTRL_Jours(self, "vacances")
-        self.label_semaines = wx.StaticText(self, -1, u"Semaines :")
+        self.label_semaines = wx.StaticText(self, -1, _(u"Semaines :"))
         self.ctrl_semaines = CTRL_Semaines(self)
-        self.label_feries = wx.StaticText(self, -1, u"Fériés :")
-        self.ctrl_feries = wx.CheckBox(self, -1, u"Inclure les jours fériés")
+        self.label_feries = wx.StaticText(self, -1, _(u"Fériés :"))
+        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les jours fériés"))
 
         # Unites
-        self.box_unites_staticbox = wx.StaticBox(self, -1, u"Unités")
+        self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
         self.ctrl_unites = CTRL_Unites(self, IDactivite=IDactivite)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -486,12 +488,12 @@ class Dialog(wx.Dialog):
         self.ctrl_unites.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un paramètre de planning")
-        self.ctrl_semaines.SetToolTipString(u"Sélectionnez une fréquence")
-        self.ctrl_feries.SetToolTipString(u"Cochez cette case pour inclure les jours fériés")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'un paramètre de planning"))
+        self.ctrl_semaines.SetToolTipString(_(u"Sélectionnez une fréquence"))
+        self.ctrl_feries.SetToolTipString(_(u"Cochez cette case pour inclure les jours fériés"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((400, 500))
 
     def __do_layout(self):
@@ -549,7 +551,7 @@ class Dialog(wx.Dialog):
         jours_scolaires = self.ctrl_scolaires.GetJours()
         jours_vacances = self.ctrl_vacances.GetJours()
         if len(jours_scolaires) == 0 and len(jours_vacances) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un jour scolaire ou de vacances !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un jour scolaire ou de vacances !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -563,7 +565,7 @@ class Dialog(wx.Dialog):
         # Unités
         listeCoches = self.ctrl_unites.GetCoches() 
         if len(listeCoches) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins une unité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une unité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

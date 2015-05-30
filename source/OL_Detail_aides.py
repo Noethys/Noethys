@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -28,8 +30,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -53,7 +55,7 @@ class Track(object):
         self.montantPrestation = donnees["montantPrestation"]
         self.montantInitialPrestation = donnees["montantInitialPrestation"]
         if self.labelPrestation != None and self.montantPrestation != None and self.montantInitialPrestation != None :
-            self.textePrestation = u"%s (initial : %.2f %s - final : %.2f %s)" % (self.labelPrestation, self.montantInitialPrestation, SYMBOLE, self.montantPrestation, SYMBOLE)
+            self.textePrestation = _(u"%s (initial : %.2f %s - final : %.2f %s)") % (self.labelPrestation, self.montantInitialPrestation, SYMBOLE, self.montantPrestation, SYMBOLE)
         else:
             self.textePrestation = u""
         
@@ -155,16 +157,16 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDdeduction", typeDonnee="entier"),
-            ColumnDefn(u"Date", 'centre', 160, "date", typeDonnee="date", stringConverter=FormateDateLong), 
-            ColumnDefn(u"Individu", 'centre', 90, "prenomIndividu", typeDonnee="texte"), 
-            ColumnDefn(u"Montant", 'centre', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
-            ColumnDefn(u"Label", 'left', 160, "label", typeDonnee="texte"),
-            ColumnDefn(u"Prestation", 'left', 300, "textePrestation", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDdeduction", typeDonnee="entier"),
+            ColumnDefn(_(u"Date"), 'centre', 160, "date", typeDonnee="date", stringConverter=FormateDateLong), 
+            ColumnDefn(_(u"Individu"), 'centre', 90, "prenomIndividu", typeDonnee="texte"), 
+            ColumnDefn(_(u"Montant"), 'centre', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
+            ColumnDefn(_(u"Label"), 'left', 160, "label", typeDonnee="texte"),
+            ColumnDefn(_(u"Prestation"), 'left', 300, "textePrestation", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune déduction")
+        self.SetEmptyListMsg(_(u"Aucune déduction"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -201,7 +203,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
 ##        # Item Ajouter
-##        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+##        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
 ##        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -210,7 +212,7 @@ class ListView(FastObjectListView):
 ##        menuPop.AppendSeparator()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -218,7 +220,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -228,14 +230,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -246,17 +248,17 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des déductions", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des déductions"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des déductions", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des déductions"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune déduction à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune déduction à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -297,14 +299,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune déduction à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDdeduction = self.Selection()[0].IDdeduction
         montant = self.Selection()[0].montant
         IDprestation = self.Selection()[0].IDprestation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette déduction ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette déduction ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             if self.modificationsVirtuelles == False :
                 # Suppression dans la base de données
@@ -392,7 +394,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une déduction...")
+        self.SetDescriptiveText(_(u"Rechercher une déduction..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

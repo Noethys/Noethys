@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -30,24 +32,24 @@ def FormatDuree(duree):
     
     listItems = []
     if jours == 1:
-        textJours = u"%d jour" % jours
+        textJours = _(u"%d jour") % jours
         listItems.append(textJours)
     if jours > 1:
-        textJours = u"%d jours" % jours
+        textJours = _(u"%d jours") % jours
         listItems.append(textJours)
     if mois > 0:
-        textMois = u"%d mois" % mois
+        textMois = _(u"%d mois") % mois
         listItems.append(textMois)
     if annees == 1:
-        textAnnees = u"%d année" % annees
+        textAnnees = _(u"%d année") % annees
         listItems.append(textAnnees)
     if annees > 1:
-        textAnnees = u"%d années" % annees
+        textAnnees = _(u"%d années") % annees
         listItems.append(textAnnees)
 
     nbreItems = len(listItems)
     if nbreItems == 0:
-        resultat = u"Validité illimitée"
+        resultat = _(u"Validité illimitée")
     else:
         if nbreItems == 1:
             resultat = listItems[0]
@@ -162,14 +164,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDtype_vaccin", typeDonnee="entier"),
-            ColumnDefn(u"Nom du vaccin", 'left', 200, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Durée de validité", "left", 140, "txt_duree_validite", typeDonnee="texte"), 
-            ColumnDefn(u"Maladies associées", "left", 220, "txt_maladies_associees", typeDonnee="texte"), 
+            ColumnDefn(_(u"ID"), "left", 0, "IDtype_vaccin", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom du vaccin"), 'left', 200, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Durée de validité"), "left", 140, "txt_duree_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Maladies associées"), "left", 220, "txt_maladies_associees", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun vaccin")
+        self.SetEmptyListMsg(_(u"Aucun vaccin"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -204,7 +206,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -213,7 +215,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -221,7 +223,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -231,14 +233,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -249,12 +251,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des types de vaccins", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de vaccins"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des types de vaccins", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des types de vaccins"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -281,7 +283,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_vaccins", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun vaccin dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun vaccin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -320,7 +322,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_vaccins", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun vaccin dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun vaccin dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -336,13 +338,13 @@ class ListView(FastObjectListView):
         nbreVaccins = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreVaccins > 0 :
-            dlg = wx.MessageDialog(self, u"Ce vaccin a déjà été attribué %d fois.\n\nVous ne pouvez donc pas le supprimer !" % nbreVaccins, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce vaccin a déjà été attribué %d fois.\n\nVous ne pouvez donc pas le supprimer !") % nbreVaccins, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce vaccin ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce vaccin ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("types_vaccins", "IDtype_vaccin", IDtype_vaccin)
@@ -371,7 +373,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un vaccin...")
+        self.SetDescriptiveText(_(u"Rechercher un vaccin..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

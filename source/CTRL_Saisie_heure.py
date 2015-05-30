@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.masked as masked
 import datetime
 
@@ -21,7 +23,7 @@ class Heure(masked.TextCtrl):
         self.parent = parent
         self.heure_max = heure_max
         self.SetMinSize((60, -1))
-        self.SetToolTipString(u"Saisissez une heure")   
+        self.SetToolTipString(_(u"Saisissez une heure"))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def StrEnDatetime(self, texteHeure):

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Transfert_RIB
 import wx.lib.agw.hyperlink as Hyperlink
@@ -47,8 +49,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Utilisez cette fonctionnalité pour convertir les anciens RIB utilisés pour les prélèvements nationaux en mandats SEPA. Noethys a déjà sélectionné les RIB qui peuvent être convertis. Il ne vous reste plus qu'à cliquer sur le bouton VALIDER pour lancer la procédure. Attention, il est conseillé de faire une sauvegarde avant..."
-        titre = u"Conversion des RIB nationaux en Mandats SEPA"
+        intro = _(u"Utilisez cette fonctionnalité pour convertir les anciens RIB utilisés pour les prélèvements nationaux en mandats SEPA. Noethys a déjà sélectionné les RIB qui peuvent être convertis. Il ne vous reste plus qu'à cliquer sur le bouton VALIDER pour lancer la procédure. Attention, il est conseillé de faire une sauvegarde avant...")
+        titre = _(u"Conversion des RIB nationaux en Mandats SEPA")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration.png")
         
@@ -57,15 +59,15 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ() 
         self.ctrl_recherche = OL_Transfert_RIB.CTRL_Outils(self, listview=self.ctrl_listview)
 
-        self.hyper_valides = Hyperlien(self, label=u"Cocher les valides", infobulle=u"Cliquez ici pour cocher uniquement les valides", URL="valides")
+        self.hyper_valides = Hyperlien(self, label=_(u"Cocher les valides"), infobulle=_(u"Cliquez ici pour cocher uniquement les valides"), URL="valides")
         self.label_separation1 = wx.StaticText(self, -1, "|")
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation2 = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Valider_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Valider"), cheminImage="Images/32x32/Valider.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -77,9 +79,9 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.CocheValides()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour lancer la conversion des RIB en mandats SEPA")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la conversion des RIB en mandats SEPA"))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import CTRL_Bandeau
 import GestionDB
@@ -21,17 +23,17 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
 
         # Bandeau
-        titre = u"Transférer des tables"
-        intro = u"Cette fonctionnalité permet de transférer le contenu des tables du fichier de données chargé vers un fichier de données local."
+        titre = _(u"Transférer des tables")
+        intro = _(u"Cette fonctionnalité permet de transférer le contenu des tables du fichier de données chargé vers un fichier de données local.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration.png")
         self.SetTitle(titre)
 
-        self.label_destination = wx.StaticText(self, -1, u"Fichier de destination :")
+        self.label_destination = wx.StaticText(self, -1, _(u"Fichier de destination :"))
 
-        wildcard = u"Fichiers Noethys (*.dat)|*.dat|All files (*.*)|*.*"
-        self.ctrl_destination = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=u"Sélectionner", toolTip=u"Cliquez ici pour sélectionner un fichier de données", dialogTitle=u"Sélectionner un fichier", fileMask=wildcard)
+        wildcard = _(u"Fichiers Noethys (*.dat)|*.dat|All files (*.*)|*.*")
+        self.ctrl_destination = filebrowse.FileBrowseButton(self, -1, labelText=u"", buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier de données"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard)
         
-        self.label_destination_copy = wx.StaticText(self, -1, u"Tables à transférer :")
+        self.label_destination_copy = wx.StaticText(self, -1, _(u"Tables à transférer :"))
         
         DB = GestionDB.DB() 
         listeTablesTemp = DB.GetListeTables() 
@@ -41,9 +43,9 @@ class Dialog(wx.Dialog):
             listeTables.append(x[0])
         self.ctrl_tables = wx.CheckListBox(self, -1, (-1, -1), wx.DefaultSize, listeTables)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -53,11 +55,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.ctrl_destination.SetToolTipString(u"Sélectionnez un fichier de destination")
-        self.ctrl_tables.SetToolTipString(u"Sélectionnez les tables à transférer")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour lancer la procédure")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_destination.SetToolTipString(_(u"Sélectionnez un fichier de destination"))
+        self.ctrl_tables.SetToolTipString(_(u"Sélectionnez les tables à transférer"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la procédure"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):
@@ -96,12 +98,12 @@ class Dialog(wx.Dialog):
         # Récupération du fichier des destination
         nomFichier = self.ctrl_destination.GetValue()
         if len(nomFichier) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un fichier de données à importer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un fichier de données à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if os.path.isfile(nomFichier) == False :
-            dlg = wx.MessageDialog(self, u"L'emplacement fichier que vous avez saisi n'existe pas !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'emplacement fichier que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -114,13 +116,13 @@ class Dialog(wx.Dialog):
                 listeTables.append(nomTable)
                 
         if len(listeTables) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement cocher au moins une table à exporter !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une table à exporter !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment transférer %d tables ?" % len(listeTables), u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment transférer %d tables ?") % len(listeTables), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -134,7 +136,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         
         # Confirmation
-        dlg = wx.MessageDialog(self, u"Procédure de transfert terminée !", u"Fin", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Procédure de transfert terminée !"), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 

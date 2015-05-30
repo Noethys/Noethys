@@ -8,8 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import wx
+import CTRL_Bouton_image
 import time
 import threading
 ##from PIL import Image
@@ -233,8 +235,8 @@ class Dialog(wx.Dialog):
         self.image = None
 
         # Bandeau
-        intro = u"Vous pouvez ici capturer une photo à partir d'une webcam connectée. Cliquez sur le bouton 'Prendre une photo' pour capturer l'image puis sur 'Ok' pour valider et ouvrir l'éditeur photo qui vous permettra d'effectuer un recadrage avant l'insertion dans la fiche individuelle."
-        titre = u"Capture d'une photo"
+        intro = _(u"Vous pouvez ici capturer une photo à partir d'une webcam connectée. Cliquez sur le bouton 'Prendre une photo' pour capturer l'image puis sur 'Ok' pour valider et ouvrir l'éditeur photo qui vous permettra d'effectuer un recadrage avant l'insertion dans la fiche individuelle.")
+        titre = _(u"Capture d'une photo")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Webcam.png")
         
@@ -244,10 +246,10 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.ctrl_ligne = wx.StaticLine(self, -1)
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_options = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Options.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.bouton_ok.Enable(False)
         
@@ -273,16 +275,16 @@ class Dialog(wx.Dialog):
         if etat == True :
             self.ctrl_video.StartVideo()
         else:
-            dlg = wx.MessageDialog(self, u"Noethys n'a pas réussi à se connecter à la caméra.\nVeuillez vérifier que celle-ci est bien installée...", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à se connecter à la caméra.\nVeuillez vérifier que celle-ci est bien installée..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
 
     def __set_properties(self):
-        self.bouton_capture.SetToolTipString(u"Cliquez ici pour prendre la photo")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_options.SetToolTipString(u"Cliquez ici pour définir les propriétés de la capture vidéo")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_capture.SetToolTipString(_(u"Cliquez ici pour prendre la photo"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour définir les propriétés de la capture vidéo"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((670, 700))
 
     def __do_layout(self):
@@ -336,27 +338,27 @@ class Dialog(wx.Dialog):
         sousMenuPort = wx.Menu()
         for index in range(0, 10) :
             id = 10000 + index
-            item = wx.MenuItem(sousMenuPort, id, u"Port n°%d" % index, u"Port n°%d" % index, wx.ITEM_CHECK)
+            item = wx.MenuItem(sousMenuPort, id, _(u"Port n°%d") % index, _(u"Port n°%d") % index, wx.ITEM_CHECK)
             sousMenuPort.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Menu_port, id=id)
             if self.port == index : item.Check(True)
-        menuPop.AppendMenu(10, u"Port de connexion", sousMenuPort)
+        menuPop.AppendMenu(10, _(u"Port de connexion"), sousMenuPort)
 
         sousMenuFPS = wx.Menu()
         for index in (5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100) :
             id = 20000 + index
-            item = wx.MenuItem(sousMenuFPS, id, u"%d" % index, u"%d images par secondes" % index, wx.ITEM_CHECK)
+            item = wx.MenuItem(sousMenuFPS, id, u"%d" % index, _(u"%d images par secondes") % index, wx.ITEM_CHECK)
             sousMenuFPS.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Menu_fps, id=id)
             if self.ctrl_video.fps == index : item.Check(True)
-        menuPop.AppendMenu(20, u"Nombres d'images par secondes", sousMenuFPS)
+        menuPop.AppendMenu(20, _(u"Nombres d'images par secondes"), sousMenuFPS)
 
 ##        menuPop.AppendSeparator()
         
-##        menuPop.AppendItem(wx.MenuItem(menuPop, 10, u"Propriétés du flux vidéo"))
+##        menuPop.AppendItem(wx.MenuItem(menuPop, 10, _(u"Propriétés du flux vidéo")))
 ##        self.Bind(wx.EVT_MENU, self.Menu_proprietes_pin, id=10)
         
-##        menuPop.AppendItem(wx.MenuItem(menuPop, 20, u"Propriétés de la capture vidéo"))
+##        menuPop.AppendItem(wx.MenuItem(menuPop, 20, _(u"Propriétés de la capture vidéo")))
 ##        self.Bind(wx.EVT_MENU, self.Menu_proprietes_filter, id=20)
         
         self.PopupMenu(menuPop)
@@ -373,7 +375,7 @@ class Dialog(wx.Dialog):
 
     def Menu_proprietes_pin(self, event):
         if self.ctrl_video.IsRunning() == False :
-            dlg = wx.MessageDialog(self, u"La caméra n'est pas connectée !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La caméra n'est pas connectée !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -381,7 +383,7 @@ class Dialog(wx.Dialog):
     
     def Menu_proprietes_filter(self, event):
         if self.ctrl_video.IsRunning() == False :
-            dlg = wx.MessageDialog(self, u"La caméra n'est pas connectée !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La caméra n'est pas connectée !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -396,7 +398,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         if self.image == None :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord capturer une image !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord capturer une image !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False

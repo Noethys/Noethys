@@ -9,7 +9,11 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+import UTILS_Traduction
+
 import wx
+import CTRL_Bouton_image
 import sys
 import platform
 import os
@@ -90,7 +94,7 @@ ID_TB_UTILISATEUR = wx.NewId()
 
 class MainFrame(wx.Frame):
     def __init__(self, parent):
-        wx.Frame.__init__(self, parent, -1, title=u"Noethys", name="general", style=wx.DEFAULT_FRAME_STYLE)
+        wx.Frame.__init__(self, parent, -1, title=_(u"Noethys"), name="general", style=wx.DEFAULT_FRAME_STYLE)
         
 ##        # Dates en francais
 ##        wx.Locale(wx.LANGUAGE_FRENCH)
@@ -147,6 +151,10 @@ class MainFrame(wx.Frame):
         # Gestion des utilisateurs
         self.listeUtilisateurs = [] 
         self.dictUtilisateur = None
+        
+        # Chargement de la traduction
+        self.langue = UTILS_Config.GetParametre("langue_interface", None)
+        self.ChargeTraduction() 
 
         # Récupération du nom du dernier fichier chargé
         self.nomDernierFichier = self.userConfig["nomFichier"]
@@ -193,7 +201,7 @@ class MainFrame(wx.Frame):
 
         # Barre des tâches
         self.CreateStatusBar()
-        self.GetStatusBar().SetStatusText(u"Bienvenue dans %s..." % NOM_APPLICATION)
+        self.GetStatusBar().SetStatusText(_(u"Bienvenue dans %s...") % NOM_APPLICATION)
         
         # Création de la barre des menus
         self.CreationBarreMenus()
@@ -227,15 +235,17 @@ class MainFrame(wx.Frame):
 
         # Affiche un Toaster quand une mise à jour du logiciel est disponible
         if self.MAJexiste == True :
-            texteToaster = u"Une nouvelle version de Noethys est disponible !"
-            self.AfficheToaster(titre=u"Mise à jour", texte=texteToaster, couleurFond="#81A8F0") 
-            
+            texteToaster = _(u"Une nouvelle version de Noethys est disponible !")
+            self.AfficheToaster(titre=_(u"Mise à jour"), texte=texteToaster, couleurFond="#81A8F0") 
+    
+    def ChargeTraduction(self):
+        UTILS_Traduction.ChargeTraduction(self.langue)
 
     def SetTitleFrame(self, nomFichier=""):
         if "[RESEAU]" in nomFichier :
             port, hote, user, mdp = nomFichier.split(";")
             nomFichier = nomFichier[nomFichier.index("[RESEAU]") + 8:]
-            nomFichier = u"Fichier réseau : %s | %s" % (nomFichier, user)
+            nomFichier = _(u"Fichier réseau : %s | %s") % (nomFichier, user)
         if nomFichier != "" :
             nomFichier = " - [" + nomFichier + "]"
         titreFrame = NOM_APPLICATION + " v" + VERSION_APPLICATION + nomFichier
@@ -267,7 +277,7 @@ class MainFrame(wx.Frame):
             try :
                 UTILS_Historique.InsertActions([{
                     "IDcategorie" : 1, 
-                    "action" : u"Fermeture du fichier",
+                    "action" : _(u"Fermeture du fichier"),
                     },])
             except :
                 pass
@@ -356,24 +366,24 @@ class MainFrame(wx.Frame):
     def CreationPanneaux(self):
         # Panneau Rechercher un individu
         self.ctrl_individus = CTRL_Recherche_individus.Panel(self)
-        self._mgr.AddPane(self.ctrl_individus, aui.AuiPaneInfo().Name("recherche").Caption(u"Individus").
+        self._mgr.AddPane(self.ctrl_individus, aui.AuiPaneInfo().Name("recherche").Caption(_(u"Individus")).
                           CenterPane().PaneBorder(True).CaptionVisible(True) )
 
         # Panneau Ephéméride
         self.ctrl_ephemeride = CTRL_Ephemeride.CTRL(self)
-        self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(u"Ephéméride").
+        self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(_(u"Ephéméride")).
                           Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
 
         # Panneau Serveur
         if UTILS_Config.GetParametre("synchro_serveur_activer", defaut=False) == True :
             import CTRL_Serveur_nomade
             self.ctrl_serveur_nomade = CTRL_Serveur_nomade.Panel(self)
-            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(u"Serveur Nomadhys").
+            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Serveur Nomadhys")).
                               Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
-        self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(u"Effectifs").
+        self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(_(u"Effectifs")).
                           Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
         
         if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
@@ -383,14 +393,14 @@ class MainFrame(wx.Frame):
             
         # Panneau Messages
         self.ctrl_messages = CTRL_Messages.Panel(self)
-        self._mgr.AddPane(self.ctrl_messages, aui.AuiPaneInfo().Name("messages").Caption(u"Messages").
+        self._mgr.AddPane(self.ctrl_messages, aui.AuiPaneInfo().Name("messages").Caption(_(u"Messages")).
                           Left().Layer(1).Position(2).CloseButton(True).MinSize((200, 100)).MaximizeButton(True).MinimizeButton(True) )
         pi = self._mgr.GetPane("messages")
         pi.dock_proportion = 50000 # Proportion
         
         # Panneau Accueil
         self.ctrl_accueil = CTRL_Accueil.Panel(self)
-        self._mgr.AddPane(self.ctrl_accueil, aui.AuiPaneInfo().Name("accueil").Caption(u"Accueil").
+        self._mgr.AddPane(self.ctrl_accueil, aui.AuiPaneInfo().Name("accueil").Caption(_(u"Accueil")).
                           Bottom().Layer(0).Position(1).Hide().CaptionVisible(False).CloseButton(False).MaximizeButton(False) )
         
         self._mgr.Update()
@@ -413,19 +423,19 @@ class MainFrame(wx.Frame):
         # Barre raccourcis --------------------------------------------------
         tb = aui.AuiToolBar(self, -1, wx.DefaultPosition, wx.DefaultSize, agwStyle=aui.AUI_TB_DEFAULT_STYLE | aui.AUI_TB_OVERFLOW | aui.AUI_TB_TEXT | aui.AUI_TB_HORZ_TEXT)
         tb.SetToolBitmapSize(wx.Size(16, 16))
-        tb.AddSimpleTool(ID_TB_GESTIONNAIRE, u"Gestionnaire des conso.", wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG), u"Accéder au gestionnaire des consommations")
-        tb.AddSimpleTool(ID_TB_LISTE_CONSO, u"Liste des conso.", wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG), u"Imprimer une liste de consommations")
-        tb.AddSimpleTool(ID_TB_BADGEAGE, u"Badgeage", wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG), u"Lancer une procédure de badgeage")
+        tb.AddSimpleTool(ID_TB_GESTIONNAIRE, _(u"Gestionnaire des conso."), wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG), _(u"Accéder au gestionnaire des consommations"))
+        tb.AddSimpleTool(ID_TB_LISTE_CONSO, _(u"Liste des conso."), wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG), _(u"Imprimer une liste de consommations"))
+        tb.AddSimpleTool(ID_TB_BADGEAGE, _(u"Badgeage"), wx.Bitmap("Images/16x16/Badgeage.png", wx.BITMAP_TYPE_PNG), _(u"Lancer une procédure de badgeage"))
         tb.AddSeparator()
-        tb.AddSimpleTool(ID_TB_REGLER_FACTURE, u"Régler une facture", wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG), u"Régler une facture à partir de son numéro")
+        tb.AddSimpleTool(ID_TB_REGLER_FACTURE, _(u"Régler une facture"), wx.Bitmap("Images/16x16/Reglement.png", wx.BITMAP_TYPE_PNG), _(u"Régler une facture à partir de son numéro"))
         self.ctrl_numfacture = CTRL_Numfacture.CTRL(tb, size=(100, -1))
         tb.AddControl(self.ctrl_numfacture)
         tb.AddSeparator()
-        tb.AddSimpleTool(ID_TB_CALCULATRICE, u"Calculatrice", wx.Bitmap("Images/16x16/Calculatrice.png", wx.BITMAP_TYPE_PNG), u"Ouvrir la calculatrice")
+        tb.AddSimpleTool(ID_TB_CALCULATRICE, _(u"Calculatrice"), wx.Bitmap("Images/16x16/Calculatrice.png", wx.BITMAP_TYPE_PNG), _(u"Ouvrir la calculatrice"))
 
         tb.Realize()
         code = "barre_raccourcis"
-        label = u"Barre de raccourcis"
+        label = _(u"Barre de raccourcis")
         self.listeBarresOutils.append(code)
         self.dictBarresOutils[code] = {"label" : label, "ctrl" : tb}
         self._mgr.AddPane(tb, aui.AuiPaneInfo().Name(code).Caption(label).ToolbarPane().Top())
@@ -436,12 +446,12 @@ class MainFrame(wx.Frame):
         tb.SetToolBitmapSize(wx.Size(16, 16))
         self.ctrl_identification = CTRL_Identification.CTRL(tb, listeUtilisateurs=self.listeUtilisateurs, size=(80, -1))
         tb.AddControl(self.ctrl_identification)
-        tb.AddSimpleTool(ID_TB_UTILISATEUR, u"xxxxxxxxxxxxxxxxxxxxxxxxxxxx", wx.Bitmap("Images/16x16/Homme.png", wx.BITMAP_TYPE_PNG), u"Utilisateur en cours")
+        tb.AddSimpleTool(ID_TB_UTILISATEUR, u"xxxxxxxxxxxxxxxxxxxxxxxxxxxx", wx.Bitmap("Images/16x16/Homme.png", wx.BITMAP_TYPE_PNG), _(u"Utilisateur en cours"))
         tb.AddSpacer(50)
         
         tb.Realize()
         code = "barre_utilisateur"
-        label = u"Barre Utilisateur"
+        label = _(u"Barre Utilisateur")
         self.listeBarresOutils.append(code)
         self.dictBarresOutils[code] = {"label" : label, "ctrl" : tb}
         self._mgr.AddPane(tb, aui.AuiPaneInfo().Name(code).Caption(label).ToolbarPane().Top())
@@ -526,397 +536,398 @@ class MainFrame(wx.Frame):
         self.listeItemsMenu = [
         
             # Fichier
-            {"code" : "menu_fichier", "label" : u"Fichier", "items" : [
-                    {"code" : "nouveau_fichier", "label" : u"Créer un nouveau fichier\tCtrl+N", "infobulle" : u"Créer un nouveau fichier", "image" : "Images/16x16/Fichier_nouveau.png", "action" : self.On_fichier_Nouveau},
-                    {"code" : "ouvrir_fichier", "label" : u"Ouvrir un fichier\tCtrl+O", "infobulle" : u"Ouvrir un fichier existant", "image" : "Images/16x16/Fichier_ouvrir.png", "action" : self.On_fichier_Ouvrir},
-                    {"code" : "fermer_fichier", "label" : u"Fermer le fichier\tCtrl+F", "infobulle" : u"Fermer le fichier ouvert", "image" : "Images/16x16/Fichier_fermer.png", "action" : self.On_fichier_Fermer, "actif" : False},
+            {"code" : "menu_fichier", "label" : _(u"Fichier"), "items" : [
+                    {"code" : "nouveau_fichier", "label" : _(u"Créer un nouveau fichier"), "infobulle" : _(u"Créer un nouveau fichier"), "image" : "Images/16x16/Fichier_nouveau.png", "action" : self.On_fichier_Nouveau},
+                    {"code" : "ouvrir_fichier", "label" : _(u"Ouvrir un fichier"), "infobulle" : _(u"Ouvrir un fichier existant"), "image" : "Images/16x16/Fichier_ouvrir.png", "action" : self.On_fichier_Ouvrir},
+                    {"code" : "fermer_fichier", "label" : _(u"Fermer le fichier"), "infobulle" : _(u"Fermer le fichier ouvert"), "image" : "Images/16x16/Fichier_fermer.png", "action" : self.On_fichier_Fermer, "actif" : False},
                     "-",
-                    {"code" : "fichier_informations", "label" : u"Informations sur le fichier", "infobulle" : u"Informations sur le fichier", "image" : "Images/16x16/Information.png", "action" : self.On_fichier_Informations, "actif" : False},
+                    {"code" : "fichier_informations", "label" : _(u"Informations sur le fichier"), "infobulle" : _(u"Informations sur le fichier"), "image" : "Images/16x16/Information.png", "action" : self.On_fichier_Informations, "actif" : False},
                     "-",
-                    {"code" : "creer_sauvegarde", "label" : u"Créer une sauvegarde\tCtrl+S", "infobulle" : u"Créer une sauvegarde", "image" : "Images/16x16/Sauvegarder.png", "action" : self.On_fichier_Sauvegarder},
-                    {"code" : "restaurer_sauvegarde", "label" : u"Restaurer une sauvegarde\tCtrl+R", "infobulle" : u"Restaurer une sauvegarde", "image" : "Images/16x16/Restaurer.png", "action" : self.On_fichier_Restaurer},
-                    {"code" : "sauvegardes_auto", "label" : u"Sauvegardes automatiques", "infobulle" : u"Paramétrage des sauvegardes automatiques", "image" : "Images/16x16/Sauvegarder_param.png", "action" : self.On_fichier_Sauvegardes_auto},
+                    {"code" : "creer_sauvegarde", "label" : _(u"Créer une sauvegarde"), "infobulle" : _(u"Créer une sauvegarde"), "image" : "Images/16x16/Sauvegarder.png", "action" : self.On_fichier_Sauvegarder},
+                    {"code" : "restaurer_sauvegarde", "label" : _(u"Restaurer une sauvegarde"), "infobulle" : _(u"Restaurer une sauvegarde"), "image" : "Images/16x16/Restaurer.png", "action" : self.On_fichier_Restaurer},
+                    {"code" : "sauvegardes_auto", "label" : _(u"Sauvegardes automatiques"), "infobulle" : _(u"Paramétrage des sauvegardes automatiques"), "image" : "Images/16x16/Sauvegarder_param.png", "action" : self.On_fichier_Sauvegardes_auto},
                     "-",
-                    {"code" : "convertir_fichier_reseau", "label" : u"Convertir en fichier réseau", "infobulle" : u"Convertir le fichier en mode réseau", "image" : "Images/16x16/Conversion_reseau.png", "action" : self.On_fichier_Convertir_reseau, "actif" : False},
-                    {"code" : "convertir_fichier_local", "label" : u"Convertir en fichier local", "infobulle" : u"Convertir le fichier en mode local", "image" : "Images/16x16/Conversion_local.png", "action" : self.On_fichier_Convertir_local, "actif" : False},
+                    {"code" : "convertir_fichier_reseau", "label" : _(u"Convertir en fichier réseau"), "infobulle" : _(u"Convertir le fichier en mode réseau"), "image" : "Images/16x16/Conversion_reseau.png", "action" : self.On_fichier_Convertir_reseau, "actif" : False},
+                    {"code" : "convertir_fichier_local", "label" : _(u"Convertir en fichier local"), "infobulle" : _(u"Convertir le fichier en mode local"), "image" : "Images/16x16/Conversion_local.png", "action" : self.On_fichier_Convertir_local, "actif" : False},
                     "-",
-                    {"code" : "quitter", "label" : u"Quitter\tCtrl+Q", "infobulle" : u"Quitter Noethys", "image" : "Images/16x16/Quitter.png", "action" : self.On_fichier_Quitter},
+                    {"code" : "quitter", "label" : _(u"Quitter"), "infobulle" : _(u"Quitter Noethys"), "image" : "Images/16x16/Quitter.png", "action" : self.On_fichier_Quitter},
                     ],
             },
 
             # Paramétrage
-            {"code" : "menu_parametrage", "label" : u"Paramétrage", "items" : [
-                    {"code" : "preferences", "label" : u"Préférences", "infobulle" : u"Préférences", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_preferences},
-                    {"code" : "enregistrement", "label" : u"Enregistrement", "infobulle" : u"Enregistrement", "image" : "Images/16x16/Cle.png", "action" : self.On_param_enregistrement},
+            {"code" : "menu_parametrage", "label" : _(u"Paramétrage"), "items" : [
+                    {"code" : "preferences", "label" : _(u"Préférences"), "infobulle" : _(u"Préférences"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_preferences},
+                    {"code" : "enregistrement", "label" : _(u"Enregistrement"), "infobulle" : _(u"Enregistrement"), "image" : "Images/16x16/Cle.png", "action" : self.On_param_enregistrement},
                     "-",
-                    {"code" : "utilisateurs", "label" : u"Utilisateurs", "infobulle" : u"Paramétrage des utilisateurs", "image" : "Images/16x16/Personnes.png", "action" : self.On_param_utilisateurs},
-                    {"code" : "modeles_droits", "label" : u"Modèles de droits", "infobulle" : u"Paramétrage des modèles de droits", "image" : "Images/16x16/Droits.png", "action" : self.On_param_modeles_droits},
-                    {"code" : "acces_reseau", "label" : u"Accès réseau", "infobulle" : u"Paramétrage des accès réseau", "image" : "Images/16x16/Utilisateur_reseau.png", "action" : self.On_param_utilisateurs_reseau},
+                    {"code" : "utilisateurs", "label" : _(u"Utilisateurs"), "infobulle" : _(u"Paramétrage des utilisateurs"), "image" : "Images/16x16/Personnes.png", "action" : self.On_param_utilisateurs},
+                    {"code" : "modeles_droits", "label" : _(u"Modèles de droits"), "infobulle" : _(u"Paramétrage des modèles de droits"), "image" : "Images/16x16/Droits.png", "action" : self.On_param_modeles_droits},
+                    {"code" : "acces_reseau", "label" : _(u"Accès réseau"), "infobulle" : _(u"Paramétrage des accès réseau"), "image" : "Images/16x16/Utilisateur_reseau.png", "action" : self.On_param_utilisateurs_reseau},
                     "-",
-                    {"code" : "organisateur", "label" : u"Organisateur", "infobulle" : u"Paramétrage des données sur l'organisateur", "image" : "Images/16x16/Organisateur.png", "action" : self.On_param_organisateur},
-                    {"code" : "groupes_activites", "label" : u"Groupes d'activités", "infobulle" : u"Paramétrage des groupes d'activités", "image" : "Images/16x16/Groupe_activite.png", "action" : self.On_param_groupes_activites},
-                    {"code" : "activites", "label" : u"Activités", "infobulle" : u"Paramétrage des activités", "image" : "Images/16x16/Activite.png", "action" : self.On_param_activites},
-                    {"code" : "types_cotisations", "label" : u"Cotisations", "infobulle" : u"Paramétrage des types de cotisations", "image" : "Images/16x16/Identite.png", "action" : self.On_param_types_cotisations},
+                    {"code" : "organisateur", "label" : _(u"Organisateur"), "infobulle" : _(u"Paramétrage des données sur l'organisateur"), "image" : "Images/16x16/Organisateur.png", "action" : self.On_param_organisateur},
+                    {"code" : "groupes_activites", "label" : _(u"Groupes d'activités"), "infobulle" : _(u"Paramétrage des groupes d'activités"), "image" : "Images/16x16/Groupe_activite.png", "action" : self.On_param_groupes_activites},
+                    {"code" : "activites", "label" : _(u"Activités"), "infobulle" : _(u"Paramétrage des activités"), "image" : "Images/16x16/Activite.png", "action" : self.On_param_activites},
+                    {"code" : "types_cotisations", "label" : _(u"Cotisations"), "infobulle" : _(u"Paramétrage des types de cotisations"), "image" : "Images/16x16/Identite.png", "action" : self.On_param_types_cotisations},
                     "-",
-                    {"code" : "modeles_documents", "label" : u"Modèles de documents", "infobulle" : u"Paramétrage des modèles de documents", "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
-                    {"code" : "modeles_emails", "label" : u"Modèles d'Emails", "infobulle" : u"Paramétrage des modèles d'Emails", "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
-                    {"code" : "modeles_tickets", "label" : u"Modèles de tickets", "infobulle" : u"Paramétrage des modèles de tickets", "image" : "Images/16x16/Ticket.png", "action" : self.On_param_modeles_tickets},
-                    {"code" : "modeles_contrats", "label" : u"Modèles de contrats", "infobulle" : u"Paramétrage des modèles de contrats", "image" : "Images/16x16/Contrat.png", "action" : self.On_param_modeles_contrats},
-                    {"code" : "modeles_plannings", "label" : u"Modèles de plannings", "infobulle" : u"Paramétrage des modèles de plannings", "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_modeles_plannings},
-                    {"code" : "modeles_aides", "label" : u"Modèles d'aides journalières", "infobulle" : u"Paramétrage des modèles d'aides journalières", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
+                    {"code" : "modeles_documents", "label" : _(u"Modèles de documents"), "infobulle" : _(u"Paramétrage des modèles de documents"), "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
+                    {"code" : "modeles_emails", "label" : _(u"Modèles d'Emails"), "infobulle" : _(u"Paramétrage des modèles d'Emails"), "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
+                    {"code" : "modeles_tickets", "label" : _(u"Modèles de tickets"), "infobulle" : _(u"Paramétrage des modèles de tickets"), "image" : "Images/16x16/Ticket.png", "action" : self.On_param_modeles_tickets},
+                    {"code" : "modeles_contrats", "label" : _(u"Modèles de contrats"), "infobulle" : _(u"Paramétrage des modèles de contrats"), "image" : "Images/16x16/Contrat.png", "action" : self.On_param_modeles_contrats},
+                    {"code" : "modeles_plannings", "label" : _(u"Modèles de plannings"), "infobulle" : _(u"Paramétrage des modèles de plannings"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_modeles_plannings},
+                    {"code" : "modeles_aides", "label" : _(u"Modèles d'aides journalières"), "infobulle" : _(u"Paramétrage des modèles d'aides journalières"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
                     "-",
-                    {"code" : "procedures_badgeage", "label" : u"Procédures de badgeage", "infobulle" : u"Paramétrage des procédures de badgeage", "image" : "Images/16x16/Badgeage.png", "action" : self.On_param_badgeage},
-                    {"code" : "synthese_vocale", "label" : u"Synthèse vocale", "infobulle" : u"Paramétrage de la synthèse vocale", "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
+                    {"code" : "procedures_badgeage", "label" : _(u"Procédures de badgeage"), "infobulle" : _(u"Paramétrage des procédures de badgeage"), "image" : "Images/16x16/Badgeage.png", "action" : self.On_param_badgeage},
+                    {"code" : "synthese_vocale", "label" : _(u"Synthèse vocale"), "infobulle" : _(u"Paramétrage de la synthèse vocale"), "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
                     "-",
-                    {"code" : "menu_parametrage_factures", "label" : u"Facturation", "items" : [
-                            {"code" : "lots_factures", "label" : u"Lots de factures", "infobulle" : u"Paramétrage des lots de factures", "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_factures},
-                            {"code" : "lots_rappels", "label" : u"Lots de rappels", "infobulle" : u"Paramétrage des lots de rappels", "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_rappels},
+                    {"code" : "menu_parametrage_factures", "label" : _(u"Facturation"), "items" : [
+                            {"code" : "lots_factures", "label" : _(u"Lots de factures"), "infobulle" : _(u"Paramétrage des lots de factures"), "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_factures},
+                            {"code" : "lots_rappels", "label" : _(u"Lots de rappels"), "infobulle" : _(u"Paramétrage des lots de rappels"), "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_rappels},
                             ],
                     },
-                    {"code" : "menu_parametrage_reglements", "label" : u"Comptabilité", "items" : [
-                            {"code" : "comptes_bancaires", "label" : u"Comptes bancaires", "infobulle" : u"Paramétrage des comptes bancaires", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes},
+                    {"code" : "menu_parametrage_reglements", "label" : _(u"Comptabilité"), "items" : [
+                            {"code" : "comptes_bancaires", "label" : _(u"Comptes bancaires"), "infobulle" : _(u"Paramétrage des comptes bancaires"), "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes},
                             "-",
-                            {"code" : "modes_reglements", "label" : u"Modes de règlements", "infobulle" : u"Paramétrage des modes de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_modes_reglements},
-                            {"code" : "emetteurs", "label" : u"Emetteurs de règlements", "infobulle" : u"Paramétrage des émetteurs de règlements", "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_emetteurs},
+                            {"code" : "modes_reglements", "label" : _(u"Modes de règlements"), "infobulle" : _(u"Paramétrage des modes de règlements"), "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_modes_reglements},
+                            {"code" : "emetteurs", "label" : _(u"Emetteurs de règlements"), "infobulle" : _(u"Paramétrage des émetteurs de règlements"), "image" : "Images/16x16/Mode_reglement.png", "action" : self.On_param_emetteurs},
                             "-",
-                            {"code" : "compta_exercices", "label" : u"Exercices comptables", "infobulle" : u"Paramétrage des exercices comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_exercices},
-                            {"code" : "compta_analytiques", "label" : u"Postes analytiques", "infobulle" : u"Paramétrage des postes analytiques", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_analytiques},
-                            {"code" : "compta_categories", "label" : u"Catégories comptables", "infobulle" : u"Paramétrage des catégories comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_categories_comptables},
-                            {"code" : "compta_comptes", "label" : u"Comptes comptables", "infobulle" : u"Paramétrage des comptes comptables", "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes_comptables},
-                            {"code" : "compta_tiers", "label" : u"Tiers", "infobulle" : u"Paramétrage des tiers", "image" : "Images/16x16/Tiers.png", "action" : self.On_param_tiers},
-                            {"code" : "compta_budgets", "label" : u"Budgets", "infobulle" : u"Paramétrage des budgets", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_param_budgets},
-                            {"code" : "compta_releves", "label" : u"Relevés bancaires", "infobulle" : u"Paramétrage des relevés bancaires", "image" : "Images/16x16/Document_coches.png", "action" : self.On_param_releves_bancaires},
+                            {"code" : "compta_exercices", "label" : _(u"Exercices comptables"), "infobulle" : _(u"Paramétrage des exercices comptables"), "image" : "Images/16x16/Reglement.png", "action" : self.On_param_exercices},
+                            {"code" : "compta_analytiques", "label" : _(u"Postes analytiques"), "infobulle" : _(u"Paramétrage des postes analytiques"), "image" : "Images/16x16/Reglement.png", "action" : self.On_param_analytiques},
+                            {"code" : "compta_categories", "label" : _(u"Catégories comptables"), "infobulle" : _(u"Paramétrage des catégories comptables"), "image" : "Images/16x16/Reglement.png", "action" : self.On_param_categories_comptables},
+                            {"code" : "compta_comptes", "label" : _(u"Comptes comptables"), "infobulle" : _(u"Paramétrage des comptes comptables"), "image" : "Images/16x16/Reglement.png", "action" : self.On_param_comptes_comptables},
+                            {"code" : "compta_tiers", "label" : _(u"Tiers"), "infobulle" : _(u"Paramétrage des tiers"), "image" : "Images/16x16/Tiers.png", "action" : self.On_param_tiers},
+                            {"code" : "compta_budgets", "label" : _(u"Budgets"), "infobulle" : _(u"Paramétrage des budgets"), "image" : "Images/16x16/Tresorerie.png", "action" : self.On_param_budgets},
+                            {"code" : "compta_releves", "label" : _(u"Relevés bancaires"), "infobulle" : _(u"Paramétrage des relevés bancaires"), "image" : "Images/16x16/Document_coches.png", "action" : self.On_param_releves_bancaires},
                             ],
                     },
-                    {"code" : "menu_parametrage_prelevements", "label" : u"Prélèvement automatique", "items" : [
-                            {"code" : "etablissements_bancaires", "label" : u"Etablissements bancaires", "infobulle" : u"Paramétrage des établissements bancaires", "image" : "Images/16x16/Banque.png", "action" : self.On_param_banques},
+                    {"code" : "menu_parametrage_prelevements", "label" : _(u"Prélèvement automatique"), "items" : [
+                            {"code" : "etablissements_bancaires", "label" : _(u"Etablissements bancaires"), "infobulle" : _(u"Paramétrage des établissements bancaires"), "image" : "Images/16x16/Banque.png", "action" : self.On_param_banques},
                             ],
                     },
                     "-",
-                    {"code" : "menu_parametrage_renseignements", "label" : u"Renseignements", "items" : [
-                            {"code" : "questionnaires", "label" : u"Questionnaires", "infobulle" : u"Paramétrage des questionnaires", "image" : "Images/16x16/Questionnaire.png", "action" : self.On_param_questionnaires},
-                            {"code" : "types_pieces", "label" : u"Types de pièces", "infobulle" : u"Paramétrage des types de pièces", "image" : "Images/16x16/Piece.png", "action" : self.On_param_pieces},
-                            {"code" : "regimes_sociaux", "label" : u"Régimes sociaux", "infobulle" : u"Paramétrage des régimes sociaux", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
-                            {"code" : "caisses", "label" : u"Caisses", "infobulle" : u"Paramétrage des caisses", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
-                            {"code" : "categories_travail", "label" : u"Catégories socio-professionnelles", "infobulle" : u"Paramétrage des catégories socio-professionnelles", "image" : "Images/16x16/Camion.png", "action" : self.On_param_categories_travail},
-                            {"code" : "villes", "label" : u"Villes et codes postaux", "infobulle" : u"Paramétrage des villes et codes postaux", "image" : "Images/16x16/Carte.png", "action" : self.On_param_villes},
-                            {"code" : "secteurs", "label" : u"Secteurs géographiques", "infobulle" : u"Paramétrage des secteurs géographiques", "image" : "Images/16x16/Secteur.png", "action" : self.On_param_secteurs},
-                            {"code" : "types_sieste", "label" : u"Types de sieste", "infobulle" : u"Paramétrage des types de sieste", "image" : "Images/16x16/Reveil.png", "action" : self.On_param_types_sieste},
-                            {"code" : "maladies", "label" : u"Maladies", "infobulle" : u"Paramétrage des maladies", "image" : "Images/16x16/Medical.png", "action" : self.On_param_maladies},
-                            {"code" : "vaccins", "label" : u"Vaccins", "infobulle" : u"Paramétrage des vaccins", "image" : "Images/16x16/Seringue.png", "action" : self.On_param_vaccins},
-                            {"code" : "medecins", "label" : u"Médecins", "infobulle" : u"Paramétrage des médecins", "image" : "Images/16x16/Medecin.png", "action" : self.On_param_medecins},
+                    {"code" : "menu_parametrage_renseignements", "label" : _(u"Renseignements"), "items" : [
+                            {"code" : "questionnaires", "label" : _(u"Questionnaires"), "infobulle" : _(u"Paramétrage des questionnaires"), "image" : "Images/16x16/Questionnaire.png", "action" : self.On_param_questionnaires},
+                            {"code" : "types_pieces", "label" : _(u"Types de pièces"), "infobulle" : _(u"Paramétrage des types de pièces"), "image" : "Images/16x16/Piece.png", "action" : self.On_param_pieces},
+                            {"code" : "regimes_sociaux", "label" : _(u"Régimes sociaux"), "infobulle" : _(u"Paramétrage des régimes sociaux"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
+                            {"code" : "caisses", "label" : _(u"Caisses"), "infobulle" : _(u"Paramétrage des caisses"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
+                            {"code" : "categories_travail", "label" : _(u"Catégories socio-professionnelles"), "infobulle" : _(u"Paramétrage des catégories socio-professionnelles"), "image" : "Images/16x16/Camion.png", "action" : self.On_param_categories_travail},
+                            {"code" : "villes", "label" : _(u"Villes et codes postaux"), "infobulle" : _(u"Paramétrage des villes et codes postaux"), "image" : "Images/16x16/Carte.png", "action" : self.On_param_villes},
+                            {"code" : "secteurs", "label" : _(u"Secteurs géographiques"), "infobulle" : _(u"Paramétrage des secteurs géographiques"), "image" : "Images/16x16/Secteur.png", "action" : self.On_param_secteurs},
+                            {"code" : "types_sieste", "label" : _(u"Types de sieste"), "infobulle" : _(u"Paramétrage des types de sieste"), "image" : "Images/16x16/Reveil.png", "action" : self.On_param_types_sieste},
+                            {"code" : "maladies", "label" : _(u"Maladies"), "infobulle" : _(u"Paramétrage des maladies"), "image" : "Images/16x16/Medical.png", "action" : self.On_param_maladies},
+                            {"code" : "vaccins", "label" : _(u"Vaccins"), "infobulle" : _(u"Paramétrage des vaccins"), "image" : "Images/16x16/Seringue.png", "action" : self.On_param_vaccins},
+                            {"code" : "medecins", "label" : _(u"Médecins"), "infobulle" : _(u"Paramétrage des médecins"), "image" : "Images/16x16/Medecin.png", "action" : self.On_param_medecins},
                             ],
                     },
-                    {"code" : "menu_parametrage_scolarite", "label" : u"Scolarité", "items" : [
-                            {"code" : "niveaux_scolaires", "label" : u"Niveaux scolaires", "infobulle" : u"Paramétrage des niveaux scolaires", "image" : "Images/16x16/Niveau_scolaire.png", "action" : self.On_param_niveaux_scolaires},
+                    {"code" : "menu_parametrage_scolarite", "label" : _(u"Scolarité"), "items" : [
+                            {"code" : "niveaux_scolaires", "label" : _(u"Niveaux scolaires"), "infobulle" : _(u"Paramétrage des niveaux scolaires"), "image" : "Images/16x16/Niveau_scolaire.png", "action" : self.On_param_niveaux_scolaires},
                             "-",
-                            {"code" : "ecoles", "label" : u"Ecoles", "infobulle" : u"Paramétrage des écoles", "image" : "Images/16x16/Ecole.png", "action" : self.On_param_ecoles},
-                            {"code" : "classes", "label" : u"Classes", "infobulle" : u"Paramétrage des classes", "image" : "Images/16x16/Classe.png", "action" : self.On_param_classes},
+                            {"code" : "ecoles", "label" : _(u"Ecoles"), "infobulle" : _(u"Paramétrage des écoles"), "image" : "Images/16x16/Ecole.png", "action" : self.On_param_ecoles},
+                            {"code" : "classes", "label" : _(u"Classes"), "infobulle" : _(u"Paramétrage des classes"), "image" : "Images/16x16/Classe.png", "action" : self.On_param_classes},
                             ],
                     },
-                    {"code" : "menu_parametrage_transports", "label" : u"Transports", "items" : [
-                            {"code" : "menu_parametrage_transports_bus", "label" : u"Bus", "items" : [
-                                    {"code" : "compagnies_bus", "label" : u"Compagnies de bus", "infobulle" : u"Paramétrage des compagnies de bus", "image" : "Images/16x16/Bus.png", "action" : self.On_param_compagnies_bus},
-                                    {"code" : "lignes_bus", "label" : u"Lignes de bus", "infobulle" : u"Paramétrage des lignes de bus", "image" : "Images/16x16/Bus.png", "action" : self.On_param_lignes_bus},
-                                    {"code" : "arrets_bus", "label" : u"Arrêts de bus", "infobulle" : u"Paramétrage des arrêts de bus", "image" : "Images/16x16/Bus.png", "action" : self.On_param_arrets_bus},
+                    {"code" : "menu_parametrage_transports", "label" : _(u"Transports"), "items" : [
+                            {"code" : "menu_parametrage_transports_bus", "label" : _(u"Bus"), "items" : [
+                                    {"code" : "compagnies_bus", "label" : _(u"Compagnies de bus"), "infobulle" : _(u"Paramétrage des compagnies de bus"), "image" : "Images/16x16/Bus.png", "action" : self.On_param_compagnies_bus},
+                                    {"code" : "lignes_bus", "label" : _(u"Lignes de bus"), "infobulle" : _(u"Paramétrage des lignes de bus"), "image" : "Images/16x16/Bus.png", "action" : self.On_param_lignes_bus},
+                                    {"code" : "arrets_bus", "label" : _(u"Arrêts de bus"), "infobulle" : _(u"Paramétrage des arrêts de bus"), "image" : "Images/16x16/Bus.png", "action" : self.On_param_arrets_bus},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_car", "label" : u"Car", "items" : [
-                                    {"code" : "compagnies_cars", "label" : u"Compagnies de cars", "infobulle" : u"Paramétrage des compagnies de cars", "image" : "Images/16x16/Car.png", "action" : self.On_param_compagnies_car},
-                                    {"code" : "lignes_cars", "label" : u"Lignes de cars", "infobulle" : u"Paramétrage des lignes de cars", "image" : "Images/16x16/Car.png", "action" : self.On_param_lignes_car},
-                                    {"code" : "arrets_cars", "label" : u"Arrêts de cars", "infobulle" : u"Paramétrage des arrêts de cars", "image" : "Images/16x16/Car.png", "action" : self.On_param_arrets_car},
+                            {"code" : "menu_parametrage_transports_car", "label" : _(u"Car"), "items" : [
+                                    {"code" : "compagnies_cars", "label" : _(u"Compagnies de cars"), "infobulle" : _(u"Paramétrage des compagnies de cars"), "image" : "Images/16x16/Car.png", "action" : self.On_param_compagnies_car},
+                                    {"code" : "lignes_cars", "label" : _(u"Lignes de cars"), "infobulle" : _(u"Paramétrage des lignes de cars"), "image" : "Images/16x16/Car.png", "action" : self.On_param_lignes_car},
+                                    {"code" : "arrets_cars", "label" : _(u"Arrêts de cars"), "infobulle" : _(u"Paramétrage des arrêts de cars"), "image" : "Images/16x16/Car.png", "action" : self.On_param_arrets_car},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_navette", "label" : u"Navette", "items" : [
-                                    {"code" : "compagnies_navettes", "label" : u"Compagnies de navettes", "infobulle" : u"Paramétrage des compagnies de navettes", "image" : "Images/16x16/Navette.png", "action" : self.On_param_compagnies_navette},
-                                    {"code" : "lignes_navettes", "label" : u"Lignes de navettes", "infobulle" : u"Paramétrage des lignes de navettes", "image" : "Images/16x16/Navette.png", "action" : self.On_param_lignes_navette},
-                                    {"code" : "arrets_navettes", "label" : u"Arrêts de navettes", "infobulle" : u"Paramétrage des arrêts de navettes", "image" : "Images/16x16/Navette.png", "action" : self.On_param_arrets_navette},
+                            {"code" : "menu_parametrage_transports_navette", "label" : _(u"Navette"), "items" : [
+                                    {"code" : "compagnies_navettes", "label" : _(u"Compagnies de navettes"), "infobulle" : _(u"Paramétrage des compagnies de navettes"), "image" : "Images/16x16/Navette.png", "action" : self.On_param_compagnies_navette},
+                                    {"code" : "lignes_navettes", "label" : _(u"Lignes de navettes"), "infobulle" : _(u"Paramétrage des lignes de navettes"), "image" : "Images/16x16/Navette.png", "action" : self.On_param_lignes_navette},
+                                    {"code" : "arrets_navettes", "label" : _(u"Arrêts de navettes"), "infobulle" : _(u"Paramétrage des arrêts de navettes"), "image" : "Images/16x16/Navette.png", "action" : self.On_param_arrets_navette},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_taxi", "label" : u"Taxi", "items" : [
-                                    {"code" : "compagnies_taxis", "label" : u"Compagnies de taxis", "infobulle" : u"Paramétrage des compagnies de taxis", "image" : "Images/16x16/Taxi.png", "action" : self.On_param_compagnies_taxi},
+                            {"code" : "menu_parametrage_transports_taxi", "label" : _(u"Taxi"), "items" : [
+                                    {"code" : "compagnies_taxis", "label" : _(u"Compagnies de taxis"), "infobulle" : _(u"Paramétrage des compagnies de taxis"), "image" : "Images/16x16/Taxi.png", "action" : self.On_param_compagnies_taxi},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_train", "label" : u"Train", "items" : [
-                                    {"code" : "lieux_gares", "label" : u"Gares", "infobulle" : u"Paramétrage des gares", "image" : "Images/16x16/Train.png", "action" : self.On_param_lieux_gares},
-                                    {"code" : "compagnies_trains", "label" : u"Compagnies de trains", "infobulle" : u"Paramétrage des compagnies de trains", "image" : "Images/16x16/Train.png", "action" : self.On_param_compagnies_train},
+                            {"code" : "menu_parametrage_transports_train", "label" : _(u"Train"), "items" : [
+                                    {"code" : "lieux_gares", "label" : _(u"Gares"), "infobulle" : _(u"Paramétrage des gares"), "image" : "Images/16x16/Train.png", "action" : self.On_param_lieux_gares},
+                                    {"code" : "compagnies_trains", "label" : _(u"Compagnies de trains"), "infobulle" : _(u"Paramétrage des compagnies de trains"), "image" : "Images/16x16/Train.png", "action" : self.On_param_compagnies_train},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_avion", "label" : u"Avion", "items" : [
-                                    {"code" : "lieux_aeroports", "label" : u"Aéroports", "infobulle" : u"Paramétrage des aéroports", "image" : "Images/16x16/Avion.png", "action" : self.On_param_lieux_aeroports},
-                                    {"code" : "compagnies_avions", "label" : u"Compagnies aériennes", "infobulle" : u"Paramétrage des compagnies aériennes", "image" : "Images/16x16/Avion.png", "action" : self.On_param_compagnies_avion},
+                            {"code" : "menu_parametrage_transports_avion", "label" : _(u"Avion"), "items" : [
+                                    {"code" : "lieux_aeroports", "label" : _(u"Aéroports"), "infobulle" : _(u"Paramétrage des aéroports"), "image" : "Images/16x16/Avion.png", "action" : self.On_param_lieux_aeroports},
+                                    {"code" : "compagnies_avions", "label" : _(u"Compagnies aériennes"), "infobulle" : _(u"Paramétrage des compagnies aériennes"), "image" : "Images/16x16/Avion.png", "action" : self.On_param_compagnies_avion},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_bateau", "label" : u"Bateau", "items" : [
-                                    {"code" : "lieux_ports", "label" : u"Ports", "infobulle" : u"Paramétrage des ports", "image" : "Images/16x16/Bateau.png", "action" : self.On_param_lieux_ports},
-                                    {"code" : "compagnies_bateaux", "label" : u"Compagnies maritimes", "infobulle" : u"Paramétrage des compagnies maritimes", "image" : "Images/16x16/Bateau.png", "action" : self.On_param_compagnies_bateau},
+                            {"code" : "menu_parametrage_transports_bateau", "label" : _(u"Bateau"), "items" : [
+                                    {"code" : "lieux_ports", "label" : _(u"Ports"), "infobulle" : _(u"Paramétrage des ports"), "image" : "Images/16x16/Bateau.png", "action" : self.On_param_lieux_ports},
+                                    {"code" : "compagnies_bateaux", "label" : _(u"Compagnies maritimes"), "infobulle" : _(u"Paramétrage des compagnies maritimes"), "image" : "Images/16x16/Bateau.png", "action" : self.On_param_compagnies_bateau},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_metro", "label" : u"Métro", "items" : [
-                                    {"code" : "compagnies_metros", "label" : u"Compagnies de métros", "infobulle" : u"Paramétrage des compagnies de métros", "image" : "Images/16x16/Metro.png", "action" : self.On_param_compagnies_metro},
-                                    {"code" : "lignes_metros", "label" : u"Lignes de métros", "infobulle" : u"Paramétrage des lignes de métros", "image" : "Images/16x16/Metro.png", "action" : self.On_param_lignes_metro},
-                                    {"code" : "arrets_metros", "label" : u"Arrêts de métros", "infobulle" : u"Paramétrage des arrêts de métros", "image" : "Images/16x16/Metro.png", "action" : self.On_param_arrets_metro},
+                            {"code" : "menu_parametrage_transports_metro", "label" : _(u"Métro"), "items" : [
+                                    {"code" : "compagnies_metros", "label" : _(u"Compagnies de métros"), "infobulle" : _(u"Paramétrage des compagnies de métros"), "image" : "Images/16x16/Metro.png", "action" : self.On_param_compagnies_metro},
+                                    {"code" : "lignes_metros", "label" : _(u"Lignes de métros"), "infobulle" : _(u"Paramétrage des lignes de métros"), "image" : "Images/16x16/Metro.png", "action" : self.On_param_lignes_metro},
+                                    {"code" : "arrets_metros", "label" : _(u"Arrêts de métros"), "infobulle" : _(u"Paramétrage des arrêts de métros"), "image" : "Images/16x16/Metro.png", "action" : self.On_param_arrets_metro},
                                     ],
                             },
-                            {"code" : "menu_parametrage_transports_pedibus", "label" : u"Pédibus", "items" : [
-                                    {"code" : "lignes_pedibus", "label" : u"Lignes de pédibus", "infobulle" : u"Paramétrage des lignes de pédibus", "image" : "Images/16x16/Pedibus.png", "action" : self.On_param_lignes_pedibus},
-                                    {"code" : "arrets_pedibus", "label" : u"Arrêts de pédibus", "infobulle" : u"Paramétrage des arrêts de pédibus", "image" : "Images/16x16/Pedibus.png", "action" : self.On_param_arrets_pedibus},
+                            {"code" : "menu_parametrage_transports_pedibus", "label" : _(u"Pédibus"), "items" : [
+                                    {"code" : "lignes_pedibus", "label" : _(u"Lignes de pédibus"), "infobulle" : _(u"Paramétrage des lignes de pédibus"), "image" : "Images/16x16/Pedibus.png", "action" : self.On_param_lignes_pedibus},
+                                    {"code" : "arrets_pedibus", "label" : _(u"Arrêts de pédibus"), "infobulle" : _(u"Paramétrage des arrêts de pédibus"), "image" : "Images/16x16/Pedibus.png", "action" : self.On_param_arrets_pedibus},
                                     ],
                             },
                             ],
                     },
                     "-",
-                    {"code" : "categories_messages", "label" : u"Catégories de messages", "infobulle" : u"Paramétrage des catégories de messages", "image" : "Images/16x16/Mail.png", "action" : self.On_param_categories_messages},
-                    {"code" : "restaurateurs", "label" : u"Restaurateurs", "infobulle" : u"Paramétrage des restaurateurs", "image" : "Images/16x16/Restaurateur.png", "action" : self.On_param_restaurateurs},
-                    {"code" : "adresses_exp_mails", "label" : u"Adresses d'expédition d'Emails", "infobulle" : u"Paramétrage des adresses d'expédition d'Emails", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_param_emails_exp},
-                    {"code" : "listes_diffusion", "label" : u"Listes de diffusion", "infobulle" : u"Paramétrage des listes de diffusion", "image" : "Images/16x16/Liste_diffusion.png", "action" : self.On_param_listes_diffusion},
+                    {"code" : "categories_messages", "label" : _(u"Catégories de messages"), "infobulle" : _(u"Paramétrage des catégories de messages"), "image" : "Images/16x16/Mail.png", "action" : self.On_param_categories_messages},
+                    {"code" : "restaurateurs", "label" : _(u"Restaurateurs"), "infobulle" : _(u"Paramétrage des restaurateurs"), "image" : "Images/16x16/Restaurateur.png", "action" : self.On_param_restaurateurs},
+                    {"code" : "adresses_exp_mails", "label" : _(u"Adresses d'expédition d'Emails"), "infobulle" : _(u"Paramétrage des adresses d'expédition d'Emails"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_param_emails_exp},
+                    {"code" : "listes_diffusion", "label" : _(u"Listes de diffusion"), "infobulle" : _(u"Paramétrage des listes de diffusion"), "image" : "Images/16x16/Liste_diffusion.png", "action" : self.On_param_listes_diffusion},
                     "-",
-                    {"code" : "menu_parametrage_calendrier", "label" : u"Calendrier", "items" : [
-                            {"code" : "vacances", "label" : u"Vacances", "infobulle" : u"Paramétrage des vacances", "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_vacances},
-                            {"code" : "feries", "label" : u"Jours fériés", "infobulle" : u"Paramétrage des jours fériés", "image" : "Images/16x16/Jour.png", "action" : self.On_param_feries},
+                    {"code" : "menu_parametrage_calendrier", "label" : _(u"Calendrier"), "items" : [
+                            {"code" : "vacances", "label" : _(u"Vacances"), "infobulle" : _(u"Paramétrage des vacances"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_vacances},
+                            {"code" : "feries", "label" : _(u"Jours fériés"), "infobulle" : _(u"Paramétrage des jours fériés"), "image" : "Images/16x16/Jour.png", "action" : self.On_param_feries},
                             ],
                     },
                     ],
             },
 
             # Affichage
-            {"code" : "menu_affichage", "label" : u"Affichage", "items" : [
-                    {"code" : "perspective_defaut", "label" : u"Disposition par défaut", "infobulle" : u"Afficher la disposition par défaut", "action" : self.On_affichage_perspective_defaut, "genre" : wx.ITEM_CHECK},
+            {"code" : "menu_affichage", "label" : _(u"Affichage"), "items" : [
+                    {"code" : "perspective_defaut", "label" : _(u"Disposition par défaut"), "infobulle" : _(u"Afficher la disposition par défaut"), "action" : self.On_affichage_perspective_defaut, "genre" : wx.ITEM_CHECK},
                     "-",
-                    {"code" : "perspective_save", "label" : u"Sauvegarder la disposition actuelle", "infobulle" : u"Sauvegarder la disposition actuelle", "image" : "Images/16x16/Perspective_ajouter.png", "action" : self.On_affichage_perspective_save},
-                    {"code" : "perspective_suppr", "label" : u"Supprimer des dispositions", "infobulle" : u"Supprimer des dispositions enregistrées", "image" : "Images/16x16/Perspective_supprimer.png", "action" : self.On_affichage_perspective_suppr},
+                    {"code" : "perspective_save", "label" : _(u"Sauvegarder la disposition actuelle"), "infobulle" : _(u"Sauvegarder la disposition actuelle"), "image" : "Images/16x16/Perspective_ajouter.png", "action" : self.On_affichage_perspective_save},
+                    {"code" : "perspective_suppr", "label" : _(u"Supprimer des dispositions"), "infobulle" : _(u"Supprimer des dispositions enregistrées"), "image" : "Images/16x16/Perspective_supprimer.png", "action" : self.On_affichage_perspective_suppr},
                     "-",
                     "-",
-                    {"code" : "affichage_barres_outils", "label" : u"Barres d'outils personnelles", "infobulle" : u"Barres d'outils personnelles", "image" : "Images/16x16/Barre_outils.png", "action" : self.On_affichage_barres_outils},
+                    {"code" : "affichage_barres_outils", "label" : _(u"Barres d'outils personnelles"), "infobulle" : _(u"Barres d'outils personnelles"), "image" : "Images/16x16/Barre_outils.png", "action" : self.On_affichage_barres_outils},
                     "-",
-                    {"code" : "actualiser_affichage", "label" : u"Actualiser l'affichage\tF11", "infobulle" : u"Actualiser l'affichage de la page d'accueil", "image" : "Images/16x16/Actualiser2.png", "action" : self.On_affichage_actualiser},
+                    {"code" : "actualiser_affichage", "label" : _(u"Actualiser l'affichage\tF11"), "infobulle" : _(u"Actualiser l'affichage de la page d'accueil"), "image" : "Images/16x16/Actualiser2.png", "action" : self.On_affichage_actualiser},
                     ],
             },
 
             # Outils
-            {"code" : "menu_outils", "label" : u"Outils", "items" : [
-                    {"code" : "statistiques", "label" : u"Statistiques", "infobulle" : u"Statistiques", "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
+            {"code" : "menu_outils", "label" : _(u"Outils"), "items" : [
+                    {"code" : "statistiques", "label" : _(u"Statistiques"), "infobulle" : _(u"Statistiques"), "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
                     "-",
-                    {"code" : "nomadhys_synchro", "label" : u"Synchroniser Nomadhys", "infobulle" : u"Synchroniser Nomadhys, l'application nomade de Noethys", "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
+                    {"code" : "nomadhys_synchro", "label" : _(u"Synchroniser Nomadhys"), "infobulle" : _(u"Synchroniser Nomadhys, l'application nomade de Noethys"), "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
                     "-",
-                    {"code" : "editeur_emails", "label" : u"Editeur d'Emails", "infobulle" : u"Editeur d'Emails", "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
-                    {"code" : "calculatrice", "label" : u"Calculatrice\tF12", "infobulle" : u"Calculatrice", "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
-                    {"code" : "calendrier", "label" : u"Calendrier", "infobulle" : u"Calendrier", "image" : "Images/16x16/Calendrier.png", "action" : self.On_outils_calendrier},
+                    {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
+                    {"code" : "calculatrice", "label" : _(u"Calculatrice\tF12"), "infobulle" : _(u"Calculatrice"), "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
+                    {"code" : "calendrier", "label" : _(u"Calendrier"), "infobulle" : _(u"Calendrier"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_outils_calendrier},
                     "-",
-                    {"code" : "villes2", "label" : u"Villes et codes postaux", "infobulle" : u"Villes et codes postaux", "image" : "Images/16x16/Carte.png", "action" : self.On_outils_villes},
-                    {"code" : "geolocalisation", "label" : u"Géolocalisation GPS", "infobulle" : u"Géolocalisation GPS", "image" : "Images/16x16/Carte.png", "action" : self.On_outils_gps},
-                    {"code" : "meteo", "label" : u"Prévisions météorologiques", "infobulle" : u"Prévisions météorologiques", "image" : "Images/16x16/Meteo.png", "action" : self.On_outils_meteo},
-                    {"code" : "horaires_soleil", "label" : u"Horaires du soleil", "infobulle" : u"Horaires du soleil", "image" : "Images/16x16/Soleil.png", "action" : self.On_outils_horaires_soleil},
+                    {"code" : "villes2", "label" : _(u"Villes et codes postaux"), "infobulle" : _(u"Villes et codes postaux"), "image" : "Images/16x16/Carte.png", "action" : self.On_outils_villes},
+                    {"code" : "geolocalisation", "label" : _(u"Géolocalisation GPS"), "infobulle" : _(u"Géolocalisation GPS"), "image" : "Images/16x16/Carte.png", "action" : self.On_outils_gps},
+                    {"code" : "meteo", "label" : _(u"Prévisions météorologiques"), "infobulle" : _(u"Prévisions météorologiques"), "image" : "Images/16x16/Meteo.png", "action" : self.On_outils_meteo},
+                    {"code" : "horaires_soleil", "label" : _(u"Horaires du soleil"), "infobulle" : _(u"Horaires du soleil"), "image" : "Images/16x16/Soleil.png", "action" : self.On_outils_horaires_soleil},
                     "-",
-                    {"code" : "connexions_reseau", "label" : u"Liste des connexions réseau", "infobulle" : u"Liste des connexions réseau", "image" : "Images/16x16/Connexion.png", "action" : self.On_outils_connexions},
+                    {"code" : "connexions_reseau", "label" : _(u"Liste des connexions réseau"), "infobulle" : _(u"Liste des connexions réseau"), "image" : "Images/16x16/Connexion.png", "action" : self.On_outils_connexions},
                     "-",
-                    {"code" : "messages", "label" : u"Messages", "infobulle" : u"Liste des messages", "image" : "Images/16x16/Mail.png", "action" : self.On_outils_messages},
-                    {"code" : "historique", "label" : u"Historique", "infobulle" : u"Historique", "image" : "Images/16x16/Historique.png", "action" : self.On_outils_historique},
-                    {"code" : "menu_outils_utilitaires", "label" : u"Utilitaires administrateur", "items" : [
-                            {"code" : "correcteur", "label" : u"Correcteur d'anomalies", "infobulle" : u"Correcteur d'anomalies", "image" : "Images/16x16/Depannage.png", "action" : self.On_outils_correcteur},
+                    {"code" : "messages", "label" : _(u"Messages"), "infobulle" : _(u"Liste des messages"), "image" : "Images/16x16/Mail.png", "action" : self.On_outils_messages},
+                    {"code" : "historique", "label" : _(u"Historique"), "infobulle" : _(u"Historique"), "image" : "Images/16x16/Historique.png", "action" : self.On_outils_historique},
+                    {"code" : "menu_outils_utilitaires", "label" : _(u"Utilitaires administrateur"), "items" : [
+                            {"code" : "correcteur", "label" : _(u"Correcteur d'anomalies"), "infobulle" : _(u"Correcteur d'anomalies"), "image" : "Images/16x16/Depannage.png", "action" : self.On_outils_correcteur},
                             "-",
-                            {"code" : "purger_historique", "label" : u"Purger l'historique", "infobulle" : u"Purger l'historique", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_historique},
-                            {"code" : "purger_journal_badgeage", "label" : u"Purger le journal de badgeage", "infobulle" : u"Purger le journal de badgeage", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_journal_badgeage},
-                            {"code" : "purger_archives_badgeage", "label" : u"Purger les archives des badgeages importés", "infobulle" : u"Purger les archives des badgeages importés", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_archives_badgeage},
-                            {"code" : "purger_repertoire_updates", "label" : u"Purger le répertoire Updates", "infobulle" : u"Purger le répertoire Updates", "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_rep_updates},
+                            {"code" : "purger_historique", "label" : _(u"Purger l'historique"), "infobulle" : _(u"Purger l'historique"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_historique},
+                            {"code" : "purger_journal_badgeage", "label" : _(u"Purger le journal de badgeage"), "infobulle" : _(u"Purger le journal de badgeage"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_journal_badgeage},
+                            {"code" : "purger_archives_badgeage", "label" : _(u"Purger les archives des badgeages importés"), "infobulle" : _(u"Purger les archives des badgeages importés"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_archives_badgeage},
+                            {"code" : "purger_repertoire_updates", "label" : _(u"Purger le répertoire Updates"), "infobulle" : _(u"Purger le répertoire Updates"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_rep_updates},
                             "-",
-                            {"code" : "extensions", "label" : u"Extensions", "infobulle" : u"Extensions", "image" : "Images/16x16/Terminal.png", "action" : self.On_outils_extensions},
-                            {"code" : "procedures", "label" : u"Procédures", "infobulle" : u"Procédures", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_procedures},
-                            {"code" : "reinitialisation", "label" : u"Réinitialisation du fichier de configuration", "infobulle" : u"Réinitialisation du fichier de configuration", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_reinitialisation},
-                            {"code" : "transfert_tables", "label" : u"Transférer des tables", "infobulle" : u"Transférer des tables de données", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_transfert_tables},
+                            {"code" : "extensions", "label" : _(u"Extensions"), "infobulle" : _(u"Extensions"), "image" : "Images/16x16/Terminal.png", "action" : self.On_outils_extensions},
+                            {"code" : "procedures", "label" : _(u"Procédures"), "infobulle" : _(u"Procédures"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_procedures},
+                            {"code" : "reinitialisation", "label" : _(u"Réinitialisation du fichier de configuration"), "infobulle" : _(u"Réinitialisation du fichier de configuration"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_reinitialisation},
+                            {"code" : "transfert_tables", "label" : _(u"Transférer des tables"), "infobulle" : _(u"Transférer des tables de données"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_transfert_tables},
                             "-",
-                            {"code" : "suppression_prestations_sans_conso", "label" : u"Suppression des prestations sans consommations associées", "infobulle" : u"Suppression des prestations sans conso. associées", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_procedure_e4072},
-                            {"code" : "liste_prestations_sans_conso", "label" : u"Liste des prestations sans consommations associées", "infobulle" : u"Liste des prestations sans conso. associées", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_prestations_sans_conso},
-                            {"code" : "liste_conso_sans_prestations", "label" : u"Liste des consommations sans prestations associées", "infobulle" : u"Liste des conso. sans prestations associées", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_conso_sans_prestations},
-                            {"code" : "deverrouillage_forfaits", "label" : u"Déverrouillage des consommations de forfaits", "infobulle" : u"Déverrouillage des consommations de forfaits", "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_deverrouillage_forfaits},
+                            {"code" : "suppression_prestations_sans_conso", "label" : _(u"Suppression des prestations sans consommations associées"), "infobulle" : _(u"Suppression des prestations sans conso. associées"), "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_procedure_e4072},
+                            {"code" : "liste_prestations_sans_conso", "label" : _(u"Liste des prestations sans consommations associées"), "infobulle" : _(u"Liste des prestations sans conso. associées"), "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_prestations_sans_conso},
+                            {"code" : "liste_conso_sans_prestations", "label" : _(u"Liste des consommations sans prestations associées"), "infobulle" : _(u"Liste des conso. sans prestations associées"), "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_conso_sans_prestations},
+                            {"code" : "deverrouillage_forfaits", "label" : _(u"Déverrouillage des consommations de forfaits"), "infobulle" : _(u"Déverrouillage des consommations de forfaits"), "image" : "Images/16x16/Medecin3.png", "action" : self.On_outils_deverrouillage_forfaits},
                             "-",
-                            {"code" : "appliquer_tva", "label" : u"Appliquer un taux de TVA à un lot de prestations", "infobulle" : u"Appliquer un taux de TVA à un lot de prestations", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_tva},
-                            {"code" : "appliquer_code_comptable", "label" : u"Appliquer un code comptable à un lot de prestations", "infobulle" : u"Appliquer un code comptable à des prestations", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_code_comptable},
-                            {"code" : "conversion_rib_sepa", "label" : u"Convertir les RIB nationaux en mandats SEPA", "infobulle" : u"Convertir les RIB nationaux en mandats SEPA", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
-                            {"code" : "creation_titulaires_helios", "label" : u"Création automatique des titulaires Hélios", "infobulle" : u"Création automatique des titulaires Hélios", "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_titulaires_helios},
+                            {"code" : "appliquer_tva", "label" : _(u"Appliquer un taux de TVA à un lot de prestations"), "infobulle" : _(u"Appliquer un taux de TVA à un lot de prestations"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_tva},
+                            {"code" : "appliquer_code_comptable", "label" : _(u"Appliquer un code comptable à un lot de prestations"), "infobulle" : _(u"Appliquer un code comptable à des prestations"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_appliquer_code_comptable},
+                            {"code" : "conversion_rib_sepa", "label" : _(u"Convertir les RIB nationaux en mandats SEPA"), "infobulle" : _(u"Convertir les RIB nationaux en mandats SEPA"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_conversion_rib_sepa},
+                            {"code" : "creation_titulaires_helios", "label" : _(u"Création automatique des titulaires Hélios"), "infobulle" : _(u"Création automatique des titulaires Hélios"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_creation_titulaires_helios},
                             "-",
-                            {"code" : "console_python", "label" : u"Console Python", "infobulle" : u"Console Python", "image" : "Images/16x16/Python.png", "action" : self.On_outils_console_python},
-                            {"code" : "console_sql", "label" : u"Console SQL", "infobulle" : u"Console SQL", "image" : "Images/16x16/Sql.png", "action" : self.On_outils_console_sql},
-                            {"code" : "liste_perso", "label" : u"Liste personnalisée SQL", "infobulle" : u"Liste personnalisée SQL", "image" : "Images/16x16/Sql.png", "action" : self.On_outils_liste_perso},
+                            {"code" : "console_python", "label" : _(u"Console Python"), "infobulle" : _(u"Console Python"), "image" : "Images/16x16/Python.png", "action" : self.On_outils_console_python},
+                            {"code" : "console_sql", "label" : _(u"Console SQL"), "infobulle" : _(u"Console SQL"), "image" : "Images/16x16/Sql.png", "action" : self.On_outils_console_sql},
+                            {"code" : "liste_perso", "label" : _(u"Liste personnalisée SQL"), "infobulle" : _(u"Liste personnalisée SQL"), "image" : "Images/16x16/Sql.png", "action" : self.On_outils_liste_perso},
                             ],
                     },
                     "-",
-                    {"code" : "updater", "label" : u"Rechercher une mise à jour du logiciel", "infobulle" : u"Rechercher une mise à jour du logiciel", "image" : "Images/16x16/Updater.png", "action" : self.On_outils_updater},
+                    {"code" : "traductions", "label" : _(u"Traduire le logiciel"), "infobulle" : _(u"Traduire le logiciel"), "image" : "Images/16x16/Traduction.png", "action" : self.On_outils_traductions},
+                    {"code" : "updater", "label" : _(u"Rechercher une mise à jour du logiciel"), "infobulle" : _(u"Rechercher une mise à jour du logiciel"), "image" : "Images/16x16/Updater.png", "action" : self.On_outils_updater},
                     ],
             },
 
             # Individus
-            {"code" : "menu_individus", "label" : u"Individus", "items" : [
-                    {"code" : "scolarite", "label" : u"Inscriptions scolaires", "infobulle" : u"Inscriptions scolaires", "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
+            {"code" : "menu_individus", "label" : _(u"Individus"), "items" : [
+                    {"code" : "scolarite", "label" : _(u"Inscriptions scolaires"), "infobulle" : _(u"Inscriptions scolaires"), "image" : "Images/16x16/Classe.png", "action" : self.On_individus_scolarite},
                     "-",
-                    {"code" : "liste_inscriptions", "label" : u"Liste des inscriptions", "infobulle" : u"Editer une liste des inscriptions", "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
-                    {"code" : "saisir_lot_inscriptions", "label" : u"Saisir un lot d'inscriptions", "infobulle" : u"Saisir un lot d'inscriptions", "image" : "Images/16x16/Activite.png", "action" : self.On_individus_saisir_lot_inscriptions},
+                    {"code" : "liste_inscriptions", "label" : _(u"Liste des inscriptions"), "infobulle" : _(u"Editer une liste des inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_inscriptions},
+                    {"code" : "saisir_lot_inscriptions", "label" : _(u"Saisir un lot d'inscriptions"), "infobulle" : _(u"Saisir un lot d'inscriptions"), "image" : "Images/16x16/Activite.png", "action" : self.On_individus_saisir_lot_inscriptions},
                     "-",
-                    {"code" : "liste_contrats", "label" : u"Liste des contrats", "infobulle" : u"Editer une liste des contrats", "image" : "Images/16x16/Contrat.png", "action" : self.On_individus_contrats},
-                    {"code" : "liste_individus", "label" : u"Liste des individus", "infobulle" : u"Editer une liste des individus", "image" : "Images/16x16/Personnes.png", "action" : self.On_individus_individus},
-                    {"code" : "liste_familles", "label" : u"Liste des familles", "infobulle" : u"Liste des familles", "image" : "Images/16x16/Famille.png", "action" : self.On_individus_familles},
+                    {"code" : "liste_contrats", "label" : _(u"Liste des contrats"), "infobulle" : _(u"Editer une liste des contrats"), "image" : "Images/16x16/Contrat.png", "action" : self.On_individus_contrats},
+                    {"code" : "liste_individus", "label" : _(u"Liste des individus"), "infobulle" : _(u"Editer une liste des individus"), "image" : "Images/16x16/Personnes.png", "action" : self.On_individus_individus},
+                    {"code" : "liste_familles", "label" : _(u"Liste des familles"), "infobulle" : _(u"Liste des familles"), "image" : "Images/16x16/Famille.png", "action" : self.On_individus_familles},
                     "-",
-                    {"code" : "menu_individus_transports", "label" : u"Liste des transports", "items" : [
-                            {"code" : "liste_detail_transports", "label" : u"Liste récapitulative", "infobulle" : u"Editer une liste récapitulative des transports", "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_recap},
-                            {"code" : "liste_recap_transports", "label" : u"Liste détaillée", "infobulle" : u"Editer une liste détaillée des transports", "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_detail},
+                    {"code" : "menu_individus_transports", "label" : _(u"Liste des transports"), "items" : [
+                            {"code" : "liste_detail_transports", "label" : _(u"Liste récapitulative"), "infobulle" : _(u"Editer une liste récapitulative des transports"), "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_recap},
+                            {"code" : "liste_recap_transports", "label" : _(u"Liste détaillée"), "infobulle" : _(u"Editer une liste détaillée des transports"), "image" : "Images/16x16/Transport.png", "action" : self.On_individus_transports_detail},
                             ],
                     },
                     "-",
-                    {"code" : "liste_anniversaires", "label" : u"Liste des anniversaires", "infobulle" : u"Editer une liste des anniversaires", "image" : "Images/16x16/Anniversaire.png", "action" : self.On_individus_anniversaires},
-                    {"code" : "liste_infos_medicales", "label" : u"Liste des informations médicales", "infobulle" : u"Editer une liste des informations médicales", "image" : "Images/16x16/Medical.png", "action" : self.On_individus_infos_med},
-                    {"code" : "liste_pieces_fournies", "label" : u"Liste des pièces fournies", "infobulle" : u"Editer la liste des pièces fournies", "image" : "Images/16x16/Piece.png", "action" : self.On_individus_pieces_fournies},
-                    {"code" : "liste_pieces_fournies", "label" : u"Liste des pièces manquantes", "infobulle" : u"Editer la liste des pièces manquantes", "image" : "Images/16x16/Piece.png", "action" : self.On_individus_pieces_manquantes},
-                    {"code" : "liste_regimes_caisses", "label" : u"Liste des régimes et caisses des familles", "infobulle" : u"Editer la liste des régimes et caisses des familles", "image" : "Images/16x16/Mecanisme.png", "action" : self.On_individus_regimes_caisses},
-                    {"code" : "liste_quotients", "label" : u"Liste des quotients familiaux", "infobulle" : u"Editer la liste des quotients familiaux des familles", "image" : "Images/16x16/Calculatrice.png", "action" : self.On_individus_quotients},
-                    {"code" : "liste_mandats_sepa", "label" : u"Liste des mandats SEPA", "infobulle" : u"Editer la liste des mandats SEPA", "image" : "Images/16x16/Prelevement.png", "action" : self.On_individus_mandats},
+                    {"code" : "liste_anniversaires", "label" : _(u"Liste des anniversaires"), "infobulle" : _(u"Editer une liste des anniversaires"), "image" : "Images/16x16/Anniversaire.png", "action" : self.On_individus_anniversaires},
+                    {"code" : "liste_infos_medicales", "label" : _(u"Liste des informations médicales"), "infobulle" : _(u"Editer une liste des informations médicales"), "image" : "Images/16x16/Medical.png", "action" : self.On_individus_infos_med},
+                    {"code" : "liste_pieces_fournies", "label" : _(u"Liste des pièces fournies"), "infobulle" : _(u"Editer la liste des pièces fournies"), "image" : "Images/16x16/Piece.png", "action" : self.On_individus_pieces_fournies},
+                    {"code" : "liste_pieces_fournies", "label" : _(u"Liste des pièces manquantes"), "infobulle" : _(u"Editer la liste des pièces manquantes"), "image" : "Images/16x16/Piece.png", "action" : self.On_individus_pieces_manquantes},
+                    {"code" : "liste_regimes_caisses", "label" : _(u"Liste des régimes et caisses des familles"), "infobulle" : _(u"Editer la liste des régimes et caisses des familles"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_individus_regimes_caisses},
+                    {"code" : "liste_quotients", "label" : _(u"Liste des quotients familiaux"), "infobulle" : _(u"Editer la liste des quotients familiaux des familles"), "image" : "Images/16x16/Calculatrice.png", "action" : self.On_individus_quotients},
+                    {"code" : "liste_mandats_sepa", "label" : _(u"Liste des mandats SEPA"), "infobulle" : _(u"Editer la liste des mandats SEPA"), "image" : "Images/16x16/Prelevement.png", "action" : self.On_individus_mandats},
                     "-",
-                    {"code" : "importer_photos", "label" : u"Importer des photos individuelles", "infobulle" : u"Importer des photos individuelles", "image" : "Images/16x16/Photos.png", "action" : self.On_individus_importer_photos},
-                    {"code" : "menu_individus_importation", "label" : u"Importer des familles ou des individus", "items" : [
-                            {"code" : "importation_individus_csv", "label" : u"Importer des individus ou des familles depuis un fichier Excel ou CSV", "infobulle" : u"Importer des individus ou des familles", "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_csv},
-                            {"code" : "importation_individus_fichier", "label" : u"Importer des familles depuis un fichier Noethys", "infobulle" : u"Importer des familles depuis un fichier Noethys", "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_fichier},
+                    {"code" : "importer_photos", "label" : _(u"Importer des photos individuelles"), "infobulle" : _(u"Importer des photos individuelles"), "image" : "Images/16x16/Photos.png", "action" : self.On_individus_importer_photos},
+                    {"code" : "menu_individus_importation", "label" : _(u"Importer des familles ou des individus"), "items" : [
+                            {"code" : "importation_individus_csv", "label" : _(u"Importer des individus ou des familles depuis un fichier Excel ou CSV"), "infobulle" : _(u"Importer des individus ou des familles"), "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_csv},
+                            {"code" : "importation_individus_fichier", "label" : _(u"Importer des familles depuis un fichier Noethys"), "infobulle" : _(u"Importer des familles depuis un fichier Noethys"), "image" : "Images/16x16/Document_import.png", "action" : self.On_individus_importer_fichier},
                             ],
                     },
                     "-",
-                    {"code" : "individus_edition_etiquettes", "label" : u"Edition d'étiquettes et de badges", "infobulle" : u"Edition d'étiquettes et de badges au format PDF", "image" : "Images/16x16/Etiquette2.png", "action" : self.On_individus_edition_etiquettes},
+                    {"code" : "individus_edition_etiquettes", "label" : _(u"Edition d'étiquettes et de badges"), "infobulle" : _(u"Edition d'étiquettes et de badges au format PDF"), "image" : "Images/16x16/Etiquette2.png", "action" : self.On_individus_edition_etiquettes},
                     ],
             },
                     
             # Consommations
-            {"code" : "menu_consommations", "label" : u"Consommations", "items" : [
-                    {"code" : "liste_consommations", "label" : u"Liste des consommations", "infobulle" : u"Editer une liste des consommations", "image" : "Images/16x16/Imprimante.png", "action" : self.On_imprim_conso_journ},
-                    {"code" : "gestionnaire_conso", "label" : u"Gestionnaire des consommations", "infobulle" : u"Gestionnaire des consommations", "image" : "Images/16x16/Calendrier.png", "action" : self.On_conso_gestionnaire},
+            {"code" : "menu_consommations", "label" : _(u"Consommations"), "items" : [
+                    {"code" : "liste_consommations", "label" : _(u"Liste des consommations"), "infobulle" : _(u"Editer une liste des consommations"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_imprim_conso_journ},
+                    {"code" : "gestionnaire_conso", "label" : _(u"Gestionnaire des consommations"), "infobulle" : _(u"Gestionnaire des consommations"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_conso_gestionnaire},
                     "-",
-                    {"code" : "liste_attente", "label" : u"Liste d'attente", "infobulle" : u"Liste d'attente", "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
-                    {"code" : "liste_refus", "label" : u"Liste des places refusées", "infobulle" : u"Liste des places refusées", "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
-                    {"code" : "liste_absences", "label" : u"Liste des absences", "infobulle" : u"Liste des absences", "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
+                    {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
+                    {"code" : "liste_refus", "label" : _(u"Liste des places refusées"), "infobulle" : _(u"Liste des places refusées"), "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
+                    {"code" : "liste_absences", "label" : _(u"Liste des absences"), "infobulle" : _(u"Liste des absences"), "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
                     "-",
-                    {"code" : "synthese_conso", "label" : u"Synthèse des consommations", "infobulle" : u"Synthèse des consommations", "image" : "Images/16x16/Diagramme.png", "action" : self.On_conso_synthese_conso},
-                    {"code" : "etat_global", "label" : u"Etat global", "infobulle" : u"Etat global", "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_global},
-                    {"code" : "etat_nominatif", "label" : u"Etat nominatif", "infobulle" : u"Etat nominatif", "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_nominatif},
+                    {"code" : "synthese_conso", "label" : _(u"Synthèse des consommations"), "infobulle" : _(u"Synthèse des consommations"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_conso_synthese_conso},
+                    {"code" : "etat_global", "label" : _(u"Etat global"), "infobulle" : _(u"Etat global"), "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_global},
+                    {"code" : "etat_nominatif", "label" : _(u"Etat nominatif"), "infobulle" : _(u"Etat nominatif"), "image" : "Images/16x16/Tableaux.png", "action" : self.On_conso_etat_nominatif},
                     "-",
-                    {"code" : "badgeage", "label" : u"Badgeage", "infobulle" : u"Badgeage", "image" : "Images/16x16/Badgeage.png", "action" : self.On_conso_badgeage},
+                    {"code" : "badgeage", "label" : _(u"Badgeage"), "infobulle" : _(u"Badgeage"), "image" : "Images/16x16/Badgeage.png", "action" : self.On_conso_badgeage},
                     ],
             },
 
             # Facturation
-            {"code" : "menu_facturation", "label" : u"Facturation", "items" : [
-                    {"code" : "facturation_verification_ventilation", "label" : u"Vérifier la ventilation", "infobulle" : u"Vérifier la ventilation des règlements", "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
+            {"code" : "menu_facturation", "label" : _(u"Facturation"), "items" : [
+                    {"code" : "facturation_verification_ventilation", "label" : _(u"Vérifier la ventilation"), "infobulle" : _(u"Vérifier la ventilation des règlements"), "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
                     "-",
-                    {"code" : "menu_facturation_factures", "label" : u"Factures", "items" : [
-                            {"code" : "factures_generation", "label" : u"Génération", "infobulle" : u"Génération des factures", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_factures_generation},
+                    {"code" : "menu_facturation_factures", "label" : _(u"Factures"), "items" : [
+                            {"code" : "factures_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des factures"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_factures_generation},
                             "-",
-                            {"code" : "factures_helios", "label" : u"Export vers Hélios", "infobulle" : u"Exporter les factures vers Hélios", "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
-                            {"code" : "factures_prelevement", "label" : u"Prélèvement automatique", "infobulle" : u"Gestion du prélèvement automatique", "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
-                            {"code" : "factures_email", "label" : u"Transmettre par Email", "infobulle" : u"Transmettre les factures par Email", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_factures_email},
-                            {"code" : "factures_imprimer", "label" : u"Imprimer", "infobulle" : u"Imprimer des factures", "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_factures_imprimer},
+                            {"code" : "factures_helios", "label" : _(u"Export vers Hélios"), "infobulle" : _(u"Exporter les factures vers Hélios"), "image" : "Images/16x16/Helios.png", "action" : self.On_facturation_factures_helios},
+                            {"code" : "factures_prelevement", "label" : _(u"Prélèvement automatique"), "infobulle" : _(u"Gestion du prélèvement automatique"), "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
+                            {"code" : "factures_email", "label" : _(u"Transmettre par Email"), "infobulle" : _(u"Transmettre les factures par Email"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_factures_email},
+                            {"code" : "factures_imprimer", "label" : _(u"Imprimer"), "infobulle" : _(u"Imprimer des factures"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_factures_imprimer},
                             "-",
-                            {"code" : "factures_liste", "label" : u"Liste des factures", "infobulle" : u"Liste des factures générées", "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_factures_liste},
+                            {"code" : "factures_liste", "label" : _(u"Liste des factures"), "infobulle" : _(u"Liste des factures générées"), "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_factures_liste},
                             ],
                     },
-                    {"code" : "menu_facturation_rappels", "label" : u"Lettres de rappel", "items" : [
-                            {"code" : "rappels_generation", "label" : u"Génération", "infobulle" : u"Génération des lettres de rappel", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_rappels_generation},
+                    {"code" : "menu_facturation_rappels", "label" : _(u"Lettres de rappel"), "items" : [
+                            {"code" : "rappels_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des lettres de rappel"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_rappels_generation},
                             "-",
-                            {"code" : "rappels_email", "label" : u"Transmettre par Email", "infobulle" : u"Transmettre les lettres de rappel par Email", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_rappels_email},
-                            {"code" : "rappels_imprimer", "label" : u"Imprimer", "infobulle" : u"Imprimer des lettres de rappel", "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_rappels_imprimer},
+                            {"code" : "rappels_email", "label" : _(u"Transmettre par Email"), "infobulle" : _(u"Transmettre les lettres de rappel par Email"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_facturation_rappels_email},
+                            {"code" : "rappels_imprimer", "label" : _(u"Imprimer"), "infobulle" : _(u"Imprimer des lettres de rappel"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_facturation_rappels_imprimer},
                             "-",
-                            {"code" : "rappels_liste", "label" : u"Liste des lettres de rappel", "infobulle" : u"Liste des lettres de rappel", "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_rappels_liste},
+                            {"code" : "rappels_liste", "label" : _(u"Liste des lettres de rappel"), "infobulle" : _(u"Liste des lettres de rappel"), "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_rappels_liste},
                             ],
                     },
-                    {"code" : "menu_facturation_attestations", "label" : u"Attestations de présence", "items" : [
-                            {"code" : "attestations_generation", "label" : u"Génération", "infobulle" : u"Génération des attestations de présence", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_attestations_generation},
-                            {"code" : "attestations_liste", "label" : u"Liste des attestations de présence", "infobulle" : u"Liste des attestations de présence générées", "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_attestations_liste},
+                    {"code" : "menu_facturation_attestations", "label" : _(u"Attestations de présence"), "items" : [
+                            {"code" : "attestations_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des attestations de présence"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_attestations_generation},
+                            {"code" : "attestations_liste", "label" : _(u"Liste des attestations de présence"), "infobulle" : _(u"Liste des attestations de présence générées"), "image" : "Images/16x16/Facture.png", "action" : self.On_facturation_attestations_liste},
                             ],
                     },
-                    {"code" : "menu_facturation_attestations_fiscales", "label" : u"Attestations fiscales", "items" : [
-                            {"code" : "attestations_fiscales_generation", "label" : u"Génération", "infobulle" : u"Génération des attestations fiscales", "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_attestations_fiscales_generation},
+                    {"code" : "menu_facturation_attestations_fiscales", "label" : _(u"Attestations fiscales"), "items" : [
+                            {"code" : "attestations_fiscales_generation", "label" : _(u"Génération"), "infobulle" : _(u"Génération des attestations fiscales"), "image" : "Images/16x16/Generation.png", "action" : self.On_facturation_attestations_fiscales_generation},
                             ],
                     },
                     "-",
-                    {"code" : "liste_prestations", "label" : u"Liste des prestations", "infobulle" : u"Liste des prestations", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
+                    {"code" : "liste_prestations", "label" : _(u"Liste des prestations"), "infobulle" : _(u"Liste des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
                     "-",
-                    {"code" : "liste_deductions", "label" : u"Liste des déductions", "infobulle" : u"Liste des déductions", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
-                    {"code" : "saisir_lot_deductions", "label" : u"Saisir un lot de déductions", "infobulle" : u"Saisir un lot de déductions", "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
+                    {"code" : "liste_deductions", "label" : _(u"Liste des déductions"), "infobulle" : _(u"Liste des déductions"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
+                    {"code" : "saisir_lot_deductions", "label" : _(u"Saisir un lot de déductions"), "infobulle" : _(u"Saisir un lot de déductions"), "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
                     "-",
-                    {"code" : "liste_soldes_familles", "label" : u"Liste des soldes", "infobulle" : u"Liste des soldes des comptes familles", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes},
-                    {"code" : "liste_soldes_individus", "label" : u"Liste des soldes individuels", "infobulle" : u"Liste des soldes individuels", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes_individuels},
+                    {"code" : "liste_soldes_familles", "label" : _(u"Liste des soldes"), "infobulle" : _(u"Liste des soldes des comptes familles"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes},
+                    {"code" : "liste_soldes_individus", "label" : _(u"Liste des soldes individuels"), "infobulle" : _(u"Liste des soldes individuels"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_soldes_individuels},
                     "-",
-                    {"code" : "synthese_impayes", "label" : u"Synthèse des impayés", "infobulle" : u"Synthèse des impayés", "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_impayes},
-                    {"code" : "solder_impayes", "label" : u"Solder les impayés", "infobulle" : u"Solder les impayés", "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_solder_impayes},
+                    {"code" : "synthese_impayes", "label" : _(u"Synthèse des impayés"), "infobulle" : _(u"Synthèse des impayés"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_impayes},
+                    {"code" : "solder_impayes", "label" : _(u"Solder les impayés"), "infobulle" : _(u"Solder les impayés"), "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_solder_impayes},
                     "-",
-                    {"code" : "synthese_prestations", "label" : u"Synthèse des prestations", "infobulle" : u"Synthèse des prestations", "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_prestations},
-                    {"code" : "prestations_villes", "label" : u"Liste des prestations par famille", "infobulle" : u"Liste des prestations par famille", "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_prestations_villes},
+                    {"code" : "synthese_prestations", "label" : _(u"Synthèse des prestations"), "infobulle" : _(u"Synthèse des prestations"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_facturation_synthese_prestations},
+                    {"code" : "prestations_villes", "label" : _(u"Liste des prestations par famille"), "infobulle" : _(u"Liste des prestations par famille"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_prestations_villes},
                     "-",
-                    {"code" : "export_compta", "label" : u"Export des écritures comptables", "infobulle" : u"Exporter les écritures comptables", "image" : "Images/16x16/Export_comptable.png", "action" : self.On_facturation_export_compta},
+                    {"code" : "export_compta", "label" : _(u"Export des écritures comptables"), "infobulle" : _(u"Exporter les écritures comptables"), "image" : "Images/16x16/Export_comptable.png", "action" : self.On_facturation_export_compta},
                     ],
             },
             
             # Cotisations
-            {"code" : "menu_cotisations", "label" : u"Cotisations", "items" : [
-                    {"code" : "liste_cotisations", "label" : u"Liste des cotisations", "infobulle" : u"Liste des cotisations", "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_recherche},
-                    {"code" : "liste_cotisations_manquantes", "label" : u"Liste des cotisations manquantes", "infobulle" : u"Liste des cotisations manquantes", "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_manquantes},
+            {"code" : "menu_cotisations", "label" : _(u"Cotisations"), "items" : [
+                    {"code" : "liste_cotisations", "label" : _(u"Liste des cotisations"), "infobulle" : _(u"Liste des cotisations"), "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_recherche},
+                    {"code" : "liste_cotisations_manquantes", "label" : _(u"Liste des cotisations manquantes"), "infobulle" : _(u"Liste des cotisations manquantes"), "image" : "Images/16x16/Cotisation.png", "action" : self.On_cotisations_manquantes},
                     "-",
-                    {"code" : "cotisations_email", "label" : u"Transmettre des cotisations par Email", "infobulle" : u"Transmettre des cotisations par Email", "image" : "Images/16x16/Emails_exp.png", "action" : self.On_cotisations_email},
-                    {"code" : "cotisations_imprimer", "label" : u"Imprimer des cotisations", "infobulle" : u"Imprimer une ou plusieurs cotisations", "image" : "Images/16x16/Imprimante.png", "action" : self.On_cotisations_imprimer},
+                    {"code" : "cotisations_email", "label" : _(u"Transmettre des cotisations par Email"), "infobulle" : _(u"Transmettre des cotisations par Email"), "image" : "Images/16x16/Emails_exp.png", "action" : self.On_cotisations_email},
+                    {"code" : "cotisations_imprimer", "label" : _(u"Imprimer des cotisations"), "infobulle" : _(u"Imprimer une ou plusieurs cotisations"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_cotisations_imprimer},
                     "-",
-                    {"code" : "cotisations_depots", "label" : u"Gestion des dépôts de cotisations", "infobulle" : u"Gestion des dépôts de cotisations", "image" : "Images/16x16/Depot_cotisations.png", "action" : self.On_cotisations_depots},
+                    {"code" : "cotisations_depots", "label" : _(u"Gestion des dépôts de cotisations"), "infobulle" : _(u"Gestion des dépôts de cotisations"), "image" : "Images/16x16/Depot_cotisations.png", "action" : self.On_cotisations_depots},
                     ],
             },
             
             # Règlements
-            {"code" : "menu_reglements", "label" : u"Règlements", "items" : [
-                    {"code" : "regler_facture", "label" : u"Régler une facture\tF4", "infobulle" : u"Régler une facture à partir de son numéro", "image" : "Images/16x16/Codebarre.png", "action" : self.On_reglements_regler_facture},
+            {"code" : "menu_reglements", "label" : _(u"Règlements"), "items" : [
+                    {"code" : "regler_facture", "label" : _(u"Régler une facture\tF4"), "infobulle" : _(u"Régler une facture à partir de son numéro"), "image" : "Images/16x16/Codebarre.png", "action" : self.On_reglements_regler_facture},
                     "-",
-                    {"code" : "liste_recus_reglements", "label" : u"Liste des reçus de règlements", "infobulle" : u"Consulter la liste des reçus de règlements", "image" : "Images/16x16/Note.png", "action" : self.On_reglements_recus},
-                    {"code" : "liste_reglements", "label" : u"Liste des règlements", "infobulle" : u"Consulter la liste des règlements", "image" : "Images/16x16/Reglement.png", "action" : self.On_reglements_recherche},
+                    {"code" : "liste_recus_reglements", "label" : _(u"Liste des reçus de règlements"), "infobulle" : _(u"Consulter la liste des reçus de règlements"), "image" : "Images/16x16/Note.png", "action" : self.On_reglements_recus},
+                    {"code" : "liste_reglements", "label" : _(u"Liste des règlements"), "infobulle" : _(u"Consulter la liste des règlements"), "image" : "Images/16x16/Reglement.png", "action" : self.On_reglements_recherche},
                     "-",
-                    {"code" : "reglements_verification_ventilation", "label" : u"Vérifier la ventilation", "infobulle" : u"Vérifier la ventilation des règlements", "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
-                    {"code" : "analyse_ventilation", "label" : u"Tableau d'analyse croisée ventilation/dépôts", "infobulle" : u"Tableau d'analyse croisée ventilation/dépôts", "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_analyse_ventilation},
-                    {"code" : "syntheses_modes_reglements", "label" : u"Synthèse des modes de règlements", "infobulle" : u"Synthèse des modes de règlements", "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_synthese_modes},
+                    {"code" : "reglements_verification_ventilation", "label" : _(u"Vérifier la ventilation"), "infobulle" : _(u"Vérifier la ventilation des règlements"), "image" : "Images/16x16/Repartition.png", "action" : self.On_reglements_ventilation},
+                    {"code" : "analyse_ventilation", "label" : _(u"Tableau d'analyse croisée ventilation/dépôts"), "infobulle" : _(u"Tableau d'analyse croisée ventilation/dépôts"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_analyse_ventilation},
+                    {"code" : "syntheses_modes_reglements", "label" : _(u"Synthèse des modes de règlements"), "infobulle" : _(u"Synthèse des modes de règlements"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_reglements_synthese_modes},
                     "-",
-                    {"code" : "reglements_prelevement", "label" : u"Prélèvement automatique", "infobulle" : u"Gestion du prélèvement automatique", "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
-                    {"code" : "reglements_depots", "label" : u"Gestion des dépôts", "infobulle" : u"Gestion des dépôts de règlements", "image" : "Images/16x16/Banque.png", "action" : self.On_reglements_depots},
+                    {"code" : "reglements_prelevement", "label" : _(u"Prélèvement automatique"), "infobulle" : _(u"Gestion du prélèvement automatique"), "image" : "Images/16x16/Prelevement.png", "action" : self.On_facturation_factures_prelevement},
+                    {"code" : "reglements_depots", "label" : _(u"Gestion des dépôts"), "infobulle" : _(u"Gestion des dépôts de règlements"), "image" : "Images/16x16/Banque.png", "action" : self.On_reglements_depots},
                     ],
             },
 
             # Comptabilité
-            {"code" : "menu_comptabilite", "label" : u"Comptabilité", "items" : [
-                    {"code" : "liste_comptes", "label" : u"Liste des comptes", "infobulle" : u"Consulter ou modifier la liste des comptes", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_comptes},
-                    {"code" : "liste_operations_tresorerie", "label" : u"Liste des opérations de trésorerie", "infobulle" : u"Consulter ou modifier la liste des opérations de trésorerie", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations_tresorerie},
-                    {"code" : "liste_operations_budgetaires", "label" : u"Liste des opérations budgétaires", "infobulle" : u"Consulter ou modifier la liste des opérations budgétaires", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations_budgetaires},
-                    {"code" : "liste_virements", "label" : u"Liste des virements", "infobulle" : u"Consulter ou modifier la liste des virements", "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_virements},
+            {"code" : "menu_comptabilite", "label" : _(u"Comptabilité"), "items" : [
+                    {"code" : "liste_comptes", "label" : _(u"Liste des comptes"), "infobulle" : _(u"Consulter ou modifier la liste des comptes"), "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_comptes},
+                    {"code" : "liste_operations_tresorerie", "label" : _(u"Liste des opérations de trésorerie"), "infobulle" : _(u"Consulter ou modifier la liste des opérations de trésorerie"), "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations_tresorerie},
+                    {"code" : "liste_operations_budgetaires", "label" : _(u"Liste des opérations budgétaires"), "infobulle" : _(u"Consulter ou modifier la liste des opérations budgétaires"), "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_operations_budgetaires},
+                    {"code" : "liste_virements", "label" : _(u"Liste des virements"), "infobulle" : _(u"Consulter ou modifier la liste des virements"), "image" : "Images/16x16/Operations.png", "action" : self.On_Comptabilite_virements},
                     "-",
-                    {"code" : "rapprochement_bancaire", "label" : u"Rapprochement bancaire", "infobulle" : u"Rapprochement bancaire", "image" : "Images/16x16/Document_coches.png", "action" : self.On_Comptabilite_rapprochement},
+                    {"code" : "rapprochement_bancaire", "label" : _(u"Rapprochement bancaire"), "infobulle" : _(u"Rapprochement bancaire"), "image" : "Images/16x16/Document_coches.png", "action" : self.On_Comptabilite_rapprochement},
                     "-",
-                    {"code" : "suivi_tresorerie", "label" : u"Suivi de la trésorerie", "infobulle" : u"Suivre la trésorerie", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_tresorerie},
-                    {"code" : "suivi_budgets", "label" : u"Suivi des budgets", "infobulle" : u"Suivre les budgets", "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_budgets},
+                    {"code" : "suivi_tresorerie", "label" : _(u"Suivi de la trésorerie"), "infobulle" : _(u"Suivre la trésorerie"), "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_tresorerie},
+                    {"code" : "suivi_budgets", "label" : _(u"Suivi des budgets"), "infobulle" : _(u"Suivre les budgets"), "image" : "Images/16x16/Tresorerie.png", "action" : self.On_Comptabilite_budgets},
                     "-",
-                    {"code" : "compta_graphiques", "label" : u"Graphiques", "infobulle" : u"Graphiques", "image" : "Images/16x16/Diagramme.png", "action" : self.On_Comptabilite_graphiques},
+                    {"code" : "compta_graphiques", "label" : _(u"Graphiques"), "infobulle" : _(u"Graphiques"), "image" : "Images/16x16/Diagramme.png", "action" : self.On_Comptabilite_graphiques},
                     ],
             },
 
             # Aide
-            {"code" : "menu_aide", "label" : u"Aide", "items" : [
-                    {"code" : "aide", "label" : u"Consulter l'aide", "infobulle" : u"Consulter l'aide de Noethys", "image" : "Images/16x16/Aide.png", "action" : self.On_aide_aide},
-                    {"code" : "acheter_licence", "label" : u"Acheter une licence pour accéder au manuel de référence", "infobulle" : u"Acheter une licence", "image" : "Images/16x16/Acheter_licence.png", "action" : self.On_propos_soutenir},
+            {"code" : "menu_aide", "label" : _(u"Aide"), "items" : [
+                    {"code" : "aide", "label" : _(u"Consulter l'aide"), "infobulle" : _(u"Consulter l'aide de Noethys"), "image" : "Images/16x16/Aide.png", "action" : self.On_aide_aide},
+                    {"code" : "acheter_licence", "label" : _(u"Acheter une licence pour accéder au manuel de référence"), "infobulle" : _(u"Acheter une licence"), "image" : "Images/16x16/Acheter_licence.png", "action" : self.On_propos_soutenir},
                     "-",
-                    {"code" : "guide_demarrage", "label" : u"Télécharger le guide de démarrage rapide (PDF)", "infobulle" : u"Télécharger le guide de démarrage rapide", "image" : "Images/16x16/Livre.png", "action" : self.On_aide_guide_demarrage},
+                    {"code" : "guide_demarrage", "label" : _(u"Télécharger le guide de démarrage rapide (PDF)"), "infobulle" : _(u"Télécharger le guide de démarrage rapide"), "image" : "Images/16x16/Livre.png", "action" : self.On_aide_guide_demarrage},
                     "-",
-                    {"code" : "forum", "label" : u"Accéder au forum d'entraide", "infobulle" : u"Accéder au forum d'entraide", "image" : "Images/16x16/Dialogue.png", "action" : self.On_aide_forum},
-                    {"code" : "tutoriels_videos", "label" : u"Visionner des tutoriels vidéos", "infobulle" : u"Visionner des tutoriels vidéos", "image" : "Images/16x16/Film.png", "action" : self.On_aide_videos},
-                    {"code" : "telechargements_communautaires", "label" : u"Télécharger des ressources communautaires", "infobulle" : u"Télécharger des ressources communautaires", "image" : "Images/16x16/Updater.png", "action" : self.On_aide_telechargements},
+                    {"code" : "forum", "label" : _(u"Accéder au forum d'entraide"), "infobulle" : _(u"Accéder au forum d'entraide"), "image" : "Images/16x16/Dialogue.png", "action" : self.On_aide_forum},
+                    {"code" : "tutoriels_videos", "label" : _(u"Visionner des tutoriels vidéos"), "infobulle" : _(u"Visionner des tutoriels vidéos"), "image" : "Images/16x16/Film.png", "action" : self.On_aide_videos},
+                    {"code" : "telechargements_communautaires", "label" : _(u"Télécharger des ressources communautaires"), "infobulle" : _(u"Télécharger des ressources communautaires"), "image" : "Images/16x16/Updater.png", "action" : self.On_aide_telechargements},
                     "-",
-                    {"code" : "email_auteur", "label" : u"Envoyer un Email à l'auteur", "infobulle" : u"Envoyer un Email à l'auteur", "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
+                    {"code" : "email_auteur", "label" : _(u"Envoyer un Email à l'auteur"), "infobulle" : _(u"Envoyer un Email à l'auteur"), "image" : "Images/16x16/Mail.png", "action" : self.On_aide_auteur},
                     ],
             },
 
             # A propos
-            {"code" : "menu_a_propos", "label" : u"A propos", "items" : [
-                    {"code" : "notes_versions", "label" : u"Notes de versions", "infobulle" : u"Notes de versions", "image" : "Images/16x16/Versions.png", "action" : self.On_propos_versions},
-                    {"code" : "licence_logiciel", "label" : u"Licence", "infobulle" : u"Licence du logiciel", "image" : "Images/16x16/Licence.png", "action" : self.On_propos_licence},
+            {"code" : "menu_a_propos", "label" : _(u"A propos"), "items" : [
+                    {"code" : "notes_versions", "label" : _(u"Notes de versions"), "infobulle" : _(u"Notes de versions"), "image" : "Images/16x16/Versions.png", "action" : self.On_propos_versions},
+                    {"code" : "licence_logiciel", "label" : _(u"Licence"), "infobulle" : _(u"Licence du logiciel"), "image" : "Images/16x16/Licence.png", "action" : self.On_propos_licence},
                     "-",
-                    {"code" : "soutenir_noethys", "label" : u"Soutenir Noethys", "infobulle" : u"Soutenir Noethys", "image" : "Images/16x16/Soutenir_noethys.png", "action" : self.On_propos_soutenir},
+                    {"code" : "soutenir_noethys", "label" : _(u"Soutenir Noethys"), "infobulle" : _(u"Soutenir Noethys"), "image" : "Images/16x16/Soutenir_noethys.png", "action" : self.On_propos_soutenir},
                     "-",
-                    {"code" : "a_propos", "label" : u"A propos", "infobulle" : u"A propos", "image" : "Images/16x16/Information.png", "action" : self.On_propos_propos},
+                    {"code" : "a_propos", "label" : _(u"A propos"), "infobulle" : _(u"A propos"), "image" : "Images/16x16/Information.png", "action" : self.On_propos_propos},
                     ],
             },
 
@@ -988,7 +999,7 @@ class MainFrame(wx.Frame):
             for nomFichier in listeDerniersFichiers :
                 if "[RESEAU]" in nomFichier :
                     nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-                item = wx.MenuItem(menu_fichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), u"Ouvrir le fichier : '%s'" % nomFichier)
+                item = wx.MenuItem(menu_fichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), _(u"Ouvrir le fichier : '%s'") % nomFichier)
                 menu_fichier.AppendItem(item)
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
@@ -1002,7 +1013,7 @@ class MainFrame(wx.Frame):
         menu_affichage = self.dictInfosMenu["menu_affichage"]["ctrl"]
         for dictPerspective in self.perspectives:
             label = dictPerspective["label"]
-            item = wx.MenuItem(menu_affichage, ID_PREMIERE_PERSPECTIVE + index, label, u"Afficher la disposition '%s'" % label, wx.ITEM_CHECK)
+            item = wx.MenuItem(menu_affichage, ID_PREMIERE_PERSPECTIVE + index, label, _(u"Afficher la disposition '%s'") % label, wx.ITEM_CHECK)
             menu_affichage.InsertItem(position, item)
             if self.perspective_active == index : item.Check(True)
             position += 1
@@ -1011,11 +1022,11 @@ class MainFrame(wx.Frame):
 
         # -------------------------- AJOUT DES ELEMENTS A AFFICHER OU CACHER dans le menu AFFICHAGE -----------------------------
         self.listePanneaux = [
-            { "label" : u"Effectifs", "code" : "effectifs", "IDmenu" : None },
-            { "label" : u"Messages", "code" : "messages", "IDmenu" : None }, 
-            { "label" : u"Ephéméride", "code" : "ephemeride", "IDmenu" : None }, 
-            { "label" : u"Barre de raccourcis", "code" : "barre_raccourcis", "IDmenu" : None },
-            { "label" : u"Barre utilisateur", "code" : "barre_utilisateur", "IDmenu" : None },
+            { "label" : _(u"Effectifs"), "code" : "effectifs", "IDmenu" : None },
+            { "label" : _(u"Messages"), "code" : "messages", "IDmenu" : None }, 
+            { "label" : _(u"Ephéméride"), "code" : "ephemeride", "IDmenu" : None }, 
+            { "label" : _(u"Barre de raccourcis"), "code" : "barre_raccourcis", "IDmenu" : None },
+            { "label" : _(u"Barre utilisateur"), "code" : "barre_utilisateur", "IDmenu" : None },
             ]
         ID = ID_AFFICHAGE_PANNEAUX
         menu_affichage = self.dictInfosMenu["menu_affichage"]["ctrl"]
@@ -1023,7 +1034,7 @@ class MainFrame(wx.Frame):
         for dictPanneau in self.listePanneaux :
             dictPanneau["IDmenu"] = ID
             label = dictPanneau["label"]
-            item = wx.MenuItem(menu_affichage, dictPanneau["IDmenu"], label, u"Afficher l'élément '%s'" % label, wx.ITEM_CHECK)
+            item = wx.MenuItem(menu_affichage, dictPanneau["IDmenu"], label, _(u"Afficher l'élément '%s'") % label, wx.ITEM_CHECK)
             menu_affichage.InsertItem(position, item)
             position += 1
             ID += 1
@@ -1033,10 +1044,10 @@ class MainFrame(wx.Frame):
         if self.MAJexiste == True :
             id = wx.NewId()
             menu_maj = wx.Menu()
-            item = wx.MenuItem(menu_maj, id, u"Télécharger la mise à jour", u"Télécharger la nouvelle mise à jour")
+            item = wx.MenuItem(menu_maj, id, _(u"Télécharger la mise à jour"), _(u"Télécharger la nouvelle mise à jour"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Updater.png", wx.BITMAP_TYPE_PNG))
             menu_maj.AppendItem(item)
-            self.menu.Append(menu_maj, u"<< Télécharger la mise à jour >>")
+            self.menu.Append(menu_maj, _(u"<< Télécharger la mise à jour >>"))
             self.Bind(wx.EVT_MENU, self.On_outils_updater, id=id)
 
         # Finalisation Barre de menu
@@ -1100,7 +1111,7 @@ class MainFrame(wx.Frame):
 
     def SupprimeToutesPerspectives(self):
         """ Supprime toutes les perspectives et sélectionne celle par défaut """
-        dlg = wx.MessageDialog(self, u"Suite à la mise à jour de Noethys, %d disposition(s) personnalisée(s) de la page d'accueil sont désormais obsolètes.\n\nPour les besoins de la nouvelle version, elles vont être supprimées. Mais il vous suffira de les recréer simplement depuis le menu Affichage... Merci de votre compréhension !" % len(self.perspectives), u"Mise à jour", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Suite à la mise à jour de Noethys, %d disposition(s) personnalisée(s) de la page d'accueil sont désormais obsolètes.\n\nPour les besoins de la nouvelle version, elles vont être supprimées. Mais il vous suffira de les recréer simplement depuis le menu Affichage... Merci de votre compréhension !") % len(self.perspectives), _(u"Mise à jour"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         # Suppression
@@ -1157,24 +1168,24 @@ class MainFrame(wx.Frame):
             return False
         
         # Affiche d'une fenêtre d'attente
-        message = u"Création du nouveau fichier en cours... Veuillez patienter..."
-        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=u"Création d'un fichier", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        message = _(u"Création du nouveau fichier en cours... Veuillez patienter...")
+        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Création d'un fichier"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
             
         if "[RESEAU]" in nomFichier :
-            self.SetStatusText(u"Création du fichier '%s' en cours..." % nomFichier[nomFichier.index("[RESEAU]"):])
+            self.SetStatusText(_(u"Création du fichier '%s' en cours...") % nomFichier[nomFichier.index("[RESEAU]"):])
         else:
-            self.SetStatusText(u"Création du fichier '%s' en cours..." % nomFichier)
+            self.SetStatusText(_(u"Création du fichier '%s' en cours...") % nomFichier)
         
         # Vérification de validité du fichier
         if nomFichier == "" :
             del dlgAttente
-            dlg = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide !", "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide !"), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             if "[RESEAU]" in nomFichier :
                 nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-            self.SetStatusText(u"Echec de la création du fichier '%s' : nom du fichier non valide." % nomFichier)
+            self.SetStatusText(_(u"Echec de la création du fichier '%s' : nom du fichier non valide.") % nomFichier)
             return False
 
         if "[RESEAU]" not in nomFichier :
@@ -1185,10 +1196,10 @@ class MainFrame(wx.Frame):
             test = os.path.isfile(fichier) 
             if test == True :
                 del dlgAttente
-                dlg = wx.MessageDialog(self, u"Vous possédez déjà un fichier qui porte le nom '" + nomFichier + u"'.\n\nVeuillez saisir un autre nom.", "Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Vous possédez déjà un fichier qui porte le nom '") + nomFichier + _(u"'.\n\nVeuillez saisir un autre nom."), "Erreur", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
-                self.SetStatusText(u"Echec de la création du fichier '%s' : Le nom existe déjà." % nomFichier)
+                self.SetStatusText(_(u"Echec de la création du fichier '%s' : Le nom existe déjà.") % nomFichier)
                 return False
         
         else:
@@ -1199,7 +1210,7 @@ class MainFrame(wx.Frame):
             if dictResultats["connexion"][0] == False :
                 del dlgAttente
                 erreur = dictResultats["connexion"][1]
-                dlg = wx.MessageDialog(self, u"La connexion au réseau MySQL est impossible. \n\nErreur : %s" % erreur, u"Erreur de connexion", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"La connexion au réseau MySQL est impossible. \n\nErreur : %s") % erreur, _(u"Erreur de connexion"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1207,7 +1218,7 @@ class MainFrame(wx.Frame):
             # Vérifie que le fichier n'est pas déjà utilisé
             if dictResultats["fichier"][0] == True and modeFichier != "internet" :
                 del dlgAttente
-                dlg = wx.MessageDialog(self, u"Le fichier existe déjà.", u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Le fichier existe déjà."), _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1220,14 +1231,14 @@ class MainFrame(wx.Frame):
         if DB.echec == 1 :
             del dlgAttente
             erreur = DB.erreur
-            dlg = wx.MessageDialog(self, u"Erreur dans la création du fichier de données.\n\nErreur : %s" % erreur, u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Erreur dans la création du fichier de données.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.userConfig["nomFichier"] = ancienFichier 
             return False
-        self.SetStatusText(u"Création des tables de données...")
+        self.SetStatusText(_(u"Création des tables de données..."))
         DB.CreationTables(Tables.DB_DATA, fenetreParente=self)
-        self.SetStatusText(u"Importation des données par défaut...")
+        self.SetStatusText(_(u"Importation des données par défaut..."))
         DB.Importation_valeurs_defaut(listeTables)
         DB.Close()
         
@@ -1237,12 +1248,12 @@ class MainFrame(wx.Frame):
             if DB.echec == 1 :
                 del dlgAttente
                 erreur = DB.erreur
-                dlg = wx.MessageDialog(self, u"Erreur dans la création du fichier de photos.\n\nErreur : %s" % erreur, u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Erreur dans la création du fichier de photos.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.userConfig["nomFichier"] = ancienFichier 
                 return False
-            self.SetStatusText(u"Création de la table de données des photos...")
+            self.SetStatusText(_(u"Création de la table de données des photos..."))
             DB.CreationTables(Tables.DB_PHOTOS)
             DB.Close()
         
@@ -1252,17 +1263,17 @@ class MainFrame(wx.Frame):
             if DB.echec == 1 :
                 del dlgAttente
                 erreur = DB.erreur
-                dlg = wx.MessageDialog(self, u"Erreur dans la création du fichier de documents.\n\nErreur : %s" % erreur, u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Erreur dans la création du fichier de documents.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.userConfig["nomFichier"] = ancienFichier 
                 return False
-            self.SetStatusText(u"Création de la table de données des documents...")
+            self.SetStatusText(_(u"Création de la table de données des documents..."))
             DB.CreationTables(Tables.DB_DOCUMENTS)
             DB.Close()
                 
         # Créé un identifiant unique pour ce fichier
-        self.SetStatusText(u"Création des informations sur le fichier...")
+        self.SetStatusText(_(u"Création des informations sur le fichier..."))
         d = datetime.datetime.now()
         IDfichier = d.strftime("%Y%m%d%H%M%S")
         for x in range(0, 3) :
@@ -1281,7 +1292,7 @@ class MainFrame(wx.Frame):
         DB.Close()
                 
         # Sauvegarde et chargement de l'identité Administrateur
-        self.SetStatusText(u"Création de l'identité administrateur...")
+        self.SetStatusText(_(u"Création de l'identité administrateur..."))
         DB = GestionDB.DB()
         listeDonnees = [    
                 ("sexe", dictAdministrateur["sexe"]),
@@ -1331,13 +1342,13 @@ class MainFrame(wx.Frame):
         del dlgAttente
         
         # Affichage d'un confirmation de succès de la création
-        self.SetStatusText(u"Le fichier '%s' a été créé avec succès." % nomFichier)
-        dlg = wx.MessageDialog(self, u"Le fichier '" + nomFichier + u"' a été créé avec succès.\n\nVous devez maintenant renseigner les informations concernant l'organisateur.", u"Création d'un fichier", wx.OK | wx.ICON_INFORMATION)
+        self.SetStatusText(_(u"Le fichier '%s' a été créé avec succès.") % nomFichier)
+        dlg = wx.MessageDialog(self, _(u"Le fichier '") + nomFichier + _(u"' a été créé avec succès.\n\nVous devez maintenant renseigner les informations concernant l'organisateur."), _(u"Création d'un fichier"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
         # Demande de remplir les infos sur l'organisateur
-        self.SetStatusText(u"Paramétrage des informations sur l'organisateur...")
+        self.SetStatusText(_(u"Paramétrage des informations sur l'organisateur..."))
         import DLG_Organisateur
         dlg = DLG_Organisateur.Dialog(self, empecheAnnulation=True)
         dlg.ShowModal()
@@ -1368,13 +1379,13 @@ class MainFrame(wx.Frame):
     def Fermer(self, sauvegarde_auto=True):
         # Vérifie qu'un fichier est chargé
         if self.userConfig["nomFichier"] == "" :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucun fichier à fermer !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucun fichier à fermer !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Mémorise l'action dans l'historique
-        UTILS_Historique.InsertActions([{"IDcategorie" : 1, "action" : u"Fermeture du fichier"},])
+        UTILS_Historique.InsertActions([{"IDcategorie" : 1, "action" : _(u"Fermeture du fichier")},])
         
         # Sauvegarde automatique
         if sauvegarde_auto == True :
@@ -1432,7 +1443,7 @@ class MainFrame(wx.Frame):
             if "[RESEAU]" in nomFichier :
                 nomFichier = nomFichier[nomFichier.index("[RESEAU]") + 8:]
             if nomFichier in listeFichiersRestaures :
-                dlg = wx.MessageDialog(self, u"Redémarrage du fichier restauré.\n\nAfin de finaliser la restauration, le fichier de données ouvert va être fermé puis ré-ouvert.", u"Redémarrage du fichier restauré", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Redémarrage du fichier restauré.\n\nAfin de finaliser la restauration, le fichier de données ouvert va être fermé puis ré-ouvert."), _(u"Redémarrage du fichier restauré"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.Fermer(sauvegarde_auto=False) 
@@ -1504,7 +1515,7 @@ class MainFrame(wx.Frame):
 
     def On_param_utilisateurs_reseau(self, event):
         if "[RESEAU]" not in self.userConfig["nomFichier"] :
-            dlg = wx.MessageDialog(self, u"Cette fonction n'est accessible que si vous utilisez un fichier réseau !", u"Accès non autorisé", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Cette fonction n'est accessible que si vous utilisez un fichier réseau !"), _(u"Accès non autorisé"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -1742,7 +1753,7 @@ class MainFrame(wx.Frame):
 
     def On_param_releves_bancaires(self, event):
         import DLG_Releves_compta
-        dlg = DLG_Releves_compta.Dialog(self, titre=u"Gestion des relevés bancaires")
+        dlg = DLG_Releves_compta.Dialog(self, titre=_(u"Gestion des relevés bancaires"))
         dlg.ShowModal() 
         dlg.Destroy()
 
@@ -2026,7 +2037,7 @@ class MainFrame(wx.Frame):
         index = 0
         for dictPerspective in self.perspectives:
             label = dictPerspective["label"]
-            item = wx.MenuItem(menu_affichage, ID_PREMIERE_PERSPECTIVE+index, label, u"Afficher la disposition '%s'" % label, wx.ITEM_CHECK)
+            item = wx.MenuItem(menu_affichage, ID_PREMIERE_PERSPECTIVE+index, label, _(u"Afficher la disposition '%s'") % label, wx.ITEM_CHECK)
             menu_affichage.InsertItem(index+1, item)
             if self.perspective_active == index : item.Check(True)
             index += 1
@@ -2050,8 +2061,8 @@ class MainFrame(wx.Frame):
 
     def On_affichage_perspective_save(self, event):
         newIDperspective = len(self.perspectives)
-        dlg = wx.TextEntryDialog(self, u"Veuillez saisir un intitulé pour cette disposition :", "Sauvegarde d'une disposition")
-        dlg.SetValue(u"Disposition %d" % (newIDperspective + 1))
+        dlg = wx.TextEntryDialog(self, _(u"Veuillez saisir un intitulé pour cette disposition :"), "Sauvegarde d'une disposition")
+        dlg.SetValue(_(u"Disposition %d") % (newIDperspective + 1))
         reponse = dlg.ShowModal()
         if reponse != wx.ID_OK:
             dlg.Destroy() 
@@ -2062,7 +2073,7 @@ class MainFrame(wx.Frame):
         # Vérifie que ce nom n'est pas déjà attribué
         for dictPerspective in self.perspectives:
             if label == dictPerspective["label"] :
-                dlg = wx.MessageDialog(self, u"Ce nom est déjà attribué à une autre disposition !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Ce nom est déjà attribué à une autre disposition !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -2079,7 +2090,7 @@ class MainFrame(wx.Frame):
         listeLabels = []
         for dictPerspective in self.perspectives :
             listeLabels.append(dictPerspective["label"])
-        dlg = wx.MultiChoiceDialog( self, u"Cochez les dispositions que vous souhaitez supprimer :", u"Supprimer des dispositions", listeLabels)
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez les dispositions que vous souhaitez supprimer :"), _(u"Supprimer des dispositions"), listeLabels)
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
             selections.sort(reverse=True)
@@ -2202,7 +2213,7 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
 
     def On_outils_meteo(self, event):
-        dlg = wx.MessageDialog(self, u"Cette fonction n'est plus accessible pour le moment car Noethys utilisait une API Météo que Google vient de supprimer définitivement. Je dois donc prendre le temps de trouver une API équivalente.\n\nMerci de votre compréhension.\n\nIvan", u"Fonction indisponible", wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Cette fonction n'est plus accessible pour le moment car Noethys utilisait une API Météo que Google vient de supprimer définitivement. Je dois donc prendre le temps de trouver une API équivalente.\n\nMerci de votre compréhension.\n\nIvan"), _(u"Fonction indisponible"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
 ##        import DLG_Meteo
@@ -2232,7 +2243,7 @@ class MainFrame(wx.Frame):
     def On_outils_connexions(self, event):
         """ Connexions réseau """
         if "[RESEAU]" not in self.userConfig["nomFichier"] :
-            dlg = wx.MessageDialog(self, u"Cette fonction n'est accessible que si vous utilisez un fichier réseau !", u"Accès non autorisé", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Cette fonction n'est accessible que si vous utilisez un fichier réseau !"), _(u"Accès non autorisé"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -2287,7 +2298,7 @@ class MainFrame(wx.Frame):
     def On_outils_purger_rep_updates(self, event):
         """ Purger le répertoire Updates """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment purger le répertoire Updates ?", u"Purger", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment purger le répertoire Updates ?"), _(u"Purger"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             FonctionsPerso.VideRepertoireUpdates(forcer=True) 
         dlg.Destroy()
@@ -2301,7 +2312,7 @@ class MainFrame(wx.Frame):
         """ Commande spéciale """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
         import UTILS_Procedures
-        dlg = wx.TextEntryDialog(self, u"Entrez le code de procédure qui vous été communiqué :", u"Procédure", "")
+        dlg = wx.TextEntryDialog(self, _(u"Entrez le code de procédure qui vous été communiqué :"), _(u"Procédure"), "")
         if dlg.ShowModal() == wx.ID_OK:
             code = dlg.GetValue()
             UTILS_Procedures.Procedure(code)
@@ -2320,8 +2331,8 @@ class MainFrame(wx.Frame):
     def On_outils_reinitialisation(self, event):
         """ Réinitialisation du fichier de configuration """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
-        message = u"Pour réinitialiser votre fichier configuration, vous devez quitter Noethys et le relancer en conservant la touche ALT gauche de votre clavier enfoncée.\n\nCette fonctionnalité est sans danger : Seront par exemple réinitialisés la liste des derniers fichiers ouverts, les périodes de références, les affichages personnalisés, etc..."
-        dlg = wx.MessageDialog(self, message, u"Réinitialisation", wx.OK | wx.ICON_INFORMATION)
+        message = _(u"Pour réinitialiser votre fichier configuration, vous devez quitter Noethys et le relancer en conservant la touche ALT gauche de votre clavier enfoncée.\n\nCette fonctionnalité est sans danger : Seront par exemple réinitialisés la liste des derniers fichiers ouverts, les périodes de références, les affichages personnalisés, etc...")
+        dlg = wx.MessageDialog(self, message, _(u"Réinitialisation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -2390,6 +2401,14 @@ class MainFrame(wx.Frame):
         dlg = DLG_Liste_perso.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
+
+    def On_outils_traductions(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_traductions", "consulter") == False : return
+        import DLG_Traductions
+        dlg = DLG_Traductions.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+        self.ChargeTraduction() 
 
     def On_outils_updater(self, event):
         """Mises à jour internet """
@@ -2464,7 +2483,7 @@ class MainFrame(wx.Frame):
         import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification()
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?", u"Ventilation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -2893,7 +2912,7 @@ class MainFrame(wx.Frame):
 
     def On_Comptabilite_rapprochement(self, event):
         import DLG_Releves_compta
-        dlg = DLG_Releves_compta.Dialog(self, titre=u"Rapprochement bancaire")
+        dlg = DLG_Releves_compta.Dialog(self, titre=_(u"Rapprochement bancaire"))
         dlg.ShowModal() 
         dlg.Destroy()
 
@@ -2945,7 +2964,7 @@ class MainFrame(wx.Frame):
         txtLicence = open("Versions.txt", "r")
         msg = txtLicence.read()
         txtLicence.close()
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), u"Notes de versions", size=(500, 500))
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"Notes de versions"), size=(500, 500))
         dlg.ShowModal()
         
     def On_propos_licence(self, event):
@@ -2954,7 +2973,7 @@ class MainFrame(wx.Frame):
         txtLicence = open("Licence.txt", "r")
         msg = txtLicence.read()
         txtLicence.close()
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), u"A propos", size=(500, 500))
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, msg.decode("iso-8859-15"), _(u"A propos"), size=(500, 500))
         dlg.ShowModal()
 
     def On_propos_soutenir(self, event):
@@ -3014,7 +3033,7 @@ class MainFrame(wx.Frame):
                 # Version Reseau
                 if "[RESEAU]" in nomFichier :
                     nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-                item = wx.MenuItem(menuFichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), u"Ouvrir le fichier : '%s'" % nomFichier)
+                item = wx.MenuItem(menuFichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), _(u"Ouvrir le fichier : '%s'") % nomFichier)
                 menuFichier.AppendItem(item)
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
@@ -3029,23 +3048,23 @@ class MainFrame(wx.Frame):
                     
     def OuvrirFichier(self, nomFichier):
         """ Suite de la commande menu Ouvrir """
-        self.SetStatusText(u"Ouverture d'un fichier en cours...")
+        self.SetStatusText(_(u"Ouverture d'un fichier en cours..."))
                         
         # Vérifie que le fichier n'est pas déjà ouvert
         if self.userConfig["nomFichier"] == nomFichier :
             if "[RESEAU]" in nomFichier :
                 nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-            dlg = wx.MessageDialog(self, u"Le fichier '" + nomFichier + u"' est déjà ouvert !", u"Ouverture de fichier", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Le fichier '") + nomFichier + _(u"' est déjà ouvert !"), _(u"Ouverture de fichier"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            self.SetStatusText(u"Le fichier '%s' est déjà ouvert." % nomFichier)
+            self.SetStatusText(_(u"Le fichier '%s' est déjà ouvert.") % nomFichier)
             return False
 
         # Teste l'existence du fichier :
         if self.TesterUnFichier(nomFichier) == False :
             if "[RESEAU]" in nomFichier :
                 nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-            self.SetStatusText(u"Impossible d'ouvrir le fichier '%s'." % nomFichier)
+            self.SetStatusText(_(u"Impossible d'ouvrir le fichier '%s'.") % nomFichier)
             return False
         
         # Vérification du mot de passe
@@ -3067,7 +3086,7 @@ class MainFrame(wx.Frame):
             if self.ValidationVersionFichier(nomFichier) == False :
                 if "[RESEAU]" in nomFichier :
                     nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-                self.SetStatusText(u"Echec de l'ouverture du fichier '%s'." % nomFichier)
+                self.SetStatusText(_(u"Echec de l'ouverture du fichier '%s'.") % nomFichier)
                 self.userConfig["nomFichier"] = ancienFichier
                 return False
 
@@ -3130,10 +3149,10 @@ class MainFrame(wx.Frame):
         # Confirmation de succès
         if "[RESEAU]" in nomFichier :
                 nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-        self.SetStatusText(u"Le fichier '%s' a été ouvert avec succès." % nomFichier)  
+        self.SetStatusText(_(u"Le fichier '%s' a été ouvert avec succès.") % nomFichier)  
         
         # Mémorise dans l'historique l'ouverture du fichier
-        UTILS_Historique.InsertActions([{"IDcategorie":1, "action":u"Ouverture du fichier %s" % nomFichier},])
+        UTILS_Historique.InsertActions([{"IDcategorie":1, "action":_(u"Ouverture du fichier %s") % nomFichier},])
         
         # Affiche les messages importants
         wx.CallLater(2000, self.AfficheMessagesOuverture)
@@ -3149,14 +3168,14 @@ class MainFrame(wx.Frame):
             if dictResultats["connexion"][0] == False :
                 # Connexion impossible au serveur MySQL
                 erreur = dictResultats["connexion"][1]
-                dlg = wx.MessageDialog(self, u"Il est impossible de se connecter au serveur MySQL.\n\nErreur : %s" % erreur, "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Il est impossible de se connecter au serveur MySQL.\n\nErreur : %s") % erreur, "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if dictResultats["fichier"][0] == False :
                 # Ouverture impossible du fichier MySQL demandé
                 erreur = dictResultats["fichier"][1]
-                dlg = wx.MessageDialog(self, u"La connexion avec le serveur MySQL fonctionne mais il est impossible d'ouvrir le fichier MySQL demandé.\n\nErreur : %s" % erreur, "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"La connexion avec le serveur MySQL fonctionne mais il est impossible d'ouvrir le fichier MySQL demandé.\n\nErreur : %s") % erreur, "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -3166,7 +3185,7 @@ class MainFrame(wx.Frame):
             fichier = "Data/" + nomFichier + "_DATA.dat"
             test = os.path.isfile(fichier) 
             if test == False :
-                dlg = wx.MessageDialog(self, u"Il est impossible d'ouvrir le fichier demandé !", "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Il est impossible d'ouvrir le fichier demandé !"), "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -3196,8 +3215,8 @@ class MainFrame(wx.Frame):
             
             # Affiche d'une fenêtre d'attente
             try :
-                message = u"Mise à jour de la base de données en cours... Veuillez patienter..."
-                dlgAttente = PBI.PyBusyInfo(message, parent=None, title=u"Mise à jour", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+                message = _(u"Mise à jour de la base de données en cours... Veuillez patienter...")
+                dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Mise à jour"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
                 wx.Yield() 
                 
                 DB = GestionDB.DB(nomFichier = nomFichier)        
@@ -3210,13 +3229,13 @@ class MainFrame(wx.Frame):
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans la mise à jour de la base de données : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la mise à jour de la base de données : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
 
             if resultat != True :
                 print resultat
-                dlg = wx.MessageDialog(self, u"Le logiciel n'arrive pas à convertir le fichier '" + nomFichier + u":\n\nErreur : " + resultat + u"\n\nVeuillez contacter le développeur du logiciel...", u"Erreur de conversion de fichier", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Le logiciel n'arrive pas à convertir le fichier '") + nomFichier + u":\n\nErreur : " + resultat + _(u"\n\nVeuillez contacter le développeur du logiciel..."), _(u"Erreur de conversion de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -3229,16 +3248,16 @@ class MainFrame(wx.Frame):
 
             # Messages exceptionnels suite à la mise à jour
             if versionFichier < (1, 1, 0, 3) :
-                dlg = wx.MessageDialog(self, u"Mise à jour majeure 1.1.0.x.\n\nEn raison des modifications conséquentes apportées à cette nouvelle version de Noethys, il est conseillé d'effectuer dès à présent une sauvegarde de votre fichier de données (Menu Fichier > Créer une sauvegarde).", u"Avertissement", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Mise à jour majeure 1.1.0.x.\n\nEn raison des modifications conséquentes apportées à cette nouvelle version de Noethys, il est conseillé d'effectuer dès à présent une sauvegarde de votre fichier de données (Menu Fichier > Créer une sauvegarde)."), _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 
             if versionFichier < (1, 1, 1, 3) :
-                dlg = wx.MessageDialog(self, u"Note de mise à jour \n\nMise à jour des droits utilisateurs : \n\nNoethys propose désormais une nouvelle gestion avancée des droits utilisateurs. Dans le cadre de cette mise à jour, tous les profils utilisateurs ont été réinitialisés sur 'Administrateur'. Vous pouvez les régler de nouveau dans Menu Paramétrage > Utilisateurs.", u"Information importante", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Note de mise à jour \n\nMise à jour des droits utilisateurs : \n\nNoethys propose désormais une nouvelle gestion avancée des droits utilisateurs. Dans le cadre de cette mise à jour, tous les profils utilisateurs ont été réinitialisés sur 'Administrateur'. Vous pouvez les régler de nouveau dans Menu Paramétrage > Utilisateurs."), _(u"Information importante"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 
-                dlg = wx.MessageDialog(self, u"Note de mise à jour \n\nAmélioration de la gestion des mandats SEPA : \n\nSi vous utilisez le prélèvement automatique et que vous avez déjà saisi les mandats dans Noethys, veuillez lancer le convertisseur de RIB Nationaux en mandats SEPA du menu Outils > Utilitaires admin.", u"Information importante", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Note de mise à jour \n\nAmélioration de la gestion des mandats SEPA : \n\nSi vous utilisez le prélèvement automatique et que vous avez déjà saisi les mandats dans Noethys, veuillez lancer le convertisseur de RIB Nationaux en mandats SEPA du menu Outils > Utilitaires admin."), _(u"Information importante"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
             
@@ -3258,7 +3277,7 @@ class MainFrame(wx.Frame):
                 </FONT>
                 </CENTER>
                 """
-                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information")
+                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"))
                 dlg.ShowModal()
                 dlg.Destroy()
             
@@ -3347,7 +3366,7 @@ class MainFrame(wx.Frame):
                     couleurFond="#FFA5A5"
                 else:
                     couleurFond="#FDF095"
-                self.AfficheToaster(titre=u"Message", texte=texteToaster, couleurFond=couleurFond) 
+                self.AfficheToaster(titre=_(u"Message"), texte=texteToaster, couleurFond=couleurFond) 
 
     def AfficheToaster(self, titre=u"", texte=u"", taille=(200, 100), couleurFond="#F0FBED"):
         """ Affiche une boîte de dialogue temporaire """
@@ -3428,10 +3447,10 @@ class MainFrame(wx.Frame):
         """ Propose la MAJ immédiate """
         if self.MAJexiste == True :
             if self.versionMAJ != None :
-                message = u"La version %s de Noethys est disponible.\n\nSouhaitez-vous télécharger cette mise à jour maintenant ?" % self.versionMAJ
+                message = _(u"La version %s de Noethys est disponible.\n\nSouhaitez-vous télécharger cette mise à jour maintenant ?") % self.versionMAJ
             else :
-                message = u"Une nouvelle version de Noethys est disponible.\n\nSouhaitez-vous télécharger cette mise à jour maintenant ?"
-            dlg = wx.MessageDialog(self, message, u"Mise à jour disponible", wx.YES_NO|wx.YES_DEFAULT|wx.ICON_INFORMATION)
+                message = _(u"Une nouvelle version de Noethys est disponible.\n\nSouhaitez-vous télécharger cette mise à jour maintenant ?")
+            dlg = wx.MessageDialog(self, message, _(u"Mise à jour disponible"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse == wx.ID_YES :
@@ -3464,7 +3483,7 @@ Merci pour votre participation !
 </FONT>
 </CENTER>
 """
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information", nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
         dlg.Destroy()
@@ -3499,8 +3518,8 @@ Merci pour votre participation !
                     if nbreJoursDepuisRappel == None or nbreJoursDepuisRappel >= 10 :
                         import wx.lib.dialogs as dialogs
                         image = wx.Bitmap("Images/32x32/Cle.png", wx.BITMAP_TYPE_ANY)
-                        message1 = u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium." % nbreJoursRestants
-                        dlg = dialogs.MultiMessageDialog(self, message1, caption = u"Enregistrement", msg2=None, style = wx.ICON_INFORMATION | wx.YES|wx.CANCEL|wx.CANCEL_DEFAULT, icon=image, btnLabels={wx.ID_YES : u"Renouveler mon abonnement", wx.ID_CANCEL : u"Fermer"})
+                        message1 = _(u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium.") % nbreJoursRestants
+                        dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Enregistrement"), msg2=None, style = wx.ICON_INFORMATION | wx.YES|wx.CANCEL|wx.CANCEL_DEFAULT, icon=image, btnLabels={wx.ID_YES : _(u"Renouveler mon abonnement"), wx.ID_CANCEL : _(u"Fermer")})
                         reponse = dlg.ShowModal() 
                         dlg.Destroy() 
                         if reponse == wx.ID_YES :
@@ -3549,14 +3568,14 @@ class MyApp(wx.App):
         heure_debut = time.time()
         
         # Vérifie l'existence des répertoires
-        for rep in ("Aide", "Temp", "Updates", "Sync") :
+        for rep in ("Aide", "Temp", "Updates", "Sync", "Lang") :
             if os.path.isdir(rep) == False :
                 os.makedirs(rep)
                 print "Creation du repertoire : ", rep
         
         # Réinitialisation du fichier des parametres en conservant la touche ALT
         if wx.GetKeyState(307) == True :
-            dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment réinitialiser Noethys ?", u"Réinitialisation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser Noethys ?"), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() == wx.ID_YES :
                 os.remove("Data/Config.dat")
             dlg.Destroy()

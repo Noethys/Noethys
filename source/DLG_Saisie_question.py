@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import wx.combo
 import Image
@@ -93,13 +95,13 @@ class CTRL_Choix(FastObjectListView):
                 listItem.SetTextColour((200, 200, 200))
 
         liste_Colonnes = [
-            ColumnDefn(u"IDchoix", "left", 0, "IDchoix"),
-            ColumnDefn(u"Label", 'left', 410, "label", isSpaceFilling=True),
+            ColumnDefn(_(u"IDchoix"), "left", 0, "IDchoix"),
+            ColumnDefn(_(u"Label"), 'left', 410, "label", isSpaceFilling=True),
             ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun choix")
+        self.SetEmptyListMsg(_(u"Aucun choix"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.listeChoix)
        
@@ -118,7 +120,7 @@ class CTRL_Choix(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -127,7 +129,7 @@ class CTRL_Choix(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -135,7 +137,7 @@ class CTRL_Choix(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -145,7 +147,7 @@ class CTRL_Choix(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Monter
-        item = wx.MenuItem(menuPop, 40, u"Monter")
+        item = wx.MenuItem(menuPop, 40, _(u"Monter"))
         bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -153,7 +155,7 @@ class CTRL_Choix(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Descendre
-        item = wx.MenuItem(menuPop, 50, u"Descendre")
+        item = wx.MenuItem(menuPop, 50, _(u"Descendre"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -176,7 +178,7 @@ class CTRL_Choix(FastObjectListView):
     def Modifier(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun choix dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -192,7 +194,7 @@ class CTRL_Choix(FastObjectListView):
     def Supprimer(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun choix dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -204,7 +206,7 @@ class CTRL_Choix(FastObjectListView):
     def Monter(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun choix dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -217,7 +219,7 @@ class CTRL_Choix(FastObjectListView):
     def Descendre(self, event=None):
         track = self.GetSelectedObject() 
         if track == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun choix dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun choix dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -375,24 +377,24 @@ class Dialog(wx.Dialog):
         self.defaut = None
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, -1, u"Généralités")
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.box_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie = CTRL_Categorie(self, type=type)
-        self.label_controle = wx.StaticText(self, -1, u"Contrôle :")
+        self.label_controle = wx.StaticText(self, -1, _(u"Contrôle :"))
         self.ctrl_controle = CTRL_Controle(self)
-        self.label_visible = wx.StaticText(self, -1, u"Visible :")
+        self.label_visible = wx.StaticText(self, -1, _(u"Visible :"))
         self.ctrl_visible = wx.CheckBox(self, -1, u"")
         self.ctrl_visible.SetValue(True) 
         
         # Apercu
-        self.box_apercu_staticbox = wx.StaticBox(self, -1, u"Valeurs par defaut")
+        self.box_apercu_staticbox = wx.StaticBox(self, -1, _(u"Valeurs par defaut"))
         self.ctrl_apercu = CTRL_Questionnaire.CTRL(self, type=type, mode="apercu", afficherInvisibles=True, largeurQuestion=0)
         self.ctrl_apercu.SetMinSize((325, 90))
 
         # Choix
-        self.box_choix_staticbox = wx.StaticBox(self, -1, u"Liste de choix")
+        self.box_choix_staticbox = wx.StaticBox(self, -1, _(u"Liste de choix"))
         self.ctrl_choix = CTRL_Choix(self, IDquestion=IDquestion)
         self.bouton_ajouter_choix = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_choix = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))        
@@ -401,21 +403,21 @@ class Dialog(wx.Dialog):
         self.bouton_descendre_choix = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
 
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.label_hauteur = wx.StaticText(self, -1, u"Hauteur du contrôle :")
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.label_hauteur = wx.StaticText(self, -1, _(u"Hauteur du contrôle :"))
         self.ctrl_hauteur = wx.SpinCtrl(self, -1, "")
         self.ctrl_hauteur.SetRange(-1, 500)
-        self.label_valmin = wx.StaticText(self, -1, u"Valeur minimale :")
+        self.label_valmin = wx.StaticText(self, -1, _(u"Valeur minimale :"))
         self.ctrl_valmin = wx.SpinCtrl(self, -1, "")
         self.ctrl_valmin.SetRange(0, 99999)
-        self.label_valmax = wx.StaticText(self, -1, u"Valeur maximale :")
+        self.label_valmax = wx.StaticText(self, -1, _(u"Valeur maximale :"))
         self.ctrl_valmax = wx.SpinCtrl(self, -1, "")
         self.ctrl_valmax.SetRange(1, 99999)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -444,22 +446,22 @@ class Dialog(wx.Dialog):
         self.ctrl_label.SetFocus()
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une question")
-        self.ctrl_label.SetToolTipString(u"Saisissez ici le label de la question")
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez ici la catégorie de la question")
-        self.ctrl_controle.SetToolTipString(u"Sélectionnez ici le type de contrôle souhaité")
-        self.ctrl_visible.SetToolTipString(u"Cochez cette case pour rendre visible cette question")
-        self.bouton_ajouter_choix.SetToolTipString(u"Cliquez ici pour ajouter une nouvelle question")
-        self.bouton_modifier_choix.SetToolTipString(u"Cliquez ici pour modifier la ligne sélectionnée dans la liste")
-        self.bouton_supprimer_choix.SetToolTipString(u"Cliquez ici pour supprimer la ligne sélectionnée dans la liste")
-        self.bouton_monter_choix.SetToolTipString(u"Cliquez ici pour monter la ligne sélectionnée dans la liste")
-        self.bouton_descendre_choix.SetToolTipString(u"Cliquez ici pour descendre la ligne sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.ctrl_hauteur.SetToolTipString(u"Saisissez ici la hauteur du contrôle (en pixels)\nIndiquez '-1' pour définir une taille automatiquement")
-        self.ctrl_valmin.SetToolTipString(u"Saisissez ici la valeur minimale du contrôle")
-        self.ctrl_valmax.SetToolTipString(u"Saisissez ici la valeur maximale du contrôle")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une question"))
+        self.ctrl_label.SetToolTipString(_(u"Saisissez ici le label de la question"))
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici la catégorie de la question"))
+        self.ctrl_controle.SetToolTipString(_(u"Sélectionnez ici le type de contrôle souhaité"))
+        self.ctrl_visible.SetToolTipString(_(u"Cochez cette case pour rendre visible cette question"))
+        self.bouton_ajouter_choix.SetToolTipString(_(u"Cliquez ici pour ajouter une nouvelle question"))
+        self.bouton_modifier_choix.SetToolTipString(_(u"Cliquez ici pour modifier la ligne sélectionnée dans la liste"))
+        self.bouton_supprimer_choix.SetToolTipString(_(u"Cliquez ici pour supprimer la ligne sélectionnée dans la liste"))
+        self.bouton_monter_choix.SetToolTipString(_(u"Cliquez ici pour monter la ligne sélectionnée dans la liste"))
+        self.bouton_descendre_choix.SetToolTipString(_(u"Cliquez ici pour descendre la ligne sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.ctrl_hauteur.SetToolTipString(_(u"Saisissez ici la hauteur du contrôle (en pixels)\nIndiquez '-1' pour définir une taille automatiquement"))
+        self.ctrl_valmin.SetToolTipString(_(u"Saisissez ici la valeur minimale du contrôle"))
+        self.ctrl_valmax.SetToolTipString(_(u"Saisissez ici la valeur maximale du contrôle"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((650, 450))
 
     def __do_layout(self):
@@ -695,7 +697,7 @@ class Dialog(wx.Dialog):
         
         # Vérification des valeurs
         if label == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun label !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun label !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

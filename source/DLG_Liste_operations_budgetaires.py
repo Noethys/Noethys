@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Operations_budgetaires
 import GestionDB
@@ -24,8 +26,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez consulter ici la liste des opérations budgétaires. Il s'agit d'opérations qui n'apparaissent pas directement dans la trésorerie mais qui ont un impact dans le bugdet. Ajoutez rapidement des opérations grâce aux boutons raccourcis situés au-dessus de la liste."
-        titre = u"Liste des opérations budgétaires"
+        intro = _(u"Vous pouvez consulter ici la liste des opérations budgétaires. Il s'agit d'opérations qui n'apparaissent pas directement dans la trésorerie mais qui ont un impact dans le bugdet. Ajoutez rapidement des opérations grâce aux boutons raccourcis situés au-dessus de la liste.")
+        titre = _(u"Liste des opérations budgétaires")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Operations.png")
         
@@ -38,8 +40,8 @@ class Dialog(wx.Dialog):
             | wx.TB_HORZ_LAYOUT
             | wx.TB_NODIVIDER
             )
-        self.barreOutils.AddLabelTool(ID_AJOUTER_DEBIT, label=u"Ajouter un débit", bitmap=wx.Bitmap("Images/22x22/Addition.png", wx.BITMAP_TYPE_PNG), shortHelp=u"Ajouter une opération au débit", longHelp=u"Ajouter une opération au débit")
-        self.barreOutils.AddLabelTool(ID_AJOUTER_CREDIT, label=u"Ajouter un crédit", bitmap=wx.Bitmap("Images/22x22/Addition.png", wx.BITMAP_TYPE_PNG), shortHelp=u"Ajouter une opération au crédit", longHelp=u"Ajouter une opération au crédit")
+        self.barreOutils.AddLabelTool(ID_AJOUTER_DEBIT, label=_(u"Ajouter un débit"), bitmap=wx.Bitmap("Images/22x22/Addition.png", wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une opération au débit"), longHelp=_(u"Ajouter une opération au débit"))
+        self.barreOutils.AddLabelTool(ID_AJOUTER_CREDIT, label=_(u"Ajouter un crédit"), bitmap=wx.Bitmap("Images/22x22/Addition.png", wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter une opération au crédit"), longHelp=_(u"Ajouter une opération au crédit"))
         self.barreOutils.Realize()
 
         # Liste des opérations
@@ -54,8 +56,8 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -77,15 +79,15 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une opération")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'opération sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'opération sélectionné dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une opération"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'opération sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'opération sélectionné dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((980, 750))
 
     def __do_layout(self):
@@ -142,12 +144,12 @@ class Dialog(wx.Dialog):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 10, u"Ajouter une opération au débit")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter une opération au débit"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Addition.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_operations.AjouterDebit, id=10)
 
-        item = wx.MenuItem(menuPop, 20, u"Ajouter une opération au crédit")
+        item = wx.MenuItem(menuPop, 20, _(u"Ajouter une opération au crédit"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Addition.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_operations.AjouterCredit, id=20)

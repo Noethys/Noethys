@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import GestionDB
 import sqlite3
 import datetime
@@ -42,42 +43,42 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     
     # Individu
     listeChampsIndividu = [
-            (u"ID de l'individu", u"253", "{IDINDIVIDU}"), 
-            (u"Civilité courte de l'individu", u"M.", "{INDIVIDU_CIVILITE_COURT}"), 
-            (u"Civilité longue de l'individu", u"Monsieur", "{INDIVIDU_CIVILITE_LONG}"), 
-            (u"Sexe de l'individu", u"H", "{INDIVIDU_SEXE}"), 
-            (u"Nom complet de l'individu", u"DUPOND Philippe", "{INDIVIDU_NOM_COMPLET}"), 
-            (u"Nom de famille de l'individu", u"DUPOND", "{INDIVIDU_NOM}"), 
-            (u"Prénom de l'individu", u"Philippe", "{INDIVIDU_PRENOM}"), 
-            (u"Numéro de sécu de l'individu", u"2 39 336...", "{INDIVIDU_NUM_SECU}"), 
-            (u"Date de naissance de l'individu", u"23/01/2010", "{INDIVIDU_DATE_NAISS}"), 
-            (u"Age de l'individu", u"9 ans", "{INDIVIDU_AGE}"), 
-            (u"Code postal de la ville de naissance de l'individu", u"29200", "{INDIVIDU_CP_NAISS}"), 
-            (u"Ville de naissance de l'individu", u"BREST", "{INDIVIDU_VILLE_NAISS}"), 
-            (u"Année de décès de l'individu", u"2012", "{INDIVIDU_ANNEE_DECES}"),
-            (u"Rue de l'adresse de l'individu", u"10 rue des oiseaux", "{INDIVIDU_RUE}"), 
-            (u"Code postal de l'adresse de l'individu", u"29870", "{INDIVIDU_CP}"), 
-            (u"Ville de l'adresse de l'individu", u"LANNILIS", "{INDIVIDU_VILLE}"), 
-            (u"Secteur de l'adresse de l'individu", u"Quartier sud", "{INDIVIDU_SECTEUR}"), 
-            (u"Catégorie socio-professionnelle de l'individu", u"Ouvrier", "{INDIVIDU_CATEGORIE_TRAVAIL}"), 
-            (u"Profession de l'individu", u"Peintre", "{INDIVIDU_PROFESSION}"), 
-            (u"Employeur de l'individu", u"Pinceaux et Cie", "{INDIVIDU_EMPLOYEUR}"),
-            (u"Numéro de téléphone pro de l'individu", u"01.02.03.04.05", "{INDIVIDU_TEL_PRO}"), 
-            (u"Numéro de fax pro de l'individu", u"01.02.03.04.05", "{INDIVIDU_FAX_PRO}"), 
-            (u"Mail pro de l'individu", u"monadresse@pro.fr", "{INDIVIDU_MAIL_PRO}"), 
-            (u"Numéro de téléphone domicile de l'individu", u"01.02.03.04.05", "{INDIVIDU_TEL_DOMICILE}"),
-            (u"Numéro de téléphone portable de l'individu", u"06.02.03.04.05", "{INDIVIDU_TEL_MOBILE}"), 
-            (u"Numéro de fax domicile de l'individu", u"01.02.03.04.05", "{INDIVIDU_FAX}"), 
-            (u"Adresse Email de l'individu", u"monadresse@perso.fr", "{INDIVIDU_MAIL}"), 
-            (u"Nom de famille du médecin traitant", u"BERGOT", "{MEDECIN_NOM}"), 
-            (u"Prénom du médecin traitant", u"Albert", "{MEDECIN_PRENOM}"), 
-            (u"Rue de l'adresse du médecin", u"3 rue des allergies", "{MEDECIN_RUE}"), 
-            (u"Code postal de l'adresse du médecin traitant", u"29870", "{MEDECIN_CP}"), 
-            (u"Ville de l'adresse du médecin traitant", u"LANNILIS", "{MEDECIN_VILLE}"), 
-            (u"Numéro de téléphone du cabinet du médecin", u"01.02.03.04.05", "{MEDECIN_TEL_CABINET}"), 
-            (u"Numéro de portable du médecin", u"06.02.03.04.05", "{MEDECIN_TEL_MOBILE}"), 
-            (u"Mémo de l'individu", u"informations diverses...", "{INDIVIDU_MEMO}"), 
-            (u"Date de création de la fiche individuelle", u"15/07/2014", "{INDIVIDU_DATE_CREATION}"), 
+            (_(u"ID de l'individu"), u"253", "{IDINDIVIDU}"), 
+            (_(u"Civilité courte de l'individu"), _(u"M."), "{INDIVIDU_CIVILITE_COURT}"), 
+            (_(u"Civilité longue de l'individu"), _(u"Monsieur"), "{INDIVIDU_CIVILITE_LONG}"), 
+            (_(u"Sexe de l'individu"), u"H", "{INDIVIDU_SEXE}"), 
+            (_(u"Nom complet de l'individu"), _(u"DUPOND Philippe"), "{INDIVIDU_NOM_COMPLET}"), 
+            (_(u"Nom de famille de l'individu"), _(u"DUPOND"), "{INDIVIDU_NOM}"), 
+            (_(u"Prénom de l'individu"), _(u"Philippe"), "{INDIVIDU_PRENOM}"), 
+            (_(u"Numéro de sécu de l'individu"), u"2 39 336...", "{INDIVIDU_NUM_SECU}"), 
+            (_(u"Date de naissance de l'individu"), u"23/01/2010", "{INDIVIDU_DATE_NAISS}"), 
+            (_(u"Age de l'individu"), _(u"9 ans"), "{INDIVIDU_AGE}"), 
+            (_(u"Code postal de la ville de naissance de l'individu"), u"29200", "{INDIVIDU_CP_NAISS}"), 
+            (_(u"Ville de naissance de l'individu"), _(u"BREST"), "{INDIVIDU_VILLE_NAISS}"), 
+            (_(u"Année de décès de l'individu"), u"2012", "{INDIVIDU_ANNEE_DECES}"),
+            (_(u"Rue de l'adresse de l'individu"), _(u"10 rue des oiseaux"), "{INDIVIDU_RUE}"), 
+            (_(u"Code postal de l'adresse de l'individu"), u"29870", "{INDIVIDU_CP}"), 
+            (_(u"Ville de l'adresse de l'individu"), _(u"LANNILIS"), "{INDIVIDU_VILLE}"), 
+            (_(u"Secteur de l'adresse de l'individu"), _(u"Quartier sud"), "{INDIVIDU_SECTEUR}"), 
+            (_(u"Catégorie socio-professionnelle de l'individu"), _(u"Ouvrier"), "{INDIVIDU_CATEGORIE_TRAVAIL}"), 
+            (_(u"Profession de l'individu"), _(u"Peintre"), "{INDIVIDU_PROFESSION}"), 
+            (_(u"Employeur de l'individu"), _(u"Pinceaux et Cie"), "{INDIVIDU_EMPLOYEUR}"),
+            (_(u"Numéro de téléphone pro de l'individu"), u"01.02.03.04.05", "{INDIVIDU_TEL_PRO}"), 
+            (_(u"Numéro de fax pro de l'individu"), u"01.02.03.04.05", "{INDIVIDU_FAX_PRO}"), 
+            (_(u"Mail pro de l'individu"), u"monadresse@pro.fr", "{INDIVIDU_MAIL_PRO}"), 
+            (_(u"Numéro de téléphone domicile de l'individu"), u"01.02.03.04.05", "{INDIVIDU_TEL_DOMICILE}"),
+            (_(u"Numéro de téléphone portable de l'individu"), u"06.02.03.04.05", "{INDIVIDU_TEL_MOBILE}"), 
+            (_(u"Numéro de fax domicile de l'individu"), u"01.02.03.04.05", "{INDIVIDU_FAX}"), 
+            (_(u"Adresse Email de l'individu"), u"monadresse@perso.fr", "{INDIVIDU_MAIL}"), 
+            (_(u"Nom de famille du médecin traitant"), _(u"BERGOT"), "{MEDECIN_NOM}"), 
+            (_(u"Prénom du médecin traitant"), _(u"Albert"), "{MEDECIN_PRENOM}"), 
+            (_(u"Rue de l'adresse du médecin"), _(u"3 rue des allergies"), "{MEDECIN_RUE}"), 
+            (_(u"Code postal de l'adresse du médecin traitant"), u"29870", "{MEDECIN_CP}"), 
+            (_(u"Ville de l'adresse du médecin traitant"), _(u"LANNILIS"), "{MEDECIN_VILLE}"), 
+            (_(u"Numéro de téléphone du cabinet du médecin"), u"01.02.03.04.05", "{MEDECIN_TEL_CABINET}"), 
+            (_(u"Numéro de portable du médecin"), u"06.02.03.04.05", "{MEDECIN_TEL_MOBILE}"), 
+            (_(u"Mémo de l'individu"), _(u"informations diverses..."), "{INDIVIDU_MEMO}"), 
+            (_(u"Date de création de la fiche individuelle"), u"15/07/2014", "{INDIVIDU_DATE_CREATION}"), 
             ]
     
     if "individu" in mode :
@@ -85,12 +86,12 @@ def GetNomsChampsPossibles(mode="individu+famille"):
     
     # Inscriptions
     listeChampsInscription = [
-            (u"Activité de l'inscription n°x", u"Accueil de Loisirs", "{INSCRIPTION_x_ACTIVITE}"),
-            (u"Groupe de l'inscription n°x", u"3-6 ans", "{INSCRIPTION_x_GROUPE}"),
-            (u"Catégorie de tarif de l'inscription n°x", u"Hors commune", "{INSCRIPTION_x_CATEGORIE_TARIF}"),
-            (u"Famille rattachée à l'inscription n°x", u"DUPOND Philippe et Marie", "{INSCRIPTION_x_NOM_TITULAIRES}"),
-            (u"Parti de l'inscription n°x", u"Oui", "{INSCRIPTION_x_PARTI}"),
-            (u"Date de l'inscription n°x", u"15/07/2014", "{INSCRIPTION_x_DATE_INSCRIPTION}"),
+            (_(u"Activité de l'inscription n°x"), _(u"Accueil de Loisirs"), "{INSCRIPTION_x_ACTIVITE}"),
+            (_(u"Groupe de l'inscription n°x"), _(u"3-6 ans"), "{INSCRIPTION_x_GROUPE}"),
+            (_(u"Catégorie de tarif de l'inscription n°x"), _(u"Hors commune"), "{INSCRIPTION_x_CATEGORIE_TARIF}"),
+            (_(u"Famille rattachée à l'inscription n°x"), _(u"DUPOND Philippe et Marie"), "{INSCRIPTION_x_NOM_TITULAIRES}"),
+            (_(u"Parti de l'inscription n°x"), _(u"Oui"), "{INSCRIPTION_x_PARTI}"),
+            (_(u"Date de l'inscription n°x"), u"15/07/2014", "{INSCRIPTION_x_DATE_INSCRIPTION}"),
             ]
 
     if "individu" in mode :
@@ -98,12 +99,12 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Infos médicales
     listeChampsInfosMedicales = [
-            (u"Intitulé de l'information médicale n°x", u"Allergie aux acariens", "{MEDICAL_x_INTITULE}"),
-            (u"Description de l'information médicale n°x", u"Fait des boutons", "{MEDICAL_x_DESCRIPTION}"),
-            (u"Traitement médical de l'information médicale n°x", u"Amoxicilline", "{MEDICAL_x_TRAITEMENT_MEDICAL}"),
-            (u"Description du traitement de l'information médicale n°x", u"Prendre tous les midis", "{MEDICAL_x_DESCRIPTION_TRAITEMENT}"),
-            (u"Date de début de traitement de l'information médicale n°x", u"01/07/2014", "{MEDICAL_x_DATE_DEBUT_TRAITEMENT}"),
-            (u"Date de fin de traitement de l'information médicale n°x", u"31/07/2014", "{MEDICAL_x_DATE_FIN_TRAITEMENT}"),
+            (_(u"Intitulé de l'information médicale n°x"), _(u"Allergie aux acariens"), "{MEDICAL_x_INTITULE}"),
+            (_(u"Description de l'information médicale n°x"), _(u"Fait des boutons"), "{MEDICAL_x_DESCRIPTION}"),
+            (_(u"Traitement médical de l'information médicale n°x"), _(u"Amoxicilline"), "{MEDICAL_x_TRAITEMENT_MEDICAL}"),
+            (_(u"Description du traitement de l'information médicale n°x"), _(u"Prendre tous les midis"), "{MEDICAL_x_DESCRIPTION_TRAITEMENT}"),
+            (_(u"Date de début de traitement de l'information médicale n°x"), u"01/07/2014", "{MEDICAL_x_DATE_DEBUT_TRAITEMENT}"),
+            (_(u"Date de fin de traitement de l'information médicale n°x"), u"31/07/2014", "{MEDICAL_x_DATE_FIN_TRAITEMENT}"),
             ]
 
     if "individu" in mode :
@@ -111,12 +112,12 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Infos scolarité
     listeChampsScolarite = [
-            (u"Date de début de l'étape de scolarité", u"01/09/2014", "{SCOLARITE_DATE_DEBUT}"),
-            (u"Date de fin de l'étape de scolarité", u"30/06/2014", "{SCOLARITE_DATE_FIN}"),
-            (u"Nom de l'école", u"Ecole Jules Ferry", "{SCOLARITE_NOM_ECOLE}"),
-            (u"Nom de la classe", u"CP/CE1 de Mme Machin", "{SCOLARITE_NOM_CLASSE}"),
-            (u"Nom du niveau scolaire", u"Cours élémentaire 1", "{SCOLARITE_NOM_NIVEAU}"),
-            (u"Nom abrégé du niveau scolaire", u"CE1", "{SCOLARITE_ABREGE_NIVEAU}"),
+            (_(u"Date de début de l'étape de scolarité"), u"01/09/2014", "{SCOLARITE_DATE_DEBUT}"),
+            (_(u"Date de fin de l'étape de scolarité"), u"30/06/2014", "{SCOLARITE_DATE_FIN}"),
+            (_(u"Nom de l'école"), _(u"Ecole Jules Ferry"), "{SCOLARITE_NOM_ECOLE}"),
+            (_(u"Nom de la classe"), _(u"CP/CE1 de Mme Machin"), "{SCOLARITE_NOM_CLASSE}"),
+            (_(u"Nom du niveau scolaire"), _(u"Cours élémentaire 1"), "{SCOLARITE_NOM_NIVEAU}"),
+            (_(u"Nom abrégé du niveau scolaire"), _(u"CE1"), "{SCOLARITE_ABREGE_NIVEAU}"),
             ]
 
     if "individu" in mode :
@@ -124,20 +125,20 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Famille
     listeChampsFamille = [
-            (u"Noms des titulaires de la famille", u"DUPOND Philippe et Marie", "{FAMILLE_NOM}"),
-            (u"Rue de l'adresse de la famille", u"10 rue des oiseaux", "{FAMILLE_RUE}"),
-            (u"Code postal de l'adresse de la famille", u"29870", "{FAMILLE_CP}"),
-            (u"Ville de l'adresse de la famille", u"LANNILIS", "{FAMILLE_VILLE}"),
-            (u"Secteur de l'adresse de la famille", u"Quartier sud", "{FAMILLE_SECTEUR}"),
-            (u"Nom de la caisse d'allocations", u"CAF", "{FAMILLE_NOM_CAISSE}"),
-            (u"Nom du régime social", u"Régime général", "{FAMILLE_NOM_REGIME}"),
-            (u"Numéro allocataire", u"1234567X", "{FAMILLE_NUM_ALLOCATAIRE}"),
-            (u"Nom de l'allocataire titulaire", u"DUPOND Philippe", "{FAMILLE_NOM_ALLOCATAIRE}"),
-            (u"Mémo de la famille", u"Informations diverses...", "{FAMILLE_MEMO}"),
-            (u"Date de création de la fiche familiale", u"15/07/2014", "{FAMILLE_DATE_CREATION}"),
-            (u"Quotient familial actuel de la famille", u"340", "{FAMILLE_QF_ACTUEL}"),
-            (u"Liste des cotisations manquantes", u"Cotisation familiale", "{COTISATIONS_MANQUANTES}"),
-            (u"Liste des pièces manquantes", u"Certificat médical", "{PIECES_MANQUANTES}"),
+            (_(u"Noms des titulaires de la famille"), _(u"DUPOND Philippe et Marie"), "{FAMILLE_NOM}"),
+            (_(u"Rue de l'adresse de la famille"), _(u"10 rue des oiseaux"), "{FAMILLE_RUE}"),
+            (_(u"Code postal de l'adresse de la famille"), u"29870", "{FAMILLE_CP}"),
+            (_(u"Ville de l'adresse de la famille"), _(u"LANNILIS"), "{FAMILLE_VILLE}"),
+            (_(u"Secteur de l'adresse de la famille"), _(u"Quartier sud"), "{FAMILLE_SECTEUR}"),
+            (_(u"Nom de la caisse d'allocations"), _(u"CAF"), "{FAMILLE_NOM_CAISSE}"),
+            (_(u"Nom du régime social"), _(u"Régime général"), "{FAMILLE_NOM_REGIME}"),
+            (_(u"Numéro allocataire"), _(u"1234567X"), "{FAMILLE_NUM_ALLOCATAIRE}"),
+            (_(u"Nom de l'allocataire titulaire"), _(u"DUPOND Philippe"), "{FAMILLE_NOM_ALLOCATAIRE}"),
+            (_(u"Mémo de la famille"), _(u"Informations diverses..."), "{FAMILLE_MEMO}"),
+            (_(u"Date de création de la fiche familiale"), u"15/07/2014", "{FAMILLE_DATE_CREATION}"),
+            (_(u"Quotient familial actuel de la famille"), u"340", "{FAMILLE_QF_ACTUEL}"),
+            (_(u"Liste des cotisations manquantes"), _(u"Cotisation familiale"), "{COTISATIONS_MANQUANTES}"),
+            (_(u"Liste des pièces manquantes"), _(u"Certificat médical"), "{PIECES_MANQUANTES}"),
             ]
             
     if "famille" in mode :
@@ -145,11 +146,11 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Messages
     listeChampsMessages = [
-            (u"Date de saisie du message n°x", u"18/07/2014", "{MESSAGE_x_DATE_SAISIE}"),
-            (u"Date de parution du message n°x", u"18/07/2014", "{MESSAGE_x_DATE_PARUTION}"),
-            (u"Texte du message n°x", u"Envoyer une facture à la famille", "{MESSAGE_x_TEXTE}"),
-            (u"Nom de l'individu ou de la famille rattachée au message n°x", u"DUPOND Philippe et Marie", "{MESSAGE_x_NOM}"),
-            (u"Catégorie du message n°x", u"Courrier", "{MESSAGE_x_CATEGORIE}"),
+            (_(u"Date de saisie du message n°x"), u"18/07/2014", "{MESSAGE_x_DATE_SAISIE}"),
+            (_(u"Date de parution du message n°x"), u"18/07/2014", "{MESSAGE_x_DATE_PARUTION}"),
+            (_(u"Texte du message n°x"), _(u"Envoyer une facture à la famille"), "{MESSAGE_x_TEXTE}"),
+            (_(u"Nom de l'individu ou de la famille rattachée au message n°x"), _(u"DUPOND Philippe et Marie"), "{MESSAGE_x_NOM}"),
+            (_(u"Catégorie du message n°x"), _(u"Courrier"), "{MESSAGE_x_CATEGORIE}"),
             ]
 
     if "individu" in mode or "famille" in mode :
@@ -157,47 +158,47 @@ def GetNomsChampsPossibles(mode="individu+famille"):
 
     # Rattachements
     listeRattachements = [
-            ("REPRESENTANT_RATTACHE_x", u"le représentant rattaché n°x"),
-            ("ENFANT_RATTACHE_x", u"l'enfant rattaché n°x"),
-            ("CONTACT_RATTACHE_x", u"le contact rattaché n°x"),
+            ("REPRESENTANT_RATTACHE_x", _(u"le représentant rattaché n°x")),
+            ("ENFANT_RATTACHE_x", _(u"l'enfant rattaché n°x")),
+            ("CONTACT_RATTACHE_x", _(u"le contact rattaché n°x")),
             ]
     listeChampsRattachements = [
-            (u"Nombre de représentants rattachés à la famille", u"2", "{NBRE_REPRESENTANTS_RATTACHES}"),
-            (u"Nombre d'enfants rattachés à la famille", u"1", "{NBRE_ENFANTS_RATTACHES}"),
-            (u"Nombre de contacts rattachés à la famille", u"3", "{NBRE_CONTACTS_RATTACHES}"),
+            (_(u"Nombre de représentants rattachés à la famille"), u"2", "{NBRE_REPRESENTANTS_RATTACHES}"),
+            (_(u"Nombre d'enfants rattachés à la famille"), u"1", "{NBRE_ENFANTS_RATTACHES}"),
+            (_(u"Nombre de contacts rattachés à la famille"), u"3", "{NBRE_CONTACTS_RATTACHES}"),
             ]
     for champRattachement, labelRattachement in listeRattachements :
         for label, exemple, champ in listeChampsIndividu :
             if champ.startswith("{INDIVIDU") :
-                label = label.replace(u"l'individu", labelRattachement)
-                champ = champ.replace(u"INDIVIDU", champRattachement)
+                label = label.replace(_(u"l'individu"), labelRattachement)
+                champ = champ.replace(_(u"INDIVIDU"), champRattachement)
                 listeChampsRattachements.append((label, exemple, champ))
-        listeChampsRattachements.append((u"Liens pour %s" % labelRattachement, u"Philippe est concubin de Marie...", "{%s_LIEN}" % champRattachement))
-        listeChampsRattachements.append((u"%s est titulaire ?" % labelRattachement, u"Oui", "{%s_TITULAIRE}" % champRattachement))
+        listeChampsRattachements.append((_(u"Liens pour %s") % labelRattachement, _(u"Philippe est concubin de Marie..."), "{%s_LIEN}" % champRattachement))
+        listeChampsRattachements.append((_(u"%s est titulaire ?") % labelRattachement, _(u"Oui"), "{%s_TITULAIRE}" % champRattachement))
 
     if "famille" in mode :
         listeChamps.extend(listeChampsRattachements)
     
     # Liens
     listeLiensPossibles = [
-            ("PERE", u"le père"),
-            ("MERE", u"la mère"),
-            ("CONJOINT", u"le ou la conjointe"),
-            ("ENFANT", u"l'enfant n°x"),
-            ("AUTRE_LIEN", u"l'autre lien n°x"),
+            ("PERE", _(u"le père")),
+            ("MERE", _(u"la mère")),
+            ("CONJOINT", _(u"le ou la conjointe")),
+            ("ENFANT", _(u"l'enfant n°x")),
+            ("AUTRE_LIEN", _(u"l'autre lien n°x")),
             ]
     listeLiens = [
-            (u"Nombre d'enfants de l'individu", u"2", "{NBRE_ENFANTS}"),
-            (u"Nombre d'autres liens de l'individu", u"4", "{NBRE_AUTRES_LIENS}"),
+            (_(u"Nombre d'enfants de l'individu"), u"2", "{NBRE_ENFANTS}"),
+            (_(u"Nombre d'autres liens de l'individu"), u"4", "{NBRE_AUTRES_LIENS}"),
             ]
     for champLien, labelLien in listeLiensPossibles :
         for label, exemple, champ in listeChampsIndividu :
             if champ.startswith("{INDIVIDU") :
-                label = label.replace(u"l'individu", labelLien)
-                champ = champ.replace(u"INDIVIDU", champLien)
+                label = label.replace(_(u"l'individu"), labelLien)
+                champ = champ.replace(_(u"INDIVIDU"), champLien)
                 listeLiens.append((label, exemple, champ))
-        listeLiens.append((u"Autorisation pour %s" % labelLien, u"Responsable légal", "{%s_AUTORISATION}" % champLien))
-        listeLiens.append((u"Nom du lien pour %s" % labelLien, u"Enfant", "{%s_NOM_LIEN}" % champLien))
+        listeLiens.append((_(u"Autorisation pour %s") % labelLien, _(u"Responsable légal"), "{%s_AUTORISATION}" % champLien))
+        listeLiens.append((_(u"Nom du lien pour %s") % labelLien, _(u"Enfant"), "{%s_NOM_LIEN}" % champLien))
     
     if "individu" in mode :
         listeChamps.extend(listeLiens)
@@ -389,9 +390,9 @@ class Informations() :
                     IDcategorie = dictValeurs["IDcategorie"]
                     titulaire = dictValeurs["titulaire"]
                     if titulaire == 1 :
-                        titulaireStr = u"Oui"
+                        titulaireStr = _(u"Oui")
                     else :
-                        titulaireStr = u"Non"
+                        titulaireStr = _(u"Non")
                     
                     dictCibles = {
                         1 : {"code" : "REPRESENTANT_RATTACHE", "key" : "NBRE_REPRESENTANTS_RATTACHES"},
@@ -415,12 +416,12 @@ class Informations() :
                     for dictLien in self.dictFamilles[IDfamille]["liens"] :
                         if dictLien["IDindividu_sujet"] == IDindividu :
                             nom_objet = self.dictIndividus[dictLien["IDindividu_objet"]]["INDIVIDU_PRENOM"]
-                            listeLiens.append(u"%s de %s" % (dictLien["lien"].lower(), nom_objet))
+                            listeLiens.append(_(u"%s de %s") % (dictLien["lien"].lower(), nom_objet))
                     texte = ""
                     if len(listeLiens) == 1 :
-                        texte = u"%s est %s" % (nom_sujet, listeLiens[0])
+                        texte = _(u"%s est %s") % (nom_sujet, listeLiens[0])
                     if len(listeLiens) > 1 :
-                        texte = u"%s est " % nom_sujet
+                        texte = _(u"%s est ") % nom_sujet
                         texte += ", ".join(listeLiens[:-1])
                         texte += " et %s" % listeLiens[-1]
                     self.dictFamilles[IDfamille][codeCible + "_LIENS"] = texte
@@ -584,11 +585,11 @@ class Informations() :
             if self.dictTitulaires.has_key(IDfamille) :
                 nomTitulaires = self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
             else :
-                nomTitulaires = u"Famille inconnue"
+                nomTitulaires = _(u"Famille inconnue")
             if parti == 1 : 
-                parti = u"Oui"
+                parti = _(u"Oui")
             else :
-                parti = u"Non"
+                parti = _(u"Non")
                 
             if self.dictIndividus.has_key(IDindividu) :
                 
@@ -858,17 +859,17 @@ class Informations() :
         dbdest = GestionDB.DB(suffixe=None, nomFichier=nomFichier, modeCreation=True)
         dictTables = {
 
-            "individus":[               ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la personne"),
-                                            ("IDcivilite", "INTEGER", u"Civilité de la personne"),
-                                            ("nom", "VARCHAR(100)", u"Nom de famille de la personne"),
-                                            ("prenom", "VARCHAR(100)", u"Prénom de la personne"),
-                                            ("photo", "BLOB", u"Photo de la personne"),
+            "individus":[               ("IDindividu", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la personne")),
+                                            ("IDcivilite", "INTEGER", _(u"Civilité de la personne")),
+                                            ("nom", "VARCHAR(100)", _(u"Nom de famille de la personne")),
+                                            ("prenom", "VARCHAR(100)", _(u"Prénom de la personne")),
+                                            ("photo", "BLOB", _(u"Photo de la personne")),
                                             ],
 
-            "informations":[          ("IDinfo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID de la ligne"),
-                                            ("IDindividu", "INTEGER", u"ID de la personne"),
-                                            ("champ", "VARCHAR(500)", u"Nom du champ"),
-                                            ("valeur", "VARCHAR(500)", u"Valeur du champ"),
+            "informations":[          ("IDinfo", "INTEGER PRIMARY KEY AUTOINCREMENT", _(u"ID de la ligne")),
+                                            ("IDindividu", "INTEGER", _(u"ID de la personne")),
+                                            ("champ", "VARCHAR(500)", _(u"Nom du champ")),
+                                            ("valeur", "VARCHAR(500)", _(u"Valeur du champ")),
                                             ]
             }
         try :

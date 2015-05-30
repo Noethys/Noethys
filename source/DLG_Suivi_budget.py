@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import datetime
@@ -121,10 +123,10 @@ class Panel_Donnees(wx.Panel):
         self.ctrl.MAJ() 
         
         # Boutons
-        self.bouton_apercu = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_excel = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_texte = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.ctrl.Apercu, self.bouton_apercu)
@@ -133,10 +135,10 @@ class Panel_Donnees(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl.ExportTexte, self.bouton_texte)
         
         # Properties
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression des données")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer les données")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter au format Excel les données")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter au format texte les données")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression des données"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer les données"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter au format Excel les données"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter au format texte les données"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 2, 5, 5)
@@ -177,16 +179,16 @@ class Panel_Graphe(wx.Panel):
         self.SetColor( (255,255,255) )
 
         # Boutons
-        self.bouton_apercu = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_options = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_options = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.Apercu, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.Options, self.bouton_options)
 
         # Properties
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour ouvrir le visualiseur de graphe pour accéder aux fonctions d'export et d'impression")
-        self.bouton_options.SetToolTipString(u"Cliquez ici pour accéder aux options du graphe")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour ouvrir le visualiseur de graphe pour accéder aux fonctions d'export et d'impression"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options du graphe"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 2, 5, 5)
@@ -230,7 +232,7 @@ class Panel_Graphe(wx.Panel):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 10, u"Afficher les valeurs", u"Afficher les valeurs", wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, 10, _(u"Afficher les valeurs"), _(u"Afficher les valeurs"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_afficher_valeurs, id=10)
         if self.afficher_valeurs == True : item.Check(True)
@@ -277,8 +279,8 @@ class Panel_Graphe(wx.Panel):
 ##        opacity = 0.4
 ##        
 ##        ax = self.figure.add_subplot(111)
-##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=u"Réel")
-##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=u"Budgété")
+##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"Réel"))
+##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"Budgété"))
 ##
 ##        # Formatage des montants sur y
 ##        majorFormatter = FormatStrFormatter(SYMBOLE + u" %d")
@@ -306,8 +308,8 @@ class Panel_Graphe(wx.Panel):
         opacity = 0.4
         
         ax = self.figure.add_subplot(111)
-        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=u"Réel")
-        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=u"Budgété")
+        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"Réel"))
+        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"Budgété"))
 
         # Formatage des montants sur x
         majorFormatter = FormatStrFormatter(u"%d " + SYMBOLE)
@@ -356,34 +358,34 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent 
 
-        intro = u"Sélectionnez un budget dans la liste déroulante pour afficher les données correspondantes."
-        titre = u"Suivi du budget"
+        intro = _(u"Sélectionnez un budget dans la liste déroulante pour afficher les données correspondantes.")
+        titre = _(u"Suivi du budget")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tresorerie.png")
 
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Paramètres")
-        self.label_budget = wx.StaticText(self, wx.ID_ANY, u"Budget :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        self.label_budget = wx.StaticText(self, wx.ID_ANY, _(u"Budget :"))
         self.ctrl_budget = CTRL_Budget(self)
-        self.bouton_budget = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_budget = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-        self.check_periode = wx.CheckBox(self, -1, u"Période personnalisée :")
+        self.check_periode = wx.CheckBox(self, -1, _(u"Période personnalisée :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.bouton_valider_periode = wx.Button(self, -1, u"Valider") 
+        self.bouton_valider_periode = wx.Button(self, -1, _(u"Valider")) 
         
-        self.check_inclure = wx.CheckBox(self, -1, u"Inclure les catégories non budgétées")
+        self.check_inclure = wx.CheckBox(self, -1, _(u"Inclure les catégories non budgétées"))
         
         # Situation
-        self.box_situation_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Situation")
+        self.box_situation_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Situation"))
         self.notebook = wx.Notebook(self, -1, style=wx.BK_BOTTOM)
         
         self.ctrl_donnees = Panel_Donnees(self.notebook)
-        self.notebook.AddPage(self.ctrl_donnees, u"Données")
+        self.notebook.AddPage(self.ctrl_donnees, _(u"Données"))
 
         self.ctrl_graphe = Panel_Graphe(self.notebook)
-        self.notebook.AddPage(self.ctrl_graphe, u"Graphique")
+        self.notebook.AddPage(self.ctrl_graphe, _(u"Graphique"))
 
         # Images des pages
         il = wx.ImageList(16, 16)
@@ -395,8 +397,8 @@ class Dialog(wx.Dialog):
         self.notebook.SetPageImage(1, self.image_graphique)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -416,13 +418,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_budget.SetToolTipString(u"Sélectionnez une budget dans la liste")
-        self.check_periode.SetToolTipString(u"Cochez cette case pour saisir une autre date que celle définie dans le budget")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de période")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de période")
-        self.bouton_valider_periode.SetToolTipString(u"Cliquez ici pour valider les dates saisies")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_budget.SetToolTipString(_(u"Sélectionnez une budget dans la liste"))
+        self.check_periode.SetToolTipString(_(u"Cochez cette case pour saisir une autre date que celle définie dans le budget"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
+        self.bouton_valider_periode.SetToolTipString(_(u"Cliquez ici pour valider les dates saisies"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((770, 680))
 
     def __do_layout(self):

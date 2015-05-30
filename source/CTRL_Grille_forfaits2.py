@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
@@ -18,8 +20,8 @@ import UTILS_Titulaires
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -49,12 +51,12 @@ class CTRL_Forfait(HTL.HyperTreeList):
         
     def Initialisation(self):               
         # Création des colonnes
-        self.AddColumn(u"Prestations")
+        self.AddColumn(_(u"Prestations"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 200)
         
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
 
         # Préparation des données
         dictDonnees = {}
@@ -94,7 +96,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
             # Branche famille
             if len(dictDonnees.keys()) > 1 or len(dictFamille["forfaits"]) > 0 :
                 famillesAffichees = True
-                label = u"Famille %s" % dictTitulaires[IDfamille]["titulairesSansCivilite"]
+                label = _(u"Famille %s") % dictTitulaires[IDfamille]["titulairesSansCivilite"]
                 brancheFamille = self.AppendItem(self.root, label)
                 self.SetPyData(brancheFamille, {"type":"famille", "donnees":IDfamille})
                 self.SetItemBackgroundColour(brancheFamille, (200, 200, 200) )
@@ -176,7 +178,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -185,7 +187,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -193,7 +195,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         if col == -1 or dataItem == None or dataItem["type"] != "forfait" : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -267,7 +269,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
             # Demande la confirmation de la suppression du forfait
             if nbreConso > 0 :
-                dlg2 = wx.MessageDialog(None, u"Souhaitez-vous recalculer les prestations affichées (conseillé) ?", u"Recalcul", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(None, _(u"Souhaitez-vous recalculer les prestations affichées (conseillé) ?"), _(u"Recalcul"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 if dlg2.ShowModal() == wx.ID_YES :
                     self.grille.RecalculerToutesPrestations() 
                 dlg2.Destroy()
@@ -281,7 +283,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         item = self.GetSelection()
         dataItem = self.GetItemPyData(item)
         if dataItem == None or dataItem["type"] != "forfait" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun forfait à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun forfait à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -355,7 +357,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
 
             # Demande la confirmation de la suppression du forfait
             if nbreConso > 0 :
-                dlg2 = wx.MessageDialog(None, u"Souhaitez-vous recalculer les prestations affichées (conseillé) ?", u"Recalcul", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg2 = wx.MessageDialog(None, _(u"Souhaitez-vous recalculer les prestations affichées (conseillé) ?"), _(u"Recalcul"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 if dlg2.ShowModal() == wx.ID_YES :
                     self.grille.RecalculerToutesPrestations() 
                 dlg2.Destroy()
@@ -366,7 +368,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
         item = self.GetSelection()
         dataItem = self.GetItemPyData(item)
         if dataItem == None or dataItem["type"] != "forfait" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun forfait à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun forfait à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -396,13 +398,13 @@ class CTRL_Forfait(HTL.HyperTreeList):
                 nbreConsoNonAffichees += 1
         
         if nbreConsoNonAffichees > 0 :
-            dlg = wx.MessageDialog(self, u"Ce forfait contient %d consommation(s) qui ne sont pas affichées ici. Il n'est donc pas possible de le supprimer maintenant !" % nbreConsoNonAffichees, u"Attention", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce forfait contient %d consommation(s) qui ne sont pas affichées ici. Il n'est donc pas possible de le supprimer maintenant !") % nbreConsoNonAffichees, _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Demande la confirmation de la suppression du forfait
-        dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment supprimer ce forfait ?", u"Suppression", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment supprimer ce forfait ?"), _(u"Suppression"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return
@@ -429,9 +431,9 @@ class CTRL(wx.Panel):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
         
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir un forfait crédit")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le forfait sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le forfait sélectionné dans la liste")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un forfait crédit"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le forfait sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le forfait sélectionné dans la liste"))
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.Ajouter, self.bouton_ajouter)

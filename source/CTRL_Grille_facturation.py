@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 ##import wx.gizmos as gizmos
 import wx.lib.agw.hypertreelist as HTL
 import datetime
@@ -21,17 +23,17 @@ try: import psyco; psyco.full()
 except: pass
 
 DICT_LABELS_CATEGORIES = {
-    "consommation" : (u"Consommation", u"Consommations"),
-    "cotisation" : (u"Cotisation", u"Cotisations"),
-    "autre" : (u"Autre", u"Autres"),
+    "consommation" : (_(u"Consommation"), _(u"Consommations")),
+    "cotisation" : (_(u"Cotisation"), _(u"Cotisations")),
+    "autre" : (_(u"Autre"), _(u"Autres")),
     } # Code : (Singulier, Pluriel)
             
             
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -64,7 +66,7 @@ class CTRL(HTL.HyperTreeList):
     
     def Initialisation(self):               
         # Création des colonnes
-        self.AddColumn(u"Prestations")
+        self.AddColumn(_(u"Prestations"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 195)
         self.AddColumn(u"")
@@ -72,7 +74,7 @@ class CTRL(HTL.HyperTreeList):
         self.SetColumnAlignment(1, wx.ALIGN_RIGHT)
         
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         self.dictBranches = {}
         self.dictBranchesPrestations = {}
@@ -291,7 +293,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Créer une prestation")
+        item = wx.MenuItem(menuPop, 10, _(u"Créer une prestation"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -305,14 +307,14 @@ class CTRL(HTL.HyperTreeList):
             menuPop.AppendSeparator()
 
             # Item Ajouter
-            item = wx.MenuItem(menuPop, 20, u"Modifier")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
             bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier, id=20)
             
             # Item Supprimer
-            item = wx.MenuItem(menuPop, 30, u"Supprimer")
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
             bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)

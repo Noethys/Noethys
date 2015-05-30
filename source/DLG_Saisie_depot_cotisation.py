@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.html as html
 
@@ -29,8 +31,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -90,9 +92,9 @@ class Track(object):
             
         # Type
         if self.typeTypeCotisation == "famille" :
-            self.typeStr = u"Cotisation familiale"
+            self.typeStr = _(u"Cotisation familiale")
         else:
-            self.typeStr = u"Cotisation individuelle"
+            self.typeStr = _(u"Cotisation individuelle")
         
         # Validité
         dateDuJour = datetime.date.today() 
@@ -103,9 +105,9 @@ class Track(object):
         
         # Dépôt
         if self.IDdepot_cotisation == None :
-            self.depotStr = u"Non déposée"
+            self.depotStr = _(u"Non déposée")
         else:
-            self.depotStr = u"Dépôt n°%d" % self.IDdepot_cotisation
+            self.depotStr = _(u"Dépôt n°%d") % self.IDdepot_cotisation
         
         # Etat
         if self.IDdepot_cotisation == None or self.IDdepot_cotisation == 0 :
@@ -124,27 +126,27 @@ class Dialog(wx.Dialog):
         self.IDdepot_cotisation = IDdepot_cotisation
         
         # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
-        self.label_nom = wx.StaticText(self, -1, u"Nom du dépôt :")
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom du dépôt :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"", size=(300, -1))
-        self.label_date = wx.StaticText(self, -1, u"Date du dépôt :")
+        self.label_date = wx.StaticText(self, -1, _(u"Date du dépôt :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
-        self.label_verrouillage = wx.StaticText(self, -1, u"Verrouillage :")
+        self.label_verrouillage = wx.StaticText(self, -1, _(u"Verrouillage :"))
         self.ctrl_verrouillage = wx.CheckBox(self, -1, u"")
-        self.label_observations = wx.StaticText(self, -1, u"Observations :")
+        self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", size=(300, -1), style=wx.TE_MULTILINE)
         
         # Cotisations
-        self.staticbox_cotisations_staticbox = wx.StaticBox(self, -1, u"Cotisations")
+        self.staticbox_cotisations_staticbox = wx.StaticBox(self, -1, _(u"Cotisations"))
         self.ctrl_cotisations = OL_Cotisations_depots.ListView(self, id=-1, inclus=True, selectionPossible=False, name="OL_cotisations_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_infos = CTRL_Infos(self, hauteur=32, couleurFond="#F0FBED" , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.SUNKEN_BORDER)
-        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Cotisation_ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ajouter = CTRL_Bouton_image.CTRL(self, texte=_(u"Ajouter ou retirer des cotisations"), cheminImage="Images/32x32/Cotisation_ajouter.png")
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Imprimer_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -157,11 +159,11 @@ class Dialog(wx.Dialog):
         
         # Importation lors d'une modification
         if self.IDdepot_cotisation != None :
-            self.SetTitle(u"Modification d'un dépôt de cotisations")
+            self.SetTitle(_(u"Modification d'un dépôt de cotisations"))
             self.Importation() 
             self.OnCheckVerrouillage(None)
         else:
-            self.SetTitle(u"Saisie d'un dépôt de cotisations")
+            self.SetTitle(_(u"Saisie d'un dépôt de cotisations"))
             self.ctrl_date.SetDate(datetime.date.today())
         
         # Importation des règlements
@@ -171,15 +173,15 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici un nom")
-        self.ctrl_date.SetToolTipString(u"Saisissez la date de dépôt")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste des cotisations du dépôt")
-        self.ctrl_verrouillage.SetToolTipString(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des cotisations qui le contient !")
-        self.ctrl_observations.SetToolTipString(u"[Optionnel] Saisissez des commentaires")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter ou retirer des cotisations de ce dépôt")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom"))
+        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de dépôt"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste des cotisations du dépôt"))
+        self.ctrl_verrouillage.SetToolTipString(_(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des cotisations qui le contient !"))
+        self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez des commentaires"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter ou retirer des cotisations de ce dépôt"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((890, 600))
 
     def __do_layout(self):
@@ -328,7 +330,7 @@ class Dialog(wx.Dialog):
         # Nom
         nom = self.ctrl_nom.GetValue() 
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom. Exemple : 'Cotisations de Juillet 2010'... !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom. Exemple : 'Cotisations de Juillet 2010'... !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -337,7 +339,7 @@ class Dialog(wx.Dialog):
         # Date
         date = self.ctrl_date.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir saisir de date de dépôt ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de date de dépôt ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -390,11 +392,11 @@ class Dialog(wx.Dialog):
             if track.inclus == True :
                 nbreTotal += 1
         if nbreTotal == 0 : 
-            texte = u"Aucune cotisation"
+            texte = _(u"Aucune cotisation")
         elif nbreTotal == 1 : 
-            texte = u"1 cotisation"
+            texte = _(u"1 cotisation")
         else:
-            texte = u"%d cotisations" % nbreTotal
+            texte = _(u"%d cotisations") % nbreTotal
         self.ctrl_infos.SetLabel(texte)
     
     def OnBoutonImprimer(self, event):               
@@ -402,14 +404,14 @@ class Dialog(wx.Dialog):
         menuPop = wx.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -430,19 +432,19 @@ class Dialog(wx.Dialog):
         listeParametres = []
 
         nom = self.ctrl_nom.GetValue()
-        listeParametres.append(u"Nom du dépôt : %s" % nom)
+        listeParametres.append(_(u"Nom du dépôt : %s") % nom)
         
         date = self.ctrl_date.GetDate() 
         if date == None : 
-            date = u"Non spécifiée"
+            date = _(u"Non spécifiée")
         else :
             date = DateEngFr(str(date))
-        listeParametres.append(u"Date : %s" % date)
+        listeParametres.append(_(u"Date : %s") % date)
         
         if self.ctrl_verrouillage.GetValue() == True :
-            listeParametres.append(u"Dépôt verrouillé")
+            listeParametres.append(_(u"Dépôt verrouillé"))
         else :
-            listeParametres.append(u"Dépôt déverrouillé")
+            listeParametres.append(_(u"Dépôt déverrouillé"))
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

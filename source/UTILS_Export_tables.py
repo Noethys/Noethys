@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import shelve
 import os
 import cStringIO
@@ -156,7 +158,7 @@ class Importer():
     
     def DemandeChoix(self):
         listeContenu = self.GetNomContenu() 
-        dlg = wx.MultiChoiceDialog(None, u"Sélectionnez le contenu à importer :", u"Importation", listeContenu)
+        dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez le contenu à importer :"), _(u"Importation"), listeContenu)
         dlg.SetSelections(range(0, len(listeContenu)))
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
@@ -174,7 +176,7 @@ class Importer():
         return listeNoms
     
     def Ajouter(self, index=0):
-        dlgAttente = PBI.PyBusyInfo(u"Merci de patienter durant l'opération...", parent=None, title=u"Patientez...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Merci de patienter durant l'opération..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         # Importation
         self.dictID = {}
@@ -275,7 +277,7 @@ if __name__ == "__main__":
     
     print "Exportation..."
     exportation = Exporter(categorie="activite")
-    exportation.Ajouter(ID=2, nom=u"Activité1")
+    exportation.Ajouter(ID=2, nom=_(u"Activité1"))
     exportation.Enregistrer(fichier="Temp/test.npa")
     
     print "Importation..."

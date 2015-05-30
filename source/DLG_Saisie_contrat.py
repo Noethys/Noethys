@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import CTRL_Saisie_date
 import OL_Contrats_periodes
@@ -76,7 +78,7 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
             listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
             listeNomsCategories = []
             for IDcategorie_tarif in listeCategoriesTarifs :
-                nomCategorieTarif = u"Categorie de tarif inconnue"
+                nomCategorieTarif = _(u"Categorie de tarif inconnue")
                 if dictCategoriesTarifs.has_key(IDcategorie_tarif) :
                     nomCategorieTarif = dictCategoriesTarifs[IDcategorie_tarif]
                 listeNomsCategories.append(nomCategorieTarif)
@@ -100,10 +102,10 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
             nom = dictTarif["nomTarif"]
             date_debut = dictTarif["date_debut"]
             date_fin = dictTarif["date_fin"]
-            if date_debut == None and date_fin == None : label = u"%s (Sans période de validité)" % nom
-            if date_debut == None and date_fin != None : label = u"%s (Jusqu'au %s)" % (nom, UTILS_Dates.DateDDEnFr(date_fin))
-            if date_debut != None and date_fin == None : label = u"%s (A partir du %s)" % (nom, UTILS_Dates.DateDDEnFr(date_debut))
-            if date_debut != None and date_fin != None : label = u"%s (Du %s au %s)" % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
+            if date_debut == None and date_fin == None : label = _(u"%s (Sans période de validité)") % nom
+            if date_debut == None and date_fin != None : label = _(u"%s (Jusqu'au %s)") % (nom, UTILS_Dates.DateDDEnFr(date_fin))
+            if date_debut != None and date_fin == None : label = _(u"%s (A partir du %s)") % (nom, UTILS_Dates.DateDDEnFr(date_debut))
+            if date_debut != None and date_fin != None : label = _(u"%s (Du %s au %s)") % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
             
             description = dictTarif["nomPrecisTarif"] + " --- " + " ou ".join(dictTarif["listeNomsCategories"])
             listeItems.append({"label" : label, "description" : description})
@@ -166,41 +168,41 @@ class Dialog(wx.Dialog):
             self.IDactivite, self.nomActivite, self.IDcompte_payeur, self.IDfamille, self.IDcategorie_tarif, self.IDgroupe, self.nomGroupe = listeDonnees[0]
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
         
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom du modèle :")
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom du modèle :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
 
         self.label_nom.Show(self.mode_modele)
         self.ctrl_nom.Show(self.mode_modele)
 
-        self.label_dates = wx.StaticText(self, wx.ID_ANY, u"Dates du contrat :")
+        self.label_dates = wx.StaticText(self, wx.ID_ANY, _(u"Dates du contrat :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
-        self.label_observations = wx.StaticText(self, wx.ID_ANY, u"Observations :")
+        self.label_observations = wx.StaticText(self, wx.ID_ANY, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
 
-        self.label_tarif = wx.StaticText(self, wx.ID_ANY, u"Tarif de base :")
+        self.label_tarif = wx.StaticText(self, wx.ID_ANY, _(u"Tarif de base :"))
         self.ctrl_tarif = CTRL_Tarif(self, IDactivite=self.IDactivite, IDcategorie_tarif=self.IDcategorie_tarif)
 
         # Périodes
-        self.box_periodes_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Périodes de facturation")
+        self.box_periodes_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Périodes de facturation"))
 
         self.listviewAvecFooter = OL_Contrats_periodes.ListviewAvecFooter(self, kwargs={"IDactivite" : self.IDactivite}) 
         self.ctrl_periodes = self.listviewAvecFooter.GetListview()
         
-        self.bouton_assistant = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Magique.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ajouter_periode = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier_periode = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_supprimer_periode = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_assistant = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Magique.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ajouter_periode = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier_periode = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer_periode = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_consommations = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Generer_conso.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_consommations = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer des consommations"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -218,38 +220,38 @@ class Dialog(wx.Dialog):
         if self.mode_modele == True :
             # Modèle de contrat
             if self.IDmodele == None :
-                self.SetTitle(u"Saisie d'un modèle de contrat pour l'activité '%s'" % self.nomActivite)
+                self.SetTitle(_(u"Saisie d'un modèle de contrat pour l'activité '%s'") % self.nomActivite)
             else :
-                self.SetTitle(u"Modification d'un modèle de contrat pour l'activité '%s'" % self.nomActivite)
+                self.SetTitle(_(u"Modification d'un modèle de contrat pour l'activité '%s'") % self.nomActivite)
                 self.Importation_modele() 
         
         else :
             # Contrat
             if self.IDcontrat == None :
-                self.SetTitle(u"Saisie d'un contrat pour l'activité '%s'" % self.nomActivite)
+                self.SetTitle(_(u"Saisie d'un contrat pour l'activité '%s'") % self.nomActivite)
                 if copie != None :
                     self.Importation(IDcontrat=copie, mode_copie=True, copie_conso=copie_conso) 
                 if self.IDmodele != None :
                     self.Importation_modele() 
             else :
-                self.SetTitle(u"Modification d'un contrat pour l'activité '%s'" % self.nomActivite)
+                self.SetTitle(_(u"Modification d'un contrat pour l'activité '%s'") % self.nomActivite)
                 self.Importation(IDcontrat=self.IDcontrat) 
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce modèle de contrat")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de contrat")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de contrat")
-        self.ctrl_observations.SetToolTipString(u"Saisissez des observations sur ce contrat")
-        self.ctrl_tarif.SetToolTipString(u"Sélectionnez un tarif de base dans cette liste des tarifs de type 'forfait crédit' disponibles")
-        self.bouton_assistant.SetToolTipString(u"Cliquez ici pour générer automatiquement les périodes")
-        self.bouton_ajouter_periode.SetToolTipString(u"Cliquez ici pour ajouter une période")
-        self.bouton_modifier_periode.SetToolTipString(u"Cliquez ici pour modifier la période sélectionnée")
-        self.bouton_supprimer_periode.SetToolTipString(u"Cliquez ici pour supprimer la période sélectionnée")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
-        self.bouton_consommations.SetToolTipString(u"Cliquez ici pour générer automatiquement des consommations")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle de contrat"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de contrat"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de contrat"))
+        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations sur ce contrat"))
+        self.ctrl_tarif.SetToolTipString(_(u"Sélectionnez un tarif de base dans cette liste des tarifs de type 'forfait crédit' disponibles"))
+        self.bouton_assistant.SetToolTipString(_(u"Cliquez ici pour générer automatiquement les périodes"))
+        self.bouton_ajouter_periode.SetToolTipString(_(u"Cliquez ici pour ajouter une période"))
+        self.bouton_modifier_periode.SetToolTipString(_(u"Cliquez ici pour modifier la période sélectionnée"))
+        self.bouton_supprimer_periode.SetToolTipString(_(u"Cliquez ici pour supprimer la période sélectionnée"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_consommations.SetToolTipString(_(u"Cliquez ici pour générer automatiquement des consommations"))
         self.SetMinSize((800, 650))
 
     def __do_layout(self):
@@ -431,7 +433,7 @@ class Dialog(wx.Dialog):
         """ Sauvegarde des données """
         nom = self.ctrl_nom.GetValue()
         if self.mode_modele == True and nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner le nom du modèle !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le nom du modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus() 
@@ -439,7 +441,7 @@ class Dialog(wx.Dialog):
             
         date_debut = self.ctrl_date_debut.GetDate() 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de début !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
@@ -447,21 +449,21 @@ class Dialog(wx.Dialog):
         
         date_fin = self.ctrl_date_fin.GetDate()
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, u"La date de début ne doit pas être supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne doit pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         IDtarif = self.ctrl_tarif.GetID()
         if IDtarif == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un tarif dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un tarif dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -471,7 +473,7 @@ class Dialog(wx.Dialog):
         
         listePeriodes = self.ctrl_periodes.GetDonnees() 
         if len(listePeriodes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir au moins une période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -479,12 +481,12 @@ class Dialog(wx.Dialog):
         # Vérifie que les périodes sont bien dans la période de validité du contrat
         for dictPeriode in listePeriodes :
             if dictPeriode["date_debut"] < date_debut :
-                dlg = wx.MessageDialog(self, u"La période '%s' comporte une date de début antérieure à la date de début du contrat !" % dictPeriode["label_prestation"], u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La période '%s' comporte une date de début antérieure à la date de début du contrat !") % dictPeriode["label_prestation"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if dictPeriode["date_fin"] > date_fin :
-                dlg = wx.MessageDialog(self, u"La période '%s' comporte une date de fin supérieure à la date de fin du contrat !" % dictPeriode["label_prestation"], u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La période '%s' comporte une date de fin supérieure à la date de fin du contrat !") % dictPeriode["label_prestation"], _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -690,7 +692,7 @@ class Dialog(wx.Dialog):
                     
                     # Vérifie si unité ouverte
                     if dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
-                        listeAnomalies.append(u"%s : Unité %s fermée pour le groupe %s" % (dateFr, dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
+                        listeAnomalies.append(_(u"%s : Unité %s fermée pour le groupe %s") % (dateFr, dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
                         valide = False
                     
                     # Recherche si pas d'incompatibilités avec les conso déjà saisies
@@ -700,23 +702,23 @@ class Dialog(wx.Dialog):
                             nomUnite2 = dictUnites[dictConsoTemp["IDunite"]]["nom"]
                             
                             if self.VerifieCompatibilitesUnites(dictUnites, dictConsoTemp["IDunite"], dictConso["IDunite"]) == False :
-                                listeAnomalies.append(u"%s : Unité %s incompatible avec unité %s déjà présente" % (dateFr, nomUnite1, nomUnite2))
+                                listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
                                 valide = False
                                 
                             if dictConso["IDunite"] == dictConsoTemp["IDunite"] :
                                 if dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
                                     if dictConso["heure_fin"] > dictConsoTemp["heure_debut"] and dictConso["heure_debut"] < dictConsoTemp["heure_fin"] :
-                                        listeAnomalies.append(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique" % (dateFr, nomUnite1))
+                                        listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
                                         valide = False
                                 else :
-                                    listeAnomalies.append(u"%s : Unité %s déjà présente" % (dateFr, nomUnite1))
+                                    listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
                                     valide = False
                     
         # Signalement des anomalies
         if len(listeAnomalies) :
-            message1 = u"Validation du contrat impossible.\n\nLes %d anomalies suivantes ont été trouvées :" % len(listeAnomalies)
+            message1 = _(u"Validation du contrat impossible.\n\nLes %d anomalies suivantes ont été trouvées :") % len(listeAnomalies)
             message2 = u"\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption = u"Génération des consommations", msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : u"Ok"})
+            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération des consommations"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             return False
@@ -752,13 +754,13 @@ class Dialog(wx.Dialog):
 ##        for dictPeriode in listePeriodes :
 ##            for dictConso in dictPeriode["listeConso"] :
 ##                if dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
-##                    listeAnomalies.append(u"%s : Unité %s fermée pour le groupe %s" % (UTILS_Dates.DateDDEnFr(dictConso["date"]), dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
+##                    listeAnomalies.append(_(u"%s : Unité %s fermée pour le groupe %s") % (UTILS_Dates.DateDDEnFr(dictConso["date"]), dictUnites[dictConso["IDunite"]]["nom"], self.nomGroupe))
 ##
 ##        # Signalement des anomalies
 ##        if len(listeAnomalies) :
-##            message1 = u"Impossible de créer ce contrat : Les %d anomalies suivantes ont été trouvées :" % len(listeAnomalies)
+##            message1 = _(u"Impossible de créer ce contrat : Les %d anomalies suivantes ont été trouvées :") % len(listeAnomalies)
 ##            message2 = u"\n".join(listeAnomalies)
-##            dlg = dialogs.MultiMessageDialog(self, message1, caption = u"Génération de consommations", msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : u"Ok"})
+##            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération de consommations"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Ok")})
 ##            reponse = dlg.ShowModal() 
 ##            dlg.Destroy() 
 ##            return False
@@ -771,17 +773,17 @@ class Dialog_selection_activite(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
-        self.SetTitle(u"Sélection d'une activité")
+        self.SetTitle(_(u"Sélection d'une activité"))
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, u"Sélectionnez l'activité pour laquelle vous souhaitez créer un modèle de contrat puis cliquez sur OK :")
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Sélectionnez l'activité pour laquelle vous souhaitez créer un modèle de contrat puis cliquez sur OK :"))
         self.ctrl_activites = OL_Activites.ListView(self, modificationAutorisee=False, id=-1, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_activites.SetMinSize((150, 50))
         self.ctrl_activites.MAJ() 
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -791,9 +793,9 @@ class Dialog_selection_activite(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((600, 400))
 
     def __do_layout(self):
@@ -827,7 +829,7 @@ class Dialog_selection_activite(wx.Dialog):
 
     def OnBoutonOk(self, event):  
         if len(self.ctrl_activites.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une activité dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

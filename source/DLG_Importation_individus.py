@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html
 import wx.lib.filebrowsebutton as filebrowse
 
@@ -33,8 +35,8 @@ import UTILS_Parametres
 from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 TYPES_IMPORTATION = [
-    {"code":"familles", "label":u"Familles", "infos":u"Sélectionnez ce type d'importation si votre fichier de données comporte une famille par ligne.\nNoethys créera alors une fiche famille pour chaque ligne ainsi que les fiches individuelles correspondantes."},
-    {"code":"individus", "label":u"Individus", "infos":u"Sélectionnez ce type d'importation si votre fichier de données comporte un individu par ligne.\nNoethys créera alors pour chaque individu une fiche individuelle non rattachée."},
+    {"code":"familles", "label":_(u"Familles"), "infos":_(u"Sélectionnez ce type d'importation si votre fichier de données comporte une famille par ligne.\nNoethys créera alors une fiche famille pour chaque ligne ainsi que les fiches individuelles correspondantes.")},
+    {"code":"individus", "label":_(u"Individus"), "infos":_(u"Sélectionnez ce type d'importation si votre fichier de données comporte un individu par ligne.\nNoethys créera alors pour chaque individu une fiche individuelle non rattachée.")},
     ]
 
 
@@ -42,105 +44,105 @@ DICT_COLONNES = {
 
     "familles" : [
 
-                        {"code":"famille_rue_resid", "label":u"Rue de résidence de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemple : 10 rue des oiseaux."},
-                        {"code":"famille_cp_resid", "label":u"CP ville de résidence de la famille", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"famille_ville_resid", "label":u"Ville de résidence de la famille", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"famille_secteur", "label":u"Secteur de résidence de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemples : Brest Nord..."},
-                        {"code":"famille_tel_domicile", "label":u"Numéro de tél. du domicile famille", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"famille_caisse", "label":u"Nom de caisse de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemples : CAF, MSA (Doit être présent dans base)."},
-                        {"code":"famille_num_allocataire", "label":u"Numéro d'allocataire de la famille", "format":"texte", "obligatoire":False, "infos":u"Exemple : 7798769X."},
-                        {"code":"famille_allocataire", "label":u"Allocataire titulaire de la famille", "format":"texte", "obligatoire":False, "infos":u"Valeurs possibles = Père, P, Mère, M."},
-                        {"code":"famille_memo", "label":u"Mémo de la famille", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"famille_rue_resid", "label":_(u"Rue de résidence de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 10 rue des oiseaux.")},
+                        {"code":"famille_cp_resid", "label":_(u"CP ville de résidence de la famille"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"famille_ville_resid", "label":_(u"Ville de résidence de la famille"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"famille_secteur", "label":_(u"Secteur de résidence de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Brest Nord...")},
+                        {"code":"famille_tel_domicile", "label":_(u"Numéro de tél. du domicile famille"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"famille_caisse", "label":_(u"Nom de caisse de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : CAF, MSA (Doit être présent dans base).")},
+                        {"code":"famille_num_allocataire", "label":_(u"Numéro d'allocataire de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 7798769X.")},
+                        {"code":"famille_allocataire", "label":_(u"Allocataire titulaire de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Valeurs possibles = Père, P, Mère, M.")},
+                        {"code":"famille_memo", "label":_(u"Mémo de la famille"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"pere_nom", "label":u"Nom de famille du père", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"pere_prenom", "label":u"Prénom du père", "format":"texte", "obligatoire":False, "infos":u"Exemples : Gérard, Xavier..."},
-                        {"code":"pere_date_naiss", "label":u"Date de naissance du père", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 01/02/2003)"},
-                        {"code":"pere_cp_naiss", "label":u"CP de la ville de naissance du père", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"pere_ville_naiss", "label":u"Ville de naissance du père", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"pere_tel_mobile", "label":u"Numéro de mobile du père", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"pere_email", "label":u"Email du père", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"pere_categorie", "label":u"Catégorie socio-pro. du père", "format":"texte", "obligatoire":False, "infos":u"Exemple : Employé (Doit être présent dans base)"},
-                        {"code":"pere_profession", "label":u"Profession du père", "format":"texte", "obligatoire":False, "infos":u"Exemples : Charpentier, Secrétaire..."},
-                        {"code":"pere_employeur", "label":u"Employeur du père", "format":"texte", "obligatoire":False, "infos":u"Exemples : SNCF, France Télécom..."},
-                        {"code":"pere_tel_travail", "label":u"Numéro de travail du père", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"pere_memo", "label":u"Mémo du père", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"pere_nom", "label":_(u"Nom de famille du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"pere_prenom", "label":_(u"Prénom du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Gérard, Xavier...")},
+                        {"code":"pere_date_naiss", "label":_(u"Date de naissance du père"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
+                        {"code":"pere_cp_naiss", "label":_(u"CP de la ville de naissance du père"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"pere_ville_naiss", "label":_(u"Ville de naissance du père"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"pere_tel_mobile", "label":_(u"Numéro de mobile du père"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"pere_email", "label":_(u"Email du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"pere_categorie", "label":_(u"Catégorie socio-pro. du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : Employé (Doit être présent dans base)")},
+                        {"code":"pere_profession", "label":_(u"Profession du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, Secrétaire...")},
+                        {"code":"pere_employeur", "label":_(u"Employeur du père"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France Télécom...")},
+                        {"code":"pere_tel_travail", "label":_(u"Numéro de travail du père"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"pere_memo", "label":_(u"Mémo du père"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"mere_nom", "label":u"Nom de famille de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"mere_nom_jfille", "label":u"Nom de jeune fille de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"mere_prenom", "label":u"Prénom de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemples : Marie, Sophie..."},
-                        {"code":"mere_date_naiss", "label":u"Date de naissance de la mère", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 01/02/2003)"},
-                        {"code":"mere_cp_naiss", "label":u"CP de la ville de naissance de la mère", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"mere_ville_naiss", "label":u"Ville de naissance de la mère", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"mere_tel_mobile", "label":u"Numéro de mobile de la mère", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"mere_email", "label":u"Email de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"mere_categorie", "label":u"Catégorie socio-pro. de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemple : Employé (Doit être présent dans base)"},
-                        {"code":"mere_profession", "label":u"Profession de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemples : Charpentier, Secrétaire..."},
-                        {"code":"mere_employeur", "label":u"Employeur de la mère", "format":"texte", "obligatoire":False, "infos":u"Exemples : SNCF, France Télécom..."},
-                        {"code":"mere_tel_travail", "label":u"Numéro de travail de la mère", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"mere_memo", "label":u"Mémo de la mère", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"mere_nom", "label":_(u"Nom de famille de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"mere_nom_jfille", "label":_(u"Nom de jeune fille de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"mere_prenom", "label":_(u"Prénom de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Marie, Sophie...")},
+                        {"code":"mere_date_naiss", "label":_(u"Date de naissance de la mère"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
+                        {"code":"mere_cp_naiss", "label":_(u"CP de la ville de naissance de la mère"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"mere_ville_naiss", "label":_(u"Ville de naissance de la mère"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"mere_tel_mobile", "label":_(u"Numéro de mobile de la mère"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"mere_email", "label":_(u"Email de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"mere_categorie", "label":_(u"Catégorie socio-pro. de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : Employé (Doit être présent dans base)")},
+                        {"code":"mere_profession", "label":_(u"Profession de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, Secrétaire...")},
+                        {"code":"mere_employeur", "label":_(u"Employeur de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France Télécom...")},
+                        {"code":"mere_tel_travail", "label":_(u"Numéro de travail de la mère"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"mere_memo", "label":_(u"Mémo de la mère"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
                         
-                        {"code":"enfant1_civilite", "label":u"Civilité de l'enfant 1", "format":"texte", "obligatoire":False, "infos":u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille."},
-                        {"code":"enfant1_nom", "label":u"Nom de famille de l'enfant 1", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"enfant1_prenom", "label":u"Prénom de l'enfant 1", "format":"texte", "obligatoire":False, "infos":u"Exemples : Kévin, Sophie..."},
-                        {"code":"enfant1_date_naiss", "label":u"Date de naissance de l'enfant 1", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 01/02/2003)"},
-                        {"code":"enfant1_cp_naiss", "label":u"CP de la ville de naiss. de l'enfant 1", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"enfant1_ville_naiss", "label":u"Ville de naissance de l'enfant 1", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"enfant1_tel_mobile", "label":u"Numéro de mobile de l'enfant 1", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"enfant1_email", "label":u"Email de l'enfant 1", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"enfant1_memo", "label":u"Mémo de l'enfant 1", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"enfant1_civilite", "label":_(u"Civilité de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant1_nom", "label":_(u"Nom de famille de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"enfant1_prenom", "label":_(u"Prénom de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant1_date_naiss", "label":_(u"Date de naissance de l'enfant 1"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
+                        {"code":"enfant1_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 1"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"enfant1_ville_naiss", "label":_(u"Ville de naissance de l'enfant 1"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"enfant1_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 1"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"enfant1_email", "label":_(u"Email de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"enfant1_memo", "label":_(u"Mémo de l'enfant 1"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"enfant2_civilite", "label":u"Civilité de l'enfant 2", "format":"texte", "obligatoire":False, "infos":u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille."},
-                        {"code":"enfant2_nom", "label":u"Nom de famille de l'enfant 2", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"enfant2_prenom", "label":u"Prénom de l'enfant 2", "format":"texte", "obligatoire":False, "infos":u"Exemples : Kévin, Sophie..."},
-                        {"code":"enfant2_date_naiss", "label":u"Date de naissance de l'enfant 2", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 02/02/2003)"},
-                        {"code":"enfant2_cp_naiss", "label":u"CP de la ville de naiss. de l'enfant 2", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"enfant2_ville_naiss", "label":u"Ville de naissance de l'enfant 2", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"enfant2_tel_mobile", "label":u"Numéro de mobile de l'enfant 2", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 02.02.03.04.05.)"},
-                        {"code":"enfant2_email", "label":u"Email de l'enfant 2", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"enfant2_memo", "label":u"Mémo de l'enfant 2", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"enfant2_civilite", "label":_(u"Civilité de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant2_nom", "label":_(u"Nom de famille de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"enfant2_prenom", "label":_(u"Prénom de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant2_date_naiss", "label":_(u"Date de naissance de l'enfant 2"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 02/02/2003)")},
+                        {"code":"enfant2_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 2"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"enfant2_ville_naiss", "label":_(u"Ville de naissance de l'enfant 2"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"enfant2_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 2"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 02.02.03.04.05.)")},
+                        {"code":"enfant2_email", "label":_(u"Email de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"enfant2_memo", "label":_(u"Mémo de l'enfant 2"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"enfant3_civilite", "label":u"Civilité de l'enfant 3", "format":"texte", "obligatoire":False, "infos":u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille."},
-                        {"code":"enfant3_nom", "label":u"Nom de famille de l'enfant 3", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"enfant3_prenom", "label":u"Prénom de l'enfant 3", "format":"texte", "obligatoire":False, "infos":u"Exemples : Kévin, Sophie..."},
-                        {"code":"enfant3_date_naiss", "label":u"Date de naissance de l'enfant 3", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 03/02/2003)"},
-                        {"code":"enfant3_cp_naiss", "label":u"CP de la ville de naiss. de l'enfant 3", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"enfant3_ville_naiss", "label":u"Ville de naissance de l'enfant 3", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"enfant3_tel_mobile", "label":u"Numéro de mobile de l'enfant 3", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 03.02.03.04.05.)"},
-                        {"code":"enfant3_email", "label":u"Email de l'enfant 3", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"enfant3_memo", "label":u"Mémo de l'enfant 3", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"enfant3_civilite", "label":_(u"Civilité de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant3_nom", "label":_(u"Nom de famille de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"enfant3_prenom", "label":_(u"Prénom de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant3_date_naiss", "label":_(u"Date de naissance de l'enfant 3"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 03/02/2003)")},
+                        {"code":"enfant3_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 3"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"enfant3_ville_naiss", "label":_(u"Ville de naissance de l'enfant 3"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"enfant3_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 3"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 03.02.03.04.05.)")},
+                        {"code":"enfant3_email", "label":_(u"Email de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"enfant3_memo", "label":_(u"Mémo de l'enfant 3"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
-                        {"code":"enfant4_civilite", "label":u"Civilité de l'enfant 4", "format":"texte", "obligatoire":False, "infos":u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille."},
-                        {"code":"enfant4_nom", "label":u"Nom de famille de l'enfant 4", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"enfant4_prenom", "label":u"Prénom de l'enfant 4", "format":"texte", "obligatoire":False, "infos":u"Exemples : Kévin, Sophie..."},
-                        {"code":"enfant4_date_naiss", "label":u"Date de naissance de l'enfant 4", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 04/02/2003)"},
-                        {"code":"enfant4_cp_naiss", "label":u"CP de la ville de naiss. de l'enfant 4", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"enfant4_ville_naiss", "label":u"Ville de naissance de l'enfant 4", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"enfant4_tel_mobile", "label":u"Numéro de mobile de l'enfant 4", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 04.02.03.04.05.)"},
-                        {"code":"enfant4_email", "label":u"Email de l'enfant 4", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"enfant4_memo", "label":u"Mémo de l'enfant 4", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"enfant4_civilite", "label":_(u"Civilité de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Garçon = M, m, Mr, M., Masculin, H, h, Homme, G, g, Garçon.<BR>Fille = F, f, Féminin, Femme, Fille.")},
+                        {"code":"enfant4_nom", "label":_(u"Nom de famille de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"enfant4_prenom", "label":_(u"Prénom de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"enfant4_date_naiss", "label":_(u"Date de naissance de l'enfant 4"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 04/02/2003)")},
+                        {"code":"enfant4_cp_naiss", "label":_(u"CP de la ville de naiss. de l'enfant 4"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"enfant4_ville_naiss", "label":_(u"Ville de naissance de l'enfant 4"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"enfant4_tel_mobile", "label":_(u"Numéro de mobile de l'enfant 4"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 04.02.03.04.05.)")},
+                        {"code":"enfant4_email", "label":_(u"Email de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"enfant4_memo", "label":_(u"Mémo de l'enfant 4"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
 
                         ],
 
     "individus" : [
-                        {"code":"individu_civilite", "label":u"Civilité", "format":"texte", "obligatoire":True, "infos":u"Monsieur = M, m, Mr, M., Monsieur, H, h, homme.<BR>Melle = Melle, Mademoiselle.<BR>Mme = Mme, Madame, Femme.<BR>Garçon = G, g, Garçon.<BR>Fille = F, f, Fille.<BR>Autres = Collectivité, Association, Organisme, Entreprise."},
-                        {"code":"individu_nom", "label":u"Nom de famille", "format":"texte", "obligatoire":True, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"individu_nom_jfille", "label":u"Nom de jeune fille", "format":"texte", "obligatoire":False, "infos":u"Exemples : DUPOND, DURAND..."},
-                        {"code":"individu_prenom", "label":u"Prénom", "format":"texte", "obligatoire":False, "infos":u"Exemples : Kévin, Sophie..."},
-                        {"code":"individu_date_naiss", "label":u"Date de naissance", "format":"date", "obligatoire":False, "infos":u"Format : jj/mm/aaa (Exemple : 01/02/2003)"},
-                        {"code":"individu_cp_naiss", "label":u"Code postal de la ville de naissance", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"individu_ville_naiss", "label":u"Ville de naissance", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"individu_rue_resid", "label":u"Rue de résidence", "format":"texte", "obligatoire":False, "infos":u"Exemple : 10 rue des oiseaux."},
-                        {"code":"individu_cp_resid", "label":u"Code postal de la ville de résidence", "format":"codepostal", "obligatoire":False, "infos":u"Format : xxxxx (Exemple : 29870)"},
-                        {"code":"individu_ville_resid", "label":u"Ville de résidence", "format":"ville", "obligatoire":False, "infos":u"Exemples : LANNILIS, BREST..."},
-                        {"code":"individu_secteur", "label":u"Secteur de résidence", "format":"texte", "obligatoire":False, "infos":u"Exemples : Brest Nord..."},
-                        {"code":"individu_tel_domicile", "label":u"Numéro de domicile", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"individu_tel_mobile", "label":u"Numéro de mobile", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"individu_email", "label":u"Email", "format":"texte", "obligatoire":False, "infos":u"Exemple : monadressemail@test.com."},
-                        {"code":"individu_categorie", "label":u"Catégorie socio-professionnelle", "format":"texte", "obligatoire":False, "infos":u"Exemple : Employé (Doit être présent dans base)"},
-                        {"code":"individu_profession", "label":u"Profession", "format":"texte", "obligatoire":False, "infos":u"Exemples : Charpentier, Secrétaire..."},
-                        {"code":"individu_employeur", "label":u"Employeur", "format":"texte", "obligatoire":False, "infos":u"Exemples : SNCF, France Télécom..."},
-                        {"code":"individu_tel_travail", "label":u"Numéro de travail", "format":"telephone", "obligatoire":False, "infos":u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)"},
-                        {"code":"individu_memo", "label":u"Mémo", "format":"texte", "obligatoire":False, "infos":u"Texte libre."},
+                        {"code":"individu_civilite", "label":_(u"Civilité"), "format":"texte", "obligatoire":True, "infos":_(u"Monsieur = M, m, Mr, M., Monsieur, H, h, homme.<BR>Melle = Melle, Mademoiselle.<BR>Mme = Mme, Madame, Femme.<BR>Garçon = G, g, Garçon.<BR>Fille = F, f, Fille.<BR>Autres = Collectivité, Association, Organisme, Entreprise.")},
+                        {"code":"individu_nom", "label":_(u"Nom de famille"), "format":"texte", "obligatoire":True, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"individu_nom_jfille", "label":_(u"Nom de jeune fille"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : DUPOND, DURAND...")},
+                        {"code":"individu_prenom", "label":_(u"Prénom"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Kévin, Sophie...")},
+                        {"code":"individu_date_naiss", "label":_(u"Date de naissance"), "format":"date", "obligatoire":False, "infos":_(u"Format : jj/mm/aaa (Exemple : 01/02/2003)")},
+                        {"code":"individu_cp_naiss", "label":_(u"Code postal de la ville de naissance"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"individu_ville_naiss", "label":_(u"Ville de naissance"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"individu_rue_resid", "label":_(u"Rue de résidence"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : 10 rue des oiseaux.")},
+                        {"code":"individu_cp_resid", "label":_(u"Code postal de la ville de résidence"), "format":"codepostal", "obligatoire":False, "infos":_(u"Format : xxxxx (Exemple : 29870)")},
+                        {"code":"individu_ville_resid", "label":_(u"Ville de résidence"), "format":"ville", "obligatoire":False, "infos":_(u"Exemples : LANNILIS, BREST...")},
+                        {"code":"individu_secteur", "label":_(u"Secteur de résidence"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Brest Nord...")},
+                        {"code":"individu_tel_domicile", "label":_(u"Numéro de domicile"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"individu_tel_mobile", "label":_(u"Numéro de mobile"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"individu_email", "label":_(u"Email"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : monadressemail@test.com.")},
+                        {"code":"individu_categorie", "label":_(u"Catégorie socio-professionnelle"), "format":"texte", "obligatoire":False, "infos":_(u"Exemple : Employé (Doit être présent dans base)")},
+                        {"code":"individu_profession", "label":_(u"Profession"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : Charpentier, Secrétaire...")},
+                        {"code":"individu_employeur", "label":_(u"Employeur"), "format":"texte", "obligatoire":False, "infos":_(u"Exemples : SNCF, France Télécom...")},
+                        {"code":"individu_tel_travail", "label":_(u"Numéro de travail"), "format":"telephone", "obligatoire":False, "infos":_(u"Format xx.xx.xx.xx.xx. (Exemple : 01.02.03.04.05.)")},
+                        {"code":"individu_memo", "label":_(u"Mémo"), "format":"texte", "obligatoire":False, "infos":_(u"Texte libre.")},
                         ],
 
     }
@@ -170,7 +172,7 @@ class Importation_Excel() :
             feuille = self.classeur.sheet_by_index(0)
         else :
             # Demande la feuille à ouvrir
-            dlg = wx.SingleChoiceDialog(None, u"Veuillez sélectionner la feuille du classeur qui comporte les données à importer :", u"Sélection d'une feuille", feuilles, wx.CHOICEDLG_STYLE)
+            dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner la feuille du classeur qui comporte les données à importer :"), _(u"Sélection d'une feuille"), feuilles, wx.CHOICEDLG_STYLE)
             if dlg.ShowModal() == wx.ID_OK:
                 feuille = self.classeur.sheet_by_index(dlg.GetSelection())
             dlg.Destroy()
@@ -207,9 +209,9 @@ class Importation_CSV() :
         self.fichierValide = True
         
         # Demande le caractère de séparation
-        listeLabels = [u"Virgule (,)", u"Point-virgule (;)", u"Tabulation"]
+        listeLabels = [_(u"Virgule (,)"), _(u"Point-virgule (;)"), _(u"Tabulation")]
         listeSeparations = [",", ";", "\t"]
-        dlg = wx.SingleChoiceDialog(None, u"Veuillez sélectionner le caractère de séparation utilisé dans ce fichier :", u"Sélection du caractère de séparation", listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner le caractère de séparation utilisé dans ce fichier :"), _(u"Sélection du caractère de séparation"), listeLabels, wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             separation = listeSeparations[dlg.GetSelection()]
         else :
@@ -279,7 +281,7 @@ class CTRL_Type_donnee(wx.Choice):
         UTILS_Linux.AdaptePolice(self)
 
         self.MAJ()
-        self.SetToolTipString(u"Sélectionnez le type de donnée qui se trouve dans cette colonne")
+        self.SetToolTipString(_(u"Sélectionnez le type de donnée qui se trouve dans cette colonne"))
         
     def MAJ(self):
         index = 0
@@ -337,16 +339,16 @@ class CTRL_Colonnes(ULC.UltimateListCtrl):
         
         # Création des colonnes
         largeurColonneDonnee = 300
-        self.InsertColumn(0, u"Colonne", width=100)
-        self.InsertColumn(1, u"Aperçu des données", width=250)
-        self.InsertColumn(2, u"Type de donnée", width=largeurColonneDonnee)
+        self.InsertColumn(0, _(u"Colonne"), width=100)
+        self.InsertColumn(1, _(u"Aperçu des données"), width=250)
+        self.InsertColumn(2, _(u"Type de donnée"), width=largeurColonneDonnee)
 
         # Création des lignes
         index = 0
         for colonne in self.listeColonnes :
             
             # Colonne Nom de colonne
-            label = u" Colonne %d" % (index+1)
+            label = _(u" Colonne %d") % (index+1)
             self.InsertStringItem(index, label, it_kind=1)
             self.SetItemPyData(index, index)
             
@@ -544,7 +546,7 @@ class CTRL_Donnees(FastObjectListView):
         
         self.SetColumns(listeColonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune donnée")
+        self.SetEmptyListMsg(_(u"Aucune donnée"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -648,7 +650,7 @@ class Page_fichier(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="page_fichier", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.box_type_staticbox = wx.StaticBox(self, -1, u"1. Type d'importation")
+        self.box_type_staticbox = wx.StaticBox(self, -1, _(u"1. Type d'importation"))
         
         index = 0
         for dictType in TYPES_IMPORTATION :
@@ -664,13 +666,13 @@ class Page_fichier(wx.Panel):
             exec(u"""self.label_type_%d.SetForegroundColour(wx.Colour(128, 128, 128))""" % index)
             index += 1
         
-        self.box_fichier_staticbox = wx.StaticBox(self, -1, u"2. Sélection du fichier")
-        self.label_fichier = wx.StaticText(self, -1, u"Cliquez sur le bouton 'Sélectionner' pour sélectionner le fichier de données :")
-        wildcard = u"Fichiers Excel ou csv|*.xls;*.csv|Fichiers Excel (*.xls)|*.xls|Fichiers csv (*.csv)|*.csv|All files (*.*)|*.*"
+        self.box_fichier_staticbox = wx.StaticBox(self, -1, _(u"2. Sélection du fichier"))
+        self.label_fichier = wx.StaticText(self, -1, _(u"Cliquez sur le bouton 'Sélectionner' pour sélectionner le fichier de données :"))
+        wildcard = _(u"Fichiers Excel ou csv|*.xls;*.csv|Fichiers Excel (*.xls)|*.xls|Fichiers csv (*.csv)|*.csv|All files (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
-        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=u"Fichier à importer :", buttonText=u"Sélectionner", toolTip=u"Cliquez ici pour sélectionner un fichier de données", dialogTitle=u"Sélectionner un fichier", fileMask=wildcard, startDirectory=cheminDefaut)
-        self.label_fichier2 = wx.StaticText(self, -1, u"Formats acceptés :\n   - Fichiers Excel (.xls - versions 2003, 2002, XP, 2000, 97, 95, 5.0, 4.0, 3.0) \n   - Fichiers CSV (.csv)")
+        self.ctrl_fichier = filebrowse.FileBrowseButton(self, -1, labelText=_(u"Fichier à importer :"), buttonText=_(u"Sélectionner"), toolTip=_(u"Cliquez ici pour sélectionner un fichier de données"), dialogTitle=_(u"Sélectionner un fichier"), fileMask=wildcard, startDirectory=cheminDefaut)
+        self.label_fichier2 = wx.StaticText(self, -1, _(u"Formats acceptés :\n   - Fichiers Excel (.xls - versions 2003, 2002, XP, 2000, 97, 95, 5.0, 4.0, 3.0) \n   - Fichiers CSV (.csv)"))
         self.label_fichier2.SetForegroundColour(wx.Colour(128, 128, 128))
         
         # Layout
@@ -712,12 +714,12 @@ class Page_fichier(wx.Panel):
     def Validation(self):
         nomFichier = self.ctrl_fichier.GetValue()
         if len(nomFichier) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un fichier de données à importer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un fichier de données à importer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if os.path.isfile(nomFichier) == False :
-            dlg = wx.MessageDialog(self, u"L'emplacement fichier que vous avez saisi n'existe pas !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'emplacement fichier que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -731,7 +733,7 @@ class Page_fichier(wx.Panel):
             importation = None
         
         if importation == None or importation.fichierValide == False :
-            dlg = wx.MessageDialog(self, u"Le fichier ne semble pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le fichier ne semble pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -739,7 +741,7 @@ class Page_fichier(wx.Panel):
         # Récupération des données
         donnees = importation.GetDonnees()
         if donnees == None :
-            dlg = wx.MessageDialog(self, u"Noethys n'a pas réussi à lire les données !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à lire les données !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -758,13 +760,13 @@ class Page_colonnes(wx.Panel):
         self.parent = parent
 
         # Contrôles
-        self.label_colonnes = wx.StaticText(self, -1, u"Sélectionnez les colonnes à importer et indiquez pour chacune d'entre elles le type de donnée qu'elle contient :")
+        self.label_colonnes = wx.StaticText(self, -1, _(u"Sélectionnez les colonnes à importer et indiquez pour chacune d'entre elles le type de donnée qu'elle contient :"))
         self.ctrl_colonnes = CTRL_Colonnes(self)
-        self.check_supprimerEntetes = wx.CheckBox(self, -1, u"Enlever la première ligne du fichier (Titres de colonnes)")
-        self.check_supprimerEntetes.SetToolTipString(u"Cochez cette case si le fichier de données contient une première ligne d'entêtes de colonnes")
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.check_supprimerEntetes = wx.CheckBox(self, -1, _(u"Enlever la première ligne du fichier (Titres de colonnes)"))
+        self.check_supprimerEntetes.SetToolTipString(_(u"Cochez cette case si le fichier de données contient une première ligne d'entêtes de colonnes"))
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
         
         # Layout
         box = wx.BoxSizer(wx.VERTICAL)
@@ -811,7 +813,7 @@ class Page_colonnes(wx.Panel):
             if colonne["donnee"] == None :
                 listeTemp.append(colonne["colonne"])
         if len(listeTemp) > 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez pas sélectionné le type de donnée pour %d colonnes cochées !" % len(listeTemp), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez pas sélectionné le type de donnée pour %d colonnes cochées !") % len(listeTemp), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -819,7 +821,7 @@ class Page_colonnes(wx.Panel):
         # Vérifie si pas de doublons dans les types de données
         for code, nbre in dictTemp.iteritems() :
             if nbre > 1 :
-                dlg = wx.MessageDialog(self, u"Un type de donnée ne peut pas être sélectionné plus d'une fois !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Un type de donnée ne peut pas être sélectionné plus d'une fois !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -834,7 +836,7 @@ class Page_colonnes(wx.Panel):
                     listeOublis.append(u"   - %s\n" % dictColonne["label"])
         if len(listeOublis) > 0 :
             texte = "".join(listeOublis)
-            dlg = wx.MessageDialog(self, u"Votre fichier n'est pas valide car il manque les colonnes obligatoires suivantes : \n\n%s" % texte, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Votre fichier n'est pas valide car il manque les colonnes obligatoires suivantes : \n\n%s") % texte, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -854,19 +856,19 @@ class Page_analyse(wx.Panel):
         self.parent = parent
 
         # Contrôles
-        self.label_donnees = wx.StaticText(self, -1, u"Cochez les données à importer et cliquez sur le bouton VALIDER pour lancer l'importation.")
+        self.label_donnees = wx.StaticText(self, -1, _(u"Cochez les données à importer et cliquez sur le bouton VALIDER pour lancer l'importation."))
         self.ctrl_donnees = CTRL_Donnees(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.image_ok = wx.StaticBitmap(self, -1, wx.Bitmap(u"Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY))
-        self.label_ok = wx.StaticText(self, -1, u"Ligne valide")
+        self.label_ok = wx.StaticText(self, -1, _(u"Ligne valide"))
         self.image_attention = wx.StaticBitmap(self, -1, wx.Bitmap(u"Images/16x16/Attention.png", wx.BITMAP_TYPE_ANY))
-        self.label_attention = wx.StaticText(self, -1, u"Ligne valide mais des données non valides")
+        self.label_attention = wx.StaticText(self, -1, _(u"Ligne valide mais des données non valides"))
         self.image_non = wx.StaticBitmap(self, -1, wx.Bitmap(u"Images/16x16/Interdit.png", wx.BITMAP_TYPE_ANY))
-        self.label_non = wx.StaticText(self, -1, u"Ligne non valide")
+        self.label_non = wx.StaticText(self, -1, _(u"Ligne non valide"))
         
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
         # Layout
         box = wx.BoxSizer(wx.VERTICAL)
@@ -901,7 +903,7 @@ class Page_analyse(wx.Panel):
     def Validation(self):
         tracks = self.ctrl_donnees.GetTracksCoches()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins une ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -911,7 +913,7 @@ class Page_analyse(wx.Panel):
             if track.ligneValide == False :
                 nbreInvalides += 1
         if nbreInvalides > 0 :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas sélectionner des lignes non valides !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas sélectionner des lignes non valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -929,8 +931,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.dictDonnees = {}
         
-        intro = u"Cet assistant permet d'importer facilement depuis un fichier Excel ou CSV des individus ou des familles dans votre fichier de données Noethys."
-        titre = u"Assistant d'importation d'individus"
+        intro = _(u"Cet assistant permet d'importer facilement depuis un fichier Excel ou CSV des individus ou des familles dans votre fichier de données Noethys.")
+        titre = _(u"Assistant d'importation d'individus")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document_import.png")
         
@@ -943,10 +945,10 @@ class Dialog(wx.Dialog):
         
         self.static_line = wx.StaticLine(self, -1)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_retour = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Retour_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_suite = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Suite_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_retour = CTRL_Bouton_image.CTRL(self, texte=_(u"Retour"), cheminImage="Images/32x32/Fleche_gauche.png")
+        self.bouton_suite = CTRL_Bouton_image.CTRL(self, texte=_(u"Suite"), cheminImage="Images/32x32/Fleche_droite.png", margesImage=(0, 0, 4, 0), positionImage=wx.RIGHT)
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         self.__set_properties()
         self.__do_layout()
                 
@@ -976,10 +978,10 @@ class Dialog(wx.Dialog):
         self.sizer_pages.Layout()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_retour.SetToolTipString(u"Cliquez ici pour revenir à la page précédente")
-        self.bouton_suite.SetToolTipString(u"Cliquez ici pour passer à l'étape suivante")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
+        self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
         self.SetMinSize((730, 620))
 
     def __do_layout(self):
@@ -1028,10 +1030,12 @@ class Dialog(wx.Dialog):
         # Si on quitte l'avant-dernière page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.Enable(True)
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Valider_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Valider.png")
+            self.bouton_suite.SetTexte(_(u"Valider"))
         else:
             self.bouton_suite.Enable(True)
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Suite_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Fleche_droite.png")
+            self.bouton_suite.SetTexte(_(u"Suite"))
         # Si on revient à la première page, on désactive le bouton Retour
         if self.pageVisible == 1 :
             self.bouton_retour.Enable(False)
@@ -1057,7 +1061,8 @@ class Dialog(wx.Dialog):
         self.sizer_pages.Layout()
         # Si on arrive à la dernière page, on désactive le bouton Suivant
         if self.pageVisible == self.nbrePages :
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Valider_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Valider.png")
+            self.bouton_suite.SetTexte(_(u"Valider"))
             self.bouton_annuler.Enable(False)
         # Si on quitte la première page, on active le bouton Retour
         if self.pageVisible > 1 :
@@ -1319,7 +1324,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         
         # Message de confirmation
-        dlg = wx.MessageDialog(self, u"%d lignes ont été importées avec succès !" % index, u"Confirmation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d lignes ont été importées avec succès !") % index, _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         
@@ -1344,7 +1349,7 @@ Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du foru
 </FONT>
 </CENTER>
 """
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information", nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
         dlg.Destroy()
@@ -1387,41 +1392,41 @@ class ValidationDonnees():
         
         # Civilité
         if code.endswith("_civilite") :
-            if "enfant" in code and valeur in (u"M", u"m", u"Mr", "M.", u"Monsieur", u"Masculin", u"H", u"h", u"Homme", u"G", u"g", u"Garçon") :
+            if "enfant" in code and valeur in (u"M", u"m", _(u"Mr"), "M.", _(u"Monsieur"), _(u"Masculin"), u"H", u"h", _(u"Homme"), u"G", u"g", _(u"Garçon")) :
                 valeur = 4
-                label = u"Garçon"
-            elif "enfant" in code and valeur in (u"F", u"f", u"Madame", u"Mme", u"Féminin", u"Femme", u"Fille") :
+                label = _(u"Garçon")
+            elif "enfant" in code and valeur in (u"F", u"f", _(u"Madame"), _(u"Mme"), _(u"Féminin"), _(u"Femme"), _(u"Fille")) :
                 valeur = 5
-                label = u"Fille"
-            elif "individu" in code and valeur in (u"M", u"m", u"Mr", "M.", u"Monsieur", u"Masculin", u"H", u"h", u"Homme") :
+                label = _(u"Fille")
+            elif "individu" in code and valeur in (u"M", u"m", _(u"Mr"), "M.", _(u"Monsieur"), _(u"Masculin"), u"H", u"h", _(u"Homme")) :
                 valeur = 1
-                label = u"Monsieur"
-            elif "individu" in code and valeur in (u"Mlle", u"Melle", u"Mademoiselle") :
+                label = _(u"Monsieur")
+            elif "individu" in code and valeur in (_(u"Mlle"), _(u"Melle"), _(u"Mademoiselle")) :
                 valeur = 2
-                label = u"Mademoiselle"
-            elif "individu" in code and valeur in (u"Madame", u"Mme", u"Femme") :
+                label = _(u"Mademoiselle")
+            elif "individu" in code and valeur in (_(u"Madame"), _(u"Mme"), _(u"Femme")) :
                 valeur = 3
-                label = u"Madame"
-            elif "individu" in code and valeur in (u"G", u"g", u"Garçon") :
+                label = _(u"Madame")
+            elif "individu" in code and valeur in (u"G", u"g", _(u"Garçon")) :
                 valeur = 4
-                label = u"Garçon"
-            elif "individu" in code and valeur in (u"F", u"f", u"Fille") :
+                label = _(u"Garçon")
+            elif "individu" in code and valeur in (u"F", u"f", _(u"Fille")) :
                 valeur = 5
-                label = u"Fille"
-            elif "individu" in code and valeur == u"Collectivité" :
+                label = _(u"Fille")
+            elif "individu" in code and valeur == _(u"Collectivité") :
                 valeur = 6
-                label = u"Collectivité"
-            elif "individu" in code and valeur == u"Association" :
+                label = _(u"Collectivité")
+            elif "individu" in code and valeur == _(u"Association") :
                 valeur = 7
-                label = u"Association"
-            elif "individu" in code and valeur == u"Organisme" :
+                label = _(u"Association")
+            elif "individu" in code and valeur == _(u"Organisme") :
                 valeur = 8
-                label = u"Organisme"
-            elif "individu" in code and valeur == u"Entreprise" :
+                label = _(u"Organisme")
+            elif "individu" in code and valeur == _(u"Entreprise") :
                 valeur = 9
-                label = u"Entreprise"
+                label = _(u"Entreprise")
             else :
-                anomalie = u"Anomalie : Civilité non valide"
+                anomalie = _(u"Anomalie : Civilité non valide")
                 if valeur == "" :
                     label = u""
                 else :
@@ -1433,7 +1438,7 @@ class ValidationDonnees():
         # Nom de famille
         if code.endswith("_nom") :
             if valeur == None or valeur == "" :
-                anomalie = u"Anomalie : Nom de famille non valide"
+                anomalie = _(u"Anomalie : Nom de famille non valide")
                 ligneValide = False
                 valeur = None
                 label = ""
@@ -1456,11 +1461,11 @@ class ValidationDonnees():
         if code.endswith("_date_naiss") :
             if valeur == "" : valeur = None
             if valeur == None :
-                anomalie = u"Anomalie : Date non valide"
+                anomalie = _(u"Anomalie : Date non valide")
                 label = ""
                 valeur = None
             elif valeur != None and type(valeur) != datetime.date : 
-                anomalie = u"Anomalie : Date non valide"
+                anomalie = _(u"Anomalie : Date non valide")
                 label = anomalie
                 valeur = None
             else :
@@ -1487,7 +1492,7 @@ class ValidationDonnees():
                         valide = True
                         break
                 if valide == False :
-                    anomalie = u"Anomalie : Code postal absent de la base de données"
+                    anomalie = _(u"Anomalie : Code postal absent de la base de données")
                     valeur = None
                     label = anomalie
     
@@ -1506,7 +1511,7 @@ class ValidationDonnees():
                         valide = True
                         break
                 if valide == False :
-                    anomalie = u"Anomalie : Ville absente de la base de données"
+                    anomalie = _(u"Anomalie : Ville absente de la base de données")
                     valeur = None
                     label = anomalie
 
@@ -1522,7 +1527,7 @@ class ValidationDonnees():
                         valeur = IDsecteur
                         valide = True
                 if valide == False :
-                    anomalie = u"Anomalie : Secteur géographique absent de la base de données"
+                    anomalie = _(u"Anomalie : Secteur géographique absent de la base de données")
                     valeur = None
                     label = anomalie
 
@@ -1538,7 +1543,7 @@ class ValidationDonnees():
                         valeur = IDcategorie
                         valide = True
                 if valide == False :
-                    anomalie = u"Anomalie : Catégorie socioprofessionnelle absente de la base de données"
+                    anomalie = _(u"Anomalie : Catégorie socioprofessionnelle absente de la base de données")
                     valeur = None
                     label = anomalie
     
@@ -1567,7 +1572,7 @@ class ValidationDonnees():
                         if c not in (".", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9") :
                             valide = False
                 if valide == False :
-                    anomalie = u"Anomalie : Numéro de téléphone non valide"
+                    anomalie = _(u"Anomalie : Numéro de téléphone non valide")
                     valeur = None
                     label = anomalie
 
@@ -1595,20 +1600,20 @@ class ValidationDonnees():
                         valeur = IDcaisse
                         valide = True
                 if valide == False :
-                    anomalie = u"Anomalie : Caisse absente de la base de données"
+                    anomalie = _(u"Anomalie : Caisse absente de la base de données")
                     valeur = None
                     label = anomalie
         
         # Allocataire titulaire
         if code.endswith("famille_allocataire") :
-            if code in (u"Père", u"père", u"P") :
+            if code in (_(u"Père"), _(u"père"), u"P") :
                 valeur = "pere"
-                label = u"Père"
-            elif code in (u"Mère", u"mère", u"M") :
+                label = _(u"Père")
+            elif code in (_(u"Mère"), _(u"mère"), u"M") :
                 valeur = "mere"
-                label = u"Mère"
+                label = _(u"Mère")
             else :
-                anomalie = u"Anomalie : Allocataire titulaire non valide"
+                anomalie = _(u"Anomalie : Allocataire titulaire non valide")
                 if valeur == "" :
                     label = u""
                 else :
@@ -1630,8 +1635,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         listeDonnees = [
-            [u"DUPOND", u"Gérard", datetime.date(1999, 12, 25), u"Rue des étés ensoleillés", u"29870", u"LANNILIS"],
-            [u"DUPOND", u"Sophie", datetime.date(1999, 12, 24), u"Rue des étés ensoleillés", u"29870", u"LANNILIS"],
+            [_(u"DUPOND"), _(u"Gérard"), datetime.date(1999, 12, 25), _(u"Rue des étés ensoleillés"), u"29870", _(u"LANNILIS")],
+            [_(u"DUPOND"), _(u"Sophie"), datetime.date(1999, 12, 24), _(u"Rue des étés ensoleillés"), u"29870", _(u"LANNILIS")],
             ]
         self.ctrl= CTRL_Colonnes(panel, listeDonnees)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
@@ -1643,7 +1648,7 @@ class MyFrame(wx.Frame):
 ##if __name__ == '__main__':
 ##    app = wx.App(0)
 ##    #wx.InitAllImageHandlers()
-##    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+##    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
 ##    app.SetTopWindow(frame_1)
 ##    frame_1.Show()
 ##    app.MainLoop()

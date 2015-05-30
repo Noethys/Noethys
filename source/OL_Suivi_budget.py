@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import DLG_Saisie_categorie_budget
 import datetime
@@ -169,7 +171,7 @@ class Analyse():
             
         listeCategories.append({
             "IDcategorie_budget" : None, "typeCategorie" : "total", 
-            "IDcategorie" : None, "valeur" : None, "nomCategorie" : u"Total",
+            "IDcategorie" : None, "valeur" : None, "nomCategorie" : _(u"Total"),
             "plafond" : totalPlafond, "realise" : totalRealise, "solde" : totalSolde,
             "pourcentage" : pourcentage,
             })
@@ -269,19 +271,19 @@ class ListView(GroupListView):
             return u"%.1f %%" % float(valeur)
 
         def FormateType(valeur):
-            if valeur == "credit" : return u"Crédit"
-            if valeur == "debit" : return u"Débit"
-            if valeur == "total" : return u"Total"
+            if valeur == "credit" : return _(u"Crédit")
+            if valeur == "debit" : return _(u"Débit")
+            if valeur == "total" : return _(u"Total")
             
             
         liste_Colonnes = [
 ##            ColumnDefn(u"", "left", 0, "IDcategorie_budget"),
-            ColumnDefn(u"Catégorie budgétaire", "left", 200, "nomCategorie", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Type", "left", 50, "typeCategorie", typeDonnee="texte", stringConverter=FormateType),
-            ColumnDefn(u"Réel", "right", 80, "realise", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Budgété", "right", 80, "plafond", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Pourcent.", "right", 80, "pourcentage", stringConverter=FormatePourcentage),
-            ColumnDefn(u"Ecart", "right", 80, "solde", typeDonnee="montant", stringConverter=FormateEcart),
+            ColumnDefn(_(u"Catégorie budgétaire"), "left", 200, "nomCategorie", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Type"), "left", 50, "typeCategorie", typeDonnee="texte", stringConverter=FormateType),
+            ColumnDefn(_(u"Réel"), "right", 80, "realise", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Budgété"), "right", 80, "plafond", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Pourcent."), "right", 80, "pourcentage", stringConverter=FormatePourcentage),
+            ColumnDefn(_(u"Ecart"), "right", 80, "solde", typeDonnee="montant", stringConverter=FormateEcart),
             ]
         self.SetColumns(liste_Colonnes)
         
@@ -291,7 +293,7 @@ class ListView(GroupListView):
         self.useExpansionColumn = True
         self.SetShowItemCounts(False)
 
-        self.SetEmptyListMsg(u"Aucune catégorie budgétaire")
+        self.SetEmptyListMsg(_(u"Aucune catégorie budgétaire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -321,14 +323,14 @@ class ListView(GroupListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -337,14 +339,14 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
 
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -355,21 +357,21 @@ class ListView(GroupListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des catégories budgétaires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des catégories budgétaires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des catégories budgétaires")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des catégories budgétaires"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des catégories budgétaires")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des catégories budgétaires"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -380,7 +382,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

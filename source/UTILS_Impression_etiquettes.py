@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import FonctionsPerso
@@ -149,8 +151,8 @@ if __name__ == u"__main__":
     for x in range(0, 12):
         dictTemp = {
             "{IDINDIVIDU}" : str(3), 
-            "{INDIVIDU_NOM}" : u"DUPOND", 
-            "{INDIVIDU_PRENOM}" : u"Gérard",
+            "{INDIVIDU_NOM}" : _(u"DUPOND"), 
+            "{INDIVIDU_PRENOM}" : _(u"Gérard"),
             }
         listeValeurs.append(dictTemp)
     # Lance édition PDF

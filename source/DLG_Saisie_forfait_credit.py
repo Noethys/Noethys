@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import wx.lib.agw.hypertreelist as HTL
@@ -47,17 +49,17 @@ class CTRL_Forfaits(HTL.HyperTreeList):
         self.dictBranches = {}
                  
         # Création des colonnes
-        self.AddColumn(u"Individu/Forfait")
+        self.AddColumn(_(u"Individu/Forfait"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 230)
-        self.AddColumn(u"Activité")
+        self.AddColumn(_(u"Activité"))
         self.SetColumnWidth(1, 60)
-        self.AddColumn(u"Tarif")
+        self.AddColumn(_(u"Tarif"))
         self.SetColumnWidth(2, 60)
         self.SetColumnAlignment(2, wx.ALIGN_RIGHT)
 
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         if self.IDfamille == None or self.date == None:
             return
@@ -196,36 +198,36 @@ class Dialog(wx.Dialog):
         self.grille = grille
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
 
-        self.label_famille = wx.StaticText(self, -1, u"Famille :")
+        self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = CTRL_Famille(self, listeFamilles)
 
-        self.label_dates = wx.StaticText(self, -1, u"Validité du :")
+        self.label_dates = wx.StaticText(self, -1, _(u"Validité du :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self, activeCallback=False)
 
         # Forfaits
-        self.box_forfaits_staticbox = wx.StaticBox(self, -1, u"Forfaits disponibles")
+        self.box_forfaits_staticbox = wx.StaticBox(self, -1, _(u"Forfaits disponibles"))
         self.ctrl_forfaits = CTRL_Forfaits(self, grille=self.grille)
 
         # Prestation
-        self.box_prestation_staticbox = wx.StaticBox(self, -1, u"Prestation")
+        self.box_prestation_staticbox = wx.StaticBox(self, -1, _(u"Prestation"))
 
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, "")
 
-        self.label_date_prestation = wx.StaticText(self, -1, u"Date :")
+        self.label_date_prestation = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_prestation = CTRL_Saisie_date.Date2(self, activeCallback=False)
         
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -244,11 +246,11 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un forfait crédit")
-        self.ctrl_forfaits.SetToolTipString(u"Sélectionnez un forfait à créer")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'un forfait crédit"))
+        self.ctrl_forfaits.SetToolTipString(_(u"Sélectionnez un forfait à créer"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((-1, 640))
 
     def __do_layout(self):
@@ -458,7 +460,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event=None):
         # validation : Famille
         if self.ctrl_famille.GetIDfamille() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une famille !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une famille !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_famille.SetFocus()
@@ -466,21 +468,21 @@ class Dialog(wx.Dialog):
 
         # validation des dates
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
 
         if self.ctrl_date_fin.Validation() == False or self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas saisir une date de début supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir une date de début supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -489,7 +491,7 @@ class Dialog(wx.Dialog):
         # Validation Forfait
         dictTarif = self.ctrl_forfaits.GetForfait() 
         if dictTarif == None :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner un tarif dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un tarif dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_forfaits.SetFocus()
@@ -497,21 +499,21 @@ class Dialog(wx.Dialog):
 
         # Validation Prestation
         if len(self.ctrl_label.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un label pour cette prestation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un label pour cette prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
             return False
 
         if self.ctrl_date_prestation.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date pour cette prestation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date pour cette prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_prestation.SetFocus()
             return False
 
         if self.ctrl_montant.GetMontant() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un montant pour cette prestation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un montant pour cette prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.html as html
 
@@ -46,23 +48,23 @@ def GetTexteFiltres(filtres):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                listeTextes.append(u"Lot de factures '%s'" % listeDonnees[0][1])
+                listeTextes.append(_(u"Lot de factures '%s'") % listeDonnees[0][1])
         
         # Date d'émission
          if filtre["type"] == "date_emission" :
-            listeTextes.append(u"Date d'émission de %s à %s" % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
+            listeTextes.append(_(u"Date d'émission de %s à %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
 
         # Date d'échéance
          if filtre["type"] == "date_echeance" :
-            listeTextes.append(u"Date d'échéance de %s à %s" % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
+            listeTextes.append(_(u"Date d'échéance de %s à %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
 
         # Numéros Intervalle
          if filtre["type"] == "numero_intervalle" :
-            listeTextes.append(u"Numéros de factures de %s à %s" % (filtre["numero_min"], filtre["numero_max"]))
+            listeTextes.append(_(u"Numéros de factures de %s à %s") % (filtre["numero_min"], filtre["numero_max"]))
 
         # Numéros Liste
          if filtre["type"] == "numero_liste" :
-            listeTextes.append(u"Numéros de factures suivants : %s" % ";".join(filtre["listeNumeros"]))
+            listeTextes.append(_(u"Numéros de factures suivants : %s") % ";".join(filtre["listeNumeros"]))
 
         # Solde initial
          if filtre["type"] == "solde_initial" :
@@ -70,7 +72,7 @@ def GetTexteFiltres(filtres):
             if operateur == u"<>" : operateur = u"&#60;&#62;"
             if operateur == u"<" : operateur = u"&#60;"
             if operateur == u">" : operateur = u"&#62;"
-            listeTextes.append(u"Solde initial %s %.2f %s" % (operateur, filtre["montant"], SYMBOLE))
+            listeTextes.append(_(u"Solde initial %s %.2f %s") % (operateur, filtre["montant"], SYMBOLE))
 
         # Solde actuel
          if filtre["type"] == "solde_actuel" :
@@ -78,26 +80,26 @@ def GetTexteFiltres(filtres):
             if operateur == u"<>" : operateur = u"&#60;&#62;"
             if operateur == u"<" : operateur = u"&#60;"
             if operateur == u">" : operateur = u"&#62;"
-            listeTextes.append(u"Solde actuel %s %.2f %s" % (operateur, filtre["montant"], SYMBOLE))
+            listeTextes.append(_(u"Solde actuel %s %.2f %s") % (operateur, filtre["montant"], SYMBOLE))
 
         # Prélèvement
          if filtre["type"] == "prelevement" :
             if filtre["choix"] == True :
-                listeTextes.append(u"Familles demandant un prélèvement automatique")
+                listeTextes.append(_(u"Familles demandant un prélèvement automatique"))
             else :
-                listeTextes.append(u"Familles ne demandant pas un prélèvement automatique")
+                listeTextes.append(_(u"Familles ne demandant pas un prélèvement automatique"))
 
         # Email
          if filtre["type"] == "email" :
             if filtre["choix"] == True :
-                listeTextes.append(u"Factures nécessitant un envoi par Email")
+                listeTextes.append(_(u"Factures nécessitant un envoi par Email"))
             else :
-                listeTextes.append(u"Factures ne nécessitant pas un envoi par Email")
+                listeTextes.append(_(u"Factures ne nécessitant pas un envoi par Email"))
     
     if len(listeTextes) > 0 :
         texte = u" | ".join(listeTextes) + u"."
     else :
-        texte = u"Aucun."
+        texte = _(u"Aucun.")
     return texte
 
 
@@ -129,9 +131,9 @@ class CTRL_Filtres(wx.Panel):
         couleurFond=wx.Colour(255, 255, 255)
         self.SetBackgroundColour(couleurFond)
         
-        self.ctrl_html = MyHtml(self, texte=u"Aucun filtre de sélection.", couleurFond=couleurFond, hauteur=25)
+        self.ctrl_html = MyHtml(self, texte=_(u"Aucun filtre de sélection."), couleurFond=couleurFond, hauteur=25)
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Filtre.png", wx.BITMAP_TYPE_ANY))#wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_parametres.SetToolTipString(u"Cliquez ici pour modifier les filtres de sélection des factures")
+        self.bouton_parametres.SetToolTipString(_(u"Cliquez ici pour modifier les filtres de sélection des factures"))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)
         
@@ -157,7 +159,7 @@ class CTRL_Filtres(wx.Panel):
         
     def MAJ(self):
         # MAJ du HTML
-        texte = u"<FONT SIZE=-1><B>Filtres de sélection :</B> %s</FONT>" % GetTexteFiltres(self.filtres)
+        texte = _(u"<FONT SIZE=-1><B>Filtres de sélection :</B> %s</FONT>") % GetTexteFiltres(self.filtres)
         self.ctrl_html.SetTexte(texte)
         # MAJ du CTRL_Factures
         if self.ctrl_factures != None :
@@ -173,59 +175,59 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Sélectionnez ici les filtres de sélection de votre choix à appliquer sur la liste des factures."
-        titre = u"Filtres de sélection des factures"
+        intro = _(u"Sélectionnez ici les filtres de sélection de votre choix à appliquer sur la liste des factures.")
+        titre = _(u"Filtres de sélection des factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Filtre.png")
         
         # Filtres
-        self.check_lot = wx.CheckBox(self, -1, u"Lot de factures :")
+        self.check_lot = wx.CheckBox(self, -1, _(u"Lot de factures :"))
         self.ctrl_lot = CTRL_Lot_factures(self)
         
-        self.check_emission = wx.CheckBox(self, -1, u"Date d'émission de")
+        self.check_emission = wx.CheckBox(self, -1, _(u"Date d'émission de"))
         self.ctrl_emission_min = CTRL_Saisie_date.Date2(self)
         self.label_emission_a = wx.StaticText(self, -1, u"à")
         self.ctrl_emission_max = CTRL_Saisie_date.Date2(self)
         
-        self.check_echeance = wx.CheckBox(self, -1, u"Date d'échéance de")
+        self.check_echeance = wx.CheckBox(self, -1, _(u"Date d'échéance de"))
         self.ctrl_echeance_min = CTRL_Saisie_date.Date2(self)
         self.label_echeance_a = wx.StaticText(self, -1, u"à")
         self.ctrl_echeance_max = CTRL_Saisie_date.Date2(self)
         
-        self.check_numeros_intervalle = wx.CheckBox(self, -1, u"Numéros de factures de")
+        self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"Numéros de factures de"))
         self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_min.SetMinSize((70, -1))
         self.label_numeros_intervalle_a = wx.StaticText(self, -1, u"à")
         self.ctrl_numeros_intervalle_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_max.SetMinSize((70, -1))
 
-        self.check_numeros_liste = wx.CheckBox(self, -1, u"Numéros de factures suivants :")
+        self.check_numeros_liste = wx.CheckBox(self, -1, _(u"Numéros de factures suivants :"))
         self.ctrl_numeros_liste = wx.TextCtrl(self, -1, u"")
         
         listeOperateurs = (u"=", u"<>", u">", u"<", u">=", u"<=")
         
-        self.check_solde_initial = wx.CheckBox(self, -1, u"Solde initial")
+        self.check_solde_initial = wx.CheckBox(self, -1, _(u"Solde initial"))
         self.ctrl_solde_initial_operateur = wx.Choice(self, -1, choices=listeOperateurs)
         self.ctrl_solde_initial_operateur.SetSelection(0)
         self.ctrl_solde_initial_montant = CTRL_Saisie_euros.CTRL(self)
         
-        self.check_solde_actuel = wx.CheckBox(self, -1, u"Solde actuel")
+        self.check_solde_actuel = wx.CheckBox(self, -1, _(u"Solde actuel"))
         self.ctrl_solde_actuel_operateur = wx.Choice(self, -1, choices=listeOperateurs)
         self.ctrl_solde_actuel_operateur.SetSelection(0)
         self.ctrl_solde_actuel_montant = CTRL_Saisie_euros.CTRL(self)
         
-        self.check_prelevement = wx.CheckBox(self, -1, u"Prélèvement automatique demandé")
-        self.ctrl_prelevement = wx.Choice(self, -1, choices=["Oui", u"Non"])
+        self.check_prelevement = wx.CheckBox(self, -1, _(u"Prélèvement automatique demandé"))
+        self.ctrl_prelevement = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_prelevement.SetSelection(0)
 
-        self.check_email = wx.CheckBox(self, -1, u"Envoi par Email demandé")
-        self.ctrl_email = wx.Choice(self, -1, choices=["Oui", u"Non"])
+        self.check_email = wx.CheckBox(self, -1, _(u"Envoi par Email demandé"))
+        self.ctrl_email = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_email.SetSelection(0)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -248,32 +250,32 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.check_lot.SetToolTipString(u"Filtre Lot de factures")
-        self.ctrl_lot.SetToolTipString(u"Sélectionnez un lot de factures dans la liste")
-        self.check_emission.SetToolTipString(u"Filtre Date d'émission")
-        self.ctrl_emission_min.SetToolTipString(u"Sélectionnez une date min")
-        self.ctrl_emission_max.SetToolTipString(u"Sélectionnez une date max")
-        self.check_echeance.SetToolTipString(u"Filtre Date d'échéance")
-        self.ctrl_echeance_min.SetToolTipString(u"Sélectionnez une date min")
-        self.ctrl_echeance_max.SetToolTipString(u"Sélectionnez une date max")
-        self.check_numeros_intervalle.SetToolTipString(u"Filtre Intervalle de numéros de facture")
-        self.ctrl_numeros_intervalle_min.SetToolTipString(u"Saisissez un numéro de facture min")
-        self.ctrl_numeros_intervalle_max.SetToolTipString(u"Saisissez un numéro de facture max")
-        self.check_numeros_liste.SetToolTipString(u"Filtre Liste de numéros de factures")
-        self.ctrl_numeros_liste.SetToolTipString(u"Saisissez les numéros de factures souhaités en les séparant par un point-virgule (;)")
-        self.check_solde_initial.SetToolTipString(u"Filtre Solde initial")
-        self.ctrl_solde_initial_operateur.SetToolTipString(u"Sélectionnez un opération de comparaison")
-        self.ctrl_solde_initial_montant.SetToolTipString(u"Saisissez un montant")
-        self.check_solde_actuel.SetToolTipString(u"Filtre Solde actuel")
-        self.ctrl_solde_actuel_operateur.SetToolTipString(u"Sélectionnez un opération de comparaison")
-        self.ctrl_solde_actuel_montant.SetToolTipString(u"Saisissez un montant")
-        self.check_prelevement.SetToolTipString(u"Filtre Prélèvement automatique")
-        self.ctrl_prelevement.SetToolTipString(u"Oui/Non")
-        self.check_email.SetToolTipString(u"Filtre Envoi par Email")
-        self.ctrl_email.SetToolTipString(u"Oui/Non")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.check_lot.SetToolTipString(_(u"Filtre Lot de factures"))
+        self.ctrl_lot.SetToolTipString(_(u"Sélectionnez un lot de factures dans la liste"))
+        self.check_emission.SetToolTipString(_(u"Filtre Date d'émission"))
+        self.ctrl_emission_min.SetToolTipString(_(u"Sélectionnez une date min"))
+        self.ctrl_emission_max.SetToolTipString(_(u"Sélectionnez une date max"))
+        self.check_echeance.SetToolTipString(_(u"Filtre Date d'échéance"))
+        self.ctrl_echeance_min.SetToolTipString(_(u"Sélectionnez une date min"))
+        self.ctrl_echeance_max.SetToolTipString(_(u"Sélectionnez une date max"))
+        self.check_numeros_intervalle.SetToolTipString(_(u"Filtre Intervalle de numéros de facture"))
+        self.ctrl_numeros_intervalle_min.SetToolTipString(_(u"Saisissez un numéro de facture min"))
+        self.ctrl_numeros_intervalle_max.SetToolTipString(_(u"Saisissez un numéro de facture max"))
+        self.check_numeros_liste.SetToolTipString(_(u"Filtre Liste de numéros de factures"))
+        self.ctrl_numeros_liste.SetToolTipString(_(u"Saisissez les numéros de factures souhaités en les séparant par un point-virgule (;)"))
+        self.check_solde_initial.SetToolTipString(_(u"Filtre Solde initial"))
+        self.ctrl_solde_initial_operateur.SetToolTipString(_(u"Sélectionnez un opération de comparaison"))
+        self.ctrl_solde_initial_montant.SetToolTipString(_(u"Saisissez un montant"))
+        self.check_solde_actuel.SetToolTipString(_(u"Filtre Solde actuel"))
+        self.ctrl_solde_actuel_operateur.SetToolTipString(_(u"Sélectionnez un opération de comparaison"))
+        self.ctrl_solde_actuel_montant.SetToolTipString(_(u"Saisissez un montant"))
+        self.check_prelevement.SetToolTipString(_(u"Filtre Prélèvement automatique"))
+        self.ctrl_prelevement.SetToolTipString(_(u"Oui/Non"))
+        self.check_email.SetToolTipString(_(u"Filtre Envoi par Email"))
+        self.ctrl_email.SetToolTipString(_(u"Oui/Non"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=20, hgap=20)
@@ -394,7 +396,7 @@ class Dialog(wx.Dialog):
         if self.check_lot.GetValue() == True :
             IDlot = self.ctrl_lot.GetID()
             if IDlot == None :
-                dlg = wx.MessageDialog(self, u"Filtre Lot de factures : Vous n'avez sélectionné aucun lot dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Lot de factures : Vous n'avez sélectionné aucun lot dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -406,7 +408,7 @@ class Dialog(wx.Dialog):
             date_min = self.ctrl_emission_min.GetDate()
             date_max = self.ctrl_emission_max.GetDate()
             if date_min == None or date_max == None :
-                dlg = wx.MessageDialog(self, u"Filtre Date d'émission : Les dates saisies ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Date d'émission : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -418,7 +420,7 @@ class Dialog(wx.Dialog):
             date_min = self.ctrl_echeance_min.GetDate()
             date_max = self.ctrl_echeance_max.GetDate()
             if date_min == None or date_max == None :
-                dlg = wx.MessageDialog(self, u"Filtre Date d'échéance : Les dates saisies ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Date d'échéance : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -436,7 +438,7 @@ class Dialog(wx.Dialog):
         if self.check_numeros_liste.GetValue() == True :
             listeTemp = self.ctrl_numeros_liste.GetValue()
             if listeTemp == "" :
-                dlg = wx.MessageDialog(self, u"Filtre Liste de numéros : Vous n'avez saisi aucun numéro de facture dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numéros : Vous n'avez saisi aucun numéro de facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -445,7 +447,7 @@ class Dialog(wx.Dialog):
                 for numero in listeTemp.split(";") :
                     listeNumeros.append(int(numero))
             except :
-                dlg = wx.MessageDialog(self, u"Filtre Liste de numéros : Les numéros de factures saisis ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numéros : Les numéros de factures saisis ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -457,7 +459,7 @@ class Dialog(wx.Dialog):
             operateur = self.ctrl_solde_initial_operateur.GetStringSelection()
             montant = self.ctrl_solde_initial_montant.GetMontant()
             if montant == None :
-                dlg = wx.MessageDialog(self, u"Filtre Solde initial : Le montant saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Solde initial : Le montant saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -469,7 +471,7 @@ class Dialog(wx.Dialog):
             operateur = self.ctrl_solde_actuel_operateur.GetStringSelection()
             montant = self.ctrl_solde_actuel_montant.GetMontant()
             if montant == None :
-                dlg = wx.MessageDialog(self, u"Filtre Solde actuel : Le montant saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Solde actuel : Le montant saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -576,7 +578,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL_Filtres(panel)
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -592,7 +594,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

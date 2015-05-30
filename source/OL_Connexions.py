@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -79,16 +81,16 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDconnexion"),
-            ColumnDefn(u"Utilisateur", 'left', 120, "utilisateur"),
-            ColumnDefn(u"Hôte", "left", 150, "hote"),
-            ColumnDefn(u"Base", "left", 120, "base"),
-            ColumnDefn(u"Action", "left", 150, "action"),
-            ColumnDefn(u"Info", "left", 270, "info"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDconnexion"),
+            ColumnDefn(_(u"Utilisateur"), 'left', 120, "utilisateur"),
+            ColumnDefn(_(u"Hôte"), "left", 150, "hote"),
+            ColumnDefn(_(u"Base"), "left", 120, "base"),
+            ColumnDefn(_(u"Action"), "left", 150, "action"),
+            ColumnDefn(_(u"Info"), "left", 270, "info"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune connexion réseau")
+        self.SetEmptyListMsg(_(u"Aucune connexion réseau"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -123,14 +125,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -141,12 +143,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des connexions réseau", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des connexions réseau"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des connexions réseau", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des connexions réseau"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -158,7 +160,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Recherche rapide...")
+        self.SetDescriptiveText(_(u"Recherche rapide..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

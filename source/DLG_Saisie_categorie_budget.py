@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import wx.lib.agw.hyperlink as Hyperlink
 import CTRL_Saisie_euros
@@ -45,11 +47,11 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         listeChamps = []
         for IDunite, nomUnite, nomActivite in listeDonnees :
             nomChamp = u"{NBRE_UNITE_%d}" % IDunite
-            listeLabels.append(u"%s : Quantité de '%s' %s" % (nomActivite, nomUnite, nomChamp))
+            listeLabels.append(_(u"%s : Quantité de '%s' %s") % (nomActivite, nomUnite, nomChamp))
             listeChamps.append(nomChamp)
         DB.Close() 
         
-        dlg = wx.SingleChoiceDialog(None, u"Sélectionnez un champ à insérer :", u"Insérer un champ", listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un champ à insérer :"), _(u"Insérer un champ"), listeLabels, wx.CHOICEDLG_STYLE)
         dlg.SetSize((600, 500))
         if dlg.ShowModal() == wx.ID_OK:
             champ = listeChamps[dlg.GetSelection()]
@@ -113,23 +115,23 @@ class Dialog(wx.Dialog):
         self.typeCategorie = typeCategorie
         self.IDcategorie_budget = None
 
-        self.label_categorie = wx.StaticText(self, wx.ID_ANY, u"Catégorie :")
+        self.label_categorie = wx.StaticText(self, wx.ID_ANY, _(u"Catégorie :"))
         self.ctrl_categorie = CTRL_Categorie(self, typeCategorie=typeCategorie)
-        self.bouton_categories = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_categories = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 
-        self.label_valeur = wx.StaticText(self, wx.ID_ANY, u"Plafond :")
+        self.label_valeur = wx.StaticText(self, wx.ID_ANY, _(u"Plafond :"))
         
-        self.radio_montant = wx.RadioButton(self, -1, u"Montant :", style=wx.RB_GROUP)
+        self.radio_montant = wx.RadioButton(self, -1, _(u"Montant :"), style=wx.RB_GROUP)
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
-        self.radio_formule = wx.RadioButton(self, -1, u"Formule de calcul :")
+        self.radio_formule = wx.RadioButton(self, -1, _(u"Formule de calcul :"))
         self.ctrl_formule = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
         self.ctrl_formule.SetMinSize((400, 100)) 
         
-        self.hyper_champ = Hyperlien(self, label=u"Insérer un champ", infobulle=u"Cliquez ici pour insérer un champ", URL="")
+        self.hyper_champ = Hyperlien(self, label=_(u"Insérer un champ"), infobulle=_(u"Cliquez ici pour insérer un champ"), URL="")
         
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -143,23 +145,23 @@ class Dialog(wx.Dialog):
 
         # Init contrôles
         if self.track != None :
-            titre = u"Modification d'une catégorie budgétaire"
+            titre = _(u"Modification d'une catégorie budgétaire")
             self.Importation()
         else :
-            titre = u"Saisie d'une catégorie budgétaire"
-        if self.typeCategorie == "credit" : titre += u" au crédit"
-        if self.typeCategorie == "debit" : titre += u" au débit"
+            titre = _(u"Saisie d'une catégorie budgétaire")
+        if self.typeCategorie == "credit" : titre += _(u" au crédit")
+        if self.typeCategorie == "debit" : titre += _(u" au débit")
         self.SetTitle(titre)
         self.OnRadioValeur(None)
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez la catégorie comptable à associer")
-        self.bouton_categories.SetToolTipString(u"Cliquez ici pour accéder à la gestion des catégories comptables")
-        self.ctrl_montant.SetToolTipString(u"Saisissez un montant plafonf (Ex : 200.00)")
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez la catégorie comptable à associer"))
+        self.bouton_categories.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des catégories comptables"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez un montant plafonf (Ex : 200.00)"))
         self.ctrl_formule.SetToolTipString("Saisissez une formule de calcul du plafond (Ex : {NBRE_UNITE_1}*3.00)")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((600, 600))
 
     def __do_layout(self):
@@ -241,7 +243,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         IDcategorie = self.ctrl_categorie.GetID()
         if IDcategorie == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une catégorie !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_categorie.SetFocus()
@@ -250,7 +252,7 @@ class Dialog(wx.Dialog):
         if self.radio_montant.GetValue() == True :
             valeur = self.ctrl_montant.GetMontant() 
             if valeur == "" or valeur == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_montant.SetFocus()
@@ -259,7 +261,7 @@ class Dialog(wx.Dialog):
         else :
             valeur = self.ctrl_formule.GetValue()
             if valeur == "" or valeur == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une formule de calcul !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une formule de calcul !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_formule.SetFocus()

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import string
 
 
@@ -136,7 +138,7 @@ class CTRL_Famille(wx.Choice):
         listeFamilles.sort()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "IDfamille" : 0, "nom" : u"Inconnue", "IDcompte_payeur" : 0 }
+        self.dictDonnees[0] = { "IDfamille" : 0, "nom" : _(u"Inconnue"), "IDcompte_payeur" : 0 }
         index = 1
         for nom, IDfamille, IDcompte_payeur in listeFamilles :
             self.dictDonnees[index] = { "IDfamille" : IDfamille, "nom " : nom, "IDcompte_payeur" : IDcompte_payeur}
@@ -172,19 +174,19 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.track = track
         
-        self.SetTitle(u"Saisie d'un prélèvement")
+        self.SetTitle(_(u"Saisie d'un prélèvement"))
         
         # Famille
-        self.box_famille_staticbox = wx.StaticBox(self, -1, u"Destinataire")
-        self.label_famille = wx.StaticText(self, -1, u"Famille :")
+        self.box_famille_staticbox = wx.StaticBox(self, -1, _(u"Destinataire"))
+        self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = CTRL_Famille(self)
         self.ctrl_famille.Enable(False) 
         
         # IBAN
-        self.box_rib_staticbox = wx.StaticBox(self, -1, u"Coordonnées bancaires")
+        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
         
-        self.label_iban = wx.StaticText(self, -1, u"IBAN")
-        self.label_bic = wx.StaticText(self, -1, u"BIC")
+        self.label_iban = wx.StaticText(self, -1, _(u"IBAN"))
+        self.label_bic = wx.StaticText(self, -1, _(u"BIC"))
         self.ctrl_iban = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE)
 
         self.image_valide = wx.Bitmap(u"Images/16x16/Ok4.png", wx.BITMAP_TYPE_ANY)
@@ -193,46 +195,46 @@ class Dialog(wx.Dialog):
         
         self.ctrl_bic = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE)
         
-##        self.label_banque = wx.StaticText(self, -1, u"Etablissement")
+##        self.label_banque = wx.StaticText(self, -1, _(u"Etablissement"))
 ##        self.ctrl_banque = CTRL_Banque(self)
 ##        self.bouton_banques = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 
-        self.label_titulaire = wx.StaticText(self, -1, u"Titulaire du compte")
+        self.label_titulaire = wx.StaticText(self, -1, _(u"Titulaire du compte"))
         self.ctrl_titulaire = wx.TextCtrl(self, -1, u"")
 
         # Prélèvement
-        self.box_prelevement_staticbox = wx.StaticBox(self, -1, u"Prélèvement")
+        self.box_prelevement_staticbox = wx.StaticBox(self, -1, _(u"Prélèvement"))
 
-        self.label_type = wx.StaticText(self, -1, u"Type :")
-        self.ctrl_type = wx.StaticText(self, -1, u"Saisie manuelle")
+        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
+        self.ctrl_type = wx.StaticText(self, -1, _(u"Saisie manuelle"))
         
-        self.label_sequence = wx.StaticText(self, -1, u"Séquence :")
+        self.label_sequence = wx.StaticText(self, -1, _(u"Séquence :"))
         self.ctrl_sequence = CTRL_Sequence(self, afficherAutomatique=False)
 
-        self.label_libelle = wx.StaticText(self, -1, u"Libellé :")
+        self.label_libelle = wx.StaticText(self, -1, _(u"Libellé :"))
         self.ctrl_libelle = wx.TextCtrl(self, -1, u"")
 
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
         if activeMontant == False :
             self.ctrl_montant.Enable(False) 
             
-        self.label_etat = wx.StaticText(self, -1, u"Statut :")
-        self.radio_etat_attente = wx.RadioButton(self, -1, u"Attente", style=wx.RB_GROUP)
-        self.radio_etat_valide = wx.RadioButton(self, -1, u"Valide")
-        self.radio_etat_refus= wx.RadioButton(self, -1, u"Refus")
+        self.label_etat = wx.StaticText(self, -1, _(u"Statut :"))
+        self.radio_etat_attente = wx.RadioButton(self, -1, _(u"Attente"), style=wx.RB_GROUP)
+        self.radio_etat_valide = wx.RadioButton(self, -1, _(u"Valide"))
+        self.radio_etat_refus= wx.RadioButton(self, -1, _(u"Refus"))
         
         self.radio_etat_attente.Enable(False) 
         self.radio_etat_valide.Enable(False) 
         self.radio_etat_refus.Enable(False) 
 
-        self.label_reglement = wx.StaticText(self, -1, u"Règlement :")
-        self.ctrl_reglement = wx.StaticText(self, -1, u"Non")
+        self.label_reglement = wx.StaticText(self, -1, _(u"Règlement :"))
+        self.ctrl_reglement = wx.StaticText(self, -1, _(u"Non"))
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -253,22 +255,22 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_iban.SetMinSize((200, -1))
         self.ctrl_bic.SetMinSize((120, -1))
-        self.ctrl_iban.SetToolTipString(u"Saisissez ici le numéro IBAN")
-        self.ctrl_bic.SetToolTipString(u"Saisissez ici le numéro BIC")
+        self.ctrl_iban.SetToolTipString(_(u"Saisissez ici le numéro IBAN"))
+        self.ctrl_bic.SetToolTipString(_(u"Saisissez ici le numéro BIC"))
 
         self.ctrl_type.SetForegroundColour(wx.Colour(150, 150, 150))
         self.ctrl_reglement.SetForegroundColour(wx.Colour(150, 150, 150))
 
-        self.ctrl_famille.SetToolTipString(u"Sélectionnez ici la famille à débiter")
-        self.ctrl_controle.SetToolTipString(u"Une coche verte apparaît si les coordonnées bancaires sont valides")
-##        self.ctrl_banque.SetToolTipString(u"Sélectionnez ici l'établissement du compte")
-##        self.bouton_banques.SetToolTipString(u"Cliquez ici pour accéder à la gestion des établissements bancaires")
+        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez ici la famille à débiter"))
+        self.ctrl_controle.SetToolTipString(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides"))
+##        self.ctrl_banque.SetToolTipString(_(u"Sélectionnez ici l'établissement du compte"))
+##        self.bouton_banques.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires"))
         
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         
-        self.ctrl_sequence.SetToolTipString(u"Sélectionnez la séquence de l'opération (Si vous n'êtes pas sûr, laissez ce que Noethys a sélectionné automatiquement)")
+        self.ctrl_sequence.SetToolTipString(_(u"Sélectionnez la séquence de l'opération (Si vous n'êtes pas sûr, laissez ce que Noethys a sélectionné automatiquement)"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -436,8 +438,8 @@ class Dialog(wx.Dialog):
         
         self.ctrl_titulaire.SetValue(self.track.titulaire)
         
-        if self.track.type == "manuel" : labelType = u"Saisie manuelle"
-        elif self.track.type == "facture" : labelType = u"Facture"
+        if self.track.type == "manuel" : labelType = _(u"Saisie manuelle")
+        elif self.track.type == "facture" : labelType = _(u"Facture")
         else : labelType = u""
         self.ctrl_type.SetLabel(labelType)
         
@@ -445,9 +447,9 @@ class Dialog(wx.Dialog):
         self.ctrl_montant.SetMontant(self.track.montant)
         
         if self.track.reglement == True :
-            self.ctrl_reglement.SetLabel(u"Oui")
+            self.ctrl_reglement.SetLabel(_(u"Oui"))
         else :
-            self.ctrl_reglement.SetLabel(u"Non")
+            self.ctrl_reglement.SetLabel(_(u"Non"))
         
         if self.track.statut == "valide" : self.radio_etat_valide.SetValue(True)
         elif self.track.statut == "refus" : self.radio_etat_refus.SetValue(True)
@@ -478,42 +480,42 @@ class Dialog(wx.Dialog):
         
         # Validation des données
         if IDfamille == None :
-            dlg = wx.MessageDialog(self, u"Vous avez oublié de sélectionner une famille dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de sélectionner une famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_famille.SetFocus()
             return False
 
         if self.ControleIBAN() == False :
-            dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_etab.SetFocus()
             return False
 
 ##        if IDbanque == None :
-##            dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nVous n'avez sélectionné aucun établissement bancaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez sélectionné aucun établissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            self.ctrl_banque.SetFocus()
 ##            return False
 
         if titulaire == "" :
-            dlg = wx.MessageDialog(self, u"Vous avez oublié de saisir un nom de titulaire pour le compte bancaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de saisir un nom de titulaire pour le compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_titulaire.SetFocus()
             return False
 
         if libelle == "" :
-            dlg = wx.MessageDialog(self, u"Vous avez oublié de saisir un libellé pour cette opération ! \n\n(Ex : 'Facture n°346573', 'Décembre 2013', etc...)", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de saisir un libellé pour cette opération ! \n\n(Ex : 'Facture n°346573', 'Décembre 2013', etc...)"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_libelle.SetFocus()
             return False
 
         if montant == None or montant == 0.0 :
-            dlg = wx.MessageDialog(self, u"Vous avez oublié de saisir un montant pour cette opération !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez oublié de saisir un montant pour cette opération !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
@@ -534,8 +536,8 @@ class Dialog(wx.Dialog):
 ##        track.nomBanque = self.ctrl_banque.GetStringSelection()
         track.sequence = sequence
         
-        if self.ctrl_type.GetLabel() == u"Saisie manuelle" : track.type = "manuel"
-        if self.ctrl_type.GetLabel() == u"Facture" : track.type = "facture"
+        if self.ctrl_type.GetLabel() == _(u"Saisie manuelle") : track.type = "manuel"
+        if self.ctrl_type.GetLabel() == _(u"Facture") : track.type = "facture"
         
         if self.radio_etat_attente.GetValue() == True : track.statut = "attente"
         if self.radio_etat_valide.GetValue() == True : track.statut = "valide"

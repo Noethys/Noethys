@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -17,8 +19,8 @@ from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -33,7 +35,7 @@ class CTRL_archive(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTipString(u"Cochez les activités à afficher")
+        self.SetToolTipString(_(u"Cochez les activités à afficher"))
         self.listeActivites = []
         self.dictActivites = {}
         # Binds
@@ -132,10 +134,10 @@ class CTRL(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(u"Cochez les activités et groupes à afficher")
+        self.SetToolTipString(_(u"Cochez les activités et groupes à afficher"))
         
         # Création des colonnes
-        self.AddColumn(u"Activité/groupe")
+        self.AddColumn(_(u"Activité/groupe"))
         self.SetColumnWidth(0, 185)
 
         # Binds
@@ -203,7 +205,7 @@ class CTRL(HTL.HyperTreeList):
         self.MAJenCours = True
         self.DeleteAllItems()
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
 ##        self.Thaw() 
@@ -288,7 +290,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -22,24 +24,24 @@ class Dialog(wx.Dialog):
         self.IDcategorie = IDcategorie
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"Nom")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options par défaut")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options par défaut"))
         
-        self.ctrl_afficher_accueil = wx.CheckBox(self, -1, u"Afficher sur la page d'accueil")
-        self.ctrl_afficher_liste = wx.CheckBox(self, -1, u"Afficher sur la liste des consommations")
+        self.ctrl_afficher_accueil = wx.CheckBox(self, -1, _(u"Afficher sur la page d'accueil"))
+        self.ctrl_afficher_liste = wx.CheckBox(self, -1, _(u"Afficher sur la liste des consommations"))
         
-        self.label_priorite = wx.StaticText(self, -1, u"Priorité :")
-        self.ctrl_priorite = wx.Choice(self, -1, choices=[u"Normale", u"Haute"])
+        self.label_priorite = wx.StaticText(self, -1, _(u"Priorité :"))
+        self.ctrl_priorite = wx.Choice(self, -1, choices=[_(u"Normale"), _(u"Haute")])
         self.ctrl_priorite.SetSelection(0)
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -48,19 +50,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDcategorie == None :
-            self.SetTitle(u"Saisie d'une catégorie de message")
+            self.SetTitle(_(u"Saisie d'une catégorie de message"))
         else:
             self.Importation()
-            self.SetTitle(u"Modification d'une catégorie de message")
+            self.SetTitle(_(u"Modification d'une catégorie de message"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour cette catégorie")
-        self.ctrl_afficher_accueil.SetToolTipString(u"Cochez cette case pour afficher ce message sur la page d'accueil")
-        self.ctrl_afficher_liste.SetToolTipString(u"Cochez cette case pour afficher ce message sur la liste des consommations")
-        self.ctrl_priorite.SetToolTipString(u"Sélectionnez ici la priorité du message")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette catégorie"))
+        self.ctrl_afficher_accueil.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la page d'accueil"))
+        self.ctrl_afficher_liste.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la liste des consommations"))
+        self.ctrl_priorite.SetToolTipString(_(u"Sélectionnez ici la priorité du message"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((460, 220))
 
     def __do_layout(self):
@@ -126,7 +128,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         # Vérification des données
         if len(self.ctrl_nom.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour cette catégorie !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catégorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.combo
 import datetime
 
@@ -25,62 +27,62 @@ from DATA_Tables import DB_DATA as DICT_TABLES
 DICT_CONTROLES = {
 
     "generalites" : [
-        {"code" : "compagnie_bus", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='bus')" },
-        {"code" : "compagnie_car", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='car')" },
-        {"code" : "compagnie_navette", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='navette')" },
-        {"code" : "compagnie_taxi", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='taxi')" },
-        {"code" : "compagnie_train", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='train')" },
-        {"code" : "compagnie_avion", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='avion')" },
-        {"code" : "compagnie_bateau", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='bateau')" },
-        {"code" : "compagnie_metro", "label" : u"Compagnie", "ctrl" : "CTRL_Compagnies(self, categorie='metro')" },
+        {"code" : "compagnie_bus", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='bus')" },
+        {"code" : "compagnie_car", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='car')" },
+        {"code" : "compagnie_navette", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='navette')" },
+        {"code" : "compagnie_taxi", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='taxi')" },
+        {"code" : "compagnie_train", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='train')" },
+        {"code" : "compagnie_avion", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='avion')" },
+        {"code" : "compagnie_bateau", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='bateau')" },
+        {"code" : "compagnie_metro", "label" : _(u"Compagnie"), "ctrl" : "CTRL_Compagnies(self, categorie='metro')" },
         
-        {"code" : "ligne_bus", "label" : u"Ligne", "ctrl" : "CTRL_Lignes(self, categorie='bus')" },
-        {"code" : "ligne_car", "label" : u"Ligne", "ctrl" : "CTRL_Lignes(self, categorie='car')" },
-        {"code" : "ligne_navette", "label" : u"Ligne", "ctrl" : "CTRL_Lignes(self, categorie='navette')" },
-        {"code" : "ligne_bateau", "label" : u"Ligne", "ctrl" : "CTRL_Lignes(self, categorie='bateau')" },
-        {"code" : "ligne_metro", "label" : u"Ligne", "ctrl" : "CTRL_Lignes(self, categorie='metro')" },
-        {"code" : "ligne_pedibus", "label" : u"Ligne", "ctrl" : "CTRL_Lignes(self, categorie='pedibus')" },
+        {"code" : "ligne_bus", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='bus')" },
+        {"code" : "ligne_car", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='car')" },
+        {"code" : "ligne_navette", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='navette')" },
+        {"code" : "ligne_bateau", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='bateau')" },
+        {"code" : "ligne_metro", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='metro')" },
+        {"code" : "ligne_pedibus", "label" : _(u"Ligne"), "ctrl" : "CTRL_Lignes(self, categorie='pedibus')" },
         
-        {"code" : "numero_avion", "label" : u"N° de vol", "ctrl" : "CTRL_Numero(self, categorie='avion')" },
-        {"code" : "numero_train", "label" : u"N° de train", "ctrl" : "CTRL_Numero(self, categorie='train')" },
-        {"code" : "details", "label" : u"Détails", "ctrl" : "CTRL_Details(self)" },
-        {"code" : "observations", "label" : u"Observ.", "ctrl" : "CTRL_Observations(self)" },
+        {"code" : "numero_avion", "label" : _(u"N° de vol"), "ctrl" : "CTRL_Numero(self, categorie='avion')" },
+        {"code" : "numero_train", "label" : _(u"N° de train"), "ctrl" : "CTRL_Numero(self, categorie='train')" },
+        {"code" : "details", "label" : _(u"Détails"), "ctrl" : "CTRL_Details(self)" },
+        {"code" : "observations", "label" : _(u"Observ."), "ctrl" : "CTRL_Observations(self)" },
         ],
         
     "depart" : [
-        {"code" : "date_heure", "label" : u"Heure", "ctrl" : "CTRL_DateHeure(self)" },
+        {"code" : "date_heure", "label" : _(u"Heure"), "ctrl" : "CTRL_DateHeure(self)" },
         
-        {"code" : "arret_bus", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
-        {"code" : "arret_car", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='car')" },
-        {"code" : "arret_navette", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
-        {"code" : "arret_bateau", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
-        {"code" : "arret_metro", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
-        {"code" : "arret_pedibus", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
+        {"code" : "arret_bus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
+        {"code" : "arret_car", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='car')" },
+        {"code" : "arret_navette", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
+        {"code" : "arret_bateau", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
+        {"code" : "arret_metro", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
+        {"code" : "arret_pedibus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
         
-        {"code" : "gare", "label" : u"Gare", "ctrl" : "CTRL_Lieux(self, categorie='gare')" },
-        {"code" : "aeroport", "label" : u"Aéroport", "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
-        {"code" : "port", "label" : u"Port", "ctrl" : "CTRL_Lieux(self, categorie='port')" },
-        #{"code" : "station", "label" : u"Station", "ctrl" : "CTRL_Lieux(self, categorie='station')" },
+        {"code" : "gare", "label" : _(u"Gare"), "ctrl" : "CTRL_Lieux(self, categorie='gare')" },
+        {"code" : "aeroport", "label" : _(u"Aéroport"), "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
+        {"code" : "port", "label" : _(u"Port"), "ctrl" : "CTRL_Lieux(self, categorie='port')" },
+        #{"code" : "station", "label" : _(u"Station"), "ctrl" : "CTRL_Lieux(self, categorie='station')" },
         
-        {"code" : "localisation", "label" : u"Localisation", "ctrl" : "CTRL_Localisation(self)" },
+        {"code" : "localisation", "label" : _(u"Localisation"), "ctrl" : "CTRL_Localisation(self)" },
         ],
 
     "arrivee" : [
-        {"code" : "date_heure", "label" : u"Heure", "ctrl" : "CTRL_DateHeure(self)" },
+        {"code" : "date_heure", "label" : _(u"Heure"), "ctrl" : "CTRL_DateHeure(self)" },
         
-        {"code" : "arret_bus", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
-        {"code" : "arret_car", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='car')" },
-        {"code" : "arret_navette", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
-        {"code" : "arret_bateau", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
-        {"code" : "arret_metro", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
-        {"code" : "arret_pedibus", "label" : u"Arrêt", "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
+        {"code" : "arret_bus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bus')" },
+        {"code" : "arret_car", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='car')" },
+        {"code" : "arret_navette", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='navette')" },
+        {"code" : "arret_bateau", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='bateau')" },
+        {"code" : "arret_metro", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='metro')" },
+        {"code" : "arret_pedibus", "label" : _(u"Arrêt"), "ctrl" : "CTRL_Arrets(self, categorie='pedibus')" },
         
-        {"code" : "gare", "label" : u"Gare", "ctrl" : "CTRL_Lieux(self, categorie='gare')" },
-        {"code" : "aeroport", "label" : u"Aéroport", "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
-        {"code" : "port", "label" : u"Port", "ctrl" : "CTRL_Lieux(self, categorie='port')" },
-        #{"code" : "station", "label" : u"Station", "ctrl" : "CTRL_Lieux(self, categorie='station')" },
+        {"code" : "gare", "label" : _(u"Gare"), "ctrl" : "CTRL_Lieux(self, categorie='gare')" },
+        {"code" : "aeroport", "label" : _(u"Aéroport"), "ctrl" : "CTRL_Lieux(self, categorie='aeroport')" },
+        {"code" : "port", "label" : _(u"Port"), "ctrl" : "CTRL_Lieux(self, categorie='port')" },
+        #{"code" : "station", "label" : _(u"Station"), "ctrl" : "CTRL_Lieux(self, categorie='station')" },
         
-        {"code" : "localisation", "label" : u"Localisation", "ctrl" : "CTRL_Localisation(self)" },
+        {"code" : "localisation", "label" : _(u"Localisation"), "ctrl" : "CTRL_Localisation(self)" },
         ],
         
     }
@@ -88,73 +90,73 @@ DICT_CONTROLES = {
 
 DICT_CATEGORIES = {
 
-    "marche" : {   "label" : u"Marche", "image" : "Marche", "type" : "localisations", "controles" : {
+    "marche" : {   "label" : _(u"Marche"), "image" : "Marche", "type" : "localisations", "controles" : {
                                     "generalites" : ["observations",],
                                     "depart" : ["date_heure", "localisation",],
                                     "arrivee" : ["date_heure", "localisation",],
                                     },},
 
-    "velo" : {   "label" : u"Vélo", "image" : "Velo", "type" : "localisations", "controles" : {
+    "velo" : {   "label" : _(u"Vélo"), "image" : "Velo", "type" : "localisations", "controles" : {
                                     "generalites" : ["observations",],
                                     "depart" : ["date_heure", "localisation",],
                                     "arrivee" : ["date_heure", "localisation",],
                                     },},
 
-    "voiture" : {   "label" : u"Voiture", "image" : "Voiture", "type" : "localisations", "controles" : {
+    "voiture" : {   "label" : _(u"Voiture"), "image" : "Voiture", "type" : "localisations", "controles" : {
                                     "generalites" : ["observations",],
                                     "depart" : ["date_heure", "localisation",],
                                     "arrivee" : ["date_heure", "localisation",],
                                     },},
 
-    "bus" : {       "label" : u"Bus", "image" : "Bus", "type" : "lignes", "controles" : {
+    "bus" : {       "label" : _(u"Bus"), "image" : "Bus", "type" : "lignes", "controles" : {
                                     "generalites" : [ "compagnie_bus", "ligne_bus", "observations"],
                                     "depart" : [ "date_heure", "arret_bus"],
                                     "arrivee" : [ "date_heure", "arret_bus"],
                                     },},
 
-    "car" : {       "label" : u"Car", "image" : "Car", "type" : "lignes", "controles" : {
+    "car" : {       "label" : _(u"Car"), "image" : "Car", "type" : "lignes", "controles" : {
                                     "generalites" : [ "compagnie_car", "ligne_car", "observations"],
                                     "depart" : [ "date_heure", "arret_car"],
                                     "arrivee" : [ "date_heure", "arret_car"],
                                     },},
 
-    "navette" : {       "label" : u"Navette", "image" : "Navette", "type" : "lignes", "controles" : {
+    "navette" : {       "label" : _(u"Navette"), "image" : "Navette", "type" : "lignes", "controles" : {
                                     "generalites" : [ "compagnie_navette", "ligne_navette", "observations"],
                                     "depart" : [ "date_heure", "arret_navette"],
                                     "arrivee" : [ "date_heure", "arret_navette"],
                                     },},
 
-    "taxi" : {          "label" : u"Taxi", "image" : "Taxi", "type" : "localisations", "controles" : {
+    "taxi" : {          "label" : _(u"Taxi"), "image" : "Taxi", "type" : "localisations", "controles" : {
                                     "generalites" : [ "compagnie_taxi", "observations"],
                                     "depart" : [ "date_heure", "localisation"],
                                     "arrivee" : [ "date_heure", "localisation"],
                                     },},
 
-    "avion" : {      "label" : u"Avion", "image" : "Avion", "type" : "lieux", "controles" : {
+    "avion" : {      "label" : _(u"Avion"), "image" : "Avion", "type" : "lieux", "controles" : {
                                     "generalites" : [ "compagnie_avion", "numero_avion", "details", "observations"],
                                     "depart" : [ "date_heure", "aeroport"],
                                     "arrivee" : [ "date_heure", "aeroport"],
                                     },},
 
-    "bateau" : {      "label" : u"Bateau", "image" : "Bateau", "type" : "lieux", "controles" : {
+    "bateau" : {      "label" : _(u"Bateau"), "image" : "Bateau", "type" : "lieux", "controles" : {
                                     "generalites" : [ "compagnie_bateau", "details", "observations"],
                                     "depart" : [ "date_heure", "port"],
                                     "arrivee" : [ "date_heure", "port"],
                                     },},
 
-    "train" : {      "label" : u"Train", "image" : "Train", "type" : "lieux", "controles" : {
+    "train" : {      "label" : _(u"Train"), "image" : "Train", "type" : "lieux", "controles" : {
                                     "generalites" : [ "compagnie_train", "numero_train", "details", "observations"],
                                     "depart" : [ "date_heure", "gare"],
                                     "arrivee" : [ "date_heure", "gare"],
                                     },},
 
-    "metro" : {      "label" : u"Métro", "image" : "Metro", "type" : "lignes", "controles" : {
+    "metro" : {      "label" : _(u"Métro"), "image" : "Metro", "type" : "lignes", "controles" : {
                                     "generalites" : [ "compagnie_metro", "ligne_metro", "observations"],
                                     "depart" : [ "date_heure", "arret_metro"],
                                     "arrivee" : [ "date_heure", "arret_metro"],
                                     },},
 
-    "pedibus" : {      "label" : u"Pédibus", "image" : "Pedibus", "type" : "lignes", "controles" : {
+    "pedibus" : {      "label" : _(u"Pédibus"), "image" : "Pedibus", "type" : "lignes", "controles" : {
                                     "generalites" : [ "ligne_pedibus", "observations"],
                                     "depart" : [ "date_heure", "arret_pedibus"],
                                     "arrivee" : [ "date_heure", "arret_pedibus"],
@@ -176,7 +178,7 @@ class CTRL_Choix_arrets(wx.Choice):
         self.IDligne = IDligne
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(u"Sélectionnez ici un arrêt")
+        self.SetToolTipString(_(u"Sélectionnez ici un arrêt"))
     
     def MAJ(self, IDligne=0):
         if IDligne == None : IDligne = 0
@@ -199,7 +201,7 @@ class CTRL_Choix_arrets(wx.Choice):
         db.Close()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for IDarret, nom in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDarret, "nom " : nom}
@@ -231,7 +233,7 @@ class CTRL_Arrets(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(u"Cliquez ici pour accéder au paramétrage des arrêts")
+        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des arrêts"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_arrets, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -288,7 +290,7 @@ class CTRL_Choix_lignes(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(u"Sélectionnez ici une ligne")
+        self.SetToolTipString(_(u"Sélectionnez ici une ligne"))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -309,7 +311,7 @@ class CTRL_Choix_lignes(wx.Choice):
         db.Close()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for IDligne, nom in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDligne, "nom " : nom}
@@ -342,7 +344,7 @@ class CTRL_Lignes(wx.Panel):
         self.Bind(wx.EVT_CHOICE, self.OnChoix, self.ctrl_lignes)
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(u"Cliquez ici pour accéder au paramétrage des lignes")
+        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des lignes"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_lignes, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -444,7 +446,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.parent = parent
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(u"Sélectionnez ici une activité")
+        self.SetToolTipString(_(u"Sélectionnez ici une activité"))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -492,7 +494,7 @@ class CTRL_Localisation_activite(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Choix_activite(self)
         
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -515,7 +517,7 @@ class CTRL_Localisation_activite(wx.Panel):
 
     def Validation(self):
         if self.ctrl_activite.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.SetFocus()
@@ -531,7 +533,7 @@ class CTRL_Choix_ecole(wx.Choice):
         self.parent = parent
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(u"Sélectionnez ici une école")
+        self.SetToolTipString(_(u"Sélectionnez ici une école"))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -579,7 +581,7 @@ class CTRL_Localisation_ecole(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.label_ecole = wx.StaticText(self, -1, u"Ecole :")
+        self.label_ecole = wx.StaticText(self, -1, _(u"Ecole :"))
         self.ctrl_ecole = CTRL_Choix_ecole(self)
         
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -602,7 +604,7 @@ class CTRL_Localisation_ecole(wx.Panel):
 
     def Validation(self):
         if self.ctrl_ecole.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune école !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune école !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.SetFocus()
@@ -622,12 +624,12 @@ class CTRL_Localisation_autre(wx.Panel):
         self.cp = u""
         self.ville = u""
         
-        self.label_adresse = wx.StaticText(self, -1, u"Adresse :")
+        self.label_adresse = wx.StaticText(self, -1, _(u"Adresse :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, u"", style=wx.TE_READONLY)
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour saisir ou modifier l'adresse")
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour saisir ou modifier l'adresse"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_base.Add(self.label_adresse, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
@@ -680,14 +682,14 @@ class CTRL_Localisation(wx.Choicebook):
     def __init__(self, parent):
         wx.Choicebook.__init__(self, parent, id=-1)
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez ici une localisation")
+        self.SetToolTipString(_(u"Sélectionnez ici une localisation"))
         
         self.listePanels = [
-            ("DOMI", u"Domicile de l'individu", CTRL_Localisation_domicile(self) ),
-            ("ACTI", u"Une activité", CTRL_Localisation_activite(self) ),
-            ("ECOL", u"Une école", CTRL_Localisation_ecole(self) ),
-            #("CONT", u"Contact du carnet d'adresses", wx.Panel(self, -1) ),
-            ("AUTR", u"Autre", CTRL_Localisation_autre(self) ),
+            ("DOMI", _(u"Domicile de l'individu"), CTRL_Localisation_domicile(self) ),
+            ("ACTI", _(u"Une activité"), CTRL_Localisation_activite(self) ),
+            ("ECOL", _(u"Une école"), CTRL_Localisation_ecole(self) ),
+            #("CONT", _(u"Contact du carnet d'adresses"), wx.Panel(self, -1) ),
+            ("AUTR", _(u"Autre"), CTRL_Localisation_autre(self) ),
             ]
         
         for code, label, ctrl in self.listePanels :
@@ -733,7 +735,7 @@ class CTRL_DateHeure(wx.Panel):
         self.parent = parent
         
         self.ctrl_heure = CTRL_Saisie_heure.Heure(self)
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -774,25 +776,25 @@ class CTRL_DateHeure(wx.Panel):
         return self.ctrl_heure.GetHeure()
 
     def Validation(self):
-        if self.rubrique == "depart" : nomTemp = u"de départ"
-        if self.rubrique == "arrivee" : nomTemp = u"d'arrivée"
+        if self.rubrique == "depart" : nomTemp = _(u"de départ")
+        if self.rubrique == "arrivee" : nomTemp = _(u"d'arrivée")
 
         if self.GetDate() == None  and self.ctrl_date.IsShown() :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date %s !" % nomTemp, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
         
         if self.GetDate() != None and self.ctrl_date.Validation() == False and self.ctrl_date.IsEnabled():
-            dlg = wx.MessageDialog(self, u"Veuillez vérifier la cohérence de la date %s !" % nomTemp, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la cohérence de la date %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
             return False
         
         if self.GetHeure() != None and self.ctrl_heure.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Veuillez vérifier la cohérence de l'heure %s !" % nomTemp, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la cohérence de l'heure %s !") % nomTemp, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure.SetFocus()
@@ -819,7 +821,7 @@ class CTRL_Details(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        self.SetToolTipString(u"Saisissez ici les détails concernant ce transport (Ex : numéro de place, classe, etc...)")
+        self.SetToolTipString(_(u"Saisissez ici les détails concernant ce transport (Ex : numéro de place, classe, etc...)"))
     
     def SetDetails(self, details=""):
         if details == None : details = ""
@@ -848,7 +850,7 @@ class CTRL_Observations(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1), style=wx.TE_MULTILINE) 
         self.parent = parent
-        self.SetToolTipString(u"Saisissez ici des observations")
+        self.SetToolTipString(_(u"Saisissez ici des observations"))
     
     def SetObservations(self, observations=""):
         if observations == None : observations = ""
@@ -877,8 +879,8 @@ class CTRL_Numero(wx.TextCtrl):
     def __init__(self, parent, categorie="avion"):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        if categorie == "avion" : self.SetToolTipString(u"Saisissez ici le numéro du vol")
-        if categorie == "train" : self.SetToolTipString(u"Saisissez ici le numéro du train")
+        if categorie == "avion" : self.SetToolTipString(_(u"Saisissez ici le numéro du vol"))
+        if categorie == "train" : self.SetToolTipString(_(u"Saisissez ici le numéro du train"))
     
     def SetNumero(self, numero=""):
         if numero == None : numero = ""
@@ -910,7 +912,7 @@ class CTRL_Choix_compagnies(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(u"Sélectionnez ici une compagnie")
+        self.SetToolTipString(_(u"Sélectionnez ici une compagnie"))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -931,7 +933,7 @@ class CTRL_Choix_compagnies(wx.Choice):
         db.Close()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for IDcompagnie, nom, rue, cp, ville, tel, fax, mail in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDcompagnie, "nom " : nom}
@@ -963,7 +965,7 @@ class CTRL_Compagnies(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(u"Cliquez ici pour accéder au paramétrage des compagnies")
+        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des compagnies"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_compagnies, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -1015,7 +1017,7 @@ class CTRL_Choix_lieux(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(u"Sélectionnez ici un lieu")
+        self.SetToolTipString(_(u"Sélectionnez ici un lieu"))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -1036,7 +1038,7 @@ class CTRL_Choix_lieux(wx.Choice):
         db.Close()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for IDlieu, nom, cp, ville in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDlieu, "nom " : nom}
@@ -1068,7 +1070,7 @@ class CTRL_Lieux(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(u"Cliquez ici pour accéder au paramétrages des lieux")
+        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrages des lieux"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_lieux, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -1127,7 +1129,7 @@ class CTRL_Categorie(wx.combo.BitmapComboBox):
         self.MAJlisteDonnees() 
         if len(self.dictDonnees) > 0 :
             self.SetSelection(0)
-        self.SetToolTipString(u"Sélectionnez ici un moyen de locomotion")
+        self.SetToolTipString(_(u"Sélectionnez ici un moyen de locomotion"))
     
     def MAJlisteDonnees(self):
         listeItems = self.GetListeDonnees()
@@ -1186,13 +1188,13 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_COMBOBOX, self.OnChoixCategorie, self.ctrl_categorie)
         
         # Généralités
-        self.CreationControles(rubrique="generalites", label=u"Généralités")
+        self.CreationControles(rubrique="generalites", label=_(u"Généralités"))
 
         # Départ
-        self.CreationControles(rubrique="depart", label=u"Départ")
+        self.CreationControles(rubrique="depart", label=_(u"Départ"))
         
         # Arrivée
-        self.CreationControles(rubrique="arrivee", label=u"Arrivée")
+        self.CreationControles(rubrique="arrivee", label=_(u"Arrivée"))
         
         # Verouillage boutons de gestion
         if verrouilleBoutons == True :
@@ -1213,7 +1215,7 @@ class CTRL(wx.Panel):
                 self.Importation() 
 
 
-    def CreationControles(self, rubrique="generalites", label=u"Généralités"):
+    def CreationControles(self, rubrique="generalites", label=_(u"Généralités")):
         box = wx.StaticBox(self, -1, label)
         boxSizer = wx.StaticBoxSizer(box, wx.VERTICAL)
         grid_sizer = wx.FlexGridSizer(rows=18, cols=2, vgap=10, hgap=10)
@@ -1416,30 +1418,30 @@ class CTRL(wx.Panel):
                 # Fériés
                 if parametres["feries"] == False :
                     if joursSpeciaux.RechercheJourFerie(date) == True :
-                        liste_problemes.append((date, u"Jour férié"))
+                        liste_problemes.append((date, _(u"Jour férié")))
                         valide = False
                 
                 # Jour de présence
                 if parametres["activite"] != None :
                     if date not in listeDatesPresences :
-                        liste_problemes.append((date, u"Non inscrit à l'activité spécifiée"))
+                        liste_problemes.append((date, _(u"Non inscrit à l'activité spécifiée")))
                         valide = False
                 
                 if valide == True :
                     liste_dates_retenues.append(date)
             
             if len(liste_dates_retenues) == 0 :
-                dlg = wx.MessageDialog(self, u"Désolé mais il n'y a aucune date valide avec les paramètres que vous avez spécifié !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Désolé mais il n'y a aucune date valide avec les paramètres que vous avez spécifié !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
 
             # Demande de confirmation des dates
             if len(liste_dates_retenues) > 1 :
-                label = u"dates"
+                label = _(u"dates")
             else :
-                label = u"date"
-            dlg = wx.MessageDialog(self, u"Confirmez-vous la saisie de ce transport sur %d %s ?" % (len(liste_dates_retenues), label), u"Demande de confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+                label = _(u"date")
+            dlg = wx.MessageDialog(self, _(u"Confirmez-vous la saisie de ce transport sur %d %s ?") % (len(liste_dates_retenues), label), _(u"Demande de confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -1553,7 +1555,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel, IDtransport=1, IDindividu=46)
         self.ctrl.VerrouilleBoutonsGestion() 
-        bouton_test = wx.Button(panel, -1, u"TEST")
+        bouton_test = wx.Button(panel, -1, _(u"TEST"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(bouton_test, 0, wx.ALL|wx.EXPAND, 4)

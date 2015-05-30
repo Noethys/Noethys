@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -21,8 +23,8 @@ except: pass
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -42,16 +44,16 @@ class Dialog(wx.Dialog):
             self.defaut = 0
 
         # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, u"Généralités")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_type = wx.StaticText(self, -1, u"Type :")
-        self.ctrl_type = wx.Choice(self, -1, choices=[u"Cotisation familiale", u"Cotisation individuelle"])
+        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
+        self.ctrl_type = wx.Choice(self, -1, choices=[_(u"Cotisation familiale"), _(u"Cotisation individuelle")])
         self.ctrl_type.Select(0)
-        self.ctrl_carte = wx.CheckBox(self, -1, u"Est représentée par une carte d'adhérent")
+        self.ctrl_carte = wx.CheckBox(self, -1, _(u"Est représentée par une carte d'adhérent"))
 
         # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, u"Unités")
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
         self.ctrl_unites = OL_Unites_cotisations.ListView(self, IDtype_cotisation=self.IDtype_cotisation, id=-1, name="OL_Unites_cotisations", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
 
         self.bouton_ajouter_unite = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -60,13 +62,13 @@ class Dialog(wx.Dialog):
         self.bouton_defaut = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY))
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.label_code_comptable = wx.StaticText(self, -1, u"Code comptable :")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code comptable :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -79,26 +81,26 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.SetDefaut, self.bouton_defaut)
         
         if self.IDtype_cotisation == None :
-            self.SetTitle(u"Saisie d'un type de cotisation")
+            self.SetTitle(_(u"Saisie d'un type de cotisation"))
             self.ctrl_unites.MAJ() 
         else:
-            self.SetTitle(u"Modification d'un type de cotisation")
+            self.SetTitle(_(u"Modification d'un type de cotisation"))
             self.Importation()
             
             
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de la cotisation")
-        self.ctrl_type.SetToolTipString(u"Sélectionnez ici le type de la cotisation")
-        self.ctrl_carte.SetToolTipString(u"Cochez cette case si la cotisation est représentée par une carte d'adhérent")
-        self.bouton_ajouter_unite.SetToolTipString(u"Cliquez ici pour ajouter une unité")
-        self.bouton_modifier_unite.SetToolTipString(u"Cliquez ici pour modifier l'unité sélectionnée dans la liste")
-        self.bouton_supprimer_unite.SetToolTipString(u"Cliquez ici pour supprimer l'unité sélectionnée dans la liste")
-        self.bouton_defaut.SetToolTipString(u"Cliquez ici pour définir l'unité de cotisation sélectionnée comme celle par défaut")
-        self.ctrl_code_comptable.SetToolTipString(u"Saisissez un code comptable pour cette cotisation si vous souhaitez exporter les écritures comptables vers des logiciels de compta")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de la cotisation"))
+        self.ctrl_type.SetToolTipString(_(u"Sélectionnez ici le type de la cotisation"))
+        self.ctrl_carte.SetToolTipString(_(u"Cochez cette case si la cotisation est représentée par une carte d'adhérent"))
+        self.bouton_ajouter_unite.SetToolTipString(_(u"Cliquez ici pour ajouter une unité"))
+        self.bouton_modifier_unite.SetToolTipString(_(u"Cliquez ici pour modifier l'unité sélectionnée dans la liste"))
+        self.bouton_supprimer_unite.SetToolTipString(_(u"Cliquez ici pour supprimer l'unité sélectionnée dans la liste"))
+        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir l'unité de cotisation sélectionnée comme celle par défaut"))
+        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez un code comptable pour cette cotisation si vous souhaitez exporter les écritures comptables vers des logiciels de compta"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((510, 590))
 
     def __do_layout(self):
@@ -234,7 +236,7 @@ class Dialog(wx.Dialog):
         
         # Vérification des données
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour ce type de cotisation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -245,7 +247,7 @@ class Dialog(wx.Dialog):
             if dictUnite["etat"] != "SUPPR" :
                 nbreUnites += 1
         if nbreUnites == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir au moins une unité de cotisation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir au moins une unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

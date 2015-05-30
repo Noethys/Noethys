@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import GestionDB
 import datetime
 
@@ -84,9 +85,9 @@ class Questionnaires():
                 texteReponse = ", ".join(listeTemp2)
         if filtre == "coche" : 
             if reponse == 1 : 
-                texteReponse = u"Oui"
+                texteReponse = _(u"Oui")
             else :
-                texteReponse = u"Non"
+                texteReponse = _(u"Non")
         if filtre == "date" : texteReponse = DateEngEnDateDD(reponse)
         return texteReponse
 

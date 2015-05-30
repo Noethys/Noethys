@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import CTRL_Saisie_euros
 
@@ -19,18 +21,18 @@ class Dialog(wx.Dialog):
         self.IDdeduction = IDdeduction
         
         if self.IDdeduction == None :
-            self.SetTitle(u"Saisie d'une déduction")
+            self.SetTitle(_(u"Saisie d'une déduction"))
         else:
-            self.SetTitle(u"Modification d'une déduction")
+            self.SetTitle(_(u"Modification d'une déduction"))
         
         self.staticbox_staticbox = wx.StaticBox(self, -1, u"")
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, font=wx.Font(13, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -38,10 +40,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(u"Saisissez ici un label pour cette déduction")
-        self.ctrl_montant.SetToolTipString(u"Saisissez ici le montant de la déduction")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_label.SetToolTipString(_(u"Saisissez ici un label pour cette déduction"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant de la déduction"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((400, -1))
 
     def __do_layout(self):
@@ -82,14 +84,14 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Vérification des données
         if self.GetLabel() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un label !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
             return
 
         if self.GetMontant() == None or self.GetMontant() == 0.0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

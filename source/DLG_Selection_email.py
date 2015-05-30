@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import GestionDB
 import CTRL_Saisie_mail
@@ -47,9 +49,9 @@ class CTRL_Membre(wx.ListBox):
         listeAdresses = []
         for IDindividu, IDcategorie, nom, prenom, mailPerso, mailTravail in listeDonnees :
             if mailPerso != None and mailPerso != "" :
-                listeAdresses.append((u"%s (Adresse perso de %s)" % (mailPerso, prenom), mailPerso, IDindividu, "perso"))
+                listeAdresses.append((_(u"%s (Adresse perso de %s)") % (mailPerso, prenom), mailPerso, IDindividu, "perso"))
             if mailTravail != None and mailTravail != "" :
-                listeAdresses.append((u"%s (Adresse pro de %s)" % (mailTravail, prenom), mailTravail, IDindividu, "travail"))
+                listeAdresses.append((_(u"%s (Adresse pro de %s)") % (mailTravail, prenom), mailTravail, IDindividu, "travail"))
 
         # Remplissage du contrôle
         listeItems = []
@@ -87,23 +89,23 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
         
         # Activation
-        self.box_activation_staticbox = wx.StaticBox(self, -1, u"Activation")
-        self.label_activation = wx.StaticText(self, -1, u"Envoi par Email activé :")
-        self.radio_activation_oui = wx.RadioButton(self, -1, u"Oui", style=wx.RB_GROUP)
-        self.radio_activation_non = wx.RadioButton(self, -1, u"Non")
+        self.box_activation_staticbox = wx.StaticBox(self, -1, _(u"Activation"))
+        self.label_activation = wx.StaticText(self, -1, _(u"Envoi par Email activé :"))
+        self.radio_activation_oui = wx.RadioButton(self, -1, _(u"Oui"), style=wx.RB_GROUP)
+        self.radio_activation_non = wx.RadioButton(self, -1, _(u"Non"))
                 
         # Adresse
-        self.box_adresse_staticbox = wx.StaticBox(self, -1, u"Adresse Email")
-        self.radio_membre = wx.RadioButton(self, -1, u"L'adresse du membre :", style=wx.RB_GROUP)
+        self.box_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse Email"))
+        self.radio_membre = wx.RadioButton(self, -1, _(u"L'adresse du membre :"), style=wx.RB_GROUP)
         self.ctrl_membre = CTRL_Membre(self, IDfamille=IDfamille)
         self.ctrl_membre.SetMinSize((380, 100))
-        self.radio_autre = wx.RadioButton(self, -1, u"L'adresse suivante :")
+        self.radio_autre = wx.RadioButton(self, -1, _(u"L'adresse suivante :"))
         self.ctrl_autre = CTRL_Saisie_mail.Mail(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -121,15 +123,15 @@ class Dialog(wx.Dialog):
         self.OnRadioAdresse(None)
 
     def __set_properties(self):
-        self.radio_activation_oui.SetToolTipString(u"Cliquez ici pour activer l'envoi par Email")
-        self.radio_activation_non.SetToolTipString(u"Cliquez ici pour désactiver l'envoi par Email")
-        self.radio_membre.SetToolTipString(u"Cliquez ici pour sélectionner l'adresse Email d'un membre de la famille")
-        self.ctrl_membre.SetToolTipString(u"Sélectionnez ici l'adresse Email d'un membre de la famille")
-        self.radio_autre.SetToolTipString(u"Cliquez ici pour saisir manuellement une adresse Email")
-        self.ctrl_autre.SetToolTipString(u"Saisissez une adresse Email")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.radio_activation_oui.SetToolTipString(_(u"Cliquez ici pour activer l'envoi par Email"))
+        self.radio_activation_non.SetToolTipString(_(u"Cliquez ici pour désactiver l'envoi par Email"))
+        self.radio_membre.SetToolTipString(_(u"Cliquez ici pour sélectionner l'adresse Email d'un membre de la famille"))
+        self.ctrl_membre.SetToolTipString(_(u"Sélectionnez ici l'adresse Email d'un membre de la famille"))
+        self.radio_autre.SetToolTipString(_(u"Cliquez ici pour saisir manuellement une adresse Email"))
+        self.ctrl_autre.SetToolTipString(_(u"Saisissez une adresse Email"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -227,7 +229,7 @@ class Dialog(wx.Dialog):
                 adresse = ""
                 
                 if IDindividu == None :
-                    dlg = wx.MessageDialog(self, u"Activation impossible !\n\nVous devez sélectionner un membre.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Activation impossible !\n\nVous devez sélectionner un membre."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_autre.SetFocus()
@@ -238,14 +240,14 @@ class Dialog(wx.Dialog):
                 adresse = self.ctrl_autre.GetValue()
 
                 if ";" in adresse :
-                    dlg = wx.MessageDialog(self, u"Vous ne pouvez pas utiliser de point-virgule (;) dans l'adresse !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas utiliser de point-virgule (;) dans l'adresse !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_autre.SetFocus()
                     return
 
                 if adresse == "" :
-                    dlg = wx.MessageDialog(self, u"Activation impossible !\n\nVous devez saisir une adresse Email.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Activation impossible !\n\nVous devez saisir une adresse Email."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_autre.SetFocus()
@@ -253,7 +255,7 @@ class Dialog(wx.Dialog):
 
                 valide, messageErreur = self.ctrl_autre.Validation()
                 if valide == False :
-                    dlg = wx.MessageDialog(self, u"Activation impossible !\n\nL'adresse email saisie n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Activation impossible !\n\nL'adresse email saisie n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_autre.SetFocus()
@@ -261,7 +263,7 @@ class Dialog(wx.Dialog):
         
         else :
             # Pas d'activation
-            dlg = wx.MessageDialog(None, u"Vous confirmez que vous ne souhaitez pas activer cette fonctionnalité ?", u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Vous confirmez que vous ne souhaitez pas activer cette fonctionnalité ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :

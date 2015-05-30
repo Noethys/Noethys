@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Dates
@@ -82,16 +84,16 @@ class ListView(FastObjectListView):
             return UTILS_Dates.DateComplete(dateDD)
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 50, "IDconso"),
-            ColumnDefn(u"Date", 'left', 150, "date", stringConverter=FormateDate),
-            ColumnDefn(u"Individu", "left", 180, "individu"),
-            ColumnDefn(u"Activité", "left", 160, "nomActivite"),
-            ColumnDefn(u"Unité", "left", 160, "nomUnite"),
+            ColumnDefn(_(u"ID"), "left", 50, "IDconso"),
+            ColumnDefn(_(u"Date"), 'left', 150, "date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Individu"), "left", 180, "individu"),
+            ColumnDefn(_(u"Activité"), "left", 160, "nomActivite"),
+            ColumnDefn(_(u"Unité"), "left", 160, "nomUnite"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune consommation")
+        self.SetEmptyListMsg(_(u"Aucune consommation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -120,13 +122,13 @@ class ListView(FastObjectListView):
     def Deverrouillage(self):
         nbreCoches = len(self.GetTracksCoches())
         if nbreCoches == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune consommation à déverrouiller !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune consommation à déverrouiller !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment déverrouiller les %d consommations cochées ?" % nbreCoches, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment déverrouiller les %d consommations cochées ?") % nbreCoches, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return
@@ -148,7 +150,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une information...")
+        self.SetDescriptiveText(_(u"Rechercher une information..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

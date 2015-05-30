@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Pieces
 import CTRL_Pieces_obligatoires
 import OL_Liste_cotisations
@@ -22,13 +24,13 @@ class Panel(wx.Panel):
         self.dictFamillesRattachees = dictFamillesRattachees
 
         # Pièces à fournir
-        self.staticbox_pieces_obligatoires = wx.StaticBox(self, -1, u"Pièces à fournir")
+        self.staticbox_pieces_obligatoires = wx.StaticBox(self, -1, _(u"Pièces à fournir"))
         self.ctrl_pieces_obligatoires = CTRL_Pieces_obligatoires.CTRL(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, largeurColonne=140)
         self.ctrl_pieces_obligatoires.SetBackgroundColour("#F0FBED")
         self.ctrl_pieces_obligatoires.SetMinSize((150, 50))
         
         # Pièces fournies
-        self.staticbox_pieces = wx.StaticBox(self, -1, u"Pièces fournies")
+        self.staticbox_pieces = wx.StaticBox(self, -1, _(u"Pièces fournies"))
         self.ctrl_pieces = OL_Pieces.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, id=-1, name="OL_pieces", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_pieces.SetMinSize((150, 50))
         
@@ -37,7 +39,7 @@ class Panel(wx.Panel):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Cotisations individuelles
-        self.staticbox_cotisations = wx.StaticBox(self, -1, u"Cotisations familiales et individuelles")
+        self.staticbox_cotisations = wx.StaticBox(self, -1, _(u"Cotisations familiales et individuelles"))
         codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom"]
         checkColonne = True
         triColonne = "date_debut"
@@ -56,12 +58,12 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer_Cotisation, self.bouton_supprimer_cotisation)
 
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir une pièce")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la pièce sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la pièce sélectionnée")
-        self.bouton_ajouter_cotisation.SetToolTipString(u"Cliquez ici pour saisir une cotisation individuelle")
-        self.bouton_modifier_cotisation.SetToolTipString(u"Cliquez ici pour modifier la cotisation individuelle sélectionnée")
-        self.bouton_supprimer_cotisation.SetToolTipString(u"Cliquez ici pour supprimer la cotisation individuelle sélectionnée")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une pièce"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la pièce sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la pièce sélectionnée"))
+        self.bouton_ajouter_cotisation.SetToolTipString(_(u"Cliquez ici pour saisir une cotisation individuelle"))
+        self.bouton_modifier_cotisation.SetToolTipString(_(u"Cliquez ici pour modifier la cotisation individuelle sélectionnée"))
+        self.bouton_supprimer_cotisation.SetToolTipString(_(u"Cliquez ici pour supprimer la cotisation individuelle sélectionnée"))
 
         # --- Layout ---
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -176,7 +178,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

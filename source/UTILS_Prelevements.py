@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import datetime
 import string
 from xml.dom.minidom import Document
@@ -20,8 +21,8 @@ def GetLigneEmetteur(dictDonnees={}) :
         "type_prelevement" : u"0308",
         "numero_emetteur" : u"222222",
         "date" : datetime.date.today(),
-        "raison_sociale" : u"CENTRE SOCIAL",
-        "reference_virement" : u"VIR.ALSH",
+        "raison_sociale" : _(u"CENTRE SOCIAL"),
+        "reference_virement" : _(u"VIR.ALSH"),
         "monnaie" : u"E",
         "numero_guichet" : u"02902",
         "numero_compte" : u"01234567895",
@@ -56,12 +57,12 @@ def GetLigneDestinataire(dictDonnees={}) :
         "type_prelevement" : u"0608",
         "numero_emetteur" : u"222222",
         "reference_ligne" : u"1",
-        "nom_destinataire" : u"S.A Matériaux plus",
-        "nom_banque" : u"Crédit agricole",
+        "nom_destinataire" : _(u"S.A Matériaux plus"),
+        "nom_banque" : _(u"Crédit agricole"),
         "numero_guichet" : u"02902",
         "numero_compte" : u"01234567895",
         "montant" : u"1201",
-        "libelle" : u"Vir. facture 12345",
+        "libelle" : _(u"Vir. facture 12345"),
         "numero_etablissement" : u"12345",
         }
     """

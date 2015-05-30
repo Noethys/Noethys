@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Transports
 import OL_Transports_prog
 
@@ -21,7 +23,7 @@ class Panel(wx.Panel):
         self.dictFamillesRattachees = dictFamillesRattachees
         
         # Transports programmés
-        self.staticbox_prog = wx.StaticBox(self, -1, u"Programmation de transports")
+        self.staticbox_prog = wx.StaticBox(self, -1, _(u"Programmation de transports"))
         self.ctrl_prog_transports = OL_Transports_prog.ListView(self, IDindividu=IDindividu, id=-1, name="OL_prog_transports", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_prog_transports.SetMinSize((150, 20))
         
@@ -30,7 +32,7 @@ class Panel(wx.Panel):
         self.bouton_prog_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
         # Liste des transports
-        self.staticbox_liste = wx.StaticBox(self, -1, u"Transports")
+        self.staticbox_liste = wx.StaticBox(self, -1, _(u"Transports"))
         self.ctrl_liste_transports = OL_Transports.ListView(self, IDindividu=IDindividu, id=-1, name="OL_liste_transports", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_liste_transports.SetMinSize((150, 20))
         
@@ -52,13 +54,13 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_liste_calendrier)
 
         # Propriétés
-        self.bouton_prog_ajouter.SetToolTipString(u"Cliquez ici pour programmer un transport")
-        self.bouton_prog_modifier.SetToolTipString(u"Cliquez ici pour modifier la programmation sélectionnée dans la liste")
-        self.bouton_prog_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la programmation sélectionnée dans la liste")
-        self.bouton_liste_ajouter.SetToolTipString(u"Cliquez ici pour saisir un ou plusieurs transports")
-        self.bouton_liste_modifier.SetToolTipString(u"Cliquez ici pour modifier le transport sélectionné dans la liste")
-        self.bouton_liste_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le transport sélectionné ou les transports cochés dans la liste")
-        self.bouton_liste_calendrier.SetToolTipString(u"Cliquez ici pour afficher le planning des transports")
+        self.bouton_prog_ajouter.SetToolTipString(_(u"Cliquez ici pour programmer un transport"))
+        self.bouton_prog_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la programmation sélectionnée dans la liste"))
+        self.bouton_prog_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la programmation sélectionnée dans la liste"))
+        self.bouton_liste_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un ou plusieurs transports"))
+        self.bouton_liste_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le transport sélectionné dans la liste"))
+        self.bouton_liste_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le transport sélectionné ou les transports cochés dans la liste"))
+        self.bouton_liste_calendrier.SetToolTipString(_(u"Cliquez ici pour afficher le planning des transports"))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -159,7 +161,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

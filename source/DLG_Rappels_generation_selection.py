@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import traceback
 import sys
@@ -53,7 +55,7 @@ class Panel(wx.Panel):
         self.parent = parent
         
         # Textes
-        self.box_textes_staticbox = wx.StaticBox(self, -1, u"Textes de rappels")
+        self.box_textes_staticbox = wx.StaticBox(self, -1, _(u"Textes de rappels"))
         
         self.ctrl_textes = OL_Textes_rappels.ListView(self, id=-1, name="OL_textes_rappels", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_textes.SetMinSize((-1, 90))
@@ -64,13 +66,13 @@ class Panel(wx.Panel):
         self.bouton_supprimer_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
         # Rappels disponibles
-        self.box_rappels_staticbox = wx.StaticBox(self, -1, u"Lettres de rappel")
+        self.box_rappels_staticbox = wx.StaticBox(self, -1, _(u"Lettres de rappel"))
         self.ctrl_rappels = CTRL_Rappels_generation_selection.CTRL(self)
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         
-        self.hyper_select_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_select_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_selection_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_selection_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
         self.__set_properties()
         self.__do_layout()
@@ -81,10 +83,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimerTexte, self.bouton_supprimer_texte)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu PDF de la lettre de rappel sélectionnée")
-        self.bouton_ajouter_texte.SetToolTipString(u"Cliquez ici pour ajouter un texte de rappel")
-        self.bouton_modifier_texte.SetToolTipString(u"Cliquez ici pour modifier le texte sélectionné dans la liste")
-        self.bouton_supprimer_texte.SetToolTipString(u"Cliquez ici pour supprimer le texte sélectionné dans la liste")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu PDF de la lettre de rappel sélectionnée"))
+        self.bouton_ajouter_texte.SetToolTipString(_(u"Cliquez ici pour ajouter un texte de rappel"))
+        self.bouton_modifier_texte.SetToolTipString(_(u"Cliquez ici pour modifier le texte sélectionné dans la liste"))
+        self.bouton_supprimer_texte.SetToolTipString(_(u"Cliquez ici pour supprimer le texte sélectionné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -151,17 +153,17 @@ class Panel(wx.Panel):
         # Validation de la saisie
         nbreCoches = len(self.ctrl_rappels.GetCoches())
         if nbreCoches == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune lettre de rappel à générer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à générer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Demande de confirmation
         if nbreCoches == 1 :
-            texte = u"Confirmez-vous la génération de 1 lettre de rappel ?"
+            texte = _(u"Confirmez-vous la génération de 1 lettre de rappel ?")
         else :
-            texte = u"Confirmez-vous la génération de %d rappels ?" % nbreCoches
-        dlg = wx.MessageDialog(self, texte, u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            texte = _(u"Confirmez-vous la génération de %d rappels ?") % nbreCoches
+        dlg = wx.MessageDialog(self, texte, _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -186,7 +188,7 @@ class Panel(wx.Panel):
 
     def SauvegardeRappels(self):
         """ Sauvegarde des rappels """
-        dlgAttente = PBI.PyBusyInfo(u"Génération des rappels en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Génération des rappels en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
 
         # Recherche numéro de facture suivant
@@ -229,7 +231,7 @@ class Panel(wx.Panel):
         # Il reste des textes non attribués :
         if len(listeAnomalies) > 0  :
             del dlgAttente
-            dlg = wx.MessageDialog(self, u"Il reste %d lettre(s) pour lesquelles vous n'avez pas attribué de texte !" % len(listeAnomalies), u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il reste %d lettre(s) pour lesquelles vous n'avez pas attribué de texte !") % len(listeAnomalies), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -241,7 +243,7 @@ class Panel(wx.Panel):
             index = 0
             for nomTitulaires, IDcompte_payeur, dictCompte in listeComptes :
 
-                self.EcritStatusbar(u"Génération de la lettre de rappel %d sur %d..." % (index+1, len(listeComptes)))
+                self.EcritStatusbar(_(u"Génération de la lettre de rappel %d sur %d...") % (index+1, len(listeComptes)))
                 
                 # Liste des activités
                 texteActivites = ""
@@ -278,7 +280,7 @@ class Panel(wx.Panel):
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.EcritStatusbar(u"")
@@ -313,7 +315,7 @@ class MyFrame(wx.Frame):
 
         self.ctrl = Panel(panel)
         self.ctrl.MAJ()
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -329,7 +331,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

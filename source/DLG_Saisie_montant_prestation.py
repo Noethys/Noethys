@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import CTRL_Bandeau
 import CTRL_Saisie_euros
@@ -21,23 +23,23 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici saisir un montant et un label personnalisés pour la prestation qui va être créée."
-        titre = u"Prestation personnalisée"
+        intro = _(u"Vous pouvez ici saisir un montant et un label personnalisés pour la prestation qui va être créée.")
+        titre = _(u"Prestation personnalisée")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
         # Label
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, label)
         
         # Montant
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, font=wx.Font(13, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD, 0, u""), style=wx.TE_RIGHT|wx.TE_PROCESS_ENTER)
         self.ctrl_montant.SetMontant(montant)
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -51,11 +53,11 @@ class Dialog(wx.Dialog):
         self.ctrl_montant.SetFocus() 
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(u"Vous pouvez modifier ici un label personnalisé pour la prestation")
-        self.ctrl_montant.SetToolTipString(u"Saisissez ici le montant de la prestation et tapez sur la touche Entrée pour valider rapidement")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_label.SetToolTipString(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant de la prestation et tapez sur la touche Entrée pour valider rapidement"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -89,14 +91,14 @@ class Dialog(wx.Dialog):
         # Validation du montant
         validation, message = self.ctrl_montant.Validation() 
         if validation == False :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant valide pour cette prestation !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant valide pour cette prestation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
             return
         # Validation du label
         if self.ctrl_label.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un label pour cette prestation !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour cette prestation !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
@@ -120,7 +122,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None, label=u"Cinéma")
+    frame_1 = Dialog(None, label=_(u"Cinéma"))
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

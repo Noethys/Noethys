@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Activites
 import wx.lib.agw.hyperlink as Hyperlink
@@ -44,8 +46,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des activités. Une activité peut être un Accueil de Loisirs, un séjour de vacances, une cantine scolaire, une garderie périscolaire, une crèche, une activité sportive ou culturelle, etc..."
-        titre = u"Gestion des activités"
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des activités. Une activité peut être un Accueil de Loisirs, un séjour de vacances, une cantine scolaire, une garderie périscolaire, une crèche, une activité sportive ou culturelle, etc...")
+        titre = _(u"Gestion des activités")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         self.ctrl_listview = OL_Activites.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
@@ -60,10 +62,10 @@ class Dialog(wx.Dialog):
 
         # Commande télécharger
         self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap(u"Images/16x16/Updater.png", wx.BITMAP_TYPE_ANY))
-        self.hyper_telecharger = Hyperlien(self, label=u"Télécharger des paramétrages d'activités", infobulle=u"Cliquez ici pour télécharger et importer des paramétrages d'activités", URL="telecharger")
+        self.hyper_telecharger = Hyperlien(self, label=_(u"Télécharger des paramétrages d'activités"), infobulle=_(u"Cliquez ici pour télécharger et importer des paramétrages d'activités"), URL="telecharger")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -77,15 +79,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(u"Gestion des activités")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer une activité")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'activité sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'activité sélectionnée dans la liste")
-        self.bouton_dupliquer.SetToolTipString(u"Cliquez ici pour dupliquer l'activité sélectionnée dans la liste")
-        self.bouton_importer.SetToolTipString(u"Cliquez ici pour importer un paramétrage d'activité (.nxa)")
-        self.bouton_exporter.SetToolTipString(u"Cliquez ici pour exporter un ou plusieurs paramétrages d'activités (.nxa)")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Gestion des activités"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une activité"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'activité sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'activité sélectionnée dans la liste"))
+        self.bouton_dupliquer.SetToolTipString(_(u"Cliquez ici pour dupliquer l'activité sélectionnée dans la liste"))
+        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer un paramétrage d'activité (.nxa)"))
+        self.bouton_exporter.SetToolTipString(_(u"Cliquez ici pour exporter un ou plusieurs paramétrages d'activités (.nxa)"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((700, 600))
 
     def __do_layout(self):

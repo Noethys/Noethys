@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import UTILS_Config
@@ -60,16 +62,16 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
         
         self.listePages = [
-            (u"informations", u"Informations", u"DLG_Famille_informations.Panel(self, IDfamille=IDfamille)", "Information.png"),
-            (u"questionnaire", u"Questionnaire", u"DLG_Famille_questionnaire.Panel(self, IDfamille=IDfamille)", "Questionnaire.png"),
-            (u"pieces", u"Pièces", u"DLG_Famille_pieces.Panel(self, IDfamille=IDfamille)", "Dupliquer.png"),
-            (u"cotisations", u"Cotisations", u"DLG_Famille_cotisations.Panel(self, IDfamille=IDfamille)", "Cotisation.png"),
-            (u"caisse", u"Caisse", u"DLG_Famille_caisse.Panel(self, IDfamille=IDfamille)", "Mecanisme.png"),
-            (u"quotients", u"Quotients familiaux", u"DLG_Famille_quotients.Panel(self, IDfamille=IDfamille)", "Calculatrice.png"),
-            (u"prestations", u"Prestations", u"DLG_Famille_prestations.Panel(self, IDfamille=IDfamille)", "Etiquette.png"),
-            (u"factures", u"Factures", u"DLG_Famille_factures.Panel(self, IDfamille=IDfamille)", "Facture.png"),
-            (u"reglements", u"Règlements", u"DLG_Famille_reglements.Panel(self, IDfamille=IDfamille)", "Reglement.png"),
-            (u"divers", u"Divers", u"DLG_Famille_divers.Panel(self, IDfamille=IDfamille)", "Planete.png"),
+            (_(u"informations"), _(u"Informations"), u"DLG_Famille_informations.Panel(self, IDfamille=IDfamille)", "Information.png"),
+            (_(u"questionnaire"), _(u"Questionnaire"), u"DLG_Famille_questionnaire.Panel(self, IDfamille=IDfamille)", "Questionnaire.png"),
+            (_(u"pieces"), _(u"Pièces"), u"DLG_Famille_pieces.Panel(self, IDfamille=IDfamille)", "Dupliquer.png"),
+            (_(u"cotisations"), _(u"Cotisations"), u"DLG_Famille_cotisations.Panel(self, IDfamille=IDfamille)", "Cotisation.png"),
+            (_(u"caisse"), _(u"Caisse"), u"DLG_Famille_caisse.Panel(self, IDfamille=IDfamille)", "Mecanisme.png"),
+            (_(u"quotients"), _(u"Quotients familiaux"), u"DLG_Famille_quotients.Panel(self, IDfamille=IDfamille)", "Calculatrice.png"),
+            (_(u"prestations"), _(u"Prestations"), u"DLG_Famille_prestations.Panel(self, IDfamille=IDfamille)", "Etiquette.png"),
+            (_(u"factures"), _(u"Factures"), u"DLG_Famille_factures.Panel(self, IDfamille=IDfamille)", "Facture.png"),
+            (_(u"reglements"), _(u"Règlements"), u"DLG_Famille_reglements.Panel(self, IDfamille=IDfamille)", "Reglement.png"),
+            (_(u"divers"), _(u"Divers"), u"DLG_Famille_divers.Panel(self, IDfamille=IDfamille)", "Planete.png"),
             ]
             
         # ImageList pour le NoteBook
@@ -147,7 +149,7 @@ class Dialog(wx.Dialog):
         UTILS_Linux.AdaptePolice(self)
 
         # Composition
-        self.sizer_composition_staticbox = wx.StaticBox(self, -1, u"Composition de la famille")
+        self.sizer_composition_staticbox = wx.StaticBox(self, -1, _(u"Composition de la famille"))
         self.ctrl_composition = CTRL_Composition.Notebook(self, IDfamille=self.IDfamille)
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -159,12 +161,12 @@ class Dialog(wx.Dialog):
         self.notebook = Notebook(self, IDfamille=self.IDfamille)
         
         # Boutons de commande
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Outils.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_consommations = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Consommations.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_saisie_reglement = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Saisie_reglement.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
+        self.bouton_consommations = CTRL_Bouton_image.CTRL(self, texte=_(u"Consommations"), cheminImage="Images/32x32/Calendrier.png")
+        self.bouton_saisie_reglement = CTRL_Bouton_image.CTRL(self, texte=_(u"Saisir un règlement"), cheminImage="Images/32x32/Reglement.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -196,19 +198,19 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Fiche familiale n°%d" % self.IDfamille)
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter ou créer un nouvel individu")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'individu sélectionné")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer ou détacher l'individu sélectionné")
-        self.bouton_liens_famille.SetToolTipString(u"Cliquez ici pour visualiser l'ensemble des liens de la famille")
-        self.bouton_calendrier.SetToolTipString(u"Cliquez ici pour ouvrir la grille des consommations de l'individu sélectionné")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder aux outils")
-##        self.bouton_documents.SetToolTipString(u"Cliquez ici pour imprimer des documents")
-        self.bouton_consommations.SetToolTipString(u"Cliquez ici pour consulter ou modifier les consommations d'un membre de la famille")
-        self.bouton_saisie_reglement.SetToolTipString(u"Cliquez ici pour saisir rapidement un règlement")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Fiche familiale n°%d") % self.IDfamille)
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter ou créer un nouvel individu"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'individu sélectionné"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer ou détacher l'individu sélectionné"))
+        self.bouton_liens_famille.SetToolTipString(_(u"Cliquez ici pour visualiser l'ensemble des liens de la famille"))
+        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour ouvrir la grille des consommations de l'individu sélectionné"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
+##        self.bouton_documents.SetToolTipString(_(u"Cliquez ici pour imprimer des documents"))
+        self.bouton_consommations.SetToolTipString(_(u"Cliquez ici pour consulter ou modifier les consommations d'un membre de la famille"))
+        self.bouton_saisie_reglement.SetToolTipString(_(u"Cliquez ici pour saisir rapidement un règlement"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
         self.bouton_ajouter.SetSize(self.bouton_ajouter.GetBestSize())
         self.bouton_modifier.SetSize(self.bouton_modifier.GetBestSize())
@@ -315,7 +317,7 @@ class Dialog(wx.Dialog):
         menuPop = wx.Menu()
         
         # Item Régler une facture
-        item = wx.MenuItem(menuPop, 40, u"Régler une facture")
+        item = wx.MenuItem(menuPop, 40, _(u"Régler une facture"))
         bmp = wx.Bitmap("Images/16x16/Codebarre.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -324,7 +326,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator() 
 
         # Item Editer un revelé de compte
-        item = wx.MenuItem(menuPop, 90, u"Editer un relevé des prestations")
+        item = wx.MenuItem(menuPop, 90, _(u"Editer un relevé des prestations"))
         bmp = wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -333,14 +335,14 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator() 
 
         # Item Editer Attestation de présence
-        item = wx.MenuItem(menuPop, 10, u"Générer une attestation de présence")
+        item = wx.MenuItem(menuPop, 10, _(u"Générer une attestation de présence"))
         bmp = wx.Bitmap("Images/16x16/Generation.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuGenererAttestation, id=10)
         
         # Item Liste Attestation de présence
-        item = wx.MenuItem(menuPop, 20, u"Liste des attestations de présences générées")
+        item = wx.MenuItem(menuPop, 20, _(u"Liste des attestations de présences générées"))
         bmp = wx.Bitmap("Images/16x16/Facture.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -349,14 +351,14 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator() 
 
         # Item Editer Lettre de rappel
-        item = wx.MenuItem(menuPop, 110, u"Générer une lettre de rappel")
+        item = wx.MenuItem(menuPop, 110, _(u"Générer une lettre de rappel"))
         bmp = wx.Bitmap("Images/16x16/Generation.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuGenererRappel, id=110)
         
         # Item Liste Lettres de rappel
-        item = wx.MenuItem(menuPop, 120, u"Liste des lettres de rappel générées")
+        item = wx.MenuItem(menuPop, 120, _(u"Liste des lettres de rappel générées"))
         bmp = wx.Bitmap("Images/16x16/Facture.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -365,12 +367,12 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator() 
 
         # Item Liste des reçus édités
-        item = wx.MenuItem(menuPop, 300, u"Liste des reçus de règlements édités")
+        item = wx.MenuItem(menuPop, 300, _(u"Liste des reçus de règlements édités"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Note.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuListeRecus, id=300)
 
-        item = wx.MenuItem(menuPop, 301, u"Répartition de la ventilation par règlement")
+        item = wx.MenuItem(menuPop, 301, _(u"Répartition de la ventilation par règlement"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Repartition.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuRepartitionVentilation, id=301)
@@ -378,7 +380,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator() 
         
         # Item Edition d'étiquettes et de badges
-        item = wx.MenuItem(menuPop, 80, u"Edition d'étiquettes et de badges")
+        item = wx.MenuItem(menuPop, 80, _(u"Edition d'étiquettes et de badges"))
         bmp = wx.Bitmap("Images/16x16/Etiquette2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -387,13 +389,13 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator() 
         
         # Item Historique
-        item = wx.MenuItem(menuPop, 30, u"Historique")
+        item = wx.MenuItem(menuPop, 30, _(u"Historique"))
         bmp = wx.Bitmap("Images/16x16/Historique.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuHistorique, id=30)
         
-        item = wx.MenuItem(menuPop, 70, u"Chronologie")
+        item = wx.MenuItem(menuPop, 70, _(u"Chronologie"))
         bmp = wx.Bitmap("Images/16x16/Timeline.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -405,17 +407,17 @@ class Dialog(wx.Dialog):
         # Item Envoyer un email
         sousMenuEmail = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 200, u"Depuis l'éditeur d'Emails de Noethys")
+        item = wx.MenuItem(menuPop, 200, _(u"Depuis l'éditeur d'Emails de Noethys"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Editeur_email.png", wx.BITMAP_TYPE_PNG))
         sousMenuEmail.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuEnvoyerMail, id=200)
         
-        item = wx.MenuItem(menuPop, 210, u"Depuis le client de messagerie par défaut")
+        item = wx.MenuItem(menuPop, 210, _(u"Depuis le client de messagerie par défaut"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Terminal.png", wx.BITMAP_TYPE_PNG))
         sousMenuEmail.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuEnvoyerMail, id=210)
                     
-        item = menuPop.AppendMenu(500, u"Envoyer un Email", sousMenuEmail)
+        item = menuPop.AppendMenu(500, _(u"Envoyer un Email"), sousMenuEmail)
         
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -425,7 +427,7 @@ class Dialog(wx.Dialog):
 ##        menuPop = wx.Menu()
 ##        
 ##        # Item Apercu avant impression
-##        item = wx.MenuItem(menuPop, 10, u"Editer une Attestation de présence")
+##        item = wx.MenuItem(menuPop, 10, _(u"Editer une Attestation de présence"))
 ##        bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -460,7 +462,7 @@ class Dialog(wx.Dialog):
         import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer un relevé des prestations...", u"Ventilation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer un relevé des prestations..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -478,7 +480,7 @@ class Dialog(wx.Dialog):
         import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer une attestation...", u"Ventilation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer une attestation..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -502,7 +504,7 @@ class Dialog(wx.Dialog):
         import DLG_Verification_ventilation
         tracks = DLG_Verification_ventilation.Verification(IDcompte_payeur)
         if len(tracks) > 0 :
-            dlg = wx.MessageDialog(self, u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer une attestation...", u"Ventilation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements sont encore à ventiler.\n\nVous devez obligatoirement effectuer cela avant d'éditer une attestation..."), _(u"Ventilation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -621,7 +623,7 @@ class Dialog(wx.Dialog):
         UTILS_Historique.InsertActions([{
                 "IDfamille" : self.IDfamille,
                 "IDcategorie" : 4, 
-                "action" : u"Création de la famille ID%d" % self.IDfamille,
+                "action" : _(u"Création de la famille ID%d") % self.IDfamille,
                 },])
     
     def SupprimerFamille(self):
@@ -652,7 +654,7 @@ class Dialog(wx.Dialog):
         self.SupprimerFamille()
         self.Destroy()
         
-        dlg = wx.MessageDialog(self, u"La fiche famille a été supprimée.", u"Suppression", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"La fiche famille a été supprimée."), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return
@@ -660,7 +662,7 @@ class Dialog(wx.Dialog):
     def Annuler(self):
         """ Annulation des modifications """
         if self.nouvelleFiche == True :
-            dlg = wx.MessageDialog(self, u"Par mesure de sécurité, vous ne pouvez pas annuler la création d'une fiche famille !\n\nSi vous voulez vraiment supprimer cette fiche famille, détachez ou supprimez chacun des membres de la famille...", "Suppression", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Par mesure de sécurité, vous ne pouvez pas annuler la création d'une fiche famille !\n\nSi vous voulez vraiment supprimer cette fiche famille, détachez ou supprimez chacun des membres de la famille..."), "Suppression", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -673,7 +675,7 @@ class Dialog(wx.Dialog):
             except :
                 pass
             
-##            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment annuler la création de cette nouvelle fiche ?", u"Annulation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler la création de cette nouvelle fiche ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
 ##            if dlg.ShowModal() == wx.ID_YES :
 ##                # Efface de la base la fiche individu 
 ##                self.SupprimerFamille()

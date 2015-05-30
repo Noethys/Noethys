@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import calendar
 import GestionDB
@@ -46,7 +48,7 @@ class CTRL_Annee(wx.SpinCtrl):
         wx.SpinCtrl.__init__(self, parent, -1, min=1977, max=2999) 
         self.parent = parent
         self.SetMinSize((60, -1))
-        self.SetToolTipString(u"Sélectionnez une année")
+        self.SetToolTipString(_(u"Sélectionnez une année"))
         annee_actuelle = datetime.date.today().year
         self.SetAnnee(annee_actuelle)
     
@@ -65,7 +67,7 @@ class CTRL_ListBox(wx.ListBox):
     def __init__(self, parent):
         wx.ListBox.__init__(self, parent, -1, style=wx.LB_EXTENDED) 
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez une ou plusieurs périodes avec les touches SHIFT ou CTRL")
+        self.SetToolTipString(_(u"Sélectionnez une ou plusieurs périodes avec les touches SHIFT ou CTRL"))
         self.listeChoix = []
     
     def SetListeChoix(self, listeChoix=[], conserveSelections=False):
@@ -111,11 +113,11 @@ class Mois(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        self.listeMois = [u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
+        self.listeMois = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
         # Controles
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = CTRL_Annee(self)
-        self.label_mois = wx.StaticText(self, -1, u"Mois :")
+        self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.ctrl_mois = CTRL_ListBox(self)
         # Layout
         grid_sizer_mois = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -165,7 +167,7 @@ class Annee(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         # Controles
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = CTRL_Annee(self)
         # Layout
         grid_sizer_annee = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -189,9 +191,9 @@ class Vacances(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         # Controles
-        self.label_annee = wx.StaticText(self, -1, u"Année :")
+        self.label_annee = wx.StaticText(self, -1, _(u"Année :"))
         self.ctrl_annee = CTRL_Annee(self)
-        self.label_periode = wx.StaticText(self, -1, u"Période :")
+        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
         self.ctrl_periode = CTRL_ListBox(self)
         # Layout
         grid_sizer_vacances = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -252,11 +254,11 @@ class Dates(wx.Panel):
         # Controles
         self.label_date_debut = wx.StaticText(self, -1, u"Du :")
         self.ctrl_date_debut = DatePickerCtrl(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"Au :")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"Au :"))
         self.ctrl_date_fin = DatePickerCtrl(self)
         # Propriétés
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez une date de fin")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
         # Layout
         grid_sizer_dates = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_dates.Add(self.label_date_debut, 0, wx.LEFT|wx.TOP|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
@@ -300,10 +302,10 @@ class CTRL(wx.Panel):
         self.page_vacances = Vacances(self.notebook)
         self.page_mois = Mois(self.notebook)
         
-        self.notebook.AddPage(self.page_mois, u"Mois")
-        self.notebook.AddPage(self.page_vacances, u"Vacances")
-        self.notebook.AddPage(self.page_annee, u"Année")
-        self.notebook.AddPage(self.page_dates, u"Dates")
+        self.notebook.AddPage(self.page_mois, _(u"Mois"))
+        self.notebook.AddPage(self.page_vacances, _(u"Vacances"))
+        self.notebook.AddPage(self.page_annee, _(u"Année"))
+        self.notebook.AddPage(self.page_dates, _(u"Dates"))
 
         self.__do_layout()
         
@@ -469,7 +471,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

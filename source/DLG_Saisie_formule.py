@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import re
 import wx.lib.agw.hyperlink as Hyperlink
 
@@ -17,14 +19,14 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 
 OPERATEURS = [
-    (u"est égal à", "="),
-    (u"est différent de", "<>"),
-    (u"est supérieur à", ">"),
-    (u"est inférieur à", "<"),
-    (u"est supérieur ou égal à", ">="),
-    (u"est inférieur ou égal à", "<="),
-    (u"est vide", "null"),
-    (u"n'est pas vide", "notnull"),
+    (_(u"est égal à"), "="),
+    (_(u"est différent de"), "<>"),
+    (_(u"est supérieur à"), ">"),
+    (_(u"est inférieur à"), "<"),
+    (_(u"est supérieur ou égal à"), ">="),
+    (_(u"est inférieur ou égal à"), "<="),
+    (_(u"est vide"), "null"),
+    (_(u"n'est pas vide"), "notnull"),
     ]
 
 def GetLabelsOperateurs():
@@ -58,7 +60,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         self.Bind(Hyperlink.EVT_HYPERLINK_LEFT, self.OnLeftLink)
         
     def OnLeftLink(self, event):
-        dlg = wx.SingleChoiceDialog(None, u"Sélectionnez un champ à insérer :", u"Insérer un champ", GetLabelsChamps(self.parent.listeChamps), wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un champ à insérer :"), _(u"Insérer un champ"), GetLabelsChamps(self.parent.listeChamps), wx.CHOICEDLG_STYLE)
         if dlg.ShowModal() == wx.ID_OK:
             champ = self.parent.listeChamps[dlg.GetSelection()][2]
             self.parent.InsertTexte(champ)
@@ -76,21 +78,21 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.listeChamps = listeChamps
 
-        self.box_formule_staticbox = wx.StaticBox(self, -1, u"Formule")
+        self.box_formule_staticbox = wx.StaticBox(self, -1, _(u"Formule"))
         
-        self.label_si = wx.StaticText(self, -1, u"Si :")
+        self.label_si = wx.StaticText(self, -1, _(u"Si :"))
         self.ctrl_champ = wx.Choice(self, -1, choices=GetLabelsChamps(listeChamps))
         self.ctrl_operateur = wx.Choice(self, -1, choices=GetLabelsOperateurs())
         self.ctrl_condition = wx.TextCtrl(self, -1, u"", size=(150, -1))
         
-        self.label_afficher = wx.StaticText(self, -1, u"Afficher :")
+        self.label_afficher = wx.StaticText(self, -1, _(u"Afficher :"))
         self.ctrl_afficher = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
-        self.hyper_formule = Hyperlien(self, label=u"Insérer un champ", infobulle=u"Cliquez ici pour insérer un champ", URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"Insérer un champ"), infobulle=_(u"Cliquez ici pour insérer un champ"), URL="")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -105,14 +107,14 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une formule conditionnelle")
-        self.ctrl_champ.SetToolTipString(u"Sélectionnez ici un champ dans la liste")
-        self.ctrl_operateur.SetToolTipString(u"Sélectionnez un opérateur dans la liste")
-        self.ctrl_condition.SetToolTipString(u"Saisissez ici la valeur conditionnelle. Il peut s'agir \nd'un mot ou d'une phrase. Vous pouvez également \nsaisir ' OU ' entre plusieurs mots pour saisir plusieurs \nconditions avec l'opérateur =.")
-        self.ctrl_afficher.SetToolTipString(u"Saisissez ici le texte à afficher si la condition est vraie.\nIl peut s'agir d'un mot ou d'une phrase mais aussi \nd'un mot-clé. Ex : 'bonjour', '{INDIVIDU_NOM}',\n'123', etc...")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une formule conditionnelle"))
+        self.ctrl_champ.SetToolTipString(_(u"Sélectionnez ici un champ dans la liste"))
+        self.ctrl_operateur.SetToolTipString(_(u"Sélectionnez un opérateur dans la liste"))
+        self.ctrl_condition.SetToolTipString(_(u"Saisissez ici la valeur conditionnelle. Il peut s'agir \nd'un mot ou d'une phrase. Vous pouvez également \nsaisir ' OU ' entre plusieurs mots pour saisir plusieurs \nconditions avec l'opérateur =."))
+        self.ctrl_afficher.SetToolTipString(_(u"Saisissez ici le texte à afficher si la condition est vraie.\nIl peut s'agir d'un mot ou d'une phrase mais aussi \nd'un mot-clé. Ex : 'bonjour', '{INDIVIDU_NOM}',\n'123', etc..."))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -161,7 +163,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         # Validation
         if self.ctrl_champ.GetSelection() == -1 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un champ SI dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un champ SI dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_champ.SetFocus()
@@ -306,14 +308,14 @@ if __name__ == u"__main__":
     #wx.InitAllImageHandlers()
     
     listeChamps = [ 
-        (u"Nom de l'organisateur", u"Association Noethys", "{ORGANISATEUR_NOM}"),
-        (u"Rue de l'organisateur", u"Avenue des Lilas", "{ORGANISATEUR_RUE}"),
-        (u"Code postal de l'organisateur", u"29870", "{ORGANISATEUR_CP}"),
+        (_(u"Nom de l'organisateur"), _(u"Association Noethys"), "{ORGANISATEUR_NOM}"),
+        (_(u"Rue de l'organisateur"), _(u"Avenue des Lilas"), "{ORGANISATEUR_RUE}"),
+        (_(u"Code postal de l'organisateur"), u"29870", "{ORGANISATEUR_CP}"),
         ]
     
     dictValeurs = {
-        "{ORGANISATEUR_NOM}" : u"Association Noethys",
-        "{FAMILLE_VILLE}" : u"QUIMPER",
+        "{ORGANISATEUR_NOM}" : _(u"Association Noethys"),
+        "{FAMILLE_VILLE}" : _(u"QUIMPER"),
         "{MONTANT}" : u"2.00 ¤",
         }
     
@@ -324,11 +326,11 @@ if __name__ == u"__main__":
     
     # Test des formules conditionnelles
     resultat = ResolveurTexte(
-                texte=u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilà et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]. Je veux aussi résoudre le calcul suivant : [[1+2.0]] Euros", 
+                texte=_(u"Ceci est [[SI {FAMILLE_VILLE}<>->Bonjour brest !]] et voilà et aussi [[SI {FAMILLE_VILLE}=QUIMPER ->Salut quimper !]]. Je veux aussi résoudre le calcul suivant : [[1+2.0]] Euros"), 
                 listeChamps=listeChamps, 
                 dictValeurs=dictValeurs)
     print (resultat,)
     
     # Test des formules de calcul
-    resultat = ResolveurCalcul(texte=u"({MONTANT}*10)+2", dictValeurs=dictValeurs)
+    resultat = ResolveurCalcul(texte=_(u"({MONTANT}*10)+2"), dictValeurs=dictValeurs)
     print (resultat,)

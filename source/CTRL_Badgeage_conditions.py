@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.lib.agw.flatnotebook as FNB
 import copy
@@ -25,8 +27,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -99,21 +101,21 @@ class CTRL_Heure(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL | wx.SIMPLE_BORDER) 
         self.SetBackgroundColour((255, 255, 255))
-        self.radio_egal = wx.RadioButton(self, -1, u"Est égal à", style=wx.RB_GROUP)
+        self.radio_egal = wx.RadioButton(self, -1, _(u"Est égal à"), style=wx.RB_GROUP)
         self.ctrl_egal = CTRL_Saisie_heure.Heure(self)
-        self.radio_different = wx.RadioButton(self, -1, u"Est différent de")
+        self.radio_different = wx.RadioButton(self, -1, _(u"Est différent de"))
         self.ctrl_different = CTRL_Saisie_heure.Heure(self)
-        self.radio_sup = wx.RadioButton(self, -1, u"Est supérieur à")
+        self.radio_sup = wx.RadioButton(self, -1, _(u"Est supérieur à"))
         self.ctrl_sup = CTRL_Saisie_heure.Heure(self)
-        self.radio_supegal = wx.RadioButton(self, -1, u"Est supérieur ou égal à")
+        self.radio_supegal = wx.RadioButton(self, -1, _(u"Est supérieur ou égal à"))
         self.ctrl_supegal = CTRL_Saisie_heure.Heure(self)
-        self.radio_inf = wx.RadioButton(self, -1, u"Est inférieur à")
+        self.radio_inf = wx.RadioButton(self, -1, _(u"Est inférieur à"))
         self.ctrl_inf = CTRL_Saisie_heure.Heure(self)
-        self.radio_infegal = wx.RadioButton(self, -1, u"Est inférieur ou égal à")
+        self.radio_infegal = wx.RadioButton(self, -1, _(u"Est inférieur ou égal à"))
         self.ctrl_infegal = CTRL_Saisie_heure.Heure(self)
-        self.radio_compris = wx.RadioButton(self, -1, u"Est compris entre")
+        self.radio_compris = wx.RadioButton(self, -1, _(u"Est compris entre"))
         self.ctrl_min = CTRL_Saisie_heure.Heure(self)
-        self.label_et = wx.StaticText(self, -1, u"et")
+        self.label_et = wx.StaticText(self, -1, _(u"et"))
         self.ctrl_max = CTRL_Saisie_heure.Heure(self)
 
         self.__do_layout()
@@ -227,7 +229,7 @@ class CTRL_Heure(wx.Panel):
     def Validation(self):
         choix, criteres = self.GetValeur() 
         if criteres == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une heure !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -244,11 +246,11 @@ class CTRL_Periode(wx.Panel):
         self.SetBackgroundColour((255, 255, 255))
         
         # Périodes scolaires
-        self.label_periodes_scolaires = wx.StaticText(self, -1,u"> Périodes scolaires :")
+        self.label_periodes_scolaires = wx.StaticText(self, -1,_(u"> Périodes scolaires :"))
         self.CreationCaseJours("scolaire")
         
         # Périodes de vacances
-        self.label_periodes_vacances = wx.StaticText(self, -1,u"> Périodes de vacances :")
+        self.label_periodes_vacances = wx.StaticText(self, -1,_(u"> Périodes de vacances :"))
         self.CreationCaseJours("vacances")
         
         # Layout
@@ -333,11 +335,11 @@ class CTRL_Poste(wx.ListBox):
         self.Set(self.listeValeurs)
     
     def Ajouter(self):
-        dlg = wx.TextEntryDialog(self, u"Saisissez le nom du poste réseau :", u"Saisie", u"")
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom du poste réseau :"), _(u"Saisie"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
-                dlg = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -350,15 +352,15 @@ class CTRL_Poste(wx.ListBox):
         valeur = self.GetStringSelection()
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun poste à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun poste à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.TextEntryDialog(self, u"Modifiez le nom du poste réseau :", u"Modification", valeur)
+        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom du poste réseau :"), _(u"Modification"), valeur)
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
-                dlg = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -371,11 +373,11 @@ class CTRL_Poste(wx.ListBox):
         valeur = self.GetStringSelection()
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun poste à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun poste à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce poste ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce poste ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
                 self.listeValeurs.pop(index)
                 self.MAJ()
@@ -390,7 +392,7 @@ class Page_Activite(wx.Panel):
         self.parent = parent
 
         # Groupes
-        self.check = wx.CheckBox(self, -1, u"Uniquement si l'individu est inscrit à l'une des activités cochées :")
+        self.check = wx.CheckBox(self, -1, _(u"Uniquement si l'individu est inscrit à l'une des activités cochées :"))
         self.ctrl = CTRL_Activite(self)
 
         self.__set_properties()
@@ -403,7 +405,7 @@ class Page_Activite(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(u"Cochez cette case si vous souhaitez appliquer un filtre sur les activités")
+        self.check.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur les activités"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -441,7 +443,7 @@ class Page_Activite(wx.Panel):
         # Vérifie la saisie
         if self.check.GetValue() == True :
             if self.GetValeur() == None :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune activité !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune activité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -454,7 +456,7 @@ class Page_Heure(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.check = wx.CheckBox(self, -1, u"Uniquement si l'heure de badgeage...")
+        self.check = wx.CheckBox(self, -1, _(u"Uniquement si l'heure de badgeage..."))
         self.ctrl_heure = CTRL_Heure(self)
 
         self.__set_properties()
@@ -465,7 +467,7 @@ class Page_Heure(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(u"Cochez cette case si vous souhaitez appliquer un filtre sur l'heure de badgeage")
+        self.check.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur l'heure de badgeage"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -513,7 +515,7 @@ class Page_Periode(wx.Panel):
         self.parent = parent
 
         # Caisses
-        self.check = wx.CheckBox(self, -1, u"Uniquement sur les jours cochés :")
+        self.check = wx.CheckBox(self, -1, _(u"Uniquement sur les jours cochés :"))
         self.ctrl_periode = CTRL_Periode(self)
 
         self.__set_properties()
@@ -526,7 +528,7 @@ class Page_Periode(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes")
+        self.check.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -567,7 +569,7 @@ class Page_Periode(wx.Panel):
         if self.check.GetValue() == True :
             valeur = self.GetValeur()
             if valeur == "None-None" :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucun jour !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucun jour !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -583,7 +585,7 @@ class Page_Poste(wx.Panel):
         self.parent = parent
         self.listeInitiale = [] 
         
-        self.check = wx.CheckBox(self, -1, u"Uniquement sur les postes réseau suivants :")
+        self.check = wx.CheckBox(self, -1, _(u"Uniquement sur les postes réseau suivants :"))
         self.ctrl = CTRL_Poste(self)
         self.ctrl.SetMinSize((150, 50))
 
@@ -604,10 +606,10 @@ class Page_Poste(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(u"Cochez cette case pour appliquer un filtre sur les noms de postes réseau")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un nom de poste")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le nom de poste sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le nom de poste sélectionné dans la liste")
+        self.check.SetToolTipString(_(u"Cochez cette case pour appliquer un filtre sur les noms de postes réseau"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un nom de poste"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le nom de poste sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le nom de poste sélectionné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -664,7 +666,7 @@ class Page_Poste(wx.Panel):
     def Validation(self):
         # Vérifie la saisie
         if self.check.GetValue() == True and self.GetValeur() == None :
-            dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'Poste' mais sans saisir de noms de poste !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'Poste' mais sans saisir de noms de poste !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -679,7 +681,7 @@ class Page_Questionnaire(wx.Panel):
         self.listeInitialeFiltres = [] 
         
         # Cotisations
-        self.check_filtres = wx.CheckBox(self, -1, u"Uniquement selon les filtres questionnaires suivants :")
+        self.check_filtres = wx.CheckBox(self, -1, _(u"Uniquement selon les filtres questionnaires suivants :"))
         self.ctrl_filtres = OL_Filtres_questionnaire.ListView(self, listeDonnees=[], listeTypes=["individu",], id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_filtres.SetMinSize((150, 50))
 
@@ -700,10 +702,10 @@ class Page_Questionnaire(wx.Panel):
         self.OnCheckFiltres(None)
 
     def __set_properties(self):
-        self.check_filtres.SetToolTipString(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels ")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un filtre")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le filtre sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste")
+        self.check_filtres.SetToolTipString(_(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels "))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un filtre"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -768,7 +770,7 @@ class Page_Questionnaire(wx.Panel):
     def Validation(self):
         # Vérifie les filtres
         if self.check_filtres.GetValue() == True and len(self.ctrl_filtres.GetDonnees()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous avez coché la condition 'Filtres de questionnaire' mais sans saisir de filtre !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez coché la condition 'Filtres de questionnaire' mais sans saisir de filtre !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -818,11 +820,11 @@ class Panel(wx.Panel):
     def CreationPages(self):
         """ Création des pages du notebook """
         self.listePages = [
-            {"index" : 0, "code" : "activite", "ctrl" : Page_Activite(self), "label" : u"Activité"},
-            {"index" : 1, "code" : "heure", "ctrl" : Page_Heure(self), "label" : u"Heure"},
-            {"index" : 2, "code" : "periode", "ctrl" : Page_Periode(self), "label" : u"Période"},
-            {"index" : 3, "code" : "poste", "ctrl" : Page_Poste(self), "label" : u"Poste"},
-            {"index" : 4, "code" : "questionnaire", "ctrl" : Page_Questionnaire(self), "label" : u"Questionnaire"},
+            {"index" : 0, "code" : "activite", "ctrl" : Page_Activite(self), "label" : _(u"Activité")},
+            {"index" : 1, "code" : "heure", "ctrl" : Page_Heure(self), "label" : _(u"Heure")},
+            {"index" : 2, "code" : "periode", "ctrl" : Page_Periode(self), "label" : _(u"Période")},
+            {"index" : 3, "code" : "poste", "ctrl" : Page_Poste(self), "label" : _(u"Poste")},
+            {"index" : 4, "code" : "questionnaire", "ctrl" : Page_Questionnaire(self), "label" : _(u"Questionnaire")},
             ]
         
         self.dictPages = {}
@@ -895,7 +897,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

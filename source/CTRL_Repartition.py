@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 
@@ -34,8 +36,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -43,7 +45,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -137,14 +139,14 @@ class CTRL(HTL.HyperTreeList):
 
         # Création des colonnes
         listeColonnes = [
-            ( u"Date", 180, wx.ALIGN_LEFT),
-            ( u"Mode", 130, wx.ALIGN_LEFT),
-            ( u"Emetteur", 130, wx.ALIGN_LEFT),
-            ( u"Numéro", 70, wx.ALIGN_LEFT),
-            ( u"Payeur", 100, wx.ALIGN_LEFT),
-            ( u"Montant", 70, wx.ALIGN_LEFT),
-            ( u"Ventilé", 80, wx.ALIGN_LEFT),
-            ( u"Dépôt", 100, wx.ALIGN_LEFT),
+            ( _(u"Date"), 180, wx.ALIGN_LEFT),
+            ( _(u"Mode"), 130, wx.ALIGN_LEFT),
+            ( _(u"Emetteur"), 130, wx.ALIGN_LEFT),
+            ( _(u"Numéro"), 70, wx.ALIGN_LEFT),
+            ( _(u"Payeur"), 100, wx.ALIGN_LEFT),
+            ( _(u"Montant"), 70, wx.ALIGN_LEFT),
+            ( _(u"Ventilé"), 80, wx.ALIGN_LEFT),
+            ( _(u"Dépôt"), 100, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -199,7 +201,7 @@ class CTRL(HTL.HyperTreeList):
 ##        self.Freeze()
         self.DeleteAllItems()
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 ##        self.Thaw() 
 

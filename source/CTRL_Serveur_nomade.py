@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import json
 import socket 
@@ -54,7 +56,7 @@ class GenerationFichier(Thread):
 
     def run(self): 
         self.parent.log.SetImage("upload")
-        self.parent.EcritLog(u"Génération du fichier de données")
+        self.parent.EcritLog(_(u"Génération du fichier de données"))
         try: 
             export = UTILS_Export_nomade.Export()
             nomFichier = export.Run() 
@@ -91,7 +93,7 @@ class Echo(Protocol):
         self.log.SetImage("upload")
         tailleFichier = os.path.getsize(nomFichier) 
         self.transport.write(json.dumps({"action":"envoyer", "nom":os.path.basename(nomFichier), "taille":tailleFichier}))
-        self.EcritLog(u"Envoi du fichier (%s)" % FonctionsPerso.Formate_taille_octets(tailleFichier))
+        self.EcritLog(_(u"Envoi du fichier (%s)") % FonctionsPerso.Formate_taille_octets(tailleFichier))
         self.log.SetImage("on")
         
     def dataReceived(self, data):
@@ -120,7 +122,7 @@ class Echo(Protocol):
                 tailleFichier = message["taille"]
                 nomInitial = message["nom"]
                 nomFinal = "Sync/%s" % nomInitial
-                self.EcritLog(u"Prêt à recevoir de l'appareil " + nom_appareil + " le fichier " + nomInitial + " (" + FonctionsPerso.Formate_taille_octets(tailleFichier) + ")")
+                self.EcritLog(_(u"Prêt à recevoir de l'appareil ") + nom_appareil + " le fichier " + nomInitial + " (" + FonctionsPerso.Formate_taille_octets(tailleFichier) + ")")
                 fichier = open(nomFinal,"wb")
                 self.dictFichierReception = {
                     "nom_initial" : nomInitial,
@@ -130,7 +132,7 @@ class Echo(Protocol):
                     "fichier" : fichier,
                     }
                 self.transport.write("pret_pour_reception")
-                self.EcritLog(u"Réception en cours") 
+                self.EcritLog(_(u"Réception en cours")) 
                 self.log.SetImage("download")
                 return
         
@@ -141,7 +143,7 @@ class Echo(Protocol):
             # Calcule de la taille de la partie telechargee
             self.dictFichierReception["taille_actuelle"] += len(data)
             pourcentage = int(100.0 * self.dictFichierReception["taille_actuelle"] / self.dictFichierReception["taille_totale"])
-            #self.EcritLog(u"Réception en cours...  " + str(pourcentage) + u" %")
+            #self.EcritLog(_(u"Réception en cours...  ") + str(pourcentage) + u" %")
             self.log.SetGauge(pourcentage)
         
     
@@ -154,23 +156,23 @@ class Echo(Protocol):
 
     def Envoyer(self):
         self.log.SetImage("upload")
-        self.EcritLog(u"Envoi en cours")
+        self.EcritLog(_(u"Envoi en cours"))
         f = open(self.nomFichierAEnvoyer, "rb")
         self.transport.write(f.read())
         f.close()
         
     def FinEnvoi(self):
-        self.EcritLog(u"Fin de l'envoi")
+        self.EcritLog(_(u"Fin de l'envoi"))
         self.log.SetImage("on")
         self.log.SetGauge(0)
         self.transport.loseConnection()
         
     def connectionLost(self, reason):
-        self.EcritLog(u"Fin de connexion du client " + self.transport.getPeer().host)
+        self.EcritLog(_(u"Fin de connexion du client ") + self.transport.getPeer().host)
         if self.dictFichierReception != None:
             wx.CallLater(1000, self.log.SetGauge, 0)
             self.log.SetImage("on")
-            self.EcritLog(u"Clôture du fichier de réception")
+            self.EcritLog(_(u"Clôture du fichier de réception"))
             nomFichier = self.dictFichierReception["nom_initial"]
             self.dictFichierReception["fichier"].close()
             self.dictFichierReception = None
@@ -183,7 +185,7 @@ class Echo(Protocol):
 
 def StartServer(log=None):
     if IMPORT_TWISTED == False :
-        log.EcritLog(u"Erreur : Problème d'importation de Twisted")
+        log.EcritLog(_(u"Erreur : Problème d'importation de Twisted"))
         return
     
     try :
@@ -200,21 +202,21 @@ def StartServer(log=None):
         s.connect(('jsonip.com', 80))
         ip_local = s.getsockname()[0]
         s.close()
-        log.EcritLog(u"IP locale : %s" % ip_local)
+        log.EcritLog(_(u"IP locale : %s") % ip_local)
         
         # IP internet
         ip_internet = json.loads(urlopen("http://jsonip.com").read())["ip"]
-        log.EcritLog(u"IP internet : %s" % ip_internet)
+        log.EcritLog(_(u"IP internet : %s") % ip_internet)
         
         # Port
-        log.EcritLog(u"Serveur prêt sur le port %d" % port)
+        log.EcritLog(_(u"Serveur prêt sur le port %d") % port)
         
         log.SetImage("on")
         reactor.run()
     except Exception, err :
-        texte = u"Erreur dans le lancement du serveur Nomadhys : %s" % err
-        print texte
-        log.EcritLog(texte)
+        print ("Erreur lancement serveur nomade :", err)
+        log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys :") )
+        log.EcritLog(err) 
         
 def StopServer():
     try :
@@ -236,9 +238,9 @@ class Panel(wx.Panel):
         
         self.gauge = wx.Gauge(self, -1, range=100, size=(-1, 8))
         
-        self.bouton_analyse = wx.Button(self, -1, u"Analyser")
+        self.bouton_analyse = wx.Button(self, -1, _(u"Analyser"))
         self.couleur_defaut = self.bouton_analyse.GetBackgroundColour()
-##        self.bouton_options = wx.Button(self, -1, u"Options")
+##        self.bouton_options = wx.Button(self, -1, _(u"Options"))
         
         self.__do_layout()
         
@@ -285,15 +287,15 @@ class Panel(wx.Panel):
         
         # MAJ du bouton Analyser
         if nbreFichiers == 0 :
-            self.bouton_analyse.SetToolTipString(u"Aucun fichier à importer")
+            self.bouton_analyse.SetToolTipString(_(u"Aucun fichier à importer"))
             self.bouton_analyse.SetBackgroundColour(self.couleur_defaut)
             self.bouton_analyse.Enable(False)            
         elif nbreFichiers == 1 :
-            self.bouton_analyse.SetToolTipString(u"1 fichier à importer")
+            self.bouton_analyse.SetToolTipString(_(u"1 fichier à importer"))
             self.bouton_analyse.SetBackgroundColour((150, 255, 150))
             self.bouton_analyse.Enable(True)
         else :
-            self.bouton_analyse.SetToolTipString(u"%d fichiers à importer" % nbreFichiers)
+            self.bouton_analyse.SetToolTipString(_(u"%d fichiers à importer") % nbreFichiers)
             self.bouton_analyse.SetBackgroundColour((150, 255, 150))
             self.bouton_analyse.Enable(True)
         

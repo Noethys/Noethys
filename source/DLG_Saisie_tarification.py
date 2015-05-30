@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -28,10 +30,10 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
         
         self.listePages = [
-            (u"generalites", u"Généralités", CTRL_Tarification_generalites.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Information.png"),
-            (u"conditions", u"Conditions d'application", CTRL_Tarification_conditions.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Filtre.png"),
-            (u"type", u"Type de tarif", CTRL_Tarification_type.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif), "Outils.png"),
-            (u"calcul", u"Calcul du tarif", CTRL_Tarification_calcul.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Calculatrice.png"),
+            (_(u"generalites"), _(u"Généralités"), CTRL_Tarification_generalites.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Information.png"),
+            (_(u"conditions"), _(u"Conditions d'application"), CTRL_Tarification_conditions.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Filtre.png"),
+            (_(u"type"), _(u"Type de tarif"), CTRL_Tarification_type.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif), "Outils.png"),
+            (_(u"calcul"), _(u"Calcul du tarif"), CTRL_Tarification_calcul.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Calculatrice.png"),
             ]
             
         # ImageList pour le NoteBook
@@ -89,8 +91,8 @@ class Dialog(wx.Dialog):
         
         self.nom_tarif = self.GetNomTarif()
 
-        intro = u"Renseignez les caractéristiques générales, les conditions d'application, le type de tarif puis le mode de calcul du tarif. Vous pouvez consulter le Guide de démarrage ou le manuel de référence pour en savoir davantage..."
-        titre = u"Paramétrage du tarif '%s'" % self.nom_tarif
+        intro = _(u"Renseignez les caractéristiques générales, les conditions d'application, le type de tarif puis le mode de calcul du tarif. Vous pouvez consulter le Guide de démarrage ou le manuel de référence pour en savoir davantage...")
+        titre = _(u"Paramétrage du tarif '%s'") % self.nom_tarif
         self.SetTitle(titre + u" (ID%d)" % self.IDtarif)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
@@ -98,9 +100,9 @@ class Dialog(wx.Dialog):
         self.toolbook = Notebook(self, IDactivite=self.IDactivite, IDtarif=self.IDtarif, nouveauTarif=self.nouveauTarif)
         
         # Boutons de commande
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -116,10 +118,10 @@ class Dialog(wx.Dialog):
             self.toolbook.GetPage("generalites").ctrl_date_debut.SetFocus()
 
     def __set_properties(self):
-##        self.SetTitle(u"Saisie d'un paramétrage pour le tarif %s" % self.nom_tarif)
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+##        self.SetTitle(_(u"Saisie d'un paramétrage pour le tarif %s") % self.nom_tarif)
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((700, 650))
 
     def __do_layout(self):
@@ -326,7 +328,7 @@ class Dialog(wx.Dialog):
         DB.Close()
 
     def OnBoutonAnnuler(self, event): 
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment annuler ?", u"Annulation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() != wx.ID_YES :
             dlg.Destroy()
             return

@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import wx.html as html
 
@@ -84,32 +86,32 @@ class Dialog(wx.Dialog):
         self.IDreleve = IDreleve
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
         
-        self.label_compte = wx.StaticText(self, wx.ID_ANY, u"Compte :")
+        self.label_compte = wx.StaticText(self, wx.ID_ANY, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
 
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
         
         self.label_du = wx.StaticText(self, wx.ID_ANY, u"Du :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Informations
-        self.box_informations_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Détail du relevé")
+        self.box_informations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail du relevé"))
         self.ctrl_informations = CTRL_Informations(self)
 
         # Opérations
-        self.box_operations_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Opérations")
+        self.box_operations_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Opérations"))
         self.ctrl_operations = OL_Operations_releve.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_operations.SetMinSize((50, 50))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -123,23 +125,23 @@ class Dialog(wx.Dialog):
         self.ctrl_compte.SetID(IDcompte_bancaire)
         
         if self.IDreleve != None :
-            self.SetTitle(u"Modification d'un relevé bancaire")
+            self.SetTitle(_(u"Modification d'un relevé bancaire"))
             self.Importation() 
         else :
-            self.SetTitle(u"Saisie d'un relevé bancaire")
+            self.SetTitle(_(u"Saisie d'un relevé bancaire"))
             
         self.ctrl_operations.SetCompteBancaire(IDcompte_bancaire)
         self.ctrl_operations.SetReleve(IDreleve)
         self.ctrl_operations.MAJ() 
 
     def __set_properties(self):
-        self.ctrl_compte.SetToolTipString(u"Sélectionnez le compte bancaire associé")
-        self.ctrl_nom.SetToolTipString(u"Saisissez le nom du relevé bancaire (Ex : 'Janvier 2014')")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début du relevé")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin du relevé")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez le compte bancaire associé"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom du relevé bancaire (Ex : 'Janvier 2014')"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début du relevé"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin du relevé"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 600))
 
     def __do_layout(self):
@@ -227,42 +229,42 @@ class Dialog(wx.Dialog):
         
         # Validation des données saisies
         if IDcompte == None : 
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un compte bancaire !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un compte bancaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_compte.SetFocus()
             return False
 
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return False
 
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
 
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
         if len(listeOperations) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez rapproché aucune opération.\n\nSouhaitez-vous tout de même valider ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez rapproché aucune opération.\n\nSouhaitez-vous tout de même valider ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :

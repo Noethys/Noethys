@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
@@ -62,10 +64,10 @@ class CTRL_Affichage(wx.Choice):
         self.item = item
         self.track = track
         if self.track.type == "conso" :
-            self.SetItems([u"Toujours afficher", u"Ne jamais afficher", u"Afficher uniquement si ouvert"])
+            self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher"), _(u"Afficher uniquement si ouvert")])
         else:
-            self.SetItems([u"Toujours afficher", u"Ne jamais afficher"])
-        self.SetToolTipString(u"Sélectionnez un type d'affichage pour cette unité")
+            self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher")])
+        self.SetToolTipString(_(u"Sélectionnez un type d'affichage pour cette unité"))
         # Defaut
         self.SetDefaut() 
         # Bind
@@ -103,11 +105,11 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( u"Activité / Unité", 190, wx.ALIGN_LEFT),
-            ( u"Abrégé", 60, wx.ALIGN_LEFT),
-            ( u"Type", 90, wx.ALIGN_LEFT),
-            ( u"Affichage", LARGEUR_COLONNE_AFFICHAGE, wx.ALIGN_LEFT),
-            ( u"Ordre", 40, wx.ALIGN_CENTER),
+            ( _(u"Activité / Unité"), 190, wx.ALIGN_LEFT),
+            ( _(u"Abrégé"), 60, wx.ALIGN_LEFT),
+            ( _(u"Type"), 90, wx.ALIGN_LEFT),
+            ( _(u"Affichage"), LARGEUR_COLONNE_AFFICHAGE, wx.ALIGN_LEFT),
+            ( _(u"Ordre"), 40, wx.ALIGN_CENTER),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -229,7 +231,7 @@ class CTRL(HTL.HyperTreeList):
         self.Freeze()
         self.DeleteAllItems()
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage(selectionItem)
         self.Thaw() 
 
@@ -316,14 +318,14 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Monter
-        item = wx.MenuItem(menuPop, 10, u"Monter")
+        item = wx.MenuItem(menuPop, 10, _(u"Monter"))
         bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=10)
         
         # Item Descendre
-        item = wx.MenuItem(menuPop, 20, u"Descendre")
+        item = wx.MenuItem(menuPop, 20, _(u"Descendre"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -332,7 +334,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop.AppendSeparator()
         
         # Item Descendre
-        item = wx.MenuItem(menuPop, 30, u"Réinitialiser")
+        item = wx.MenuItem(menuPop, 30, _(u"Réinitialiser"))
         bmp = wx.Bitmap("Images/16x16/Actualiser.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -354,12 +356,12 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection()
         track = self.GetMainWindow().GetItemPyData(item)
         if track == None or type(track) == int :
-            dlg = wx.MessageDialog(self, u"Nous n'avez sélectionné aucune unité à déplacer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Nous n'avez sélectionné aucune unité à déplacer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if track.position == 0 :
-            dlg = wx.MessageDialog(self, u"Cette unité est déjà en première position !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette unité est déjà en première position !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -373,12 +375,12 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection()
         track = self.GetMainWindow().GetItemPyData(item)
         if track == None or type(track) == int :
-            dlg = wx.MessageDialog(self, u"Nous n'avez sélectionné aucune unité à déplacer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Nous n'avez sélectionné aucune unité à déplacer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if track.position == len(self.dictTracks[self.typeListe][track.IDactivite])-1 :
-            dlg = wx.MessageDialog(self, u"Cette unité est déjà en dernière position !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette unité est déjà en dernière position !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -389,7 +391,7 @@ class CTRL(HTL.HyperTreeList):
         self.MAJ(track) 
     
     def Reinit(self, event):
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment réinitialiser la liste des unités ?", u"Réinitialisation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser la liste des unités ?"), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES :
             self.dictTracks = copy.deepcopy(self.dictInitial)
             self.MAJ() 
@@ -407,7 +409,7 @@ class MyFrame(wx.Frame):
         self.ctrl = CTRL(panel)
         self.ctrl.listeActivites = [1, 3]
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)

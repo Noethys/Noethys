@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import FonctionsPerso
@@ -189,7 +191,7 @@ class Impression():
             largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
             dataTableau.append((dictOptions["titre"],))
             texteDateReference = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-            dataTableau.append((u"Période du %s au %s" % (UTILS_Dates.DateDDEnFr(dictOptions["date_debut"]), UTILS_Dates.DateDDEnFr(dictOptions["date_fin"])),))
+            dataTableau.append((_(u"Période du %s au %s") % (UTILS_Dates.DateDDEnFr(dictOptions["date_debut"]), UTILS_Dates.DateDDEnFr(dictOptions["date_fin"])),))
             style = TableStyle([
                     ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
                     ('FONT',(0,0),(0,0), "Helvetica-Bold", 19), 
@@ -228,7 +230,7 @@ class Impression():
                 story.append(Spacer(0, 25))
             
             # DETAIL par enfant
-            dataTableau = [(u"Nom et prénom", u"Date de naissance", u"Montant"),]
+            dataTableau = [(_(u"Nom et prénom"), _(u"Date de naissance"), _(u"Montant")),]
             largeursColonnes = [ 220, 80, 80]
             
             paraStyle = ParagraphStyle(name="detail",

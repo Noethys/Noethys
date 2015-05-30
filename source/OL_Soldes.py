@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
@@ -27,8 +29,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -144,7 +146,7 @@ class Track(object):
         if dictTitulaires.has_key(self.IDfamille) :
             self.nomsTitulaires =  dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
         else:
-            self.nomsTitulaires = u"Sans titulaires"
+            self.nomsTitulaires = _(u"Sans titulaires")
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -199,17 +201,17 @@ class ListView(FastObjectListView):
                 return u"- %.2f %s" % (-montant, SYMBOLE)
         
         liste_Colonnes = [
-            ColumnDefn(u"IDfamille", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", 'left', 300, "nomsTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Solde", 'right', 110, "solde", typeDonnee="montant", stringConverter=FormateSolde),
-            ColumnDefn(u"Prestations", 'right', 110, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Règlements", 'right', 110, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
-##            ColumnDefn(u"Ventilé", 'right', 80, "total_ventilations", stringConverter=FormateMontant),
-##            ColumnDefn(u"A ventiler", 'right', 80, "reste_a_ventiler", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), 'left', 300, "nomsTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Solde"), 'right', 110, "solde", typeDonnee="montant", stringConverter=FormateSolde),
+            ColumnDefn(_(u"Prestations"), 'right', 110, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Règlements"), 'right', 110, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
+##            ColumnDefn(_(u"Ventilé"), 'right', 80, "total_ventilations", stringConverter=FormateMontant),
+##            ColumnDefn(_(u"A ventiler"), 'right', 80, "reste_a_ventiler", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun solde")
+        self.SetEmptyListMsg(_(u"Aucun solde"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(1)
         
@@ -228,7 +230,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ouverture fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -237,14 +239,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -253,14 +255,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -273,22 +275,22 @@ class ListView(FastObjectListView):
         if self.date == None :
             return ""
         else :
-            return u"> Situation au %s." % DateEngFr(str(self.date))
+            return _(u"> Situation au %s.") % DateEngFr(str(self.date))
         
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des soldes", intro=self.GetDateStr() , format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des soldes"), intro=self.GetDateStr() , format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des soldes", intro=self.GetDateStr() , format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des soldes"), intro=self.GetDateStr() , format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -301,11 +303,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des soldes", autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des soldes"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des soldes", autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des soldes"), autoriseSelections=False)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -316,7 +318,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_soldes
@@ -367,7 +369,7 @@ class ListviewAvecFooter(PanelAvecFooter):
 ##            "nomsTitulaires" : {"mode" : "nombre", "singulier" : "famille", "pluriel" : "familles", "alignement" : wx.ALIGN_CENTER, "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
 ##            "solde" : {"mode" : "total", "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
 ##            "total_prestations" : {"mode" : "total", "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD), "couleur" : wx.Colour(0, 0, 0), },
-##            "total_reglements" : {"mode" : "texte", "texte" : u"Coucou !", "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
+##            "total_reglements" : {"mode" : "texte", "texte" : _(u"Coucou !"), "font" : wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD)},
 ##            }
 ##        PanelAvecFooter.__init__(self, parent, ListView, dictColonnes)
 

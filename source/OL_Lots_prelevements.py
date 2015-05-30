@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import UTILS_Utilisateurs
@@ -26,9 +28,9 @@ class Track(object):
         self.observations = donnees[4]
         self.typePrelevement = donnees[5]
         if self.typePrelevement == "sepa" : 
-            self.typePrelevementStr = u"SEPA"
+            self.typePrelevementStr = _(u"SEPA")
         else :
-            self.typePrelevementStr = u"National"
+            self.typePrelevementStr = _(u"National")
             self.typePrelevement = "national"
         self.nbrePrelevements = donnees[6]
         
@@ -99,16 +101,16 @@ class ListView(FastObjectListView):
                 return None
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 42, "IDlot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
-            ColumnDefn(u"Nom", "left", 290, "nom", typeDonnee="texte"), 
-            ColumnDefn(u"Date", "left", 80, "date", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Nbre Prélèv.", "center", 80, "nbrePrelevements", typeDonnee="entier"), 
-            ColumnDefn(u"Type", "left", 70, "typePrelevementStr", typeDonnee="texte"), 
-            ColumnDefn(u"Observations", "left", 200, "observations", typeDonnee="texte"), 
+            ColumnDefn(_(u"ID"), "left", 42, "IDlot", typeDonnee="entier", imageGetter=GetImageVerrouillage),
+            ColumnDefn(_(u"Nom"), "left", 290, "nom", typeDonnee="texte"), 
+            ColumnDefn(_(u"Date"), "left", 80, "date", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Nbre Prélèv."), "center", 80, "nbrePrelevements", typeDonnee="entier"), 
+            ColumnDefn(_(u"Type"), "left", 70, "typePrelevementStr", typeDonnee="texte"), 
+            ColumnDefn(_(u"Observations"), "left", 200, "observations", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun lot de prélèvements")
+        self.SetEmptyListMsg(_(u"Aucun lot de prélèvements"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -143,7 +145,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -152,7 +154,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -160,7 +162,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -170,14 +172,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -188,12 +190,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des lots de prélèvements", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lots de prélèvements"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des lots de prélèvements", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lots de prélèvements"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -212,7 +214,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun lot à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun lot à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -226,17 +228,17 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun lot à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun lot à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         nbrePrelevements = self.Selection()[0].nbrePrelevements
         if nbrePrelevements > 0 :
-            dlg = wx.MessageDialog(self, u"Il est impossible de supprimer ce lot puisqu'il est déjà constitué de %d prélèvements(s) !" % nbrePrelevements, u"Suppression impossible", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce lot puisqu'il est déjà constitué de %d prélèvements(s) !") % nbrePrelevements, _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce lot de prélèvements ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce lot de prélèvements ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDlot = self.Selection()[0].IDlot
             DB = GestionDB.DB()
@@ -261,8 +263,8 @@ class ListView(FastObjectListView):
         """ Demander si SEPA ou National à créer """
         import DLG_Choix
         listeBoutons = [
-            (u"Prélèvement SEPA", u"Nouvelle norme de prélèvements bancaires valables dans toute l'Europe à partir du 1er février 2014. Veuillez à saisir les mandats de vos usagers avant d'utiliser ce nouveau type de prélèvement."),
-            (u"Prélèvement National", u"Type de prélèvement valable uniquement jusqu'au 1er février 2014 en France. Ce type de prélèvement sera impossible au-delà de cette date."),
+            (_(u"Prélèvement SEPA"), _(u"Nouvelle norme de prélèvements bancaires valables dans toute l'Europe à partir du 1er février 2014. Veuillez à saisir les mandats de vos usagers avant d'utiliser ce nouveau type de prélèvement.")),
+            (_(u"Prélèvement National"), _(u"Type de prélèvement valable uniquement jusqu'au 1er février 2014 en France. Ce type de prélèvement sera impossible au-delà de cette date.")),
             ]
         dlg = DLG_Choix.Dialog(self, listeBoutons=listeBoutons)
         reponse = dlg.ShowModal() 
@@ -280,7 +282,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un lot de prélèvements...")
+        self.SetDescriptiveText(_(u"Rechercher un lot de prélèvements..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

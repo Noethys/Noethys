@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import FonctionsPerso
 
@@ -51,22 +53,22 @@ class PanelGraph(wx.Panel):
         standardPath = wx.StandardPaths.Get()
         save_destination = standardPath.GetDocumentsDir()
 
-        dlg = wx.FileDialog(self, message=u"Enregistrer le graphe sous...",
+        dlg = wx.FileDialog(self, message=_(u"Enregistrer le graphe sous..."),
                             defaultDir = save_destination, defaultFile="graphe.png",
                             wildcard=file_choices, style=wx.SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
             self.canvas.print_figure(path, dpi=300)
-            message = u"Le graphe a été sauvegardé avec succès"
-            dlg = wx.MessageDialog(self, message, u"Sauvegarde", wx.OK | wx.ICON_INFORMATION)
+            message = _(u"Le graphe a été sauvegardé avec succès")
+            dlg = wx.MessageDialog(self, message, _(u"Sauvegarde"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
                 
     def Clipboard_image(self):
         self.canvas.Copy_to_Clipboard()
-        message = u"Le graphe a été envoyé dans le presse-papiers."
-        dlg = wx.MessageDialog(self, message, u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
+        message = _(u"Le graphe a été envoyé dans le presse-papiers.")
+        dlg = wx.MessageDialog(self, message, _(u"Presse-papiers"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -98,11 +100,11 @@ class Dialog(wx.Dialog):
         self.ctrl_graphe.SetMinSize((300, 300))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_save_image = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Enregistrer_graphe.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_clipboard_image = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Clipboard_image.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer_image = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Imprimer_graphe.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_save_image = CTRL_Bouton_image.CTRL(self, texte=_(u"Enregistrer le graphe"), cheminImage="Images/32x32/Disk.png")
+        self.bouton_clipboard_image = CTRL_Bouton_image.CTRL(self, texte=_(u"Copier le graphe dans le presse-papiers"), cheminImage="Images/32x32/Clipboard.png")
+        self.bouton_imprimer_image = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer le graphe"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -114,13 +116,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
 
     def __set_properties(self):
-        self.SetTitle(u"Visualisateur de graphe")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_save_image.SetToolTipString(u"Cliquez ici pour enregistrer le graphe au format image")
-        self.bouton_clipboard_image.SetToolTipString(u"Cliquez ici pour envoyer le graphe dans le presse-papiers")
-        self.bouton_imprimer_image.SetToolTipString(u"Cliquez ici pour publier le graphe au format PDF")
-        self.SetMinSize((900, 650)) 
+        self.SetTitle(_(u"Visualisateur de graphe"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_save_image.SetToolTipString(_(u"Cliquez ici pour enregistrer le graphe au format image"))
+        self.bouton_clipboard_image.SetToolTipString(_(u"Cliquez ici pour envoyer le graphe dans le presse-papiers"))
+        self.bouton_imprimer_image.SetToolTipString(_(u"Cliquez ici pour publier le graphe au format PDF"))
+        self.SetMinSize((950, 650)) 
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -176,7 +178,7 @@ if __name__ == u"__main__":
     t = arange(0.0,3.0,0.01)
     s = sin(2*pi*t)
     ax.plot(t,s)
-    title = ax.set_title(u"Répartition par activité professionnelle", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+    title = ax.set_title(_(u"Répartition par activité professionnelle"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
     matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
     
     dialog_1 = Dialog(None, figure=figure)

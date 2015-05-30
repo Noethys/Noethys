@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Titulaires
@@ -89,7 +91,7 @@ def GetListe(listeActivites=None, presents=None):
             ville = titulaires[IDfamille]["adresse"]["ville"]
             secteur = titulaires[IDfamille]["adresse"]["nomSecteur"]
         else :
-            nomTitulaires = u"Aucun titulaire"
+            nomTitulaires = _(u"Aucun titulaire")
             rue = u""
             cp = u""
             ville = u""
@@ -164,15 +166,15 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", 'left', 250, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Rue", "left", 160, "rue", typeDonnee="texte"),
-            ColumnDefn(u"C.P.", "left", 45, "cp", typeDonnee="texte"),
-            ColumnDefn(u"Ville", "left", 120, "ville", typeDonnee="texte"),
-            ColumnDefn(u"Secteur", "left", 100, "secteur", typeDonnee="texte"),
-            ColumnDefn(u"Régime", "left", 130, "regime", typeDonnee="texte"),
-            ColumnDefn(u"Caisse", "left", 130, "caisse", typeDonnee="texte"),
-            ColumnDefn(u"Numéro Alloc.", "left", 120, "numAlloc", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), 'left', 250, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Rue"), "left", 160, "rue", typeDonnee="texte"),
+            ColumnDefn(_(u"C.P."), "left", 45, "cp", typeDonnee="texte"),
+            ColumnDefn(_(u"Ville"), "left", 120, "ville", typeDonnee="texte"),
+            ColumnDefn(_(u"Secteur"), "left", 100, "secteur", typeDonnee="texte"),
+            ColumnDefn(_(u"Régime"), "left", 130, "regime", typeDonnee="texte"),
+            ColumnDefn(_(u"Caisse"), "left", 130, "caisse", typeDonnee="texte"),
+            ColumnDefn(_(u"Numéro Alloc."), "left", 120, "numAlloc", typeDonnee="texte"),
             ]        
 
         # Insertion des champs infos de base individus
@@ -182,7 +184,7 @@ class ListView(FastObjectListView):
             liste_Colonnes.append(ColumnDefn(nomChamp, "left", 100, nomChamp, typeDonnee=typeDonnee, visible=False))
 
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_familles")
-        self.SetEmptyListMsg(u"Aucune famille")
+        self.SetEmptyListMsg(_(u"Aucune famille"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -191,7 +193,7 @@ class ListView(FastObjectListView):
         self.listeActivites = listeActivites
         self.presents = presents
         self.labelParametres = labelParametres
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
         attente.Destroy() 
@@ -211,7 +213,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
         
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 70, u"Ouvrir la fiche famille correspondante")
+        item = wx.MenuItem(menuPop, 70, _(u"Ouvrir la fiche famille correspondante"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -221,14 +223,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -237,14 +239,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -259,7 +261,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -273,14 +275,14 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         intro = self.labelParametres
-        total = u"> %d famillles" % len(self.donnees)
+        total = _(u"> %d famillles") % len(self.donnees)
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des familles", intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des familles"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -294,11 +296,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des familles")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des familles"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des familles")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des familles"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -310,7 +312,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une famille...")
+        self.SetDescriptiveText(_(u"Rechercher une famille..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

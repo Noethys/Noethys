@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -57,13 +59,13 @@ class ListView(FastObjectListView):
             
         liste_Colonnes = [
             ColumnDefn(u"", 'left', 0, ""),
-            ColumnDefn(u"Nom du champ", 'left', 150, "nom", typeDonnee="texte", isSpaceFilling=True ),
-            ColumnDefn(u"Valeur exemple", 'left', 150, "exemple", typeDonnee="texte"),
-            ColumnDefn(u"Code", 'left', 230, "code", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom du champ"), 'left', 150, "nom", typeDonnee="texte", isSpaceFilling=True ),
+            ColumnDefn(_(u"Valeur exemple"), 'left', 150, "exemple", typeDonnee="texte"),
+            ColumnDefn(_(u"Code"), 'left', 230, "code", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun champ disponible")
+        self.SetEmptyListMsg(_(u"Aucun champ disponible"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
@@ -97,7 +99,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Insérer")
+        item = wx.MenuItem(menuPop, 10, _(u"Insérer"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -106,14 +108,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -124,17 +126,17 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des champs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des champs"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des champs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des champs"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Inserer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun champ à insérer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ à insérer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -155,7 +157,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un champ...")
+        self.SetDescriptiveText(_(u"Rechercher un champ..."))
         self.ShowSearchButton(True)
         
         self.listView = listview
@@ -198,8 +200,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         listeChamps = [
-            (u"Nom de l'individu", u"DUPOND", u"NOM_INDIVIDU"),
-            (u"Prénom de l'individu", u"Gérard", u"PRENOM_INDIVIDU"),
+            (_(u"Nom de l'individu"), _(u"DUPOND"), _(u"NOM_INDIVIDU")),
+            (_(u"Prénom de l'individu"), _(u"Gérard"), _(u"PRENOM_INDIVIDU")),
             ]
         self.myOlv = ListView(panel, listeChamps=listeChamps, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 

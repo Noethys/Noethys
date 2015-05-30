@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
 import GestionDB
@@ -58,20 +60,20 @@ class Track(object):
         
         # Analyse
         informationsManquantes = []
-        if self.iban == None or self.iban == "" : informationsManquantes.append(u"IBAN")
-        if self.bic == None or self.bic == "" : informationsManquantes.append(u"BIC")
-        if self.individu_nom_complet == None or self.individu_nom_complet == "" : informationsManquantes.append(u"nom du titulaire")
-        if self.rum == None or self.rum == "" : informationsManquantes.append(u"RUM")
-        if self.date == None or self.date == "" : informationsManquantes.append(u"date du mandat")
+        if self.iban == None or self.iban == "" : informationsManquantes.append(_(u"IBAN"))
+        if self.bic == None or self.bic == "" : informationsManquantes.append(_(u"BIC"))
+        if self.individu_nom_complet == None or self.individu_nom_complet == "" : informationsManquantes.append(_(u"nom du titulaire"))
+        if self.rum == None or self.rum == "" : informationsManquantes.append(_(u"RUM"))
+        if self.date == None or self.date == "" : informationsManquantes.append(_(u"date du mandat"))
         
         if self.IDmandat != None :
-            self.analyse = u"Mandat déjà créé"
+            self.analyse = _(u"Mandat déjà créé")
             self.valide = False
         elif len(informationsManquantes) > 0 :
-            self.analyse = u"Infos manquantes : %s" % ", ".join(informationsManquantes)
+            self.analyse = _(u"Infos manquantes : %s") % ", ".join(informationsManquantes)
             self.valide = False
         else :
-            self.analyse = u"Prêt pour transfert"
+            self.analyse = _(u"Prêt pour transfert")
             self.valide = True
         
         
@@ -159,21 +161,21 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille"),
-            ColumnDefn(u"Analyse", 'left', 250, "analyse", imageGetter=GetImageAnalyse),
-            ColumnDefn(u"Famille", 'left', 200, "titulairesFamille"),
-            ColumnDefn(u"IBAN", 'left', 180, "iban"),
-            ColumnDefn(u"BIC", 'left', 100, "bic"),
-            ColumnDefn(u"RUM", 'left', 60, "rum"),
-            ColumnDefn(u"Date sign.", 'left', 75, "date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Titulaire", 'left', 110, "individu_nom_complet"),
-            ColumnDefn(u"Observations", 'left', 120, "memo"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDfamille"),
+            ColumnDefn(_(u"Analyse"), 'left', 250, "analyse", imageGetter=GetImageAnalyse),
+            ColumnDefn(_(u"Famille"), 'left', 200, "titulairesFamille"),
+            ColumnDefn(_(u"IBAN"), 'left', 180, "iban"),
+            ColumnDefn(_(u"BIC"), 'left', 100, "bic"),
+            ColumnDefn(_(u"RUM"), 'left', 60, "rum"),
+            ColumnDefn(_(u"Date sign."), 'left', 75, "date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Titulaire"), 'left', 110, "individu_nom_complet"),
+            ColumnDefn(_(u"Observations"), 'left', 120, "memo"),
             ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune donnée")
+        self.SetEmptyListMsg(_(u"Aucune donnée"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -202,7 +204,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Cocher les valides
-        item = wx.MenuItem(menuPop, 60, u"Cocher uniquement les transferts valides")
+        item = wx.MenuItem(menuPop, 60, _(u"Cocher uniquement les transferts valides"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -211,14 +213,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
         bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -227,14 +229,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -243,14 +245,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -261,12 +263,12 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des mandats", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mandats"), format="A", orientation=wx.LANDSCAPE)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -280,11 +282,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des RIB")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des RIB"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des RIB")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des RIB"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -322,13 +324,13 @@ class ListView(FastObjectListView):
         # Vérifie si ligne valide
         for track in tracks :
             if track.valide == False :
-                dlg = wx.MessageDialog(self, u"Vous ne pouvez sélectionner que les lignes valides !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez sélectionner que les lignes valides !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Confirmez-vous la création de %d mandats ?\n\nCette opération peut prendre quelques minutes..." % len(tracks), u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création de %d mandats ?\n\nCette opération peut prendre quelques minutes...") % len(tracks), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -339,7 +341,7 @@ class ListView(FastObjectListView):
         
         index = 0
         for track in tracks :
-            self.EcritStatusbar(u"Veuillez patienter...  Création du mandat %d / %d" % (index, len(tracks)))
+            self.EcritStatusbar(_(u"Veuillez patienter...  Création du mandat %d / %d") % (index, len(tracks)))
             listeDonnees = [    
                     ("IDfamille", track.IDfamille),
                     ("rum", track.rum),
@@ -364,7 +366,7 @@ class ListView(FastObjectListView):
         DB.Close()
         self.EcritStatusbar(u"") 
         
-        dlg = wx.MessageDialog(self, u"%d mandats ont été créés avec succès." % len(tracks), u"Fin", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d mandats ont été créés avec succès.") % len(tracks), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
@@ -387,7 +389,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

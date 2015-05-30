@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import DLG_Saisie_compte
 
@@ -88,16 +90,16 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 21, "IDcompte", typeDonnee="entier", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Intitulé", 'left', 200, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Numéro", "left", 100, "numero", typeDonnee="texte"),
-            ColumnDefn(u"Raison sociale", "left", 170, "raison", typeDonnee="texte"),
-            ColumnDefn(u"Code Etab.", "left", 80, "code_etab", typeDonnee="texte"),
-            ColumnDefn(u"Code Guichet", "left", 90, "code_guichet", typeDonnee="texte"),
-            ColumnDefn(u"N° NNE", "left", 80, "code_nne", typeDonnee="texte"),
+            ColumnDefn(_(u"Intitulé"), 'left', 200, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Numéro"), "left", 100, "numero", typeDonnee="texte"),
+            ColumnDefn(_(u"Raison sociale"), "left", 170, "raison", typeDonnee="texte"),
+            ColumnDefn(_(u"Code Etab."), "left", 80, "code_etab", typeDonnee="texte"),
+            ColumnDefn(_(u"Code Guichet"), "left", 90, "code_guichet", typeDonnee="texte"),
+            ColumnDefn(_(u"N° NNE"), "left", 80, "code_nne", typeDonnee="texte"),
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun compte bancaire")
+        self.SetEmptyListMsg(_(u"Aucun compte bancaire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -132,7 +134,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -141,7 +143,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -149,7 +151,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -159,7 +161,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Par défaut
-        item = wx.MenuItem(menuPop, 60, u"Définir comme compte par défaut")
+        item = wx.MenuItem(menuPop, 60, _(u"Définir comme compte par défaut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG)
@@ -171,14 +173,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -189,12 +191,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des comptes bancaires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des comptes bancaires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des comptes bancaires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des comptes bancaires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -212,7 +214,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_bancaires", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun compte à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun compte à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -225,7 +227,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_comptes_bancaires", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun compte à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun compte à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -241,7 +243,7 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d règlement(s).\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -256,7 +258,7 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d dépôt(s) de règlements.\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d dépôt(s) de règlements.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -271,7 +273,7 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d opérations comptables.\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d opérations comptables.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -286,13 +288,13 @@ class ListView(FastObjectListView):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, u"Ce compte a déjà été attribué à %d relevés de compte.\n\nVous ne pouvez donc pas le supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce compte a déjà été attribué à %d relevés de compte.\n\nVous ne pouvez donc pas le supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce compte bancaire ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce compte bancaire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             # Suppression de l'identité
@@ -337,27 +339,27 @@ class Saisie(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        self.label_nom = wx.StaticText(self, -1, u"Intitulé du compte :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Intitulé du compte :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
         if nom != None :
             self.ctrl_nom.SetValue(nom)
-        self.label_numero = wx.StaticText(self, -1, u"Numéro de compte :")
+        self.label_numero = wx.StaticText(self, -1, _(u"Numéro de compte :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, "")
         if numero !=None :
             self.ctrl_numero.SetValue(numero)
             
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nom == None :
-            self.SetTitle(u"Saisie d'un compte")
+            self.SetTitle(_(u"Saisie d'un compte"))
         else:
-            self.SetTitle(u"Modification d'un compte")
+            self.SetTitle(_(u"Modification d'un compte"))
         self.SetMinSize((450, -1))
         
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici l'intitulé du compte")
-        self.ctrl_numero.SetToolTipString(u"Saisissez ici le numéro du compte")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici l'intitulé du compte"))
+        self.ctrl_numero.SetToolTipString(_(u"Saisissez ici le numéro du compte"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -393,13 +395,13 @@ class Saisie(wx.Dialog):
         nom = self.ctrl_nom.GetValue()
         numero = self.ctrl_numero.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom de compte !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de compte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         if numero == "" :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas saisir de numéro de compte ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro de compte ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -419,7 +421,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un compte bancaire...")
+        self.SetDescriptiveText(_(u"Rechercher un compte bancaire..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

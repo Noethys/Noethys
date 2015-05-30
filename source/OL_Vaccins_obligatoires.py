@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import CTRL_Saisie_date
 import GestionDB
@@ -167,12 +169,12 @@ class ListView(FastObjectListView):
             return track.etat
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 23, "IDvaccin", imageGetter=GetImage),
-            ColumnDefn(u"Nom du vaccin", 'left', 100, "nom"),
+            ColumnDefn(_(u"ID"), "left", 23, "IDvaccin", imageGetter=GetImage),
+            ColumnDefn(_(u"Nom du vaccin"), 'left', 100, "nom"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune maladie")
+        self.SetEmptyListMsg(_(u"Aucune maladie"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)

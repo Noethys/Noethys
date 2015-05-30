@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 
 import shelve
 import cStringIO
@@ -198,6 +199,6 @@ if __name__ == "__main__":
     ImporterDepuisFichierDefaut(IDmodele=13, nom=None, IDfond=1, defaut=0)
     
     # Dupliquer un modèle
-##    DupliquerModele(IDmodele=5, nom=u"Attestation fiscale par défaut 2", categorie="attestation_fiscale")
+##    DupliquerModele(IDmodele=5, nom=_(u"Attestation fiscale par défaut 2"), categorie="attestation_fiscale")
 
     

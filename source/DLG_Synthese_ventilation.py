@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
 import sys
@@ -39,26 +41,26 @@ class Parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.staticbox_staticbox = wx.StaticBox(self, -1, u"Paramètres")
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         
         self.radio_depots = wx.RadioButton(self, -1, "")
-        self.label_depots = wx.StaticText(self, -1, u"Affiche les dépôts sélectionnés :")
+        self.label_depots = wx.StaticText(self, -1, _(u"Affiche les dépôts sélectionnés :"))
         self.ctrl_depots = CTRL_Selection_depots.CTRL(self)
         self.ctrl_depots.MAJ() 
         
         self.radio_prestations = wx.RadioButton(self, -1, "")
-        self.label_prestations = wx.StaticText(self, -1, u"Affiche les prestations ventilées sur la période :")
+        self.label_prestations = wx.StaticText(self, -1, _(u"Affiche les prestations ventilées sur la période :"))
         
         self.label_date_debut = wx.StaticText(self, -1, "Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_date_fin = wx.StaticText(self, -1, " au")
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         
-        self.check_activites = wx.CheckBox(self, -1, u"Uniquement rattachées aux activités :")
+        self.check_activites = wx.CheckBox(self, -1, _(u"Uniquement rattachées aux activités :"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         
         # Boutons Actualiser
-        self.bouton_actualiser = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_actualiser.SetMinSize((-1, 50)) 
 
         self.__set_properties()
@@ -73,15 +75,15 @@ class Parametres(wx.Panel):
         self.ActiveControles() 
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
 ##        self.ctrl_date_debut.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
 ##        self.ctrl_date_debut.SetMinSize((70, 18))
 ##        self.ctrl_date_fin.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
 ##        self.ctrl_date_fin.SetMinSize((70, 18))
-        self.radio_depots.SetToolTipString(u"Cliquez ici pour sélectionner des dépôts")
-        self.radio_prestations.SetToolTipString(u"Cliquez ici pour sélectionner une periode")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser les résultats")
+        self.radio_depots.SetToolTipString(_(u"Cliquez ici pour sélectionner des dépôts"))
+        self.radio_prestations.SetToolTipString(_(u"Cliquez ici pour sélectionner une periode"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser les résultats"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -125,7 +127,7 @@ class Parametres(wx.Panel):
             # DEPOTS
             listeDepots = self.ctrl_depots.GetDepots() 
 ##            if len(listeDepots) == 0 :
-##                dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun dépôt !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun dépôt !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##                dlg.ShowModal()
 ##                dlg.Destroy()
             
@@ -135,7 +137,7 @@ class Parametres(wx.Panel):
             # PRESTATIONS D'UNE PERIODE
             date_debut = self.ctrl_date_debut.GetDate()
             if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-                dlg = wx.MessageDialog(self, u"La date de début de période ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
@@ -143,7 +145,7 @@ class Parametres(wx.Panel):
 
             date_fin = self.ctrl_date_fin.GetDate()
             if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-                dlg = wx.MessageDialog(self, u"La date de fin de période ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -152,7 +154,7 @@ class Parametres(wx.Panel):
             if self.check_activites.GetValue() == True :
                 listeActivites = self.GetActivites() 
                 if len(listeActivites) == 0 :
-                    dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -202,8 +204,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Ceci est un tableau d'analyse croisée Ventilation/Dépôts qui vous permet d'afficher deux types de données : 1) Les prestations, regroupées par période, que les règlements des dépôts sélectionnés ont servi à payer, et 2) les dépôts dont les règlements ont servi à payer les prestations d'une période donnée. Ces résultats vous permettront donc de mettre en corrélation les dépôts et les prestations à la fin d'un exercice comptable."
-        titre = u"Tableau d'analyse croisée ventilation/dépôts"
+        intro = _(u"Ceci est un tableau d'analyse croisée Ventilation/Dépôts qui vous permet d'afficher deux types de données : 1) Les prestations, regroupées par période, que les règlements des dépôts sélectionnés ont servi à payer, et 2) les dépôts dont les règlements ont servi à payer les prestations d'une période donnée. Ces résultats vous permettront donc de mettre en corrélation les dépôts et les prestations à la fin d'un exercice comptable.")
+        titre = _(u"Tableau d'analyse croisée ventilation/dépôts")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         self.SetTitle(titre)
         
@@ -211,7 +213,7 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres = Parametres(self)
         
         # CTRL Coefficients
-        self.staticbox_stats_staticbox = wx.StaticBox(self, -1, u"Résultats")
+        self.staticbox_stats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
         self.ctrl_stats = CTRL_Synthese_ventilation.CTRL(self)
         
         # Commandes de liste
@@ -219,11 +221,11 @@ class Dialog(wx.Dialog):
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
         # Commandes de résultats
-        self.label_mode_affichage = wx.StaticText(self, -1, u"Mode d'affichage :")
-        self.radio_mois = wx.RadioButton(self, -1, u"Mois", style=wx.RB_GROUP)
-        self.radio_annee = wx.RadioButton(self, -1, u"Année")
+        self.label_mode_affichage = wx.StaticText(self, -1, _(u"Mode d'affichage :"))
+        self.radio_mois = wx.RadioButton(self, -1, _(u"Mois"), style=wx.RB_GROUP)
+        self.radio_annee = wx.RadioButton(self, -1, _(u"Année"))
         
-        self.check_details = wx.CheckBox(self, -1, u"Afficher détails")
+        self.check_details = wx.CheckBox(self, -1, _(u"Afficher détails"))
         self.check_details.SetValue(True) 
         
         self.hyper_developper = self.Build_Hyperlink_developper()
@@ -231,8 +233,8 @@ class Dialog(wx.Dialog):
         self.hyper_reduire = self.Build_Hyperlink_reduire()
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
@@ -248,13 +250,13 @@ class Dialog(wx.Dialog):
         self.MAJ() 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter les résultats au format MS Excel")
-        self.radio_mois.SetToolTipString(u"Cliquez ici pour afficher les résultats par mois")
-        self.radio_annee.SetToolTipString(u"Cliquez ici pour afficher les résultats par années")
-        self.check_details.SetToolTipString(u"Cliquez ici pour afficher les détails dans les résultats")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter les résultats au format MS Excel"))
+        self.radio_mois.SetToolTipString(_(u"Cliquez ici pour afficher les résultats par mois"))
+        self.radio_annee.SetToolTipString(_(u"Cliquez ici pour afficher les résultats par années"))
+        self.check_details.SetToolTipString(_(u"Cliquez ici pour afficher les détails dans les résultats"))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):
@@ -320,14 +322,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_developper(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, u"Tout développer", URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout développer"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_developper)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(u"Tout développer"))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout développer")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
@@ -338,14 +340,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_reduire(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, u"Tout réduire", URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout réduire"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_reduire)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(u"Tout réduire"))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout réduire")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
