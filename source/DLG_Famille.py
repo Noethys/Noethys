@@ -62,16 +62,16 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
         
         self.listePages = [
-            (_(u"informations"), _(u"Informations"), u"DLG_Famille_informations.Panel(self, IDfamille=IDfamille)", "Information.png"),
-            (_(u"questionnaire"), _(u"Questionnaire"), u"DLG_Famille_questionnaire.Panel(self, IDfamille=IDfamille)", "Questionnaire.png"),
-            (_(u"pieces"), _(u"Pièces"), u"DLG_Famille_pieces.Panel(self, IDfamille=IDfamille)", "Dupliquer.png"),
-            (_(u"cotisations"), _(u"Cotisations"), u"DLG_Famille_cotisations.Panel(self, IDfamille=IDfamille)", "Cotisation.png"),
-            (_(u"caisse"), _(u"Caisse"), u"DLG_Famille_caisse.Panel(self, IDfamille=IDfamille)", "Mecanisme.png"),
-            (_(u"quotients"), _(u"Quotients familiaux"), u"DLG_Famille_quotients.Panel(self, IDfamille=IDfamille)", "Calculatrice.png"),
-            (_(u"prestations"), _(u"Prestations"), u"DLG_Famille_prestations.Panel(self, IDfamille=IDfamille)", "Etiquette.png"),
-            (_(u"factures"), _(u"Factures"), u"DLG_Famille_factures.Panel(self, IDfamille=IDfamille)", "Facture.png"),
-            (_(u"reglements"), _(u"Règlements"), u"DLG_Famille_reglements.Panel(self, IDfamille=IDfamille)", "Reglement.png"),
-            (_(u"divers"), _(u"Divers"), u"DLG_Famille_divers.Panel(self, IDfamille=IDfamille)", "Planete.png"),
+            ("informations", _(u"Informations"), u"DLG_Famille_informations.Panel(self, IDfamille=IDfamille)", "Information.png"),
+            ("questionnaire", _(u"Questionnaire"), u"DLG_Famille_questionnaire.Panel(self, IDfamille=IDfamille)", "Questionnaire.png"),
+            ("pieces", _(u"Pièces"), u"DLG_Famille_pieces.Panel(self, IDfamille=IDfamille)", "Dupliquer.png"),
+            ("cotisations", _(u"Cotisations"), u"DLG_Famille_cotisations.Panel(self, IDfamille=IDfamille)", "Cotisation.png"),
+            ("caisse", _(u"Caisse"), u"DLG_Famille_caisse.Panel(self, IDfamille=IDfamille)", "Mecanisme.png"),
+            ("quotients", _(u"Quotients familiaux"), u"DLG_Famille_quotients.Panel(self, IDfamille=IDfamille)", "Calculatrice.png"),
+            ("prestations", _(u"Prestations"), u"DLG_Famille_prestations.Panel(self, IDfamille=IDfamille)", "Etiquette.png"),
+            ("factures", _(u"Factures"), u"DLG_Famille_factures.Panel(self, IDfamille=IDfamille)", "Facture.png"),
+            ("reglements", _(u"Règlements"), u"DLG_Famille_reglements.Panel(self, IDfamille=IDfamille)", "Reglement.png"),
+            ("divers", _(u"Divers"), u"DLG_Famille_divers.Panel(self, IDfamille=IDfamille)", "Planete.png"),
             ]
             
         # ImageList pour le NoteBook

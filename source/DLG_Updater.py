@@ -136,7 +136,7 @@ class Download(Thread):
         #print "Telechargement de la nouvelle version : etape 4"
 
     def _hook(self, nb_blocs, taille_bloc, taille_fichier):
-        #print _(u"Telecharge="), nb_blocs*taille_bloc, _(u"/ total="), taille_fichier
+        #print "Telecharge=", nb_blocs*taille_bloc, _(u"/ total="), taille_fichier
         if nb_blocs*taille_bloc >= taille_fichier:
             #print "Le telechargement est termine !"
             self.succes = True

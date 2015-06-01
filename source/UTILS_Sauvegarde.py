@@ -343,7 +343,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
                 return False
 
         # Création du répertoire temporaire
-        repTemp = _(u"Temp/restoretemp")
+        repTemp = "Temp/restoretemp"
         if os.path.isdir(repTemp) == True :
             shutil.rmtree(repTemp)
         os.mkdir(repTemp)

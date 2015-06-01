@@ -291,15 +291,15 @@ class Dialog(wx.Dialog):
         
 
     def OnAjouterEmetteur(self, event): 
-        print _(u"Event handler `OnAjouterEmetteur' not implemented!")
+        print "Event handler `OnAjouterEmetteur' not implemented!"
         event.Skip()
 
     def OnModifierEmetteur(self, event): 
-        print _(u"Event handler `OnModifierEmetteur' not implemented!")
+        print "Event handler `OnModifierEmetteur' not implemented!"
         event.Skip()
 
     def OnSupprimerEmetteur(self, event): 
-        print _(u"Event handler `OnSupprimerEmetteur' not implemented!")
+        print "Event handler `OnSupprimerEmetteur' not implemented!"
         event.Skip()
 
     def OnBoutonAide(self, event): 

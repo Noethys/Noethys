@@ -79,16 +79,16 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
         
         listePages = [
-            (_(u"informations"), _(u"Informations"), u"DLG_Individu_informations.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Information.png"),
-            (_(u"identite"), _(u"Identité"), u"DLG_Individu_identite.Panel_identite(self, IDindividu=IDindividu)", "Identite.png"),
-            (_(u"liens"), _(u"Liens"), u"DLG_Individu_liens.Panel_liens(self, IDindividu=IDindividu)", "Famille.png"),
-            (_(u"questionnaire"), _(u"Questionnaire"), u"DLG_Individu_questionnaire.Panel(self, IDindividu=IDindividu)", "Questionnaire.png"),
-            (_(u"coords"), _(u"Coordonnées"), u"DLG_Individu_coords.Panel_coords(self, IDindividu=IDindividu)", "Maison.png"),
-            (_(u"activites"), _(u"Activités"), u"DLG_Individu_inscriptions.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Activite.png"),
-            (_(u"scolarite"), _(u"Scolarité"), u"DLG_Individu_scolarite.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Classe.png"),
-            (_(u"pieces"), _(u"Pièces"), u"DLG_Individu_pieces.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Dupliquer.png"),
-            (_(u"transports"), _(u"Transports"), u"DLG_Individu_transports.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Transport.png"),
-            (_(u"medical"), _(u"Médical"), u"DLG_Individu_medical.Panel(self, IDindividu=IDindividu)", "Medical.png"),
+            ("informations", _(u"Informations"), u"DLG_Individu_informations.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Information.png"),
+            ("identite", _(u"Identité"), u"DLG_Individu_identite.Panel_identite(self, IDindividu=IDindividu)", "Identite.png"),
+            ("liens", _(u"Liens"), u"DLG_Individu_liens.Panel_liens(self, IDindividu=IDindividu)", "Famille.png"),
+            ("questionnaire", _(u"Questionnaire"), u"DLG_Individu_questionnaire.Panel(self, IDindividu=IDindividu)", "Questionnaire.png"),
+            ("coords", _(u"Coordonnées"), u"DLG_Individu_coords.Panel_coords(self, IDindividu=IDindividu)", "Maison.png"),
+            ("activites", _(u"Activités"), u"DLG_Individu_inscriptions.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Activite.png"),
+            ("scolarite", _(u"Scolarité"), u"DLG_Individu_scolarite.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Classe.png"),
+            ("pieces", _(u"Pièces"), u"DLG_Individu_pieces.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Dupliquer.png"),
+            ("transports", _(u"Transports"), u"DLG_Individu_transports.Panel(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees)", "Transport.png"),
+            ("medical", _(u"Médical"), u"DLG_Individu_medical.Panel(self, IDindividu=IDindividu)", "Medical.png"),
             ]
             
         # ImageList pour le NoteBook

@@ -137,7 +137,7 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer.Enable(self.radio_planning_detail.GetValue())
         
     def OnBoutonModele(self, event):  
-        print _(u"Event handler 'OnBoutonModele' not implemented!")
+        print "Event handler 'OnBoutonModele' not implemented!"
         event.Skip()
 
     def OnBoutonAide(self, event): 

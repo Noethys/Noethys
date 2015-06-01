@@ -30,10 +30,10 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
         
         self.listePages = [
-            (_(u"generalites"), _(u"Généralités"), CTRL_Tarification_generalites.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Information.png"),
-            (_(u"conditions"), _(u"Conditions d'application"), CTRL_Tarification_conditions.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Filtre.png"),
-            (_(u"type"), _(u"Type de tarif"), CTRL_Tarification_type.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif), "Outils.png"),
-            (_(u"calcul"), _(u"Calcul du tarif"), CTRL_Tarification_calcul.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Calculatrice.png"),
+            ("generalites", _(u"Généralités"), CTRL_Tarification_generalites.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Information.png"),
+            ("conditions", _(u"Conditions d'application"), CTRL_Tarification_conditions.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Filtre.png"),
+            ("type", _(u"Type de tarif"), CTRL_Tarification_type.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif), "Outils.png"),
+            ("calcul", _(u"Calcul du tarif"), CTRL_Tarification_calcul.Panel(self, IDactivite=IDactivite, IDtarif=IDtarif), "Calculatrice.png"),
             ]
             
         # ImageList pour le NoteBook

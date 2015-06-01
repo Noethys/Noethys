@@ -153,7 +153,11 @@ class MainFrame(wx.Frame):
         self.dictUtilisateur = None
         
         # Chargement de la traduction
-        self.langue = UTILS_Config.GetParametre("langue_interface", None)
+        if test == False :
+            self.langue = self.Select_langue()
+            UTILS_Config.SetParametre("langue_interface", self.langue)
+        else :
+            self.langue = UTILS_Config.GetParametre("langue_interface", None)
         self.ChargeTraduction() 
 
         # Récupération du nom du dernier fichier chargé
@@ -240,6 +244,41 @@ class MainFrame(wx.Frame):
     
     def ChargeTraduction(self):
         UTILS_Traduction.ChargeTraduction(self.langue)
+
+    def Select_langue(self):
+        # Recherche les fichiers de langues existants
+        listeFichiers = os.listdir("Lang/") 
+        listeLabels = [u"Français (fr_FR - par défaut)",]
+        listeCodes = [None,]
+        for nomFichier in listeFichiers :
+            code, extension = nomFichier.split(".")
+            fichier = shelve.open("Lang/" + nomFichier, "r")
+            
+            # Lecture des caractéristiques
+            dictInfos = fichier["###INFOS###"]
+            nom = dictInfos["nom_langue"]
+            code = dictInfos["code_langue"]
+                    
+            # Fermeture du fichier
+            fichier.close()
+            
+            label = u"%s (%s)" % (nom, code)
+            if code not in listeCodes :
+                listeLabels.append(label)
+                listeCodes.append(code)
+        
+        # DLG
+        code = None
+        dlg = wx.SingleChoiceDialog(self, u"Sélectionnez la langue de l'interface :", u"Bienvenue dans Noethys", listeLabels, wx.CHOICEDLG_STYLE)
+        dlg.SetSize((400, 400))
+        dlg.CenterOnScreen()
+        if dlg.ShowModal() == wx.ID_OK:
+            index = dlg.GetSelection()
+            code = listeCodes[index]
+        dlg.Destroy()
+        
+        return code
+
 
     def SetTitleFrame(self, nomFichier=""):
         if "[RESEAU]" in nomFichier :

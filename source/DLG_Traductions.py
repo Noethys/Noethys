@@ -43,7 +43,9 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
             dlg = DLG_Envoi(self)
             dlg.ShowModal()
             dlg.Destroy()
-        
+        if self.URL == "importer" :
+            self.parent.Importer()
+
         self.UpdateLink()
         
 
@@ -71,7 +73,9 @@ class Dialog(wx.Dialog):
         self.bouton_importer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Document_import.png", wx.BITMAP_TYPE_ANY))
         self.bouton_exporter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Document_export.png", wx.BITMAP_TYPE_ANY))
         
-        self.hyper_proposer = Hyperlien(self, label=_(u"Partager un fichier de traduction personnalisé avec la communauté"), infobulle=_(u"Partager un fichier de traduction avec la communauté"), URL="proposer")
+        self.hyper_proposer = Hyperlien(self, label=_(u"Partager un fichier de traduction avec la communauté"), infobulle=_(u"Partager un fichier de traduction avec la communauté"), URL="proposer")
+        self.label_separation = wx.StaticText(self, -1, "|") 
+        self.hyper_importer = Hyperlien(self, label=_(u"Importer/Exporter les textes au format TXT"), infobulle=_(u"Importer/Exporter les textes au format TXT"), URL="importer")
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -120,6 +124,8 @@ class Dialog(wx.Dialog):
         grid_sizer_modeles.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
         
         grid_sizer_hyper = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_hyper.Add(self.hyper_importer, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_hyper.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_hyper.Add(self.hyper_proposer, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_modeles.Add(grid_sizer_hyper, 1, wx.EXPAND, 0)
         
@@ -150,6 +156,12 @@ class Dialog(wx.Dialog):
     def OnBoutonFermer(self, event): 
         self.EndModal(wx.ID_CANCEL)        
 
+    def Importer(self):
+        import DLG_Traduction_importer
+        dlg = DLG_Traduction_importer.Dialog(self)      
+        if dlg.ShowModal() == wx.ID_OK:
+            self.ctrl_langues.MAJ() 
+        dlg.Destroy() 
 
 
 

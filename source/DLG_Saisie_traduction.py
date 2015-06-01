@@ -176,13 +176,23 @@ class Dialog(wx.Dialog):
         
         # Fermeture
         self.EndModal(wx.ID_OK)
+    
+    def OnBoutonImporter(self, event):
+        import DLG_Traduction_importer
+##        dlg = DLG_Traduction_importer.Dialog(self, texte=track.texte, traduction=track.traduction)      
+##        if dlg.ShowModal() == wx.ID_OK:
+##            traduction = dlg.GetTraduction() 
+##            track.traduction_perso = traduction
+##            track.MAJ() 
+##            self.RefreshObject(track)
+##        dlg.Destroy() 
         
 
 
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, code="En_GB", nom="English")
+    dialog_1 = Dialog(None, code="en_GB", nom="English")
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

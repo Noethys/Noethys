@@ -110,9 +110,29 @@ def GenerationFichierTextes() :
     fichier.close()
     print "Generation du fichier de textes terminee."
 
+def ConvertShelveEnTexte():
+    """ Convertit le fichier Textes.dat en fichier Textes.txt """
+    # Lecture du fichier dat
+    fichier = shelve.open("Textes.dat", "r")
+    listeTextes = []
+    for texte, listeFichiers in fichier.iteritems() :
+        listeTextes.append(texte)
+    fichier.close()
+    listeTextes.sort() 
+    
+    # Enregistrement du fichier texte
+    fichier = open("Temp/Textes.txt", "w")
+    for texte in listeTextes :
+        fichier.write(texte + "\n")
+    fichier.close() 
+    print "Fini !"
+
+
+
 
 
 
 if __name__ == "__main__":
-    GenerationFichierTextes() 
+##    GenerationFichierTextes() 
+    ConvertShelveEnTexte()
     
