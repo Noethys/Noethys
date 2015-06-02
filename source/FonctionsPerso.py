@@ -17,6 +17,7 @@ import GestionDB
 import datetime
 import os
 import subprocess
+import webbrowser
 
 
 
@@ -587,34 +588,28 @@ def sendTextMail():
 
 def EnvoyerMail(adresses = [], sujet="", message=""):
     """ Envoyer un Email avec le client de messagerie par défaut """
-    if "linux" in sys.platform :
-        dlg = wx.MessageDialog(None, _(u"Désolé, cette fonction n'est pas encore disponible dans la version LINUX de Teamworks."), _(u"Fonction indisponible"), wx.OK | wx.ICON_ERROR)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return
-        
     if len(adresses) == 1 :
-        commande = "start mailto:%s" % adresses[0]
+        commande = "mailto:%s" % adresses[0]
     else:
-        commande = "start mailto:%s" % adresses[0] + "?"
+        commande = "mailto:%s" % adresses[0] + "?"
         if len(adresses) > 1 :
             commande+= "bcc=%s" % adresses[1]
         for adresse in adresses[2:] :
-            commande+= "^&bcc=%s" % adresse
+            commande+= "&bcc=%s" % adresse
     if sujet != "" : 
         if len(adresses) == 1 : 
             commande += "?"
         else :
-            commande += "^&"
+            commande += "&"
         commande += "subject=%s" % sujet
     if message != "" : 
         if len(adresses) == 1 and sujet == "" : 
             commande += "?"
         else:
-            commande += "^&"
+            commande += "&"
         commande += "body=%s" % message
     #print commande
-    os.system(commande)
+    webbrowser.open(commande)
 
 
 class FichierConfig():
