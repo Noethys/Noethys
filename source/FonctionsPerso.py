@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from __future__ import unicode_literals
 from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -1243,7 +1244,7 @@ def RemplacerContenuFichier():
 ##        ("ColumnDefn, Filter", "ColumnDefn, Filter, CTRL_Outils"),
         ("wx.SearchCtrl.__init__(self, parent, size=(-1,20)", "wx.SearchCtrl.__init__(self, parent, size=(-1, -1)"),
         ]
-    listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
+    #listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
     for nomFichier in listeFichiers :
         if nomFichier.endswith(".py") :
             fichier = open(nomFichier, 'r')
@@ -1458,11 +1459,56 @@ def GetIDfichier():
     IDfichier = listeTemp[0][2]
     return IDfichier
 
+
+
+
+
+def InsertUnicodeLiterals():
+    """ Pour insérer from __future__ import unicode_literals dans tous les fichiers """
+    # Get fichiers
+    listeFichiers = os.listdir(os.getcwd())
+    indexFichier = 0
+    for nomFichier in listeFichiers :
+        if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False :
+            #print "%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier)
+            
+            # Ouverture des fichiers
+            fichier = open(nomFichier, "r")
+            dirty = False
+            
+            listeLignes = []
+            for ligne in fichier :
+                # Insertion de l'import
+                if "from UTILS_Traduction import _" in ligne :
+                    listeLignes.append("from __future__ import unicode_literals\n")
+                    dirty = True
+                
+                listeLignes.append(ligne) 
+                
+            # Clôture des fichiers
+            fichier.close()
+            
+            # Ecriture du nouveau fichier
+            if dirty == True :
+                nouveauFichier = open("New/%s" % nomFichier, "w")
+                for ligne in listeLignes :
+                    nouveauFichier.write(ligne)
+                nouveauFichier.close()
+            
+        indexFichier += 1
+            
+    print "Fini !!!!!!!!!!!!!!!!!"
+
+
+
+
+
 if __name__ == "__main__":
 ##    RemplacerContenuFichier() 
     # ------- Affiche les stats -------
 ##    AfficheStatsProgramme()
     
+##    InsertUnicodeLiterals() 
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")
@@ -1480,7 +1526,9 @@ if __name__ == "__main__":
 ##    app.MainLoop()
     
     # Recherche de modules
-    listeModules = RechercheModules("OL_Liste_comptes.py")
-    for x in listeModules :
-        print x
-    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
+##    listeModules = RechercheModules("OL_Liste_comptes.py")
+##    for x in listeModules :
+##        print x
+##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
+    pass
+    

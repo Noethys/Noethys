@@ -8,6 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+from __future__ import unicode_literals
 from UTILS_Traduction import _
 import wx
 import time
@@ -204,6 +205,13 @@ def ModifieFichiers():
         indexFichier += 1
             
     print "Fini !!!!!!!!!!!!!!!!!"
+
+
+
+
+
+
+
 
 
 
