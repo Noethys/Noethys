@@ -85,7 +85,8 @@ class CTRL_Forfait(HTL.HyperTreeList):
             couleur = dictForfait["couleur"]
             self.dictImages[IDprestation] = il.Add(self.CreationImage(couleur))
             
-        self.AssignImageList(il)
+        if il.GetImageCount() > 0 :
+            self.AssignImageList(il)
         
         # Recherche du nom des titulaires
         dictTitulaires = UTILS_Titulaires.GetTitulaires(dictDonnees.keys())
