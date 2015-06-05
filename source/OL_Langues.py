@@ -8,7 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-from __future__ import unicode_literals
+
 from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -52,7 +52,7 @@ class ListView(FastObjectListView):
         for nomFichier in listeFichiers :
             code, extension = nomFichier.split(".")
             fichier = shelve.open("Lang/" + nomFichier, "r")
-            dictInfos = fichier["###INFOS###"]
+            dictInfos = fichier[str("###INFOS###")]
             nom = dictInfos["nom_langue"]
             code = dictInfos["code_langue"]
             nbreTextes = len(fichier) - 1

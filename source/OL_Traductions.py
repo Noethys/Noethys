@@ -8,7 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-from __future__ import unicode_literals
+
 from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -310,7 +310,6 @@ def AjoutImport():
                     idx = indexLigne + 2
                 
                 if idx == indexLigne :
-from __future__ import unicode_literals
                     nouveauFichier.write("from UTILS_Traduction import _\n")
 
                 indexLigne += 1

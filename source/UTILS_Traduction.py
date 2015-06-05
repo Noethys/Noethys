@@ -54,12 +54,7 @@ def CreationFichierTest():
     fichier = shelve.open(nomFichier, flag)
     fichier["##NOM_LANGUE"] = u"Anglais"
     fichier["##CODE_LANGUE"] = "anglais"
-    fichier["##TRADUCTEUR_NOM"] = u"DUPOND"
-    fichier["##TRADUCTEUR_PRENOM"] = u"Célestin"
     fichier["Régler une facture"] = u"Régler une facture2"
-    fichier["  Liste  "] = u"  LISTE!!!  "
-    fichier["Badgeage"] = u"BadgetrucPERSO"
-    
     fichier.close()
 
 

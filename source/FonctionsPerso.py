@@ -8,7 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-from __future__ import unicode_literals
+
 from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
@@ -1464,7 +1464,7 @@ def GetIDfichier():
 
 
 def InsertUnicodeLiterals():
-    """ Pour insérer from __future__ import unicode_literals dans tous les fichiers """
+    """ Pour insérer  dans tous les fichiers """
     # Get fichiers
     listeFichiers = os.listdir(os.getcwd())
     indexFichier = 0
@@ -1480,7 +1480,7 @@ def InsertUnicodeLiterals():
             for ligne in fichier :
                 # Insertion de l'import
                 if "from UTILS_Traduction import _" in ligne :
-                    listeLignes.append("from __future__ import unicode_literals\n")
+                    listeLignes.append("\n")
                     dirty = True
                 
                 listeLignes.append(ligne) 
