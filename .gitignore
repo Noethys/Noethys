@@ -28,6 +28,7 @@ msvcr90.dll
 Microsoft.VC90.CRT.manifest
 Thumbs.db
 .bak
+*.xlang
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
