@@ -34,8 +34,9 @@ def GetReponse(dictReponses={}, IDquestion=None, ID=None):
         if dictReponses[IDquestion].has_key(ID) :
             return dictReponses[IDquestion][ID]
     return u""
-
-
+    
+    
+    
 class Questionnaires():
     def __init__(self):
         self.dictControles = self.GetControles() 
@@ -113,7 +114,7 @@ class Questionnaires():
         listeResultats = []
         for IDquestion, label, type, controle, defaut in listeQuestions :
             if self.GetFiltre(controle) != None :
-                listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut})
+                listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut, "filtre":self.GetFiltre(controle)})
             
         return listeResultats
 

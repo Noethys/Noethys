@@ -476,7 +476,15 @@ class ListView(FastObjectListView):
         # Ajout des questions des questionnaires
         for dictQuestion in self.LISTE_QUESTIONS :
             nomChamp = "question_%d" % dictQuestion["IDquestion"]
-            typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+            #typeDonnee = UTILS_Infos_individus.GetTypeChamp(nomChamp)
+            filtre = dictQuestion["filtre"]
+            if filtre == "texte" : typeDonnee = "texte"
+            elif filtre == "entier" : typeDonnee = "entier"
+            elif filtre == "montant" : typeDonnee = "montant"
+            elif filtre == "choix" : typeDonnee = "texte"
+            elif filtre == "coche" : typeDonnee = "texte"
+            elif filtre == "date" : typeDonnee = "date"
+            else : typeDonnee = "texte"
             liste_Colonnes.append(ColumnDefn(dictQuestion["label"], "left", 150, "question_%d" % dictQuestion["IDquestion"], typeDonnee=typeDonnee))
 
         self.SetColumns(liste_Colonnes)
@@ -685,7 +693,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(categorie="famille", listeActivites=None, presents=None)
+        self.myOlv.MAJ(categorie="individu", listeActivites=None, presents=None)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
