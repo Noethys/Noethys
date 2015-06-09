@@ -45,17 +45,17 @@ def _(chaine) :
     return chaine
 
 
-def CreationFichierTest():
-    nomFichier = "Lang/anglais.xlang"
-    if os.path.isfile(nomFichier) :
-        flag = "w"
-    else :
-        flag = "n"
-    fichier = shelve.open(nomFichier, flag)
-    fichier["##NOM_LANGUE"] = u"Anglais"
-    fichier["##CODE_LANGUE"] = "anglais"
-    fichier["Régler une facture"] = u"Régler une facture2"
-    fichier.close()
+##def CreationFichierTest():
+##    nomFichier = "Lang/anglais.xlang"
+##    if os.path.isfile(nomFichier) :
+##        flag = "w"
+##    else :
+##        flag = "n"
+##    fichier = shelve.open(nomFichier, flag)
+##    fichier["##NOM_LANGUE"] = u"Anglais"
+##    fichier["##CODE_LANGUE"] = "anglais"
+##    fichier["Régler une facture"] = u"Régler une facture2"
+##    fichier.close()
 
 
 def GenerationFichierTextes() :
@@ -122,12 +122,26 @@ def ConvertShelveEnTexte():
     fichier.close() 
     print "Fini !"
 
-
+def FusionneFichiers(code="en_GB"):
+    # Lecture du fichier xlang
+    fichier = shelve.open("Lang/%s.xlang" % code, "r")
+    dictDonnees = {}
+    for texte, traduction in fichier.iteritems() :
+        if texte != "###INFOS###" :
+            dictDonnees[texte] = traduction
+    fichier.close()
+    
+    # Lecture du fichier lang
+    fichier = shelve.open("Lang/%s.lang" % code, "w")
+    for texte, traduction in dictDonnees.iteritems() :
+        fichier[texte] = traduction
+    fichier.close()
+    print "Fusion de %d traductions terminee !" % len(dictDonnees)
 
 
 
 
 if __name__ == "__main__":
 ##    GenerationFichierTextes() 
-    ConvertShelveEnTexte()
-    
+##    ConvertShelveEnTexte()
+    FusionneFichiers("en_GB")

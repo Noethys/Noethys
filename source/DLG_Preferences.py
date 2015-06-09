@@ -34,16 +34,17 @@ class Langue(wx.Panel):
         # Recherche des langues disponibles
         listeFichiers = os.listdir("Lang/") 
         for nomFichier in listeFichiers :
-            code, extension = nomFichier.split(".")
-            fichier = shelve.open("Lang/" + nomFichier, "r")
-            dictInfos = fichier["###INFOS###"]
-            nom = dictInfos["nom_langue"]
-            code = dictInfos["code_langue"]
-            fichier.close()
-            
-            if code not in self.listeCodes :
-                self.listeCodes.append(code)
-                self.listeLangues.append(nom)
+            if nomFichier.endswith("lang") :
+                code, extension = nomFichier.split(".")
+                fichier = shelve.open("Lang/" + nomFichier, "r")
+                dictInfos = fichier["###INFOS###"]
+                nom = dictInfos["nom_langue"]
+                code = dictInfos["code_langue"]
+                fichier.close()
+                
+                if code not in self.listeCodes :
+                    self.listeCodes.append(code)
+                    self.listeLangues.append(nom)
         
         self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Langue interface*"))
         self.label_langue = wx.StaticText(self, -1, _(u"Langue :"))

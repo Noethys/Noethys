@@ -50,21 +50,22 @@ class ListView(FastObjectListView):
         listeFichiers = os.listdir("Lang/") 
         dictLangues = {}
         for nomFichier in listeFichiers :
-            code, extension = nomFichier.split(".")
-            fichier = shelve.open("Lang/" + nomFichier, "r")
-            dictInfos = fichier[str("###INFOS###")]
-            nom = dictInfos["nom_langue"]
-            code = dictInfos["code_langue"]
-            nbreTextes = len(fichier) - 1
-            fichier.close()
-            
-            if dictLangues.has_key(code) == False :
-                dictLangues[code] = {"nom" : nom, "initial" : 0, "perso" : 0}
-            
-            if extension == "lang" :
-                dictLangues[code]["initial"] = nbreTextes
-            else :
-                dictLangues[code]["perso"] = nbreTextes
+            if nomFichier.endswith("lang") :
+                code, extension = nomFichier.split(".")
+                fichier = shelve.open("Lang/" + nomFichier, "r")
+                dictInfos = fichier["###INFOS###"]
+                nom = dictInfos["nom_langue"]
+                code = dictInfos["code_langue"]
+                nbreTextes = len(fichier) - 1
+                fichier.close()
+                
+                if dictLangues.has_key(code) == False :
+                    dictLangues[code] = {"nom" : nom, "initial" : 0, "perso" : 0}
+                
+                if extension == "lang" :
+                    dictLangues[code]["initial"] = nbreTextes
+                else :
+                    dictLangues[code]["perso"] = nbreTextes
         
         # Remplissage
         listeListeView = []
