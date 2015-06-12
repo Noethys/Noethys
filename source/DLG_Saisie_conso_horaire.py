@@ -69,8 +69,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonHeureFinNow, self.bouton_heure_fin_now)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk, self.ctrl_heure_debut)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk, self.ctrl_heure_fin)
+##        self.ctrl_heure_debut.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk)
+##        self.ctrl_heure_fin.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk)
+        self.ctrl_heure_debut.Bind(wx.EVT_KEY_DOWN, self.OnKey)
+        self.ctrl_heure_fin.Bind(wx.EVT_KEY_DOWN, self.OnKey)
 
     def __set_properties(self):
         self.bouton_heure_debut_now.SetToolTipString(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de début"))
@@ -113,6 +115,12 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.CenterOnScreen() 
     
+    def OnKey(self, event):
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_RETURN or keycode == wx.WXK_NUMPAD_ENTER: 
+            self.OnBoutonOk() 
+        event.Skip() 
+        
     def OnBoutonHeureDebutNow(self, event):
         heureActuelle = time.strftime('%H:%M', time.localtime()) 
         self.ctrl_heure_debut.SetHeure(heureActuelle)
@@ -124,7 +132,7 @@ class Dialog(wx.Dialog):
     def OnBoutonSupprimer(self, event):
         self.EndModal(3)
 
-    def OnBoutonOk(self, event):
+    def OnBoutonOk(self, event=None):
         # Vérification des données saisies
         if self.ctrl_heure_debut.GetHeure() == None or self.ctrl_heure_debut.Validation() == False :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
