@@ -1,3 +1,11 @@
+Version 1.1.4.6 (12/06/2015) :
+
+- Ajout de la traduction multilingue
+- Ajout de l'envoi par email depuis le client de messagerie par défaut sur Linux (par Claude)
+- Conversion de tous les boutons images/textes
+- Correction d'un bug sur serveur Nomadhys
+- Correction de divers bugs
+
 Version 1.1.4.5 (24/05/2015) :
 
 - Ajout de la synchronisation avec Nomadhys
