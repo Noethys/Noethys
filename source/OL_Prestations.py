@@ -169,7 +169,7 @@ class ListView(GroupListView):
         ;""" % (conditionFamille, conditionComptes, conditionDates, filtreSQL)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq() 
-        
+
         req = """
         SELECT ventilation.IDprestation, SUM(ventilation.montant) AS montant_ventilation
         FROM ventilation
@@ -179,7 +179,6 @@ class ListView(GroupListView):
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
         LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
         LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
-        LEFT JOIN deductions ON deductions.IDprestation = prestations.IDprestation
         LEFT JOIN factures ON prestations.IDfacture = factures.IDfacture
         WHERE %s %s %s %s
         GROUP BY ventilation.IDprestation
@@ -189,7 +188,6 @@ class ListView(GroupListView):
         dictVentilation = {}
         for IDprestation, montantVentilation in listeVentilation :
             dictVentilation[IDprestation] = montantVentilation
-        
         DB.Close() 
         
         listePrestations = []
@@ -795,8 +793,11 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, -1, IDfamille=14, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+        self.myOlv = ListView(panel, -1, IDfamille=None, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+        import time
+        t = time.time()
         self.myOlv.MAJ() 
+        print time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
