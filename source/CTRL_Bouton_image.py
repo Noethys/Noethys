@@ -68,8 +68,12 @@ class CTRL(wx.Button):
         self.SetLabel(texte)
         self.MAJ() 
         
-        
-        
+    def SetImageEtTexte(self, cheminImage="", texte=""):
+        self.SetBitmap(wx.NullBitmap)
+        self.cheminImage = cheminImage
+        self.texte = texte
+        self.SetLabel(texte)
+        self.MAJ() 
         
 # -------------------------------------------- DLG de test -----------------------------------------------------
 
