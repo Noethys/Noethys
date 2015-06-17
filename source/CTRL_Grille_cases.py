@@ -1860,6 +1860,16 @@ class CaseMultihoraires(Case):
     
     def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True):
         """ Création d'une barre + conso """        
+        # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
+        incompatibilite = self.VerifieCompatibilitesUnites()
+        if incompatibilite != None :
+            nomUniteCase = self.grid.dictUnites[self.IDunite]["nom"]
+            nomUniteIncompatible = self.grid.dictUnites[incompatibilite]["nom"]
+            dlg = wx.MessageDialog(self.grid, _(u"L'unité %s est incompatible avec l'unité %s déjà sélectionnée !") % (nomUniteCase, nomUniteIncompatible), _(u"Incompatibilités d'unités"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         # Vérifie que la case n'est pas déjà occupée
         if self.IsCaseDisponible(heure_debut, heure_fin) == False :
             if modeSilencieux == True : 
