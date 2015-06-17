@@ -254,7 +254,8 @@ class ListView(FastObjectListView):
         
         self.SetEmptyListMsg(_(u"Aucun individu"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        self.SetSortColumn(self.columns[1])
+        if len(self.columns) > 0 :
+            self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
     def MAJ(self, listeActivites=None, presents=None, labelParametres=""):
