@@ -341,7 +341,7 @@ class Cotisation():
         if dictOptions == None :
             if afficherDoc == False :
                 dlg = DLG_Apercu_cotisation.Dialog(None, titre=_(u"Sélection des paramètres de la cotisation"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la cotisation."))
-                dlg.bouton_ok.SetBitmapLabel(wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+                dlg.bouton_ok.SetImage(wx.Bitmap(u"Images/32x32/Ok.png", wx.BITMAP_TYPE_ANY))
             else :
                 dlg = DLG_Apercu_cotisation.Dialog(None)
             if dlg.ShowModal() == wx.ID_OK:

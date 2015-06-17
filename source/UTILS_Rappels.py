@@ -373,7 +373,7 @@ class Facturation():
         if dictOptions == None :
             if afficherDoc == False :
                 dlg = DLG_Apercu_rappel.Dialog(None, titre=_(u"Sélection des paramètres de la lettre de rappel"), intro=_(u"Sélectionnez ici les paramètres d'affichage du rappel à envoyer par Email."))
-                dlg.bouton_ok.SetBitmapLabel(wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+                dlg.bouton_ok.SetImage(wx.Bitmap(u"Images/32x32/Ok.png", wx.BITMAP_TYPE_ANY))
             else :
                 dlg = DLG_Apercu_rappel.Dialog(None)
             if dlg.ShowModal() == wx.ID_OK:
