@@ -2316,15 +2316,17 @@ class ObjectListView(wx.ListCtrl):
         
     def DefileDernier(self):
         """ Defile jusqu'au dernier item de la liste """
-        if self.GetFilter() != None :
-            listeObjets = self.GetFilteredObjects()
-        else :
-            listeObjets = self.GetObjects()
-        if len(listeObjets) > 0 :
-            dernierTrack = listeObjets[-1]
-            index = self.GetIndexOf(dernierTrack)
-            self.EnsureCellVisible(index, 0)
-
+        largeur, hauteur = self.GetSize()
+        if largeur > 0 and hauteur > 0 :
+            if self.GetFilter() != None :
+                listeObjets = self.GetFilteredObjects()
+            else :
+                listeObjets = self.GetObjects()
+            if len(listeObjets) > 0 :
+                dernierTrack = listeObjets[-1]
+                index = self.GetIndexOf(dernierTrack)
+                self.EnsureCellVisible(index, 0)
+            
     def Filtrer(self, texteRecherche=None):
         listeFiltres = []
         

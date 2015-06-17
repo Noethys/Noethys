@@ -174,7 +174,9 @@ class ListView(FastObjectListView):
         self.selectionID = None
         self.selectionTrack = None
         self._ResizeSpaceFillingColumns() 
-    
+        if ID == None :
+            wx.CallAfter(self.DefileDernier)
+
     def Selection(self):
         return self.GetSelectedObjects()
 
