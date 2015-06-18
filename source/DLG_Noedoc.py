@@ -5108,7 +5108,7 @@ class Impression():
         self.listeObjetsFond = listeObjetsFond
                     
         # -------- Initialisation du document ----------
-        nomDoc = "Temp/DocumentPDF_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        nomDoc = "Temp/DocumentPDF_%s.pdf" % FonctionsPerso.GenerationIDdoc()
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         canvas = CanvasPDF(nomDoc, pagesize=(self.taille_page[0]*mmPDF, self.taille_page[1]*mmPDF) )
         

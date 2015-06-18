@@ -80,7 +80,7 @@ class Impression():
         nbreLignes = (hauteurPage - margeHaut - margeBas + espaceVertical) / (hauteurEtiquette + espaceVertical)
         
         # Initialisation du PDF
-        nomDoc = "Temp/etiquettes_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        nomDoc = "Temp/ETIQUETTES%s.pdf" % FonctionsPerso.GenerationIDdoc()
         canvas = Canvas(nomDoc, pagesize=(largeurPage*mm, hauteurPage*mm))
         
         # Création des étiquettes

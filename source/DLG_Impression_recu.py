@@ -22,6 +22,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import CTRL_Bandeau
 import CTRL_Choix_modele
+import FonctionsPerso
 
 import GestionDB
 import DATA_Civilites as Civilites
@@ -558,7 +559,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Recu_reglement.pdf", categorie="recu_reglement", listeAdresses=self.listeAdresses)
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RECUREGLEMENT.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="recu_reglement", listeAdresses=self.listeAdresses)
     
     def GetPrestations(self):
         DB = GestionDB.DB()

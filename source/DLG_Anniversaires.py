@@ -392,7 +392,7 @@ class Dialog(wx.Dialog):
         self.EcritStatusBar(_(u"Création du PDF...")) 
         
         # Initialisation du PDF
-        nomDoc = "Temp/anniversaires_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        nomDoc = "Temp/anniversaires_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = BaseDocTemplate(nomDoc, pagesize=(self.largeur_page, self.hauteur_page), topMargin=30, bottomMargin=30, showBoundary=False)
         doc.addPageTemplates(MyPageTemplate(pageSize=(self.largeur_page, self.hauteur_page)))

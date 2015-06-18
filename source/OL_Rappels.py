@@ -16,6 +16,7 @@ import GestionDB
 import datetime
 import locale
 import wx.lib.agw.pybusyinfo as PBI
+import FonctionsPerso
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -460,7 +461,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         # Envoi du mail
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/Rappel.pdf", categorie="rappel")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/RAPPEL%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="rappel")
     
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
         """ Création du PDF pour Email """

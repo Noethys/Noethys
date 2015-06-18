@@ -21,6 +21,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import CTRL_Bandeau
 import CTRL_Choix_modele
+import FonctionsPerso
 
 import GestionDB
 import DATA_Civilites as Civilites
@@ -419,7 +420,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Inscription.pdf", categorie="inscription", listeAdresses=self.listeAdresses)
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/INSCRIPTION%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="inscription", listeAdresses=self.listeAdresses)
     
     def CreationPDF(self, nomDoc="Temp/Inscription.pdf", afficherDoc=True):        
         dictChampsFusion = {}

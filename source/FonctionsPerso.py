@@ -19,7 +19,7 @@ import datetime
 import os
 import subprocess
 import webbrowser
-
+import random
 
 
 
@@ -1459,8 +1459,13 @@ def GetIDfichier():
     IDfichier = listeTemp[0][2]
     return IDfichier
 
-
-
+def GenerationIDdoc():
+    """ Génération d'un ID unique à base de la date, de l'heure de l'IDfichier et d'un numéro aléatoire """
+    IDfichier = GetIDfichier()[14:17]
+    numAleatoire = random.randint(100, 999)
+    horodatage = datetime.datetime.now().strftime("%Y%m%d%H%M%S") 
+    IDdoc = "%s%s%d" % (horodatage, IDfichier, numAleatoire)
+    return IDdoc
 
 
 def InsertUnicodeLiterals():
@@ -1509,6 +1514,8 @@ if __name__ == "__main__":
 ##    AfficheStatsProgramme()
     
 ##    InsertUnicodeLiterals() 
+    
+    print GenerationIDdoc() 
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")

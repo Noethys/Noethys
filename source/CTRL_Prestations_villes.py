@@ -24,6 +24,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 import UTILS_Utilisateurs
 import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites() 
+import FonctionsPerso
 
 try: import psyco; psyco.full()
 except: pass
@@ -372,7 +373,7 @@ class CTRL(HTL.HyperTreeList):
         # Initialisation du PDF
         PAGE_HEIGHT=defaultPageSize[1]
         PAGE_WIDTH=defaultPageSize[0]
-        nomDoc = "Temp/liste_prestations_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        nomDoc = "Temp/liste_prestations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30, leftMargin=40, rightMargin=40)
         story = []

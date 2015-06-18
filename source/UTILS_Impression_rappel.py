@@ -248,7 +248,7 @@ class Impression():
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = "Temp/Rappels_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            nomDoc = "Temp/RAPPELS%s.pdf" % FonctionsPerso.GenerationIDdoc() 
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)

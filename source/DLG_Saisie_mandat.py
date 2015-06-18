@@ -759,7 +759,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Mandat_sepa.pdf", categorie="mandat_sepa")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/MANDATSEPA%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="mandat_sepa")
 
     def OnBoutonImprimer(self, event):
         self.CreationPDF() 

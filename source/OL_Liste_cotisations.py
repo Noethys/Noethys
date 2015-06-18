@@ -14,6 +14,7 @@ import wx
 import CTRL_Bouton_image
 import datetime
 import time
+import FonctionsPerso
 import GestionDB
 import UTILS_Historique
 import UTILS_Titulaires
@@ -767,7 +768,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         # Envoi du mail
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/Cotisation.pdf", categorie="cotisation")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/COTISATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="cotisation")
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
         """ Création du PDF pour Email """

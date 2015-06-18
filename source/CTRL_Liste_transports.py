@@ -543,7 +543,7 @@ class CTRL(HTL.HyperTreeList):
             largeurContenu = 770
 
         # Initialisation du PDF
-        nomDoc = "Temp/liste_transports_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        nomDoc = "Temp/liste_transports_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeurPage, hauteurPage), topMargin=30, bottomMargin=30)
         story = []

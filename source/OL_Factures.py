@@ -15,6 +15,7 @@ import CTRL_Bouton_image
 import GestionDB
 import datetime
 import locale
+import FonctionsPerso
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -593,7 +594,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         # Envoi du mail
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/Facture.pdf", categorie="facture")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/FACTURE%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="facture")
     
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
         """ Création du PDF pour Email """

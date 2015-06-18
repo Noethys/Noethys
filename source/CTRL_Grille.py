@@ -45,6 +45,7 @@ import UTILS_Questionnaires
 import UTILS_Divers
 import UTILS_Parametres
 import UTILS_Utilisateurs
+import FonctionsPerso
 
 import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
@@ -4048,7 +4049,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def EnvoyerEmail(self):
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Reservations.pdf", categorie="reservations")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/CONSOMMATIONS%s.pdf" % FonctionsPerso.GenerationIDdoc() , categorie="reservations")
         
         
         
