@@ -22,7 +22,7 @@ import UTILS_Dates
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
-
+import DLG_Famille
 
 
 class Track(object):
@@ -496,7 +496,7 @@ class ListView(FastObjectListView):
     
     def OuvrirFicheFamille(self, track=None, ouvrirGrille=False, ouvrirFicheInd=False):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
-        import DLG_Famille
+        
         IDindividu = track.IDindividu
         
         rattachements, dictTitulaires, txtTitulaires = track.GetRattachements() 
@@ -705,20 +705,50 @@ class BarreRecherche(wx.SearchCtrl):
         self.Recherche(self.GetValue())
 
     def OnText(self, evt):
-        # Si code-barres individu saisi
         txtSearch = self.GetValue()
+        
+        # Si code-barres individu saisi
         if len(txtSearch) > 6 and txtSearch.startswith("I") :
             txtSearch = txtSearch[1:]
+            IDindividu = None
             try :
                 IDindividu = int(txtSearch)
-                if self.listView.dictTracks.has_key(IDindividu) :
-                    track = self.listView.dictTracks[IDindividu]
-                    self.listView.SelectObject(track)
-                    self.listView.OuvrirFicheFamille(track)
+            except :
+                IDfamille = None
+            if IDindividu != None and self.listView.dictTracks.has_key(IDindividu) :
+                track = self.listView.dictTracks[IDindividu]
+                self.listView.SelectObject(track)
+                self.listView.OuvrirFicheFamille(track)
+                self.OnCancel(None)
+                return
+                
+        # Si code-barres famille saisi
+        if len(txtSearch) > 6 and txtSearch.startswith("A") :
+            txtSearch = txtSearch[1:]
+            IDfamille = None
+            try :
+                IDfamille = int(txtSearch)
+            except :
+                IDfamille = None
+            if IDfamille != None :
+                DB = GestionDB.DB()
+                req = """SELECT IDfamille FROM Familles WHERE IDfamille=%d
+                ;""" % IDfamille
+                DB.ExecuterReq(req)
+                listeDonnees = DB.ResultatReq()
+                DB.Close()
+                if len(listeDonnees) > 0 :
+                    dlg = DLG_Famille.Dialog(self, IDfamille)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    # MAJ du remplissage
+                    if self.GetGrandParent().GetName() == "general" :
+                        self.GetGrandParent().MAJ() 
+                    else:
+                        self.MAJ() 
                     self.OnCancel(None)
                     return
-            except :
-                pass            
+                       
         # Filtre la liste normalement
         self.Recherche(self.GetValue())
         
