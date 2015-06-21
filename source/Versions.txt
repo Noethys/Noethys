@@ -1,3 +1,11 @@
+Version 1.1.4.7 (21/06/2015) :
+
+- Ajout de la détection des codes-barres familles depuis page d'accueil
+- Ajout de la validation des horaires des conso avec Entrée
+- Ajout de la gestion des unités multihoraires incompatibles 
+- Amélioration de la gestion des pdf temporaires pour alfa3a
+- Correction de divers bugs
+
 Version 1.1.4.6 (12/06/2015) :
 
 - Ajout de la traduction multilingue
