@@ -130,7 +130,7 @@ class CS1504:
         self.ser = serial.Serial(port,
                                  baudrate=9600,
                                  bytesize=8,
-                                 parity=serial.PARITY_ODD,
+                                 parity=serial.PARITY_NONE,
                                  stopbits=serial.STOPBITS_ONE,
                                  timeout=2)
         connected = True
