@@ -340,9 +340,10 @@ class Track(object):
             exec("""self.%s = %s""" % (champ.code, formule))
             return "ok"
         except Exception, err :
-            exec("self.%s = None" % champ.code)
-            self.listeErreurs.append("Probleme dans le champ %s : %s" % (champ.code, err))
-            return err
+            if champ.code != "" :
+                exec("self.%s = None" % champ.code)
+                self.listeErreurs.append("Probleme dans le champ %s : %s" % (champ.code, err))
+                return err
 
 
 # ----------------------------------------------------------------------------------------------------------------

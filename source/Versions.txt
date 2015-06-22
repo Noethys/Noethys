@@ -1,3 +1,7 @@
+Version 1.1.4.8 (22/06/2015) :
+
+- Correction d'un bug sur l'envoi des reçus de règlements par email
+
 Version 1.1.4.7 (21/06/2015) :
 
 - Ajout de la détection des codes-barres familles depuis page d'accueil
