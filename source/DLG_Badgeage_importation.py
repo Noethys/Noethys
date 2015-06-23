@@ -13,6 +13,7 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import os
+import sys
 import datetime
 import CTRL_Bandeau
 import wx.lib.agw.hyperlink as Hyperlink
@@ -236,7 +237,13 @@ class CTRL_Choix_port(wx.Choice):
         self.MAJ() 
     
     def MAJ(self):
-        listeDonnees = ["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9"]
+        if "linux" in sys.platform :
+            listeDonnees = ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB3", "/dev/ttyUSB4", "/dev/ttyUSB5", "/dev/ttyUSB6", "/dev/ttyUSB7", "/dev/ttyUSB8", "/dev/ttyUSB9"]
+        else :
+            if "darwin" in sys.platform :
+                listeDonnees = ["/dev/cu.usbserial"]
+            else :
+                listeDonnees = ["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9"]
         listeItems = []
         self.dictDonnees = {}
         index = 0
