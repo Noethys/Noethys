@@ -120,7 +120,7 @@ symbologies = {
 MAX_RESP = 6144
 
 class CS1504:
-
+# parity passé à NONE car sous linux pas possible de faire plusieurs lectures successives avec ODD
   def __init__(self, port='/dev/cu.usbserial'):
     attempts = 0
     connected = False
