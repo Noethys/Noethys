@@ -244,7 +244,7 @@ class Export():
             if afficherDlgAttente == True :
                 dlgAttente.Destroy() 
                 del dlgAttente
-            dlg = wx.MessageDialog(None, _(u"Désolé, l'erreur suivante a été rencontrée : ") + err, "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Désolé, l'erreur suivante a été rencontrée : ") + str(err), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return None

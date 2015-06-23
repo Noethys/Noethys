@@ -22,7 +22,7 @@ import UTILS_Dates
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Utilisateurs
-import DLG_Famille
+
 
 
 class Track(object):
@@ -547,6 +547,7 @@ class ListView(FastObjectListView):
             
         # Ouverture de la fiche famille
         if IDfamille != None and IDfamille != -1 :
+            import DLG_Famille
             dlg = DLG_Famille.Dialog(self, IDfamille)
             # Ouverture grille de l'individ
             if ouvrirGrille == True :
@@ -738,6 +739,7 @@ class BarreRecherche(wx.SearchCtrl):
                 listeDonnees = DB.ResultatReq()
                 DB.Close()
                 if len(listeDonnees) > 0 :
+                    import DLG_Famille
                     dlg = DLG_Famille.Dialog(self, IDfamille)
                     dlg.ShowModal()
                     dlg.Destroy()

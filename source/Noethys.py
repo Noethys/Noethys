@@ -153,11 +153,12 @@ class MainFrame(wx.Frame):
         self.dictUtilisateur = None
         
         # Chargement de la traduction
-        if test == False :
-            self.langue = self.Select_langue()
-            UTILS_Config.SetParametre("langue_interface", self.langue)
-        else :
-            self.langue = UTILS_Config.GetParametre("langue_interface", None)
+##        if test == False :
+##            self.langue = self.Select_langue()
+##            UTILS_Config.SetParametre("langue_interface", self.langue)
+##        else :
+##            self.langue = UTILS_Config.GetParametre("langue_interface", None)
+        self.langue = UTILS_Config.GetParametre("langue_interface", None)
         self.ChargeTraduction() 
 
         # Récupération du nom du dernier fichier chargé

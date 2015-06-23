@@ -232,7 +232,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RELEVEPRESTATIONS.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="releve_prestations")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RELEVE%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="releve_prestations")
 
 
 class Impression():
