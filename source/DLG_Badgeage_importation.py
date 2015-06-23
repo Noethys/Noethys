@@ -241,7 +241,7 @@ class CTRL_Choix_port(wx.Choice):
             listeDonnees = ["/dev/ttyUSB0", "/dev/ttyUSB1", "/dev/ttyUSB2", "/dev/ttyUSB3", "/dev/ttyUSB4", "/dev/ttyUSB5", "/dev/ttyUSB6", "/dev/ttyUSB7", "/dev/ttyUSB8", "/dev/ttyUSB9"]
         else :
             if "darwin" in sys.platform :
-                listeDonnees = ["/dev/cu.usbserial"] # pour MAC pas testé
+                listeDonnees = ["/dev/cu.usbserial"]
             else :
                 listeDonnees = ["COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9"]
         listeItems = []
@@ -287,7 +287,7 @@ class CTRL_Choix_appareil(wx.Choice):
     def MAJ(self):
         listeDonnees = [
             ("cs1504", _(u"Symbol CS1504")),
-            ("cs1504", _(u"Opticon OPN-2001")),
+            ("opn-2001", _(u"Opticon OPN-2001")),
             ]
         listeItems = []
         self.dictDonnees = {}
@@ -365,7 +365,7 @@ class Page_scanner(wx.Panel):
         
         # Init
         port = UTILS_Config.GetParametre("scanner_memoire_port", None)
-        modele = UTILS_Config.GetParametre("scanner_memoire_modele", None)
+        modele = UTILS_Config.GetParametre("scanner_memoire_appareil", None)
         vidage = UTILS_Config.GetParametre("scanner_memoire_vidage", False)
         heure_auto = UTILS_Config.GetParametre("scanner_memoire_heure_auto", True)
         self.ctrl_port.SetID(port)
@@ -476,7 +476,7 @@ class Page_scanner(wx.Panel):
             return False
         
         # Connexion à l'appareil
-        if appareil == "cs1504" :
+        if (appareil == "cs1504") or (appareil == "opn-2001") :
             try :
                 scanner = UTILS_CS1504.CS1504(port)
                 scanner.interrogate()
