@@ -41,10 +41,7 @@ def AffichetailleFichier(fichierURL):
     try :
         fichier = urllib2.urlopen(fichierURL)
         infoFichier = (fichier.info().getheaders('Content-Length'))
-        if len(infoFichier) > 0 :
-            tailleFichier = infoFichier[0]
-        else :
-            tailleFichier = 0
+        tailleFichier = infoFichier[0]
     except IOError :
         tailleFichier = 0
     return tailleFichier
