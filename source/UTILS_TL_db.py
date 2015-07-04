@@ -24,6 +24,7 @@ Implementation of Timeline with flat file storage.
 
 The class FileTimeline implements the Timeline interface.
 """
+from UTILS_Traduction import _
 
 import wx
 import CTRL_Bouton_image

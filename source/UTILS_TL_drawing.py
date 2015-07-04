@@ -20,7 +20,7 @@
 Defines the interface for drawing algorithms and provides common utilities for
 drawing.
 """
-
+from UTILS_Traduction import _
 
 import wx
 import CTRL_Bouton_image

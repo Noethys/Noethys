@@ -26,6 +26,7 @@ The drawing interface is implemented in the `DefaultDrawingAlgorithm` class in
 the `draw` method.
 """
 
+from UTILS_Traduction import _
 
 import math
 import logging

@@ -337,10 +337,11 @@ class CTRL(HTL.HyperTreeList):
                 
             listeLabelsPrestations = []
             for periode in listePeriodes :
-                if dictVentilation[IDdepot].has_key(periode) :
-                    for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].iteritems() : 
-                        if labelPrestation not in listeLabelsPrestations :
-                            listeLabelsPrestations.append(labelPrestation)
+                if dictVentilation.has_key(IDdepot) :
+                    if dictVentilation[IDdepot].has_key(periode) :
+                        for labelPrestation, montantVentilation in dictVentilation[IDdepot][periode].iteritems() : 
+                            if labelPrestation not in listeLabelsPrestations :
+                                listeLabelsPrestations.append(labelPrestation)
             listeLabelsPrestations.sort()
 
             for labelPrestation in listeLabelsPrestations :
@@ -354,19 +355,20 @@ class CTRL(HTL.HyperTreeList):
                 totalLigne = 0.0
                 for periode in listePeriodes :
                     texte = None
-                    if dictVentilation[IDdepot].has_key(periode) :
-                        if dictVentilation[IDdepot][periode].has_key(labelPrestation) :
-                            valeur = dictVentilation[IDdepot][periode][labelPrestation]
-                            totalLigne += valeur
-                            if dictLigneTotal.has_key(labelPrestation) == False :
-                                dictLigneTotal[labelPrestation] = {}
-                            if dictLigneTotal[labelPrestation].has_key(periode) == False :
-                                dictLigneTotal[labelPrestation][periode] = 0.0
-                            dictLigneTotal[labelPrestation][periode] += valeur
-                            if self.affichage_details == True :
-                                texte = u"%.2f %s" % (valeur, SYMBOLE)
-                                self.SetItemText(niveauPrestation, texte, dictColonnes[periode])
-                                impressionLigne.append(texte)
+                    if dictVentilation.has_key(IDdepot) :
+                        if dictVentilation[IDdepot].has_key(periode) :
+                            if dictVentilation[IDdepot][periode].has_key(labelPrestation) :
+                                valeur = dictVentilation[IDdepot][periode][labelPrestation]
+                                totalLigne += valeur
+                                if dictLigneTotal.has_key(labelPrestation) == False :
+                                    dictLigneTotal[labelPrestation] = {}
+                                if dictLigneTotal[labelPrestation].has_key(periode) == False :
+                                    dictLigneTotal[labelPrestation][periode] = 0.0
+                                dictLigneTotal[labelPrestation][periode] += valeur
+                                if self.affichage_details == True :
+                                    texte = u"%.2f %s" % (valeur, SYMBOLE)
+                                    self.SetItemText(niveauPrestation, texte, dictColonnes[periode])
+                                    impressionLigne.append(texte)
                     if texte == None and self.affichage_details == True : impressionLigne.append("")
                 
                 # Colonne Non ventilé
@@ -397,10 +399,11 @@ class CTRL(HTL.HyperTreeList):
             totalColonne = 0.0
             for dateDepot, IDdepot, dictDepot in listeDepotsTemp :
                 for label in listeLabels :
-                    if dictVentilation[IDdepot].has_key(periode):
-                        if dictVentilation[IDdepot][periode].has_key(label):
-                            valeur = dictVentilation[IDdepot][periode][label]
-                            totalColonne += valeur
+                    if dictVentilation.has_key(IDdepot) :
+                        if dictVentilation[IDdepot].has_key(periode):
+                            if dictVentilation[IDdepot][periode].has_key(label):
+                                valeur = dictVentilation[IDdepot][periode][label]
+                                totalColonne += valeur
             texte = u"%.2f %s" % (totalColonne, SYMBOLE)
             totalLigne += totalColonne
             self.SetItemText(niveauTotal, texte, dictColonnes[periode])
