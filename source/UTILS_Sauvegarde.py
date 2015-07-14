@@ -303,7 +303,8 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
                 f.close()
             except Exception, err:
                 dlgprogress.Destroy()
-                dlg = wx.MessageDialog(None, _(u"La restauration du fichier '") + nomFichier + _(u"' a rencontré l'erreur suivante : \n") + err, "Erreur", wx.OK| wx.ICON_ERROR)  
+                print err
+                dlg = wx.MessageDialog(None, _(u"La restauration du fichier '%s' a rencontré l'erreur suivante : \n%s") % (fichier, err), "Erreur", wx.OK| wx.ICON_ERROR)  
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -388,7 +389,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
 ##                "<",
 ##                fichierRestore,
 ##                ]
-                
+            
             if "linux" in sys.platform :
                 args = "%sbin/mysql --defaults-extra-file=%s %s < %s" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
             else :
@@ -459,6 +460,18 @@ def GetRepertoireMySQL(dictValeurs={}):
         if os.path.isfile(u"/usr/bin/mysqldump") and os.path.isfile(u"/usr/bin/mysql") :
             return u"/usr/"
     else :
+        
+        # Vérifie le chemin Canon (x86)
+        chemin = "C:/Program Files (x86)/Canon/Easy-WebPrint EX/"
+        if os.path.isfile(chemin + "bin/mysql.exe") :
+            return chemin
+        
+        # Vérifie le chemin Canon
+        chemin = "C:/Program Files/Canon/Easy-WebPrint EX/"
+        if os.path.isfile(chemin + "bin/mysql.exe") :
+            return chemin
+        
+        # Vérifie le chemin MySQL classique
         try :
             listeFichiers1 = os.listdir(u"C:/")
             for fichier1 in listeFichiers1 :
@@ -472,7 +485,7 @@ def GetRepertoireMySQL(dictValeurs={}):
                             for fichier3 in listeFichiers3 :
                                 if "MySQL Server" in fichier3 :
                                     chemin = u"C:/%s/%s/%s/" % (fichier1, fichier2, fichier3)
-                                    if os.path.isdir(chemin) :
+                                    if os.path.isfile(chemin + "bin/mysql.exe") :
                                         return chemin
         except :
             pass
