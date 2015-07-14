@@ -26,6 +26,7 @@ import UTILS_Titulaires
 import CTRL_Choix_modele
 import UTILS_Config
 import UTILS_Questionnaires
+import FonctionsPerso
 import CTRL_Attestations_options
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -920,12 +921,12 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Attestation_presence.pdf", categorie="attestation_presence")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/ATTESTATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="attestation_presence")
 
     def OnBoutonOk(self, event): 
         self.CreationPDF() 
 
-    def CreationPDF(self, nomDoc="Temp/Attestation_presence.pdf", afficherDoc=True):        
+    def CreationPDF(self, nomDoc="Temp/ATTESTATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), afficherDoc=True):        
         # Récupération du dictOptions
         dictOptions = self.ctrl_parametres.GetOptions() 
         if dictOptions == False :
