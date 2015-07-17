@@ -859,6 +859,21 @@ class DB:
         connexionDefaut.commit()
         connexionDefaut.close() 
 
+    def CreationIndex(self, nomIndex=""):
+        """ Création d'un index """
+        nomTable = Tables.DB_INDEX[nomIndex]["table"]
+        nomChamp = Tables.DB_INDEX[nomIndex]["champ"]
+        if self.IsTableExists(nomTable) :
+            #print "Creation de l'index : %s" % nomIndex
+            req = "CREATE INDEX %s ON %s (%s);" % (nomIndex, nomTable, nomChamp)
+            self.ExecuterReq(req)
+            self.Commit() 
+    
+    def CreationTousIndex(self):
+        """ Création de tous les index """
+        for nomIndex, temp in Tables.DB_INDEX.iteritems() :
+            self.CreationIndex(nomIndex)
+
 
 # ------------- Fonctions de MAJ de la base de données ---------------------------------------------------------------
         
@@ -1569,7 +1584,15 @@ class DB:
         
         # =============================================================
         
+        versionFiltre = (1, 1, 4, 9)
+        if versionFichier < versionFiltre :   
+            try :
+                import UTILS_Procedures
+                UTILS_Procedures.A8823() 
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
+        # =============================================================
         
         
         
@@ -1870,5 +1893,12 @@ if __name__ == "__main__":
 ##    db.ConversionTypeChamp(nomTable="factures", nomChamp="numero", typeChamp="VARCHAR(100)")
 ##    db.Close() 
     
+    # Création de tous les index
+    db = DB(suffixe="DATA")
+    db.CreationTousIndex() 
+    db.Close() 
+    db = DB(suffixe="PHOTOS")
+    db.CreationTousIndex() 
+    db.Close() 
     pass
     

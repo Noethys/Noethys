@@ -1450,6 +1450,41 @@ DB_DOCUMENTS = {
                                     
     }
 
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DB_INDEX = {
+
+    "index_photos_IDindividu" : {"table" : "photos", "champ" : "IDindividu"},
+    "index_liens_IDfamille" : {"table" : "liens", "champ" : "IDfamille"},
+    "index_familles_IDcompte_payeur" : {"table" : "familles", "champ" : "IDcompte_payeur"},
+    "index_rattachements_IDfamille" : {"table" : "rattachements", "champ" : "IDfamille"},
+    "index_pieces_IDfamille" : {"table" : "pieces", "champ" : "IDfamille"},
+    "index_pieces_IDindividu" : {"table" : "pieces", "champ" : "IDindividu"},
+    "index_ouvertures_IDactivite" : {"table" : "ouvertures", "champ" : "IDactivite"},
+    "index_ouvertures_date" : {"table" : "ouvertures", "champ" : "date"},
+    "index_remplissage_IDactivite" : {"table" : "remplissage", "champ" : "IDactivite"},
+    "index_remplissage_date" : {"table" : "remplissage", "champ" : "date"},
+    "index_inscriptions_IDindividu" : {"table" : "inscriptions", "champ" : "IDindividu"},
+    "index_inscriptions_IDfamille" : {"table" : "inscriptions", "champ" : "IDfamille"},
+    "index_consommations_IDcompte_payeur" : {"table" : "consommations", "champ" : "IDcompte_payeur"},
+    "index_consommations_IDindividu" : {"table" : "consommations", "champ" : "IDindividu"},
+    "index_consommations_IDactivite" : {"table" : "consommations", "champ" : "IDactivite"},
+    "index_consommations_date" : {"table" : "consommations", "champ" : "date"},
+    "index_prestations_IDfamille" : {"table" : "prestations", "champ" : "IDfamille"},
+    "index_prestations_IDcompte_payeur" : {"table" : "prestations", "champ" : "IDcompte_payeur"},
+    "index_prestations_date" : {"table" : "prestations", "champ" : "date"},
+    "index_prestations_IDactivite" : {"table" : "prestations", "champ" : "IDactivite"},
+    "index_comptes_payeurs_IDfamille" : {"table" : "comptes_payeurs", "champ" : "IDfamille"},
+    "index_reglements_IDcompte_payeur" : {"table" : "reglements", "champ" : "IDcompte_payeur"},
+    "index_ventilation_IDcompte_payeur" : {"table" : "ventilation", "champ" : "IDcompte_payeur"},
+    "index_ventilation_IDprestation" : {"table" : "ventilation", "champ" : "IDprestation"},
+    "index_factures_IDcompte_payeur" : {"table" : "factures", "champ" : "IDcompte_payeur"},
+
+    }
+
+
+
+
 
 
 if __name__ == "__main__":

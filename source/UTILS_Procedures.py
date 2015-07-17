@@ -42,7 +42,10 @@ DICT_PROCEDURES = {
     "A8574" : _(u"Mise à niveau de la base de données"),
     "A8623" : _(u"Remplacement des exercices comptables par les dates budgétaires"),
     "A8733" : _(u"Correction des IDinscription disparus"),
+    "A8823" : _(u"Création de tous les index"),
     }
+
+
 
 # -------------------------------------------------------------------------------------------------------------------------
 
@@ -635,7 +638,15 @@ def A8733():
     DB.Close() 
     
     
-    
+def A8823():
+    """ Creation de tous les index """
+    DB = GestionDB.DB(suffixe="DATA")
+    DB.CreationTousIndex() 
+    DB.Close() 
+    DB = GestionDB.DB(suffixe="PHOTOS")
+    DB.CreationTousIndex() 
+    DB.Close() 
+
     
     
     

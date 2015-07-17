@@ -1311,7 +1311,16 @@ class MainFrame(wx.Frame):
             self.SetStatusText(_(u"Création de la table de données des documents..."))
             DB.CreationTables(Tables.DB_DOCUMENTS)
             DB.Close()
-                
+        
+        # Création des index
+        self.SetStatusText(_(u"Création des index des tables..."))
+        DB = GestionDB.DB(suffixe="DATA")
+        DB.CreationTousIndex() 
+        DB.Close() 
+        DB = GestionDB.DB(suffixe="PHOTOS")
+        DB.CreationTousIndex() 
+        DB.Close() 
+
         # Créé un identifiant unique pour ce fichier
         self.SetStatusText(_(u"Création des informations sur le fichier..."))
         d = datetime.datetime.now()
