@@ -914,7 +914,10 @@ class ObjectListView(wx.ListCtrl):
             newWidth = freeSpace * col.freeSpaceProportion / totalProportion
             boundedWidth = col.CalcBoundedWidth(newWidth)
             if self.GetColumnWidth(i) != boundedWidth:
-                self.SetColumnWidth(i, boundedWidth)
+                try :
+                    self.SetColumnWidth(i, boundedWidth)
+                except :
+                    pass
 
 
     def SetCheckState(self, modelObject, state):
@@ -1873,12 +1876,16 @@ class ObjectListView(wx.ListCtrl):
         # exception than it is to test for the class
         def _getSortValue(x):
             primary = sortColumn.GetValue(x)
+            if type(primary) == datetime.date :
+                primary = str(primary)
             try:
                 primary = primary.lower()
             except AttributeError:
                 pass
             if secondarySortColumn:
                 secondary = secondarySortColumn.GetValue(x)
+                if type(secondary) == datetime.date :
+                    secondary = str(secondary)
                 try:
                     secondary = secondary.lower()
                 except AttributeError:
