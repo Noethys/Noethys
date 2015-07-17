@@ -178,8 +178,8 @@ if __name__ == "__main__":
     IDactivite = 1
     frame_1 = Dialog(None) 
     # TESTS
-    frame_1.page1.ctrl_date_debut.SetDate(datetime.date(2011, 1, 1))
-    frame_1.page1.ctrl_date_fin.SetDate(datetime.date(2011, 12, 31))
+    frame_1.page1.ctrl_date_debut.SetDate(datetime.date(2015, 7, 1))
+    frame_1.page1.ctrl_date_fin.SetDate(datetime.date(2015, 7, 31))
     
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()

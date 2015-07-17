@@ -270,7 +270,7 @@ class Facturation():
         dictVentilationReports = {}
         for IDprestation, montant_ventilation in listeVentilationReports :
             dictVentilationReports[IDprestation] = montant_ventilation
-
+        
         # Recherche des déductions
         if len(listeFactures) == 0 :
             conditions = ""
@@ -310,7 +310,7 @@ class Facturation():
             dictConsommations[IDprestation].append({"date" : UTILS_Dates.DateEngEnDateDD(date), "etat" : etat})
             
         DB.Close() 
-
+        
         # Analyse et regroupement des données
         num_facture = 0
         dictComptes = {}

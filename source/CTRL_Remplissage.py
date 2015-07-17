@@ -1077,17 +1077,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictRemplissage[IDunite_remplissage][dateDD] = {}
             if dictRemplissage[IDunite_remplissage][dateDD].has_key(IDgroupe) == False:
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
-            
+
         # Récupération des consommations existantes 
-        req = """SELECT IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, quantite
+        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite
         FROM consommations 
-        WHERE IDactivite IN %s %s
-        ORDER BY date; """ % (conditionActivites, conditionDates)
+        WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
         db.ExecuterReq(req)
         listeConso = db.ResultatReq()
-        for IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, quantite in listeConso :
+        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite in listeConso :
             dateDD = DateEngEnDateDD(date)
-            date_saisieDD = DateEngEnDateDD(date)
             
             # Quantité
             if quantite == None :

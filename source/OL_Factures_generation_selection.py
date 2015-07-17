@@ -347,15 +347,19 @@ class MyFrame(wx.Frame):
         self.ctrl = self.listviewAvecFooter.GetListview()
         
         dictParametres = {
-            "date_debut" : datetime.date(2011, 2, 1),
-            "date_fin" : datetime.date(2012, 3, 28),
+            "date_debut" : datetime.date(2015, 7, 1),
+            "date_fin" : datetime.date(2015, 7, 31),
             "date_emission" : datetime.date.today(),
             "date_echeance" : None,
             "prestations" : ["consommation", "cotisation", "autre"],
             "IDcompte_payeur" : None,
             "listeActivites" : [1, 2, 3],
             }
+            
+        import time
+        h = time.time()
         self.ctrl.SetParametres(dictParametres) 
+        print time.time() - h
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.listviewAvecFooter, 1, wx.ALL|wx.EXPAND, 4)

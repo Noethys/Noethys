@@ -62,7 +62,10 @@ class Sauvegarde_auto():
                 message1 = _(u"Souhaitez-vous lancer la procédure de sauvegarde '%s' ?") % dictSauvegarde["nom"]
                 dlg = dialogs.MultiMessageDialog(self.parent, message1, caption=_(u"Sauvegarde automatique"), msg2=None, style = wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=image, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_NO : _(u"Non"), wx.ID_CANCEL : _(u"Annuler")})
                 reponse = dlg.ShowModal() 
-                dlg.Destroy() 
+                try :
+                    dlg.Destroy() 
+                except :
+                    pass
                 if reponse == wx.ID_NO :
                     valide = False
                 if reponse == wx.ID_CANCEL :

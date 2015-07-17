@@ -1506,6 +1506,29 @@ def InsertUnicodeLiterals():
 
 
 
+def RechercheWhere():
+    """ Pour rechercher les clauses WHERE dans tous les fichiers """
+    # Get fichiers
+    listeFichiers = os.listdir(os.getcwd())
+    for nomFichier in listeFichiers :
+        if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False :
+            # Ouverture du fichier
+            fichier = open(nomFichier, "r")
+            for ligne in fichier :
+                # Insertion de l'import
+                if "WHERE" in ligne :
+                    ligne = ligne.replace("\n", "")
+                    ligne = ligne.replace("  ", "")
+                    print ligne
+                
+            # Clôture des fichiers
+            fichier.close()
+            
+    print "Fini !!!!!!!!!!!!!!!!!"
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -1515,7 +1538,7 @@ if __name__ == "__main__":
     
 ##    InsertUnicodeLiterals() 
     
-    print GenerationIDdoc() 
+    RechercheWhere() 
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")
