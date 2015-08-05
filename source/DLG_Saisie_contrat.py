@@ -312,7 +312,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide(u"Contrats")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)
@@ -823,7 +823,7 @@ class Dialog_selection_activite(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Contrats")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)

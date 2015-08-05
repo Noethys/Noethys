@@ -303,7 +303,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Enregistrement")
 
     def OnBoutonFermer(self, event): 
         """ Fermeture """

@@ -97,11 +97,11 @@ class Dialog(wx.Dialog):
         self.ctrl_langues.MAJ() 
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer un nouveau modèle"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le modèle sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le modèle sélectionné dans la liste"))
-        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer un modèle de document (.ndc)"))
-        self.bouton_exporter.SetToolTipString(_(u"Cliquez ici pour exporter le modèle sélectionné dans la liste (.ndc)"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une nouvelle traduction"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la traduction sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la traduction sélectionnée dans la liste"))
+        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer une traduction (.xlang)"))
+        self.bouton_exporter.SetToolTipString(_(u"Cliquez ici pour exporter la traduction personnalisée sélectionnée dans la liste (.xlang)"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((650, 560))
@@ -152,7 +152,7 @@ class Dialog(wx.Dialog):
             
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Traduirelelogiciel")
 
     def OnBoutonFermer(self, event): 
         self.EndModal(wx.ID_CANCEL)        
@@ -236,7 +236,7 @@ class DLG_Envoi(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Traduirelelogiciel")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)

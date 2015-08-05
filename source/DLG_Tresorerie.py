@@ -102,7 +102,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Suividelatresorerie")
 
     def OnChoix(self, event=None):
         code = self.ctrl_periode.GetCode() 

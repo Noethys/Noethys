@@ -163,7 +163,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("SynchroniserNomadhys")
 
     def OnBoutonFermer(self, event):
         if self.ArchiverFichiers() == False :

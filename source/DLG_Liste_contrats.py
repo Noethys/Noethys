@@ -170,11 +170,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des contrats"))
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille de la prestation sélectionnée dans la liste"))
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille du contrat sélectionné dans la liste"))
         self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression de la liste"))
         self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer directement la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la prestation sélectionnée dans la liste"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la prestation sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le contrat sélectionné dans la liste"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le contrat sélectionné dans la liste"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 700))
@@ -269,7 +269,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Listedescontrats")
 
 
 

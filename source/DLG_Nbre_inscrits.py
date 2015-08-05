@@ -342,7 +342,7 @@ class Panel(wx.Panel):
     
     def Aide(self, event):
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Villesetcodespostaux")
         
         
 

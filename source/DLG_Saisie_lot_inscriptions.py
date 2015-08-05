@@ -185,7 +185,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Saisirunlotdinscriptions")
     
     def OnBoutonOk(self, event):
         IDactivite = self.ctrl_activite.GetID() 

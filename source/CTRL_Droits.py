@@ -959,7 +959,7 @@ class DLG_Restrictions(wx.Dialog):
 
     def OnBoutonAide(self, event):
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Utilisateurs")
 
     def OnBoutonAnnuler(self, event):
         self.EndModal(wx.ID_CANCEL)

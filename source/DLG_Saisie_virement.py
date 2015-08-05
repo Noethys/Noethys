@@ -203,7 +203,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event):
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Listedesvirements")
 
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)

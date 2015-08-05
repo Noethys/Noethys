@@ -145,7 +145,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Traduirelelogiciel")
         
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)

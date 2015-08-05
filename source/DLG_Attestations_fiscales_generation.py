@@ -103,7 +103,7 @@ class Dialog(wx.Dialog):
     
     def Onbouton_aide(self, event):
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Generation")
 
     def Onbouton_retour(self, event):
         # rend invisible la page affichée
