@@ -43,6 +43,7 @@ DICT_PROCEDURES = {
     "A8623" : _(u"Remplacement des exercices comptables par les dates budgétaires"),
     "A8733" : _(u"Correction des IDinscription disparus"),
     "A8823" : _(u"Création de tous les index"),
+    "A8836" : _(u"Suppression des consommations avec prestation disparue"),
     }
 
 
@@ -647,8 +648,26 @@ def A8823():
     DB.CreationTousIndex() 
     DB.Close() 
 
-    
-    
+def A8836():
+    """ Suppression des consommations dont la prestation a été supprimée """
+    # Recherche
+    DB = GestionDB.DB()
+    req = """SELECT IDconso, consommations.IDindividu, IDinscription, consommations.date, IDunite, consommations.IDprestation, prestations.IDprestation, consommations.etat FROM consommations
+    LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
+    WHERE consommations.IDprestation IS NOT NULL AND prestations.IDprestation IS NULL AND etat='reservation'
+    ORDER BY consommations.IDindividu, IDunite;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close() 
+    print "Nbre consommations avec prestations supprimées : ", len(listeDonnees)
+    listeConso = []
+    for listeTemp in listeDonnees :
+        listeConso.append(listeTemp[0])
+    # Suppression
+    DB = GestionDB.DB()
+    for IDconso in listeConso :
+        DB.ReqDEL("consommations", "IDconso", IDconso)
+    DB.Close()
     
 
 ##def A8360():
@@ -735,5 +754,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8733()
+    A8836()
     app.MainLoop()

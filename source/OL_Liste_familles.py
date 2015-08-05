@@ -187,7 +187,8 @@ class ListView(FastObjectListView):
         self.SetColumns2(colonnes=liste_Colonnes, nomListe="OL_Liste_familles")
         self.SetEmptyListMsg(_(u"Aucune famille"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        self.SetSortColumn(self.columns[1])
+        if len(self.columns) > 0 :
+            self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
     def MAJ(self, listeActivites=None, presents=None, labelParametres=""):

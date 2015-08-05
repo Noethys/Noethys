@@ -285,12 +285,30 @@ class ListView(FastObjectListView):
             return
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_droits", "supprimer") == False : return
         IDmodele = self.Selection()[0].IDmodele
+        
+        # Vérifie que ce modèle n'a pas déjà été attribué à un utilisateur
+        DB = GestionDB.DB()
+        condition = "modele:%d" % IDmodele
+        req = """SELECT IDutilisateur, profil
+        FROM utilisateurs
+        WHERE profil='%s'
+        ;""" % condition
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close() 
+        if len(listeDonnees) > 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer ce modèle de droits.\n\nIl a déjà été attribué à %d utilisateur(s) !") % len(listeDonnees), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Demande confirmation suppression
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce modèle ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("modeles_droits", "IDmodele", IDmodele)
             DB.ReqDEL("droits", "IDmodele", IDmodele)
-            # Attribue le Défaut à un autre type de cotisation
+            # Attribue le Défaut à un autre enregistrement
             if self.Selection()[0].defaut == 1 :
                 req = """SELECT IDmodele, defaut
                 FROM modeles_droits

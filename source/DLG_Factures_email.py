@@ -126,7 +126,10 @@ class Dialog(wx.Dialog):
         
         def SupprimerFichiersTemp():
             for IDfacture, fichier in dictPieces.iteritems() :
-                os.remove(fichier)  
+                try :
+                    os.remove(fichier)  
+                except :
+                    pass
 
         # Récupération de toutes les adresses Emails
         DB = GestionDB.DB()

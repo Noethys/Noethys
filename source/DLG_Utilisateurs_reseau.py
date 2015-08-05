@@ -210,7 +210,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             
             if host == "%" : host = _(u"Connexion depuis n'importe quel hôte")
             elif host == "localhost" : host = _(u"Connexion uniquement depuis le serveur principal")
-            else : host = _(u"Connexion uniquement depuis l'hôte %s") % host
+            else : host = _(u"Connexion uniquement depuis l'hôte %s") % host.decode("iso-8859-15")
             self.SetStringItem(index, 2, host)
             
             if password != "" and password != None : 

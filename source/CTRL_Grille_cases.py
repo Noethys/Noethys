@@ -877,32 +877,33 @@ class Case():
                 for IDunite, listeConso in dictUnites.iteritems() :
                     for conso in listeConso :
                         case = conso.case
-                        if conso.IDprestation == IDprestationForfait :
-                            # Suppression conso multihoraires
-                            if case.CategorieCase == "multihoraires" :
-                                conso.etat = None
-                                conso.forfait = None
-                                if conso.IDconso != None : 
-                                    conso.statut = "suppression"
-                                    self.grid.listeConsoSupprimees.append(conso)
-                                if conso.IDconso == None : 
-                                    conso.statut = "suppression"
-                                case.MAJ_facturation() 
-                                case.listeBarres.remove(conso.barre)
-                                self.grid.dictConsoIndividus[case.IDindividu][case.date][case.IDunite].remove(conso)
-                                self.Refresh() 
-                            else :
-                                # Suppression conso standard
-                                if conso.etat != None :
-                                    case.etat = None
-                                    case.forfait = None
-                                    if case.IDconso != None : case.statut = "suppression"
-                                    if case.IDconso == None : case.statut = None
-                                    case.MemoriseValeurs()
-                                    case.Refresh()
-                                    case.grid.listeHistorique.append((IDindividu, date, IDunite, _(u"Suppression d'une conso forfait")))
-                                    if case not in listeCases :
-                                        listeCases.append(case)
+                        if case != None : 
+                            if conso.IDprestation == IDprestationForfait :
+                                # Suppression conso multihoraires
+                                if case.CategorieCase == "multihoraires" :
+                                    conso.etat = None
+                                    conso.forfait = None
+                                    if conso.IDconso != None : 
+                                        conso.statut = "suppression"
+                                        self.grid.listeConsoSupprimees.append(conso)
+                                    if conso.IDconso == None : 
+                                        conso.statut = "suppression"
+                                    case.MAJ_facturation() 
+                                    case.listeBarres.remove(conso.barre)
+                                    self.grid.dictConsoIndividus[case.IDindividu][case.date][case.IDunite].remove(conso)
+                                    self.Refresh() 
+                                else :
+                                    # Suppression conso standard
+                                    if conso.etat != None :
+                                        case.etat = None
+                                        case.forfait = None
+                                        if case.IDconso != None : case.statut = "suppression"
+                                        if case.IDconso == None : case.statut = None
+                                        case.MemoriseValeurs()
+                                        case.Refresh()
+                                        case.grid.listeHistorique.append((IDindividu, date, IDunite, _(u"Suppression d'une conso forfait")))
+                                        if case not in listeCases :
+                                            listeCases.append(case)
         
         for case in listeCases :
             case.MAJ_facturation() 
