@@ -142,7 +142,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Tableau des prestations")) )
 
         # Affichage condensé ou détaillé
-        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Condensé")], values=[0, 1] , value=0)
+        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Regroupement par label"), _(u"Regroupement par label et montant unitaire")], values=[0, 1, 2] , value=0)
         propriete.SetHelpString(_(u"Sélectionnez un type d'affichage")) 
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)

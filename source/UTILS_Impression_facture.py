@@ -204,10 +204,9 @@ class Impression():
         DICT_OPTIONS = dictOptions
         self.mode = mode
         
-        if dictOptions["affichage_prestations"] == 0 : 
-            detail = True
-        else :
-            detail = False
+        detail = 0
+        if dictOptions["affichage_prestations"] != None :
+            detail = dictOptions["affichage_prestations"]
         
         # Initialisation du document
         if nomFichier == None :
@@ -354,11 +353,11 @@ class Impression():
                         largeurColonneMontantTTC = dictOptions["largeur_colonne_montant_ttc"]
                         largeurColonneBaseTTC = largeurColonneMontantTTC
                         
-                        if activeTVA == True and detail == True :
+                        if activeTVA == True and detail == 0 :
                             largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantHT - largeurColonneTVA - largeurColonneMontantTTC
                             largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantHT, largeurColonneTVA, largeurColonneMontantTTC]
                         else :
-                            if detail == False :
+                            if detail != 0 :
                                 largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneBaseTTC - largeurColonneMontantTTC
                                 largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneBaseTTC, largeurColonneMontantTTC]
                             else :
@@ -421,7 +420,7 @@ class Impression():
                                           )
                                 
 
-                            if detail == False :
+                            if detail != 0 :
                                 
                                 # -------------- MODE REGROUPE ----------------
                                 
@@ -435,14 +434,19 @@ class Impression():
                                         montant = dictPrestation["montant"]
                                         deductions = dictPrestation["deductions"]
                                         tva = dictPrestation["tva"]
-                                        labelkey=label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
                                         
+                                        if detail == 1 : labelkey = label
+                                        if detail == 2 : labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
+                                            
                                         if dictRegroupement.has_key(labelkey) == False :
                                             dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
                                             dictRegroupement[labelkey]["base"] = montant
                                         
                                         dictRegroupement[labelkey]["total"] += montant
                                         dictRegroupement[labelkey]["nbre"] += 1
+                                        
+                                        if detail == 1 :
+                                            dictRegroupement[labelkey]["base"] = dictRegroupement[labelkey]["total"] / dictRegroupement[labelkey]["nbre"]
  
                                         if len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
@@ -617,10 +621,10 @@ class Impression():
                         
                         # Insertion des totaux
                         dataTableau = []
-                        if activeTVA == True and detail == True :
+                        if activeTVA == True and detail == 0 :
                             dataTableau.append(["", "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         else :
-                            if detail == False :
+                            if detail != 0 :
                                 dataTableau.append(["", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                             else :
                                 dataTableau.append(["", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
