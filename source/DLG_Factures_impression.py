@@ -40,6 +40,7 @@ class Dialog(wx.Dialog):
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"Récapitulatif"), cheminImage="Images/32x32/Imprimante.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
@@ -48,6 +49,7 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_CLOSE, self.OnBoutonAnnuler)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonRecap, self.bouton_recap)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonApercu, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
@@ -57,6 +59,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_recap.SetToolTipString(_(u"Cliquez ici pour imprimer un récapitulatif des factures cochées dans la liste"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((850, 700))
@@ -74,8 +77,9 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_recap, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
@@ -96,6 +100,20 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event): 
         self.ctrl_options.MemoriserParametres() 
         self.EndModal(wx.ID_CANCEL)
+
+    def OnBoutonRecap(self, event): 
+        """ Aperçu PDF du récapitulatif des factures """
+        tracks = self.ctrl_liste_factures.GetTracksCoches() 
+        if len(tracks) == 0 : 
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une facture dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        import DLG_Impression_recap_factures
+        dlg = DLG_Impression_recap_factures.Dialog(self, dictOptions={}, tracks=tracks)
+        dlg.ShowModal() 
+        dlg.Destroy()
 
     def OnBoutonApercu(self, event): 
         """ Aperçu PDF des factures """
