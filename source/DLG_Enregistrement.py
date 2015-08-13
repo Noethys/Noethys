@@ -11,6 +11,7 @@
 
 from UTILS_Traduction import _
 import wx
+import sys
 import CTRL_Bouton_image
 import CTRL_Bandeau
 import wx.lib.masked as masked

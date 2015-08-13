@@ -1,3 +1,12 @@
+Version 1.1.4.9 (13/08/2015) :
+
+- Ajout de l'impression d'un récapitulatif des factures
+- Ajout d'un nouveau mode d'affichage condensé sur les factures
+- Ajout prise en charge des scanners à mémoire pour Linux (par Claude)
+- Ajout des index dans la base de données
+- Mise à jour des liens vers documentation
+- Correction de divers bugs
+
 Version 1.1.4.8 (22/06/2015) :
 
 - Correction d'un bug sur l'envoi des reçus de règlements par email

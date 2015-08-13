@@ -25,6 +25,7 @@ class FichierConfig():
         dictDonnees = {}
         for key in db.keys():
             dictDonnees[key] = db[key]
+            #print key, db[key]
         db.close()
         return dictDonnees
     

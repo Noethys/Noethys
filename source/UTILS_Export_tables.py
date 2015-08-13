@@ -167,7 +167,7 @@ class Importer():
             selections = []
         dlg.Destroy()
         for index in selections :
-            self.Ajouter(index)
+            self.Ajouter(index, len(selections))
         return len(selections)
 
     def GetNomContenu(self):
@@ -176,8 +176,8 @@ class Importer():
             listeNoms.append(importation["nom"])
         return listeNoms
     
-    def Ajouter(self, index=0):
-        dlgAttente = PBI.PyBusyInfo(_(u"Merci de patienter durant l'opération..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+    def Ajouter(self, index=0, nbre=0):
+        dlgAttente = PBI.PyBusyInfo(_(u"Merci de patienter durant l'opération...  (%d/%d)") % (index+1, nbre), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         # Importation
         self.dictID = {}
@@ -276,14 +276,15 @@ class Importer():
 if __name__ == "__main__":
     app = wx.App(0)
     
-    print "Exportation..."
-    exportation = Exporter(categorie="activite")
-    exportation.Ajouter(ID=2, nom=_(u"Activité1"))
-    exportation.Enregistrer(fichier="Temp/test.npa")
+##    print "Exportation..."
+##    exportation = Exporter(categorie="activite")
+##    exportation.Ajouter(ID=2, nom=_(u"Activité1"))
+##    exportation.Enregistrer(fichier="Temp/test.npa")
     
-    print "Importation..."
-    importation = Importer(fichier="Temp/test.npa")
-    importation.DemandeChoix() 
-    #importation.Ajouter(index=0)
-    print "Fin."
+##    print "Importation..."
+##    importation = Importer(fichier="Temp/test.npa")
+##    importation.DemandeChoix() 
+##    #importation.Ajouter(index=0)
+##    print "Fin."
+    
     
