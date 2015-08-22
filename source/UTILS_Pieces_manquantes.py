@@ -32,20 +32,52 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
         conditionActivites = ""
     else:
         if len(listeActivites) == 1 :
-            conditionActivites = " AND inscriptions.IDactivite=%d" % listeActivites[0]
+            conditionActivites = " AND consommations.IDactivite=%d" % listeActivites[0]
         else:
-            conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
+            conditionActivites = " AND consommations.IDactivite IN %s" % str(tuple(listeActivites))
             
     # Conditions Présents
-    if presents == None :
-        conditionPresents = ""
-        jonctionPresents = ""
-    else:
-        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
-        jonctionPresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+##    if presents == None :
+##        conditionPresents = ""
+##        jonctionPresents = ""
+##    else:
+##        conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(presents[0]), str(presents[1]))
+##        jonctionPresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+    
+    DB = GestionDB.DB()
     
     # Récupération des pièces à fournir
-    DB = GestionDB.DB()
+
+## # Ancienne Version moins rapide :
+##    req = """
+##    SELECT 
+##    inscriptions.IDfamille, pieces_activites.IDtype_piece, types_pieces.nom, types_pieces.public, types_pieces.valide_rattachement, individus.prenom, individus.IDindividu
+##    FROM pieces_activites 
+##    LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces_activites.IDtype_piece
+##    LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
+##    LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
+##    %s
+##    WHERE inscriptions.parti=0 %s %s
+##    GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu
+##    ;""" % (jonctionPresents, conditionActivites, conditionPresents)
+##    DB.ExecuterReq(req)
+##    listePiecesObligatoires = DB.ResultatReq()
+
+    # Récupération des individus présents
+    listePresents = []
+    if presents != None :
+        req = """
+        SELECT IDindividu, IDinscription
+        FROM consommations
+        WHERE date>='%s' AND date<='%s' %s
+        GROUP BY IDindividu
+        ;"""  % (str(presents[0]), str(presents[1]), conditionActivites)
+        DB.ExecuterReq(req)
+        listeIndividusPresents = DB.ResultatReq()
+        for IDindividu, IDinscription in listeIndividusPresents :
+            listePresents.append(IDindividu)
+
+
     req = """
     SELECT 
     inscriptions.IDfamille, pieces_activites.IDtype_piece, types_pieces.nom, types_pieces.public, types_pieces.valide_rattachement, individus.prenom, individus.IDindividu
@@ -53,13 +85,13 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces_activites.IDtype_piece
     LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    %s
-    WHERE inscriptions.parti=0 %s %s
+    WHERE inscriptions.parti=0 %s
     GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu
-    ;""" % (jonctionPresents, conditionActivites, conditionPresents)
+    ;""" % conditionActivites.replace("consommations", "inscriptions")
     DB.ExecuterReq(req)
     listePiecesObligatoires = DB.ResultatReq()
-    
+
+
     # Recherche des pièces déjà fournies
     req = """
     SELECT IDpiece, pieces.IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, public
@@ -83,31 +115,34 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     # Comparaison de la liste des pièces à fournir et la liste des pièces fournies
     dictDonnees = {}
     for IDfamille, IDtype_piece, nomPiece, publicPiece, rattachementPiece, prenom, IDindividu in listePiecesObligatoires :
-        # Pour les pièces familiales :
-        if publicPiece == "famille" : IDindividu = None
-        # Pour les pièces qui sont indépendantes de la famille
-        if rattachementPiece == 1 :
-            IDfamilleTemp = None
-        else:
-            IDfamilleTemp = IDfamille
+        
+        if presents == None or (presents != None and IDindividu in listePresents) :
             
-        # Préparation du label
-        if publicPiece == "famille" or IDindividu == None :
-            label = nomPiece
-        else:
-            label = _(u"%s de %s") % (nomPiece, prenom)
-                    
-        if dictPiecesFournies.has_key( (IDfamilleTemp, IDtype_piece, IDindividu) ) :
-            date_debut, date_fin = dictPiecesFournies[(IDfamilleTemp, IDtype_piece, IDindividu)]
-            nbreJoursRestants = (date_fin - datetime.date.today()).days
-            if nbreJoursRestants > 15 :
-                valide = "ok"
+            # Pour les pièces familiales :
+            if publicPiece == "famille" : IDindividu = None
+            # Pour les pièces qui sont indépendantes de la famille
+            if rattachementPiece == 1 :
+                IDfamilleTemp = None
             else:
-                valide = "attention"
-        else:
-            valide = "pasok"
-            
-        dictDonnees[(IDfamille, IDtype_piece, IDindividu)] = (IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide, label)
+                IDfamilleTemp = IDfamille
+                
+            # Préparation du label
+            if publicPiece == "famille" or IDindividu == None :
+                label = nomPiece
+            else:
+                label = _(u"%s de %s") % (nomPiece, prenom)
+                        
+            if dictPiecesFournies.has_key( (IDfamilleTemp, IDtype_piece, IDindividu) ) :
+                date_debut, date_fin = dictPiecesFournies[(IDfamilleTemp, IDtype_piece, IDindividu)]
+                nbreJoursRestants = (date_fin - datetime.date.today()).days
+                if nbreJoursRestants > 15 :
+                    valide = "ok"
+                else:
+                    valide = "attention"
+            else:
+                valide = "pasok"
+                
+            dictDonnees[(IDfamille, IDtype_piece, IDindividu)] = (IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide, label)
         
     # Répartition par famille
     dictPieces = {}
@@ -145,4 +180,4 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
             
             
 if __name__ == '__main__':
-    print GetListePiecesManquantes()
+    print len(GetListePiecesManquantes(dateReference=datetime.date.today(), listeActivites=[1,], presents=(datetime.date(2015, 8, 13), datetime.date(2015, 8, 13)), concernes=True))
