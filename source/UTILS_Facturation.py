@@ -106,7 +106,7 @@ class Facturation():
         
         # Récupération des infos de base familles
         self.infosIndividus = UTILS_Infos_individus.Informations() 
-
+        
 
     def RechercheAgrement(self, IDactivite, date):
         for IDactiviteTmp, agrement, date_debut, date_fin in self.listeAgrements :
@@ -806,7 +806,7 @@ class Facturation():
         if resultat == False :
             return False
         dictFactures, dictChampsFusion = resultat
-                
+        
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
@@ -880,14 +880,24 @@ class Facturation():
 
 
 
-def SuppressionFacture(listeFactures=[]):
+def SuppressionFacture(listeFactures=[], mode="suppression"):
     """ Suppression d'une facture """
-    dlgAttente = PBI.PyBusyInfo(_(u"Suppression des factures en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+    dlgAttente = PBI.PyBusyInfo(_(u"%s des factures en cours...") % mode.capitalize(), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
     wx.Yield() 
     DB = GestionDB.DB()
-    for IDfacture in listeFactures :
-        DB.ReqMAJ("prestations", [("IDfacture", None ),], "IDfacture", IDfacture)
-        DB.ReqDEL("factures", "IDfacture", IDfacture)
+    
+    # Suppression
+    if mode == "suppression" :
+        for IDfacture in listeFactures :
+            DB.ReqMAJ("prestations", [("IDfacture", None),], "IDfacture", IDfacture)
+            DB.ReqDEL("factures", "IDfacture", IDfacture)
+            
+    # Annulation
+    if mode == "annulation" :
+        for IDfacture in listeFactures :
+            DB.ReqMAJ("prestations", [("IDfacture", None),], "IDfacture", IDfacture)
+            DB.ReqMAJ("factures", [("etat", "annulation"),], "IDfacture", IDfacture)
+            
     DB.Close() 
     del dlgAttente
     return True
