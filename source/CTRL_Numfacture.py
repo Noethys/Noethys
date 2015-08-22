@@ -73,26 +73,26 @@ class CTRL(wx.SearchCtrl):
 
         DB = GestionDB.DB()
 
-        # Récupération des totaux des prestations pour chaque facture
-        req = """
-        SELECT 
-        IDfacture, SUM(montant)
-        FROM prestations
-        WHERE IDfacture IS NOT NULL %s
-        GROUP BY IDfacture
-        ;""" % conditionFamille
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
-        dictPrestations = {}
-        for IDfacture, totalPrestations in listeDonnees :
-            if IDfacture != None :
-                dictPrestations[IDfacture] = totalPrestations
+##        # Récupération des totaux des prestations pour chaque facture
+##        req = """
+##        SELECT 
+##        IDfacture, SUM(montant)
+##        FROM prestations
+##        WHERE IDfacture IS NOT NULL %s
+##        GROUP BY IDfacture
+##        ;""" % conditionFamille
+##        DB.ExecuterReq(req)
+##        listeDonnees = DB.ResultatReq()     
+##        dictPrestations = {}
+##        for IDfacture, totalPrestations in listeDonnees :
+##            if IDfacture != None :
+##                dictPrestations[IDfacture] = totalPrestations
 
         # Recherche si le numéro de facture existe
         req = """
         SELECT 
         factures.IDfacture, factures.total, factures.regle, factures.solde,
-        SUM(ventilation.montant),
+        SUM(ventilation.montant), etat,
         comptes_payeurs.IDfamille
         FROM factures
         LEFT JOIN prestations ON prestations.IDfacture = factures.IDfacture
@@ -111,11 +111,29 @@ class CTRL(wx.SearchCtrl):
             dlg.Destroy()
             return
         
-        IDfacture, totalInitial, regleInitial, soldeInitial, regleActuel, IDfamille = listeDonnees[0]
-        if dictPrestations.has_key(IDfacture) :
-            totalActuel = dictPrestations[IDfacture]
-        else:
+        IDfacture, totalInitial, regleInitial, soldeInitial, regleActuel, etat, IDfamille = listeDonnees[0]
+        if etat == "annulation" :
+            dlg = wx.MessageDialog(self, _(u"La facture n°%d a été annulée !") % numFacture, _(u"Facture annulée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        
+        # Recherche si la facture a déjà été réglée
+        
+        DB = GestionDB.DB()
+        req = """SELECT IDfacture, SUM(montant)
+        FROM prestations
+        WHERE IDfacture=%d
+        GROUP BY IDfacture
+        ;""" % IDfacture
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()     
+        if len(listeDonnees) > 0 :
+            totalActuel = listeDonnees[0][1]
+        else :
             totalActuel = 0.0
+        DB.Close() 
+        
         if totalActuel == None : totalActuel = 0.0 
         if regleActuel == None : regleActuel = 0.0 
         if totalActuel - regleActuel == 0.0 :
