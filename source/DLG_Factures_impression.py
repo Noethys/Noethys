@@ -127,6 +127,14 @@ class Dialog(wx.Dialog):
 
         listeIDfacture = []
         for track in tracks :
+            # Avertissements
+            if track.etat == "annulation" : 
+                dlg = wx.MessageDialog(self, _(u"La facture n°%s a été annulée.\n\nVous ne pouvez pas l'imprimer !") % track.numero, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+            
+            # Ajout
             listeIDfacture.append(track.IDfacture) 
         
         # Récupération des options

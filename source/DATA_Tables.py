@@ -738,6 +738,7 @@ DB_DATA = {
                                     ("solde", "FLOAT", u"Solde à régler pour la période"),
                                     ("IDlot", "INTEGER", u"ID du lot de factures"),
                                     ("prestations", "VARCHAR(500)", u"Liste des types de prestations intégrées"),
+                                    ("etat", "VARCHAR(100)", u"Etat de la facture"),
                                     ], # Factures éditées
 
     "textes_rappels":[      ("IDtexte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDtexte"),

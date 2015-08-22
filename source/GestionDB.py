@@ -706,7 +706,11 @@ class DB:
         
         # Importation des données vers la nouvelle table
         req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
-        self.cursor.executemany(req, listeDonnees)
+        try :
+            self.cursor.executemany(req, listeDonnees)
+        except Exception, err :
+            print "Erreur dans l'importation de la table %s :" % nomTable
+            print err
         self.connexion.commit()
 
     def Importation_table_reseau(self, nomTable="", nomFichier="", dictTables={}):
@@ -1594,7 +1598,14 @@ class DB:
         
         # =============================================================
         
+        versionFiltre = (1, 1, 5, 0)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("factures", "etat", "VARCHAR(100)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
+        # =============================================================
         
         
         
@@ -1874,9 +1885,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("compta_budgets", "date_fin", "DATE")
-##    db.Close()
+    db = DB(suffixe="DATA")
+    db.AjoutChamp("factures", "etat", "VARCHAR(100)")
+    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
 ##    db = DB(suffixe="DATA")
@@ -1894,11 +1905,13 @@ if __name__ == "__main__":
 ##    db.Close() 
     
     # Création de tous les index
-    db = DB(suffixe="DATA")
-    db.CreationTousIndex() 
-    db.Close() 
-    db = DB(suffixe="PHOTOS")
-    db.CreationTousIndex() 
-    db.Close() 
+##    db = DB(suffixe="DATA")
+##    db.CreationTousIndex() 
+##    db.Close() 
+##    db = DB(suffixe="PHOTOS")
+##    db.CreationTousIndex() 
+##    db.Close() 
+    
+    
     pass
     

@@ -113,7 +113,7 @@ class Panel(wx.Panel):
         codesColonnes = ["IDfacture", "date", "numero", "date_debut", "date_fin", "total", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = True
         triColonne = "date"
-        self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : self.IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 
+        self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : self.IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne, "afficherAnnulations" : True}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
 
         self.ctrl_recherche = OL_Factures.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
