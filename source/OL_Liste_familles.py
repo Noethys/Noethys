@@ -40,15 +40,17 @@ def GetListe(listeActivites=None, presents=None):
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
     # Conditions Présents
-    if presents == None :
-        conditionPresents = ""
-        jointurePresents = ""
-    else:
-        conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
-        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+##    if presents == None :
+##        conditionPresents = ""
+##        jointurePresents = ""
+##    else:
+##        conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
+##        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
     
-    # Récupération des régimes et num d'alloc pour chaque famille
+    
     DB = GestionDB.DB()
+
+### Ancienne version lente :
 ##    req = """
 ##    SELECT 
 ##    familles.IDfamille, regimes.nom, caisses.nom, num_allocataire
@@ -63,19 +65,33 @@ def GetListe(listeActivites=None, presents=None):
 ##    GROUP BY familles.IDfamille
 ##    ;""" % (conditionActivites, conditionPresents)
 
+    # Récupération des présents
+    listePresents = []
+    if presents != None :
+        req = """SELECT IDfamille, inscriptions.IDinscription
+        FROM consommations
+        LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
+        WHERE date>='%s' AND date<='%s' %s
+        GROUP BY IDfamille
+        ;"""  % (str(presents[0]), str(presents[1]), conditionActivites.replace("inscriptions", "consommations"))
+        DB.ExecuterReq(req)
+        listeIndividusPresents = DB.ResultatReq()
+        for IDfamille, IDinscription in listeIndividusPresents :
+            listePresents.append(IDfamille)
+    
+    # Récupération des régimes et num d'alloc pour chaque famille
     req = """
     SELECT 
     inscriptions.IDfamille, regimes.nom, caisses.nom, num_allocataire
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
     LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
-    %s
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-    WHERE inscriptions.parti=0 %s %s
+    WHERE inscriptions.parti=0 %s
     GROUP BY familles.IDfamille
-    ;""" % (jointurePresents, conditionActivites, conditionPresents)
+    ;""" % conditionActivites
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()
@@ -85,23 +101,26 @@ def GetListe(listeActivites=None, presents=None):
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, nomRegime, nomCaisse, numAlloc in listeFamilles :
-        if IDfamille != None and titulaires.has_key(IDfamille) :
-            nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
-            rue = titulaires[IDfamille]["adresse"]["rue"]
-            cp = titulaires[IDfamille]["adresse"]["cp"]
-            ville = titulaires[IDfamille]["adresse"]["ville"]
-            secteur = titulaires[IDfamille]["adresse"]["nomSecteur"]
-        else :
-            nomTitulaires = _(u"Aucun titulaire")
-            rue = u""
-            cp = u""
-            ville = u""
-            secteur = u""
-        dictFinal[IDfamille] = {
-            "IDfamille" : IDfamille, "titulaires" : nomTitulaires, "nomRegime" : nomRegime, 
-            "nomCaisse" : nomCaisse, "numAlloc" : numAlloc,
-            "rue" : rue, "cp" : cp, "ville" : ville, "secteur" : secteur,
-            }
+        
+        if presents == None or (presents != None and IDfamille in listePresents) :
+            
+            if IDfamille != None and titulaires.has_key(IDfamille) :
+                nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
+                rue = titulaires[IDfamille]["adresse"]["rue"]
+                cp = titulaires[IDfamille]["adresse"]["cp"]
+                ville = titulaires[IDfamille]["adresse"]["ville"]
+                secteur = titulaires[IDfamille]["adresse"]["nomSecteur"]
+            else :
+                nomTitulaires = _(u"Aucun titulaire")
+                rue = u""
+                cp = u""
+                ville = u""
+                secteur = u""
+            dictFinal[IDfamille] = {
+                "IDfamille" : IDfamille, "titulaires" : nomTitulaires, "nomRegime" : nomRegime, 
+                "nomCaisse" : nomCaisse, "numAlloc" : numAlloc,
+                "rue" : rue, "cp" : cp, "ville" : ville, "secteur" : secteur,
+                }
     
     return dictFinal
 
@@ -357,7 +376,11 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2010, 1, 5), datetime.date(2012, 1, 5))) 
+        import time
+        t = time.time()
+        self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31))) 
+        print len(self.myOlv.donnees)
+        print "Temps d'execution =", time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

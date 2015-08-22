@@ -54,12 +54,27 @@ def GetListe(listeActivites=None, presents=None):
             conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
     # Conditions Présents
-    if presents == None :
-        conditionPresents = ""
-        jointurePresents = ""
-    else:
-        conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
-        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+##    if presents == None :
+##        conditionPresents = ""
+##        jointurePresents = ""
+##    else:
+##        conditionPresents = " AND consommations.date>='%s' AND consommations.date<='%s' AND consommations.etat IN ('reservation', 'present')" % (str(presents[0]), str(presents[1]))
+##        jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+    
+    DB = GestionDB.DB()
+    
+    # Récupération des présents
+    listePresents = []
+    if presents != None :
+        req = """SELECT IDindividu, IDinscription
+        FROM consommations
+        WHERE date>='%s' AND date<='%s' %s
+        GROUP BY IDindividu
+        ;"""  % (str(presents[0]), str(presents[1]), conditionActivites.replace("inscriptions", "consommations"))
+        DB.ExecuterReq(req)
+        listeIndividusPresents = DB.ResultatReq()
+        for IDindividu, IDinscription in listeIndividusPresents :
+            listePresents.append(IDindividu)
 
     # Récupération des individus
     listeChamps = (
@@ -69,15 +84,14 @@ def GetListe(listeActivites=None, presents=None):
         "IDcategorie_travail", "profession", "employeur", "travail_tel", "travail_fax", "travail_mail", 
         "tel_domicile", "tel_mobile", "tel_fax", "mail"
         )
-    DB = GestionDB.DB()
+    
     req = """
     SELECT %s
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    %s
-    WHERE inscriptions.parti=0 %s %s
+    WHERE inscriptions.parti=0 %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), jointurePresents, conditionActivites, conditionPresents)
+    ;""" % (",".join(listeChamps), conditionActivites)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 
@@ -90,34 +104,38 @@ def GetListe(listeActivites=None, presents=None):
 
     listeListeView = []
     for valeurs in listeDonnees :
-        dictTemp = {}
-        dictTemp["IDindividu"] = valeurs[0]
-        # Infos de la table Individus
-        for index in range(0, len(listeChamps)) :
-            nomChamp = listeChamps[index]
-            dictTemp[nomChamp] = valeurs[index]
-        # Infos sur la civilité
-        if dictTemp["IDcivilite"] != None and dictTemp["IDcivilite"] != "" : 
-            IDcivilite = dictTemp["IDcivilite"]
-        else :
-            IDcivilite = 1
-        dictTemp["genre"] = dictCivilites[IDcivilite]["sexe"]
-        dictTemp["categorieCivilite"] = dictCivilites[IDcivilite]["categorie"]
-        dictTemp["civiliteLong"]  = dictCivilites[IDcivilite]["civiliteLong"]
-        dictTemp["civiliteAbrege"] = dictCivilites[IDcivilite]["civiliteAbrege"] 
-        dictTemp["nomImage"] = dictCivilites[IDcivilite]["nomImage"] 
+        IDindividu = valeurs[0]
         
-        if dictTemp["date_naiss"] == None :
-            dictTemp["age"] = None
-        else:
-            datenaissDD = datetime.date(year=int(dictTemp["date_naiss"][:4]), month=int(dictTemp["date_naiss"][5:7]), day=int(dictTemp["date_naiss"][8:10]))
-            datedujour = datetime.date.today()
-            age = (datedujour.year - datenaissDD.year) - int((datedujour.month, datedujour.day) < (datenaissDD.month, datenaissDD.day))
-            dictTemp["age"] = age
-                    
-        # Formatage sous forme de TRACK
-        track = Track(dictTemp)
-        listeListeView.append(track)
+        if presents == None or (presents != None and IDindividu in listePresents) :
+            
+            dictTemp = {}
+            dictTemp["IDindividu"] = valeurs[0]
+            # Infos de la table Individus
+            for index in range(0, len(listeChamps)) :
+                nomChamp = listeChamps[index]
+                dictTemp[nomChamp] = valeurs[index]
+            # Infos sur la civilité
+            if dictTemp["IDcivilite"] != None and dictTemp["IDcivilite"] != "" : 
+                IDcivilite = dictTemp["IDcivilite"]
+            else :
+                IDcivilite = 1
+            dictTemp["genre"] = dictCivilites[IDcivilite]["sexe"]
+            dictTemp["categorieCivilite"] = dictCivilites[IDcivilite]["categorie"]
+            dictTemp["civiliteLong"]  = dictCivilites[IDcivilite]["civiliteLong"]
+            dictTemp["civiliteAbrege"] = dictCivilites[IDcivilite]["civiliteAbrege"] 
+            dictTemp["nomImage"] = dictCivilites[IDcivilite]["nomImage"] 
+            
+            if dictTemp["date_naiss"] == None :
+                dictTemp["age"] = None
+            else:
+                datenaissDD = datetime.date(year=int(dictTemp["date_naiss"][:4]), month=int(dictTemp["date_naiss"][5:7]), day=int(dictTemp["date_naiss"][8:10]))
+                datedujour = datetime.date.today()
+                age = (datedujour.year - datenaissDD.year) - int((datedujour.month, datedujour.day) < (datenaissDD.month, datenaissDD.day))
+                dictTemp["age"] = age
+                        
+            # Formatage sous forme de TRACK
+            track = Track(dictTemp)
+            listeListeView.append(track)
         
     return listeListeView
 
@@ -399,8 +417,11 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(listeActivites=(1, 2, 3))#, presents=(datetime.date(2013, 8, 30), datetime.date(2013, 8, 30)))
+        import time
+        t = time.time()
+        self.myOlv.MAJ(listeActivites=(1, 2, 3), presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31)))
         print len(self.myOlv.donnees)
+        print "Temps d'execution =", time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

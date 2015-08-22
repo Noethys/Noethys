@@ -89,15 +89,30 @@ class ListView(FastObjectListView):
                 conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(self.listeActivites))
                 
         # Conditions Présents
-        if self.presents == None :
-            conditionPresents = ""
-            jointurePresents = ""
-        else:
-            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(self.presents[0]), str(self.presents[1]))
-            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
-        
-        # Récupération des familles
+##        if self.presents == None :
+##            conditionPresents = ""
+##            jointurePresents = ""
+##        else:
+##            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(self.presents[0]), str(self.presents[1]))
+##            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+
         DB = GestionDB.DB()
+
+        # Récupération des présents
+        listePresents = []
+        if self.presents != None :
+            req = """SELECT IDfamille, inscriptions.IDinscription
+            FROM consommations
+            LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
+            WHERE date>='%s' AND date<='%s' %s
+            GROUP BY IDfamille
+            ;"""  % (str(self.presents[0]), str(self.presents[1]), conditionActivites.replace("inscriptions", "consommations"))
+            DB.ExecuterReq(req)
+            listeIndividusPresents = DB.ResultatReq()
+            for IDfamille, IDinscription in listeIndividusPresents :
+                listePresents.append(IDfamille)
+
+        # Récupération des familles
 ##        req = """SELECT familles.IDfamille
 ##        FROM familles 
 ##        LEFT JOIN rattachements ON rattachements.IDfamille = familles.IDfamille
@@ -112,13 +127,12 @@ class ListView(FastObjectListView):
         FROM inscriptions 
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
-        %s
         AND inscriptions.IDfamille = familles.IDfamille
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-        WHERE inscriptions.parti=0 %s %s
+        WHERE inscriptions.parti=0 %s
         GROUP BY familles.IDfamille
-        ;""" % (jointurePresents, conditionActivites, conditionPresents)
+        ;""" % conditionActivites
 
         DB.ExecuterReq(req)
         listeFamilles = DB.ResultatReq()
@@ -139,17 +153,20 @@ class ListView(FastObjectListView):
 
         listeListeView = []
         for IDfamille, in listeFamilles :
-            if dictQuotients.has_key(IDfamille) :
-                dictQuotient = dictQuotients[IDfamille]
-            else :
-                dictQuotient = None
+            
+            if self.presents == None or (self.presents != None and IDfamille in listePresents) :
                 
-            if self.familles == "TOUTES" :
-                listeListeView.append(Track(IDfamille, dictQuotient))
-            if self.familles == "AVEC" and dictQuotient != None:
-                listeListeView.append(Track(IDfamille, dictQuotient))
-            if self.familles == "SANS" and dictQuotient == None:
-                listeListeView.append(Track(IDfamille, dictQuotient))
+                if dictQuotients.has_key(IDfamille) :
+                    dictQuotient = dictQuotients[IDfamille]
+                else :
+                    dictQuotient = None
+                    
+                if self.familles == "TOUTES" :
+                    listeListeView.append(Track(IDfamille, dictQuotient))
+                if self.familles == "AVEC" and dictQuotient != None:
+                    listeListeView.append(Track(IDfamille, dictQuotient))
+                if self.familles == "SANS" and dictQuotient == None:
+                    listeListeView.append(Track(IDfamille, dictQuotient))
 
         return listeListeView
       
@@ -334,7 +351,11 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(date_reference=datetime.date(2012, 5, 17), listeActivites=[1, 2, 3, 4], presents=None, familles="TOUTES")
+        import time
+        t = time.time()
+        self.myOlv.MAJ(date_reference=datetime.date(2015, 8, 13), listeActivites=[1, 2, 3, 4], presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31)), familles="TOUTES")
+        print len(self.myOlv.donnees)
+        print "Temps d'execution =", time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
