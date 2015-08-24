@@ -710,10 +710,13 @@ class Facturation():
             if dictComptes.has_key(IDfacture) :
                 
                 dictCompte = dictComptes[IDfacture]
-
                 dictCompte["select"] = True
-                dictCompte["ventilation"] = regle
-                dictCompte["solde"] = solde
+                
+                # Affichage du solde initial
+                if dictOptions != None and dictOptions["affichage_solde"] == 1:
+                    dictCompte["ventilation"] = regle
+                    dictCompte["solde"] = solde
+                
                 # Attribue un numéro de facture
                 dictCompte["num_facture"] = numero
                 dictCompte["num_codeBarre"] = "%07d" % numero
@@ -725,7 +728,7 @@ class Facturation():
                 dictCompte["{DATE_FIN}"] = UTILS_Dates.DateEngFr(str(date_fin))
                 dictCompte["{DATE_EDITION_FACTURE}"] = UTILS_Dates.DateEngFr(str(date_edition))
                 dictCompte["{DATE_ECHEANCE}"] = UTILS_Dates.DateEngFr(str(date_echeance))
-                dictCompte["{SOLDE}"] = u"%.2f %s" % (solde, SYMBOLE)
+                dictCompte["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
                 dictCompte["{SOLDE_LETTRES}"] = UTILS_Conversion.trad(solde, MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize() 
 
                 if nomLot == None :
@@ -762,7 +765,7 @@ class Facturation():
                 dictChampsFusion[IDfacture]["{DATE_FIN}"] = UTILS_Dates.DateEngFr(str(date_fin))
                 dictChampsFusion[IDfacture]["{DATE_EDITION_FACTURE}"] = UTILS_Dates.DateEngFr(str(date_edition))
                 dictChampsFusion[IDfacture]["{DATE_ECHEANCE}"] = UTILS_Dates.DateEngFr(str(date_echeance))
-                dictChampsFusion[IDfacture]["{SOLDE}"] = u"%.2f %s" % (solde, SYMBOLE)
+                dictChampsFusion[IDfacture]["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
                 
                 # Fusion pour textes personnalisés
                 dictCompte["texte_titre"] = self.RemplaceMotsCles(dictOptions["texte_titre"], dictCompte)
@@ -915,5 +918,5 @@ if __name__ == '__main__':
 ##    print facturation.Impression(listeFactures=[92, 93], nomDoc=None, afficherDoc=True, dictOptions=None)
 ##    print len(facturation.GetDonnees2(listeFactures=range(3240, 3400)))
 ##    facturation.GetDonneesImpression2(listeFactures=range(3240, 3400))
-    print "resultats =", facturation.Impression(listeFactures=[77,])
+    print "resultats =", facturation.Impression(listeFactures=[8,])
     app.MainLoop()

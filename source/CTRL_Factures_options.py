@@ -70,7 +70,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Catégorie 
         self.Append( wxpg.PropertyCategory(_(u"Eléments à afficher")) )
-        
+
+        # Affichage condensé ou détaillé
+        propriete = wxpg.EnumProperty(label=_(u"Afficher le solde"), name="affichage_solde", labels=[_(u"Actuel"), _(u"Initial")], values=[0, 1] , value=0)
+        propriete.SetHelpString(_(u"Sélectionnez un type d'affichage pour le solde (Actuel=Solde à ce jour / Initial=Solde au moment de la génération de la facture)")) 
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
         # Afficher les coupons-réponse
         propriete = wxpg.BoolProperty(label=_(u"Afficher le coupon-réponse"), name="afficher_coupon_reponse", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher un coupon-réponse dans le document")) 
