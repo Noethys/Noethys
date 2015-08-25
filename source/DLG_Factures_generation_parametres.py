@@ -151,6 +151,7 @@ class Panel(wx.Panel):
         self.label_prochain_numero = wx.StaticText(self, -1, _(u"Prochain numéro :"))
         self.ctrl_prochain_numero = wx.TextCtrl(self, -1, u"", size=(95, -1))
         self.bouton_prochain_numero = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_ANY))
+        self.check_numero_auto = wx.CheckBox(self, -1, _(u"Auto."))
         self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.label_date_emission = wx.StaticText(self, -1, _(u"Date d'émission :"))
         self.ctrl_date_emission = CTRL_Saisie_date.Date2(self)
@@ -177,6 +178,7 @@ class Panel(wx.Panel):
         self.__do_layout()
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLots, self.bouton_lots)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckNumeroAuto, self.check_numero_auto)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_toutes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_unique)
         self.Bind(wx.EVT_BUTTON, self.AfficheProchainNumeroDefaut, self.bouton_prochain_numero)
@@ -187,7 +189,7 @@ class Panel(wx.Panel):
         self.check_cotisations.SetValue(True)
         self.check_autres.SetValue(True)
         self.OnRadioFamilles(None)
-        
+                
         # Recherche du prochain numéro de facture
         DB = GestionDB.DB()
         req = """SELECT MAX(numero) FROM factures;""" 
@@ -199,13 +201,15 @@ class Panel(wx.Panel):
         else:
             self.prochain_numero_defaut = listeDonnees[0][0] + 1
         self.AfficheProchainNumeroDefaut()
-        
+        self.check_numero_auto.SetValue(True)
+        self.OnCheckNumeroAuto()
 
     def __set_properties(self):
         self.ctrl_lot.SetToolTipString(_(u"Sélectionnez un nom de lot à associer aux factures générées. Ex : Janvier 2013, Février, 2013, etc... Ce nom vous permettra de retrouver vos factures facilement [Optionnel]"))
         self.bouton_lots.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des lots"))
         self.ctrl_prochain_numero.SetToolTipString(_(u"Numéro de la prochaine facture générée. Vous pouvez modifier ce numéro si vous souhaitez par exemple modifier la numérotation en début d'année"))
         self.bouton_prochain_numero.SetToolTipString(_(u"Cliquez ici pour sélectionner automatiquement le prochain numéro de facture"))
+        self.check_numero_auto.SetToolTipString(_(u"Cochez cette case pour laisser Noethys sélectionner automatiquement le prochain numéro de facture"))
         self.ctrl_date_emission.SetToolTipString(_(u"Saisissez ici la date d'émission la date des factures (Par défaut la date du jour)"))
         self.ctrl_date_echeance.SetToolTipString(_(u"Saisissez la date d'échéance de paiement qui apparaîtra sur la facture [Optionnel]"))
         self.check_consommations.SetToolTipString(_(u"Cochez cette case pour inclure les prestations de consommations"))
@@ -247,9 +251,10 @@ class Panel(wx.Panel):
         
         grid_sizer_parametres.Add(self.label_prochain_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         
-        grid_sizer_numero = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_numero = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_numero.Add(self.ctrl_prochain_numero, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
         grid_sizer_numero.Add(self.bouton_prochain_numero, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
+        grid_sizer_numero.Add(self.check_numero_auto, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
         grid_sizer_parametres.Add(grid_sizer_numero, 0, 0, 0)
         
         grid_sizer_parametres.Add(self.label_date_emission, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -303,7 +308,12 @@ class Panel(wx.Panel):
 
     def OnRadioFamilles(self, event):
         self.ctrl_famille.Enable(self.radio_familles_unique.GetValue())
-
+    
+    def OnCheckNumeroAuto(self, event=None):
+        etat = self.check_numero_auto.GetValue()
+        self.ctrl_prochain_numero.Enable(not etat)
+        self.bouton_prochain_numero.Enable(not etat)
+        
     def Validation(self):
         """ Validation des données saisies """
         # Vérifie date début
@@ -343,23 +353,28 @@ class Panel(wx.Panel):
                 return False
         
         # Prochain numéro de facture
-        try :
-            prochain_numero = int(self.ctrl_prochain_numero.GetValue())
-        except :
+        if self.check_numero_auto.GetValue() == True :
+            # Numéro auto
             prochain_numero = None
-        if prochain_numero in (None, "") :
-            dlg = wx.MessageDialog(self, _(u"Le prochain numéro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_prochain_numero.SetFocus()
-            return False
-        
-        if prochain_numero < self.prochain_numero_defaut :
-            dlg = wx.MessageDialog(self, _(u"Le prochain numéro de facture n'est pas valide : une facture générée porte déjà un numéro égal ou supérieur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_prochain_numero.SetFocus()
-            return False
+        else :
+            # Numéro perso
+            try :
+                prochain_numero = int(self.ctrl_prochain_numero.GetValue())
+            except :
+                prochain_numero = None
+            if prochain_numero in (None, "") :
+                dlg = wx.MessageDialog(self, _(u"Le prochain numéro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_prochain_numero.SetFocus()
+                return False
+            
+            if prochain_numero < self.prochain_numero_defaut :
+                dlg = wx.MessageDialog(self, _(u"Le prochain numéro de facture n'est pas valide : une facture générée porte déjà un numéro égal ou supérieur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_prochain_numero.SetFocus()
+                return False
         
         # Date d'émission
         date_emission = self.ctrl_date_emission.GetDate()

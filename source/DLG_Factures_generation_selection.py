@@ -123,6 +123,18 @@ class Panel(wx.Panel):
         # Sélection du prochain numéro de facture
         numero = self.parent.dictParametres["prochain_numero"]
         
+        if numero == None :
+            # Recherche du prochain numéro de facture si mode AUTO
+            DB = GestionDB.DB()
+            req = """SELECT MAX(numero) FROM factures;""" 
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()  
+            DB.Close() 
+            if listeDonnees[0][0] == None :
+                numero = 1
+            else:
+                numero = listeDonnees[0][0] + 1
+            
         # Sauvegarde
         DB = GestionDB.DB()
         try :
