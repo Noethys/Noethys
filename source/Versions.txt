@@ -1,3 +1,11 @@
+Version 1.1.5.0 (25/08/2015) :
+
+- Ajout de l'annulation des factures
+- Ajout de l'affichage du solde actuel dans les factures
+- Ajout des nouvelles zones scolaires
+- Optimisation de la recherche des pièces manquantes
+- Optimisation de l'affichage de plusieurs listes
+
 Version 1.1.4.9 (13/08/2015) :
 
 - Ajout de l'impression d'un récapitulatif des factures

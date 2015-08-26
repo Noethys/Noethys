@@ -461,12 +461,20 @@ class Dialog(wx.Dialog):
             
             for track in self.tracks :
                 
+                numero = track.numero
+                if track.etat == "annulation" :
+                    numero = u"%s (Annulée)" % numero
+                
+                solde = track.solde
+                if solde != 0.0 :
+                    solde = -solde
+                    
                 # Numéro de facture
                 dataTableau = []
                 largeursColonnes = [100, 100, largeurContenu-100-100]
                 dataTableau.append((
-                    _(u"Facture n°%s") % track.numero, 
-                    u"%.2f %s" % (-track.solde, SYMBOLE),
+                    _(u"Facture n°%s") % numero, 
+                    u"%.2f %s" % (solde, SYMBOLE),
                     _(u"Edité le %s | Echéance le %s | Période du %s au %s") % (UTILS_Dates.DateDDEnFr(track.date_edition), UTILS_Dates.DateDDEnFr(track.date_echeance), UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)),
                     ))
                 tableau = Table(dataTableau, largeursColonnes)
