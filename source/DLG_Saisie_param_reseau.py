@@ -146,9 +146,9 @@ class Dialog(wx.Dialog):
     
 def TestConnexion(dictValeurs={}):
     """ Test de connexion au réseau MySQL """
-    import MySQLdb
+    import mysql
     try :
-        connexion = MySQLdb.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True) 
+        connexion = mysql.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True)
         cursor = connexion.cursor()
     except Exception, err :
         return False

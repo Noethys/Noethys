@@ -1025,18 +1025,404 @@ class Dialog(wx.Dialog):
         
         
         
-class LogTest():
+class ClasseTest():
     """ Une déviation du log pour les tests uniquement """
     def __init__(self):
+        self.IDprocedure = 1
+        self.dictProcedure = self.ImportationProcedure()
+        # Initialisation de la liste des individus
+        self.infosIndividus = InfosIndividus()
+        self.frame_1 = Dialog(None, log=self, IDprocedure=1, date=datetime.date.today(), dateauto=True, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        self.ctrl_grille = DLG_Badgeage_grille.CTRL(self.frame_1)
         pass
+
     def AjouterAction(self, individu=u"", IDindividu=None, action=u"", resultat=True):
         print "LOG =", (action, individu, resultat)
-        
+
+    def ImportationProcedure(self):
+        """ Importation de la procédure """
+        dictProcedure = {}
+        DB = GestionDB.DB()
+
+        # Paramètres de la procédure
+        req = """SELECT nom, style, theme, image, systeme, activites, confirmation, vocal, tutoiement
+        FROM badgeage_procedures
+        WHERE IDprocedure=%d;
+        """ % self.IDprocedure
+        DB.ExecuterReq(req)
+        listeProcedures = DB.ResultatReq()
+
+        if len(listeProcedures) == 0 : return {}
+        nom, style, theme, image, systeme, activites, confirmation, vocal, tutoiement = listeProcedures[0]
+        if activites != None :
+            listeActivites = []
+            for IDactivite in activites.split(";") :
+                listeActivites.append(int(IDactivite))
+            activites = listeActivites
+
+        dictProcedure["parametres"] = {"nom":nom, "style":style, "theme":theme, "image":image, "systeme":systeme, "activites":activites, "confirmation":confirmation, "vocal":vocal, "tutoiement":tutoiement}
+
+        # Actions
+        listeChamps = []
+        for nom, type, info in DICT_TABLES["badgeage_actions"] :
+            listeChamps.append(nom)
+        req = """SELECT %s
+        FROM badgeage_actions
+        WHERE IDprocedure=%d
+        ORDER BY ordre
+        ;""" % (", ".join(listeChamps), self.IDprocedure)
+        DB.ExecuterReq(req)
+        listeActions = DB.ResultatReq()
+
+        listeDonnees = []
+        ordre = 1
+        for ligne in listeActions :
+            index = 0
+            dictTemp = {}
+            for valeur in ligne :
+                nomChamp = listeChamps[index]
+                dictTemp[nomChamp] = valeur
+                index += 1
+            dictTemp["ordre"] = ordre
+
+            # Importation des messages
+            if dictTemp["action"] == "message" :
+                req = """SELECT IDmessage, message
+                FROM badgeage_messages
+                WHERE IDaction=%d
+                ;""" % dictTemp["IDaction"]
+                DB.ExecuterReq(req)
+                listeTemp = DB.ResultatReq()
+                listeMessages = []
+                for IDmessage, message in listeTemp :
+                    listeMessages.append((IDmessage, message))
+                dictTemp["action_messages"] = listeMessages
+
+            listeDonnees.append(dictTemp)
+            ordre += 1
+
+        dictProcedure["actions"] = listeDonnees
+
+        DB.Close()
+        return dictProcedure
+
+    def Procedure_enregistrer(self, dictAction, IDindividu, date, heure, arrivee=False, depart=False):
+        """ Procédure enregistrer """
+        IDactivite = int(dictAction["action_activite"])
+        IDunite = int(dictAction["action_unite"])
+        etat = dictAction["action_etat"]
+        demande = int(dictAction["action_demande"])
+        heure_debut = dictAction["action_heure_debut"]
+        heure_fin = dictAction["action_heure_fin"]
+        message = dictAction["action_message"]
+        vocal = int(dictAction["action_vocal"])
+        ticket = dictAction["action_ticket"]
+
+        # Récupération des infos sur l'activité et sur l'individu
+        dictActivite, dictUnites, listeOuvertures, dictGroupes = GetInfosActivite(IDactivite, date)
+        nomIndividu = u"%s %s" % (self.infosIndividus.RechercheIndividu(IDindividu)["nom"], self.infosIndividus.RechercheIndividu(IDindividu)["prenom"])
+        nomAction = u"Enregistrement d'une consommation '%s'" % dictUnites[IDunite]["nom"]
+
+        # Recherche si l'individu est bien inscrit à l'activité
+        IDfamille, IDgroupe = self.RechercheInscription(IDindividu, nomIndividu, IDactivite, dictActivite, nomAction)
+        if IDfamille == False :
+            return False
+
+        # Recherche si l'unité est ouverte pour ce groupe à cette date
+        if (IDunite, IDgroupe) not in listeOuvertures :
+            self.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Unité '%s' fermée le %s" % (dictUnites[IDunite]["nom"], DateEngFr(str(date))))
+            return False
+
+        # Initialisation de la grille des conso
+        self.ctrl_grille.InitGrille(IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, date=date)
+
+        # Si demande début ou fin
+        if demande == 1 :
+            if arrivee==False and depart==False :
+                if self.dictProcedure["parametres"]["tutoiement"] == 1 :
+                    texte = u"Est-ce que tu arrives ? Ou est-ce que tu pars ?"
+                else :
+                    texte = u"Est-ce que vous arrivez ? Ou est-ce que vous partez ?"
+                listeChoix = [u"J'arrive", u"Je pars"]
+                dlg = DIALOGUES.DLG_Choix(self.frame_1, message=texte, listeItems=listeChoix, multiSelection=False)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse == wx.ID_YES :
+                    selection = dlg.GetSelections()[0]
+                    if selection == 0 :
+                        # J'arrive
+                        heureDebut = heure
+                        if heure_fin == "defaut" :
+                            heureFin = "defaut"
+                        else :
+                            heureFin = heure_fin
+                    else :
+                        # Je pars
+                        heureDebut = None
+                        heureFin = heure
+                else :
+                    return False
+            else :
+                if arrivee == True :
+                    heureDebut = heure
+                    heureFin = None
+                if depart == True :
+                    heureDebut = None
+                    heureFin = heure
+
+        else :
+            # Calcul des heures
+            if heure_debut == "defaut" : heureDebut = "defaut"
+            elif heure_debut == "pointee" : heureDebut = heure
+            else : heureDebut = heure_debut
+
+            if heure_fin == "defaut" : heureFin = "defaut"
+            elif heure_fin == "pointee" : heureFin = heure
+            else : heureFin = heure_fin
+
+##            case = self.ctrl_grille.GetCase(IDunite)
+##            print case.heure_debut, case.heure_fin, case.etat
+
+        # Saisie de la consommation
+        resultat = self.ctrl_grille.SaisieConso(IDunite=IDunite, mode="reservation", etat=etat, heure_debut=heureDebut, heure_fin=heureFin)
+        self.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=resultat)
+
+        # Impression ticket
+        if ticket not in (None, "") :
+            IDmodele = int(ticket)
+            dictValeurs = {
+                "{ID_INDIVIDU}" : str(IDindividu),
+                "{NOM_INDIVIDU}" : nomIndividu,
+                "{NOM_ACTIVITE}" : dictActivite["nom"],
+                "{ACTION}" : nomAction,
+                "{NOM_UNITE}" : dictUnites[IDunite]["nom"],
+                "{DATE}" : DateEngFr(str(date)),
+                "{HEURE}" : heure.replace(":", "h"),
+                "{NOM_GROUPE}" : dictGroupes[IDgroupe]["nom"],
+                }
+
+            UTILS_Ticket.ImpressionModele(IDmodele=IDmodele, dictValeurs=dictValeurs)
+
+        if resultat == True :
+            # Sauvegarde de la grille des conso
+            self.ctrl_grille.Sauvegarde()
+            # Affichage du message de confirmation
+            if message != None :
+                #texte = self.RemplacementVariablesMessages(message, heure, IDindividu, date)
+                texte=""
+                #DIALOGUES.DLG_Message(self, message=texte, icone="information")
+            return True
+        else :
+            return False
+
+    def VerificationConditionsAction(self, dictAction, IDindividu, date, heure):
+        """ Vérification si les conditions de l'action sont bonnes """
+        # Condition individu inscrit aux activités données
+        if dictAction["condition_activite"] != None :
+            listeActivites = ConvertStrToListe(dictAction["condition_activite"])
+            valide = False
+            for dictInscription in self.infosIndividus.GetInscriptions(IDindividu) :
+                if dictInscription["IDactivite"] in listeActivites :
+                    valide = True
+            if valide == False :
+                return False
+
+        # Condition heure de badgeage
+        if dictAction["condition_heure"] != None :
+            choix, criteres = dictAction["condition_heure"].split(";")
+            valide = False
+            if choix == "EGAL" :
+                if str(heure) == str(criteres) : valide = True
+            if choix == "DIFFERENT" :
+                if str(heure) != str(criteres) : valide = True
+            if choix == "SUP" :
+                if str(heure) > str(criteres) : valide = True
+            if choix == "SUPEGAL" :
+                if str(heure) >= str(criteres) : valide = True
+            if choix == "INF" :
+                if str(heure) < str(criteres) : valide = True
+            if choix == "INFEGAL" :
+                if str(heure) <= str(criteres) : valide = True
+            if choix == "COMPRIS" :
+                if str(heure) >= str(criteres.split("-")[0]) and str(heure) <= str(criteres.split("-")[1]) : valide = True
+            if valide == False :
+                return False
+
+        # Condition jours période scolaires ou vacances
+        if dictAction["condition_periode"] != None :
+
+            # Recherche des périodes de vacances
+            DB = GestionDB.DB()
+            req = """SELECT date_debut, date_fin, nom, annee
+            FROM vacances
+            ORDER BY date_debut; """
+            DB.ExecuterReq(req)
+            listeVacances = DB.ResultatReq()
+            DB.Close()
+            # Vérifie si la date est en vacances ou non
+            estEnVacances = False
+            for valeurs in listeVacances :
+                date_debut = valeurs[0]
+                date_fin = valeurs[1]
+                if str(date) >= date_debut and str(date) <= date_fin :
+                    estEnVacances = True
+            # Analyse la condition
+            joursScolaires, joursVacances = dictAction["condition_periode"].split("-")
+            valide = False
+            if estEnVacances == False :
+                if date.weekday() in ConvertStrToListe(joursScolaires) :
+                    valide = True
+            if estEnVacances == True :
+                if date.weekday() in ConvertStrToListe(joursVacances) :
+                    valide = True
+            if valide == False :
+                return False
+
+        # Condition Poste réseau
+        if dictAction["condition_poste"] != None :
+            listePostes = dictAction["condition_poste"].split(";")
+            DB = GestionDB.DB()
+            nomPosteActuel = DB.GetNomPosteReseau()
+            DB.Close()
+            if nomPosteActuel not in listePostes :
+                return False
+
+        # Condition Questionnaire
+        if dictAction["condition_questionnaire"] != None :
+            listeFiltres = dictAction["condition_questionnaire"].split("##")
+            DB = GestionDB.DB()
+
+            # Recherche des contrôles et des types
+            req = """SELECT IDquestion,type, controle
+            FROM questionnaire_questions
+            LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie;"""
+            DB.ExecuterReq(req)
+            listeQuestions = DB.ResultatReq()
+            dictQuestions = {}
+            for IDquestion, type, controle in listeQuestions :
+                dictQuestions[IDquestion] = {"type":type, "controle":controle}
+
+            valide = True
+            for filtre in listeFiltres :
+                IDquestion, choix, criteres = filtre.split(";;")
+                IDquestion = int(IDquestion)
+
+                # Recherche les réponses
+                if dictQuestions[IDquestion]["type"] == "individu" :
+                    req = """SELECT IDreponse, reponse
+                    FROM questionnaire_reponses
+                    WHERE IDquestion=%d AND IDindividu=%d;""" % (IDquestion, IDindividu)
+                    DB.ExecuterReq(req)
+                    listeReponses = DB.ResultatReq()
+
+##                if dictQuestions[IDquestion]["type"] == "famille" :
+##                    req = """SELECT IDreponse, reponse
+##                    FROM questionnaire_reponses
+##                    WHERE IDquestion=%d AND IDfamille=%d;""" % (IDquestion, IDfamille)
+##                    DB.ExecuterReq(req)
+##                    listeReponses = DB.ResultatReq()
+
+                # Compare le filtre avec les réponses
+                for IDreponse, reponse in listeReponses :
+                    resultat = UTILS_Filtres_questionnaires.Filtre(controle=dictQuestions[IDquestion]["controle"], choix=choix, criteres=criteres, reponse=reponse)
+                    if resultat == False :
+                        valide = False
+
+            DB.Close()
+            if valide == False :
+                return False
+
+        # On verifie que l'individu a reservé l'unité correspondante
+        # Cela consiste a verifie qu'il y a une ligne dans la table des consommations pour cette date / heure avec un etat = reservation
+        # idActivite = int(dictAction["action_activite"])
+        # idUnite = int(dictAction["action_unite"])
+        # DB = GestionDB.DB()
+        # req = """
+        # SELECT *
+        # FROM consommations
+        # WHERE IDindividu = %d AND IDactivite=%d AND IDunite = %d AND heure_debut <= '%s' AND heure_fin >= '%s' AND date = '%s'
+        # ;""" % (IDindividu ,idActivite, idUnite, heure, heure, date)
+        # DB.ExecuterReq(req)
+        # listeDonnees = DB.ResultatReq()
+        # DB.Close()
+        # if len(listeDonnees) == 0 :
+        #     self.AjouterAction(individu=IDindividu, IDindividu=IDindividu, action=u"N'a pas de réservation a cette date/heure '%s' : %s." % (date, heure), resultat=False)
+        #     return False
+
+        # Si toutes les conditions sont ok
+        return True
+
+    def GetTheme(self):
+        theme = self.dictProcedure["parametres"]["theme"]
+        return GetTheme(theme)
+
+    def RechercheInscription(self, IDindividu, nomIndividu, IDactivite, dictActivite, nomAction=u""):
+        """ Récupère IDfamille et IDgroupe """
+        listeInscriptions = self.infosIndividus.GetInscriptions(IDindividu)
+        listeIDfamille = []
+        for dictInscription in listeInscriptions :
+            if dictInscription["IDactivite"] == IDactivite :
+                listeIDfamille.append((dictInscription["IDfamille"], dictInscription["IDgroupe"]))
+
+        if len(listeIDfamille) == 0 :
+            # Individu pas inscrit à cette activité
+            self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=nomAction, resultat=u"Individu non inscrit à l'activité")
+            if self.infosIndividus.RechercheIndividu(IDindividu)["genre"] == "F" :
+                feminin = "e"
+            else :
+                feminin = ""
+            if self.dictProcedure["parametres"]["tutoiement"] == 1 :
+                message = u"Tu n'es pas inscrit%s à l'activité '%s' !" % (feminin, dictActivite["nom"])
+            else :
+                message = u"Vous n'êtes pas inscrit%s à l'activité '%s' !" % (feminin, dictActivite["nom"])
+            DIALOGUES.DLG_Message(self, message=message, icone="erreur")
+            return False, False
+
+        elif len(listeIDfamille) > 1 :
+            # Rattaché à plusieurs familles sur cette activité
+            listeNomsTitulaires = []
+            for IDfamille, IDgroupe in listeIDfamille :
+                listeNomsTitulaires.append(self.infosIndividus.GetNomsTitulaires(IDfamille))
+            dlg = DIALOGUES.DLG_Choix(self, message=u"Sur quel dossier faut-il facturer l'activité '%s' ?" % dictActivite["nom"], listeItems=listeNomsTitulaires, multiSelection=False)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse == wx.ID_YES :
+                index = dlg.GetSelections()[0]
+                IDfamille, IDgroupe = listeIDfamille[index]
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=u"Choix d'une famille à facturer sur l'activité '%s' : %s." % (dictActivite["nom"], listeNomsTitulaires[index]), resultat=True)
+            else :
+                self.log.AjouterAction(individu=nomIndividu, IDindividu=IDindividu, action=u"Choix d'une famille à facturer sur l'activité '%s'." % dictActivite["nom"], resultat=u"Annulation lors du choix de la famille rattachée.")
+                return False, False
+
+        else :
+            # 1 seule famille rattachée sur cette activité
+            IDfamille, IDgroupe = listeIDfamille[0]
+
+        return IDfamille, IDgroupe
+
+
         
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None, log=LogTest(), IDprocedure=6, date=datetime.date.today(), dateauto=True, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
-    app.SetTopWindow(frame_1)
-    frame_1.ShowModal()
-    app.MainLoop()
+    tst=ClasseTest()
+    # Lancement des actions
+    for dictAction in tst.dictProcedure["actions"] :
+        # Vérifie les conditions
+        if tst.VerificationConditionsAction(dictAction, 6, datetime.date(2015,5,11), "08:10") == True :
+            tst.Procedure_enregistrer(dictAction, 6, "2015-05-11", "08:10")
+        if tst.VerificationConditionsAction(dictAction, 6, datetime.date(2015,5,11), "17:30") == True :
+            tst.Procedure_enregistrer(dictAction, 6, "2015-05-11", "17:30")
+        if tst.VerificationConditionsAction(dictAction, 6, datetime.date(2015,5,12), "19:30") == True :
+            tst.Procedure_enregistrer(dictAction, 6, "2015-05-12", "19:30", True, False)
+        if tst.VerificationConditionsAction(dictAction, 6, datetime.date(2015,5,15), "18:05") == True :
+            tst.Procedure_enregistrer(dictAction, 6, "2015-05-15", "18:05", True, False)
+        #if tst.VerificationConditionsAction(dictAction, 6, "2015-03-25", "17:45") == True :
+        #    tst.Procedure_enregistrer(dictAction, 6, "2015-03-25", "17:45", False, True)
+        #if tst.VerificationConditionsAction(dictAction, 60, "2015-03-25", "08:45") == True :
+        #    tst.Procedure_enregistrer(dictAction, 60, "2015-03-25", "08:45",True,False)
+        #if tst.VerificationConditionsAction(dictAction, 60, "2015-03-25", "19:45") == True :
+        #    tst.Procedure_enregistrer(dictAction, 60, "2015-03-25", "19:45",False, True)
+    #app.SetTopWindow(frame_1)
+    #frame_1.ShowModal()
+    #app.MainLoop()
