@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
@@ -75,8 +78,8 @@ class CTRL_Type(wx.Choice):
         self.parent = parent
         self.item = item
         self.track = track
-        self.SetItems([u"Nombre d'unités consommées", u"Temps réél de présence", u"Temps de présence facturé"])
-        self.SetToolTipString(u"Sélectionnez le type de calcul à appliquer à cette unité de consommation")
+        self.SetItems([_(u"Nombre d'unités consommées"), _(u"Temps réél de présence"), _(u"Temps de présence facturé")])
+        self.SetToolTipString(_(u"Sélectionnez le type de calcul à appliquer à cette unité de consommation"))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         # Defaut
         if self.track.typeUnite == "Horaire" :
@@ -107,10 +110,10 @@ class CTRL_Arrondi(wx.Choice):
         self.parent = parent
         self.item = item
         self.track = track
-        self.listeLabels = [u"Aucun", u"5 min. sup.", u"10 min. sup.", u"15 min. sup.", u"30 min. sup.", u"45 min. sup.", u"60 min. sup."]
+        self.listeLabels = [_(u"Aucun"), _(u"5 min. sup."), _(u"10 min. sup."), _(u"15 min. sup."), _(u"30 min. sup."), _(u"45 min. sup."), _(u"60 min. sup.")]
         self.listeArrondis=[None, 5, 10, 15, 30, 45, 60]
         self.SetItems(self.listeLabels)
-        self.SetToolTipString(u"Sélectionnez un arrondi à appliquer à chaque consommation. Ex : Arrondir au quart d'heure supérieur.")
+        self.SetToolTipString(_(u"Sélectionnez un arrondi à appliquer à chaque consommation. Ex : Arrondir au quart d'heure supérieur."))
         # Defaut
         self.SetSelection(0)
     
@@ -127,7 +130,7 @@ class CTRL_Coeff(wx.TextCtrl):
         self.parent = parent
         self.item = item
         self.track = track
-        self.SetToolTipString(u"Saisissez le coefficient multiplicateur à appliquer")
+        self.SetToolTipString(_(u"Saisissez le coefficient multiplicateur à appliquer"))
     
     def Validation(self):
         valeur = self.GetValue() 
@@ -169,7 +172,7 @@ class CTRL_Plafond(CTRL_Saisie_heure.Heure):
         self.SetSize((70, -1))
         self.item = item
         self.track = track
-        self.SetToolTipString(u"Saisissez le nombre d'heures plafond")
+        self.SetToolTipString(_(u"Saisissez le nombre d'heures plafond"))
     
     def GetValeur(self):
         valeur = self.GetHeure() 
@@ -193,11 +196,11 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( u"Unité de consommation", 225, wx.ALIGN_LEFT),
-            ( u"Type de calcul", 210, wx.ALIGN_LEFT),
-            ( u"Coefficient", 80, wx.ALIGN_LEFT),
-            ( u"Arrondi", 92, wx.ALIGN_LEFT),
-            ( u"Plafond", 80, wx.ALIGN_LEFT),
+            ( _(u"Unité de consommation"), 225, wx.ALIGN_LEFT),
+            ( _(u"Type de calcul"), 210, wx.ALIGN_LEFT),
+            ( _(u"Coefficient"), 80, wx.ALIGN_LEFT),
+            ( _(u"Arrondi"), 92, wx.ALIGN_LEFT),
+            ( _(u"Plafond"), 80, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -251,7 +254,7 @@ class CTRL(HTL.HyperTreeList):
         # MAJ
         self.Freeze()
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.Thaw() 
 
@@ -354,7 +357,7 @@ class CTRL(HTL.HyperTreeList):
                 if typeCalcul == 0 :
                     # Heure selon coeff
                     if track.ValidationCoeff() == False :
-                        dlg = wx.MessageDialog(self, u"Le coefficient de l'unité '%s' semble incorrecte !" % track.nomUnite, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Le coefficient de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
@@ -365,7 +368,7 @@ class CTRL(HTL.HyperTreeList):
                 elif typeCalcul == 1 :
                     # heures réelles
                     if track.ValidationPlafond() == False :
-                        dlg = wx.MessageDialog(self, u"Le plafond de l'unité '%s' semble incorrecte !" % track.nomUnite, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Le plafond de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
@@ -413,7 +416,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)

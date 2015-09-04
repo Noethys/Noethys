@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -17,29 +20,29 @@ from CTRL_Questionnaire import LISTE_CONTROLES
 
 
 LISTE_CHAMPS_STANDARDS = [
-    ("INDIVIDU_ID", u"ID de l'individu", u"Individu", u"IDIndividu", 50),
-    ("INDIVIDU_GENRE", u"Genre de l'individu (M/F)", u"Individu", u"Genre", 70),
-    ("INDIVIDU_CIVILITE_LONG", u"Civilité de l'individu (long)", u"Individu", u"Civilité", 80),
-    ("INDIVIDU_CIVILITE_COURT", u"Civilité de l'individu (court)", u"Individu", u"Civilité", 80),
-    ("INDIVIDU_NOM", u"Nom de l'individu", u"Individu", u"Nom", 150),
-    ("INDIVIDU_PRENOM", u"Prénom de l'individu", u"Individu", u"Prénom", 150),
-    ("INDIVIDU_NOM_COMPLET", u"Nom complet de l'individu", u"Individu", u"Nom", 200),
-    ("INDIVIDU_DATE_NAISS", u"Date de naissance de l'individu", u"Individu", u"Date Naiss.", 80),
-    ("INDIVIDU_AGE", u"Age de l'individu", u"Individu", u"Age", 80),
-    ("INDIVIDU_NUM_SECU", u"Numéro de sécu de l'individu", u"Individu", u"Num. sécu.", 120),
-    ("INDIVIDU_RUE", u"Adresse de l'individu - Rue", u"Individu", u"Rue", 100),
-    ("INDIVIDU_CP", u"Adresse de l'individu - CP", u"Individu", u"C.P.", 80),
-    ("INDIVIDU_VILLE", u"Adresse de l'individu - Ville", u"Individu", u"Ville", 80),
+    ("INDIVIDU_ID", _(u"ID de l'individu"), _(u"Individu"), _(u"IDIndividu"), 50),
+    ("INDIVIDU_GENRE", _(u"Genre de l'individu (M/F)"), _(u"Individu"), _(u"Genre"), 70),
+    ("INDIVIDU_CIVILITE_LONG", _(u"Civilité de l'individu (long)"), _(u"Individu"), _(u"Civilité"), 80),
+    ("INDIVIDU_CIVILITE_COURT", _(u"Civilité de l'individu (court)"), _(u"Individu"), _(u"Civilité"), 80),
+    ("INDIVIDU_NOM", _(u"Nom de l'individu"), _(u"Individu"), _(u"Nom"), 150),
+    ("INDIVIDU_PRENOM", _(u"Prénom de l'individu"), _(u"Individu"), _(u"Prénom"), 150),
+    ("INDIVIDU_NOM_COMPLET", _(u"Nom complet de l'individu"), _(u"Individu"), _(u"Nom"), 200),
+    ("INDIVIDU_DATE_NAISS", _(u"Date de naissance de l'individu"), _(u"Individu"), _(u"Date Naiss."), 80),
+    ("INDIVIDU_AGE", _(u"Age de l'individu"), _(u"Individu"), _(u"Age"), 80),
+    ("INDIVIDU_NUM_SECU", _(u"Numéro de sécu de l'individu"), _(u"Individu"), _(u"Num. sécu."), 120),
+    ("INDIVIDU_RUE", _(u"Adresse de l'individu - Rue"), _(u"Individu"), _(u"Rue"), 100),
+    ("INDIVIDU_CP", _(u"Adresse de l'individu - CP"), _(u"Individu"), _(u"C.P."), 80),
+    ("INDIVIDU_VILLE", _(u"Adresse de l'individu - Ville"), _(u"Individu"), _(u"Ville"), 80),
 
-    ("FAMILLE_ID", u"ID de la famille", u"Famille", u"IDfamille", 50),
-    ("FAMILLE_TITULAIRES", u"Nom des titulaires", u"Famille", u"Représentants", 200),
-    ("FAMILLE_RUE", u"Adresse de la famille - Rue", u"Famille", u"Rue", 200),
-    ("FAMILLE_CP", u"Adresse de la famille - CP", u"Famille", u"C.P.", 80),
-    ("FAMILLE_VILLE", u"Adresse de la famille - Ville", u"Famille", u"Ville", 100),
-    ("FAMILLE_CAISSE", u"Nom de la caisse d'allocation", u"Famille", u"Caisse", 100),
-    ("FAMILLE_NUM_ALLOCATAIRE", u"Numéro d'allocataire", u"Famille", u"Num. Alloc.", 80),
-    ("FAMILLE_ALLOCATAIRE", u"Nom du titulaire allocataire", u"Famille", u"Allocataire", 100),
-    ("FAMILLE_QF", u"Quotient familial de la famille", u"Famille", u"QF", 80),
+    ("FAMILLE_ID", _(u"ID de la famille"), _(u"Famille"), _(u"IDfamille"), 50),
+    ("FAMILLE_TITULAIRES", _(u"Nom des titulaires"), _(u"Famille"), _(u"Représentants"), 200),
+    ("FAMILLE_RUE", _(u"Adresse de la famille - Rue"), _(u"Famille"), _(u"Rue"), 200),
+    ("FAMILLE_CP", _(u"Adresse de la famille - CP"), _(u"Famille"), _(u"C.P."), 80),
+    ("FAMILLE_VILLE", _(u"Adresse de la famille - Ville"), _(u"Famille"), _(u"Ville"), 100),
+    ("FAMILLE_CAISSE", _(u"Nom de la caisse d'allocation"), _(u"Famille"), _(u"Caisse"), 100),
+    ("FAMILLE_NUM_ALLOCATAIRE", _(u"Numéro d'allocataire"), _(u"Famille"), _(u"Num. Alloc."), 80),
+    ("FAMILLE_ALLOCATAIRE", _(u"Nom du titulaire allocataire"), _(u"Famille"), _(u"Allocataire"), 100),
+    ("FAMILLE_QF", _(u"Quotient familial de la famille"), _(u"Famille"), _(u"QF"), 80),
     ] # (code, label, actif)
 
 
@@ -102,56 +105,56 @@ class Champs():
         # Champs QUESTIONNAIRES
         listeQuestions = self.ImportationQuestions() 
         for IDquestion, label, type, controle in listeQuestions :
-            if type == "individu" : categorie = u"Individu"
-            if type == "famille" : categorie = u"Famille"
+            if type == "individu" : categorie = _(u"Individu")
+            if type == "famille" : categorie = _(u"Famille")
             dictTemp = {"IDchamp":None, "code":"QUESTION%d" % IDquestion, "label":label, "type":"QUESTION", "categorie":categorie, "titre":label, "formule":None}
             listeListeView.append(Track(dictTemp))
             
         # Quantité UNITES
         listeUnites = self.ImportationUnites() 
         for IDunite, IDactivite, nomUnite, typeUnite, nomActivite, abregeActivite in listeUnites :
-            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_UNITE%d" % IDunite, "label":u"Quantité de '%s (%s)'" % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":u"Consommation", "titre":u"Qté %s" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)'") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s") % nomUnite ,"formule":None}))
             # Grandes vacances
-            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_GV_UNITE%d" % IDunite, "label":u"Quantité de '%s (%s)' durant les grandes vacances" % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":u"Consommation", "titre":u"Qté %s GV" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_GV_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)' durant les grandes vacances") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s GV") % nomUnite ,"formule":None}))
             # Petites vacances
-            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_PV_UNITE%d" % IDunite, "label":u"Quantité de '%s (%s)' durant les petites vacances" % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":u"Consommation", "titre":u"Qté %s PV" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_PV_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)' durant les petites vacances") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s PV") % nomUnite ,"formule":None}))
             # Hors vacances
-            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_HV_UNITE%d" % IDunite, "label":u"Quantité de '%s (%s)' hors vacances" % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":u"Consommation", "titre":u"Qté %s HV" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"NBRE_HV_UNITE%d" % IDunite, "label":_(u"Quantité de '%s (%s)' hors vacances") % (nomUnite, abregeActivite), "type":"NBRE_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Qté %s HV") % nomUnite ,"formule":None}))
 
         # Temps UNITES
         for IDunite, IDactivite, nomUnite, typeUnite, nomActivite, abregeActivite in listeUnites :
-            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_UNITE%d" % IDunite, "label":u"Temps de '%s (%s)'" % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":u"Consommation", "titre":u"Temps %s" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)'") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s") % nomUnite ,"formule":None}))
             # Grandes vacances
-            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_GV_UNITE%d" % IDunite, "label":u"Temps de '%s (%s)' durant les grandes vacances" % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":u"Consommation", "titre":u"Temps %s GV" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_GV_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)' durant les grandes vacances") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s GV") % nomUnite ,"formule":None}))
             # Petites vacances
-            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_PV_UNITE%d" % IDunite, "label":u"Temps de '%s (%s)' durant les petites vacances" % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":u"Consommation", "titre":u"Temps %s PV" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_PV_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)' durant les petites vacances") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s PV") % nomUnite ,"formule":None}))
             # Hors vacances
-            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_HV_UNITE%d" % IDunite, "label":u"Temps de '%s (%s)' hors vacances" % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":u"Consommation", "titre":u"Temps %s HV" % nomUnite ,"formule":None}))
+            listeListeView.append(Track({"IDchamp":None, "code":"TEMPS_HV_UNITE%d" % IDunite, "label":_(u"Temps de '%s (%s)' hors vacances") % (nomUnite, abregeActivite), "type":"TEMPS_UNITE", "categorie":_(u"Consommation"), "titre":_(u"Temps %s HV") % nomUnite ,"formule":None}))
 
         # Montant PRESTATIONS
 ##        listePrestations = self.ImportationPrestations() 
 ##        for label, abregeActivite in listePrestations :
 ##            code = FormateLabelPrestation(label)
-##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_%s" % code, "label":u"Montant de '%s (%s)'" % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":u"Prestation", "titre":u"Montant %s" % label ,"formule":None}))
+##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_%s" % code, "label":_(u"Montant de '%s (%s)'") % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":_(u"Prestation"), "titre":_(u"Montant %s") % label ,"formule":None}))
 ##            # Grandes vacances
-##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_GV_%s" % code, "label":u"Montant de '%s (%s)' durant les grandes vacances" % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":u"Prestation", "titre":u"Montant %s GV" % label ,"formule":None}))
+##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_GV_%s" % code, "label":_(u"Montant de '%s (%s)' durant les grandes vacances") % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":_(u"Prestation"), "titre":_(u"Montant %s GV") % label ,"formule":None}))
 ##            # Petites vacances
-##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_PV_%s" % code, "label":u"Montant de '%s (%s)' durant les petites vacances" % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":u"Prestation", "titre":u"Montant %s PV" % label ,"formule":None}))
+##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_PV_%s" % code, "label":_(u"Montant de '%s (%s)' durant les petites vacances") % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":_(u"Prestation"), "titre":_(u"Montant %s PV") % label ,"formule":None}))
 ##            # Hors vacances
-##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_HV_%s" % code, "label":u"Montant de '%s (%s)' hors vacances" % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":u"Prestation", "titre":u"Montant %s HV" % label ,"formule":None}))
+##            listeListeView.append(Track({"IDchamp":None, "code":"MONTANT_HV_%s" % code, "label":_(u"Montant de '%s (%s)' hors vacances") % (label, abregeActivite), "type":"MONTANT_PRESTATION", "categorie":_(u"Prestation"), "titre":_(u"Montant %s HV") % label ,"formule":None}))
             
         # Aides
 ##        listeCaisses = self.ImportationCaisses() 
 ##        for IDcaisse, nomCaisse in listeCaisses :
-##            dictTemp = {"IDchamp":None, "code":"NBRE_AIDES%d" % IDcaisse, "label":u"Qté des aides %s" % nomCaisse, "type":"NBRE_AIDES", "categorie":u"Aide", "titre":u"Qté Aides" ,"formule":None}
+##            dictTemp = {"IDchamp":None, "code":"NBRE_AIDES%d" % IDcaisse, "label":_(u"Qté des aides %s") % nomCaisse, "type":"NBRE_AIDES", "categorie":_(u"Aide"), "titre":_(u"Qté Aides") ,"formule":None}
 ##            listeListeView.append(Track(dictTemp))
-##            dictTemp = {"IDchamp":None, "code":"MONTANT_AIDES%d" % IDcaisse, "label":u"Montant des aides %s" % nomCaisse, "type":"MONTANT_AIDES", "categorie":u"Aide", "titre":u"Montant Aides" ,"formule":None}
+##            dictTemp = {"IDchamp":None, "code":"MONTANT_AIDES%d" % IDcaisse, "label":_(u"Montant des aides %s") % nomCaisse, "type":"MONTANT_AIDES", "categorie":_(u"Aide"), "titre":_(u"Montant Aides") ,"formule":None}
 ##            listeListeView.append(Track(dictTemp))
 
         # Champs PERSO
         listeChamps = self.ImportationChampsPerso() 
         for IDchamp, code, label, formule, titre in listeChamps :
-            dictTemp = {"IDchamp":IDchamp, "code":code, "label":label, "type":"PERSO", "categorie":u"Personnalisé", "titre":titre ,"formule":formule}
+            dictTemp = {"IDchamp":IDchamp, "code":code, "label":label, "type":"PERSO", "categorie":_(u"Personnalisé"), "titre":titre ,"formule":formule}
             listeListeView.append(Track(dictTemp))
         
         return listeListeView
@@ -279,14 +282,14 @@ class ListView(FastObjectListView):
         self.AddNamedImages("temps", wx.Bitmap("Images/16x16/Horloge3.png", wx.BITMAP_TYPE_PNG))
 
         def GetImageCode(track):
-            if track.categorie == u"Individu" : return "individu"
-            if track.categorie == u"Famille" : return "famille"
-            if track.type == u"NBRE_UNITE" : return "unite"
-            if track.type == u"TEMPS_UNITE" : return "temps"
-            if track.type == u"MONTANT_PRESTATION" : return "euro"
-            if track.type == u"NBRE_AIDES" : return "unite"
-            if track.type == u"MONTANT_AIDES" : return "euro"
-            if track.type == u"PERSO" : return "perso"
+            if track.categorie == _(u"Individu") : return "individu"
+            if track.categorie == _(u"Famille") : return "famille"
+            if track.type == _(u"NBRE_UNITE") : return "unite"
+            if track.type == _(u"TEMPS_UNITE") : return "temps"
+            if track.type == _(u"MONTANT_PRESTATION") : return "euro"
+            if track.type == _(u"NBRE_AIDES") : return "unite"
+            if track.type == _(u"MONTANT_AIDES") : return "euro"
+            if track.type == _(u"PERSO") : return "perso"
             return None
 
         def GetImageFormule(track):
@@ -301,17 +304,17 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDchamp", typeDonnee="entier"),
-            ColumnDefn(u"Code", "left", 200, "code", typeDonnee="texte", imageGetter=GetImageCode), 
-            ColumnDefn(u"Description", 'left', 300, "label", typeDonnee="texte"),
-            ColumnDefn(u"Titre", 'left', 120, "titre", typeDonnee="texte"),
-            ColumnDefn(u"Catégorie", 'left', 80, "categorie", typeDonnee="texte"),
-            ColumnDefn(u"Formule", 'left', 150, "formule", typeDonnee="texte", imageGetter=GetImageFormule, isSpaceFilling=True),
+            ColumnDefn(_(u"ID"), "left", 0, "IDchamp", typeDonnee="entier"),
+            ColumnDefn(_(u"Code"), "left", 200, "code", typeDonnee="texte", imageGetter=GetImageCode), 
+            ColumnDefn(_(u"Description"), 'left', 300, "label", typeDonnee="texte"),
+            ColumnDefn(_(u"Titre"), 'left', 120, "titre", typeDonnee="texte"),
+            ColumnDefn(_(u"Catégorie"), 'left', 80, "categorie", typeDonnee="texte"),
+            ColumnDefn(_(u"Formule"), 'left', 150, "formule", typeDonnee="texte", imageGetter=GetImageFormule, isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucun champ")
+        self.SetEmptyListMsg(_(u"Aucun champ"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -347,7 +350,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -356,7 +359,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -364,7 +367,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -374,14 +377,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -390,14 +393,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -408,21 +411,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des champs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des champs"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des champs", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des champs"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des champs")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des champs"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des champs")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des champs"))
     
     def GetChamps(self):
         listeChamps = []
@@ -440,7 +443,7 @@ class ListView(FastObjectListView):
             formule = dlg.GetFormule()
             titre = dlg.GetTitre()
             DB = GestionDB.DB()
-            listeDonnees = [ ("code", code), ("label", nom), ("formule", formule), (u"titre", titre),]
+            listeDonnees = [ ("code", code), ("label", nom), ("formule", formule), (_(u"titre"), titre),]
             IDchamp = DB.ReqInsert("etat_nomin_champs", listeDonnees)
             DB.Close()
             self.MAJ(IDchamp)
@@ -448,13 +451,13 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun champ à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.type != "PERSO" :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez modifier que des champs personnalisés !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez modifier que des champs personnalisés !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -474,17 +477,17 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun champ à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun champ à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.type != "PERSO" :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez supprimer que des champs personnalisés !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez supprimer que des champs personnalisés !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce champ ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce champ ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("etat_nomin_champs", "IDchamp", track.IDchamp)
@@ -531,7 +534,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un champ...")
+        self.SetDescriptiveText(_(u"Rechercher un champ..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

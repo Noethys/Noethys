@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import calendar
@@ -70,7 +73,7 @@ class Choix_Piece_autre(wx.Choice):
                         for IDfamille, dictFamille in self.parent.dictFamillesRattachees.iteritems() :
                             nomTitulaires = dictFamille["nomsTitulaires"]
                             if (IDfamille, IDtype_piece, IDindividuTmp) not in self.listePiecesObligatoires :
-                                self.listeNoms.append( u"%s (Famille de %s)" % (nomPiece, nomTitulaires))
+                                self.listeNoms.append( _(u"%s (Famille de %s)") % (nomPiece, nomTitulaires))
                                 self.listeID.append(IDtype_piece)
                                 self.listeDonnees.append( {"IDfamille":IDfamille, "IDtype_piece":IDtype_piece, "IDindividu":IDindividuTmp, "nomPiece":nomPiece} )
                     
@@ -100,7 +103,7 @@ class Choix_Piece_autre(wx.Choice):
                 else:
                     for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire, nom, prenom in listeMembres :
                         if (IDfamille, IDtype_piece, IDindividu) not in self.listePiecesObligatoires :
-                            self.listeNoms.append( u"% s de %s" % (nomPiece, prenom) )
+                            self.listeNoms.append( _(u"% s de %s") % (nomPiece, prenom) )
                             self.listeID.append(IDtype_piece)
                             self.listeDonnees.append( {"IDfamille":IDfamille, "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "nomPiece":nomPiece} )
         
@@ -150,34 +153,34 @@ class Dialog(wx.Dialog):
         self.dictTypesPieces = self.Importation_types_pieces() 
         
         # Liste des pièces
-        self.sizer_type_staticbox = wx.StaticBox(self, -1, u"Type de pièce")
+        self.sizer_type_staticbox = wx.StaticBox(self, -1, _(u"Type de pièce"))
         if IDfamille != None :
-            texte = u"la famille"
+            texte = _(u"la famille")
         else:
-            texte = u"l'individu"
-        self.radio_pieces_1 = wx.RadioButton(self, -1, u"Dans la liste des pièces que %s doit fournir :" % texte, style = wx.RB_GROUP)
+            texte = _(u"l'individu")
+        self.radio_pieces_1 = wx.RadioButton(self, -1, _(u"Dans la liste des pièces que %s doit fournir :") % texte, style = wx.RB_GROUP)
         self.ctrl_pieces_obligatoires = CTRL_Pieces_obligatoires.CTRL(self, IDfamille=IDfamille, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, size=(-1, 200))
         self.ctrl_pieces_obligatoires.SetMinSize((-1, 90))
         self.ctrl_pieces_obligatoires.MAJ() 
         self.listePiecesObligatoires = self.ctrl_pieces_obligatoires.GetlistePiecesObligatoires()
         
         # Types de pièces autres
-        self.radio_pieces_2 = wx.RadioButton(self, -1, u"Dans la liste des autres types de pièces :")
+        self.radio_pieces_2 = wx.RadioButton(self, -1, _(u"Dans la liste des autres types de pièces :"))
         self.ctrl_pieces_autres = Choix_Piece_autre(self, self.listePiecesObligatoires, self.dictTypesPieces)
         
         # Date de début
-        self.sizer_date_debut_staticbox = wx.StaticBox(self, -1, u"Date de début")
+        self.sizer_date_debut_staticbox = wx.StaticBox(self, -1, _(u"Date de début"))
         self.label_date_debut = wx.StaticText(self, -1, "Date :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         
         # Date de fin
-        self.sizer_date_fin_staticbox = wx.StaticBox(self, -1, u"Date de fin")
-        self.radio_date_fin_1 = wx.RadioButton(self, -1, u"Date :", style = wx.RB_GROUP)
-        self.radio_date_fin_2 = wx.RadioButton(self, -1, u"Validité illimitée")
+        self.sizer_date_fin_staticbox = wx.StaticBox(self, -1, _(u"Date de fin"))
+        self.radio_date_fin_1 = wx.RadioButton(self, -1, _(u"Date :"), style = wx.RB_GROUP)
+        self.radio_date_fin_2 = wx.RadioButton(self, -1, _(u"Validité illimitée"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         
         # Pages capturées
-        self.sizer_pages_staticbox = wx.StaticBox(self, -1, u"Documents associés")
+        self.sizer_pages_staticbox = wx.StaticBox(self, -1, _(u"Documents associés"))
         self.ctrl_pages = CTRL_Vignettes_documents.CTRL(self, IDpiece=self.IDpiece, style=wx.BORDER_SUNKEN)
         self.bouton_ajouter_page = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_page = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
@@ -186,9 +189,9 @@ class Dialog(wx.Dialog):
         self.bouton_zoom_moins = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/zoom_moins.png", wx.BITMAP_TYPE_ANY))
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -198,10 +201,10 @@ class Dialog(wx.Dialog):
 
         # Si Modification -> importation des données
         if IDpiece == None :
-            self.SetTitle(u"Saisie d'une pièce")
+            self.SetTitle(_(u"Saisie d'une pièce"))
             self.ctrl_date_debut.SetDate(datetime.date.today())
         else:
-            self.SetTitle(u"Modification d'une pièce")
+            self.SetTitle(_(u"Modification d'une pièce"))
             self.Importation()
 
         # Binds
@@ -221,17 +224,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.radio_pieces_1.SetValue(1)
-        self.radio_pieces_2.SetToolTipString(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas dans la liste des pièces obligatoires à fournir")
-        self.ctrl_pieces_obligatoires.SetToolTipString(u"Sélectionnez un type de pièce en cliquant sur son nom")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de validité.\nRemarque : Il s'agit bien de la date d'emission de la pièce \n(par exemple, la date d'obtention d'un diplôme) et non la date à laquelle vous avez reçue la pièce")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date d'expiration de la pièce")
-        self.radio_date_fin_1.SetToolTipString(u"Cliquez ici si la pièce a une durée de validité limitée dans le temps")
-        self.radio_date_fin_2.SetToolTipString(u"Cliquez ici si la pièce que vous souhaitez enregistrer a une durée de validité illimitée")
-        self.bouton_ajouter_page.SetToolTipString(u"Cliquez ici pour ajouter un document")
-        self.bouton_supprimer_page.SetToolTipString(u"Cliquez ici pour supprimer le document sélectionné")
-        self.bouton_visualiser_page.SetToolTipString(u"Cliquez ici pour visualiser le document sélectionné")
-        self.bouton_zoom_plus.SetToolTipString(u"Cliquez ici pour agrandir les vignettes")
-        self.bouton_zoom_moins.SetToolTipString(u"Cliquez ici pour réduire les vignettes")
+        self.radio_pieces_2.SetToolTipString(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas dans la liste des pièces obligatoires à fournir"))
+        self.ctrl_pieces_obligatoires.SetToolTipString(_(u"Sélectionnez un type de pièce en cliquant sur son nom"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de validité.\nRemarque : Il s'agit bien de la date d'emission de la pièce \n(par exemple, la date d'obtention d'un diplôme) et non la date à laquelle vous avez reçue la pièce"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date d'expiration de la pièce"))
+        self.radio_date_fin_1.SetToolTipString(_(u"Cliquez ici si la pièce a une durée de validité limitée dans le temps"))
+        self.radio_date_fin_2.SetToolTipString(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer a une durée de validité illimitée"))
+        self.bouton_ajouter_page.SetToolTipString(_(u"Cliquez ici pour ajouter un document"))
+        self.bouton_supprimer_page.SetToolTipString(_(u"Cliquez ici pour supprimer le document sélectionné"))
+        self.bouton_visualiser_page.SetToolTipString(_(u"Cliquez ici pour visualiser le document sélectionné"))
+        self.bouton_zoom_plus.SetToolTipString(_(u"Cliquez ici pour agrandir les vignettes"))
+        self.bouton_zoom_moins.SetToolTipString(_(u"Cliquez ici pour réduire les vignettes"))
         self.SetMinSize((640, 500)) 
         
     def __do_layout(self):
@@ -547,14 +550,14 @@ class Dialog(wx.Dialog):
         # Vérification des données saisies
         selection = self.GetSelectionPiece() 
         if selection == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun type de pièce !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun type de pièce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
             
         # Validation de la date de début
         if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -562,7 +565,7 @@ class Dialog(wx.Dialog):
         
         if self.radio_date_fin_1.GetValue() == True :
             if self.ctrl_date_fin.FonctionValiderDate() == False or self.ctrl_date_fin.GetDate() == None :
-                dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -571,7 +574,7 @@ class Dialog(wx.Dialog):
         # Vérifie que la date de fin est supérieure à la date de début
         if self.radio_date_fin_1.GetValue() == True :
             if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-                dlg = wx.MessageDialog(self, u"Attention, la date de début est supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Attention, la date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -605,17 +608,17 @@ class Dialog(wx.Dialog):
         
         # Mémorise l'action dans l'historique
         if nouvellePiece == True :
-            type = u"Saisie"
+            type = _(u"Saisie")
             IDcategorie = 15 
         else:
-            type = u"Modification"
+            type = _(u"Modification")
             IDcategorie = 16
         if IDindividu != None and IDfamille !=None :
-            texteDetail = u"pour l'individu ID%d et la famille ID%d" % (IDindividu, IDfamille)
+            texteDetail = _(u"pour l'individu ID%d et la famille ID%d") % (IDindividu, IDfamille)
         elif IDindividu == None and IDfamille !=None :
-            texteDetail = u"pour la famille ID%d" % IDfamille
+            texteDetail = _(u"pour la famille ID%d") % IDfamille
         elif IDindividu != None and IDfamille == None :
-            texteDetail = u"pour l'individu ID%d" % IDindividu 
+            texteDetail = _(u"pour l'individu ID%d") % IDindividu 
         else:
             texteDetail = u""
         nomPiece = selection["nomPiece"]
@@ -623,7 +626,7 @@ class Dialog(wx.Dialog):
                 "IDindividu" : IDindividu,
                 "IDfamille" : self.IDfamille,
                 "IDcategorie" : IDcategorie, 
-                "action" : u"%s de la pièce ID%d '%s' %s" % (type, self.IDpiece, nomPiece, texteDetail),
+                "action" : _(u"%s de la pièce ID%d '%s' %s") % (type, self.IDpiece, nomPiece, texteDetail),
                 },])
         
         # Sauvegarde des pages scannées

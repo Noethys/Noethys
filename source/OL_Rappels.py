@@ -8,11 +8,15 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import locale
 import wx.lib.agw.pybusyinfo as PBI
+import FonctionsPerso
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -49,7 +53,7 @@ class Track(object):
         if self.date_edition == None or self.date_min == None :
             self.retard = None
         else :
-            self.retard = u"%s jours" % (self.date_edition - self.date_max).days
+            self.retard = _(u"%s jours") % (self.date_edition - self.date_max).days
                 
         # Envoi par Email
         self.email_factures =  donnees["email_factures"]
@@ -293,17 +297,17 @@ class ListView(FastObjectListView):
         
         dictColonnes = {
             "IDrappel" : ColumnDefn(u"", "left", 0, "IDrappel", typeDonnee="entier"),
-            "date_edition" : ColumnDefn(u"Date d'édition", "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
-            "date_reference" : ColumnDefn(u"Date de référence", "centre", 80, "date_reference", typeDonnee="date", stringConverter=FormateDate),
+            "date_edition" : ColumnDefn(_(u"Date d'édition"), "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
+            "date_reference" : ColumnDefn(_(u"Date de référence"), "centre", 80, "date_reference", typeDonnee="date", stringConverter=FormateDate),
             "numero" : ColumnDefn(u"N°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
-            "famille" : ColumnDefn(u"Famille", "left", 180, "nomsTitulaires", typeDonnee="texte"),
-            "date_min" : ColumnDefn(u"Date min", "centre", 80, "date_min", typeDonnee="date", stringConverter=FormateDate),
-            "date_max" : ColumnDefn(u"Date max", "centre", 80, "date_max", typeDonnee="date", stringConverter=FormateDate),
-            "solde" : ColumnDefn(u"Solde", "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
-            "nom_lot" : ColumnDefn(u"Lot", "left", 150, "nomLot", typeDonnee="texte"),
-            "labelTexte" : ColumnDefn(u"Texte", "left", 150, "labelTexte", typeDonnee="texte"),
+            "famille" : ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
+            "date_min" : ColumnDefn(_(u"Date min"), "centre", 80, "date_min", typeDonnee="date", stringConverter=FormateDate),
+            "date_max" : ColumnDefn(_(u"Date max"), "centre", 80, "date_max", typeDonnee="date", stringConverter=FormateDate),
+            "solde" : ColumnDefn(_(u"Solde"), "right", 65, "solde", typeDonnee="montant", stringConverter=FormateMontant),
+            "nom_lot" : ColumnDefn(_(u"Lot"), "left", 150, "nomLot", typeDonnee="texte"),
+            "labelTexte" : ColumnDefn(_(u"Texte"), "left", 150, "labelTexte", typeDonnee="texte"),
             "email" : ColumnDefn(u"E", "left", 20, "", imageGetter=GetImageEmail),
-            "retard" : ColumnDefn(u"Retard", "left", 80, "retard", typeDonnee="texte"),
+            "retard" : ColumnDefn(_(u"Retard"), "left", 80, "retard", typeDonnee="texte"),
             }
 
         listeColonnes = []
@@ -323,7 +327,7 @@ class ListView(FastObjectListView):
             if self.checkColonne == True : tri += 1
             self.SetSortColumn(self.columns[tri])
 
-        self.SetEmptyListMsg(u"Aucune lettre de rappel")
+        self.SetEmptyListMsg(_(u"Aucune lettre de rappel"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
             
@@ -364,14 +368,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Rééditer la lettre
-        item = wx.MenuItem(menuPop, 60, u"Aperçu PDF de la lettre de rappel")
+        item = wx.MenuItem(menuPop, 60, _(u"Aperçu PDF de la lettre de rappel"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Reedition, id=60)
 
         # Item Envoyer la lettre par Email
-        item = wx.MenuItem(menuPop, 90, u"Envoyer la lettre de rappel par Email")
+        item = wx.MenuItem(menuPop, 90, _(u"Envoyer la lettre de rappel par Email"))
         bmp = wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -380,7 +384,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -392,26 +396,26 @@ class ListView(FastObjectListView):
         if self.checkColonne == True :
             
             # Item Tout cocher
-            item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+            item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
             # Item Tout décocher
-            item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+            item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheRien, id=80)
 
             menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -420,14 +424,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -438,7 +442,7 @@ class ListView(FastObjectListView):
     
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune lettre à imprimer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -450,14 +454,14 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la lettre par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune lettre de rappel à envoyer par Email !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         # Envoi du mail
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/Rappel.pdf", categorie="rappel")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/RAPPEL%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="rappel")
     
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
         """ Création du PDF pour Email """
@@ -471,10 +475,10 @@ class ListView(FastObjectListView):
         return dictChampsFusion[IDrappel]
 
     def GetTextesImpression(self):
-        total = u"%d factures. " % len(self.donnees)
+        total = _(u"%d factures. ") % len(self.donnees)
         if self.filtres != None :
             from DLG_Filtres_rappels import GetTexteFiltres 
-            intro = total + u"Filtres de sélection : %s" % GetTexteFiltres(self.filtres)
+            intro = total + _(u"Filtres de sélection : %s") % GetTexteFiltres(self.filtres)
         else :
             intro = None
         return intro, total
@@ -482,22 +486,22 @@ class ListView(FastObjectListView):
     def Apercu(self, event=None):
         import UTILS_Printer
         txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des lettres de rappel", intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lettres de rappel"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event=None):
         import UTILS_Printer
         txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des lettres de rappel", intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des lettres de rappel"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des lettres de rappel")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des lettres de rappel"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des lettres de rappel")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des lettres de rappel"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -523,7 +527,7 @@ class ListView(FastObjectListView):
         if self.IDcompte_payeur == None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_rappels", "supprimer") == False : return
         
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune lettre de rappel à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune lettre de rappel à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -531,7 +535,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les %d lettres de rappel cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d lettres de rappel cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -540,7 +544,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la lettre de rappel n°%d ?" % listeSelections[0].numero, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la lettre de rappel n°%d ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -551,7 +555,7 @@ class ListView(FastObjectListView):
         for track in listeSelections :
             listeIDrappels.append(track.IDrappel)
 
-        dlgAttente = PBI.PyBusyInfo(u"Suppression des lettres de rappel en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Suppression des lettres de rappel en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         DB = GestionDB.DB()
         for IDrappel in listeIDrappels :
@@ -563,14 +567,14 @@ class ListView(FastObjectListView):
         self.MAJ() 
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"%d lettres(s) de rappel supprimée(s) avec succès." % len(listeSelections), u"Suppression", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d lettres(s) de rappel supprimée(s) avec succès.") % len(listeSelections), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -592,7 +596,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une lettre de rappel...")
+        self.SetDescriptiveText(_(u"Rechercher une lettre de rappel..."))
         self.ShowSearchButton(True)
         
         if listview != None :

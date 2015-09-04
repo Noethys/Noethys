@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import platform
 import traceback
@@ -56,13 +59,13 @@ class DLG_Rapport(wx.Dialog):
         self.parent = parent
 
         self.ctrl_image = wx.StaticBitmap(self, wx.ID_ANY, wx.Bitmap(u"Images/48x48/Erreur.png", wx.BITMAP_TYPE_ANY))
-        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, u"Noethys a rencontré un problème !")
-        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, u"Le rapport d'erreur ci-dessous peut servir à la résolution de ce bug.\nMerci de bien vouloir le communiquer à l'auteur par Email ou depuis le forum.")
+        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Noethys a rencontré un problème !"))
+        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport d'erreur ci-dessous peut servir à la résolution de ce bug.\nMerci de bien vouloir le communiquer à l'auteur par Email ou depuis le forum."))
         self.ctrl_rapport = wx.TextCtrl(self, wx.ID_ANY, texte, style=wx.TE_MULTILINE | wx.TE_READONLY)
         
-        self.bouton_envoyer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Envoi_mail_auteur.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_forum = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Acceder_forum.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer à l'auteur"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_forum = CTRL_Bouton_image.CTRL(self, texte=_(u"Accéder au forum"), cheminImage="Images/32x32/Forum.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -82,12 +85,12 @@ class DLG_Rapport(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(u"Rapport d'erreurs")
+        self.SetTitle(_(u"Rapport d'erreurs"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_rapport.SetToolTipString(u"Ce rapport d'erreur a été copié dans le presse-papiers")
-        self.bouton_envoyer.SetToolTipString(u"Cliquez ici pour envoyer ce rapport d'erreur à l'auteur par Email")
-        self.bouton_forum.SetToolTipString(u"Cliquez ici pour ouvrir votre navigateur internet et accéder au forum de Noethys. Vous pourrez ainsi signaler ce bug dans la rubrique dédiée.")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_rapport.SetToolTipString(_(u"Ce rapport d'erreur a été copié dans le presse-papiers"))
+        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer ce rapport d'erreur à l'auteur par Email"))
+        self.bouton_forum.SetToolTipString(_(u"Cliquez ici pour ouvrir votre navigateur internet et accéder au forum de Noethys. Vous pourrez ainsi signaler ce bug dans la rubrique dédiée."))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((650, 450))
 
     def __do_layout(self):
@@ -135,7 +138,7 @@ class DLG_Rapport(wx.Dialog):
 ##                self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonForum(self, event):  
-        dlg = wx.MessageDialog(self, u"Noethys va ouvrir votre navigateur internet à la page du forum de Noethys. Vous n'aurez plus qu'à vous connecter avec vos identifiants Noethys et poster un nouveau message dans la rubrique dédiée aux bugs.", u"Forum Noethys", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Noethys va ouvrir votre navigateur internet à la page du forum de Noethys. Vous n'aurez plus qu'à vous connecter avec vos identifiants Noethys et poster un nouveau message dans la rubrique dédiée aux bugs."), _(u"Forum Noethys"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         webbrowser.open("http://www.noethys.com/index.php/forum-34/6-signaler-un-bug")
@@ -172,8 +175,8 @@ class DLG_Rapport(wx.Dialog):
         # texte
         texteRapport = self.ctrl_rapport.GetValue().replace("\n","<br/>")
         if len(commentaires) == 0 :
-            commentaires = u"Aucun"
-        texteMail = u"<u>Rapport de bug %s :</u><br/><br/>%s<br/><u>Commentaires :</u><br/><br/>%s" % (IDrapport, texteRapport, commentaires)
+            commentaires = _(u"Aucun")
+        texteMail = _(u"<u>Rapport de bug %s :</u><br/><br/>%s<br/><u>Commentaires :</u><br/><br/>%s") % (IDrapport, texteRapport, commentaires)
         
         # Destinataire
         listeDestinataires = ["noethys" + "@gmail.com",]
@@ -181,7 +184,7 @@ class DLG_Rapport(wx.Dialog):
         # Expéditeur
         dictExp = self.GetAdresseExpDefaut() 
         if dictExp == None :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord saisir une adresse d'expéditeur depuis le menu Paramétrage > Adresses d'expédition d'Emails. Sinon, postez votre rapport de bug dans le forum de Noethys.", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord saisir une adresse d'expéditeur depuis le menu Paramétrage > Adresses d'expédition d'Emails. Sinon, postez votre rapport de bug dans le forum de Noethys."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -196,7 +199,7 @@ class DLG_Rapport(wx.Dialog):
         msg['From'] = adresseExpediteur
         msg['To'] = ";".join(listeDestinataires)
         msg['Date'] = formatdate(localtime=True)
-        msg['Subject'] = u"Rapport de bug Noethys n°%s" % IDrapport
+        msg['Subject'] = _(u"Rapport de bug Noethys n°%s") % IDrapport
             
         msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
         
@@ -215,13 +218,13 @@ class DLG_Rapport(wx.Dialog):
             smtp.sendmail(adresseExpediteur, listeDestinataires, msg.as_string())
             smtp.close()
         except Exception, err :
-            dlg = wx.MessageDialog(self, u"Le message n'a pas pu être envoyé. Merci de poster votre rapport de bug sur le forum de Noethys.\n\nErreur : %s !" % err, u"Envoi impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le message n'a pas pu être envoyé. Merci de poster votre rapport de bug sur le forum de Noethys.\n\nErreur : %s !") % err, _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Message de confirmation
-        dlg = wx.MessageDialog(self, u"Le rapport d'erreur a été envoyé avec succès.", u"Rapport envoyé", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Le rapport d'erreur a été envoyé avec succès."), _(u"Rapport envoyé"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -236,13 +239,13 @@ class DLG_Envoi(wx.Dialog):
         self.parent = parent
         self.texteRapport = texteRapport
 
-        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, u"Le rapport est prêt à être envoyé...")
-        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, u"Vous pouvez ajouter ci-dessous des commentaires, remarques ou \ncompléments d'informations avant de l'envoyer à l'auteur.")
+        self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Le rapport est prêt à être envoyé..."))
+        self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez ajouter ci-dessous des commentaires, remarques ou \ncompléments d'informations avant de l'envoyer à l'auteur."))
         
         self.ctrl_commentaires = wx.TextCtrl(self, wx.ID_ANY, "", style=wx.TE_MULTILINE)
-        self.bouton_apercu = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_envoyer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Envoyer_mail.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer l'Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -252,12 +255,12 @@ class DLG_Envoi(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Envoyer le rapport à l'auteur")
+        self.SetTitle(_(u"Envoyer le rapport à l'auteur"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_commentaires.SetToolTipString(u"Vous pouvez saisir des commentaires ici")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour visualiser le contenu du message qui sera envoyé à l'auteur")
-        self.bouton_envoyer.SetToolTipString(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_commentaires.SetToolTipString(_(u"Vous pouvez saisir des commentaires ici"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour visualiser le contenu du message qui sera envoyé à l'auteur"))
+        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((400, 300))
 
     def __do_layout(self):
@@ -283,9 +286,9 @@ class DLG_Envoi(wx.Dialog):
         """ Visualisation du message à envoyer """
         commentaires = self.ctrl_commentaires.GetValue() 
         if len(commentaires) == 0 :
-            commentaires = u"Aucun"
-        message = u"Rapport : \n\n%s\nCommentaires : \n\n%s" % (self.texteRapport, commentaires)
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, message, u"Visualisation du contenu du message")
+            commentaires = _(u"Aucun")
+        message = _(u"Rapport : \n\n%s\nCommentaires : \n\n%s") % (self.texteRapport, commentaires)
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, message, _(u"Visualisation du contenu du message"))
         dlg.ShowModal()
         dlg.Destroy() 
 

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -52,17 +55,17 @@ class Dialog(wx.Dialog):
         self.listeUnites = listeUnites
         
         # Date
-        self.staticbox_date = wx.StaticBox(self, -1, u"Date")
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.staticbox_date = wx.StaticBox(self, -1, _(u"Date"))
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date(self)
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
 
         # Unites
-        self.staticbox_unites = wx.StaticBox(self, -1, u"Unités à combiner")
+        self.staticbox_unites = wx.StaticBox(self, -1, _(u"Unités à combiner"))
         self.ctrl_unites = CTRL_Unites(self, self.listeUnites)
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -71,12 +74,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une combinaison de forfait")
-        self.ctrl_date.SetToolTipString(u"Saisissez ici la date de la consommation")
-        self.bouton_calendrier.SetToolTipString(u"Cliquez ici pour sélectionner la date dans un calendrier")
-        self.ctrl_unites.SetToolTipString(u"Cochez les unités à combiner")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une combinaison de forfait"))
+        self.ctrl_date.SetToolTipString(_(u"Saisissez ici la date de la consommation"))
+        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour sélectionner la date dans un calendrier"))
+        self.ctrl_unites.SetToolTipString(_(u"Cochez les unités à combiner"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((350, 420))
 
     def __do_layout(self):
@@ -128,7 +131,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         date = self.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, u"La date que vous avez saisi ne semble pas valide !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date que vous avez saisi ne semble pas valide !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
@@ -136,7 +139,7 @@ class Dialog(wx.Dialog):
         
         listeUnites = self.GetUnites()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins une unité !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

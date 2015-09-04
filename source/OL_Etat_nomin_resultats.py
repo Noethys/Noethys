@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
 import decimal
@@ -187,9 +190,9 @@ def GetQuestionnaires():
                         texteReponse = ", ".join(listeTemp2)
                     if filtre == "coche" : 
                         if reponse == "1" : 
-                            texteReponse = u"Oui"
+                            texteReponse = _(u"Oui")
                         else :
-                            texteReponse = u"Non"
+                            texteReponse = _(u"Non")
                     if filtre == "date" : texteReponse = DateEngEnDateDD(reponse)
 
                 # Mémorisation
@@ -337,9 +340,10 @@ class Track(object):
             exec("""self.%s = %s""" % (champ.code, formule))
             return "ok"
         except Exception, err :
-            exec("self.%s = None" % champ.code)
-            self.listeErreurs.append("Probleme dans le champ %s : %s" % (champ.code, err))
-            return err
+            if champ.code != "" :
+                exec("self.%s = None" % champ.code)
+                self.listeErreurs.append("Probleme dans le champ %s : %s" % (champ.code, err))
+                return err
 
 
 # ----------------------------------------------------------------------------------------------------------------
@@ -574,7 +578,7 @@ class ListView(FastObjectListView):
 
         # Avertissement au sujet des familles sans QF
         if len(listeFamillesSansQF) > 0 :
-            dlg = wx.MessageDialog(self, u"Attention, veuillez noter que %d familles ne disposant de quotient familial sur la période sélectionnée ont été exclus des résultats !" % len(listeFamillesSansQF), u"Avertissement", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Attention, veuillez noter que %d familles ne disposant de quotient familial sur la période sélectionnée ont été exclus des résultats !") % len(listeFamillesSansQF), _(u"Avertissement"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -637,7 +641,7 @@ class ListView(FastObjectListView):
                 liste_Colonnes.append(ColumnDefn(champ.titre, "left", champ.largeur, champ.code, typeDonnee=RechercheTypeDonnee(champ), stringConverter=FormatageValeur))
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune donnée")
+        self.SetEmptyListMsg(_(u"Aucune donnée"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -706,7 +710,7 @@ class ListView(FastObjectListView):
                 listeTextes.append(u"%s = %s" % (label, valeur))
         
         try :
-            texte = u"---- TOTAUX pour les %d individus de la liste ----\n%s" % (len(listeTracks), ", ".join(listeTextes))
+            texte = _(u"---- TOTAUX pour les %d individus de la liste ----\n%s") % (len(listeTracks), ", ".join(listeTextes))
             self.GetParent().ctrl_totaux.SetValue(texte)
         except :
             pass
@@ -722,14 +726,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -738,14 +742,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -756,21 +760,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Etat nominatif des consommations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Etat nominatif des consommations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Etat nominatif des consommations"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des champs")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des champs"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des champs")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des champs"))
     
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -781,7 +785,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une information...")
+        self.SetDescriptiveText(_(u"Rechercher une information..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -856,7 +860,7 @@ class MyFrame(wx.Frame):
                 dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":trackInfo.label, "type":trackInfo.type, "categorie":trackInfo.categorie, "formule":trackInfo.formule, "titre":trackInfo.titre, "largeur":trackInfo.largeur}
             else :
                 # Champ indisponible
-                dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":u"Non disponible", "type":None, "categorie":None, "titre":None, "formule":None}
+                dictTemp = {"IDselection":IDselection, "IDprofil":IDprofil, "code":code, "ordre":ordre, "label":_(u"Non disponible"), "type":None, "categorie":None, "titre":None, "formule":None}
             listeChamps.append(OL_Etat_nomin_selections.Track(dictTemp))
             
         # Création des paramètres

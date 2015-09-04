@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Choix_modele
 import GestionDB
 import os
@@ -24,14 +27,14 @@ class CTRL(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.label_modele = wx.StaticText(self, -1, u"Modèle :")
+        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie="cotisation")
         self.bouton_modele = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-##        self.checkbox_coupon = wx.CheckBox(self, -1, u"Insérer le coupon-réponse")
+##        self.checkbox_coupon = wx.CheckBox(self, -1, _(u"Insérer le coupon-réponse"))
 
-        self.label_repertoire = wx.StaticText(self, -1, u"Copie :")
-        self.checkbox_repertoire = wx.CheckBox(self, -1, u"Enregistrer une copie unique dans le répertoire :")
+        self.label_repertoire = wx.StaticText(self, -1, _(u"Copie :"))
+        self.checkbox_repertoire = wx.CheckBox(self, -1, _(u"Enregistrer une copie unique dans le répertoire :"))
         self.ctrl_repertoire = wx.TextCtrl(self, -1, u"")
         self.ctrl_repertoire.SetMinSize((270, -1))
         self.bouton_repertoire = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Repertoire.png", wx.BITMAP_TYPE_ANY))
@@ -54,11 +57,11 @@ class CTRL(wx.Panel):
         self.OnCheckRepertoire(None)
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez le modèle")
-        self.bouton_modele.SetToolTipString(u"Cliquez ici pour accéder à la gestion des modèles")
-##        self.checkbox_coupon.SetToolTipString(u"Cochez cette case pour insérer un coupon à découper")
-        self.checkbox_repertoire.SetToolTipString(u"Cochez cette case pour enregistrer un exemplaire de chaque cotisation au format PDF dans le répertoire indiqué")
-        self.bouton_repertoire.SetToolTipString(u"Cliquez ici pour sélectionner un répertoire de destination")
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez le modèle"))
+        self.bouton_modele.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles"))
+##        self.checkbox_coupon.SetToolTipString(_(u"Cochez cette case pour insérer un coupon à découper"))
+        self.checkbox_repertoire.SetToolTipString(_(u"Cochez cette case pour enregistrer un exemplaire de chaque cotisation au format PDF dans le répertoire indiqué"))
+        self.bouton_repertoire.SetToolTipString(_(u"Cliquez ici pour sélectionner un répertoire de destination"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -109,7 +112,7 @@ class CTRL(wx.Panel):
                 cheminDefaut = ""
         else:
             cheminDefaut = ""
-        dlg = wx.DirDialog(self, u"Veuillez sélectionner un répertoire de destination :", defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
+        dlg = wx.DirDialog(self, _(u"Veuillez sélectionner un répertoire de destination :"), defaultPath=cheminDefaut, style=wx.DD_DEFAULT_STYLE | wx.DD_DIR_MUST_EXIST)
         if dlg.ShowModal() == wx.ID_OK:
             self.ctrl_repertoire.SetValue(dlg.GetPath())
         dlg.Destroy()
@@ -129,14 +132,14 @@ class CTRL(wx.Panel):
             repertoire = self.ctrl_repertoire.GetValue() 
             # Vérifie qu'un répertoire a été saisie
             if repertoire == "" :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un répertoire de destination !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un répertoire de destination !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_repertoire.SetFocus()
                 return False
             # Vérifie que le répertoire existe
             if os.path.isdir(repertoire) == False :
-                dlg = wx.MessageDialog(self, u"Le répertoire de destination que vous avez saisi n'existe pas !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le répertoire de destination que vous avez saisi n'existe pas !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_repertoire.SetFocus()
@@ -147,7 +150,7 @@ class CTRL(wx.Panel):
         # Récupération du modèle
         IDmodele = self.ctrl_modele.GetID() 
         if IDmodele == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un modèle !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -175,7 +178,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)        
         self.ctrl = CTRL(panel)
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -191,7 +194,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

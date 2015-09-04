@@ -9,7 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -24,24 +27,24 @@ class DLG_Saisie(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        self.label_nom = wx.StaticText(self, -1, u"Nom de la ville :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom de la ville :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "", size=(280, -1))
         if nom != None :
             self.ctrl_nom.SetValue(nom)
             
-        self.label_cp = wx.StaticText(self, -1, u"Code postal :")
+        self.label_cp = wx.StaticText(self, -1, _(u"Code postal :"))
         self.ctrl_cp = wx.TextCtrl(self, -1, "", size=(80, -1))
         if cp !=None :
             self.ctrl_cp.SetValue(cp)
             
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nom == None :
-            self.SetTitle(u"Saisie d'une ville")
+            self.SetTitle(_(u"Saisie d'une ville"))
         else:
-            self.SetTitle(u"Modification d'une ville")
+            self.SetTitle(_(u"Modification d'une ville"))
         self.SetMinSize((350, -1))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -78,13 +81,13 @@ class DLG_Saisie(wx.Dialog):
         nom = self.ctrl_nom.GetValue()
         cp = self.ctrl_cp.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun nom de ville !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom de ville !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         if cp == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun code postal !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun code postal !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_cp.SetFocus()
@@ -206,12 +209,12 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDville", typeDonnee="entier"),
-            ColumnDefn(u"Nom de la ville", 'left', 250, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom de la ville"), 'left', 250, "nom", typeDonnee="texte"),
             ColumnDefn("Code postal", "left", 120, "cp", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune ville")
+        self.SetEmptyListMsg(_(u"Aucune ville"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -245,14 +248,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -260,7 +263,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -287,7 +290,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_villes", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ville à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ville à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -316,7 +319,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_villes", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ville à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ville à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -325,7 +328,7 @@ class ListView(FastObjectListView):
         cp = self.Selection()[0].cp
         mode = self.Selection()[0].mode
         
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la ville '%s (%s)' ?" % (nom, cp), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la ville '%s (%s)' ?") % (nom, cp), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             # Si c'est une ville par défaut
@@ -353,7 +356,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une ville ou un code postal...")
+        self.SetDescriptiveText(_(u"Rechercher une ville ou un code postal..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_villes

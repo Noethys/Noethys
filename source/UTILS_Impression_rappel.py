@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import FonctionsPerso
@@ -88,7 +91,7 @@ def DateEngFr(textDate):
     return text
 
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -152,7 +155,7 @@ class MyPageTemplate(PageTemplate):
             # Textes
             canvas.rotate(90)
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(y+2*mm, -x-4*mm, u"Merci de joindre ce coupon à votre règlement")
+            canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
             canvas.setFont("Helvetica", 7)
             solde = dictCompte["solde_num"]#dictCompte["total"] - dictCompte["ventilation"]
             numero = dictCompte["numero"]
@@ -177,7 +180,7 @@ class MyPageTemplate(PageTemplate):
             canvas.rect(x, y, largeur, hauteur, fill=0)
             # Textes
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(x+2*mm, y+hauteur-4*mm, u"Merci de joindre ce coupon à votre règlement")
+            canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
             canvas.setFont("Helvetica", 7)
             solde = dictCompte["solde_num"]#dictCompte["total"] - dictCompte["ventilation"]
             numero = dictCompte["numero"]
@@ -245,7 +248,7 @@ class Impression():
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = "Temp/Rappels_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            nomDoc = "Temp/RAPPELS%s.pdf" % FonctionsPerso.GenerationIDdoc() 
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
@@ -293,7 +296,7 @@ class Impression():
                 largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
                 dataTableau.append((dictCompte["titre"],))
                 texteDateReference = DateEngFr(str(datetime.date.today()))
-                dataTableau.append((u"Situation au %s" % texteDateReference,))
+                dataTableau.append((_(u"Situation au %s") % texteDateReference,))
                 style = TableStyle([
                         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
                         ('FONT',(0,0),(0,0), "Helvetica-Bold", 19), 

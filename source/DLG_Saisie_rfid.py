@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.animate
 import time
 
@@ -35,8 +38,8 @@ class Dialog(wx.Dialog):
         self.timer = wx.Timer(self, -1)
 
         # Bandeau
-        titre = u"Scanner un badge RFID"
-        intro = u"Veuillez scanner un badge dans votre lecteur RFID."
+        titre = _(u"Scanner un badge RFID")
+        intro = _(u"Veuillez scanner un badge dans votre lecteur RFID.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Rfid.png")
         
@@ -47,10 +50,10 @@ class Dialog(wx.Dialog):
         self.ctrl_image.SetUseWindowBackgroundColour()
         self.ctrl_image.Play()
             
-        self.ctrl_label = wx.StaticText(self.panel, -1, u"Veuillez scanner un badge")
+        self.ctrl_label = wx.StaticText(self.panel, -1, _(u"Veuillez scanner un badge"))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -65,8 +68,8 @@ class Dialog(wx.Dialog):
         self.Start()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((420, 320))
 
     def __do_layout(self):

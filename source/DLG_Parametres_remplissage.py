@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Grille_periode
@@ -22,7 +25,7 @@ class CTRL_activites(wx.CheckListBox):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
         self.data = []
-        self.SetToolTipString(u"Cochez les activités à afficher")
+        self.SetToolTipString(_(u"Cochez les activités à afficher"))
         self.listeActivites = []
 
     def MAJ(self):
@@ -96,37 +99,37 @@ class Dialog(wx.Dialog):
         self.afficheLargeurColonneUnite = afficheLargeurColonneUnite
         
         # Périodes
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)
         self.ctrl_periodes.SetMinSize((200, 230))
         
         # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_activites(self)
         self.ctrl_activites.SetMinSize((300, 150))
         
-        self.ctrl_masquer_activites = wx.CheckBox(self, -1, u"Masquer les anciennes activités")
+        self.ctrl_masquer_activites = wx.CheckBox(self, -1, _(u"Masquer les anciennes activités"))
         self.ctrl_masquer_activites.SetValue(UTILS_Parametres.Parametres(mode="get", categorie="parametres_remplissage", nom="masquer_anciennes_activites", valeur=0))
         self.ctrl_masquer_activites.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         
         # Options d'affichage
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
-        self.label_largeurUnite = wx.StaticText(self, -1, u"Largeur des colonnes unités (60 par défaut) :")
+        self.label_largeurUnite = wx.StaticText(self, -1, _(u"Largeur des colonnes unités (60 par défaut) :"))
         self.ctrl_largeurUnite = wx.SpinCtrl(self, -1, str(largeurColonneUnite), size=(60, -1))
         self.ctrl_largeurUnite.SetRange(30, 300)
 
-        self.label_abregeGroupes = wx.StaticText(self, -1, u"Utiliser le nom abrégé des groupes :")
-        self.ctrl_abregeGroupes_oui = wx.RadioButton(self, -1, u"Oui", style = wx.RB_GROUP)
-        self.ctrl_abregeGroupes_non = wx.RadioButton(self, -1, u"Non")
+        self.label_abregeGroupes = wx.StaticText(self, -1, _(u"Utiliser le nom abrégé des groupes :"))
+        self.ctrl_abregeGroupes_oui = wx.RadioButton(self, -1, _(u"Oui"), style = wx.RB_GROUP)
+        self.ctrl_abregeGroupes_non = wx.RadioButton(self, -1, _(u"Non"))
         if abregeGroupes == True :
             self.ctrl_abregeGroupes_oui.SetValue(True)
         else:
             self.ctrl_abregeGroupes_non.SetValue(True)
 
-        self.label_affichePresents = wx.StaticText(self, -1, u"Afficher les présents en temps réel :")
-        self.ctrl_affichePresents_oui = wx.RadioButton(self, -1, u"Oui", style = wx.RB_GROUP)
-        self.ctrl_affichePresents_non = wx.RadioButton(self, -1, u"Non")
+        self.label_affichePresents = wx.StaticText(self, -1, _(u"Afficher les présents en temps réel :"))
+        self.ctrl_affichePresents_oui = wx.RadioButton(self, -1, _(u"Oui"), style = wx.RB_GROUP)
+        self.ctrl_affichePresents_non = wx.RadioButton(self, -1, _(u"Non"))
         if affichePresents == True :
             self.ctrl_affichePresents_oui.SetValue(True)
         else:
@@ -146,8 +149,8 @@ class Dialog(wx.Dialog):
             self.staticbox_options_staticbox.Show(False)
             
         # Boutons de commandes 
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -163,10 +166,10 @@ class Dialog(wx.Dialog):
         self.ctrl_activites.SetDictDonnees(dictDonnees)
 
     def __set_properties(self):
-        self.SetTitle(u"Paramètres d'affichage")
-        self.ctrl_masquer_activites.SetToolTipString(u"Cochez cette case pour masquer de cette liste les activités vieilles de plus de 2 ans")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Paramètres d'affichage"))
+        self.ctrl_masquer_activites.SetToolTipString(_(u"Cochez cette case pour masquer de cette liste les activités vieilles de plus de 2 ans"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((540, 420))
 
     def __do_layout(self):
@@ -264,13 +267,13 @@ class Dialog(wx.Dialog):
         try :
             newLargeur = int(newLargeur)
         except :
-            dlg2 = wx.MessageDialog(self, u"La largeur des colonnes unités semble incorrecte !", u"Erreur de saisie", wx.OK | wx.ICON_INFORMATION)
+            dlg2 = wx.MessageDialog(self, _(u"La largeur des colonnes unités semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_INFORMATION)
             dlg2.ShowModal()
             dlg2.Destroy()
             dlg.Destroy() 
             return
         if newLargeur < 30 or newLargeur > 300 :
-            dlg2 = wx.MessageDialog(self, u"La largeur des colonnes unités doit être comprise entre 30 et 300 !", u"Erreur de saisie", wx.OK | wx.ICON_INFORMATION)
+            dlg2 = wx.MessageDialog(self, _(u"La largeur des colonnes unités doit être comprise entre 30 et 300 !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_INFORMATION)
             dlg2.ShowModal()
             dlg2.Destroy()
             return

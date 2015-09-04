@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 from wx.lib.ticker import Ticker
 
 import datetime
@@ -83,9 +86,9 @@ class CTRL(wx.Panel):
         
     def JoinListe(self, listeTemp=[]):
         if len(listeTemp) > 2 :
-            return u"%s et %s" % (u", ".join(listeTemp[:-1], listeTemp[-1]))
+            return _(u"%s et %s") % (u", ".join(listeTemp[:-1], listeTemp[-1]))
         else :
-            return u" et ".join(listeTemp)
+            return _(u" et ").join(listeTemp)
         
     def GetTexte(self, listeActivites=[]):
         """ Récupération des données dans la base de données """
@@ -142,12 +145,12 @@ class CTRL(wx.Panel):
             
             nbre = dictTemp[IDactivite]["nbre"]
             if nbre == 1 :
-                temp = u"individu"
+                temp = _(u"individu")
             else :
-                temp = u"individus"
-            listeTextes.append(u"%d %s sur l'activité %s (%s)" % (nbre, temp, nomActivite, self.JoinListe(groupes)))
+                temp = _(u"individus")
+            listeTextes.append(_(u"%d %s sur l'activité %s (%s)") % (nbre, temp, nomActivite, self.JoinListe(groupes)))
         
-        texte = u"Il y a actuellement %s" % self.JoinListe(listeTextes)
+        texte = _(u"Il y a actuellement %s") % self.JoinListe(listeTextes)
         return texte
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

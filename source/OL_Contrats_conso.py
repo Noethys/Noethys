@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
@@ -38,20 +41,20 @@ class Track(object):
         if self.heure_debut != None and self.heure_fin != None :
             self.texteDetail = "%s-%s" % (self.heure_debut, self.heure_fin)
         if self.quantite != None :
-            self.texteDetail += u" Qté=%d" % self.quantite
+            self.texteDetail += _(u" Qté=%d") % self.quantite
         
         if self.etat == "reservation" : 
-            self.texteEtat = u"Réservation"
+            self.texteEtat = _(u"Réservation")
         elif self.etat == "present" : 
-            self.texteEtat = u"Présent"
+            self.texteEtat = _(u"Présent")
         elif self.etat == "attente" : 
-            self.texteEtat = u"Attente"
+            self.texteEtat = _(u"Attente")
         elif self.etat == "absenti" : 
-            self.texteEtat = u"Absence injustifiée"
+            self.texteEtat = _(u"Absence injustifiée")
         elif self.etat == "absentj" : 
-            self.texteEtat = u"Absence justifiée"
+            self.texteEtat = _(u"Absence justifiée")
         elif self.etat == "refus" : 
-            self.texteEtat = u"Refus"
+            self.texteEtat = _(u"Refus")
         else :
             self.texteEtat = ""
             
@@ -126,16 +129,16 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"IDconso", "left", 0, "IDconso", typeDonnee="entier"),
-            ColumnDefn(u"Date", 'centre', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Unité", 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Etat", 'left', 50, "texteEtat", typeDonnee="texte"),
-            ColumnDefn(u"Détail", 'left', 100, "texteDetail", typeDonnee="texte"),
+            ColumnDefn(_(u"IDconso"), "left", 0, "IDconso", typeDonnee="entier"),
+            ColumnDefn(_(u"Date"), 'centre', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Unité"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Etat"), 'left', 50, "texteEtat", typeDonnee="texte"),
+            ColumnDefn(_(u"Détail"), 'left', 100, "texteDetail", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune consommation")
+        self.SetEmptyListMsg(_(u"Aucune consommation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(2)
         
@@ -168,7 +171,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
 ##        # Item Assistant
-##        item = wx.MenuItem(menuPop, 100, u"Générer automatiquement des consommations")
+##        item = wx.MenuItem(menuPop, 100, _(u"Générer automatiquement des consommations"))
 ##        bmp = wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -177,14 +180,14 @@ class ListView(FastObjectListView):
 ##        menuPop.AppendSeparator()
 ##
 ##        # Item Modifier
-##        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+##        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
 ##        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
 ##        self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 ##
 ##        # Item Ajouter
-##        item = wx.MenuItem(menuPop, 20, u"Modifier")
+##        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
 ##        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -192,7 +195,7 @@ class ListView(FastObjectListView):
 ##        if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -202,14 +205,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
         bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -218,14 +221,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -234,14 +237,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -252,21 +255,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des consommations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des consommations"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des consommations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des consommations"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des consommations", autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des consommations"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des consommations", autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des consommations"), autoriseSelections=False)
 
     def Generer(self, event):  
         pass
@@ -293,7 +296,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):  
         pass
 ##        if len(self.Selection()) == 0 :
-##            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune période à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -307,7 +310,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune consommation à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune consommation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -315,7 +318,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les consommations cochées ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les consommations cochées ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -324,7 +327,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la consommation sélectionnée ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la consommation sélectionnée ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -334,7 +337,7 @@ class ListView(FastObjectListView):
         listeSuppressions = []
         for track in listeSelections :
             if track.etat in ("present", "absenti", "absentj") :
-                dlg = wx.MessageDialog(self, u"Vous ne pouvez pas supprimer la consommation '%s' du %s car elle est déjà pointée !" % (track.nomUnite, UTILS_Dates.DateDDEnFr(track.date)) , u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la consommation '%s' du %s car elle est déjà pointée !") % (track.nomUnite, UTILS_Dates.DateDDEnFr(track.date)) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -379,7 +382,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_soldes
@@ -417,7 +420,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nomUnite" : {"mode" : "nombre", "singulier" : u"consommation", "pluriel" : u"consommations", "alignement" : wx.ALIGN_LEFT},
+            "nomUnite" : {"mode" : "nombre", "singulier" : _(u"consommation"), "pluriel" : _(u"consommations"), "alignement" : wx.ALIGN_LEFT},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 

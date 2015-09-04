@@ -9,19 +9,16 @@
 #-----------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import CTRL_Grille
 import UTILS_Dates
 
 
-##class CTRL_Mode():
-##    def __init__(self, parent):
-##        self.parent = parent
-##        
-##    def GetMode(self):
-##        return self.parent.parent.mode
 
 class CTRL_Activites():
     def __init__(self, parent):
@@ -30,11 +27,12 @@ class CTRL_Activites():
     def GetIDgroupe(self, IDactivite=None, IDindividu=None):
         return None
 
+
 class Panel_Activites():
     def __init__(self, parent):
         self.parent = parent
         self.ctrl_activites = CTRL_Activites(self)
-##        self.ctrl_mode = CTRL_Mode(self)
+
 
 class Panel_Facturation():
     def __init__(self, parent):
@@ -129,7 +127,7 @@ class CTRL(wx.Panel):
             date_debut, date_fin = date, date
         else :
             date_debut, date_fin = periode
-        self.grille.SetModeIndividu([IDactivite,], [IDindividu,], [IDindividu,], [(date_debut, date_fin),])
+        self.grille.SetModeIndividu([IDactivite,], [IDindividu,], [IDindividu,], [(date_debut, date_fin),], modeSilencieux=True)
         
         # Récupération des informations
         self.dictInfosIndividu = self.grille.dictInfosIndividus[IDindividu]
@@ -142,35 +140,31 @@ class CTRL(wx.Panel):
         """ Sauvegarde de la grille """
         self.grille.Sauvegarde()
     
-    def GetCase(self, IDunite=None, date=None):
+    def GetCase(self, IDunite=None, date=None, memo=False):
         """ Récupère une case d'après un IDunite """
         for numLigne, ligne in self.grille.dictLignes.iteritems() :
             for numColonne, case in ligne.dictCases.iteritems() :
                 if case.typeCase == "consommation" :
                     if case.IDunite == IDunite and (case.date == date or date == None) :
                         return case
+                if case.typeCase == "memo" :
+                    if case.date == date or date == None :
+                        return case
         return None
     
     def HasPlacesDisponibles(self, IDunite=None, date=None):
         case = self.GetCase(IDunite, date)
         return case.HasPlaceDisponible() 
-##        if case == None :
-##            return None
-##        if case.dictInfosPlaces == None :
-##            return None
-##        else :
-##            nbrePlaces = case.dictInfosPlaces["nbrePlacesRestantes"]
-##            return nbrePlaces
         
-    def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None):
+    def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None, quantite=None):
         """ Crée ou modifie une conso pour l'unité indiquée """
         case = self.GetCase(IDunite, date)
         if case == None :
-            return u"Cette case est inexistante."
+            return _(u"Cette case est inexistante.")
         
         # Vérifie que cette unité est ouverte
         if case.ouvert == False :
-            return u"Cette unité est fermée."
+            return _(u"Cette unité est fermée.")
 
         # Recherche Heures par défaut
         heure_debut_defaut = self.grille.dictUnites[IDunite]["heure_debut"]
@@ -182,13 +176,13 @@ class CTRL(wx.Panel):
 
         # Vérifie qu'il reste des places disponibles
         if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
-            return u"Il n'y a plus de place à cette date."
+            return _(u"Il n'y a plus de place à cette date.")
         
         # Vérifie la compatibilité avec les autres unités
         incompatibilite = case.VerifieCompatibilitesUnites()
         if incompatibilite != None :
             nomUniteIncompatible = self.grille.dictUnites[incompatibilite]["nom"]
-            return u"Action impossible car il existe déjà à cette date une réservation sur l'unité '%s'." %  nomUniteIncompatible
+            return _(u"Action impossible car il existe déjà à cette date une réservation sur l'unité '%s'.") %  nomUniteIncompatible
             
         # Définit le mode
         self.mode = mode
@@ -196,14 +190,16 @@ class CTRL(wx.Panel):
         # Si la conso n'existe pas déjà :
         if case.IsCaseDisponible(heure_debut, heure_fin) == True :
             if typeUnite == "Quantite" :
-                quantite = 1
+                quantiteTmp = 1
             else :
-                quantite = None
+                quantiteTmp = None
+            if quantite != None :
+                quantiteTmp = quantite
             if typeUnite == "Multihoraires" :
                 barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin))
                 case.ModifieEtat(barre.conso, etat)
             else :
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True)
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
                 case.ModifieEtat(None, etat)
 
 
@@ -220,11 +216,14 @@ class CTRL(wx.Panel):
             
             # Type Quantité
             if typeUnite == "Quantite" :
-                quantite = case.quantite
-                if case.quantite == None :
-                    quantite = 1
-                quantite += 1
-                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True)
+                quantiteTmp = case.quantite
+                if quantite != None :
+                    quantiteTmp = quantite
+                else :
+                    if quantiteTmp == None :
+                        quantiteTmp = 1
+                    quantiteTmp += 1
+                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
                 case.ModifieEtat(None, etat)
             
             if typeUnite == "Unitaire" :
@@ -236,11 +235,13 @@ class CTRL(wx.Panel):
         """ Supprime la conso d'une unité donnée """
         case = self.GetCase(IDunite, date)
         if case == None : 
-            return u"Cette case est inexistante."
+            return _(u"Cette case est inexistante.")
         if case.etat == None :
-            return u"Il n'existe aucune consommation à cette date et pour cette unité."
+            return _(u"Il n'existe aucune consommation à cette date et pour cette unité.")
         if case.IDfacture != None :
-            return u"Interdit de supprimer une consommation déjà facturée."
+            return _(u"Interdit de supprimer une consommation déjà facturée.")
+        if case.etat in ("present", "absenti", "absentj") :
+            return _(u"Interdit de supprimer une consommation déjà pointée.")
         case.OnClick(modeSilencieux=True)
         return True
 
@@ -248,20 +249,27 @@ class CTRL(wx.Panel):
         """ Modifie l'état de l'unité donnée """
         case = self.GetCase(IDunite, date)
         if case == None :
-            return u"Cette case est inexistante."
+            return _(u"Cette case est inexistante.")
         for conso in case.GetListeConso() :
             if conso.etat == None :
-                return u"Il n'existe aucune consommation à cette date et pour cette unité."
+                return _(u"Il n'existe aucune consommation à cette date et pour cette unité.")
             if conso.etat != etat :
                 case.ModifieEtat(None, etat)
         return True
     
+    def ModifieMemo(self, date=None, texte=""):
+        case = self.GetCase(date=date, memo=True)
+        if case == None :
+            return _(u"La case mémo journalier est inexistante.")
+        case.SetTexte(texte)
+        return True        
+        
     
 # FONCTIONS DISPONIBLES :
 # Sauvegarde() : Pour sauvegarder
 # SaisieConso() : Pour ajouter une conso
 # SupprimeConso() : Pour Supprimer une conso
-
+# ModifieMemo(): Pour modifier le mémo journalier
 
 
 
@@ -274,10 +282,10 @@ class Dialog(wx.Dialog):
         self.ctrl = CTRL(self)
         
         # Boutons de test
-        bouton1 = wx.Button(self, -1, u"TEST 1 - fam 1 - Date unique")
-        bouton2 = wx.Button(self, -1, u"TEST 2 - fam 2- Plusieurs dates")
-        bouton3 = wx.Button(self, -1, u"TEST 3 - Sauvegarde ")
-        bouton4 = wx.Button(self, -1, u"TEST 4 - saisie conso")
+        bouton1 = wx.Button(self, -1, _(u"TEST 1 - fam 1 - Date unique"))
+        bouton2 = wx.Button(self, -1, _(u"TEST 2 - fam 2- Plusieurs dates"))
+        bouton3 = wx.Button(self, -1, _(u"TEST 3 - Sauvegarde "))
+        bouton4 = wx.Button(self, -1, _(u"TEST 4 - saisie conso"))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest1, bouton1)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest2, bouton2)

@@ -8,9 +8,13 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
+import FonctionsPerso
 import GestionDB
 import UTILS_Historique
 import UTILS_Titulaires
@@ -59,9 +63,9 @@ class Track(object):
             
         # Type
         if self.typeTypeCotisation == "famille" :
-            self.typeStr = u"Cotisation familiale"
+            self.typeStr = _(u"Cotisation familiale")
         else:
-            self.typeStr = u"Cotisation individuelle"
+            self.typeStr = _(u"Cotisation individuelle")
         
         # Validité
         dateDuJour = datetime.date.today() 
@@ -72,9 +76,9 @@ class Track(object):
         
         # Dépôt
         if self.IDdepot_cotisation == None :
-            self.depotStr = u"Non déposée"
+            self.depotStr = _(u"Non déposée")
         else:
-            self.depotStr = u"Dépôt n°%d" % self.IDdepot_cotisation
+            self.depotStr = _(u"Dépôt n°%d") % self.IDdepot_cotisation
 
         # Nom des titulaires de famille
         self.beneficiaires = ""
@@ -83,7 +87,7 @@ class Track(object):
         self.ville = ""
         
         if self.IDfamille != None :
-            self.beneficiaires = u"IDfamille n°%d" % self.IDfamille
+            self.beneficiaires = _(u"IDfamille n°%d") % self.IDfamille
             if parent.dictFamillesRattachees != None :
                 if parent.dictFamillesRattachees.has_key(self.IDfamille) :
                     self.beneficiaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
@@ -470,7 +474,7 @@ class ListView(FastObjectListView):
         
         def FormateDate(dateDD):
             if dateDD == None : return ""
-            if dateDD == "2999-01-01" : return u"Illimitée"
+            if dateDD == "2999-01-01" : return _(u"Illimitée")
             date = str(dateDD)
             text = str(date[8:10]) + "/" + str(date[5:7]) + "/" + str(date[:4])
             return text
@@ -497,24 +501,24 @@ class ListView(FastObjectListView):
         dictColonnes = {
             "IDcotisation" : ColumnDefn(u"", "left", 0, "IDcotisation", typeDonnee="entier"),
             "date_debut" : ColumnDefn(u"Du", 'left', 80, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-            "date_fin" : ColumnDefn(u"Au", 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            "date_saisie" : ColumnDefn(u"Date saisie", 'left', 80, "date_saisie", typeDonnee="date", stringConverter=FormateDate), 
-            "beneficiaires" : ColumnDefn(u"Bénéficiaires", 'left', 150, "beneficiaires", typeDonnee="texte"),
-            "rue" : ColumnDefn(u"Rue", 'left', 120, "rue", typeDonnee="texte"),
-            "cp" : ColumnDefn(u"CP", 'left', 70, "cp", typeDonnee="texte"),
-            "ville" : ColumnDefn(u"Ville", 'left', 100, "ville", typeDonnee="texte"),
-            "type" : ColumnDefn(u"Type", 'left', 110, "typeStr", typeDonnee="texte"),
-            "nom" : ColumnDefn(u"Nom", 'left', 210, "nomCotisation", typeDonnee="texte"),
-            "type_cotisation" : ColumnDefn(u"Type", 'left', 210, "nomTypeCotisation", typeDonnee="texte"),
-            "unite_cotisation" : ColumnDefn(u"Unité", 'left', 90, "nomUniteCotisation", typeDonnee="texte"),
-            "numero" : ColumnDefn(u"Numéro", 'left', 70, "numero", typeDonnee="texte"), 
-            "montant" : ColumnDefn(u"Montant", 'left', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
-            "regle" : ColumnDefn(u"Réglé", 'left', 70, "ventilation", typeDonnee="montant", stringConverter=FormateMontant), 
-            "date_reglement" : ColumnDefn(u"Date réglement", 'left', 80, "dateReglement", typeDonnee="date", stringConverter=FormateDate), 
-            "mode_reglement" : ColumnDefn(u"Mode réglement", 'left', 80, "modeReglement", typeDonnee="texte"), 
-            "solde" : ColumnDefn(u"Solde", 'left', 80, "solde", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
-            "date_creation_carte" : ColumnDefn(u"Création carte", 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-            "depot_nom" : ColumnDefn(u"Dépôt carte", 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
+            "date_fin" : ColumnDefn(_(u"Au"), 'left', 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            "date_saisie" : ColumnDefn(_(u"Date saisie"), 'left', 80, "date_saisie", typeDonnee="date", stringConverter=FormateDate), 
+            "beneficiaires" : ColumnDefn(_(u"Bénéficiaires"), 'left', 150, "beneficiaires", typeDonnee="texte"),
+            "rue" : ColumnDefn(_(u"Rue"), 'left', 120, "rue", typeDonnee="texte"),
+            "cp" : ColumnDefn(_(u"CP"), 'left', 70, "cp", typeDonnee="texte"),
+            "ville" : ColumnDefn(_(u"Ville"), 'left', 100, "ville", typeDonnee="texte"),
+            "type" : ColumnDefn(_(u"Type"), 'left', 110, "typeStr", typeDonnee="texte"),
+            "nom" : ColumnDefn(_(u"Nom"), 'left', 210, "nomCotisation", typeDonnee="texte"),
+            "type_cotisation" : ColumnDefn(_(u"Type"), 'left', 210, "nomTypeCotisation", typeDonnee="texte"),
+            "unite_cotisation" : ColumnDefn(_(u"Unité"), 'left', 90, "nomUniteCotisation", typeDonnee="texte"),
+            "numero" : ColumnDefn(_(u"Numéro"), 'left', 70, "numero", typeDonnee="texte"), 
+            "montant" : ColumnDefn(_(u"Montant"), 'left', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
+            "regle" : ColumnDefn(_(u"Réglé"), 'left', 70, "ventilation", typeDonnee="montant", stringConverter=FormateMontant), 
+            "date_reglement" : ColumnDefn(_(u"Date réglement"), 'left', 80, "dateReglement", typeDonnee="date", stringConverter=FormateDate), 
+            "mode_reglement" : ColumnDefn(_(u"Mode réglement"), 'left', 80, "modeReglement", typeDonnee="texte"), 
+            "solde" : ColumnDefn(_(u"Solde"), 'left', 80, "solde", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
+            "date_creation_carte" : ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
+            "depot_nom" : ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
             }
             
             
@@ -523,34 +527,34 @@ class ListView(FastObjectListView):
 ##            liste_Colonnes = [
 ##                ColumnDefn(u"", "left", 0, "IDcotisation"),
 ##                ColumnDefn(u"Du", 'left', 80, "date_debut", stringConverter=FormateDate), 
-##                ColumnDefn(u"Au", 'left', 80, "date_fin", stringConverter=FormateDate), 
-##                ColumnDefn(u"Bénéficiaires", 'left', 150, "beneficiaires"),
-##                ColumnDefn(u"Rue", 'left', 120, "rue"),
-##                ColumnDefn(u"CP", 'left', 70, "cp"),
-##                ColumnDefn(u"Ville", 'left', 100, "ville"),
-##                ColumnDefn(u"Type", 'left', 110, "typeStr"),
-##                ColumnDefn(u"Nom", 'left', 210, "nomCotisation"),
-##                ColumnDefn(u"Numéro", 'left', 70, "numero"), 
-##                ColumnDefn(u"Montant", 'left', 70, "montant", stringConverter=FormateMontant), 
-##                ColumnDefn(u"Réglé", 'left', 70, "ventilation", stringConverter=FormateMontant), 
-##                ColumnDefn(u"Date réglement", 'left', 80, "dateReglement", stringConverter=FormateDate), 
-##                ColumnDefn(u"Mode réglement", 'left', 80, "modeReglement"), 
-##                ColumnDefn(u"Solde", 'left', 80, "solde", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
-##                ColumnDefn(u"Création carte", 'left', 100, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-##                ColumnDefn(u"Dépôt carte", 'left', 100, "depotStr", imageGetter=GetImageDepot), 
+##                ColumnDefn(_(u"Au"), 'left', 80, "date_fin", stringConverter=FormateDate), 
+##                ColumnDefn(_(u"Bénéficiaires"), 'left', 150, "beneficiaires"),
+##                ColumnDefn(_(u"Rue"), 'left', 120, "rue"),
+##                ColumnDefn(_(u"CP"), 'left', 70, "cp"),
+##                ColumnDefn(_(u"Ville"), 'left', 100, "ville"),
+##                ColumnDefn(_(u"Type"), 'left', 110, "typeStr"),
+##                ColumnDefn(_(u"Nom"), 'left', 210, "nomCotisation"),
+##                ColumnDefn(_(u"Numéro"), 'left', 70, "numero"), 
+##                ColumnDefn(_(u"Montant"), 'left', 70, "montant", stringConverter=FormateMontant), 
+##                ColumnDefn(_(u"Réglé"), 'left', 70, "ventilation", stringConverter=FormateMontant), 
+##                ColumnDefn(_(u"Date réglement"), 'left', 80, "dateReglement", stringConverter=FormateDate), 
+##                ColumnDefn(_(u"Mode réglement"), 'left', 80, "modeReglement"), 
+##                ColumnDefn(_(u"Solde"), 'left', 80, "solde", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
+##                ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
+##                ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", imageGetter=GetImageDepot), 
 ##                ]
 ##        else :
 ##            # Mode famille
 ##            liste_Colonnes = [
 ##                ColumnDefn(u"", "left", 0, "IDcotisation"),
 ##                ColumnDefn(u"Du", 'left', 80, "date_debut", stringConverter=FormateDate), 
-##                ColumnDefn(u"Au", 'left', 80, "date_fin", stringConverter=FormateDate), 
-##                ColumnDefn(u"Bénéficiaires", 'left', 150, "beneficiaires"),
-##                ColumnDefn(u"Type", 'left', 130, "typeStr"),
-##                ColumnDefn(u"Nom", 'left', 230, "nomCotisation"),
-##                ColumnDefn(u"Numéro", 'left', 70, "numero"), 
-##                ColumnDefn(u"Création carte", 'left', 90, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-##                ColumnDefn(u"Dépôt carte", 'left', 100, "depotStr", imageGetter=GetImageDepot), 
+##                ColumnDefn(_(u"Au"), 'left', 80, "date_fin", stringConverter=FormateDate), 
+##                ColumnDefn(_(u"Bénéficiaires"), 'left', 150, "beneficiaires"),
+##                ColumnDefn(_(u"Type"), 'left', 130, "typeStr"),
+##                ColumnDefn(_(u"Nom"), 'left', 230, "nomCotisation"),
+##                ColumnDefn(_(u"Numéro"), 'left', 70, "numero"), 
+##                ColumnDefn(_(u"Création carte"), 'left', 90, "date_creation_carte", stringConverter=FormateDate, imageGetter=GetImageCreation), 
+##                ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", imageGetter=GetImageDepot), 
 ##                ]
         
             
@@ -573,7 +577,7 @@ class ListView(FastObjectListView):
             if self.checkColonne == True : tri += 1
             self.SetSortColumn(self.columns[tri])
             
-        self.SetEmptyListMsg(u"Aucune cotisation")
+        self.SetEmptyListMsg(_(u"Aucune cotisation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
        
@@ -614,7 +618,7 @@ class ListView(FastObjectListView):
         if self.mode != "liste" :
             
             # Item Ajouter
-            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -623,7 +627,7 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
         
             # Item Modifier
-            item = wx.MenuItem(menuPop, 20, u"Modifier")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
             bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -631,7 +635,7 @@ class ListView(FastObjectListView):
             if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -641,7 +645,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Imprimer cotisation
-        item = wx.MenuItem(menuPop, 100, u"Imprimer la cotisation")
+        item = wx.MenuItem(menuPop, 100, _(u"Imprimer la cotisation"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -649,7 +653,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
 
         # Item Envoyer la cotisation par Email
-        item = wx.MenuItem(menuPop, 110, u"Envoyer la cotisation par Email")
+        item = wx.MenuItem(menuPop, 110, _(u"Envoyer la cotisation par Email"))
         bmp = wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -659,7 +663,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Recu Dons aux oeuvres
-        item = wx.MenuItem(menuPop, 60, u"Editer un reçu Dons aux Oeuvres (PDF)")
+        item = wx.MenuItem(menuPop, 60, _(u"Editer un reçu Dons aux Oeuvres (PDF)"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -671,7 +675,7 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
             
             # Item Ouvrir fiche famille
-            item = wx.MenuItem(menuPop, 70, u"Ouvrir la fiche famille correspondante")
+            item = wx.MenuItem(menuPop, 70, _(u"Ouvrir la fiche famille correspondante"))
             bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -683,13 +687,13 @@ class ListView(FastObjectListView):
         if self.checkColonne == True :
             
             # Item Tout cocher
-            item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+            item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
             # Item Tout décocher
-            item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+            item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.CocheRien, id=80)
@@ -697,14 +701,14 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression de la liste")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression de la liste"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer la liste")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer la liste"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -713,14 +717,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -731,7 +735,7 @@ class ListView(FastObjectListView):
 
     def Reedition(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune cotisation à imprimer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation à imprimer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -743,7 +747,7 @@ class ListView(FastObjectListView):
     def RecuCotisation(self, event):
         """ Imprimer dons aux oeuvres """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune cotisation dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -757,14 +761,14 @@ class ListView(FastObjectListView):
     def EnvoyerEmail(self, event):
         """ Envoyer la cotisation par Email """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune cotisation à envoyer par Email !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation à envoyer par Email !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         # Envoi du mail
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/Cotisation.pdf", categorie="cotisation")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=track.IDfamille, nomDoc="Temp/COTISATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="cotisation")
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):        
         """ Création du PDF pour Email """
@@ -778,10 +782,10 @@ class ListView(FastObjectListView):
         return dictChampsFusion[IDcotisation]
 
     def GetTextesImpression(self):
-        total = u"%d cotisations. " % len(self.donnees)
+        total = _(u"%d cotisations. ") % len(self.donnees)
         if self.filtres != None :
             from DLG_Filtres_cotisations import GetTexteFiltres 
-            intro = total + u"Filtres de sélection : %s" % GetTexteFiltres(self.filtres)
+            intro = total + _(u"Filtres de sélection : %s") % GetTexteFiltres(self.filtres)
         else :
             intro = None
         return intro, total
@@ -789,22 +793,22 @@ class ListView(FastObjectListView):
     def Apercu(self, event=None):
         import UTILS_Printer
         txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des cotisations", intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des cotisations"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event=None):
         import UTILS_Printer
         txtIntro, txtTotal = self.GetTextesImpression()
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des cotisations", intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des cotisations"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des cotisations")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des cotisations"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des cotisations")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des cotisations"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -837,7 +841,7 @@ class ListView(FastObjectListView):
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, u"Pour bénéficier d'une cotisation, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !", u"Création de cotisation impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour bénéficier d'une cotisation, un individu doit obligatoirement être\nrattaché comme représentant ou enfant à une fiche famille !"), _(u"Création de cotisation impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -857,7 +861,7 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_cotisations", "modifier") == False : return
         if self.IDindividu != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_cotisations", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune cotisation à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -870,7 +874,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune cotisation à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -878,7 +882,7 @@ class ListView(FastObjectListView):
         if len(self.GetTracksCoches()) > 0 :
             # Suppression multiple
             listeSelections = self.GetTracksCoches()
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer les %d cotisations cochées ?" % len(listeSelections), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les %d cotisations cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -887,7 +891,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la cotisation n°%s ?" % listeSelections[0].numero, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la cotisation n°%s ?") % listeSelections[0].numero, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -922,10 +926,10 @@ class ListView(FastObjectListView):
                     nbreCotisations += 1
             if nbreCotisations > 0 :
                 if nbreCotisations == 1 :
-                    message = u"Cette cotisation apparaît déjà sur une facture. Il est donc impossible de la supprimer."
+                    message = _(u"Cette cotisation apparaît déjà sur une facture. Il est donc impossible de la supprimer.")
                 else :
-                    message = u"%d de ces cotisations apparaissent déjà sur une ou plusieurs factures. Il est donc impossible d'effectuer la suppression." % len(listeFactures)
-                dlg = wx.MessageDialog(self, message, u"Suppression impossible", wx.OK | wx.ICON_ERROR)
+                    message = _(u"%d de ces cotisations apparaissent déjà sur une ou plusieurs factures. Il est donc impossible d'effectuer la suppression.") % len(listeFactures)
+                dlg = wx.MessageDialog(self, message, _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -942,7 +946,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : track.IDindividu,
                 "IDfamille" : track.IDfamille,
                 "IDcategorie" : 23, 
-                "action" : u"Suppression de la cotisation ID%d '%s' pour la période du %s au %s" % (track.IDcotisation, track.nomCotisation, UTILS_Dates.DateEngFr(str(track.date_debut)), UTILS_Dates.DateEngFr(str(track.date_fin))),
+                "action" : _(u"Suppression de la cotisation ID%d '%s' pour la période du %s au %s") % (track.IDcotisation, track.nomCotisation, UTILS_Dates.DateEngFr(str(track.date_debut)), UTILS_Dates.DateEngFr(str(track.date_fin))),
                 },])
                 
             # Actualisation de l'affichage
@@ -954,7 +958,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -976,7 +980,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une cotisation...")
+        self.SetDescriptiveText(_(u"Rechercher une cotisation..."))
         self.ShowSearchButton(True)
         
         if listview != None :
@@ -1017,7 +1021,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "beneficiaires" : {"mode" : "nombre", "singulier" : u"cotisation", "pluriel" : u"cotisations", "alignement" : wx.ALIGN_CENTER},
+            "beneficiaires" : {"mode" : "nombre", "singulier" : _(u"cotisation"), "pluriel" : _(u"cotisations"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             "ventilation" : {"mode" : "total"},
             "solde" : {"mode" : "total"},

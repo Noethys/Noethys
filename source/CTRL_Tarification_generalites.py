@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -87,32 +90,32 @@ class Panel(wx.Panel):
         self.parent = parent
 
         # Validité
-        self.label_date_debut = wx.StaticText(self, -1, u"A partir du :")
+        self.label_date_debut = wx.StaticText(self, -1, _(u"A partir du :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.check_date_fin = wx.CheckBox(self, -1, u"Jusqu'au")
+        self.check_date_fin = wx.CheckBox(self, -1, _(u"Jusqu'au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Description
-        self.label_description = wx.StaticText(self, -1, u"Nom du tarif :")
+        self.label_description = wx.StaticText(self, -1, _(u"Nom du tarif :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"") 
 
         # Observations
-        self.label_observations = wx.StaticText(self, -1, u"Observations :")
+        self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE) 
 
         # Catégories de tarifs
-        self.label_categories = wx.StaticText(self, -1, u"Catégories :")
+        self.label_categories = wx.StaticText(self, -1, _(u"Catégories :"))
         self.ctrl_categories = CTRL_Categories(self, IDactivite)
         self.ctrl_categories.SetMinSize((150, 100))
         
         # TVA
-        self.label_tva = wx.StaticText(self, -1, u"Taux TVA :")
+        self.label_tva = wx.StaticText(self, -1, _(u"Taux TVA :"))
         self.ctrl_tva = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
         self.ctrl_tva.SetFormat("%f")
         self.ctrl_tva.SetDigits(2)
         
         # Code comptable
-        self.label_code_comptable = wx.StaticText(self, -1, u"Code compta :")
+        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code compta :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"") 
 
         # Layout
@@ -150,12 +153,12 @@ class Panel(wx.Panel):
         sizer_base.Fit(self)
                 
         # Tooltips
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de validité")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de validité")
-        self.ctrl_description.SetToolTipString(u"Saisissez une description explicite pour ce tarif [Optionnel]")
-        self.ctrl_categories.SetToolTipString(u"Cochez les catégories de tarifs à rattacher à ce tarif")
-        self.ctrl_tva.SetToolTipString(u"Saisissez le taux de TVA inclus [Optionnel]")
-        self.ctrl_code_comptable.SetToolTipString(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_description.SetToolTipString(_(u"Saisissez une description explicite pour ce tarif [Optionnel]"))
+        self.ctrl_categories.SetToolTipString(_(u"Cochez les catégories de tarifs à rattacher à ce tarif"))
+        self.ctrl_tva.SetToolTipString(_(u"Saisissez le taux de TVA inclus [Optionnel]"))
+        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]"))
 
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDateFin, self.check_date_fin)
@@ -238,7 +241,7 @@ class Panel(wx.Panel):
         if validation == False : 
             return False
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début de validité !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -249,13 +252,13 @@ class Panel(wx.Panel):
             if validation == False : 
                 return False
             if self.ctrl_date_fin.GetDate() == None :
-                dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin de validité !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de validité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
             if self.ctrl_date_fin.GetDate() < self.ctrl_date_debut.GetDate() :
-                dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin supérieure à la date de début !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin supérieure à la date de début !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -264,7 +267,7 @@ class Panel(wx.Panel):
         # Vérifie que des catégories de tarifs ont été cochées
         listeCategories = self.ctrl_categories.GetIDcoches()
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune catégorie de tarifs.\nCe tarif sera donc inactif pour le moment...\n\nVoulez-vous quand-même continuer ?" , u"Erreur", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune catégorie de tarifs.\nCe tarif sera donc inactif pour le moment...\n\nVoulez-vous quand-même continuer ?") , _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -297,7 +300,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

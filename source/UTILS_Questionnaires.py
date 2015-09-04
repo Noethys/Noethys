@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import GestionDB
 import datetime
 
@@ -32,8 +34,9 @@ def GetReponse(dictReponses={}, IDquestion=None, ID=None):
         if dictReponses[IDquestion].has_key(ID) :
             return dictReponses[IDquestion][ID]
     return u""
-
-
+    
+    
+    
 class Questionnaires():
     def __init__(self):
         self.dictControles = self.GetControles() 
@@ -84,9 +87,9 @@ class Questionnaires():
                 texteReponse = ", ".join(listeTemp2)
         if filtre == "coche" : 
             if reponse == 1 : 
-                texteReponse = u"Oui"
+                texteReponse = _(u"Oui")
             else :
-                texteReponse = u"Non"
+                texteReponse = _(u"Non")
         if filtre == "date" : texteReponse = DateEngEnDateDD(reponse)
         return texteReponse
 
@@ -111,7 +114,7 @@ class Questionnaires():
         listeResultats = []
         for IDquestion, label, type, controle, defaut in listeQuestions :
             if self.GetFiltre(controle) != None :
-                listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut})
+                listeResultats.append({"IDquestion":IDquestion, "label":label, "type":type, "controle":controle, "defaut":defaut, "filtre":self.GetFiltre(controle)})
             
         return listeResultats
 

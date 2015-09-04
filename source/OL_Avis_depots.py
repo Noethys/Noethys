@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -53,14 +56,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"Index", "left", 0, "index", typeDonnee="entier"),
-            ColumnDefn(u"Famille", "left", 240, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Email", 'left', 180, "adresse", typeDonnee="texte"),
-            ColumnDefn(u"Règlement", "left", 200, "detail_reglement", typeDonnee="texte"), 
+            ColumnDefn(_(u"Index"), "left", 0, "index", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), "left", 240, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Email"), 'left', 180, "adresse", typeDonnee="texte"),
+            ColumnDefn(_(u"Règlement"), "left", 200, "detail_reglement", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune donnée")
+        self.SetEmptyListMsg(_(u"Aucune donnée"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[2])
         self.CreateCheckStateColumn(1)
@@ -77,14 +80,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
             
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
         bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -93,14 +96,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -109,14 +112,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -127,21 +130,21 @@ class ListView(FastObjectListView):
     
     def Apercu(self, event=None):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des avis de dépôts", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des avis de dépôts"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event=None):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des avis de dépôts", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des avis de dépôts"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des avis de dépôts")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des avis de dépôts"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des avis de dépôts")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des avis de dépôts"))
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -172,7 +175,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         if listview != None :
@@ -221,7 +224,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
 
         listeDonnees = [
-            {"IDfamille" : 10, "nomTitulaires": "DUPOND", "adresse" : "dupond@test.test", "pieces" : [], "champs" : {"{DATE_REGLEMENT}" : "01/01/2011", "{MODE_REGLEMENT}" : u"Chèque", "{MONTANT_REGLEMENT}" : u"10.00"} }
+            {"IDfamille" : 10, "nomTitulaires": "DUPOND", "adresse" : "dupond@test.test", "pieces" : [], "champs" : {"{DATE_REGLEMENT}" : "01/01/2011", "{MODE_REGLEMENT}" : _(u"Chèque"), "{MONTANT_REGLEMENT}" : u"10.00"} }
             ]
 
         self.myOlv = ListView(panel, -1, listeDonnees=listeDonnees, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER)

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import CTRL_Liste_factures
 import GestionDB
@@ -23,8 +26,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDlot = IDlot
         
-        intro = u"Cochez les factures que vous souhaitez ajouter au bordereau PES ORMC puis cliquez sur le bouton 'Ok'."
-        titre = u"Ajouter des factures au bordereau PES ORMC"
+        intro = _(u"Cochez les factures que vous souhaitez ajouter au bordereau PES ORMC puis cliquez sur le bouton 'Ok'.")
+        titre = _(u"Ajouter des factures au bordereau PES ORMC")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Facture.png")
         
@@ -33,9 +36,9 @@ class Dialog(wx.Dialog):
             ]
         self.ctrl_factures = CTRL_Liste_factures.CTRL(self, filtres=filtres)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_OK, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, id=wx.ID_OK, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -47,9 +50,9 @@ class Dialog(wx.Dialog):
         self.ctrl_factures.MAJ() 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((930, 700))
 
     def __do_layout(self):
@@ -99,7 +102,7 @@ class Dialog(wx.Dialog):
         # Validation des données
         tracks = self.ctrl_factures.GetTracksCoches()
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à inclure dans votre bordereau !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à inclure dans votre bordereau !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -125,26 +128,26 @@ class Dialog(wx.Dialog):
                     if dictTemp["IDlot"] != self.IDlot :
                         nomLot = dictTemp["nomLot"]
                         statut = dictTemp["statut"]
-                        listeAutresLots.append(u"- %s (avec le statut '%s')" % (nomLot, statut.capitalize()))
+                        listeAutresLots.append(_(u"- %s (avec le statut '%s')") % (nomLot, statut.capitalize()))
                         
             if len(listeAutresLots) > 0 :
-                message1 = u"La facture n°%s est déjà présente dans les autres bordereaux suivants. Souhaitez-vous tout de même l'inclure de votre bordereau actuel ?" % track.numero
+                message1 = _(u"La facture n°%s est déjà présente dans les autres bordereaux suivants. Souhaitez-vous tout de même l'inclure de votre bordereau actuel ?") % track.numero
                 message2 = "\n".join(listeAutresLots)
-                dlg = dialogs.MultiMessageDialog(self, message1, caption=u"Avertissement", msg2=message2, style = wx.ICON_QUESTION |wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=None, btnLabels={wx.ID_YES : u"Oui", wx.ID_NO : u"Non", wx.ID_CANCEL : u"Annuler"})
+                dlg = dialogs.MultiMessageDialog(self, message1, caption=_(u"Avertissement"), msg2=message2, style = wx.ICON_QUESTION |wx.NO | wx.CANCEL | wx.YES | wx.YES_DEFAULT, icon=None, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_NO : _(u"Non"), wx.ID_CANCEL : _(u"Annuler")})
                 reponse = dlg.ShowModal() 
                 dlg.Destroy() 
                 if reponse != wx.ID_YES :
                     return False
                     
         if len(listeErreursSoldes) > 0 :
-            dlg = wx.MessageDialog(None, u"Vous avez sélectionné %d factures qui ont déjà été payées.\n\nSouhaitez-vous tout de même les inclure dans le bordereau ?" % len(listeErreursSoldes), u"Réinitialisation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(None, _(u"Vous avez sélectionné %d factures qui ont déjà été payées.\n\nSouhaitez-vous tout de même les inclure dans le bordereau ?") % len(listeErreursSoldes), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
             
 ##        if len(listeErreursRIB) > 0 :
-##            dlg = wx.MessageDialog(self, u"Vous avez sélectionné %d factures pour des familles qui n'ont pas d'autorisation de prélèvement !" % len(listeErreursRIB), u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné %d factures pour des familles qui n'ont pas d'autorisation de prélèvement !") % len(listeErreursRIB), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return False

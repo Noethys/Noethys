@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -86,14 +89,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDlieu", typeDonnee="entier"),
-            ColumnDefn(u"Nom", 'left', 280, "nom", typeDonnee="texte"),
-            ColumnDefn(u"C.P.", "left", 50, "cp", typeDonnee="texte"),
-            ColumnDefn(u"Ville", "left", 160, "ville", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDlieu", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), 'left', 280, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"C.P."), "left", 50, "cp", typeDonnee="texte"),
+            ColumnDefn(_(u"Ville"), "left", 160, "ville", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun%s %s" % (self.masculinFeminin, self.categorieSingulier))
+        self.SetEmptyListMsg(_(u"Aucun%s %s") % (self.masculinFeminin, self.categorieSingulier))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -128,7 +131,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -137,7 +140,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -145,7 +148,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -155,14 +158,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -173,19 +176,19 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des %s" % self.categoriePluriel, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des %s") % self.categoriePluriel, format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des %s" % self.categoriePluriel, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des %s") % self.categoriePluriel, format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_lieux", "creer") == False : return
         import DLG_Saisie_lieu
-        dlg = DLG_Saisie_lieu.Dialog(self, titre=u"Saisie d'un%s %s" % (self.masculinFeminin, self.categorieSingulier))
+        dlg = DLG_Saisie_lieu.Dialog(self, titre=_(u"Saisie d'un%s %s") % (self.masculinFeminin, self.categorieSingulier))
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetNom()
             cp = dlg.GetCp()
@@ -205,13 +208,13 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_lieux", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun%s %s à modifier dans la liste !" % (self.masculinFeminin, self.categorieSingulier), u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun%s %s à modifier dans la liste !") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import DLG_Saisie_lieu
         IDlieu = self.Selection()[0].IDlieu
-        dlg = DLG_Saisie_lieu.Dialog(self, titre=u"Modification d'un%s %s" % (self.masculinFeminin, self.categorieSingulier))
+        dlg = DLG_Saisie_lieu.Dialog(self, titre=_(u"Modification d'un%s %s") % (self.masculinFeminin, self.categorieSingulier))
         dlg.SetNom(self.Selection()[0].nom)
         dlg.SetCp(self.Selection()[0].cp)
         dlg.SetVille(self.Selection()[0].ville)
@@ -233,7 +236,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_lieux", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun%s %s dans la liste !" % (self.masculinFeminin, self.categorieSingulier), u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun%s %s dans la liste !") % (self.masculinFeminin, self.categorieSingulier), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -249,13 +252,13 @@ class ListView(FastObjectListView):
 ##        nbreUnites = int(DB.ResultatReq()[0][0])
 ##        DB.Close()
 ##        if nbreUnites > 0 :
-##            dlg = wx.MessageDialog(self, u"Cette compagnie a déjà été attribuée à %d unité(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !" % nbreUnites, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Cette compagnie a déjà été attribuée à %d unité(s) de consommation.\n\nVous ne pouvez donc pas le supprimer !") % nbreUnites, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce lieu ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce lieu ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("transports_lieux", "IDlieu", IDlieu)
@@ -268,12 +271,12 @@ class ListView(FastObjectListView):
 
 
 class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent, categorieSingulier=u"aéroport", masculinFeminin=""):
+    def __init__(self, parent, categorieSingulier=_(u"aéroport"), masculinFeminin=""):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un%s %s..." % (masculinFeminin, categorieSingulier))
+        self.SetDescriptiveText(_(u"Rechercher un%s %s...") % (masculinFeminin, categorieSingulier))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -315,7 +318,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, categorie="aeroport", categorieSingulier=u"aéroport", categoriePluriel=u"aéroports", masculinFeminin="", name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, categorie="aeroport", categorieSingulier=_(u"aéroport"), categoriePluriel=_(u"aéroports"), masculinFeminin="", name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import random
 import wx.lib.agw.customtreectrl as CT
 
@@ -16,16 +19,16 @@ import wx.lib.agw.customtreectrl as CT
 # Liste d'"l"ments pour les tests uniquement :
 LISTE_ITEMS_TESTS = [
     # Fichier
-    {"code" : "menu_fichier", "label" : u"Fichier", "items" : [
-            {"code" : "nouveau_fichier", "label" : u"Créer un nouveau fichier\tCtrl+N", "infobulle" : u"Créer un nouveau fichier", "image" : "Images/16x16/Fichier_nouveau.png", "action" : None},
-            {"code" : "ouvrir_fichier", "label" : u"Ouvrir un fichier\tCtrl+O", "infobulle" : u"Ouvrir un fichier existant", "image" : "Images/16x16/Fichier_ouvrir.png", "action" : None},
-            {"code" : "fermer_fichier", "label" : u"Fermer le fichier\tCtrl+F", "infobulle" : u"Fermer le fichier ouvert", "image" : "Images/16x16/Fichier_fermer.png", "action" : None, "actif" : False},
+    {"code" : "menu_fichier", "label" : _(u"Fichier"), "items" : [
+            {"code" : "nouveau_fichier", "label" : _(u"Créer un nouveau fichier\tCtrl+N"), "infobulle" : _(u"Créer un nouveau fichier"), "image" : "Images/16x16/Fichier_nouveau.png", "action" : None},
+            {"code" : "ouvrir_fichier", "label" : _(u"Ouvrir un fichier\tCtrl+O"), "infobulle" : _(u"Ouvrir un fichier existant"), "image" : "Images/16x16/Fichier_ouvrir.png", "action" : None},
+            {"code" : "fermer_fichier", "label" : _(u"Fermer le fichier\tCtrl+F"), "infobulle" : _(u"Fermer le fichier ouvert"), "image" : "Images/16x16/Fichier_fermer.png", "action" : None, "actif" : False},
             ],
     },
     # Paramétrage
-    {"code" : "menu_parametrage", "label" : u"Paramétrage", "items" : [
-            {"code" : "preferences", "label" : u"Préférences", "infobulle" : u"Préférences", "image" : "Images/16x16/Mecanisme.png", "action" : None},
-            {"code" : "enregistrement", "label" : u"Enregistrement", "infobulle" : u"Enregistrement", "image" : "Images/16x16/Cle.png", "action" : None},
+    {"code" : "menu_parametrage", "label" : _(u"Paramétrage"), "items" : [
+            {"code" : "preferences", "label" : _(u"Préférences"), "infobulle" : _(u"Préférences"), "image" : "Images/16x16/Mecanisme.png", "action" : None},
+            {"code" : "enregistrement", "label" : _(u"Enregistrement"), "infobulle" : _(u"Enregistrement"), "image" : "Images/16x16/Cle.png", "action" : None},
         ],
     },
     ]
@@ -67,11 +70,11 @@ class CTRL_elements(wx.TreeCtrl):
         
         # Données
         self.listeElements = [
-            {"code" : "elements_speciaux", "label" : u"Eléments spéciaux", "elements" : [
+            {"code" : "elements_speciaux", "label" : _(u"Eléments spéciaux"), "elements" : [
                 {"code" : "|", "infobulle" : u"<Séparateur>", "image" : "Images/16x16/Barreoutils_separator.png"},
                 {"code" : "-", "infobulle" : u"<Espace>", "image" : "Images/16x16/Barreoutils_spacer.png"},
                 ]},
-            {"code" : "elements_menus", "label" : u"Eléments du menu", "elements" : 
+            {"code" : "elements_menus", "label" : _(u"Eléments du menu"), "elements" : 
                 GetListeItemsMenu()
                 },
             ]
@@ -230,10 +233,10 @@ class CTRL_Style(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeStyles = [
-            {"code" : "textedroite", "label" : u"Icône + texte à droite"},
-            {"code" : "textedessous", "label" : u"Icône + texte dessous"},
-            {"code" : "texteseul", "label" : u"Texte uniquement"},
-            {"code" : "imageseule", "label" : u"Icône uniquement"},            
+            {"code" : "textedroite", "label" : _(u"Icône + texte à droite")},
+            {"code" : "textedessous", "label" : _(u"Icône + texte dessous")},
+            {"code" : "texteseul", "label" : _(u"Texte uniquement")},
+            {"code" : "imageseule", "label" : _(u"Icône uniquement")},            
             ]
         self.MAJ() 
         self.SetSelection(0)
@@ -264,36 +267,36 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_observations = wx.StaticText(self, wx.ID_ANY, u"Observations :")
-        self.label_style = wx.StaticText(self, wx.ID_ANY, u"Style :")
+        self.label_observations = wx.StaticText(self, wx.ID_ANY, _(u"Observations :"))
+        self.label_style = wx.StaticText(self, wx.ID_ANY, _(u"Style :"))
         self.ctrl_style = CTRL_Style(self)
         self.ctrl_observations = wx.TextCtrl(self, wx.ID_ANY, u"", style=wx.TE_MULTILINE)
         
         # Elements
-        self.box_elements_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Eléments")
+        self.box_elements_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Eléments"))
 
-        self.label_elements_dispo = wx.StaticText(self, wx.ID_ANY, u"Eléments disponibles")
+        self.label_elements_dispo = wx.StaticText(self, wx.ID_ANY, _(u"Eléments disponibles"))
         self.ctrl_elements_dispo = CTRL_elements_dispo(self)
         self.ctrl_elements_dispo.SetMinSize((250, 50))
 
-        self.bouton_droite = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Avancer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_gauche = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Reculer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_droite = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Avancer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_gauche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Reculer.png", wx.BITMAP_TYPE_ANY))
 
-        self.label_elements_barre = wx.StaticText(self, wx.ID_ANY, u"Eléments de la barre")
+        self.label_elements_barre = wx.StaticText(self, wx.ID_ANY, _(u"Eléments de la barre"))
         self.ctrl_elements_barre = CTRL_elements_barre(self)
         self.ctrl_elements_barre.SetMinSize((250, 50))
 
-##        self.bouton_modifier = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_monter = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_descendre = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
+##        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -310,27 +313,27 @@ class Dialog(wx.Dialog):
         # Init contrôles
         self.ctrl_elements_dispo.MAJ() 
         if texte == None :
-            self.SetTitle(u"Saisie d'une barre d'outils")
+            self.SetTitle(_(u"Saisie d'une barre d'outils"))
             self.code = self.GetCodeUnique() 
         else :
-            self.SetTitle(u"Modification d'une barre d'outils")
+            self.SetTitle(_(u"Modification d'une barre d'outils"))
             self.Importation(texte)
 
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((300, 21))
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour cette barre d'outils")
-        self.ctrl_style.SetToolTipString(u"Sélectionnez un style d'affichage pour cette barre d'outils")
-        self.ctrl_observations.SetToolTipString(u"Saisissez des observations (optionnel)")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette barre d'outils"))
+        self.ctrl_style.SetToolTipString(_(u"Sélectionnez un style d'affichage pour cette barre d'outils"))
+        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations (optionnel)"))
         self.label_elements_dispo.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.label_elements_barre.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.bouton_droite.SetToolTipString(u"Cliquez ici pour insérer l'élément sélectionné dans la barre d'outils (Vous pouvez également double-cliquer dessus)")
-        self.bouton_gauche.SetToolTipString(u"Cliquez ici pour retirer l'élément sélectionné de la barre d'outils (Vous pouvez également double-cliquer dessus)")
-        self.bouton_monter.SetToolTipString(u"Cliquez ici pour déplacer cet élément")
-        self.bouton_descendre.SetToolTipString(u"Cliquez ici pour déplacer cet élément")
-##        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier cet élément")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_droite.SetToolTipString(_(u"Cliquez ici pour insérer l'élément sélectionné dans la barre d'outils (Vous pouvez également double-cliquer dessus)"))
+        self.bouton_gauche.SetToolTipString(_(u"Cliquez ici pour retirer l'élément sélectionné de la barre d'outils (Vous pouvez également double-cliquer dessus)"))
+        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour déplacer cet élément"))
+        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour déplacer cet élément"))
+##        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier cet élément"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 550))
 
     def __do_layout(self):
@@ -463,14 +466,14 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):  
         nom = self.ctrl_nom.GetValue() 
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner le nom de la barre d'outils !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le nom de la barre d'outils !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         listeElements = self.GetElements() 
         if len(listeElements) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez insérer au moins un élément dans cette barre d'outils !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez insérer au moins un élément dans cette barre d'outils !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

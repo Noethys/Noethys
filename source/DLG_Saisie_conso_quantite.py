@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 
 class Dialog(wx.Dialog):
@@ -17,24 +20,24 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         if nouveau == True :
-            intro = u"Vous pouvez saisir ici une consommation de type quantité. Tapez la quantité dans le champ de saisie ou utilisez les flèches."
-            titre = u"Saisie d'une quantité"
+            intro = _(u"Vous pouvez saisir ici une consommation de type quantité. Tapez la quantité dans le champ de saisie ou utilisez les flèches.")
+            titre = _(u"Saisie d'une quantité")
         else:
-            intro = u"Vous pouvez modifier ici une consommation de type quantité. Tapez la quantité dans le champ de saisie ou utilisez les flèches."
-            titre = u"Modification d'une quantité"
+            intro = _(u"Vous pouvez modifier ici une consommation de type quantité. Tapez la quantité dans le champ de saisie ou utilisez les flèches.")
+            titre = _(u"Modification d'une quantité")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Ctrl_nombre.png")
         
-        self.label_quantite = wx.StaticText(self, -1, u"Quantité : ")
+        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité : "))
         self.label_quantite.SetFont(wx.Font(12, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         
         self.ctrl_quantite = wx.SpinCtrl(self, -1, u"1", min=1, max=1000, style=wx.TE_PROCESS_ENTER)
         self.ctrl_quantite.SetFont(wx.Font(22, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         self.ctrl_quantite.SetMinSize((250, 40))
         
-        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nouveau == True :
             self.bouton_supprimer.Enable(False)
@@ -47,9 +50,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk, self.ctrl_quantite)
         
     def __set_properties(self):
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer cette consommation")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer cette consommation"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((350, 110))
         
     def __do_layout(self):

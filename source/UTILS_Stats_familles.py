@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -133,7 +136,7 @@ def GetDictCaisses(DB, dictParametres):
             if dictCaisses.has_key(IDcaisse) :
                 nom = dictCaisses[IDcaisse] 
             else :
-                nom = u"Caisse inconnue"
+                nom = _(u"Caisse inconnue")
             dictResultats[IDcaisse] = {"nom" : nom, "nbreFamilles" : 0}
         dictResultats[IDcaisse]["nbreFamilles"] += 1
 
@@ -290,7 +293,7 @@ class Texte_nombre_familles(MODELES.Texte):
     def __init__(self):
         """ Recherche du nombre de familles dont les individus sont présents """
         MODELES.Texte.__init__(self)
-        self.nom = u"Nombre de familles"
+        self.nom = _(u"Nombre de familles")
         self.code = "texte_nombre_familles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -320,14 +323,14 @@ class Texte_nombre_familles(MODELES.Texte):
         listeDonnees = DB.ResultatReq()
         
         if dictParametres["mode"] == "presents" :
-            mot = u"présent"
+            mot = _(u"présent")
         else:
-            mot = u"inscrit"
+            mot = _(u"inscrit")
             
         if len(listeDonnees) == 0 or listeDonnees[0][0] == 0 : 
-            self.texte = u"Aucune famille dont les membres sont %ss." % mot
+            self.texte = _(u"Aucune famille dont les membres sont %ss.") % mot
         else:
-            self.texte = u"%d familles dont les membres sont %ss." % (len(listeDonnees), mot)
+            self.texte = _(u"%d familles dont les membres sont %ss.") % (len(listeDonnees), mot)
 
 
 
@@ -336,7 +339,7 @@ class Tableau_nombre_familles(MODELES.Tableau):
     """ Répartition du nombre de familles par activité """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition du nombre de familles par activité"
+        self.nom = _(u"Répartition du nombre de familles par activité")
         self.code = "tableau_nombre_familles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -379,7 +382,7 @@ class Tableau_nombre_familles(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Activité", "250"), (u"Nombre de familles", "150") ]
+        self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
         for IDactivite, listeFamilles in dictActiTemp.iteritems() :
             nomActivite = dictParametres["dictActivites"][IDactivite]
@@ -390,7 +393,7 @@ class Tableau_nombre_familles(MODELES.Tableau):
 class Graphe_nombre_familles(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Comparatif du nombre de familles"
+        self.nom = _(u"Comparatif du nombre de familles")
         self.code = "graphe_nombre_familles"
         self.taille = (470, 360)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -431,7 +434,7 @@ class Graphe_nombre_familles(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Comparatif du nombre de familles", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Comparatif du nombre de familles"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
@@ -447,7 +450,7 @@ class Tableau_repartition_caisses(MODELES.Tableau):
     """ Répartition des familles par caisse """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des familles par caisse"
+        self.nom = _(u"Répartition des familles par caisse")
         self.code = "tableau_repartition_caisses"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -459,7 +462,7 @@ class Tableau_repartition_caisses(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Caisse", "250"), (u"Nombre de familles", "150") ]
+        self.colonnes = [ (_(u"Caisse"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
         
         # Tri par nbre de familles
@@ -478,7 +481,7 @@ class Tableau_repartition_caisses(MODELES.Tableau):
 class Graphe_repartition_caisses(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition par caisse"
+        self.nom = _(u"Répartition par caisse")
         self.code = "graphe_repartition_caisses"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -514,7 +517,7 @@ class Graphe_repartition_caisses(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(u"Répartition par caisse", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par caisse"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -530,7 +533,7 @@ class Tableau_nombre_membres(MODELES.Tableau):
     """ Répartition du nombre de membres présents ou inscrits sur l'activité """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Nombre de membres présents"
+        self.nom = _(u"Nombre de membres présents")
         self.code = "tableau_nombre_membres"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -544,13 +547,13 @@ class Tableau_nombre_membres(MODELES.Tableau):
         dictResultats = GetDictMembres(DB, dictParametres) 
         
         if dictParametres["mode"] == "presents" :
-            self.nom = u"Nombre de membres présents"
+            self.nom = _(u"Nombre de membres présents")
         else:
-            self.nom = u"Nombre de membres inscrits"
+            self.nom = _(u"Nombre de membres inscrits")
 
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Nombre de membres", "250"), (u"Nombre de familles", "150") ]
+        self.colonnes = [ (_(u"Nombre de membres"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
         for nbreMembres, nbreFamilles in dictResultats.iteritems() :
             self.lignes.append((nbreMembres, nbreFamilles))
@@ -562,7 +565,7 @@ class Tableau_nombre_membres(MODELES.Tableau):
 class Graphe_nombre_membres(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Nombre de membres présents"
+        self.nom = _(u"Nombre de membres présents")
         self.code = "graphe_nombre_membres"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -576,9 +579,9 @@ class Graphe_nombre_membres(MODELES.Graphe):
         dictResultats = GetDictMembres(DB, dictParametres) 
         
         if dictParametres["mode"] == "presents" :
-            self.nom = u"Nombre de membres présents"
+            self.nom = _(u"Nombre de membres présents")
         else:
-            self.nom = u"Nombre de membres inscrits"
+            self.nom = _(u"Nombre de membres inscrits")
         
         listeValeurs = []
         listeLabels = []
@@ -595,9 +598,9 @@ class Graphe_nombre_membres(MODELES.Graphe):
         for nbreMembres, nbreFamilles in listeResultats :
             listeValeurs.append(nbreFamilles)
             if nbreMembres == 1 :
-                label = u"1 membre"
+                label = _(u"1 membre")
             else:
-                label = u"%d membres" % nbreMembres
+                label = _(u"%d membres") % nbreMembres
             listeLabels.append(label)
             
             couleur = 1.0 * nbreFamilles / nbreTotalFamilles
@@ -621,7 +624,7 @@ class Tableau_qf_tarifs(MODELES.Tableau):
     """ QF par tranches de tarifs """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Quotients familiaux par tranches de tarifs"
+        self.nom = _(u"Quotients familiaux par tranches de tarifs")
         self.code = "tableau_qf_tarifs"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -633,7 +636,7 @@ class Tableau_qf_tarifs(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Tranche QF", "250"), (u"Nombre de familles", "150") ]
+        self.colonnes = [ (_(u"Tranche QF"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
         
         # Tri des tranches par ordre croissant
@@ -644,11 +647,11 @@ class Tableau_qf_tarifs(MODELES.Tableau):
         # Création du tableau des valeurs
         for tranche in listeTranches :
             if tranche == "autre" : 
-                label = u"Autre"
+                label = _(u"Autre")
                 if dictTranches[tranche] == 0 : 
                     label = None
             elif tranche == "pasqf" :
-                label = u"Sans QF"
+                label = _(u"Sans QF")
             else :
                 label = u"%d - %d" % tranche
             if label != None :
@@ -658,7 +661,7 @@ class Tableau_qf_tarifs(MODELES.Tableau):
 class Graphe_qf_tarifs(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Quotients familiaux par tranches de tarifs"
+        self.nom = _(u"Quotients familiaux par tranches de tarifs")
         self.code = "graphe_qf_tarifs"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -687,11 +690,11 @@ class Graphe_qf_tarifs(MODELES.Graphe):
             for tranche in listeTranches :
                 valeur = dictTranches[tranche]
                 if tranche == "autre" : 
-                    label = u"Autre"
+                    label = _(u"Autre")
                     if dictTranches[tranche] == 0 : 
                         label = None
                 elif tranche == "pasqf" :
-                    label = u"Sans QF"
+                    label = _(u"Sans QF")
                 else :
                     label = u"%d - %d" % tranche
                 if label != None :
@@ -719,7 +722,7 @@ class Tableau_qf_defaut(MODELES.Tableau):
     """ QF par tranches de tarifs """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Quotients familiaux par tranches de 100"
+        self.nom = _(u"Quotients familiaux par tranches de 100")
         self.code = "tableau_qf_defaut"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -731,7 +734,7 @@ class Tableau_qf_defaut(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Tranche QF", "250"), (u"Nombre de familles", "150") ]
+        self.colonnes = [ (_(u"Tranche QF"), "250"), (_(u"Nombre de familles"), "150") ]
         self.lignes = []
         
         # Tri des tranches par ordre croissant
@@ -742,11 +745,11 @@ class Tableau_qf_defaut(MODELES.Tableau):
         # Création du tableau des valeurs
         for tranche in listeTranches :
             if tranche == "autre" : 
-                label = u"Autre"
+                label = _(u"Autre")
                 if dictTranches[tranche] == 0 : 
                     label = None
             elif tranche == "pasqf" :
-                label = u"Sans QF"
+                label = _(u"Sans QF")
             else :
                 label = u"%d - %d" % tranche
             if label != None :
@@ -756,7 +759,7 @@ class Tableau_qf_defaut(MODELES.Tableau):
 class Graphe_qf_defaut2(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Quotients familiaux par tranches de 100"
+        self.nom = _(u"Quotients familiaux par tranches de 100")
         self.code = "graphe_qf_defaut"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -784,11 +787,11 @@ class Graphe_qf_defaut2(MODELES.Graphe):
         for tranche in listeTranches :
             valeur = dictTranches[tranche]
             if tranche == "autre" : 
-                label = u"Autre"
+                label = _(u"Autre")
                 if dictTranches[tranche] == 0 : 
                     label = None
             elif tranche == "pasqf" :
-                label = u"Sans QF"
+                label = _(u"Sans QF")
             else :
                 label = u"%d - %d" % tranche
             if label != None and valeur != 0 :
@@ -815,7 +818,7 @@ class Graphe_qf_defaut2(MODELES.Graphe):
 class Graphe_qf_defaut(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Quotients familiaux par tranches de 100"
+        self.nom = _(u"Quotients familiaux par tranches de 100")
         self.code = "graphe_qf_defaut"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -856,7 +859,7 @@ class Graphe_qf_defaut(MODELES.Graphe):
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
         # Axe horizontal
-        ax.set_xlabel(u"Tranches", fontsize=8)
+        ax.set_xlabel(_(u"Tranches"), fontsize=8)
         ind = arange(len(listeLabels)) 
         ax.set_xticks(ind + width) 
         ax.set_xticklabels(listeLabels)
@@ -898,7 +901,7 @@ if __name__ == '__main__':
         "mode" : "presents",
         "periode" : {"type":"annee", "annee":annee, "date_debut":datetime.date(annee, 1, 1), "date_fin":datetime.date(annee, 12, 31)}, 
         "listeActivites" : [1, 2, 3, 4, 5], 
-        "dictActivites" : {1 : u"Centre de Loisirs", 2 : u"Action 10-14 ans", 3 : u"Camp 4-6 ans", 4 : u"Camp 6-9 ans", 5 : u"Camp 10-14 ans", 6 : u"Art floral", 7 : u"Yoga"}, 
+        "dictActivites" : {1 : _(u"Centre de Loisirs"), 2 : _(u"Action 10-14 ans"), 3 : _(u"Camp 4-6 ans"), 4 : _(u"Camp 6-9 ans"), 5 : _(u"Camp 10-14 ans"), 6 : _(u"Art floral"), 7 : _(u"Yoga")}, 
         }
     frame_1 = MODELES.FrameTest(objet=Graphe_qf_defaut(), dictParametres=dictParametres)
     app.SetTopWindow(frame_1)

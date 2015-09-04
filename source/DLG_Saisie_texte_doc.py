@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Documents_champs
 import DLG_Saisie_formule
 import wx.lib.agw.hyperlink as Hyperlink
@@ -48,20 +51,20 @@ class Dialog(wx.Dialog):
         self.listeChamps = listeChamps 
         self.texte = texte
 
-        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, u"Saisie de texte")
-        self.staticbox_champs_staticbox = wx.StaticBox(self, -1, u"Champs disponibles")
-        self.label_intro = wx.StaticText(self, -1, u"Vous pouvez écrire votre texte et insérer des champs en double-cliquant sur un item de la liste.", style=wx.ALIGN_CENTER)
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Saisie de texte"))
+        self.staticbox_champs_staticbox = wx.StaticBox(self, -1, _(u"Champs disponibles"))
+        self.label_intro = wx.StaticText(self, -1, _(u"Vous pouvez écrire votre texte et insérer des champs en double-cliquant sur un item de la liste."), style=wx.ALIGN_CENTER)
         self.ctrl_champs = OL_Documents_champs.ListView(self, listeChamps=listeChamps, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_recherche = OL_Documents_champs.BarreRecherche(self, self.ctrl_champs)
         self.ctrl_champs.SetMinSize((-1, 300))
         self.ctrl_champs.MAJ() 
-        self.staticbox_champs_staticbox.SetLabel(u"%d champs disponibles" % self.ctrl_champs.GetNbreChamps())
+        self.staticbox_champs_staticbox.SetLabel(_(u"%d champs disponibles") % self.ctrl_champs.GetNbreChamps())
         self.ctrl_texte = wx.TextCtrl(self, -1, self.texte, style=wx.TE_MULTILINE)
-        self.hyper_formule = Hyperlien(self, label=u"Insérer une formule conditionnelle", infobulle=u"Cliquez ici pour insérer une formule conditionnelle", URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"Insérer une formule conditionnelle"), infobulle=_(u"Cliquez ici pour insérer une formule conditionnelle"), URL="")
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -74,10 +77,10 @@ class Dialog(wx.Dialog):
         self.ctrl_texte.SetInsertionPointEnd() 
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un texte")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'un texte"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 680))
 
     def __do_layout(self):
@@ -130,10 +133,10 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     listeChamps = [
-        (u"Nom de l'individu", u"DUPOND", u"{NOM_INDIVIDU}"),
-        (u"Prénom de l'individu", u"Gérard", u"{PRENOM_INDIVIDU}"),
+        (_(u"Nom de l'individu"), _(u"DUPOND"), u"{NOM_INDIVIDU}"),
+        (_(u"Prénom de l'individu"), _(u"Gérard"), u"{PRENOM_INDIVIDU}"),
         ]
-    dialog_1 = Dialog(None, texte=u"coucou !", listeChamps=listeChamps)
+    dialog_1 = Dialog(None, texte=_(u"coucou !"), listeChamps=listeChamps)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

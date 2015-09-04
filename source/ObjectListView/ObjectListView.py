@@ -914,7 +914,10 @@ class ObjectListView(wx.ListCtrl):
             newWidth = freeSpace * col.freeSpaceProportion / totalProportion
             boundedWidth = col.CalcBoundedWidth(newWidth)
             if self.GetColumnWidth(i) != boundedWidth:
-                self.SetColumnWidth(i, boundedWidth)
+                try :
+                    self.SetColumnWidth(i, boundedWidth)
+                except :
+                    pass
 
 
     def SetCheckState(self, modelObject, state):
@@ -1873,12 +1876,16 @@ class ObjectListView(wx.ListCtrl):
         # exception than it is to test for the class
         def _getSortValue(x):
             primary = sortColumn.GetValue(x)
+            if type(primary) == datetime.date :
+                primary = str(primary)
             try:
                 primary = primary.lower()
             except AttributeError:
                 pass
             if secondarySortColumn:
                 secondary = secondarySortColumn.GetValue(x)
+                if type(secondary) == datetime.date :
+                    secondary = str(secondary)
                 try:
                     secondary = secondary.lower()
                 except AttributeError:
@@ -2316,15 +2323,17 @@ class ObjectListView(wx.ListCtrl):
         
     def DefileDernier(self):
         """ Defile jusqu'au dernier item de la liste """
-        if self.GetFilter() != None :
-            listeObjets = self.GetFilteredObjects()
-        else :
-            listeObjets = self.GetObjects()
-        if len(listeObjets) > 0 :
-            dernierTrack = listeObjets[-1]
-            index = self.GetIndexOf(dernierTrack)
-            self.EnsureCellVisible(index, 0)
-
+        largeur, hauteur = self.GetSize()
+        if largeur > 0 and hauteur > 0 :
+            if self.GetFilter() != None :
+                listeObjets = self.GetFilteredObjects()
+            else :
+                listeObjets = self.GetObjects()
+            if len(listeObjets) > 0 :
+                dernierTrack = listeObjets[-1]
+                index = self.GetIndexOf(dernierTrack)
+                self.EnsureCellVisible(index, 0)
+            
     def Filtrer(self, texteRecherche=None):
         listeFiltres = []
         

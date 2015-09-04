@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 """
 IMPORTANT :
 J'ai rajoute la ligne 101 de gridlabelrenderer.py dans wxPython mixins :
@@ -16,6 +18,7 @@ if rows == [-1] : return
 
 
 import wx
+import CTRL_Bouton_image
 import wx.grid as gridlib
 ##import Outils.gridlabelrenderer as glr
 import wx.lib.mixins.gridlabelrenderer as glr
@@ -42,6 +45,7 @@ import UTILS_Questionnaires
 import UTILS_Divers
 import UTILS_Parametres
 import UTILS_Utilisateurs
+import FonctionsPerso
 
 import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
@@ -61,6 +65,7 @@ import CTRL_Grille_renderers
 AFFICHE_NOM_GROUPE = True
 AFFICHE_COLONNE_MEMO = True
 AFFICHE_COLONNE_TRANSPORTS = True
+FORMAT_LABEL_LIGNE = "nom_prenom"
 
 # Colonnes unités
 HAUTEUR_LIGNE = 30
@@ -93,8 +98,8 @@ DICT_ECOLES = {}
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -192,7 +197,7 @@ class BarreRecherche(wx.SearchCtrl):
         wx.SearchCtrl.__init__(self, parent, size=size, style=wx.TE_PROCESS_ENTER)
         self.parent = parent
         self.ctrl_grille = ctrl_grille
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
         self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
@@ -277,7 +282,15 @@ class Ligne():
         if modeLabel == "date" : 
             self.labelLigne = DateComplete(self.date)
         if modeLabel == "nom" : 
-            nomIndividu = u"%s %s" % (self.dictInfosIndividu["nom"], self.dictInfosIndividu["prenom"])
+            if FORMAT_LABEL_LIGNE == "nom_prenom" :
+                nomIndividu = u"%s %s" % (self.dictInfosIndividu["nom"], self.dictInfosIndividu["prenom"])
+            if FORMAT_LABEL_LIGNE == "prenom_nom" :
+                nomIndividu = u"%s %s" % (self.dictInfosIndividu["prenom"], self.dictInfosIndividu["nom"])
+            if FORMAT_LABEL_LIGNE == "nom_prenom_id" :
+                nomIndividu = u"%s %s (%s)" % (self.dictInfosIndividu["nom"], self.dictInfosIndividu["prenom"], self.IDindividu)
+            if FORMAT_LABEL_LIGNE == "prenom_nom_id" :
+                nomIndividu = u"%s %s (%s)" % (self.dictInfosIndividu["prenom"], self.dictInfosIndividu["nom"], self.IDindividu)
+
             self.labelLigne = nomIndividu
         
         # Couleurs de label
@@ -431,13 +444,13 @@ class Ligne():
         menuPop.AppendSeparator()
 
 ##        # Item Verrouillage
-##        item = wx.MenuItem(menuPop, 10, u"Verrouiller toutes les consommations")
+##        item = wx.MenuItem(menuPop, 10, _(u"Verrouiller toutes les consommations"))
 ##        bmp = wx.Bitmap("Images/16x16/Cadenas_ferme.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
 ##        self.grid.Bind(wx.EVT_MENU, self.Verrouillage, id=10)
 ##        
-##        item = wx.MenuItem(menuPop, 20, u"Déverrouiller toutes les consommations")
+##        item = wx.MenuItem(menuPop, 20, _(u"Déverrouiller toutes les consommations"))
 ##        bmp = wx.Bitmap("Images/16x16/Cadenas.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -453,23 +466,23 @@ class Ligne():
                     
         if nbreCasesReservations > 0 :
             
-            item = wx.MenuItem(menuPop, 30, u"Définir toutes les pointages de la ligne comme 'Pointage en attente'")
+            item = wx.MenuItem(menuPop, 30, _(u"Définir toutes les pointages de la ligne comme 'Pointage en attente'"))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=30)
             
-            item = wx.MenuItem(menuPop, 40, u"Pointer toutes les consommations de la ligne sur 'Présent'")
+            item = wx.MenuItem(menuPop, 40, _(u"Pointer toutes les consommations de la ligne sur 'Présent'"))
             bmp = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=40)
             
-            item = wx.MenuItem(menuPop, 50, u"Pointer toutes les consommations de la ligne sur 'Absence justifiée'")
+            item = wx.MenuItem(menuPop, 50, _(u"Pointer toutes les consommations de la ligne sur 'Absence justifiée'"))
             bmp = wx.Bitmap("Images/16x16/absentj.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=50)
             
-            item = wx.MenuItem(menuPop, 60, u"Pointer toutes les consommations de la ligne sur 'Absence injustifiée'")
+            item = wx.MenuItem(menuPop, 60, _(u"Pointer toutes les consommations de la ligne sur 'Absence injustifiée'"))
             bmp = wx.Bitmap("Images/16x16/absenti.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -501,7 +514,7 @@ class Ligne():
                 case.MemoriseValeurs()
                 case.renderer.MAJ()
         self.MAJctrl_totaux()
-        self.grid.listeHistorique.append((self.IDindividu, self.date, None, u"Modification de l'état de toutes les consommations de la ligne"))
+        self.grid.listeHistorique.append((self.IDindividu, self.date, None, _(u"Modification de l'état de toutes les consommations de la ligne")))
                 
     
     def Verrouillage(self, event):
@@ -566,11 +579,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.SetDefaultCellBackgroundColour(self.GetBackgroundColour())
         
         # Récupération des paramètres
-        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS
+        global AFFICHE_COLONNE_MEMO, AFFICHE_COLONNE_TRANSPORTS, FORMAT_LABEL_LIGNE
         
         parametresDefaut = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
             "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
+            "format_label_ligne" : FORMAT_LABEL_LIGNE,
             "affiche_sans_prestation" : True,
             "blocage_si_complet" : True,
             "hauteur_lignes" : HAUTEUR_LIGNE,
@@ -582,6 +596,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Paramètres divers
         AFFICHE_COLONNE_MEMO = dictParametres["affiche_colonne_memo"]
         AFFICHE_COLONNE_TRANSPORTS = dictParametres["affiche_colonne_transports"]
+        FORMAT_LABEL_LIGNE = dictParametres["format_label_ligne"]
         self.blocageSiComplet = dictParametres["blocage_si_complet"]
         self.afficheSansPrestation = dictParametres["affiche_sans_prestation"]
 
@@ -658,8 +673,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictAides = self.GetAides() 
                         
         
-    def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[]):
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+    def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[], modeSilencieux=False):
+        if modeSilencieux == False :
+            attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.mode = "individu"
         self.listeActivites = listeActivites
         self.listeSelectionIndividus = listeSelectionIndividus
@@ -670,10 +686,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Importation_forfaits(listeComptesPayeurs=[self.dictComptesPayeurs[self.IDfamille],]) 
         self.Importation_transports()
         self.MAJ()
-        attente.Destroy() 
+        if modeSilencieux == False :
+            attente.Destroy() 
 
-    def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None):
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+    def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None, modeSilencieux=False):
+        if modeSilencieux == False :
+            attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.mode = "date"
         self.listeActivites = listeActivites
         self.date = date
@@ -685,7 +703,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Importation_forfaits() 
         self.Importation_transports()
         self.MAJ()
-        attente.Destroy() 
+        if modeSilencieux == False :
+            attente.Destroy() 
 
     def MAJ(self):
         self.MAJ_donnees()
@@ -869,14 +888,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 numColonne += 1
             self.SetColLabelRenderer(numColonne, None)
             self.SetColSize(numColonne, self.dictParametres["largeurs"]["memo"])
-            self.SetColLabelValue(numColonne, u"Mémo journalier")
+            self.SetColLabelValue(numColonne, _(u"Mémo journalier"))
             numColonne += 1
             
         # Création de la colonne Transports
         if AFFICHE_COLONNE_TRANSPORTS == True :
             self.SetColLabelRenderer(numColonne, None)
             self.SetColSize(numColonne, LARGEUR_COLONNE_TRANSPORTS)
-            self.SetColLabelValue(numColonne, u"Transports")
+            self.SetColLabelValue(numColonne, _(u"Transports"))
         
         
         # ------------------ Création des lignes -----------------------------
@@ -939,7 +958,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
             listeNomsIndividus = []
             for IDindividu, dictInfos in self.dictInfosIndividus.iteritems() :
-                nomIndividu = u"%s %s" % (dictInfos["nom"], dictInfos["prenom"])
+                if FORMAT_LABEL_LIGNE.startswith("nom_prenom") : 
+                    nomIndividu = u"%s %s" % (dictInfos["nom"], dictInfos["prenom"])
+                if FORMAT_LABEL_LIGNE.startswith("prenom_nom") : 
+                    nomIndividu = u"%s %s" % (dictInfos["prenom"], dictInfos["nom"])
                 listeNomsIndividus.append( (nomIndividu, IDindividu) )
             listeNomsIndividus.sort()
             nbreLignes = len(listeNomsIndividus)
@@ -1335,7 +1357,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        dictGroupes[0] = { "IDactivite" : 0, "nom" : u"Sans groupe", "ordre" : 0 }
+        dictGroupes[0] = { "IDactivite" : 0, "nom" : _(u"Sans groupe"), "ordre" : 0 }
         for IDgroupe, IDactivite, nom, ordre in listeDonnees :
             dictGroupes[IDgroupe] = { "IDactivite" : IDactivite, "nom" : nom, "ordre" : ordre}
         return dictGroupes
@@ -3854,7 +3876,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         date = datetime.date(2010, 6, 16)
         IDactivite = 1
         IDtarif = None
-        nom_tarif = u"Mini-camps à Crozon"
+        nom_tarif = _(u"Mini-camps à Crozon")
         montant = 150.00
         IDfamille = 3
         IDindividu = 24
@@ -3904,7 +3926,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         date = datetime.date(2010, 6, 16)
         IDactivite = 1
         IDtarif = None
-        nom_tarif = u"Mini-camps à Crozon"
+        nom_tarif = _(u"Mini-camps à Crozon")
         montant = 150.00
         IDfamille = 3
         IDindividu = 24
@@ -3971,7 +3993,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     nomActivite = self.dictActivites[IDactivite]["nom"]
                                     agrement = RechercheAgrement(IDactivite, date)
                                     if agrement != None :
-                                        agrement = u" - n° agrément : %s" % agrement
+                                        agrement = _(u" - n° agrément : %s") % agrement
                     
                                     # Mémorisation des données
                                     if dictDonnees.has_key(IDindividu) == False :
@@ -3986,12 +4008,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     ordreUnite = self.dictUnites[IDunite]["ordre"]
                                     typeUnite = self.dictUnites[IDunite]["type"]
                                     etat = conso.etat
-                                    if etat == "reservation" : etat = u"Réservation"
-                                    if etat == "absenti" : etat = u"Absence injustifiée"
-                                    if etat == "absentj" : etat = u"Absence justifiée"
-                                    if etat == "present" : etat = u"Présent"
-                                    if etat == "attente" : etat = u"Attente"
-                                    if etat == "refus" : etat = u"Refus"
+                                    if etat == "reservation" : etat = _(u"Réservation")
+                                    if etat == "absenti" : etat = _(u"Absence injustifiée")
+                                    if etat == "absentj" : etat = _(u"Absence justifiée")
+                                    if etat == "present" : etat = _(u"Présent")
+                                    if etat == "attente" : etat = _(u"Attente")
+                                    if etat == "refus" : etat = _(u"Refus")
                                     IDgroupe = conso.IDgroupe
                                     IDprestation = conso.IDprestation
                                     heure_debut = conso.heure_debut
@@ -4015,7 +4037,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date][IDunite] = dictTemp
         
         if len(dictDonnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune consommation à imprimer !", u"Erreur", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -4027,7 +4049,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def EnvoyerEmail(self):
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Reservations.pdf", categorie="reservations")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/CONSOMMATIONS%s.pdf" % FonctionsPerso.GenerationIDdoc() , categorie="reservations")
         
         
         
@@ -4102,7 +4124,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##                            listeDejaFactures.append(case.IDprestation)
 
         if len(listeDejaFactures) > 0 :
-            dlg = wx.MessageDialog(self, u"Notez que %d prestations n'ont pas été recalculés car \ncelles-ci apparaissent déjà sur des factures !" % len(listeDejaFactures), u"Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que %d prestations n'ont pas été recalculés car \ncelles-ci apparaissent déjà sur des factures !") % len(listeDejaFactures), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
     
@@ -4354,7 +4376,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dlg_grille = self.GetGrandParent()
         
         try :
-            dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant la procédure...", parent=None, title=u"Traitement par lot", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la procédure..."), parent=None, title=_(u"Traitement par lot"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
 
             # Sélection des individus
@@ -4430,19 +4452,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             
                                             # Vérifie qu'il est possible de placer une conso dans cette case
                                             if case.IsCaseDisponible(heure_debut, heure_fin) == False :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Une consommation est déjà enregistrée"))
+                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Une consommation est déjà enregistrée")))
                                                 valide = False
                                             
                                             # Vérifie qu'il reste des places disponibles
                                             if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Plus de places"))
+                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Plus de places")))
                                                 valide = False
                                             
                                             # Vérifie la compatibilité avec les autres unités
                                             incompatibilite = case.VerifieCompatibilitesUnites()
                                             if incompatibilite != None :
                                                 nomUniteIncompatible = self.dictUnites[incompatibilite]["nom"]
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Incompatibilité avec l'unité '%s' déjà enregistrée" %  nomUniteIncompatible))
+                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Incompatibilité avec l'unité '%s' déjà enregistrée") %  nomUniteIncompatible))
                                                 valide = False
                                             
                                             # Saisie d'une conso
@@ -4473,13 +4495,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                 if conso.etat != None :
                                                     
                                                     if conso.IDfacture != None :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Interdit de modifier une consommation déjà facturée"))
+                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
                                                         
                                                     elif conso.etat in ("present", "absentj", "absenti") :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Interdit de modifier une consommation déjà pointée"))
+                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
                                                     
                                                     elif conso.forfait != None :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Interdit de modifier un forfait"))
+                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier un forfait")))
                                                         
                                                     else :
                                                         # Modifie les heures 
@@ -4511,11 +4533,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             for conso in case.GetListeConso() :
                                                 
                                                 if conso.IDfacture != None :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Interdit de modifier une consommation déjà facturée"))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
                                                 elif conso.etat in ("present", "absentj", "absenti") :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Interdit de modifier une consommation déjà pointée"))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
                                                 elif conso.forfait != None :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Impossible de modifier un forfait"))
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de modifier un forfait")))
                                                 else :
                                                     if dictUnite["type"] == "Multihoraires" :
                                                         case.SupprimerBarre(conso.barre)
@@ -4532,7 +4554,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                 if conso.etat != None :
                                                     if resultats["etat"] != None and conso.etat != resultats["etat"] :
                                                         if conso.IDfacture != None :
-                                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], u"Impossible de supprimer une consommation déjà facturée"))
+                                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
                                                         else :
                                                             case.ModifieEtat(conso, resultats["etat"])
             
@@ -4541,13 +4563,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré dans le traitement par lot des consommations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans le traitement par lot des consommations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Formatage du texte de résultats
-        texte = u"<B>La procédure de traitement par lot est terminée mais les incidents suivants ont été rencontrés :</B><BR><BR>"
+        texte = _(u"<B>La procédure de traitement par lot est terminée mais les incidents suivants ont été rencontrés :</B><BR><BR>")
         
         afficher = False
         for IDindividu, listeActions in journal.iteritems() :
@@ -4565,7 +4587,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Affichage des résultats
         if afficher == True :
             import DLG_Message_html
-            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=u"Résultats du traitement par lot", size=(630, 450))
+            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"Résultats du traitement par lot"), size=(630, 450))
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -4924,6 +4946,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictValeurs = {
             "affiche_colonne_memo" : AFFICHE_COLONNE_MEMO,
             "affiche_colonne_transports" : AFFICHE_COLONNE_TRANSPORTS,
+            "format_label_ligne" : FORMAT_LABEL_LIGNE,
             "affiche_sans_prestation" : self.afficheSansPrestation,
             "blocage_si_complet" : self.blocageSiComplet,
             "hauteur_lignes" : self.dictParametres["hauteur"],
@@ -4995,7 +5018,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global AFFICHE_COLONNE_TRANSPORTS
         AFFICHE_COLONNE_TRANSPORTS = etat
         self.MAJ_affichage() 
-        
+    
     def GetAfficheColonneMemo(self):
         return AFFICHE_COLONNE_MEMO
     
@@ -5003,13 +5026,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         global AFFICHE_COLONNE_MEMO
         AFFICHE_COLONNE_MEMO = etat
         self.MAJ_affichage() 
-        
+
+    def GetFormatLabelLigne(self):
+        return FORMAT_LABEL_LIGNE
+    
+    def SetFormatLabelLigne(self, format="nom_prenom"):
+        global FORMAT_LABEL_LIGNE
+        FORMAT_LABEL_LIGNE = format
+        self.MAJ_affichage() 
+    
     def Parametres(self):
         listeDonnees = []
         
         # Hauteur
         listeDonnees.append(
-            (u"Hauteur de ligne", [{"label" : u"Hauteur", "code" : "hauteur", "valeur" : self.dictParametres["hauteur"], "defaut" : HAUTEUR_LIGNE},] )
+            (_(u"Hauteur de ligne"), [{"label" : _(u"Hauteur"), "code" : "hauteur", "valeur" : self.dictParametres["hauteur"], "defaut" : HAUTEUR_LIGNE},] )
             )
         listeActivites = []
         
@@ -5025,12 +5056,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     else :
                         defaut = LARGEUR_COLONNE_UNITE
                     listeUnites.append( {"label" : nomUnite, "code" : str(IDunite), "valeur" : self.dictParametres["largeurs"]["unites"][IDunite], "defaut" : defaut} )
-            listeDonnees.append((u"Colonnes %s" % nomActivite, listeUnites))
+            listeDonnees.append((_(u"Colonnes %s") % nomActivite, listeUnites))
 
         listeDonnees.append(
-            (u"Autres colonnes", [
-                {"label" : u"Mémo journalier", "code" : "memo", "valeur" : self.dictParametres["largeurs"]["memo"], "defaut" : LARGEUR_COLONNE_MEMO},
-                {"label" : u"Transports", "code" : "transports", "valeur" : self.dictParametres["largeurs"]["transports"], "defaut" : LARGEUR_COLONNE_TRANSPORTS},
+            (_(u"Autres colonnes"), [
+                {"label" : _(u"Mémo journalier"), "code" : "memo", "valeur" : self.dictParametres["largeurs"]["memo"], "defaut" : LARGEUR_COLONNE_MEMO},
+                {"label" : _(u"Transports"), "code" : "transports", "valeur" : self.dictParametres["largeurs"]["transports"], "defaut" : LARGEUR_COLONNE_TRANSPORTS},
                 ] )
             )
 
@@ -5086,7 +5117,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel, IDfamille=14)
         self.grille.SetModeIndividu(listeActivites=[1, 2], listeSelectionIndividus=[46,], listeIndividusFamille=[14,], listePeriodes=[(datetime.date(2013, 6, 1), datetime.date(2013, 7, 1)),])
-        self.bouton_ok = wx.BitmapButton(panel, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.ctrl_facturation = wx.TextCtrl(panel, -1, "", size=(-1, 60), style=wx.TE_MULTILINE)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)

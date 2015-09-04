@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.colourselect
 ##import wx.lib.agw.knobctrl
@@ -26,21 +29,21 @@ import wx.lib.agw.floatspin as FS
 
 
 LISTE_CONTROLES = [
-    {"code" : "ligne_texte", "label" : u"Ligne de texte", "image" : "Texte_ligne.png", "filtre" : "texte"},
-    {"code" : "bloc_texte", "label" : u"Bloc de texte multiligne", "image" : "Texte_bloc.png", "options" : {"hauteur":60}, "filtre" : "texte" },
-    {"code" : "entier", "label" : u"Nombre entier", "image" : "Ctrl_nombre.png", "options" : {"min":0, "max":99999}, "filtre" : "entier" },
-    {"code" : "decimal", "label" : u"Nombre décimal", "image" : "Ctrl_decimal.png", "options" : {"min":0, "max":99999}, "filtre" : "decimal" },
-    {"code" : "montant", "label" : u"Montant", "image" : "Euro.png", "filtre" : "montant" },
-    {"code" : "liste_deroulante", "label" : u"Liste déroulante", "image" : "Ctrl_choice.png", "options":{"choix":None}, "filtre" : "choix" },
-    {"code" : "liste_coches", "label" : u"Liste à cocher", "image" : "Coches.png", "options" : {"hauteur":-1, "choix":None} , "filtre" : "choix"},
-    {"code" : "case_coche", "label" : u"Case à cocher", "image" : "Ctrl_coche.png" , "filtre" : "coche"},
-    {"code" : "date", "label" : u"Date", "image" : "Jour.png" , "filtre" : "date"},
-    {"code" : "slider", "label" : u"Réglette", "image" : "Reglette.png", "options" : {"hauteur":-1, "min":0, "max":100}, "filtre" : "entier" },
-    {"code" : "couleur", "label" : u"Couleur", "image" : "Ctrl_couleur.png", "options" : {"hauteur":20}, "filtre" : None},
-##    {"code" : "potentiometre", "label" : u"Potentiomère", "image" : "Potentiometre.png", "options" : {"hauteur":100, "min":0, "max":100} },
-    {"code" : "documents", "label" : u"Porte-documents", "image" : "Document.png", "options" : {"hauteur":60}, "filtre" : None},
-    {"code" : "codebarres", "label" : u"Code-barres", "image" : "Codebarres.png", "options" : {"norme":"39"}, "filtre" : "texte" },
-    {"code" : "rfid", "label" : u"Badge RFID", "image" : "Rfid.png" , "filtre" : "texte"},
+    {"code" : "ligne_texte", "label" : _(u"Ligne de texte"), "image" : "Texte_ligne.png", "filtre" : "texte"},
+    {"code" : "bloc_texte", "label" : _(u"Bloc de texte multiligne"), "image" : "Texte_bloc.png", "options" : {"hauteur":60}, "filtre" : "texte" },
+    {"code" : "entier", "label" : _(u"Nombre entier"), "image" : "Ctrl_nombre.png", "options" : {"min":0, "max":99999}, "filtre" : "entier" },
+    {"code" : "decimal", "label" : _(u"Nombre décimal"), "image" : "Ctrl_decimal.png", "options" : {"min":0, "max":99999}, "filtre" : "decimal" },
+    {"code" : "montant", "label" : _(u"Montant"), "image" : "Euro.png", "filtre" : "montant" },
+    {"code" : "liste_deroulante", "label" : _(u"Liste déroulante"), "image" : "Ctrl_choice.png", "options":{"choix":None}, "filtre" : "choix" },
+    {"code" : "liste_coches", "label" : _(u"Liste à cocher"), "image" : "Coches.png", "options" : {"hauteur":-1, "choix":None} , "filtre" : "choix"},
+    {"code" : "case_coche", "label" : _(u"Case à cocher"), "image" : "Ctrl_coche.png" , "filtre" : "coche"},
+    {"code" : "date", "label" : _(u"Date"), "image" : "Jour.png" , "filtre" : "date"},
+    {"code" : "slider", "label" : _(u"Réglette"), "image" : "Reglette.png", "options" : {"hauteur":-1, "min":0, "max":100}, "filtre" : "entier" },
+    {"code" : "couleur", "label" : _(u"Couleur"), "image" : "Ctrl_couleur.png", "options" : {"hauteur":20}, "filtre" : None},
+##    {"code" : "potentiometre", "label" : _(u"Potentiomère"), "image" : "Potentiometre.png", "options" : {"hauteur":100, "min":0, "max":100} },
+    {"code" : "documents", "label" : _(u"Porte-documents"), "image" : "Document.png", "options" : {"hauteur":60}, "filtre" : None},
+    {"code" : "codebarres", "label" : _(u"Code-barres"), "image" : "Codebarres.png", "options" : {"norme":"39"}, "filtre" : "texte" },
+    {"code" : "rfid", "label" : _(u"Badge RFID"), "image" : "Rfid.png" , "filtre" : "texte"},
     ] 
 
 LISTE_NORMES_CODESBARRES = [
@@ -76,10 +79,10 @@ class DLG_Choix_creation(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
-        self.bouton_categorie = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Questionnaire_categorie.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_question = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Questionnaire_question.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_categorie = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Questionnaire_categorie.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_question = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Questionnaire_question.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.bouton_categorie.SetMinSize((140, 120))
         self.bouton_question.SetMinSize((140, 120))
@@ -92,11 +95,11 @@ class DLG_Choix_creation(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(u"Choix de l'élément à créer")
-        self.bouton_categorie.SetToolTipString(u"Créer une nouvelle catégorie")
-        self.bouton_question.SetToolTipString(u"Créer une nouvelle question")
-        self.bouton_aide.SetToolTipString(u"Obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Annuler")
+        self.SetTitle(_(u"Choix de l'élément à créer"))
+        self.bouton_categorie.SetToolTipString(_(u"Créer une nouvelle catégorie"))
+        self.bouton_question.SetToolTipString(_(u"Créer une nouvelle question"))
+        self.bouton_aide.SetToolTipString(_(u"Obtenir de l'aide"))
+        self.bouton_annuler.SetToolTipString(_(u"Annuler"))
         self.SetMinSize((340, 230))
 
     def __do_layout(self):
@@ -290,7 +293,7 @@ class CTRL_montant(CTRL_Saisie_euros.CTRL):
         self.item = item
         self.track = track
         self.SetBackgroundColour((255, 255, 255))
-        self.SetToolTipString(u"Saisissez un montant")
+        self.SetToolTipString(_(u"Saisissez un montant"))
     
     def SetValeur(self, valeur=None):
         if valeur == None : valeur = u""
@@ -437,14 +440,14 @@ class CTRL_liste_coches(wx.CheckListBox):
         menuPop = wx.Menu()
 
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 10, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 10, _(u"Tout cocher"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=10)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 20, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 20, _(u"Tout décocher"))
         bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -506,7 +509,7 @@ class CTRL_date(CTRL_Saisie_date.Date2):
         self.item = item
         self.track = track
         self.SetBackgroundColour((255, 255, 255))
-        self.ctrl_date.SetToolTipString(u"Saisissez une date")
+        self.ctrl_date.SetToolTipString(_(u"Saisissez une date"))
     
     def SetValeur(self, valeur=None):
         if valeur == None : valeur = u""
@@ -561,7 +564,7 @@ class CTRL_slider(wx.Panel):
         self.ctrl_slider.SetValue(0)
         self.Bind(wx.EVT_COMMAND_SCROLL, self.OnSlider, self.ctrl_slider)
         self.ctrl_slider.SetBackgroundColour(wx.Colour(255, 255, 255))
-        self.ctrl_slider.SetToolTipString(u"Faites glisser la glissière sur la valeur de votre choix")
+        self.ctrl_slider.SetToolTipString(_(u"Faites glisser la glissière sur la valeur de votre choix"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=0, hgap=0)
@@ -610,7 +613,7 @@ class CTRL_couleur(wx.lib.colourselect.ColourSelect):
         self.item = item
         self.track = track
         self.SetBackgroundColour((255, 255, 255))
-        self.SetToolTipString(u"Cliquez ici pour sélectionner une couleur")
+        self.SetToolTipString(_(u"Cliquez ici pour sélectionner une couleur"))
 
     def SetValeur(self, valeur=None):
         if valeur == None : valeur = u""
@@ -721,7 +724,7 @@ class CTRL_documents(wx.Panel):
         self.ctrl_vignettes = CTRL_Vignettes_documents.CTRL(self, IDreponse=None, afficheLabels=False, tailleVignette=hauteur-20, style=wx.BORDER_SUNKEN)
         
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder aux commandes disponibles")
+        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes disponibles"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         
         # Layout
@@ -801,7 +804,7 @@ class CTRL_rfid(wx.Panel):
         # Contrôles
         self.ctrl_code = wx.TextCtrl(self, -1, "")
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Rfid.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour scanner un badge")
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour scanner un badge"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         
         # Layout
@@ -815,7 +818,7 @@ class CTRL_rfid(wx.Panel):
     def OnBoutonModifier(self, event=None):
         import DLG_Saisie_rfid
         if DLG_Saisie_rfid.CheckLecteurs() == False :
-                dlg = wx.MessageDialog(self, u"Aucun lecteur RFID connecté.", "Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Aucun lecteur RFID connecté."), "Erreur", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return 
@@ -920,8 +923,8 @@ class CTRL(HTL.HyperTreeList):
         
         # Création des colonnes
         listeColonnes = [
-            ( u"Question", self.largeurQuestion, wx.ALIGN_LEFT),
-            ( u"Réponse", self.largeurReponse, wx.ALIGN_LEFT),
+            ( _(u"Question"), self.largeurQuestion, wx.ALIGN_LEFT),
+            ( _(u"Réponse"), self.largeurReponse, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -930,8 +933,8 @@ class CTRL(HTL.HyperTreeList):
             self.SetColumnAlignment(numColonne, alignement)
             numColonne += 1
         
-        if mode == "normal" : self.SetAGWWindowStyleFlag(wx.TR_ROW_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_NO_HEADER)
-        if mode == "apercu" : self.SetAGWWindowStyleFlag(wx.TR_ROW_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_NO_HEADER)
+        if mode == "normal" : self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_NO_HEADER)
+        if mode == "apercu" : self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_NO_HEADER)
         self.EnableSelectionVista(True)
         
         # Création de l'ImageList
@@ -969,7 +972,7 @@ class CTRL(HTL.HyperTreeList):
         self.Freeze()
         self.DeleteAllItems()
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         if importation == True :
             self.Importation() 
         # Création des contrôles
@@ -1176,7 +1179,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1185,7 +1188,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1193,7 +1196,7 @@ class CTRL(HTL.HyperTreeList):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1203,7 +1206,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop.AppendSeparator()
     
         # Item Monter
-        item = wx.MenuItem(menuPop, 40, u"Monter")
+        item = wx.MenuItem(menuPop, 40, _(u"Monter"))
         bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1211,7 +1214,7 @@ class CTRL(HTL.HyperTreeList):
         if noSelection == True : item.Enable(False)
         
         # Item Descendre
-        item = wx.MenuItem(menuPop, 50, u"Descendre")
+        item = wx.MenuItem(menuPop, 50, _(u"Descendre"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -1239,7 +1242,7 @@ class CTRL(HTL.HyperTreeList):
         if reponse == 200 : 
             # Vérifie avant qu'une catégorie existe bien
             if len(self.dictCategories) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez d'abord créer au moins une catégorie !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez d'abord créer au moins une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -1254,7 +1257,7 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection() 
         resultat = self.IdentificationBranche(item) 
         if resultat == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -1276,7 +1279,7 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection() 
         resultat = self.IdentificationBranche(item) 
         if resultat == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -1285,12 +1288,12 @@ class CTRL(HTL.HyperTreeList):
             IDcategorie = resultat["ID"]
             listeQuestionRattachees = self.dictCategories[IDcategorie]["questions"]
             if len(listeQuestionRattachees) > 0 :
-                dlg = wx.MessageDialog(self, u"Cette catégorie comporte déjà %d question(s).\n\nVous devez déjà les supprimer avant de supprimer la catégorie." % len(listeQuestionRattachees), u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette catégorie comporte déjà %d question(s).\n\nVous devez déjà les supprimer avant de supprimer la catégorie.") % len(listeQuestionRattachees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             # Confirmation
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette catégorie ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette catégorie ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -1315,7 +1318,7 @@ class CTRL(HTL.HyperTreeList):
             DB.ExecuterReq(req)
             listeReponses = DB.ResultatReq()     
             if len(listeReponses) > 0 :
-                dlg = wx.MessageDialog(self, u"%d filtres sont déjà associés à cette question.\n\nVous devez déjà les supprimer avant de supprimer la question." % len(listeReponses), u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"%d filtres sont déjà associés à cette question.\n\nVous devez déjà les supprimer avant de supprimer la question.") % len(listeReponses), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -1329,14 +1332,14 @@ class CTRL(HTL.HyperTreeList):
             listeReponses = DB.ResultatReq()     
             DB.Close() 
             if len(listeReponses) > 0 :
-                dlg = wx.MessageDialog(self, u"%d fiches comportent une réponse à cette question.\nSi vous supprimez cette question, les réponses le seront également.\n\nSouhaitez-vous vraiment supprimer cette question ?" % len(listeReponses), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"%d fiches comportent une réponse à cette question.\nSi vous supprimez cette question, les réponses le seront également.\n\nSouhaitez-vous vraiment supprimer cette question ?") % len(listeReponses), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
                     return 
 
             # Confirmation
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette question ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette question ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -1354,7 +1357,7 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection() 
         resultat = self.IdentificationBranche(item) 
         if resultat == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -1379,7 +1382,7 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection() 
         resultat = self.IdentificationBranche(item) 
         if resultat == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -1442,7 +1445,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel, type="individu", menuActif=True, afficherInvisibles=True)
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)

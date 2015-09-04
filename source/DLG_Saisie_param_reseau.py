@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -19,21 +22,21 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         if intro == None :
-            intro = u"Veuillez saisir les paramètres de connexion :"
+            intro = _(u"Veuillez saisir les paramètres de connexion :")
 
-        self.box_contenu_staticbox = wx.StaticBox(self, -1, u"Paramètres de connexion")
+        self.box_contenu_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de connexion"))
         self.label_intro = wx.StaticText(self, -1, intro)
-        self.label_port = wx.StaticText(self, -1, u"Port :")
+        self.label_port = wx.StaticText(self, -1, _(u"Port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, u"3306")
-        self.label_hote = wx.StaticText(self, -1, u"Hôte :")
+        self.label_hote = wx.StaticText(self, -1, _(u"Hôte :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, u"")
-        self.label_utilisateur = wx.StaticText(self, -1, u"Utilisateur :")
+        self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = wx.TextCtrl(self, -1, u"")
-        self.label_mdp = wx.StaticText(self, -1, u"Mot de passe :")
+        self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -43,7 +46,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Paramètres de connexion")
+        self.SetTitle(_(u"Paramètres de connexion"))
         self.ctrl_port.SetMinSize((60, -1))
         self.ctrl_port.SetToolTipString("Saisissez ici le numéro de port")
         self.ctrl_hote.SetToolTipString("Saisissez ici l'hôte")
@@ -101,28 +104,28 @@ class Dialog(wx.Dialog):
         try :
             port = int(port)
         except Exception, err:
-            dlg = wx.MessageDialog(self, u"Le numéro de port n'est pas valide. \n\nErreur : %s" % err, u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le numéro de port n'est pas valide. \n\nErreur : %s") % err, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_port.SetFocus()
             return
         
         if hote == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un nom pour le serveur hôte.", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom pour le serveur hôte."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_hote.SetFocus()
             return
         
         if user == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un nom d'utilisateur.", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un nom d'utilisateur."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_utilisateur.SetFocus()
             return
         
         if mdp == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un mot de passe.", u"Erreur de saisie", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un mot de passe."), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_mdp.SetFocus()

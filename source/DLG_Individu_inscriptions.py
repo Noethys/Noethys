@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Inscriptions 
 import OL_Contrats
 import UTILS_Utilisateurs
@@ -22,7 +25,7 @@ class Panel(wx.Panel):
         self.dictFamillesRattachees = dictFamillesRattachees
         
         # Inscriptions
-        self.staticbox_inscriptions = wx.StaticBox(self, -1, u"Inscriptions")
+        self.staticbox_inscriptions = wx.StaticBox(self, -1, _(u"Inscriptions"))
         self.ctrl_inscriptions = OL_Inscriptions.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, id=-1, name="OL_inscriptions", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_inscriptions.SetMinSize((150, 50))
         
@@ -33,7 +36,7 @@ class Panel(wx.Panel):
         self.bouton_forfait = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Forfait.png", wx.BITMAP_TYPE_ANY))
 
         # Contrats
-        self.staticbox_contrats = wx.StaticBox(self, -1, u"Contrats")
+        self.staticbox_contrats = wx.StaticBox(self, -1, _(u"Contrats"))
         self.ctrl_contrats = OL_Contrats.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, id=-1, name="OL_contrats", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_contrats.SetMinSize((150, 90))
         
@@ -52,13 +55,13 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Supprimer, self.bouton_supprimer_contrat)
 
         # Propriétés
-        self.bouton_ajouter_inscription.SetToolTipString(u"Cliquez ici pour inscrire l'individu à une activité")
-        self.bouton_modifier_inscription.SetToolTipString(u"Cliquez ici pour modifier l'inscription sélectionnée")
-        self.bouton_supprimer_inscription.SetToolTipString(u"Cliquez ici pour supprimer l'inscription sélectionnée")
-        self.bouton_forfait.SetToolTipString(u"Cliquez ici pour saisir manuellement un forfait daté")
-        self.bouton_ajouter_contrat.SetToolTipString(u"Cliquez ici pour créer un contrat pour cet individu")
-        self.bouton_modifier_contrat.SetToolTipString(u"Cliquez ici pour modifier le contrat sélectionné")
-        self.bouton_supprimer_contrat.SetToolTipString(u"Cliquez ici pour supprimer le contrat sélectionné")
+        self.bouton_ajouter_inscription.SetToolTipString(_(u"Cliquez ici pour inscrire l'individu à une activité"))
+        self.bouton_modifier_inscription.SetToolTipString(_(u"Cliquez ici pour modifier l'inscription sélectionnée"))
+        self.bouton_supprimer_inscription.SetToolTipString(_(u"Cliquez ici pour supprimer l'inscription sélectionnée"))
+        self.bouton_forfait.SetToolTipString(_(u"Cliquez ici pour saisir manuellement un forfait daté"))
+        self.bouton_ajouter_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat pour cet individu"))
+        self.bouton_modifier_contrat.SetToolTipString(_(u"Cliquez ici pour modifier le contrat sélectionné"))
+        self.bouton_supprimer_contrat.SetToolTipString(_(u"Cliquez ici pour supprimer le contrat sélectionné"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)
@@ -116,7 +119,7 @@ class Panel(wx.Panel):
         menuPop = wx.Menu()
         
         # Item Recu 
-        item = wx.MenuItem(menuPop, 10, u"Editer une confirmation d'inscription (PDF)")
+        item = wx.MenuItem(menuPop, 10, _(u"Editer une confirmation d'inscription (PDF)"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -126,14 +129,14 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_inscriptions.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -156,7 +159,7 @@ class Panel(wx.Panel):
                 if dictFamille["IDcategorie"] in (1, 2) :
                     valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, u"Pour être inscrit à une activité, un individu doit obligatoirement être rattaché comme représentant ou enfant à une fiche famille !", u"Inscription impossible", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Pour être inscrit à une activité, un individu doit obligatoirement être rattaché comme représentant ou enfant à une fiche famille !"), _(u"Inscription impossible"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -177,7 +180,7 @@ class Panel(wx.Panel):
                 IDfamille = listeFamille[0]
             else:
                 # On demande à quelle famille rattacher cette inscription
-                dlg = wx.SingleChoiceDialog(self, u"Cet individu est rattaché à %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?" % len(listeNoms), u"Rattachements multiples", listeNoms, wx.CHOICEDLG_STYLE)
+                dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nA quelle famille souhaitez-vous rattacher cette inscription ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
                 if dlg.ShowModal() == wx.ID_OK:
                     indexSelection = dlg.GetSelection()
                     IDfamille = listeFamille[indexSelection]
@@ -234,7 +237,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

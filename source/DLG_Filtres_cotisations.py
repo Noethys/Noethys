@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.html as html
 
@@ -40,7 +43,7 @@ def GetTexteFiltres(filtres):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                listeTextes.append(u"Type de cotisation '%s'" % listeDonnees[0][1])
+                listeTextes.append(_(u"Type de cotisation '%s'") % listeDonnees[0][1])
 
         # Unité de cotisation
          if filtre["type"] == "unite" :
@@ -50,19 +53,19 @@ def GetTexteFiltres(filtres):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                listeTextes.append(u"Unité de cotisation '%s'" % listeDonnees[0][1])
+                listeTextes.append(_(u"Unité de cotisation '%s'") % listeDonnees[0][1])
 
 ##        # Date d'échéance
 ##         if filtre["type"] == "date_echeance" :
-##            listeTextes.append(u"Date d'échéance de %s à %s" % (UTILS_Dates.DateEngFr(str(filtre["date_min"])), UTILS_Dates.DateEngFr(str(filtre["date_max"]))))
+##            listeTextes.append(_(u"Date d'échéance de %s à %s") % (UTILS_Dates.DateEngFr(str(filtre["date_min"])), UTILS_Dates.DateEngFr(str(filtre["date_max"]))))
 
         # Numéros Intervalle
          if filtre["type"] == "numero_intervalle" :
-            listeTextes.append(u"Numéros de cotisations de %d à %d" % (filtre["numero_min"], filtre["numero_max"]))
+            listeTextes.append(_(u"Numéros de cotisations de %d à %d") % (filtre["numero_min"], filtre["numero_max"]))
 
         # Numéros Liste
          if filtre["type"] == "numero_liste" :
-            listeTextes.append(u"Numéros de cotisations suivants : %s" % ";".join([str(x) for x in filtre["liste"]]))
+            listeTextes.append(_(u"Numéros de cotisations suivants : %s") % ";".join([str(x) for x in filtre["liste"]]))
 
         # Montant
          if filtre["type"] == "montant" :
@@ -70,7 +73,7 @@ def GetTexteFiltres(filtres):
             if operateur == u"<>" : operateur = u"&#60;&#62;"
             if operateur == u"<" : operateur = u"&#60;"
             if operateur == u">" : operateur = u"&#62;"
-            listeTextes.append(u"Montant facturé %s %.2f %s" % (operateur, filtre["montant"], SYMBOLE))
+            listeTextes.append(_(u"Montant facturé %s %.2f %s") % (operateur, filtre["montant"], SYMBOLE))
 
         # Solde actuel
          if filtre["type"] == "solde_actuel" :
@@ -78,21 +81,21 @@ def GetTexteFiltres(filtres):
             if operateur == u"<>" : operateur = u"&#60;&#62;"
             if operateur == u"<" : operateur = u"&#60;"
             if operateur == u">" : operateur = u"&#62;"
-            listeTextes.append(u"Montant réglé %s %.2f %s" % (operateur, filtre["montant"], SYMBOLE))
+            listeTextes.append(_(u"Montant réglé %s %.2f %s") % (operateur, filtre["montant"], SYMBOLE))
 
         # Carte
          if filtre["type"] == "carte" :
             if filtre["choix"] == True :
-                listeTextes.append(u"Cotisations pour lesquelles une carte a été créée")
+                listeTextes.append(_(u"Cotisations pour lesquelles une carte a été créée"))
             else :
-                listeTextes.append(u"Cotisations pour lesquelles aucune carte n'a été créée")
+                listeTextes.append(_(u"Cotisations pour lesquelles aucune carte n'a été créée"))
 
         # Facturée
          if filtre["type"] == "facturee" :
             if filtre["choix"] == True :
-                listeTextes.append(u"Cotisations facturées")
+                listeTextes.append(_(u"Cotisations facturées"))
             else :
-                listeTextes.append(u"Cotisations non facturées")
+                listeTextes.append(_(u"Cotisations non facturées"))
 
         # Dépôt
          if filtre["type"] == "depot" :
@@ -102,12 +105,12 @@ def GetTexteFiltres(filtres):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                listeTextes.append(u"Dépôt de cotisations '%s'" % listeDonnees[0][1])
+                listeTextes.append(_(u"Dépôt de cotisations '%s'") % listeDonnees[0][1])
 
     if len(listeTextes) > 0 :
         texte = u" | ".join(listeTextes) + u"."
     else :
-        texte = u"Aucun."
+        texte = _(u"Aucun.")
     return texte
 
 
@@ -128,9 +131,9 @@ class CTRL_Types_cotisations(wx.Choice):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        listeItems = [u"Aucun type de cotisation",]
+        listeItems = [_(u"Aucun type de cotisation"),]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnu"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnu")}
         index = 1
         for IDtype_cotisation, nom in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDtype_cotisation, "nom" : nom}
@@ -176,9 +179,9 @@ class CTRL_Unites_cotisations(wx.Choice):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        listeItems = [u"Aucune unité de cotisation",]
+        listeItems = [_(u"Aucune unité de cotisation"),]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnu"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnu")}
         index = 1
         for ID, nom in listeDonnees :
             self.dictDonnees[index] = { "ID" : ID, "nom" : nom}
@@ -224,9 +227,9 @@ class CTRL_Depots_cotisations(wx.Choice):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        listeItems = [u"Aucun dépôt de cotisations",]
+        listeItems = [_(u"Aucun dépôt de cotisations"),]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnu"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnu")}
         index = 1
         for ID, nom in listeDonnees :
             self.dictDonnees[index] = { "ID" : ID, "nom" : nom}
@@ -284,9 +287,9 @@ class CTRL_Filtres(wx.Panel):
         couleurFond=wx.Colour(255, 255, 255)
         self.SetBackgroundColour(couleurFond)
         
-        self.ctrl_html = MyHtml(self, texte=u"Aucun filtre de sélection.", couleurFond=couleurFond, hauteur=25)
+        self.ctrl_html = MyHtml(self, texte=_(u"Aucun filtre de sélection."), couleurFond=couleurFond, hauteur=25)
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Filtre.png", wx.BITMAP_TYPE_ANY))#wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_parametres.SetToolTipString(u"Cliquez ici pour modifier les filtres de sélection des cotisations")
+        self.bouton_parametres.SetToolTipString(_(u"Cliquez ici pour modifier les filtres de sélection des cotisations"))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)
         
@@ -312,7 +315,7 @@ class CTRL_Filtres(wx.Panel):
         
     def MAJ(self):
         # MAJ du HTML
-        texte = u"<FONT SIZE=-1><B>Filtres de sélection :</B> %s</FONT>" % GetTexteFiltres(self.filtres)
+        texte = _(u"<FONT SIZE=-1><B>Filtres de sélection :</B> %s</FONT>") % GetTexteFiltres(self.filtres)
         self.ctrl_html.SetTexte(texte)
         # MAJ du CTRL_Cotisations
         if self.ctrl_cotisations != None :
@@ -328,90 +331,90 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Sélectionnez ici les filtres de sélection de votre choix à appliquer sur la liste des cotisations"
-        titre = u"Filtres de sélection des cotisations"
+        intro = _(u"Sélectionnez ici les filtres de sélection de votre choix à appliquer sur la liste des cotisations")
+        titre = _(u"Filtres de sélection des cotisations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Filtre.png")
         
         # Filtres
-        self.check_type = wx.CheckBox(self, -1, u"Type de cotisation :")
-        self.check_type.SetToolTipString(u"Filtre type de cotisation")
+        self.check_type = wx.CheckBox(self, -1, _(u"Type de cotisation :"))
+        self.check_type.SetToolTipString(_(u"Filtre type de cotisation"))
         self.ctrl_type = CTRL_Types_cotisations(self)
-        self.ctrl_type.SetToolTipString(u"Sélectionnez un type de cotisation dans la liste")
+        self.ctrl_type.SetToolTipString(_(u"Sélectionnez un type de cotisation dans la liste"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_type)
 
-        self.check_unite = wx.CheckBox(self, -1, u"Unité de cotisation :")
-        self.check_unite.SetToolTipString(u"Filtre unité de cotisation")
+        self.check_unite = wx.CheckBox(self, -1, _(u"Unité de cotisation :"))
+        self.check_unite.SetToolTipString(_(u"Filtre unité de cotisation"))
         self.ctrl_unite = CTRL_Unites_cotisations(self)
-        self.ctrl_unite.SetToolTipString(u"Sélectionnez une unité de cotisation dans la liste")
+        self.ctrl_unite.SetToolTipString(_(u"Sélectionnez une unité de cotisation dans la liste"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_unite)
         
-##        self.check_echeance = wx.CheckBox(self, -1, u"Date d'échéance de")
+##        self.check_echeance = wx.CheckBox(self, -1, _(u"Date d'échéance de"))
 ##        self.ctrl_echeance_min = CTRL_Saisie_date.Date2(self)
 ##        self.label_echeance_a = wx.StaticText(self, -1, u"à")
 ##        self.ctrl_echeance_max = CTRL_Saisie_date.Date2(self)
         
-        self.check_numeros_intervalle = wx.CheckBox(self, -1, u"Numéros de cotisations de")
-        self.check_numeros_intervalle.SetToolTipString(u"Filtre Intervalle de numéros de cotisation")
+        self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"Numéros de cotisations de"))
+        self.check_numeros_intervalle.SetToolTipString(_(u"Filtre Intervalle de numéros de cotisation"))
         self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_min.SetMinSize((70, -1))
         self.label_numeros_intervalle_a = wx.StaticText(self, -1, u"à")
         self.ctrl_numeros_intervalle_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_max.SetMinSize((70, -1))
-        self.ctrl_numeros_intervalle_min.SetToolTipString(u"Saisissez un numéro de cotisation min")
-        self.ctrl_numeros_intervalle_max.SetToolTipString(u"Saisissez un numéro de cotisation max")
+        self.ctrl_numeros_intervalle_min.SetToolTipString(_(u"Saisissez un numéro de cotisation min"))
+        self.ctrl_numeros_intervalle_max.SetToolTipString(_(u"Saisissez un numéro de cotisation max"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_numeros_intervalle)
         
-        self.check_numeros_liste = wx.CheckBox(self, -1, u"Numéros de cotisations suivants :")
-        self.check_numeros_liste.SetToolTipString(u"Filtre Liste de numéros de cotisations")
+        self.check_numeros_liste = wx.CheckBox(self, -1, _(u"Numéros de cotisations suivants :"))
+        self.check_numeros_liste.SetToolTipString(_(u"Filtre Liste de numéros de cotisations"))
         self.ctrl_numeros_liste = wx.TextCtrl(self, -1, u"")
-        self.ctrl_numeros_liste.SetToolTipString(u"Saisissez les numéros de cotisations souhaités en les séparant par un point-virgule (;)")
+        self.ctrl_numeros_liste.SetToolTipString(_(u"Saisissez les numéros de cotisations souhaités en les séparant par un point-virgule (;)"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_numeros_liste)
         
         listeOperateurs = (u"=", u"<>", u">", u"<", u">=", u"<=")
         
-        self.check_montant = wx.CheckBox(self, -1, u"Montant facturé")
-        self.check_montant.SetToolTipString(u"Filtre montant facturé")
+        self.check_montant = wx.CheckBox(self, -1, _(u"Montant facturé"))
+        self.check_montant.SetToolTipString(_(u"Filtre montant facturé"))
         self.ctrl_montant_operateur = wx.Choice(self, -1, choices=listeOperateurs)
         self.ctrl_montant_operateur.SetSelection(0)
-        self.ctrl_montant_operateur.SetToolTipString(u"Sélectionnez un opérateur de comparaison")
+        self.ctrl_montant_operateur.SetToolTipString(_(u"Sélectionnez un opérateur de comparaison"))
         self.ctrl_montant_montant = CTRL_Saisie_euros.CTRL(self)
-        self.ctrl_montant_montant.SetToolTipString(u"Saisissez un montant")
+        self.ctrl_montant_montant.SetToolTipString(_(u"Saisissez un montant"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_montant)
         
-        self.check_solde_actuel = wx.CheckBox(self, -1, u"Solde actuel")
-        self.check_solde_actuel.SetToolTipString(u"Filtre Solde actuel")
+        self.check_solde_actuel = wx.CheckBox(self, -1, _(u"Solde actuel"))
+        self.check_solde_actuel.SetToolTipString(_(u"Filtre Solde actuel"))
         self.ctrl_solde_actuel_operateur = wx.Choice(self, -1, choices=listeOperateurs)
         self.ctrl_solde_actuel_operateur.SetSelection(0)
-        self.ctrl_solde_actuel_operateur.SetToolTipString(u"Sélectionnez un opérateur de comparaison")
+        self.ctrl_solde_actuel_operateur.SetToolTipString(_(u"Sélectionnez un opérateur de comparaison"))
         self.ctrl_solde_actuel_montant = CTRL_Saisie_euros.CTRL(self)
-        self.ctrl_solde_actuel_montant.SetToolTipString(u"Saisissez un montant")
+        self.ctrl_solde_actuel_montant.SetToolTipString(_(u"Saisissez un montant"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_solde_actuel)
         
-        self.check_carte = wx.CheckBox(self, -1, u"Carte créée")
-        self.check_carte.SetToolTipString(u"Filtre carte créée")
-        self.ctrl_carte = wx.Choice(self, -1, choices=["Oui", u"Non"])
+        self.check_carte = wx.CheckBox(self, -1, _(u"Carte créée"))
+        self.check_carte.SetToolTipString(_(u"Filtre carte créée"))
+        self.ctrl_carte = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_carte.SetSelection(0)
-        self.ctrl_carte.SetToolTipString(u"Oui/Non")
+        self.ctrl_carte.SetToolTipString(_(u"Oui/Non"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_carte)
         
-        self.check_facturee = wx.CheckBox(self, -1, u"Cotisation facturée")
-        self.check_facturee.SetToolTipString(u"Filtre cotisation facturée")
-        self.ctrl_facturee = wx.Choice(self, -1, choices=["Oui", u"Non"])
+        self.check_facturee = wx.CheckBox(self, -1, _(u"Cotisation facturée"))
+        self.check_facturee.SetToolTipString(_(u"Filtre cotisation facturée"))
+        self.ctrl_facturee = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_facturee.SetSelection(0)
-        self.ctrl_facturee.SetToolTipString(u"Oui/Non")
+        self.ctrl_facturee.SetToolTipString(_(u"Oui/Non"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_facturee)
         
-        self.check_depot = wx.CheckBox(self, -1, u"Dépôt de cotisations :")
-        self.check_depot.SetToolTipString(u"Filtre dépôt de cotisations")
+        self.check_depot = wx.CheckBox(self, -1, _(u"Dépôt de cotisations :"))
+        self.check_depot.SetToolTipString(_(u"Filtre dépôt de cotisations"))
         self.ctrl_depot = CTRL_Depots_cotisations(self)
-        self.ctrl_depot.SetToolTipString(u"Sélectionnez un dépôt de cotisations dans la liste")
+        self.ctrl_depot.SetToolTipString(_(u"Sélectionnez un dépôt de cotisations dans la liste"))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_depot)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -426,9 +429,9 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=20, hgap=20)
@@ -554,7 +557,7 @@ class Dialog(wx.Dialog):
         if self.check_type.GetValue() == True :
             IDtype_cotisation = self.ctrl_type.GetID()
             if IDtype_cotisation == None :
-                dlg = wx.MessageDialog(self, u"Filtre Type de cotisation : Vous n'avez sélectionné aucun type dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Type de cotisation : Vous n'avez sélectionné aucun type dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -565,7 +568,7 @@ class Dialog(wx.Dialog):
         if self.check_unite.GetValue() == True :
             IDunite_cotisation = self.ctrl_unite.GetID()
             if IDunite_cotisation == None :
-                dlg = wx.MessageDialog(self, u"Filtre Unité de cotisation : Vous n'avez sélectionné aucune unité dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Unité de cotisation : Vous n'avez sélectionné aucune unité dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -577,7 +580,7 @@ class Dialog(wx.Dialog):
 ##            date_min = self.ctrl_echeance_min.GetDate()
 ##            date_max = self.ctrl_echeance_max.GetDate()
 ##            if date_min == None or date_max == None :
-##                dlg = wx.MessageDialog(self, u"Filtre Date d'échéance : Les dates saisies ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##                dlg = wx.MessageDialog(self, _(u"Filtre Date d'échéance : Les dates saisies ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##                dlg.ShowModal()
 ##                dlg.Destroy()
 ##                return False
@@ -595,7 +598,7 @@ class Dialog(wx.Dialog):
         if self.check_numeros_liste.GetValue() == True :
             listeTemp = self.ctrl_numeros_liste.GetValue()
             if listeTemp == "" :
-                dlg = wx.MessageDialog(self, u"Filtre Liste de numéros : Vous n'avez saisi aucun numéro de facture dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numéros : Vous n'avez saisi aucun numéro de facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -604,7 +607,7 @@ class Dialog(wx.Dialog):
                 for numero in listeTemp.split(";") :
                     listeNumeros.append(int(numero))
             except :
-                dlg = wx.MessageDialog(self, u"Filtre Liste de numéros : Les numéros de factures saisis ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Liste de numéros : Les numéros de factures saisis ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -616,7 +619,7 @@ class Dialog(wx.Dialog):
             operateur = self.ctrl_montant_operateur.GetStringSelection()
             montant = self.ctrl_montant_montant.GetMontant()
             if montant == None :
-                dlg = wx.MessageDialog(self, u"Filtre Montant facturé : Le montant saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Montant facturé : Le montant saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -628,7 +631,7 @@ class Dialog(wx.Dialog):
             operateur = self.ctrl_solde_actuel_operateur.GetStringSelection()
             montant = self.ctrl_solde_actuel_montant.GetMontant()
             if montant == None :
-                dlg = wx.MessageDialog(self, u"Filtre Solde actuel : Le montant saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Solde actuel : Le montant saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -657,7 +660,7 @@ class Dialog(wx.Dialog):
         if self.check_depot.GetValue() == True :
             IDdepot_cotisation = self.ctrl_depot.GetID()
             if IDdepot_cotisation == None :
-                dlg = wx.MessageDialog(self, u"Filtre Dépôt de cotisations : Vous n'avez sélectionné aucun dépôt dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Filtre Dépôt de cotisations : Vous n'avez sélectionné aucun dépôt dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -750,7 +753,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL_Filtres(panel)
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -766,7 +769,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

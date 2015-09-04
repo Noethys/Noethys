@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Vacances
 
@@ -19,8 +22,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des périodes de vacances. Cliquez sur 'Importer depuis Internet' pour télécharger automatiquement les périodes depuis le site de l'Education Nationale."
-        titre = u"Gestion des périodes de vacances"
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des périodes de vacances. Cliquez sur 'Importer depuis Internet' pour télécharger automatiquement les périodes depuis le site de l'Education Nationale.")
+        titre = _(u"Gestion des périodes de vacances")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier.png")
         self.ctrl_listview = OL_Vacances.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
@@ -30,9 +33,9 @@ class Dialog(wx.Dialog):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_importation = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Importation_internet.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_importation = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer depuis internet"), cheminImage="Images/32x32/Fleche_bas.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -44,13 +47,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImportation, self.bouton_importation)
 
     def __set_properties(self):
-        self.SetTitle(u"Gestion des périodes de vacances")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une période de vacances")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la période de vacances sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la période de vacances sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_importation.SetToolTipString(u"Cliquez ici pour importer des périodes depuis le site internet de l'Education Nationale")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Gestion des périodes de vacances"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une période de vacances"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la période de vacances sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la période de vacances sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_importation.SetToolTipString(_(u"Cliquez ici pour importer des périodes depuis le site internet de l'Education Nationale"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((650, 600))
 
     def __do_layout(self):

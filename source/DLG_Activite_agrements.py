@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import OL_Agrements
 import GestionDB
@@ -22,15 +25,15 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        self.staticbox_agrements_staticbox = wx.StaticBox(self, -1, u"Agréments de l'activité")
+        self.staticbox_agrements_staticbox = wx.StaticBox(self, -1, _(u"Agréments de l'activité"))
         self.radio_aucun = wx.RadioButton(self, -1, u"")
         self.radio_aucun.SetValue(True)
-        self.label_aucun = wx.StaticText(self, -1, u"Aucun agrément")
+        self.label_aucun = wx.StaticText(self, -1, _(u"Aucun agrément"))
         self.radio_unique = wx.RadioButton(self, -1, u"")
-        self.label_unique = wx.StaticText(self, -1, u"Agrément unique :")
+        self.label_unique = wx.StaticText(self, -1, _(u"Agrément unique :"))
         self.ctrl_agrement_unique = wx.TextCtrl(self, -1, u"")
         self.radio_multiples = wx.RadioButton(self, -1, u"")
-        self.label_multiples = wx.StaticText(self, -1, u"Agréments multiples :")
+        self.label_multiples = wx.StaticText(self, -1, _(u"Agréments multiples :"))
         
         self.ctrl_agrements = OL_Agrements.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_agrements", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_agrements.MAJ() 
@@ -58,13 +61,13 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.radio_unique.SetToolTipString(u"Sélectionnez 'Agrément unique' si l'activité possède un agrément unique")
+        self.radio_unique.SetToolTipString(_(u"Sélectionnez 'Agrément unique' si l'activité possède un agrément unique"))
         self.ctrl_agrement_unique.SetMinSize((120, -1))
-        self.ctrl_agrement_unique.SetToolTipString(u"Saisissez ici le numéro d'agrément unique")
-        self.radio_multiples.SetToolTipString(u"Sélectionnez 'Agréments multiples' si l'activité peut avoir plusieurs agréments")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un agrément")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'agrément selectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'agrément selectionnné dans la liste")
+        self.ctrl_agrement_unique.SetToolTipString(_(u"Saisissez ici le numéro d'agrément unique"))
+        self.radio_multiples.SetToolTipString(_(u"Sélectionnez 'Agréments multiples' si l'activité peut avoir plusieurs agréments"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un agrément"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'agrément selectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'agrément selectionnné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
@@ -160,7 +163,7 @@ class Panel(wx.Panel):
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) > 0 :
-                dlg = wx.MessageDialog(self, u"Vous avez sélectionné 'Aucun agrément' pour cette activité. Souhaitez-vous vraiment supprimer le ou les agréments précédemment saisis pour cette activité ?", u"Suppression d'agréments", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Aucun agrément' pour cette activité. Souhaitez-vous vraiment supprimer le ou les agréments précédemment saisis pour cette activité ?"), _(u"Suppression d'agréments"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 if dlg.ShowModal() != wx.ID_YES :
                     dlg.Destroy()
                     return False
@@ -169,7 +172,7 @@ class Panel(wx.Panel):
         # Unique
         if self.radio_unique.GetValue() == True :
             if self.ctrl_agrement_unique.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"Vous avez sélectionné 'Agrément unique' sans saisir de numéro d'agrément !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Agrément unique' sans saisir de numéro d'agrément !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_agrement_unique.SetFocus() 
@@ -178,7 +181,7 @@ class Panel(wx.Panel):
         if self.radio_multiples.GetValue() == True :
             nbreAgrements = len(self.ctrl_agrements.donnees)
             if nbreAgrements == 0 :
-                dlg = wx.MessageDialog(self, u"Vous avez sélectionné 'Agréments multiples' sans saisir aucun numéro d'agrément !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Agréments multiples' sans saisir aucun numéro d'agrément !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -264,7 +267,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

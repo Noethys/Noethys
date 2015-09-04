@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import OL_Etiquettes
@@ -57,7 +60,7 @@ import wx.lib.dialogs as dialogs
 ##                "listeActivites" : [],
 ##                }
 ##            dlg = DLG_Parametres_remplissage.Dialog(self, dictDonnees=dictDonnees, afficheLargeurColonneUnite=False, afficheAbregeGroupes=False)
-##            dlg.SetTitle(u"Sélection de la période et des activités")
+##            dlg.SetTitle(_(u"Sélection de la période et des activités"))
 ##            if dlg.ShowModal() != wx.ID_OK:
 ##                return
 ##            listeActivites = dlg.GetListeActivites()
@@ -96,7 +99,7 @@ import wx.lib.dialogs as dialogs
 ##            # Recherche des familles présentes
 ##            if self.URL == "familles_presents" :
 ##                if len(listeFamilles) == 0 :
-##                    dlg = wx.MessageDialog(self, u"Aucun présent n'a été trouvé !", "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+##                    dlg = wx.MessageDialog(self, _(u"Aucun présent n'a été trouvé !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
 ##                    dlg.ShowModal()
 ##                    dlg.Destroy()
 ##                    return
@@ -110,7 +113,7 @@ import wx.lib.dialogs as dialogs
 ##                        listeFamillesSansMail.append(nomTitulaires)
 ##                if len(listeFamillesSansMail) > 0 :
 ##                    listeFamillesSansMail.sort()
-##                    txt = u"%s présents ont été trouvés mais les %d familles suivantes ne possèdent pas d'adresse mail :\n\n> " % (len(listeFamilles), len(listeFamillesSansMail))
+##                    txt = _(u"%s présents ont été trouvés mais les %d familles suivantes ne possèdent pas d'adresse mail :\n\n> ") % (len(listeFamilles), len(listeFamillesSansMail))
 ##                    txt += ", ".join(listeFamillesSansMail) + u"."
 ##                    dlg = wx.MessageDialog(self, txt, "Remarque", wx.OK| wx.ICON_INFORMATION)  
 ##                    dlg.ShowModal()
@@ -144,7 +147,7 @@ class Page_Saisie_manuelle(wx.Panel):
         self.ctrl = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
         self.ctrl.SetMinSize((10, 10))
         self.Bind(wx.EVT_TEXT, self.OnCheck, self.ctrl)
-        self.ctrl.SetToolTipString(u"Saisissez manuellement des adresses emails en les séparant par des points-virgules (;)")
+        self.ctrl.SetToolTipString(_(u"Saisissez manuellement des adresses emails en les séparant par des points-virgules (;)"))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -188,7 +191,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTipString(u"Cochez les listes de diffusion souhaitées")
+        self.SetToolTipString(_(u"Cochez les listes de diffusion souhaitées"))
         self.listeDiff = []
         self.dictDiff = {}
         self.dictAbonnements = {}
@@ -224,9 +227,9 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         for IDliste, nom in listeListes :
             dictDiff[IDliste] = nom
             if dictAbonnements.has_key(IDliste) :
-                txtAbonnements = u"(%d abonnés)" % len(dictAbonnements[IDliste])
+                txtAbonnements = _(u"(%d abonnés)") % len(dictAbonnements[IDliste])
             else:
-                txtAbonnements = u"(Aucun abonné)"
+                txtAbonnements = _(u"(Aucun abonné)")
             label = u"%s %s" % (nom, txtAbonnements)
             listeDiff.append((label, IDliste))
         listeDiff.sort()
@@ -359,9 +362,9 @@ class Page_Familles_individus(wx.Panel):
         
         if len(listeNonValides) > 0 :
             image = wx.Bitmap("Images/32x32/Activite.png", wx.BITMAP_TYPE_ANY)
-            texteIntro = u"Attention, les %d destinataires sélectionnés suivants n'ont pas d'adresse valide :" % len(listeNonValides)
+            texteIntro = _(u"Attention, les %d destinataires sélectionnés suivants n'ont pas d'adresse valide :") % len(listeNonValides)
             texteDetail = "\n".join(listeNonValides)
-            dlg = dialogs.MultiMessageDialog(self, texteIntro, caption=u"Avertissement", msg2=texteDetail, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : u"Continuer", wx.ID_CANCEL:u"Annuler"})
+            dlg = dialogs.MultiMessageDialog(self, texteIntro, caption=_(u"Avertissement"), msg2=texteDetail, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : _(u"Continuer"), wx.ID_CANCEL:_(u"Annuler")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse == wx.ID_CANCEL :
@@ -448,10 +451,10 @@ class CTRL_Pages(wx.Notebook):
         self.SetPadding((10, 8)) 
         
         self.listePages = [
-            {"code" : "familles", "label" : u"Familles", "page" : Page_Familles_individus(self, "familles"), "image" : wx.Bitmap(u"Images/32x32/Famille.png", wx.BITMAP_TYPE_PNG)},
-            {"code" : "individus", "label" : u"Individus", "page" : Page_Familles_individus(self, "individus"), "image" : wx.Bitmap(u"Images/32x32/Personnes.png", wx.BITMAP_TYPE_PNG)},
-            {"code" : "listes_diffusion", "label" : u"Listes de diffusion", "page" : Page_Listes_diffusion(self), "image" : wx.Bitmap(u"Images/32x32/Questionnaire.png", wx.BITMAP_TYPE_PNG)},
-            {"code" : "saisie_manuelle", "label" : u"Saisie manuelle", "page" : Page_Saisie_manuelle(self), "image" : wx.Bitmap(u"Images/32x32/Contrat.png", wx.BITMAP_TYPE_PNG)},
+            {"code" : "familles", "label" : _(u"Familles"), "page" : Page_Familles_individus(self, "familles"), "image" : wx.Bitmap(u"Images/32x32/Famille.png", wx.BITMAP_TYPE_PNG)},
+            {"code" : "individus", "label" : _(u"Individus"), "page" : Page_Familles_individus(self, "individus"), "image" : wx.Bitmap(u"Images/32x32/Personnes.png", wx.BITMAP_TYPE_PNG)},
+            {"code" : "listes_diffusion", "label" : _(u"Listes de diffusion"), "page" : Page_Listes_diffusion(self), "image" : wx.Bitmap(u"Images/32x32/Questionnaire.png", wx.BITMAP_TYPE_PNG)},
+            {"code" : "saisie_manuelle", "label" : _(u"Saisie manuelle"), "page" : Page_Saisie_manuelle(self), "image" : wx.Bitmap(u"Images/32x32/Contrat.png", wx.BITMAP_TYPE_PNG)},
             ]
             
         # Images
@@ -498,9 +501,9 @@ class CTRL_Pages(wx.Notebook):
         if len(listeAdressesUniques) == 0 :
             texte = self.parent.texte_intro
         elif len(listeAdressesUniques) == 1 :
-            texte = u"Vous avez sélectionné 1 destinataire valide. Cliquez sur OK pour valider la sélection."
+            texte = _(u"Vous avez sélectionné 1 destinataire valide. Cliquez sur OK pour valider la sélection.")
         else :
-            texte = u"Vous avez sélectionné %d destinataires valides. Cliquez sur OK pour valider la sélection." % len(listeAdressesUniques)
+            texte = _(u"Vous avez sélectionné %d destinataires valides. Cliquez sur OK pour valider la sélection.") % len(listeAdressesUniques)
         self.parent.ctrl_intro.SetLabel(texte)
 
     def GetListeAdressesUniques(self):
@@ -534,15 +537,15 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent   
         
-        self.texte_intro = u"Sélectionnez des adresses Emails grâce aux contrôles ci-dessous..."
+        self.texte_intro = _(u"Sélectionnez des adresses Emails grâce aux contrôles ci-dessous...")
         self.ctrl_intro = wx.StaticText(self, -1, self.texte_intro)
         
         self.ctrl_pages = CTRL_Pages(self)
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_detail = wx.Button(self, -1, u"Afficher la liste des adresses valides")
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_detail = wx.Button(self, -1, _(u"Afficher la liste des adresses valides"))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -552,11 +555,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
                 
     def __set_properties(self):
-        self.SetTitle(u"Sélection des destinataires")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_detail.SetToolTipString(u"Cliquez ici pour afficher la liste des adresses valides")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Sélection des destinataires"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_detail.SetToolTipString(_(u"Cliquez ici pour afficher la liste des adresses valides"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((700, 550))
 
     def __do_layout(self):
@@ -584,10 +587,10 @@ class Dialog(wx.Dialog):
         """ Affiche la liste détaillée des adresses valides """
         listeAdressesUniques = self.ctrl_pages.GetListeAdressesUniques()
         if len(listeAdressesUniques) == 0 :
-            texte = u"Aucune adresse valide"
+            texte = _(u"Aucune adresse valide")
         else :
             texte = "\n".join(listeAdressesUniques)
-        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, texte, u"Liste des adresses valides")
+        dlg = wx.lib.dialogs.ScrolledMessageDialog(self, texte, _(u"Liste des adresses valides"))
         dlg.ShowModal()
         dlg.Destroy()
                     
@@ -602,7 +605,7 @@ class Dialog(wx.Dialog):
         
         donnees, listeAdressesUniques = self.ctrl_pages.GetDonnees()
         if len(listeAdressesUniques) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune adresse valide.\n\nSouhaitez-vous tout de même valider ?", u"Information", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune adresse valide.\n\nSouhaitez-vous tout de même valider ?"), _(u"Information"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :

@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with Timeline.  If not, see <http://www.gnu.org/licenses/>.
 
+from UTILS_Traduction import _
+
 import calendar
 import logging
 import os.path
@@ -25,6 +27,7 @@ from datetime import datetime as dt
 from datetime import time
 
 import wx
+import CTRL_Bouton_image
 import wx.html
 import wx.lib.colourselect as colourselect
 from wx.lib.masked import TimeCtrl
@@ -67,19 +70,19 @@ class ToolBar(wx.ToolBar):
         self.parent = self.GetParent() 
         
         # Boutons
-        self.AddLabelTool(ID_IMPRIMER,           u"Imprimer", wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Imprimer", "")
-        self.AddLabelTool(ID_APERCU,              u"Aperçu", wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Aperçu avant impression", "")
-        self.AddLabelTool(ID_IMAGE,                 u"Enreg.", wx.Bitmap("Images/16x16/Sauvegarder.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Exporter au format image", "")
+        self.AddLabelTool(ID_IMPRIMER,           _(u"Imprimer"), wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Imprimer"), "")
+        self.AddLabelTool(ID_APERCU,              _(u"Aperçu"), wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aperçu avant impression"), "")
+        self.AddLabelTool(ID_IMAGE,                 _(u"Enreg."), wx.Bitmap("Images/16x16/Sauvegarder.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Exporter au format image"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_GO_TODAY,         u"Aujourd.", wx.Bitmap("Images/16x16/Jour.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Atteindre aujourd'hui", "")
-        self.AddLabelTool(ID_GO_DATE,            u"Trouver", wx.Bitmap("Images/16x16/Recherche_date.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Atteindre une date", "")
+        self.AddLabelTool(ID_GO_TODAY,         _(u"Aujourd."), wx.Bitmap("Images/16x16/Jour.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Atteindre aujourd'hui"), "")
+        self.AddLabelTool(ID_GO_DATE,            _(u"Trouver"), wx.Bitmap("Images/16x16/Recherche_date.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Atteindre une date"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_AFFICHE_ANNEE, u"Année", wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Afficher l'année", "")
-        self.AddLabelTool(ID_AFFICHE_MOIS,    u"Mois", wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Afficher le mois", "")
-        self.AddLabelTool(ID_AFFICHE_JOUR,    u"Jour", wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Afficher le jour", "")
+        self.AddLabelTool(ID_AFFICHE_ANNEE, _(u"Année"), wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher l'année"), "")
+        self.AddLabelTool(ID_AFFICHE_MOIS,    _(u"Mois"), wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher le mois"), "")
+        self.AddLabelTool(ID_AFFICHE_JOUR,    _(u"Jour"), wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher le jour"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_GO_ARRIERE,      u"Reculer", wx.Bitmap("Images/16x16/Reculer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Reculer", "")
-        self.AddLabelTool(ID_GO_AVANT,          u"Avancer", wx.Bitmap("Images/16x16/Avancer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Avancer", "")
+        self.AddLabelTool(ID_GO_ARRIERE,      _(u"Reculer"), wx.Bitmap("Images/16x16/Reculer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Reculer"), "")
+        self.AddLabelTool(ID_GO_AVANT,          _(u"Avancer"), wx.Bitmap("Images/16x16/Avancer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Avancer"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.parent.Imprimer, id=ID_IMPRIMER)
@@ -205,12 +208,12 @@ class CTRL(wx.Panel):
         extension_map = {"png": wx.BITMAP_TYPE_PNG}
         extensions = extension_map.keys()
         wildcard = _create_wildcard("Fichiers images", extensions)
-        dialog = wx.FileDialog(self, message=u"Exporter au format image",
+        dialog = wx.FileDialog(self, message=_(u"Exporter au format image"),
                                wildcard=wildcard, style=wx.FD_SAVE)
         if dialog.ShowModal() == wx.ID_OK:
             path, extension = _extend_path(dialog.GetPath(), extensions, "png")
             if os.path.exists(path) :
-                reponse = _ask_question(u"Le fichier existe déjà. Voulez-vous l'écraser ?", self) 
+                reponse = _ask_question(_(u"Le fichier existe déjà. Voulez-vous l'écraser ?"), self) 
                 if reponse == False :
                     return
             bitmap = self.drawing_area.bgbuf
@@ -654,7 +657,7 @@ class DrawingArea(wx.Panel):
         frame = wx.GetApp().GetTopWindow()
         if not printer.Print(frame, printout, True):
             if printer.GetLastError() == wx.PRINTER_ERROR:
-                wx.MessageBox(u"Problème d'impression. Peut-être votre imprimante n'est-elle pas configurée correctement ?", "Impression", wx.OK)
+                wx.MessageBox(_(u"Problème d'impression. Peut-être votre imprimante n'est-elle pas configurée correctement ?"), "Impression", wx.OK)
         else:
             self.printData = wx.PrintData( printer.GetPrintDialogData().GetPrintData() )
         printout.Destroy()
@@ -665,10 +668,10 @@ class DrawingArea(wx.Panel):
         printout = drawing.TimelinePrintout(self, False)
         self.preview = wx.PrintPreview(printout_preview, printout, data)
         if not self.preview.Ok():
-            logging.debug(u"Impossible d'afficher l'aperçu avant impression...\n")
+            logging.debug(_(u"Impossible d'afficher l'aperçu avant impression...\n"))
             return
         frame = wx.GetApp().GetTopWindow()
-        pfrm = wx.PreviewFrame(self.preview, frame, u"Aperçu avant impression")
+        pfrm = wx.PreviewFrame(self.preview, frame, _(u"Aperçu avant impression"))
         pfrm.Initialize()
         pfrm.SetPosition(frame.GetPosition())
         pfrm.SetSize(frame.GetSize())
@@ -832,8 +835,8 @@ class DrawingArea(wx.Panel):
         if self.context_menu_event == None or self.lectureSeule == True :
             return
         menu_definitions = (
-            (u"Modifier", self._context_menu_on_edit_event),
-            (u"Supprimer", self._context_menu_on_delete_event),
+            (_(u"Modifier"), self._context_menu_on_edit_event),
+            (_(u"Supprimer"), self._context_menu_on_delete_event),
         )
         menu = wx.Menu()
         for menu_definition in menu_definitions:
@@ -1169,9 +1172,9 @@ class DrawingArea(wx.Panel):
         selected_events = self.drawing_algorithm.get_selected_events()
         nbr_of_selected_events = len(selected_events)
         if nbr_of_selected_events > 1:
-            text = u"Confirmez-vous la suppression de %d évènements ?" % nbr_of_selected_events
+            text = _(u"Confirmez-vous la suppression de %d évènements ?") % nbr_of_selected_events
         else:
-            text = u"Confirmez-vous la suppression de l'évènement ?"
+            text = _(u"Confirmez-vous la suppression de l'évènement ?")
         if _ask_question(text, self) == wx.YES:
             try:
                 self.timeline.delete_selected_events()
@@ -1733,13 +1736,13 @@ class CategoryEditor(wx.Dialog):
 class GotoDateDialog(wx.Dialog):
 
     def __init__(self, parent, time):
-        wx.Dialog.__init__(self, parent, title=u"Atteindre une date")
+        wx.Dialog.__init__(self, parent, title=_(u"Atteindre une date"))
         self._create_gui()
         self.dtpc.set_value(time)
 
     def _create_gui(self):
         self.dtpc = DateTimePicker(self)
-        checkbox = wx.CheckBox(self, label=u"Afficher l'heure")
+        checkbox = wx.CheckBox(self, label=_(u"Afficher l'heure"))
         checkbox.SetValue(False)
         self.dtpc.show_time(checkbox.IsChecked())
         self.Bind(wx.EVT_CHECKBOX, self._chb_show_time_on_checkbox, checkbox)
@@ -1882,7 +1885,7 @@ def _display_error_message(message, parent=None):
 
 def _ask_question(question, parent=None):
     """Ask a yes/no question and return the reply."""
-    return wx.MessageBox(question, u"Question",
+    return wx.MessageBox(question, _(u"Question"),
                          wx.YES_NO|wx.CENTRE|wx.NO_DEFAULT, parent)
 
 
@@ -1964,7 +1967,7 @@ class MyFrame(wx.Frame):
         dialog.Destroy()
 
     def edit_event(self, event):
-        dialog = EventEditor(self, u"Edit Event", self.timeline, event=event)
+        dialog = EventEditor(self, _(u"Edit Event"), self.timeline, event=event)
         dialog.ShowModal() 
         dialog.Destroy()
 

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 import FonctionsPerso
 
@@ -46,7 +49,7 @@ class MyHtml(html.HtmlWindow):
         
         
 class Dialog(wx.Dialog):
-    def __init__(self, parent, texte=u"", titre=u"Information", size=(360, 410), nePlusAfficher=False):
+    def __init__(self, parent, texte=u"", titre=_(u"Information"), size=(360, 410), nePlusAfficher=False):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.THICK_FRAME)
         self.SetTitle(titre)
         self.size = size
@@ -55,11 +58,11 @@ class Dialog(wx.Dialog):
         self.ctrl_html = MyHtml(self, texte=texte, hauteur=30)
         
         # Boutons de commande
-        self.check_nePlusAfficher = wx.CheckBox(self, -1, u"Ne plus afficher ce message")
+        self.check_nePlusAfficher = wx.CheckBox(self, -1, _(u"Ne plus afficher ce message"))
         if nePlusAfficher == False :
             self.check_nePlusAfficher.Show(False) 
             
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY), size=(100, -1))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -69,8 +72,8 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.check_nePlusAfficher.SetToolTipString(u"Cochez cette case pour ne plus afficher ce message")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour fermer ce message")
+        self.check_nePlusAfficher.SetToolTipString(_(u"Cochez cette case pour ne plus afficher ce message"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer ce message"))
         self.SetMinSize(self.size)
 
     def __do_layout(self):
@@ -104,7 +107,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, texte=TEXTE, titre=u"Message", nePlusAfficher=True)
+    dialog_1 = Dialog(None, texte=TEXTE, titre=_(u"Message"), nePlusAfficher=True)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

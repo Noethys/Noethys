@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import CTRL_Newsticker
 import wx.lib.analogclock as clock
@@ -33,7 +36,7 @@ import UTILS_Meteo
 def DateDDEnDateFR(dateDD):
     """ Transforme une datetime.date en date complète FR """
     listeJours = ("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     return listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
 
 def DateEngEnDateDD(dateEng):
@@ -46,10 +49,10 @@ def Concatenation(listeTextes=[]):
     elif len(listeTextes) == 1 :
         return listeTextes[0]
     elif len(listeTextes) == 2 :
-        return u"%s et %s" % (listeTextes[0], listeTextes[1])
+        return _(u"%s et %s") % (listeTextes[0], listeTextes[1])
     else :
         premiers = ", ".join(listeTextes[:-1])
-        return u"%s et %s" % (premiers, listeTextes[-1])
+        return _(u"%s et %s") % (premiers, listeTextes[-1])
 
 def GetAge(date_naiss=None):
     if date_naiss == None : return None
@@ -214,10 +217,10 @@ class CTRL(wx.Panel):
                 
             # Mix des fêtes et des célébrations
             texte = u""
-            intro = u"<t>LES CELEBRATIONS DU JOUR</t>"
-            if len(texteFetes) > 0 and len(texteCelebrations) > 0 : texte = u"%sNous fêtons aujourd'hui les %s et célébrons %s." % (intro, texteFetes, texteCelebrations)
-            if len(texteFetes) > 0 and len(texteCelebrations) == 0 : texte = u"%sNous fêtons aujourd'hui les %s." % (intro, texteFetes)
-            if len(texteFetes) == 0 and len(texteCelebrations) > 0 : texte = u"%sNous célébrons aujourd'hui %s." % (intro, texteCelebrations)
+            intro = _(u"<t>LES CELEBRATIONS DU JOUR</t>")
+            if len(texteFetes) > 0 and len(texteCelebrations) > 0 : texte = _(u"%sNous fêtons aujourd'hui les %s et célébrons %s.") % (intro, texteFetes, texteCelebrations)
+            if len(texteFetes) > 0 and len(texteCelebrations) == 0 : texte = _(u"%sNous fêtons aujourd'hui les %s.") % (intro, texteFetes)
+            if len(texteFetes) == 0 and len(texteCelebrations) > 0 : texte = _(u"%sNous célébrons aujourd'hui %s.") % (intro, texteCelebrations)
             if texte == "" : 
                 return None
             return texte
@@ -245,8 +248,8 @@ class CTRL(wx.Panel):
             for IDindividu, nom, prenom, date_naiss in listeDonnees :
                 date_naiss = DateEngEnDateDD(date_naiss)
                 age = GetAge(date_naiss)
-                listeTextes.append(u"%s %s (%d ans)" % (prenom, nom, age))
-            texte = u"<t>LES ANNIVERSAIRES DU JOUR</t>Joyeux anniversaire à %s." % Concatenation(listeTextes)
+                listeTextes.append(_(u"%s %s (%d ans)") % (prenom, nom, age))
+            texte = _(u"<t>LES ANNIVERSAIRES DU JOUR</t>Joyeux anniversaire à %s.") % Concatenation(listeTextes)
             return texte
         
         except :
@@ -257,7 +260,7 @@ class CTRL(wx.Panel):
         texte = ""
         index = random.randint(0, len(LISTE_CITATIONS) - 1)
         citation, auteur = LISTE_CITATIONS[index]
-        texte = u"<t>LA CITATION DU JOUR</t>%s (%s)" % (citation, auteur)
+        texte = _(u"<t>LA CITATION DU JOUR</t>%s (%s)") % (citation, auteur)
         return texte
 
     def GetSoleil(self):
@@ -276,7 +279,7 @@ class CTRL(wx.Panel):
             c = City((ville, "France", float(lat), float(long), "Europe/Paris"))
             heureLever = c.sunrise()
             heureCoucher = c.sunset()
-            texte = u"<t>HORAIRES DU SOLEIL</t>Aujourd'hui à %s, le soleil se lève à %dh%02d et se couche à %dh%02d." % (ville.capitalize(), heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
+            texte = _(u"<t>HORAIRES DU SOLEIL</t>Aujourd'hui à %s, le soleil se lève à %dh%02d et se couche à %dh%02d.") % (ville.capitalize(), heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
             return texte
         
         except :
@@ -297,7 +300,7 @@ class CTRL(wx.Panel):
             dictMeteo = UTILS_Meteo.Meteo(ville, cp)
             if dictMeteo == None :
                 return None
-            texte = u"<t>METEO</t>Actuellement sur %s, c'est %s (%s°c - %s, %s). Prévision pour demain : %s." % (
+            texte = _(u"<t>METEO</t>Actuellement sur %s, c'est %s (%s°c - %s, %s). Prévision pour demain : %s.") % (
                     ville.capitalize(), 
                     dictMeteo["jour"]["condition"].decode("iso-8859-15").replace(u"&#39;", "'").lower(), 
                     dictMeteo["jour"]["temp"].decode("iso-8859-15"),

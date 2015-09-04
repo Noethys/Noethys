@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import datetime
@@ -36,11 +39,15 @@ except Exception, err :
 
 
 LISTE_MODELES = [
-    {"code" : "repartition_categories_debit", "label" : u"Répartition des dépenses", "image" : "Repartition.png"},
-    {"code" : "repartition_categories_credit", "label" : u"Répartition des recettes", "image" : "Repartition.png"},
-    {"code" : "tiers_debit", "label" : u"Dépenses par tiers", "image" : "Barres.png"},
-    {"code" : "tiers_credit", "label" : u"Recettes par tiers", "image" : "Barres.png"},
-    #{"code" : "repartition_depenses", "label" : u"Graphique 3", "image" : "Courbes2.png"},
+    {"code" : "repartition_categories_debit_tresorerie", "label" : _(u"Répartition des opérations de trésorerie au débit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie", "label" : _(u"Répartition des opérations de trésorerie au crédit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_budgetaires", "label" : _(u"Répartition des opérations budgétaires au débit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_budgetaires", "label" : _(u"Répartition des opérations budgétaires au crédit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_debit_tresorerie_budgetaires", "label" : _(u"Répartition des opérations de trésorerie + budgétaires au débit"), "image" : "Repartition.png"},
+    {"code" : "repartition_categories_credit_tresorerie_budgetaires", "label" : _(u"Répartition des opérations de trésorerie + budgétaires au crédit"), "image" : "Repartition.png"},
+    {"code" : "tiers_debit", "label" : _(u"Dépenses par tiers"), "image" : "Barres.png"},
+    {"code" : "tiers_credit", "label" : _(u"Recettes par tiers"), "image" : "Barres.png"},
+    #{"code" : "repartition_depenses", "label" : _(u"Graphique 3"), "image" : "Courbes2.png"},
     ]
 
 
@@ -101,8 +108,8 @@ class CTRL_Exercice(wx.Choice):
         self.SetID(self.IDdefaut)
     
     def GetListeDonnees(self):
-        listeItems = [u"Tous les exercices",]
-        self.dictDonnees = { 0 : {"ID":None}, }
+        listeItems = [_(u"Tous les exercices"),]
+        self.dictDonnees = { 0 : {"ID":None, "date_debut":None, "date_fin":None}, }
         DB = GestionDB.DB()
         req = """SELECT IDexercice, nom, date_debut, date_fin, defaut
         FROM compta_exercices
@@ -112,7 +119,9 @@ class CTRL_Exercice(wx.Choice):
         DB.Close()
         index = 1
         for IDexercice, nom, date_debut, date_fin, defaut in listeDonnees :
-            self.dictDonnees[index] = { "ID" : IDexercice }
+            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+            self.dictDonnees[index] = { "ID" : IDexercice, "date_debut" : date_debut, "date_fin" : date_fin}
             label = nom
             listeItems.append(label)
             if defaut == 1 :
@@ -129,7 +138,11 @@ class CTRL_Exercice(wx.Choice):
         index = self.GetSelection()
         if index == -1 : return None
         return self.dictDonnees[index]["ID"]
-
+    
+    def GetDictExercice(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]
 
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -150,7 +163,7 @@ class CTRL_Analytique(wx.Choice):
         self.SetID(self.IDdefaut)
     
     def GetListeDonnees(self):
-        listeItems = [u"Tous les postes analytiques",]
+        listeItems = [_(u"Tous les postes analytiques"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         DB = GestionDB.DB()
         req = """SELECT IDanalytique, nom, abrege, defaut
@@ -211,7 +224,7 @@ class CTRL_Graphique(wx.Panel):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 10, u"Afficher les valeurs", u"Afficher les valeurs", wx.ITEM_CHECK)
+        item = wx.MenuItem(menuPop, 10, _(u"Afficher les valeurs"), _(u"Afficher les valeurs"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_afficher_valeurs, id=10)
         if self.afficher_valeurs == True : item.Check(True)
@@ -244,17 +257,22 @@ class CTRL_Graphique(wx.Panel):
             wx.CallAfter(self.SendSizeEvent)
             return
         
-        if self.dictParametres["IDmodele"] == "repartition_categories_debit" : self.Graphe_repartition_categories(typeCategorie="debit")
-        if self.dictParametres["IDmodele"] == "repartition_categories_credit" : self.Graphe_repartition_categories(typeCategorie="credit")
+        if self.dictParametres["IDmodele"] == "repartition_categories_debit_tresorerie" : self.Graphe_repartition_categories(typeCategorie="debit", typeDonnees="tresorerie")
+        if self.dictParametres["IDmodele"] == "repartition_categories_credit_tresorerie" : self.Graphe_repartition_categories(typeCategorie="credit", typeDonnees="tresorerie")
+        if self.dictParametres["IDmodele"] == "repartition_categories_debit_budgetaires" : self.Graphe_repartition_categories(typeCategorie="debit", typeDonnees="budgetaires")
+        if self.dictParametres["IDmodele"] == "repartition_categories_credit_budgetaires" : self.Graphe_repartition_categories(typeCategorie="credit", typeDonnees="budgetaires")
+        if self.dictParametres["IDmodele"] == "repartition_categories_debit_tresorerie_budgetaires" : self.Graphe_repartition_categories(typeCategorie="debit", typeDonnees="tresorerie+budgetaires")
+        if self.dictParametres["IDmodele"] == "repartition_categories_credit_tresorerie_budgetaires" : self.Graphe_repartition_categories(typeCategorie="credit", typeDonnees="tresorerie+budgetaires")
         if self.dictParametres["IDmodele"] == "tiers_debit" : self.Graphe_tiers(typeCategorie="debit")
         if self.dictParametres["IDmodele"] == "tiers_credit" : self.Graphe_tiers(typeCategorie="credit")
         self.Layout()
 
-    def Graphe_repartition_categories(self, typeCategorie=""):
+    def Graphe_repartition_categories(self, typeCategorie="", typeDonnees="tresorerie+budgetaires"):
         # Récupération des données
         conditions = []
-        if self.dictParametres["IDexercice"] != None :
-            conditions.append("IDexercice=%d" % self.dictParametres["IDexercice"])
+        if self.dictParametres["date_debut"] != None :
+            conditions.append("date_budget>='%s'" % self.dictParametres["date_debut"])
+            conditions.append("date_budget<='%s'" % self.dictParametres["date_fin"])
         if self.dictParametres["IDanalytique"] != None :
             conditions.append("IDanalytique=%d" % self.dictParametres["IDanalytique"])
         if len(conditions) > 0 :
@@ -263,16 +281,38 @@ class CTRL_Graphique(wx.Panel):
             ConditionsStr = ""
             
         DB = GestionDB.DB()
-        req = """SELECT compta_ventilation.IDcategorie, compta_categories.nom, SUM(compta_ventilation.montant)
-        FROM compta_ventilation
-        LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_ventilation.IDcategorie
-        WHERE type='%s' %s
-        GROUP BY compta_ventilation.IDcategorie
-        ;""" % (typeCategorie, ConditionsStr)
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        dictDonnees = {}
+        
+        if "budgetaires" in typeDonnees :
+            req = """SELECT compta_operations_budgetaires.IDcategorie, compta_categories.nom, SUM(compta_operations_budgetaires.montant)
+            FROM compta_operations_budgetaires
+            LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_operations_budgetaires.IDcategorie
+            WHERE compta_operations_budgetaires.type='%s' %s
+            GROUP BY compta_operations_budgetaires.IDcategorie
+            ;""" % (typeCategorie, ConditionsStr)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            for IDcategorie, nom, montant in listeDonnees :
+                if dictDonnees.has_key(IDcategorie) == False :
+                    dictDonnees[IDcategorie] = {"nom" : nom, "montant" : 0.0}
+                dictDonnees[IDcategorie]["montant"] += montant
+        
+        if "tresorerie" in typeDonnees :
+            req = """SELECT compta_ventilation.IDcategorie, compta_categories.nom, SUM(compta_ventilation.montant)
+            FROM compta_ventilation
+            LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_ventilation.IDcategorie
+            WHERE type='%s' %s
+            GROUP BY compta_ventilation.IDcategorie
+            ;""" % (typeCategorie, ConditionsStr)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            for IDcategorie, nom, montant in listeDonnees :
+                if dictDonnees.has_key(IDcategorie) == False :
+                    dictDonnees[IDcategorie] = {"nom" : nom, "montant" : 0.0}
+                dictDonnees[IDcategorie]["montant"] += montant
+
         DB.Close()
-        if len(listeDonnees) == 0 :
+        if len(dictDonnees) == 0 :
             return
 
         listeValeurs = []
@@ -280,13 +320,13 @@ class CTRL_Graphique(wx.Panel):
         listeCouleurs = []
         
         montantTotal = 0.0
-        for IDcategorie, nom, montant in listeDonnees :
-            montantTotal += montant
+        for IDcategorie, dictTemp in dictDonnees.iteritems() :
+            montantTotal += dictTemp["montant"]
             
         index = 1
-        for IDcategorie, nom, montant in listeDonnees :
-            listeValeurs.append(montant)
-            label = nom
+        for IDcategorie, dictTemp in dictDonnees.iteritems() :
+            listeValeurs.append(dictTemp["montant"])
+            label = dictTemp["nom"]
             if self.afficher_valeurs == True :
                 label += u"\n%.2f %s" % (float(montant), SYMBOLE)
             listeLabels.append(label)            
@@ -316,8 +356,9 @@ class CTRL_Graphique(wx.Panel):
     def Graphe_tiers(self, typeCategorie=""):
         # Récupération des données
         conditions = []
-        if self.dictParametres["IDexercice"] != None :
-            conditions.append("IDexercice=%d" % self.dictParametres["IDexercice"])
+        if self.dictParametres["date_debut"] != None :
+            conditions.append("date_budget>='%s'" % self.dictParametres["date_debut"])
+            conditions.append("date_budget<='%s'" % self.dictParametres["date_fin"])
         if self.dictParametres["IDanalytique"] != None :
             conditions.append("IDanalytique=%d" % self.dictParametres["IDanalytique"])
         if len(conditions) > 0 :
@@ -425,8 +466,8 @@ class CTRL_Graphique(wx.Panel):
 ##        opacity = 0.4
 ##        
 ##        ax = self.figure.add_subplot(111)
-##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=u"Réel")
-##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=u"Budgété")
+##        barres = ax.bar(listeIndex, listeRealise, width=bar_width, alpha=opacity, color="g", label=_(u"Réel"))
+##        barres = ax.bar(listeIndex + bar_width, listeBudgete, width=bar_width, alpha=opacity, color="b", label=_(u"Budgété"))
 ##
 ##        # Formatage des montants sur y
 ##        majorFormatter = FormatStrFormatter(SYMBOLE + u" %d")
@@ -454,8 +495,8 @@ class CTRL_Graphique(wx.Panel):
         opacity = 0.4
         
         ax = self.figure.add_subplot(111)
-        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=u"Réel")
-        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=u"Budgété")
+        barresRealise = ax.barh(listeIndex, listeRealise, height=bar_height, alpha=opacity, color="g", label=_(u"Réel"))
+        barresBudgete = ax.barh(listeIndex + bar_height, listeBudgete, height=bar_height, alpha=opacity, color="b", label=_(u"Budgété"))
 
         # Formatage des montants sur x
         majorFormatter = FormatStrFormatter(u"%d " + SYMBOLE)
@@ -505,32 +546,32 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent 
 
-        intro = u"Sélectionnez un modèle de graphique dans la liste proposée puis ajustez les paramètres si besoin."
-        titre = u"Graphiques"
+        intro = _(u"Sélectionnez un modèle de graphique dans la liste proposée puis ajustez les paramètres si besoin.")
+        titre = _(u"Graphiques")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
 
         # Modèle
-        self.box_modele_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Modèle")
+        self.box_modele_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Modèle"))
         self.ctrl_modele = CTRL_Modele(self)
         self.ctrl_modele.SetMinSize((400, -1))
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Paramètres")
-        self.label_exercice = wx.StaticText(self, wx.ID_ANY, u"Exercice :")
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
+        self.label_exercice = wx.StaticText(self, wx.ID_ANY, _(u"Exercice :"))
         self.ctrl_exercice = CTRL_Exercice(self)
-        self.label_analytique = wx.StaticText(self, wx.ID_ANY, u"Analytique :")
+        self.label_analytique = wx.StaticText(self, wx.ID_ANY, _(u"Analytique :"))
         self.ctrl_analytique = CTRL_Analytique(self)
         
         # Graphique
         self.box_graphique_staticbox = wx.StaticBox(self, wx.ID_ANY, "Graphique")
         self.ctrl_graphique = CTRL_Graphique(self)
-        self.bouton_zoom = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_options = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_zoom = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_options = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -548,13 +589,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez un modèle de graphique")
-        self.ctrl_exercice.SetToolTipString(u"Sélectionnez un exercice")
-        self.ctrl_analytique.SetToolTipString(u"Sélectionnez un poste analytique")
-        self.bouton_zoom.SetToolTipString(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique")
-        self.bouton_options.SetToolTipString(u"Cliquez ici pour accéder aux options du graphique")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de graphique"))
+        self.ctrl_exercice.SetToolTipString(_(u"Sélectionnez un exercice"))
+        self.ctrl_analytique.SetToolTipString(_(u"Sélectionnez un poste analytique"))
+        self.bouton_zoom.SetToolTipString(_(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options du graphique"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):
@@ -622,16 +663,22 @@ class Dialog(wx.Dialog):
     
     def OnBoutonAide(self, event):
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Graphiques")
 
     def OnBoutonFermer(self, event): 
         self.EndModal(wx.ID_CANCEL)
 
     def MAJgraphique(self, event=None):
+        dictExercice = self.ctrl_exercice.GetDictExercice() 
+        if dictExercice == None : return
+        date_debut = dictExercice["date_debut"]
+        date_fin = dictExercice["date_fin"]
+        
         dictParametres = {
             "IDmodele" : self.ctrl_modele.GetID(),
             "nom" : self.ctrl_modele.GetLabel(),
-            "IDexercice" : self.ctrl_exercice.GetID() ,
+            "date_debut" : date_debut,
+            "date_fin" : date_fin,
             "IDanalytique" : self.ctrl_analytique.GetID(),
             }
         

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import os
@@ -91,11 +94,11 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, None),
-            ColumnDefn(u"Pièce", 'left', 180, "label", imageGetter=GetImagePiece, isSpaceFilling=True),
+            ColumnDefn(_(u"Pièce"), 'left', 180, "label", imageGetter=GetImagePiece, isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune pièce")
+        self.SetEmptyListMsg(_(u"Aucune pièce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -130,13 +133,13 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
         
         # Ajouter pièce jointe
-        item = wx.MenuItem(menuPop, 20, u"Ajouter")
+        item = wx.MenuItem(menuPop, 20, _(u"Ajouter"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=20)
         
         # Retirer pièce jointe
-        item = wx.MenuItem(menuPop, 30, u"Retirer")
+        item = wx.MenuItem(menuPop, 30, _(u"Retirer"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Retirer, id=30)
@@ -146,7 +149,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Ouvrir pièce jointe
-        item = wx.MenuItem(menuPop, 60, u"Ouvrir la pièce")
+        item = wx.MenuItem(menuPop, 60, _(u"Ouvrir la pièce"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ouvrir, id=60)
@@ -156,14 +159,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -176,7 +179,7 @@ class ListView(FastObjectListView):
         """ Demande l'emplacement du fichier à joindre """
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=u"Veuillez sélectionner le ou les fichiers à joindre", defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
+        dlg = wx.FileDialog(self, message=_(u"Veuillez sélectionner le ou les fichiers à joindre"), defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
         if dlg.ShowModal() == wx.ID_OK:
             chemins = dlg.GetPaths()
         else:
@@ -186,7 +189,7 @@ class ListView(FastObjectListView):
         for fichier in chemins :
             valide = True
             if fichier in self.listeDonnees :
-                dlg = wx.MessageDialog(self, u"Le fichier '%s' est déjà dans la liste !" % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+                dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est déjà dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
@@ -197,7 +200,7 @@ class ListView(FastObjectListView):
     def Retirer(self, event):
         """ Retirer pièces """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une pièce à retirer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une pièce à retirer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -207,7 +210,7 @@ class ListView(FastObjectListView):
 
     def Ouvrir(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une pièce à ouvrir dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une pièce à ouvrir dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -216,12 +219,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des pièces jointes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces jointes"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des pièces jointes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces jointes"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
     
     def GetDonnees(self):

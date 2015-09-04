@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import CTRL_Graph_tresorerie
 import CTRL_Saisie_compte
@@ -22,29 +25,29 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Sélectionnez un compte et une période pour afficher le suivi de la trésorerie correspondante."
-        titre = u"Trésorerie"
+        intro = _(u"Sélectionnez un compte et une période pour afficher le suivi de la trésorerie correspondante.")
+        titre = _(u"Trésorerie")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tresorerie.png")
         
         # Options
-        self.label_compte = wx.StaticText(self, wx.ID_ANY, u"Compte :")
+        self.label_compte = wx.StaticText(self, wx.ID_ANY, _(u"Compte :"))
         self.ctrl_compte = CTRL_Saisie_compte.CTRL(self, IDcompte_bancaire=IDcompte_bancaire)
         
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, u"Période :")
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Période :"))
         self.ctrl_periode = CTRL_Graph_tresorerie.CTRL_Affichage(self)
         
         self.label_date_debut = wx.StaticText(self, wx.ID_ANY, u"du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_date_fin = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.bouton_actualiser = wx.Button(self, -1, u"Actualiser")
+        self.bouton_actualiser = wx.Button(self, -1, _(u"Actualiser"))
 
         # Graphe
         self.ctrl_graphique = CTRL_Graph_tresorerie.CTRL(self, style=wx.SUNKEN_BORDER)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -59,9 +62,9 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser l'affichage")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser l'affichage"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((850, 690))
 
     def __do_layout(self):
@@ -99,7 +102,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Suividelatresorerie")
 
     def OnChoix(self, event=None):
         code = self.ctrl_periode.GetCode() 

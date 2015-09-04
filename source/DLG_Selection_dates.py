@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 
@@ -18,22 +21,22 @@ import UTILS_Dates
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, date_debut=None, date_fin=None, titre=u"Sélection d'une période"):
+    def __init__(self, parent, date_debut=None, date_fin=None, titre=_(u"Sélection d'une période")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent   
         self.SetTitle(titre)
 
         # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.label_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
                 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -47,11 +50,11 @@ class Dialog(wx.Dialog):
         if date_fin != None : self.SetDateFin(date_fin)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((500, 200))
 
     def __do_layout(self):
@@ -105,21 +108,21 @@ class Dialog(wx.Dialog):
         date_fin = self.GetDateFin() 
         
         if date_debut == None or self.ctrl_date_debut.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
         if date_fin == None or self.ctrl_date_fin.Validation() == False :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, u"La date de début ne peut pas être supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()

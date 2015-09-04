@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import GestionDB
 import FonctionsPerso
@@ -92,12 +95,12 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
     listeAdresses = []
     for IDindividu,  IDcategorie, nom, prenom, mailPerso, mailTravail in listeDonnees :
         if mailPerso != None and mailPerso != "" :
-            listeAdresses.append((u"%s (Adresse perso de %s)" % (mailPerso, prenom), mailPerso))
+            listeAdresses.append((_(u"%s (Adresse perso de %s)") % (mailPerso, prenom), mailPerso))
         if mailTravail != None and mailTravail != "" :
-            listeAdresses.append((u"%s (Adresse pro de %s)" % (mailTravail, prenom), mailTravail))
+            listeAdresses.append((_(u"%s (Adresse pro de %s)") % (mailTravail, prenom), mailTravail))
     if len(listeAdresses) == 0 :
         if muet == False :
-            dlg = wx.MessageDialog(None, u"Aucun membre de la famille de %s ne dispose d'adresse mail !" % nomTitulaires, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Aucun membre de la famille de %s ne dispose d'adresse mail !") % nomTitulaires, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
         return []
@@ -109,9 +112,9 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         for label, adresse in listeAdresses :
             listeLabels.append(label)
         if choixMultiple == True :
-            dlg = wx.MultiChoiceDialog(None, u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celles que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :" % (len(listeAdresses), nomTitulaires), u"Choix d''adresses Emails", listeLabels)
+            dlg = wx.MultiChoiceDialog(None, _(u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celles que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :") % (len(listeAdresses), nomTitulaires), _(u"Choix d''adresses Emails"), listeLabels)
         else :
-            dlg = wx.SingleChoiceDialog(None, u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celle que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :" % (len(listeAdresses), nomTitulaires), u"Choix d'une adresse Email", listeLabels)
+            dlg = wx.SingleChoiceDialog(None, _(u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celle que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :") % (len(listeAdresses), nomTitulaires), _(u"Choix d'une adresse Email"), listeLabels)
         dlg.SetSize((450, -1))
         dlg.CenterOnScreen() 
         if dlg.ShowModal() == wx.ID_OK :
@@ -121,7 +124,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
                 selections = [dlg.GetSelection(),]
             dlg.Destroy()
             if len(selections) == 0 :
-                dlg = wx.MessageDialog(None, u"Vous n'avez sélectionné aucune adresse mail !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(None, _(u"Vous n'avez sélectionné aucune adresse mail !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return []
@@ -158,7 +161,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
     for img in listeImages :
         img = img.replace(u"\\", u"/")
         img = img.replace(u":", u"%3a")
-        texteMail = texteMail.replace(u"file:/%s" % img, u"cid:image%d" % index)
+        texteMail = texteMail.replace(_(u"file:/%s") % img, u"cid:image%d" % index)
         index += 1
     
     # Création du message
@@ -254,8 +257,8 @@ if __name__ == u"__main__":
         adresseExpediteur="XXX", 
         listeDestinataires=["XXX",], 
         listeDestinatairesCCI=[], 
-        sujetMail=u"Sujet du Mail", 
-        texteMail=u"Texte du Mail", 
+        sujetMail=_(u"Sujet du Mail"), 
+        texteMail=_(u"Texte du Mail"), 
         listeFichiersJoints=[], 
         serveur="XXX", 
         port=465, 

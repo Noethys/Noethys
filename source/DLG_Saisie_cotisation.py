@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import CTRL_Saisie_date
@@ -25,8 +28,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -232,17 +235,17 @@ class Choix_beneficiaire(wx.Choice):
                     listeTitulaires.append(nomIndividu)
                 nbreTitulaires = len(listeTitulaires)
                 if nbreTitulaires == 0 : 
-                    nomTitulaires = u"Pas de titulaires !"
+                    nomTitulaires = _(u"Pas de titulaires !")
                 if nbreTitulaires == 1 : 
                     nomTitulaires = listeTitulaires[0]
                 if nbreTitulaires == 2 : 
-                    nomTitulaires = u"%s et %s" % (listeTitulaires[0], listeTitulaires[1])
+                    nomTitulaires = _(u"%s et %s") % (listeTitulaires[0], listeTitulaires[1])
                 if nbreTitulaires > 2 :
                     nomTitulaires = ""
                     for nomTitulaire in listeTitulaires[:-1] :
                         nomTitulaires += u"%s, " % nomTitulaire
-                    nomTitulaires = u"%s et %s" % (nomTitulaires[:-2], listeTitulaires[-1])
-                self.listeNoms.append(u"Famille de %s" % nomTitulaires)
+                    nomTitulaires = _(u"%s et %s") % (nomTitulaires[:-2], listeTitulaires[-1])
+                self.listeNoms.append(_(u"Famille de %s") % nomTitulaires)
                 self.listeDonnees.append(self.parent.IDfamille)
                 
             else:
@@ -252,7 +255,7 @@ class Choix_beneficiaire(wx.Choice):
                     for IDfamille, dictFamille in self.parent.dictFamillesRattachees.iteritems() :
                         if dictFamille["IDcategorie"] in (1, 2) :
                             nomTitulaires = dictFamille["nomsTitulaires"]
-                            self.listeNoms.append(u"Famille de %s" % nomTitulaires)
+                            self.listeNoms.append(_(u"Famille de %s") % nomTitulaires)
                             self.listeDonnees.append(IDfamille)
 
         # Remplissage du contrôle
@@ -320,17 +323,17 @@ class Choix_payeur(wx.Choice):
                 listeTitulaires.append(nomIndividu)
             nbreTitulaires = len(listeTitulaires)
             if nbreTitulaires == 0 : 
-                nomTitulaires = u"Pas de titulaires !"
+                nomTitulaires = _(u"Pas de titulaires !")
                 IDcompte_payeur = None
             if nbreTitulaires == 1 : 
                 nomTitulaires = listeTitulaires[0]
             if nbreTitulaires == 2 : 
-                nomTitulaires = u"%s et %s" % (listeTitulaires[0], listeTitulaires[1])
+                nomTitulaires = _(u"%s et %s") % (listeTitulaires[0], listeTitulaires[1])
             if nbreTitulaires > 2 :
                 nomTitulaires = ""
                 for nomTitulaire in listeTitulaires[:-1] :
                     nomTitulaires += u"%s, " % nomTitulaire
-                nomTitulaires = u"%s et %s" % (nomTitulaires[:-2], listeTitulaires[-1])
+                nomTitulaires = _(u"%s et %s") % (nomTitulaires[:-2], listeTitulaires[-1])
             self.listeNoms.append(nomTitulaires)
             self.listeDonnees.append((IDcompte_payeur, self.parent.IDfamille))
                 
@@ -381,49 +384,49 @@ class Dialog(wx.Dialog):
         self.IDutilisateur = UTILS_Identification.GetIDutilisateur()
         
         # Cotisation
-        self.staticbox_cotisation_staticbox = wx.StaticBox(self, -1, u"Cotisation")
-        self.label_type = wx.StaticText(self, -1, u"Type :")
+        self.staticbox_cotisation_staticbox = wx.StaticBox(self, -1, _(u"Cotisation"))
+        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.ctrl_type = Choix_type(self)
-        self.label_unite = wx.StaticText(self, -1, u"Unité :")
+        self.label_unite = wx.StaticText(self, -1, _(u"Unité :"))
         self.ctrl_unite = Choix_unite(self)
-        self.label_beneficiaire = wx.StaticText(self, -1, u"Bénéfic. :")
+        self.label_beneficiaire = wx.StaticText(self, -1, _(u"Bénéfic. :"))
         self.ctrl_beneficiaire = Choix_beneficiaire(self)
-        self.label_validite = wx.StaticText(self, -1, u"Validité :")
+        self.label_validite = wx.StaticText(self, -1, _(u"Validité :"))
         self.label_du = wx.StaticText(self, -1, u"du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
 
         # Carte
-        self.staticbox_carte_staticbox = wx.StaticBox(self, -1, u"Carte d'adhérent")
-        self.label_creation = wx.StaticText(self, -1, u"Création :")
+        self.staticbox_carte_staticbox = wx.StaticBox(self, -1, _(u"Carte d'adhérent"))
+        self.label_creation = wx.StaticText(self, -1, _(u"Création :"))
         self.ctrl_creation = wx.CheckBox(self, -1, "")
-        self.label_numero = wx.StaticText(self, -1, u"Numéro :")
+        self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_creation = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_creation.SetDate(datetime.date.today())
-        self.label_depot = wx.StaticText(self, -1, u"Dépôt :")
+        self.label_depot = wx.StaticText(self, -1, _(u"Dépôt :"))
         self.ctrl_depot = wx.TextCtrl(self, -1, u"")
         
         # Prestation
-        self.staticbox_prestation_staticbox = wx.StaticBox(self, -1, u"Facturation")
-        self.label_facturer = wx.StaticText(self, -1, u"Facturer :")
+        self.staticbox_prestation_staticbox = wx.StaticBox(self, -1, _(u"Facturation"))
+        self.label_facturer = wx.StaticText(self, -1, _(u"Facturer :"))
         self.ctrl_facturer = wx.CheckBox(self, -1, "")
-        self.label_date_prestation = wx.StaticText(self, -1, u"Date :")
+        self.label_date_prestation = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date_prestation = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_prestation.SetDate(datetime.date.today())
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
-        self.label_payeur = wx.StaticText(self, -1, u"Payeur :")
+        self.label_payeur = wx.StaticText(self, -1, _(u"Payeur :"))
         self.ctrl_payeur = Choix_payeur(self)
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -436,14 +439,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDcotisation == None :
-            self.SetTitle(u"Saisie d'une cotisation")
+            self.SetTitle(_(u"Saisie d'une cotisation"))
             self.SetProchainIDcotisation() 
             self.OnChoixCreation(None)
             self.OnChoixFacturer(None) 
             self.OnChoixType(None)
             self.OnChoixUnite(None)
         else:
-            self.SetTitle(u"Modification d'une cotisation")
+            self.SetTitle(_(u"Modification d'une cotisation"))
             self.Importation() 
         
         # Init contrôles
@@ -452,27 +455,27 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetFocus() 
         
     def __set_properties(self):
-        self.ctrl_type.SetToolTipString(u"Sélectionnez ici le type de cotisation")
-        self.ctrl_unite.SetToolTipString(u"Sélectionnez ici l'unité de cotisation")
-        self.ctrl_beneficiaire.SetToolTipString(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de validité")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de validité")
-        self.ctrl_creation.SetToolTipString(u"Selectionnez OUI si une carte d'adhérent a ete créee")
+        self.ctrl_type.SetToolTipString(_(u"Sélectionnez ici le type de cotisation"))
+        self.ctrl_unite.SetToolTipString(_(u"Sélectionnez ici l'unité de cotisation"))
+        self.ctrl_beneficiaire.SetToolTipString(_(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_creation.SetToolTipString(_(u"Selectionnez OUI si une carte d'adhérent a ete créee"))
         self.ctrl_numero.SetMinSize((70, -1))
-        self.ctrl_numero.SetToolTipString(u"Saisissez ici le numéro de la carte d'adhérent")
-        self.ctrl_date_creation.SetToolTipString(u"Saisissez ici la date de création de la carte d'adhérent")
+        self.ctrl_numero.SetToolTipString(_(u"Saisissez ici le numéro de la carte d'adhérent"))
+        self.ctrl_date_creation.SetToolTipString(_(u"Saisissez ici la date de création de la carte d'adhérent"))
         self.ctrl_depot.SetMinSize((70, -1))
-        self.ctrl_depot.SetToolTipString(u"Numero et date du dépôt")
-        self.ctrl_facturer.SetToolTipString(u"Selectionnez OUI si la carte doit etre facturée")
-        self.ctrl_date_prestation.SetToolTipString(u"Saisissez ici la date de la prestation à facturer")
+        self.ctrl_depot.SetToolTipString(_(u"Numero et date du dépôt"))
+        self.ctrl_facturer.SetToolTipString(_(u"Selectionnez OUI si la carte doit etre facturée"))
+        self.ctrl_date_prestation.SetToolTipString(_(u"Saisissez ici la date de la prestation à facturer"))
         self.ctrl_montant.SetMinSize((70, -1))
-        self.ctrl_montant.SetToolTipString(u"Saisissez ici le montant a facturer")
-        self.ctrl_label.SetToolTipString(u"Saisissez ici le label de la prestation a créer")
-        self.ctrl_payeur.SetToolTipString(u"Sélectionnez la famille à facturer")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
-        self.SetMinSize((337, 437))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant a facturer"))
+        self.ctrl_label.SetToolTipString(_(u"Saisissez ici le label de la prestation a créer"))
+        self.ctrl_payeur.SetToolTipString(_(u"Sélectionnez la famille à facturer"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.SetMinSize((450, 437))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -662,21 +665,21 @@ class Dialog(wx.Dialog):
         
         # Type
         if self.ctrl_type.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un type de cotisation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un type de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Unité
         if self.ctrl_unite.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une unité de cotisation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Validation de la date de début
         if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -684,7 +687,7 @@ class Dialog(wx.Dialog):
 
         # Validation de la date de fin
         if self.ctrl_date_fin.FonctionValiderDate() == False or self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -695,7 +698,7 @@ class Dialog(wx.Dialog):
             
             # Vérifie la date de création
             if self.ctrl_date_creation.FonctionValiderDate() == False or self.ctrl_date_creation.GetDate() == None :
-                dlg = wx.MessageDialog(self, u"Vous devez saisir une date de création de carte valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de création de carte valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_creation.SetFocus()
@@ -703,7 +706,7 @@ class Dialog(wx.Dialog):
 
             # Vérifie qu'un numéro de carte a été saisi
             if self.ctrl_numero.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas saisir de numéro d'adhérent ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro d'adhérent ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -714,7 +717,7 @@ class Dialog(wx.Dialog):
 
             # Vérifie la date de facturation
             if self.ctrl_date_prestation.FonctionValiderDate() == False or self.ctrl_date_prestation.GetDate() == None :
-                dlg = wx.MessageDialog(self, u"Vous devez saisir une date de facturation valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de facturation valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_prestation.SetFocus()
@@ -722,7 +725,7 @@ class Dialog(wx.Dialog):
 
             # Vérifie le montant
             if self.ctrl_montant.GetMontant() == 0.00 :
-                dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir saisir de montant ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de montant ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -730,7 +733,7 @@ class Dialog(wx.Dialog):
 
             # Vérifie le label de prestation
             if self.ctrl_label.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un label pour la facturation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la facturation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_label_prestation.SetFocus()
@@ -740,7 +743,7 @@ class Dialog(wx.Dialog):
             
             # Demande la confirmation de la suppression de la prestation
             if self.IDprestation != None :
-                dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la prestation qui a déjà été créée pour cette cotisation ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation qui a déjà été créée pour cette cotisation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 if dlg.ShowModal() != wx.ID_YES :
                     return False
                 dlg.Destroy()
@@ -881,7 +884,7 @@ class Dialog(wx.Dialog):
                 "IDindividu" : IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : IDcategorie, 
-                "action" : u"%s de la cotisation ID%d '%s' pour la période du %s au %s" % (type, self.IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
+                "action" : _(u"%s de la cotisation ID%d '%s' pour la période du %s au %s") % (type, self.IDcotisation, label_prestation, date_debut_periode, date_fin_periode),
                 },])
         
 
@@ -925,9 +928,9 @@ class Dialog(wx.Dialog):
             self.ctrl_numero.SetValue(numero)
             
         if IDdepot_cotisation == None :
-            self.ctrl_depot.SetValue(u"Non déposée")
+            self.ctrl_depot.SetValue(_(u"Non déposée"))
         else:
-            self.ctrl_depot.SetValue(u"Déposée sur le dépôt n°%d" % IDdepot_cotisation)
+            self.ctrl_depot.SetValue(_(u"Déposée sur le dépôt n°%d") % IDdepot_cotisation)
             self.ctrl_creation.Enable(False)
             self.ctrl_date_creation.Enable(False)
             self.ctrl_numero.Enable(False)

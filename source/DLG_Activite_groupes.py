@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import OL_Groupes
 import GestionDB
@@ -22,7 +25,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDactivite = IDactivite
         
-        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, u"Groupes")
+        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         
         self.ctrl_groupes = OL_Groupes.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_groupes", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_groupes.MAJ() 
@@ -33,7 +36,7 @@ class Panel(wx.Panel):
         self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_ANY))
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
 
-        self.label_info = wx.StaticText(self, -1, u"Vous devez obligatoirement saisir un groupe. Si votre activité n'en possède pas, créez juste un groupe intitulé 'Groupe unique'.")
+        self.label_info = wx.StaticText(self, -1, _(u"Vous devez obligatoirement saisir un groupe. Si votre activité n'en possède pas, créez juste un groupe intitulé 'Groupe unique'."))
         self.label_info.SetFont(wx.Font(6, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         
         self.__set_properties()
@@ -51,11 +54,11 @@ class Panel(wx.Panel):
         
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un groupe")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le groupe selectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le groupe selectionné dans la liste")
-        self.bouton_monter.SetToolTipString(u"Cliquez ici pour monter le groupe sélectionné dans la liste")
-        self.bouton_descendre.SetToolTipString(u"Cliquez ici pour descendre le groupe sélectionné dans la liste")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un groupe"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le groupe selectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le groupe selectionné dans la liste"))
+        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter le groupe sélectionné dans la liste"))
+        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre le groupe sélectionné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
@@ -124,7 +127,7 @@ class Panel(wx.Panel):
     def Validation(self):
         nbreGroupes = len(self.ctrl_groupes.donnees)
         if nbreGroupes == 0 :
-            dlg = wx.MessageDialog(self, u"Vous avez sélectionné 'Avec groupes' sans saisir aucun groupe dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Avec groupes' sans saisir aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -154,7 +157,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

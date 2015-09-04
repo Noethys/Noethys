@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import os
 import re
@@ -43,13 +46,13 @@ class Dialog(wx.Dialog):
         self.listeSucces = []
 
         # Bandeau
-        intro = u"Vous pouvez ici expédier des Emails par lot. Sélectionnez une adresse d'expéditeur, un objet, un ou plusieurs destinataires avant de rédiger votre texte. Les Emails sont envoyés par lots afin de contourner les protections anti-spam des opérateurs."
-        titre = u"Editeur d'Emails"
+        intro = _(u"Vous pouvez ici expédier des Emails par lot. Sélectionnez une adresse d'expéditeur, un objet, un ou plusieurs destinataires avant de rédiger votre texte. Les Emails sont envoyés par lots afin de contourner les protections anti-spam des opérateurs.")
+        titre = _(u"Editeur d'Emails")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Editeur_email.png")
         
         # Destinataires
-        self.box_destinataires_staticbox = wx.StaticBox(self, -1, u"Destinataires")
+        self.box_destinataires_staticbox = wx.StaticBox(self, -1, _(u"Destinataires"))
         self.ctrl_destinataires = OL_Destinataires_emails.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_destinataires.MAJ() 
         self.bouton_modifier_dest = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Email_destinataires.png", wx.BITMAP_TYPE_ANY))
@@ -57,13 +60,13 @@ class Dialog(wx.Dialog):
         self.bouton_retirer_piece_spec = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Paramètres
-        self.box_param_staticbox = wx.StaticBox(self, -1, u"Paramètres")
-        self.label_exp = wx.StaticText(self, -1, u"Exp. :")
+        self.box_param_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.label_exp = wx.StaticText(self, -1, _(u"Exp. :"))
         self.ctrl_exp = CTRL_Editeur_email.Panel_Expediteur(self)
-        self.check_accuseReception = wx.CheckBox(self, -1, u"Accusé de réception")
+        self.check_accuseReception = wx.CheckBox(self, -1, _(u"Accusé de réception"))
         
         # Pièces jointes
-        self.box_pieces_staticbox = wx.StaticBox(self, -1, u"Pièces jointes communes")
+        self.box_pieces_staticbox = wx.StaticBox(self, -1, _(u"Pièces jointes communes"))
         self.ctrl_pieces = OL_Pieces_jointes_emails.ListView(self, id=-1, style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_pieces.SetMinSize((200, 70))
         self.ctrl_pieces.MAJ() 
@@ -72,18 +75,18 @@ class Dialog(wx.Dialog):
         self.bouton_suppr_piece = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
         # Texte
-        self.box_texte_staticbox = wx.StaticBox(self, -1, u"Message")
-        self.label_objet = wx.StaticText(self, -1, u"Objet :")
+        self.box_texte_staticbox = wx.StaticBox(self, -1, _(u"Message"))
+        self.label_objet = wx.StaticText(self, -1, _(u"Objet :"))
         self.ctrl_objet = wx.TextCtrl(self, -1, u"")
         self.ctrl_objet.SetMinSize((200, -1))
 
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Outils.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_envoyer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Envoyer_mail.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
+        self.bouton_envoyer = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer l'Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -101,18 +104,18 @@ class Dialog(wx.Dialog):
         self.ctrl_objet.SetFocus()
         
     def __set_properties(self):
-        self.ctrl_exp.SetToolTipString(u"Sélectionnez l'adresse d'expéditeur")
-        self.ctrl_objet.SetToolTipString(u"Saisissez l'objet du message")
-        self.bouton_modifier_dest.SetToolTipString(u"Cliquez pour ajouter ou supprimer des destinataires")
-        self.bouton_ajouter_piece_spec.SetToolTipString(u"Cliquez pour ajouter une pièce jointe personnelle au destinataire sélectionné dans la liste")
-        self.bouton_retirer_piece_spec.SetToolTipString(u"Cliquez pour retirer une pièce jointe personnelle au destinataire sélectionné dans la liste")
-        self.bouton_ajouter_piece.SetToolTipString(u"Cliquez ici pour ajouter une pièce jointe")
-        self.bouton_suppr_piece.SetToolTipString(u"Cliquez ici pour retirer la pièce jointe sélectionnée dans la liste")
-        self.check_accuseReception.SetToolTipString(u"Cochez cette option pour demander un accusé de réception")
-        self.bouton_aide.SetToolTipString(u"Cliquez pour obtenir de l'aide")
-        self.bouton_outils.SetToolTipString(u"Cliquez ici pour accéder aux outils")
-        self.bouton_envoyer.SetToolTipString(u"Cliquez ici pour envoyer le mail")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_exp.SetToolTipString(_(u"Sélectionnez l'adresse d'expéditeur"))
+        self.ctrl_objet.SetToolTipString(_(u"Saisissez l'objet du message"))
+        self.bouton_modifier_dest.SetToolTipString(_(u"Cliquez pour ajouter ou supprimer des destinataires"))
+        self.bouton_ajouter_piece_spec.SetToolTipString(_(u"Cliquez pour ajouter une pièce jointe personnelle au destinataire sélectionné dans la liste"))
+        self.bouton_retirer_piece_spec.SetToolTipString(_(u"Cliquez pour retirer une pièce jointe personnelle au destinataire sélectionné dans la liste"))
+        self.bouton_ajouter_piece.SetToolTipString(_(u"Cliquez ici pour ajouter une pièce jointe"))
+        self.bouton_suppr_piece.SetToolTipString(_(u"Cliquez ici pour retirer la pièce jointe sélectionnée dans la liste"))
+        self.check_accuseReception.SetToolTipString(_(u"Cochez cette option pour demander un accusé de réception"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez pour obtenir de l'aide"))
+        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
+        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer le mail"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((750, 680))
 
     def __do_layout(self):
@@ -214,10 +217,10 @@ class Dialog(wx.Dialog):
             sousMenuMotscles.AppendItem(wx.MenuItem(menuPop, id, motcle))
             self.Bind(wx.EVT_MENU, self.InsererMotcle, id=id)
             index += 1
-        menuPop.AppendMenu(10, u"Insérer un mot-clé", sousMenuMotscles)
+        menuPop.AppendMenu(10, _(u"Insérer un mot-clé"), sousMenuMotscles)
 
         # Aperçu de la fusion
-        item = wx.MenuItem(menuPop, 60, u"Aperçu de la fusion")
+        item = wx.MenuItem(menuPop, 60, _(u"Aperçu de la fusion"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Apercu_fusion_emails.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ApercuFusion, id=60)
@@ -225,7 +228,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
         
         # Effacer le texte
-        item = wx.MenuItem(menuPop, 50, u"Effacer le texte")
+        item = wx.MenuItem(menuPop, 50, _(u"Effacer le texte"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Gomme.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.EffacerTexte, id=50)
@@ -253,12 +256,12 @@ class Dialog(wx.Dialog):
             sousMenuModeles.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.ChargerModele, id=id)
                         
-        item = menuPop.AppendMenu(20, u"Charger un modèle d'Email", sousMenuModeles)
+        item = menuPop.AppendMenu(20, _(u"Charger un modèle d'Email"), sousMenuModeles)
         if len(listeDonnees) == 0 :
             item.Enable(False)
             
         # Gestion des modèles d'Email
-        item = wx.MenuItem(menuPop, 30, u"Gestion des modèles")
+        item = wx.MenuItem(menuPop, 30, _(u"Gestion des modèles"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Emails_modele.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.GestionModeles, id=30)
@@ -266,7 +269,7 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
         
         # Envoyer un email de test
-        item = wx.MenuItem(menuPop, 40, u"Envoyer un Email de test")
+        item = wx.MenuItem(menuPop, 40, _(u"Envoyer un Email de test"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Mail.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.EnvoyerTest, id=40)
@@ -283,12 +286,12 @@ class Dialog(wx.Dialog):
         # Préparation des données de fusion
         donnees = self.ctrl_destinataires.GetDonneesDict()  
         if len(donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un destinataire !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un destinataire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if len(self.ctrl_editeur.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un texte !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_editeur.SetFocus()
@@ -350,7 +353,7 @@ class Dialog(wx.Dialog):
     def EnvoyerTest(self, event):
         """ Envoi d'un Email de test """
         adresse = UTILS_Parametres.Parametres(mode="get", categorie="emails", nom="adresse_test", valeur=u"")      
-        dlg = wx.TextEntryDialog(self, u"Saisissez une adresse Email et cliquez sur Ok :", u"Envoi d'un Email de test", adresse)
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez une adresse Email et cliquez sur Ok :"), _(u"Envoi d'un Email de test"), adresse)
         if dlg.ShowModal() != wx.ID_OK:
             dlg.Destroy()
             return
@@ -358,7 +361,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         # Mémorise l'adresse saisie
         if UTILS_Envoi_email.ValidationEmail(adresse) == False :
-            dlg = wx.MessageDialog(self, u"L'adresse saisie n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'adresse saisie n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -366,7 +369,7 @@ class Dialog(wx.Dialog):
         # Vérifie si au moins un destintaire saisi
         listeDestinataires=self.ctrl_destinataires.GetDonnees()
         if len(listeDestinataires) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un destinataire !\n\n(En cas de fusion, les données du premier destinataire seront utilisés)", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un destinataire !\n\n(En cas de fusion, les données du premier destinataire seront utilisés)"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -382,7 +385,7 @@ class Dialog(wx.Dialog):
         # Expéditeur
         dictExp = self.ctrl_exp.GetDonnees()
         if dictExp == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune adresse d'expéditeur !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune adresse d'expéditeur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             if self.IsShown() == False : self.ShowModal()
@@ -399,7 +402,7 @@ class Dialog(wx.Dialog):
         # Objet
         sujet = self.ctrl_objet.GetValue()
         if len(sujet) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un objet pour ce message !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un objet pour ce message !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             if self.IsShown() == False : self.ShowModal()
@@ -408,7 +411,7 @@ class Dialog(wx.Dialog):
         
         # Destinataires
         if len(listeDestinataires) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un destinataire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un destinataire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             if self.IsShown() == False : self.ShowModal()
@@ -419,14 +422,14 @@ class Dialog(wx.Dialog):
             if dest.adresse == None :
                 nbreAnomalies += 1
         if nbreAnomalies > 0 :
-            dlg = wx.MessageDialog(self, u"%d adresse(s) Email ne sont pas renseignées !" % nbreAnomalies, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"%d adresse(s) Email ne sont pas renseignées !") % nbreAnomalies, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
             
         # Texte
         if len(self.ctrl_editeur.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un texte !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             if self.IsShown() == False : self.ShowModal()
@@ -444,7 +447,7 @@ class Dialog(wx.Dialog):
 
         # Demande de confirmation
         if adresseTest == None :
-            dlg = wx.MessageDialog(self, u"Confirmez-vous l'envoi de ce message pour %d destinataires ?\n\nAttention, l'envoi peut prendre quelques minutes..." % len(listeDestinataires), u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Confirmez-vous l'envoi de ce message pour %d destinataires ?\n\nAttention, l'envoi peut prendre quelques minutes...") % len(listeDestinataires), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 if self.IsShown() == False : self.ShowModal()
@@ -452,8 +455,8 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
 
         # Envoi des mails
-        dlg = wx.ProgressDialog(u"Envoi des mails",
-                               u"Veuillez patienter...",
+        dlg = wx.ProgressDialog(_(u"Envoi des mails"),
+                               _(u"Veuillez patienter..."),
                                maximum = len(listeDestinataires)+1,
                                parent=self,
                                 )
@@ -491,7 +494,7 @@ class Dialog(wx.Dialog):
                 labelAdresse = adresse.decode("iso-8859-15")
             except :
                 labelAdresse = adresse
-            label = u"Envoi %d/%d : %s..." % (index, len(listeDestinataires), labelAdresse)
+            label = _(u"Envoi %d/%d : %s...") % (index, len(listeDestinataires), labelAdresse)
             self.EcritStatusBar(label)
             dlg.Update(index, label)
             
@@ -519,7 +522,7 @@ class Dialog(wx.Dialog):
                 err = str(err).decode("iso-8859-15")
                 self.listeAnomalies.append((track, err))
                 print ("Erreur dans l'envoi d'un mail : %s...", err)
-                dlgErreur = wx.MessageDialog(self, u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?" % (label, err), u"Erreur", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
+                dlgErreur = wx.MessageDialog(self, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?") % (label, err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
                 traceback.print_exc(file=sys.stdout)
                 if dlgErreur.ShowModal() != wx.ID_YES :
                     dlgErreur.Destroy()
@@ -534,7 +537,7 @@ class Dialog(wx.Dialog):
             index += 1
         
         # Fin de la gauge
-        dlg.Update(index, u"Fin de l'envoi.")
+        dlg.Update(index, _(u"Fin de l'envoi."))
 ##        time.sleep(2)
         dlg.Destroy() 
         
@@ -542,15 +545,15 @@ class Dialog(wx.Dialog):
         handler.DeleteTemporaryImages()
 
         # Affichage des résultats
-        self.EcritStatusBar(u"Fin de l'envoi des Emails")
+        self.EcritStatusBar(_(u"Fin de l'envoi des Emails"))
         
         # Si tous les Emails envoyés avec succès
         if len(self.listeAnomalies) == 0 and self.afficher_confirmation_envoi == True :
             if len(self.listeSucces) == 1 :
-                message = u"L'Email a été envoyé avec succès !"
+                message = _(u"L'Email a été envoyé avec succès !")
             else :
-                message = u"Les %d Emails ont été envoyés avec succès !" % len(self.listeSucces)
-            dlg = wx.MessageDialog(self, message, u"Fin de l'envoi", wx.OK | wx.ICON_INFORMATION)
+                message = _(u"Les %d Emails ont été envoyés avec succès !") % len(self.listeSucces)
+            dlg = wx.MessageDialog(self, message, _(u"Fin de l'envoi"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         
@@ -558,9 +561,9 @@ class Dialog(wx.Dialog):
         if len(self.listeAnomalies) > 0 :
             
             if len(self.listeSucces) > 0 :
-                message = u"%d Email(s) ont été envoyés avec succès mais les %d envois suivants ont échoué :\n\n" % (len(self.listeSucces), len(self.listeAnomalies))
+                message = _(u"%d Email(s) ont été envoyés avec succès mais les %d envois suivants ont échoué :\n\n") % (len(self.listeSucces), len(self.listeAnomalies))
             else :
-                message = u"Tous les envois ont lamentablement échoué :\n\n"
+                message = _(u"Tous les envois ont lamentablement échoué :\n\n")
             
             for track, erreur in self.listeAnomalies :
                 try :
@@ -568,7 +571,7 @@ class Dialog(wx.Dialog):
                 except :
                     message += u"   - %s : %s" % (track.adresse, erreur)
             
-            dlg = wx.lib.dialogs.ScrolledMessageDialog(self, message, u"Compte-rendu de l'envoi")
+            dlg = wx.lib.dialogs.ScrolledMessageDialog(self, message, _(u"Compte-rendu de l'envoi"))
             dlg.ShowModal()
                     
         self.EcritStatusBar(u"")
@@ -586,7 +589,7 @@ class Dialog(wx.Dialog):
                 "IDindividu" : IDindividu,
                 "IDfamille" : IDfamille,
                 "IDcategorie" : 33, 
-                "action" : u"Envoi de l'Email '%s'" % sujet,
+                "action" : _(u"Envoi de l'Email '%s'") % sujet,
                 },])
         DB.Close()
 
@@ -621,14 +624,14 @@ class Dialog(wx.Dialog):
         
         # Affichage des résultats
         if len(listeResultats) > 0 :
-            message = u"Certains mots-clés semblent ne pas avoir été remplacés lors de la fusion des données. Est-ce normal ?\n\n"
+            message = _(u"Certains mots-clés semblent ne pas avoir été remplacés lors de la fusion des données. Est-ce normal ?\n\n")
             affichageMax = 10
             for adresse, listeAnomalies in listeResultats[:affichageMax] :
                 message += u"   - %s : %s.\n" % (adresse, ", ".join(listeAnomalies))
             if len(listeResultats) > affichageMax :
-                message += u"   - Ainsi que %d autres...\n" % (len(listeResultats) - affichageMax)
-            message += u"\nSouhaitez-vous tout de même continuer l'envoi ?"
-            dlgErreur = wx.MessageDialog(self, message, u"Anomalies", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                message += _(u"   - Ainsi que %d autres...\n") % (len(listeResultats) - affichageMax)
+            message += _(u"\nSouhaitez-vous tout de même continuer l'envoi ?")
+            dlgErreur = wx.MessageDialog(self, message, _(u"Anomalies"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             if dlgErreur.ShowModal() == wx.ID_YES :
                 return True
             else :
@@ -654,7 +657,7 @@ if __name__ == u"__main__":
 ##        raise NameError("été")
 ##    except Exception, err :
 ##        err = str(err).decode("iso-8859-15")
-##        dlgErreur = wx.MessageDialog(None, u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?" % ("label", err), u"Erreur", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
+##        dlgErreur = wx.MessageDialog(None, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?") % ("label", err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
 ##        traceback.print_exc(file=sys.stdout)
 ##        dlgErreur.ShowModal() 
 ##        dlgErreur.Destroy()

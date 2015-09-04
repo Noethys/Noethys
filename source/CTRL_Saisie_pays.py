@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import sqlite3
 
@@ -51,15 +54,15 @@ class SaisiePays(wx.Panel):
         if nomPays != None : pays = self.Recherche_Pays(nomPays=nomPays)
         self.IDpays = pays[0]
         self.image_pays.SetBitmap(wx.Bitmap("Images/Drapeaux/" + pays[1] + ".png", wx.BITMAP_TYPE_PNG))
-        self.image_pays.SetToolTipString(u"Pays de naissance : " + pays[2])
+        self.image_pays.SetToolTipString(_(u"Pays de naissance : ") + pays[2])
         if self.mode == "pays" :
             # Mode pays
-            self.bouton_pays.SetToolTipString(u"Cliquez ici pour sélectionner un autre pays de naissance")
-            self.image_pays.SetToolTipString(u"Pays de naissance : %s" % pays[2])
+            self.bouton_pays.SetToolTipString(_(u"Cliquez ici pour sélectionner un autre pays de naissance"))
+            self.image_pays.SetToolTipString(_(u"Pays de naissance : %s") % pays[2])
         else:
             # Mode nationalité
-            self.image_pays.SetToolTipString(u"Nationalité : %s" % pays[3])
-            self.bouton_pays.SetToolTipString(u"Cliquez ici pour sélectionner une autre nationalité")
+            self.image_pays.SetToolTipString(_(u"Nationalité : %s") % pays[3])
+            self.bouton_pays.SetToolTipString(_(u"Cliquez ici pour sélectionner une autre nationalité"))
     
     def GetValue(self):
         return self.IDpays

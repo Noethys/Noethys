@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import FonctionsPerso
 import GestionDB
 
@@ -29,10 +32,10 @@ class Dialog(wx.Dialog):
         self.defaut = 0   
         
         # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, u"Généralités")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_description = wx.StaticText(self, -1, u"Description :")
+        self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Mots-clés
@@ -41,26 +44,26 @@ class Dialog(wx.Dialog):
         for motCle, code in listeMotscles :
             self.listeMotsCles.append(motCle)
 
-        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, u"Mots-clés disponibles")
+        self.staticbox_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles"))
         self.ctrl_motscles = wx.ListBox(self, -1, choices=self.listeMotsCles, style=wx.SIMPLE_BORDER)
         self.ctrl_motscles.SetBackgroundColour("#F0FBED")
         
         # Expéditeur
-        self.label_exp = wx.StaticText(self, -1, u"Expéditeur :")
+        self.label_exp = wx.StaticText(self, -1, _(u"Expéditeur :"))
         self.ctrl_exp = CTRL_Editeur_email.Panel_Expediteur(self)
         
         # Objet
-        self.label_objet = wx.StaticText(self, -1, u"Objet :")
+        self.label_objet = wx.StaticText(self, -1, _(u"Objet :"))
         self.ctrl_objet = wx.TextCtrl(self, -1, u"")
         
         # texte
-        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, u"Message")
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Message"))
         self.ctrl_editeur = CTRL_Editeur_email.CTRL(self)
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -71,20 +74,20 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDmodele != None :
-            self.SetTitle(u"Modification d'un modèle d'Email")
+            self.SetTitle(_(u"Modification d'un modèle d'Email"))
             self.Importation()
         else:
-            self.SetTitle(u"Saisie d'un modèle d'Email")
+            self.SetTitle(_(u"Saisie d'un modèle d'Email"))
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce modèle")
-        self.ctrl_description.SetToolTipString(u"Saisissez une description pour ce modèle")
-        self.ctrl_objet.SetToolTipString(u"Saisissez l'objet du message")
-        self.ctrl_motscles.SetToolTipString(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades).")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle"))
+        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour ce modèle"))
+        self.ctrl_objet.SetToolTipString(_(u"Saisissez l'objet du message"))
+        self.ctrl_motscles.SetToolTipString(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades)."))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((700, 580))
 
     def __do_layout(self):
@@ -159,7 +162,7 @@ class Dialog(wx.Dialog):
         # Vérification des données
         nom = self.ctrl_nom.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour ce modèle !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -168,7 +171,7 @@ class Dialog(wx.Dialog):
         # Description
         description = self.ctrl_description.GetValue()
         if description == "" :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir saisir de description pour ce modèle ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de description pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -177,7 +180,7 @@ class Dialog(wx.Dialog):
         # Adresse Exp
         IDadresse = self.ctrl_exp.GetID()
         if IDadresse == None :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir sélectionner d'adresse d'expéditeur pour ce modèle ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir sélectionner d'adresse d'expéditeur pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -186,7 +189,7 @@ class Dialog(wx.Dialog):
         # Objet
         objet = self.ctrl_objet.GetValue()
         if objet == "" :
-            dlg = wx.MessageDialog(self, u"Etes-vous sûr de ne pas vouloir saisir d'objet de message pour ce modèle ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir d'objet de message pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()
                 return
@@ -196,7 +199,7 @@ class Dialog(wx.Dialog):
         texteStr = self.ctrl_editeur.GetValue() 
         texteXML = self.ctrl_editeur.GetXML()
         if len(texteStr) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un texte !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_editeur.SetFocus()

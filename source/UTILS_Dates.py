@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import datetime
 import time
 
@@ -25,8 +27,8 @@ def DateDDEnFr(date):
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
     if dateDD == None : return u""
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -37,12 +39,16 @@ def DateEngEnDateDD(dateEng):
 
 
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
-def CalculeAge(dateReference, date_naiss):
-    # Calcul de l'age de la personne
+def CalculeAge(dateReference=None, date_naiss=None):
+    """ Calcul de l'age de la personne """
+    if dateReference == None :
+        dateReference = datetime.date.today()
+    if date_naiss in (None, "") :
+        return None
     age = (dateReference.year - date_naiss.year) - int((dateReference.month, dateReference.day) < (date_naiss.month, date_naiss.day))
     return age
 
@@ -96,6 +102,20 @@ def DatetimeTimeEnStr(heure, separateur="h"):
         return None
     else :
         return u"%02d%s%02d" % (heure.hour, separateur, heure.minute)
+
+def HorodatageEnDatetime(horodatage, separation=None):
+    if separation == None :
+        annee = int(horodatage[0:4])
+        mois = int(horodatage[4:6])
+        jour = int(horodatage[6:8])
+        heures = int(horodatage[8:10])
+        minutes = int(horodatage[10:12])
+        secondes = int(horodatage[12:14])
+        horodatage = datetime.datetime(annee, mois, jour, heures, minutes, secondes)
+    else :
+        annee, mois, jour, heures, minutes, secondes = horodatage.split(separation)
+        horodatage = datetime.datetime(int(annee), int(mois), int(jour), int(heures), int(minutes), int(secondes))
+    return horodatage
 
 
 

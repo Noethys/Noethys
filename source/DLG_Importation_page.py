@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import CTRL_Bandeau
 import GestionDB
@@ -23,15 +26,15 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici importer un document à partir d'un fichier présent sur le disque dur ou depuis d'un scanner connecté à votre ordinateur."
-        titre = u"Importation d'un document"
+        intro = _(u"Vous pouvez ici importer un document à partir d'un fichier présent sur le disque dur ou depuis d'un scanner connecté à votre ordinateur.")
+        titre = _(u"Importation d'un document")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Document.png")
 
-        self.bouton_dossier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Page_dossier_2.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_scanner = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Page_scanner_2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_dossier = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Page_dossier_2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_scanner = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Page_scanner_2.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -41,11 +44,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(u"Importation d'un document")
-        self.bouton_dossier.SetToolTipString(u"Importer un document depuis un dossier")
-        self.bouton_scanner.SetToolTipString(u"Importer un document depuis un scanner")
-        self.bouton_aide.SetToolTipString(u"Obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Annuler")
+        self.SetTitle(_(u"Importation d'un document"))
+        self.bouton_dossier.SetToolTipString(_(u"Importer un document depuis un dossier"))
+        self.bouton_scanner.SetToolTipString(_(u"Importer un document depuis un scanner"))
+        self.bouton_aide.SetToolTipString(_(u"Obtenir de l'aide"))
+        self.bouton_annuler.SetToolTipString(_(u"Annuler"))
         self.SetMinSize((370, 310))
 
     def __do_layout(self):

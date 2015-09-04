@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Aides 
 import GestionDB
 import wx.lib.agw.hyperlink as Hyperlink
@@ -72,7 +75,7 @@ class CTRL_Caisse(wx.Choice):
         db.Close()
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for IDcaisse, nom in listeDonnees :
             self.dictDonnees[index] = { "ID" : IDcaisse, "nom " : nom}
@@ -127,7 +130,7 @@ class CTRL_Allocataire(wx.Choice):
         # Remplissage du contrôle
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for donnees in listeRepresentants :
             label = u"%s %s" % (donnees["prenom"], donnees["nom"])
@@ -160,24 +163,24 @@ class Panel(wx.Panel):
         self.majEffectuee = False
         
         # Caisse
-        self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, u"Caisse")
-        self.label_caisse = wx.StaticText(self, -1, u"Caisse d'allocation :")
+        self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, _(u"Caisse"))
+        self.label_caisse = wx.StaticText(self, -1, _(u"Caisse d'allocation :"))
         self.ctrl_caisse = CTRL_Caisse(self)
         self.bouton_caisses = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-        self.label_numero = wx.StaticText(self, -1, u"N° allocataire :")
+        self.label_numero = wx.StaticText(self, -1, _(u"N° allocataire :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
-        self.label_allocataire = wx.StaticText(self, -1, u"Titulaire :")
+        self.label_allocataire = wx.StaticText(self, -1, _(u"Titulaire :"))
         self.ctrl_allocataire = CTRL_Allocataire(self)
         
         # Aides
-        self.staticbox_aides_staticbox = wx.StaticBox(self, -1, u"Aides journalières")
+        self.staticbox_aides_staticbox = wx.StaticBox(self, -1, _(u"Aides journalières"))
         self.ctrl_aides = OL_Aides.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_aides", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_aides.SetMinSize((20, 20)) 
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
-        self.hyper_liste = Hyperlien(self, label=u"Afficher la liste des déductions", infobulle=u"Cliquez ici pour afficher la liste des déductions", URL="")
+        self.hyper_liste = Hyperlien(self, label=_(u"Afficher la liste des déductions"), infobulle=_(u"Cliquez ici pour afficher la liste des déductions"), URL="")
         
         self.__set_properties()
         self.__do_layout()
@@ -193,13 +196,13 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.ctrl_caisse.SetToolTipString(u"Sélectionnez une caisse")
-        self.bouton_caisses.SetToolTipString(u"Cliquez ici pour accéder à la gestion des caisses")
-        self.ctrl_numero.SetToolTipString(u"Saisissez le numéro d'allocataire")
-        self.ctrl_allocataire.SetToolTipString(u"Sélectionnez l'individu titulaire du dossier d'allocataire")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une aide journalière")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste")
+        self.ctrl_caisse.SetToolTipString(_(u"Sélectionnez une caisse"))
+        self.bouton_caisses.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des caisses"))
+        self.ctrl_numero.SetToolTipString(_(u"Saisissez le numéro d'allocataire"))
+        self.ctrl_allocataire.SetToolTipString(_(u"Sélectionnez l'individu titulaire du dossier d'allocataire"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une aide journalière"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -358,7 +361,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

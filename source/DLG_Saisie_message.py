@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -24,8 +27,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -101,20 +104,20 @@ class Dialog(wx.Dialog):
         self.nom = None
         
         # Catégorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, u"Catégorie")
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie"))
         self.ctrl_categorie = CTRL_Categorie(self)
         self.bouton_categorie = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 
         # Texte
-        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, u"Texte")
+        self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Texte"))
         self.ctrl_texte = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
-        self.ctrl_afficher_accueil = wx.CheckBox(self, -1, u"Afficher sur la page d'accueil")
-        self.ctrl_afficher_liste = wx.CheckBox(self, -1, u"Afficher sur la liste des consommations")
-        self.ctrl_afficher_factures = wx.CheckBox(self, -1, u"Afficher sur les factures")
+        self.ctrl_afficher_accueil = wx.CheckBox(self, -1, _(u"Afficher sur la page d'accueil"))
+        self.ctrl_afficher_liste = wx.CheckBox(self, -1, _(u"Afficher sur la liste des consommations"))
+        self.ctrl_afficher_factures = wx.CheckBox(self, -1, _(u"Afficher sur les factures"))
         if self.mode != "famille" :
             self.ctrl_afficher_factures.Enable(False)
         if self.mode == "accueil" :
@@ -122,20 +125,20 @@ class Dialog(wx.Dialog):
             self.ctrl_afficher_accueil.Enable(False)
             self.ctrl_afficher_liste.Enable(False)
         
-        self.ctrl_rappel = wx.CheckBox(self, -1, u"Rappel à l'ouverture du fichier")
+        self.ctrl_rappel = wx.CheckBox(self, -1, _(u"Rappel à l'ouverture du fichier"))
 
-        self.label_parution = wx.StaticText(self, -1, u"Date de parution :")
+        self.label_parution = wx.StaticText(self, -1, _(u"Date de parution :"))
         self.ctrl_parution = CTRL_Saisie_date.Date(self)
         self.ctrl_parution.SetDate(datetime.date.today())
         
-        self.label_priorite = wx.StaticText(self, -1, u"Priorité :")
-        self.ctrl_priorite = wx.Choice(self, -1, choices=[u"Normale", u"Haute"])
+        self.label_priorite = wx.StaticText(self, -1, _(u"Priorité :"))
+        self.ctrl_priorite = wx.Choice(self, -1, choices=[_(u"Normale"), _(u"Haute")])
         self.ctrl_priorite.SetSelection(0)
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -145,23 +148,23 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
         if self.IDmessage == None :
-            self.SetTitle(u"Saisie d'un message")
+            self.SetTitle(_(u"Saisie d'un message"))
         else:
             self.Importation()
-            self.SetTitle(u"Modification d'un message")
+            self.SetTitle(_(u"Modification d'un message"))
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez une catégorie")
-        self.bouton_categorie.SetToolTipString(u"Cliquez ici pour accéder à la gestion des catégories de messages")
-        self.ctrl_afficher_accueil.SetToolTipString(u"Cochez cette case pour afficher ce message sur la page d'accueil")
-        self.ctrl_afficher_factures.SetToolTipString(u"Cochez cette case pour afficher ce message sur les futures factures de la famille")
-        self.ctrl_parution.SetToolTipString(u"Saisissez ici la date de parution du message")
-        self.ctrl_afficher_liste.SetToolTipString(u"Cochez cette case pour afficher ce message sur la liste des consommations")
-        self.ctrl_priorite.SetToolTipString(u"Sélectionnez ici la priorité du message")
-        self.ctrl_rappel.SetToolTipString(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez une catégorie"))
+        self.bouton_categorie.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des catégories de messages"))
+        self.ctrl_afficher_accueil.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la page d'accueil"))
+        self.ctrl_afficher_factures.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur les futures factures de la famille"))
+        self.ctrl_parution.SetToolTipString(_(u"Saisissez ici la date de parution du message"))
+        self.ctrl_afficher_liste.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la liste des consommations"))
+        self.ctrl_priorite.SetToolTipString(_(u"Sélectionnez ici la priorité du message"))
+        self.ctrl_rappel.SetToolTipString(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((550, 440))
 
     def __do_layout(self):
@@ -237,20 +240,20 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         # Vérification des données
         if self.ctrl_categorie.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une catégorie !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if len(self.ctrl_texte.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un texte !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_texte.SetFocus()
             return
         
         if self.ctrl_parution.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de parution !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de parution !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_parution.SetFocus()
@@ -343,17 +346,17 @@ class Dialog(wx.Dialog):
         
         # Mémorise l'action dans l'historique
         if nouveauMessage == True :
-            type = u"Saisie"
+            type = _(u"Saisie")
             IDcategorie = 24
         else:
-            type = u"Modification"
+            type = _(u"Modification")
             IDcategorie = 25
         if len(texte) > 450 : texte = texte[450:] + u"..."
         UTILS_Historique.InsertActions([{
             "IDindividu" : self.IDindividu,
             "IDfamille" : self.IDfamille,
             "IDcategorie" : IDcategorie, 
-            "action" : u"%s du message ID%d : '%s'" % (type, self.IDmessage, texte)
+            "action" : _(u"%s du message ID%d : '%s'") % (type, self.IDmessage, texte)
             },])
 
     

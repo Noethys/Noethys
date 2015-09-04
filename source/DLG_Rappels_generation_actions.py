@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import OL_Rappels
@@ -20,7 +23,7 @@ class Panel(wx.Panel):
         self.parent = parent
         
         # Liste de rappels
-        self.box_rappels_staticbox = wx.StaticBox(self, -1, u"Lettres de rappel")
+        self.box_rappels_staticbox = wx.StaticBox(self, -1, _(u"Lettres de rappel"))
 
         codesColonnes = ["IDrappel", "date_edition", "date_reference", "numero", "famille", "date_min", "date_max", "retard", "email", "solde", "nom_lot", "labelTexte"]
         checkColonne = False
@@ -37,12 +40,12 @@ class Panel(wx.Panel):
         self.bouton_export_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
         # Actions
-        self.box_actions_staticbox = wx.StaticBox(self, -1, u"Autres actions possibles")
+        self.box_actions_staticbox = wx.StaticBox(self, -1, _(u"Autres actions possibles"))
         
         self.image_fleche1 = wx.StaticBitmap(self, -1, wx.Bitmap("Images/16x16/Fleche_droite.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_email_lot = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Factures_email.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer_lot = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Factures_imprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_email_lot = CTRL_Bouton_image.CTRL(self, texte=_(u"Transmettre\npar Email"), tailleImage=(32, 32), margesImage=(4, 4, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_imprimer_lot = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Imprimante.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -58,15 +61,15 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimerLot, self.bouton_imprimer_lot)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu de la lettre de rappel sélectionnée")
-        self.bouton_email.SetToolTipString(u"Cliquez ici envoyer la lettre de rappel sélectionnée par Email")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la lettre de rappel sélectionnée ou les lettres de rappel cochées")
-        self.bouton_apercu_liste.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression de la liste")
-        self.bouton_imprimer_liste.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_export_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format texte")
-        self.bouton_export_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_email_lot.SetToolTipString(u"Cliquez ici pour accéder à l'envoi des rappels par Email")
-        self.bouton_imprimer_lot.SetToolTipString(u"Cliquez ici pour imprimer les lettres de rappel générées")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la lettre de rappel sélectionnée"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici envoyer la lettre de rappel sélectionnée par Email"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la lettre de rappel sélectionnée ou les lettres de rappel cochées"))
+        self.bouton_apercu_liste.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer_liste.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format texte"))
+        self.bouton_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_email_lot.SetToolTipString(_(u"Cliquez ici pour accéder à l'envoi des rappels par Email"))
+        self.bouton_imprimer_lot.SetToolTipString(_(u"Cliquez ici pour imprimer les lettres de rappel générées"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -152,7 +155,7 @@ class Panel(wx.Panel):
         """ Envoi par Email des lettres de rappel """
         filtres = [self.GetFiltreNumerosRappels(),]
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous que Noethys sélectionne automatiquement les lettres de rappels dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)", u"Application automatique de filtres", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les lettres de rappels dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -169,7 +172,7 @@ class Panel(wx.Panel):
         """ Impression des lettres de rappel """
         filtres = [self.GetFiltreNumerosRappels(),]
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous que Noethys sélectionne automatiquement les lettres de rappel dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)", u"Application automatique de filtres", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les lettres de rappel dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -187,7 +190,7 @@ class Panel(wx.Panel):
             IDrappel_min = min(self.parent.listeRappelsGenerees)
             IDrappel_max = max(self.parent.listeRappelsGenerees)
             self.ctrl_rappels.SetFiltres([{"type" : "IDrappel_intervalle", "IDrappel_min" : IDrappel_min, "IDrappel_max" : IDrappel_max},])
-            self.box_rappels_staticbox.SetLabel(u"%d lettres de rappel générées" % len(self.parent.listeRappelsGenerees))
+            self.box_rappels_staticbox.SetLabel(_(u"%d lettres de rappel générées") % len(self.parent.listeRappelsGenerees))
         self.ctrl_rappels.MAJ() 
         self.ctrl_rappels.DefilePremier()
         
@@ -210,7 +213,7 @@ class MyFrame(wx.Frame):
         
         self.ctrl = Panel(panel)
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -226,7 +229,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

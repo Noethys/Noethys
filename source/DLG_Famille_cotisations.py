@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Liste_cotisations 
 import GestionDB
 import UTILS_Utilisateurs
@@ -20,7 +23,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        self.staticbox_cotisations = wx.StaticBox(self, -1, u"Cotisations familiales et individuelles")
+        self.staticbox_cotisations = wx.StaticBox(self, -1, _(u"Cotisations familiales et individuelles"))
         
         # OL Cotisations
         codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom"]
@@ -44,10 +47,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir une cotisation")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la cotisation sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la cotisation sélectionnée")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer un document")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une cotisation"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la cotisation sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la cotisation sélectionnée"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer un document"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -98,7 +101,7 @@ class Panel(wx.Panel):
         menuPop = wx.Menu()
 
         # Item Imprimer cotisation
-        item = wx.MenuItem(menuPop, 40, u"Imprimer la cotisation")
+        item = wx.MenuItem(menuPop, 40, _(u"Imprimer la cotisation"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -106,7 +109,7 @@ class Panel(wx.Panel):
         if noSelection == True : item.Enable(False)
 
         # Item Recu Dons aux oeuvres
-        item = wx.MenuItem(menuPop, 10, u"Editer un reçu Dons aux Oeuvres (PDF)")
+        item = wx.MenuItem(menuPop, 10, _(u"Editer un reçu Dons aux Oeuvres (PDF)"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -116,14 +119,14 @@ class Panel(wx.Panel):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, u"Aperçu avant impression de la liste")
+        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression de la liste"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=20)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, u"Imprimer la liste")
+        item = wx.MenuItem(menuPop, 30, _(u"Imprimer la liste"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -183,7 +186,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

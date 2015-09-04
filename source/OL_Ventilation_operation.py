@@ -8,9 +8,13 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import DLG_Saisie_ventilation_operation
+import UTILS_Dates
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -23,7 +27,7 @@ from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, 
 class Track(object):
     def __init__(self, donnees):
         self.IDventilation = donnees["IDventilation"]
-        self.IDexercice = donnees["IDexercice"]
+        self.date_budget = donnees["date_budget"]
         self.IDcategorie = donnees["IDcategorie"]
         self.IDanalytique = donnees["IDanalytique"]
         self.libelle = donnees["libelle"]
@@ -33,35 +37,31 @@ class Track(object):
         self.dictCategories = {}
         self.dictAnalytiques = {}
     
-    def MAJ(self):
-        if self.dictExercices.has_key(self.IDexercice) :
-            self.label_exercice = self.dictExercices[self.IDexercice]
-        else :
-            self.label_exercice = u"Exercice inconnu"
-            
+    def MAJ(self):            
         if self.dictCategories.has_key(self.IDcategorie) :
             self.label_categorie = self.dictCategories[self.IDcategorie]
         else :
-            self.label_categorie = u"Catégorie inconnue"
+            self.label_categorie = _(u"Catégorie inconnue")
             
         if self.dictAnalytiques.has_key(self.IDanalytique) :
             self.label_analytique = self.dictAnalytiques[self.IDanalytique]
         else :
-            self.label_analytique = u"Code analytique inconnu"
+            self.label_analytique = _(u"Code analytique inconnu")
             
 
 def Importation(IDoperation=None):
     DB = GestionDB.DB()
-    req = """SELECT IDventilation, IDexercice, IDcategorie, IDanalytique, libelle, montant
+    req = """SELECT IDventilation, date_budget, IDcategorie, IDanalytique, libelle, montant
     FROM compta_ventilation 
     WHERE IDoperation=%d;""" % IDoperation
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
     listeTracks = []
-    for IDventilation, IDexercice, IDcategorie, IDanalytique, libelle, montant in listeDonnees :
+    for IDventilation, date_budget, IDcategorie, IDanalytique, libelle, montant in listeDonnees :
+        date_budget = UTILS_Dates.DateEngEnDateDD(date_budget)
         dictTemp = {
-            "IDventilation" : IDventilation, "IDexercice" : IDexercice, "IDcategorie" : IDcategorie, 
+            "IDventilation" : IDventilation, "date_budget" : date_budget, "IDcategorie" : IDcategorie, 
             "IDanalytique" : IDanalytique, "libelle" : libelle, "montant" : montant, 
             }
         track = Track(dictTemp)
@@ -96,16 +96,7 @@ class ListView(FastObjectListView):
                 
     def InitModel(self):
         DB = GestionDB.DB()
-        
-        # Importation des exercices
-        req = """SELECT IDexercice, nom
-        FROM compta_exercices ;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        self.dictExercices = {}
-        for IDexercice, nom in listeDonnees :
-            self.dictExercices[IDexercice] = nom
-        
+                
         # Importation des catégories
         req = """SELECT IDcategorie, nom
         FROM compta_categories ;"""
@@ -127,7 +118,6 @@ class ListView(FastObjectListView):
         DB.Close()
 
         for track in self.listeTracks :
-            track.dictExercices = self.dictExercices
             track.dictCategories = self.dictCategories
             track.dictAnalytiques = self.dictAnalytiques
             track.MAJ() 
@@ -140,21 +130,24 @@ class ListView(FastObjectListView):
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 
+        def FormateDate(date):
+            return UTILS_Dates.DateDDEnFr(date)
+
         def FormateMontant(montant):
             if montant == None : return u""
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDreleve", typeDonnee="entier"),
-            ColumnDefn(u"Exercice", 'left', 120, "label_exercice", typeDonnee="texte"),
-            ColumnDefn(u"Analytique", "left", 120, "label_analytique", typeDonnee="texte"),
-            ColumnDefn(u"Catégorie", "left", 150, "label_categorie", typeDonnee="texte"),
-            ColumnDefn(u"Libellé", "left", 120, "libelle", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Montant", "right", 100, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Date budget"), 'left', 100, "date_budget", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Analytique"), "left", 150, "label_analytique", typeDonnee="texte"),
+            ColumnDefn(_(u"Catégorie"), "left", 150, "label_categorie", typeDonnee="texte"),
+            ColumnDefn(_(u"Libellé"), "left", 120, "libelle", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Montant"), "right", 100, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune ventilation")
+        self.SetEmptyListMsg(_(u"Aucune ventilation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[5])
         self.SetObjects(self.donnees)
@@ -190,7 +183,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -199,7 +192,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -207,7 +200,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -217,14 +210,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -235,16 +228,20 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des ventilations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des ventilations"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des ventilations", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des ventilations"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
-        dlg = DLG_Saisie_ventilation_operation.Dialog(self, typeOperation=self.typeOperation, track=None)
+        if self.GetGrandParent().GetName() == "DLG_Saisie_operation_tresorerie" :
+            dateOperation = self.GetGrandParent().ctrl_date.GetDate()
+        else :
+            dateOperation = None
+        dlg = DLG_Saisie_ventilation_operation.Dialog(self, typeOperation=self.typeOperation, track=None, dateOperation=dateOperation)
         if dlg.ShowModal() == wx.ID_OK:
             dictDonnees = dlg.GetDictDonnees() 
             track = Track(dictDonnees)
@@ -255,7 +252,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ventilation à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ventilation à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -272,14 +269,14 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ventilation à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ventilation à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
         # Suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette ventilation ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette ventilation ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listeTracks.remove(track)
             self.MAJ()
@@ -297,7 +294,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -335,7 +332,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "label_exercice" : {"mode" : "nombre", "singulier" : u"ventilation", "pluriel" : u"ventilations", "alignement" : wx.ALIGN_CENTER},
+            "label_exercice" : {"mode" : "nombre", "singulier" : _(u"ventilation"), "pluriel" : _(u"ventilations"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

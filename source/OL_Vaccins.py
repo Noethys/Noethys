@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import CTRL_Saisie_date
 import GestionDB
@@ -188,28 +191,28 @@ class ListView(FastObjectListView):
         
         def FormateValidite(nbreJoursRestants):
             if nbreJoursRestants == None :
-                return u"Validité illimitée"
+                return _(u"Validité illimitée")
             elif nbreJoursRestants == 0 :
-                return u"Expire aujourd'hui"
+                return _(u"Expire aujourd'hui")
             elif nbreJoursRestants < 0 :
-                return u"Vaccin périmé"
+                return _(u"Vaccin périmé")
             else:
-                return u"Expire dans %d jours" % nbreJoursRestants
+                return _(u"Expire dans %d jours") % nbreJoursRestants
         
         def rowFormatter(listItem, track):
             if track.nbreJoursRestants < 0 :
                 listItem.SetTextColour((180, 180, 180))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDvaccin", typeDonnee="entier"),
-            ColumnDefn(u"Nom du vaccin", 'left', 140, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Validité", "left", 120, "nbreJoursRestants", typeDonnee="texte", stringConverter=FormateValidite), 
-            ColumnDefn(u"Maladies associées", "left", 110, "txt_maladies_associees", typeDonnee="texte", isSpaceFilling=True), 
+            ColumnDefn(_(u"ID"), "left", 0, "IDvaccin", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom du vaccin"), 'left', 140, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Validité"), "left", 120, "nbreJoursRestants", typeDonnee="texte", stringConverter=FormateValidite), 
+            ColumnDefn(_(u"Maladies associées"), "left", 110, "txt_maladies_associees", typeDonnee="texte", isSpaceFilling=True), 
             ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun vaccin")
+        self.SetEmptyListMsg(_(u"Aucun vaccin"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -245,7 +248,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -254,7 +257,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -262,7 +265,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -272,14 +275,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -290,12 +293,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des vaccins", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des vaccins"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des vaccins", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des vaccins"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -320,7 +323,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_vaccins", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun vaccin à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun vaccin à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -346,11 +349,11 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_vaccins", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun vaccin à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun vaccin à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce vaccin ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce vaccin ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDvaccin = self.Selection()[0].IDvaccin
             DB = GestionDB.DB()
@@ -372,7 +375,7 @@ class Choice(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeData = []
-        self.SetToolTipString(u"Sélectionnez le vaccin")
+        self.SetToolTipString(_(u"Sélectionnez le vaccin"))
     
     def SetListe(self, listeData=[]):
         self.Clear()
@@ -402,24 +405,24 @@ class Saisie(wx.Dialog):
 
         listeVaccins = self.GetListeVaccins()
         
-        self.label_vaccin = wx.StaticText(self, -1, u"Vaccin :")
+        self.label_vaccin = wx.StaticText(self, -1, _(u"Vaccin :"))
         self.ctrl_vaccin = Choice(self)
         self.ctrl_vaccin.SetListe(listeVaccins)
         if IDtype_vaccin != None :
             self.ctrl_vaccin.SetID(IDtype_vaccin)
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date(self, date_max=DateEngFr(str(datetime.date.today())))
         if date !=None :
             self.ctrl_date.SetDate(date)
             
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if IDtype_vaccin == None :
-            self.SetTitle(u"Saisie d'un vaccin")
+            self.SetTitle(_(u"Saisie d'un vaccin"))
         else:
-            self.SetTitle(u"Modification d'un vaccin")
+            self.SetTitle(_(u"Modification d'un vaccin"))
         self.SetMinSize((350, -1))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -467,14 +470,14 @@ class Saisie(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.ctrl_vaccin.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un vaccin dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un vaccin dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_vaccin.SetFocus()
             return
         
         if self.ctrl_date.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date pour ce vaccin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date pour ce vaccin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
@@ -503,7 +506,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un vaccin...")
+        self.SetDescriptiveText(_(u"Rechercher un vaccin..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

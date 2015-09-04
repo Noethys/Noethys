@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
     
@@ -35,7 +38,7 @@ class CTRL_Groupes(wx.CheckListBox):
         index = 0
         for nomGroupe, IDtype_groupe_activite in self.listeDonnees :
             if nomGroupe == None :
-                nomGroupe = u"Groupe inconnu !"
+                nomGroupe = _(u"Groupe inconnu !")
             self.Append(nomGroupe) 
             self.dictIndex[index] = IDtype_groupe_activite
             index += 1
@@ -191,15 +194,15 @@ class CTRL(wx.Panel):
         self.afficheToutes = afficheToutes
         
         # Contrôles
-        self.radio_toutes = wx.RadioButton(self, -1, u"Toutes les activités", style=wx.RB_GROUP)
+        self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les activités"), style=wx.RB_GROUP)
         if self.afficheToutes == False :
             style = wx.RB_GROUP
         else :
             style = 0
-        self.radio_groupes = wx.RadioButton(self, -1, u"Les groupes d'activités suivants :", style=style)
+        self.radio_groupes = wx.RadioButton(self, -1, _(u"Les groupes d'activités suivants :"), style=style)
         self.ctrl_groupes = CTRL_Groupes(self)
         self.ctrl_groupes.SetMinSize((200, 50))
-        self.radio_activites = wx.RadioButton(self, -1, u"Les activités suivantes :")
+        self.radio_activites = wx.RadioButton(self, -1, _(u"Les activités suivantes :"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((200, 50))
         
@@ -239,7 +242,7 @@ class CTRL(wx.Panel):
         if self.afficheToutes == True and self.radio_toutes.GetValue() == True :
             return True
         if len(self.GetActivites()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

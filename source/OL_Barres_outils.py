@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 
@@ -76,14 +79,14 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"Nom", 'left', 200, "label"),
-            ColumnDefn(u"Nbre éléments", "left", 90, "nbreElements"),
-            ColumnDefn(u"Observations", "left", 250, "observations"),
+            ColumnDefn(_(u"Nom"), 'left', 200, "label"),
+            ColumnDefn(_(u"Nbre éléments"), "left", 90, "nbreElements"),
+            ColumnDefn(_(u"Observations"), "left", 250, "observations"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune barre d'outils")
+        self.SetEmptyListMsg(_(u"Aucune barre d'outils"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -127,7 +130,7 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-        item = wx.MenuItem(menuPop, 70, u"Ajouter")
+        item = wx.MenuItem(menuPop, 70, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -135,14 +138,14 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 60, u"Modifier")
+        item = wx.MenuItem(menuPop, 60, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Modifier, id=60)
         if len(self.Selection()) == 0 : item.Enable(False)
 
-        item = wx.MenuItem(menuPop, 80, u"Supprimer")
+        item = wx.MenuItem(menuPop, 80, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -152,26 +155,26 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Tout sélectionner
-        item = wx.MenuItem(menuPop, 20, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 20, _(u"Tout cocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=20)
 
         # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 30, _(u"Tout décocher"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -180,14 +183,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -198,12 +201,12 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des barres d'outils", intro="", total="", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des barres d'outils"), intro="", total="", format="A", orientation=wx.LANDSCAPE)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -217,11 +220,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des barres d'outils")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des barres d'outils"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des barres d'outils")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des barres d'outils"))
 
     def Ajouter(self, event=None):
         self.MemoriseCoches() 
@@ -234,7 +237,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune barre d'outils à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune barre d'outils à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -249,14 +252,14 @@ class ListView(FastObjectListView):
         
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune période à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer la barre d'outils '%s' ?" % track.label, u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la barre d'outils '%s' ?") % track.label, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listeTextesBarres.pop(track.index)
             self.MAJ() 
@@ -285,7 +288,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

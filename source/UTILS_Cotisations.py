@@ -9,7 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import copy
@@ -19,8 +22,8 @@ import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", u"Euro")
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", u"Centime")
+MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
+MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -93,7 +96,7 @@ class Cotisation():
 
     def GetDonneesImpression(self, listeCotisations=[]):
         """ Impression des factures """
-        dlgAttente = PBI.PyBusyInfo(u"Recherche des données...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         # Récupère les données de la facture
@@ -183,15 +186,15 @@ class Cotisation():
             
             # Type
             if typeTypeCotisation == "famille" :
-                typeStr = u"Cotisation familiale"
+                typeStr = _(u"Cotisation familiale")
             else:
-                typeStr = u"Cotisation individuelle"
+                typeStr = _(u"Cotisation individuelle")
                         
             # Dépôt
             if IDdepot_cotisation == None :
-                depotStr = u"Non déposée"
+                depotStr = _(u"Non déposée")
             else:
-                depotStr = u"Dépôt n°%d" % IDdepot_cotisation
+                depotStr = _(u"Dépôt n°%d") % IDdepot_cotisation
 
             # Nom des titulaires de famille
             beneficiaires = ""
@@ -337,8 +340,8 @@ class Cotisation():
         # Récupération des paramètres d'affichage
         if dictOptions == None :
             if afficherDoc == False :
-                dlg = DLG_Apercu_cotisation.Dialog(None, titre=u"Sélection des paramètres de la cotisation", intro=u"Sélectionnez ici les paramètres d'affichage de la cotisation.")
-                dlg.bouton_ok.SetBitmapLabel(wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+                dlg = DLG_Apercu_cotisation.Dialog(None, titre=_(u"Sélection des paramètres de la cotisation"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la cotisation."))
+                dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
             else :
                 dlg = DLG_Apercu_cotisation.Dialog(None)
             if dlg.ShowModal() == wx.ID_OK:
@@ -351,7 +354,7 @@ class Cotisation():
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = PBI.PyBusyInfo(u"Génération des cotisations à l'unité au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Génération des cotisations à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             try :
                 index = 0
@@ -359,10 +362,10 @@ class Cotisation():
                     if dictCotisation["select"] == True :
                         numero_cotisation = str(dictCotisation["{NUMERO_CARTE}"])
                         nomTitulaires = self.Supprime_accent(dictCotisation["{FAMILLE_NOM}"])
-                        nomFichier = u"Cotisation %s - %s" % (numero_cotisation, nomTitulaires)
+                        nomFichier = _(u"Cotisation %s - %s") % (numero_cotisation, nomTitulaires)
                         cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
                         dictComptesTemp = {IDcotisation : dictCotisation}
-                        self.EcritStatusbar(u"Edition de la cotisation %d/%d : %s" % (index, len(dictCotisation), nomFichier))
+                        self.EcritStatusbar(_(u"Edition de la cotisation %d/%d : %s") % (index, len(dictCotisation), nomFichier))
                         UTILS_Impression_cotisation.Impression(dictComptesTemp, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=False, nomFichier=cheminFichier)
                         dictPieces[IDcotisation] = cheminFichier
                         index += 1
@@ -372,7 +375,7 @@ class Cotisation():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -392,9 +395,9 @@ class Cotisation():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = PBI.PyBusyInfo(u"Création du PDF des cotisations...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des cotisations..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
-            self.EcritStatusbar(u"Création du PDF des cotisations en cours... veuillez patienter...")
+            self.EcritStatusbar(_(u"Création du PDF des cotisations en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_cotisation.Impression(dictCotisations, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -402,7 +405,7 @@ class Cotisation():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, "Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, "Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

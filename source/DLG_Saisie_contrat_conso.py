@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import CTRL_Saisie_date
 import OL_Contrats_planning_elements
@@ -82,31 +85,31 @@ class Dialog(wx.Dialog):
         self.listePeriodes = listePeriodes
         
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_periode = wx.StaticText(self, wx.ID_ANY, u"Dates :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_periode = wx.StaticText(self, wx.ID_ANY, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Planning
-        self.box_planning_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Planning")
+        self.box_planning_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Planning"))
         
-        self.radio_modele = wx.RadioButton(self, wx.ID_ANY, u"Le modèle de planning suivant :", style=wx.RB_GROUP)
+        self.radio_modele = wx.RadioButton(self, wx.ID_ANY, _(u"Le modèle de planning suivant :"), style=wx.RB_GROUP)
         self.ctrl_modele = CTRL_Modeles(self, IDactivite=IDactivite)
-        self.bouton_modele = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modele = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-        self.radio_planning_detail = wx.RadioButton(self, wx.ID_ANY, u"Le planning suivant :")
+        self.radio_planning_detail = wx.RadioButton(self, wx.ID_ANY, _(u"Le planning suivant :"))
         self.ctrl_planning_detail = OL_Contrats_planning_elements.ListView(self, id=-1, IDactivite=IDactivite, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_planning_detail.SetMinSize((50, 50)) 
         
-        self.bouton_ajouter = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_supprimer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -134,19 +137,19 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Génération de consommations")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez une date de fin")
-        self.radio_modele.SetToolTipString(u"Sélectionnez cette option pour utiliser un modèle de planning")
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez un modèle de planning dans la liste")
-        self.bouton_modele.SetToolTipString(u"Cliquez ici pour accéder à la gestion des modèles de planning")
-        self.radio_planning_detail.SetToolTipString(u"Sélectionnez cette option pour définir un planning manuellement")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un paramètre")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier un paramètre")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer un paramètre")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Génération de consommations"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
+        self.radio_modele.SetToolTipString(_(u"Sélectionnez cette option pour utiliser un modèle de planning"))
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de planning dans la liste"))
+        self.bouton_modele.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles de planning"))
+        self.radio_planning_detail.SetToolTipString(_(u"Sélectionnez cette option pour définir un planning manuellement"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un paramètre"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier un paramètre"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer un paramètre"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((550, 500))
 
     def __do_layout(self):
@@ -230,39 +233,39 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Contrats")
 
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)   
 
     def OnBoutonOk(self, event):
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir la date de début d'application !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la date de début d'application !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir la date de fin d'application !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la date de fin d'application !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-            dlg = wx.MessageDialog(self, u"La date de début doit être inférieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début doit être inférieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.radio_modele.GetValue() == True and self.ctrl_modele.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un modèle de planning !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
             
         donnees = self.GetDonnees() 
         if len(donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement définir au moins un paramètre de planning !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement définir au moins un paramètre de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -471,21 +474,21 @@ class Dialog(wx.Dialog):
                             nomUnite2 = self.dictUnites[dictConsoTemp["IDunite"]]["nom"]
                                 
                             if self.VerifieCompatibilitesUnites(dictConsoTemp["IDunite"], dictConso["IDunite"]) == False :
-                                listeAnomalies.append(u"%s : Unité %s incompatible avec unité %s déjà présente" % (dateFr, nomUnite1, nomUnite2))
+                                listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
                                 valide = False
                                 
                             if dictConso["IDunite"] == dictConsoTemp["IDunite"] :
                                 if self.dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
                                     if dictConso["heure_fin"] > dictConsoTemp["heure_debut"] and dictConso["heure_debut"] < dictConsoTemp["heure_fin"] :
-                                        listeAnomalies.append(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique" % (dateFr, nomUnite1))
+                                        listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
                                         valide = False
                                 else :
-                                    listeAnomalies.append(u"%s : Unité %s déjà présente" % (dateFr, nomUnite1))
+                                    listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
                                     valide = False
                             
                     # Vérifie si unité ouverte
                     if self.IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
-                        listeAnomalies.append(u"%s : Unité %s fermée" % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
+                        listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
                         valide = False
                             
                     # Insertion de la conso validée dans la période
@@ -497,22 +500,22 @@ class Dialog(wx.Dialog):
         
         # Signalement des anomalies
         if len(listeAnomalies) :
-            message1 = u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?" % (len(listeAnomalies), nbreConsoValides)
+            message1 = _(u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
             message2 = u"\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption = u"Génération", msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : u"Oui", wx.ID_CANCEL : u"Annuler"})
+            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse != wx.ID_YES :
                 return False
         
         if nbreConsoValides == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune consommation valide à générer !", u"Génération", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation valide à générer !"), _(u"Génération"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
                 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Confirmez-vous la génération de %d consommations ?" % nbreConsoValides, u"Génération", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :

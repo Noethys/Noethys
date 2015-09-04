@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 try: import psyco; psyco.full()
@@ -95,7 +98,7 @@ def DemandeModele(categorie=""):
         if defaut == 1 :
             indexDefaut = index
         index += 1
-    dlg = wx.SingleChoiceDialog(None, u"Veuillez sélectionner un modèle dans la liste :", u"Sélection d'un modèle", listeLabels, wx.CHOICEDLG_STYLE)
+    dlg = wx.SingleChoiceDialog(None, _(u"Veuillez sélectionner un modèle dans la liste :"), _(u"Sélection d'un modèle"), listeLabels, wx.CHOICEDLG_STYLE)
     if indexDefaut != None :
         dlg.SetSelection(indexDefaut)        
     if dlg.ShowModal() == wx.ID_OK:
@@ -104,7 +107,7 @@ def DemandeModele(categorie=""):
         dlg.Destroy()
     else:
         dlg.Destroy()
-        dlg = wx.MessageDialog(None, u"Sans modèle, l'édition est annulée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Sans modèle, l'édition est annulée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return None

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 try: import psyco; psyco.full()
@@ -45,7 +48,7 @@ class CTRL_Villes(wx.ListBox):
     def Supprimer(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner une ville dans la liste !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une ville dans la liste !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -98,22 +101,22 @@ class Dialog(wx.Dialog):
         self.IDcategorie_tarif = IDcategorie_tarif
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"Nom de la catégorie")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de la catégorie"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.ctrl_checkVille = wx.CheckBox(self, -1, u"")
-        self.label_ville = wx.StaticText(self, -1, u"Lors d'une inscription, attribuer par défaut cette catégorie aux\nindividus dont la ville de résidence figure dans la liste suivante :")
+        self.label_ville = wx.StaticText(self, -1, _(u"Lors d'une inscription, attribuer par défaut cette catégorie aux\nindividus dont la ville de résidence figure dans la liste suivante :"))
         self.ctrl_villes = CTRL_Villes(self, self.IDcategorie_tarif)
         self.bouton_villes_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_villes_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -131,13 +134,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une catégorie de tarif")
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour cette catégorie")
-        self.bouton_villes_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une ville dans la liste")
-        self.bouton_villes_supprimer.SetToolTipString(u"Cliquez ici pour enlever la ville sélectionnée de la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une catégorie de tarif"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette catégorie"))
+        self.bouton_villes_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une ville dans la liste"))
+        self.bouton_villes_supprimer.SetToolTipString(_(u"Cliquez ici pour enlever la ville sélectionnée de la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((420, 350))
 
     def __do_layout(self):
@@ -206,14 +209,14 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Vérification des données
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour cette catégorie !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette catégorie !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         if self.ctrl_checkVille.GetValue() == True :
             if len(self.ctrl_villes.listeDonnees) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez saisie aucune ville !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisie aucune ville !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

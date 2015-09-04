@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Titulaires
@@ -86,15 +89,30 @@ class ListView(FastObjectListView):
                 conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(self.listeActivites))
                 
         # Conditions Présents
-        if self.presents == None :
-            conditionPresents = ""
-            jointurePresents = ""
-        else:
-            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(self.presents[0]), str(self.presents[1]))
-            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
-        
-        # Récupération des familles
+##        if self.presents == None :
+##            conditionPresents = ""
+##            jointurePresents = ""
+##        else:
+##            conditionPresents = " AND (consommations.date>='%s' AND consommations.date<='%s')" % (str(self.presents[0]), str(self.presents[1]))
+##            jointurePresents = "LEFT JOIN consommations ON consommations.IDindividu = individus.IDindividu"
+
         DB = GestionDB.DB()
+
+        # Récupération des présents
+        listePresents = []
+        if self.presents != None :
+            req = """SELECT IDfamille, inscriptions.IDinscription
+            FROM consommations
+            LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
+            WHERE date>='%s' AND date<='%s' %s
+            GROUP BY IDfamille
+            ;"""  % (str(self.presents[0]), str(self.presents[1]), conditionActivites.replace("inscriptions", "consommations"))
+            DB.ExecuterReq(req)
+            listeIndividusPresents = DB.ResultatReq()
+            for IDfamille, IDinscription in listeIndividusPresents :
+                listePresents.append(IDfamille)
+
+        # Récupération des familles
 ##        req = """SELECT familles.IDfamille
 ##        FROM familles 
 ##        LEFT JOIN rattachements ON rattachements.IDfamille = familles.IDfamille
@@ -109,13 +127,12 @@ class ListView(FastObjectListView):
         FROM inscriptions 
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
-        %s
         AND inscriptions.IDfamille = familles.IDfamille
         LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-        WHERE inscriptions.parti=0 %s %s
+        WHERE inscriptions.parti=0 %s
         GROUP BY familles.IDfamille
-        ;""" % (jointurePresents, conditionActivites, conditionPresents)
+        ;""" % conditionActivites
 
         DB.ExecuterReq(req)
         listeFamilles = DB.ResultatReq()
@@ -136,17 +153,20 @@ class ListView(FastObjectListView):
 
         listeListeView = []
         for IDfamille, in listeFamilles :
-            if dictQuotients.has_key(IDfamille) :
-                dictQuotient = dictQuotients[IDfamille]
-            else :
-                dictQuotient = None
+            
+            if self.presents == None or (self.presents != None and IDfamille in listePresents) :
                 
-            if self.familles == "TOUTES" :
-                listeListeView.append(Track(IDfamille, dictQuotient))
-            if self.familles == "AVEC" and dictQuotient != None:
-                listeListeView.append(Track(IDfamille, dictQuotient))
-            if self.familles == "SANS" and dictQuotient == None:
-                listeListeView.append(Track(IDfamille, dictQuotient))
+                if dictQuotients.has_key(IDfamille) :
+                    dictQuotient = dictQuotients[IDfamille]
+                else :
+                    dictQuotient = None
+                    
+                if self.familles == "TOUTES" :
+                    listeListeView.append(Track(IDfamille, dictQuotient))
+                if self.familles == "AVEC" and dictQuotient != None:
+                    listeListeView.append(Track(IDfamille, dictQuotient))
+                if self.familles == "SANS" and dictQuotient == None:
+                    listeListeView.append(Track(IDfamille, dictQuotient))
 
         return listeListeView
       
@@ -160,16 +180,16 @@ class ListView(FastObjectListView):
             return DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", 'left', 280, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Quotient", "left", 70, "quotient", typeDonnee="entier"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), 'left', 280, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Quotient"), "left", 70, "quotient", typeDonnee="entier"),
             ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Au", "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Observations", "left", 250, "observations", typeDonnee="texte"),
+            ColumnDefn(_(u"Au"), "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Observations"), "left", 250, "observations", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune famille")
+        self.SetEmptyListMsg(_(u"Aucune famille"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -180,7 +200,7 @@ class ListView(FastObjectListView):
         self.presents = presents
         self.familles = familles
         self.labelParametres = labelParametres
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
         attente.Destroy()
@@ -194,7 +214,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ouverture fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -203,14 +223,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -219,14 +239,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -237,14 +257,14 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         intro = self.labelParametres
-        total = u"> %s familles" % len(self.donnees)
+        total = _(u"> %s familles") % len(self.donnees)
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des quotients familiaux", intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -253,7 +273,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -272,11 +292,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des quotients familiaux")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des quotients familiaux"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des quotients familiaux")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des quotients familiaux"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -288,7 +308,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une information...")
+        self.SetDescriptiveText(_(u"Rechercher une information..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -331,7 +351,11 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(date_reference=datetime.date(2012, 5, 17), listeActivites=[1, 2, 3, 4], presents=None, familles="TOUTES")
+        import time
+        t = time.time()
+        self.myOlv.MAJ(date_reference=datetime.date(2015, 8, 13), listeActivites=[1, 2, 3, 4], presents=(datetime.date(2015, 1, 1), datetime.date(2015, 12, 31)), familles="TOUTES")
+        print len(self.myOlv.donnees)
+        print "Temps d'execution =", time.time() - t
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

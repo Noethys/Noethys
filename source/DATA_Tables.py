@@ -738,6 +738,7 @@ DB_DATA = {
                                     ("solde", "FLOAT", u"Solde à régler pour la période"),
                                     ("IDlot", "INTEGER", u"ID du lot de factures"),
                                     ("prestations", "VARCHAR(500)", u"Liste des types de prestations intégrées"),
+                                    ("etat", "VARCHAR(100)", u"Etat de la facture"),
                                     ], # Factures éditées
 
     "textes_rappels":[      ("IDtexte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDtexte"),
@@ -1350,6 +1351,7 @@ DB_DATA = {
                                     ("IDanalytique", "INTEGER", u"ID du poste analytique"),
                                     ("libelle", "VARCHAR(400)", u"Libellé de la ventilation"),
                                     ("montant", "FLOAT", u"Montant de la ventilation"),
+                                    ("date_budget", "DATE", u"Date d'impact budgétaire"),
                                     ], # Compta : Ventilation des opérations
                                     
     "compta_exercices":[("IDexercice", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Exercice"),
@@ -1389,6 +1391,8 @@ DB_DATA = {
                                     ("nom", "VARCHAR(400)", u"Nom du budget"),
                                     ("observations", "VARCHAR(200)", u"Observations sur le budget"),
                                     ("analytiques", "VARCHAR(450)", u"Liste des postes analytiques associés"),
+                                    ("date_debut", "DATE", u"Date de début de période"),
+                                    ("date_fin", "DATE", u"Date de fin de période"),
                                     ], # Compta : Budgets
 
     "compta_categories_budget":[("IDcategorie_budget", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Categorie budget"),
@@ -1405,6 +1409,20 @@ DB_DATA = {
                                     ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire"),
                                     ], # Compta : Relevés de comptes
 
+    "compta_operations_budgetaires":[("IDoperation_budgetaire", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID opération budgétaire"),
+                                    ("type", "VARCHAR(200)", u"Type de données (debit/crédit)"),
+                                    ("date_budget", "DATE", u"Date d'impact budgétaire"),
+                                    ("IDcategorie", "INTEGER", u"ID de la catégorie"),
+                                    ("IDanalytique", "INTEGER", u"ID du poste analytique"),
+                                    ("libelle", "VARCHAR(400)", u"Libellé de la ventilation"),
+                                    ("montant", "FLOAT", u"Montant de la ventilation"),
+                                    ], # Compta : Ventilation des opérations
+
+    "nomade_archivage":  [("IDarchive", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Archive"),
+                                    ("nom_fichier", "VARCHAR(400)", u"Nom du fichier"),
+                                    ("ID_appareil", "VARCHAR(100)", u"ID de l'appareil"),
+                                    ("date", "DATE", u"Date de l'archivage"),
+                                    ], # Synchronisation Nomadhys : Archivage des fichiers
 
 
     }
@@ -1432,6 +1450,41 @@ DB_DOCUMENTS = {
                                     ], # BLOB documents
                                     
     }
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+DB_INDEX = {
+
+    "index_photos_IDindividu" : {"table" : "photos", "champ" : "IDindividu"},
+    "index_liens_IDfamille" : {"table" : "liens", "champ" : "IDfamille"},
+    "index_familles_IDcompte_payeur" : {"table" : "familles", "champ" : "IDcompte_payeur"},
+    "index_rattachements_IDfamille" : {"table" : "rattachements", "champ" : "IDfamille"},
+    "index_pieces_IDfamille" : {"table" : "pieces", "champ" : "IDfamille"},
+    "index_pieces_IDindividu" : {"table" : "pieces", "champ" : "IDindividu"},
+    "index_ouvertures_IDactivite" : {"table" : "ouvertures", "champ" : "IDactivite"},
+    "index_ouvertures_date" : {"table" : "ouvertures", "champ" : "date"},
+    "index_remplissage_IDactivite" : {"table" : "remplissage", "champ" : "IDactivite"},
+    "index_remplissage_date" : {"table" : "remplissage", "champ" : "date"},
+    "index_inscriptions_IDindividu" : {"table" : "inscriptions", "champ" : "IDindividu"},
+    "index_inscriptions_IDfamille" : {"table" : "inscriptions", "champ" : "IDfamille"},
+    "index_consommations_IDcompte_payeur" : {"table" : "consommations", "champ" : "IDcompte_payeur"},
+    "index_consommations_IDindividu" : {"table" : "consommations", "champ" : "IDindividu"},
+    "index_consommations_IDactivite" : {"table" : "consommations", "champ" : "IDactivite"},
+    "index_consommations_date" : {"table" : "consommations", "champ" : "date"},
+    "index_prestations_IDfamille" : {"table" : "prestations", "champ" : "IDfamille"},
+    "index_prestations_IDcompte_payeur" : {"table" : "prestations", "champ" : "IDcompte_payeur"},
+    "index_prestations_date" : {"table" : "prestations", "champ" : "date"},
+    "index_prestations_IDactivite" : {"table" : "prestations", "champ" : "IDactivite"},
+    "index_comptes_payeurs_IDfamille" : {"table" : "comptes_payeurs", "champ" : "IDfamille"},
+    "index_reglements_IDcompte_payeur" : {"table" : "reglements", "champ" : "IDcompte_payeur"},
+    "index_ventilation_IDcompte_payeur" : {"table" : "ventilation", "champ" : "IDcompte_payeur"},
+    "index_ventilation_IDprestation" : {"table" : "ventilation", "champ" : "IDprestation"},
+    "index_factures_IDcompte_payeur" : {"table" : "factures", "champ" : "IDcompte_payeur"},
+
+    }
+
+
+
 
 
 

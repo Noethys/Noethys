@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import wx.lib.agw.hypertreelist as HTL
 import datetime
@@ -33,8 +36,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -42,7 +45,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Jan", u"Fév", u"Mars", u"Avr", u"Mai", u"Juin", u"Juil", u"Août", u"Sept", u"Oct", u"Nov", u"Déc")
+    listeMois = (_(u"Jan"), _(u"Fév"), _(u"Mars"), _(u"Avr"), _(u"Mai"), _(u"Juin"), _(u"Juil"), _(u"Août"), _(u"Sept"), _(u"Oct"), _(u"Nov"), _(u"Déc"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -225,7 +228,7 @@ class CTRL(HTL.HyperTreeList):
     def CreationColonnes(self, listePeriodes=[]):
         """ Création des colonnes """
         # Création de la première colonne
-        self.AddColumn(u"Prestations")
+        self.AddColumn(_(u"Prestations"))
         self.SetColumnWidth(0, 250)
         self.SetColumnAlignment(0, wx.ALIGN_LEFT)
         
@@ -238,7 +241,7 @@ class CTRL(HTL.HyperTreeList):
             numColonne += 1
         
         # Création de la colonne Total
-        self.AddColumn(u"Total")
+        self.AddColumn(_(u"Total"))
         self.SetColumnWidth(numColonne, 65)
         self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
         
@@ -253,18 +256,18 @@ class CTRL(HTL.HyperTreeList):
         # Mémorisation des colonnes
         dictColonnes = {}
         index = 1
-        self.dictImpression["entete"].append(u"Prestations")
+        self.dictImpression["entete"].append(_(u"Prestations"))
         for periode in listePeriodes :
             dictColonnes[periode] = index
             self.dictImpression["entete"].append(PeriodeComplete(periode[1], periode[0]))
             index += 1
         dictColonnes["total"] = index
-        self.dictImpression["entete"].append(u"Total")
+        self.dictImpression["entete"].append(_(u"Total"))
         
         # Initialisation du CTRL
         self.RAZ() 
         self.CreationColonnes(listePeriodes) 
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches
         
@@ -313,7 +316,7 @@ class CTRL(HTL.HyperTreeList):
             for periode in periodes :
                 for IDcategorie_tarif in dictPrestations[label]["periodes"][periode]["categories"].keys() :
                     if IDcategorie_tarif == None or dictCategoriesTarifs.has_key(IDcategorie_tarif) == False : 
-                        nomCategorie = u"Sans catégorie"
+                        nomCategorie = _(u"Sans catégorie")
                     else: 
                         nomCategorie = u"%s - %s" % (dictCategoriesTarifs[IDcategorie_tarif]["nomActivite"], dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"])
                     if (nomCategorie, IDcategorie_tarif) not in listeCategories :
@@ -356,11 +359,11 @@ class CTRL(HTL.HyperTreeList):
                     self.dictImpression["contenu"].append(impressionLigne)
         
         # ------------ Ligne Total --------------
-        niveauTotal = self.AppendItem(self.root, u"Total")
+        niveauTotal = self.AppendItem(self.root, _(u"Total"))
         self.SetItemBackgroundColour(niveauTotal, (150, 150, 150) )
         self.SetItemTextColour(niveauTotal, wx.Colour(255, 255, 255) )
         
-        impressionLigne = [u"Total",]
+        impressionLigne = [_(u"Total"),]
         
         dictTotal = {}
         totalPeriodes = {}
@@ -403,8 +406,8 @@ class CTRL(HTL.HyperTreeList):
             # Tri des catégories
             listeCategories = []
             for IDcategorie_tarif in dictTotal.keys() :
-                if IDcategorie_tarif == None : 
-                    nomCategorie = u"Sans catégorie"
+                if IDcategorie_tarif == None or dictCategoriesTarifs.has_key(IDcategorie_tarif) == False : 
+                    nomCategorie = _(u"Sans catégorie")
                 else: 
                     nomCategorie = u"%s - %s" % (dictCategoriesTarifs[IDcategorie_tarif]["nomActivite"], dictCategoriesTarifs[IDcategorie_tarif]["nomCategorie"])
                 listeCategories.append((nomCategorie, IDcategorie_tarif))
@@ -480,8 +483,8 @@ class CTRL(HTL.HyperTreeList):
         largeur_page = A4[1]
             
         # Initialisation du PDF
-        nomDoc = "Temp/Synthese_prestations_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        nomDoc = "Temp/Synthese_prestations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur_page, hauteur_page), topMargin=30, bottomMargin=20, leftMargin=40, rightMargin=40)
         story = []
         
@@ -489,7 +492,7 @@ class CTRL(HTL.HyperTreeList):
         dataTableau = []
         largeursColonnes = ( (largeur_page-175, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (u"Synthèse des prestations", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"Synthèse des prestations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -560,7 +563,7 @@ class CTRL(HTL.HyperTreeList):
     
     def ExportExcel(self):
         """ Export Excel """
-        titre = u"Synthèse des prestations"
+        titre = _(u"Synthèse des prestations")
         
         # Demande à l'utilisateur le nom de fichier et le répertoire de destination
         nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
@@ -569,7 +572,7 @@ class CTRL(HTL.HyperTreeList):
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.SAVE
@@ -584,7 +587,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -781,8 +784,8 @@ class CTRL(HTL.HyperTreeList):
         wb.save(cheminFichier)
 
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?"
-        dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 import FonctionsPerso
 import datetime
@@ -54,7 +57,7 @@ class MyHtml(html.HtmlWindow):
         self.SetBackgroundColour(couleurFond)
     
     def OnLinkClicked(self, link):
-        FonctionsPerso.LanceFichierExterne(u"http://www.noethys.com")
+        FonctionsPerso.LanceFichierExterne(_(u"http://www.noethys.com"))
         
 
 class MargeGauche(wx.Panel):
@@ -79,7 +82,7 @@ class Dialog(wx.Dialog):
         self.ctrl_html = MyHtml(self, texte=texte, hauteur=30)
         
         # Boutons de commande
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY), size=(120, -1))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -89,8 +92,8 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(u"A propos")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour fermer cette fenêtre")
+        self.SetTitle(_(u"A propos"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer cette fenêtre"))
         self.SetMinSize((600, 500))
 
     def __do_layout(self):

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import DLG_Saisie_categorie_budget
 import datetime
@@ -42,43 +45,72 @@ class Analyse():
             nomChamp = "{NBRE_UNITE_%d}" % IDunite
             self.dictChamps[nomChamp] = nbreConso
         
-        # Récupération du réalisé
+        # Condition analytiques
         if len(self.dictBudget["analytiques"]) == 0 : conditionAnalytiques = ""
         elif len(self.dictBudget["analytiques"]) == 1 : conditionAnalytiques = "(%d)" % self.dictBudget["analytiques"][0]
         else : conditionAnalytiques = str(tuple(self.dictBudget["analytiques"]))
+        
+        listeCategoriesUtilisees = []
+        
+        # Récupération des opérations de trésorerie
         req = """SELECT IDcategorie, SUM(montant)
         FROM compta_ventilation
-        WHERE IDexercice=%d AND IDanalytique IN %s
+        WHERE date_budget>='%s' AND date_budget<='%s' AND IDanalytique IN %s
         GROUP BY IDcategorie
-        ;""" % (self.dictBudget["IDexercice"], conditionAnalytiques)
+        ;""" % (self.dictBudget["date_debut"], self.dictBudget["date_fin"], conditionAnalytiques)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        dictRealise = {}
+        dictOperationsTresorerie = {}
         for IDcategorie, montant in listeDonnees :
-            dictRealise[IDcategorie] = montant        
+            dictOperationsTresorerie[IDcategorie] = montant       
+            if IDcategorie not in listeCategoriesUtilisees :
+                listeCategoriesUtilisees.append(IDcategorie) 
+
+        # Récupération des opérations budgétaires
+        req = """SELECT IDcategorie, SUM(montant)
+        FROM compta_operations_budgetaires
+        WHERE date_budget>='%s' AND date_budget<='%s' AND IDanalytique IN %s
+        GROUP BY IDcategorie
+        ;""" % (self.dictBudget["date_debut"], self.dictBudget["date_fin"], conditionAnalytiques)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dictOperationsBudgetaires = {}
+        for IDcategorie, montant in listeDonnees :
+            dictOperationsBudgetaires[IDcategorie] = montant        
+            if IDcategorie not in listeCategoriesUtilisees :
+                listeCategoriesUtilisees.append(IDcategorie) 
+
+        # Récupéraion des infos sur les catégories
+        req = """SELECT IDcategorie, type, nom, abrege
+        FROM compta_categories;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dictInfosCategories = {}
+        for IDcategorie, typeCategorie, nom, abrege in listeDonnees :
+            dictInfosCategories[IDcategorie] = {"typeCategorie" : typeCategorie, "nom" : nom, "abrege" : abrege}        
         
         # Récupération des catégories budgétaires
-        req = """SELECT IDcategorie_budget, compta_categories_budget.type, compta_categories_budget.IDcategorie, valeur,
-        compta_categories.nom
+        req = """SELECT IDcategorie_budget, type, IDcategorie, valeur
         FROM compta_categories_budget
-        LEFT JOIN compta_categories ON compta_categories.IDcategorie = compta_categories_budget.IDcategorie
-        WHERE compta_categories_budget.IDbudget=%d
-        ORDER BY compta_categories_budget.type, compta_categories.nom
+        WHERE IDbudget=%d
+        ORDER BY type
         ;""" % self.dictBudget["IDbudget"]
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         
         listeCategories = []
+        listeIDcategories = []
         totalPlafond = 0.0
         totalRealise = 0.0
         totalSolde = 0.0
-        for IDcategorie_budget, typeCategorie, IDcategorie, valeur, nomCategorie in listeDonnees :
+        for IDcategorie_budget, typeCategorie, IDcategorie, valeur in listeDonnees :
             plafond = self.CalculePlafond(valeur)
             
-            if dictRealise.has_key(IDcategorie) :
-                realise = dictRealise[IDcategorie]
-            else :
-                realise = 0.0
+            realise = 0.0
+            if dictOperationsTresorerie.has_key(IDcategorie) :
+                realise += dictOperationsTresorerie[IDcategorie]
+            if dictOperationsBudgetaires.has_key(IDcategorie) :
+                realise += dictOperationsBudgetaires[IDcategorie]
                 
             if typeCategorie == "debit" : 
                 solde = plafond - realise
@@ -96,23 +128,51 @@ class Analyse():
             
             totalSolde += solde 
             
+            listeIDcategories.append(IDcategorie)
             listeCategories.append({
                 "IDcategorie_budget" : IDcategorie_budget, "typeCategorie" : typeCategorie, 
-                "IDcategorie" : IDcategorie, "valeur" : valeur, "nomCategorie" : nomCategorie,
+                "IDcategorie" : IDcategorie, "valeur" : valeur, "nomCategorie" : dictInfosCategories[IDcategorie]["nom"],
                 "plafond" : plafond, "realise" : realise, "solde" : solde, "pourcentage" : pourcentage,
                 })
 
         DB.Close() 
         
+        # Catégories non budgétées
+        if self.dictBudget["inclure_toutes_categories"] == True :
+            
+            for IDcategorie in listeCategoriesUtilisees :
+                if IDcategorie not in listeIDcategories :
+                    typeCategorie = dictInfosCategories[IDcategorie]["typeCategorie"]
+                    
+                    realise = 0.0
+                    if dictOperationsBudgetaires.has_key(IDcategorie) :
+                        realise += dictOperationsBudgetaires[IDcategorie]
+                    if dictOperationsTresorerie.has_key(IDcategorie) :
+                        realise += dictOperationsTresorerie[IDcategorie]
+
+                    if typeCategorie == "debit" : 
+                        solde = - realise
+                        totalRealise -= realise
+                    else :
+                        solde = realise
+                        totalRealise += realise
+                    totalSolde += solde 
+                    
+                    listeCategories.append({
+                        "IDcategorie_budget" : None, "typeCategorie" : typeCategorie, 
+                        "IDcategorie" : IDcategorie, "valeur" : 0.0, "nomCategorie" : dictInfosCategories[IDcategorie]["nom"],
+                        "plafond" : 0.0, "realise" : realise, "solde" : solde, "pourcentage" : None,
+                        })
+        
         # Total
         try :
             pourcentage = 100.0 * totalRealise / totalPlafond
         except :
-            pourcentage = 0.0
+            pourcentage = None
             
         listeCategories.append({
             "IDcategorie_budget" : None, "typeCategorie" : "total", 
-            "IDcategorie" : None, "valeur" : None, "nomCategorie" : u"Total",
+            "IDcategorie" : None, "valeur" : None, "nomCategorie" : _(u"Total"),
             "plafond" : totalPlafond, "realise" : totalRealise, "solde" : totalSolde,
             "pourcentage" : pourcentage,
             })
@@ -212,19 +272,19 @@ class ListView(GroupListView):
             return u"%.1f %%" % float(valeur)
 
         def FormateType(valeur):
-            if valeur == "credit" : return u"Crédit"
-            if valeur == "debit" : return u"Débit"
-            if valeur == "total" : return u"Total"
+            if valeur == "credit" : return _(u"Crédit")
+            if valeur == "debit" : return _(u"Débit")
+            if valeur == "total" : return _(u"Total")
             
             
         liste_Colonnes = [
 ##            ColumnDefn(u"", "left", 0, "IDcategorie_budget"),
-            ColumnDefn(u"Catégorie budgétaire", "left", 200, "nomCategorie", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Type", "left", 50, "typeCategorie", typeDonnee="texte", stringConverter=FormateType),
-            ColumnDefn(u"Réel", "right", 80, "realise", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Budgété", "right", 80, "plafond", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Pourcent.", "right", 80, "pourcentage", stringConverter=FormatePourcentage),
-            ColumnDefn(u"Ecart", "right", 80, "solde", typeDonnee="montant", stringConverter=FormateEcart),
+            ColumnDefn(_(u"Catégorie budgétaire"), "left", 200, "nomCategorie", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Type"), "left", 50, "typeCategorie", typeDonnee="texte", stringConverter=FormateType),
+            ColumnDefn(_(u"Réel"), "right", 80, "realise", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Budgété"), "right", 80, "plafond", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Pourcent."), "right", 80, "pourcentage", stringConverter=FormatePourcentage),
+            ColumnDefn(_(u"Ecart"), "right", 80, "solde", typeDonnee="montant", stringConverter=FormateEcart),
             ]
         self.SetColumns(liste_Colonnes)
         
@@ -234,7 +294,7 @@ class ListView(GroupListView):
         self.useExpansionColumn = True
         self.SetShowItemCounts(False)
 
-        self.SetEmptyListMsg(u"Aucune catégorie budgétaire")
+        self.SetEmptyListMsg(_(u"Aucune catégorie budgétaire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -264,14 +324,14 @@ class ListView(GroupListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -280,14 +340,14 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
 
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -298,21 +358,21 @@ class ListView(GroupListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des catégories budgétaires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des catégories budgétaires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des catégories budgétaires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des catégories budgétaires")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des catégories budgétaires"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des catégories budgétaires")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des catégories budgétaires"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -323,7 +383,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -383,9 +443,9 @@ class MyFrame(wx.Frame):
         
         dictBudget = {
             "IDbudget" : 1,
-            "IDexercice" : 1,
-            "date_debut" : datetime.date(2014, 1, 1),
-            "date_fin" : datetime.date(2014, 12, 31),
+            "inclure_toutes_categories" : True,
+            "date_debut" : datetime.date(2015, 1, 1),
+            "date_fin" : datetime.date(2015, 12, 31),
             "analytiques" : (1, 2),
             }
         self.ctrl.SetDictBudget(dictBudget)

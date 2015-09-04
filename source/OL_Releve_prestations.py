@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import operator
@@ -16,7 +19,7 @@ import DLG_Releve_prestations_saisie
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
         
-LISTE_MOIS = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
@@ -24,8 +27,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -50,9 +53,9 @@ class Track(object):
         
         # Type
         if self.typeDonnees == "prestations" : 
-            self.label_type = u"Prestations"
+            self.label_type = _(u"Prestations")
         if self.typeDonnees == "factures" : 
-            self.label_type = u"Factures"
+            self.label_type = _(u"Factures")
         
         # Période
         self.date_debut = self.dictPeriode["date_debut"]
@@ -64,18 +67,18 @@ class Track(object):
         self.listeOptions = []
                 
         if self.dictOptions.has_key("impayes") and self.dictOptions["impayes"] == True :
-            self.listeOptions.append(u"Uniquement les impayés")
+            self.listeOptions.append(_(u"Uniquement les impayés"))
         
         if self.dictOptions.has_key("regroupement") :
             if self.dictOptions["regroupement"] == "date" :
-                self.listeOptions.append(u"Regroupement par date")
+                self.listeOptions.append(_(u"Regroupement par date"))
             if self.dictOptions["regroupement"] == "mois" :
-                self.listeOptions.append(u"Regroupement par mois")
+                self.listeOptions.append(_(u"Regroupement par mois"))
             if self.dictOptions["regroupement"] == "annee" :
-                self.listeOptions.append(u"Regroupement par année")
+                self.listeOptions.append(_(u"Regroupement par année"))
                 
         if self.dictOptions.has_key("conso") and self.dictOptions["conso"] == True :
-            self.listeOptions.append(u"Détail des consommations")
+            self.listeOptions.append(_(u"Détail des consommations"))
         
         self.label_options = ", ".join(self.listeOptions)
 
@@ -111,16 +114,16 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"Période", 'left', 180, "label_periode", typeDonnee="entier"),
-            ColumnDefn(u"Type", "left", 100, "label_type", typeDonnee="texte"),
-            ColumnDefn(u"Options", "left", 230, "label_options", typeDonnee="texte"),
-            ColumnDefn(u"Date de début", "left", 0, "date_debut", typeDonnee="date"),
-            ColumnDefn(u"Date de fin", "left", 0, "date_fin", typeDonnee="date"),
+            ColumnDefn(_(u"Période"), 'left', 180, "label_periode", typeDonnee="entier"),
+            ColumnDefn(_(u"Type"), "left", 100, "label_type", typeDonnee="texte"),
+            ColumnDefn(_(u"Options"), "left", 230, "label_options", typeDonnee="texte"),
+            ColumnDefn(_(u"Date de début"), "left", 0, "date_debut", typeDonnee="date"),
+            ColumnDefn(_(u"Date de fin"), "left", 0, "date_fin", typeDonnee="date"),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucune période")
+        self.SetEmptyListMsg(_(u"Aucune période"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[4])
         self.SetObjects(self.donnees)
@@ -164,7 +167,7 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-        item = wx.MenuItem(menuPop, 70, u"Ajouter")
+        item = wx.MenuItem(menuPop, 70, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -172,14 +175,14 @@ class ListView(FastObjectListView):
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 60, u"Modifier")
+        item = wx.MenuItem(menuPop, 60, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Modifier, id=60)
         if len(self.Selection()) == 0 : item.Enable(False)
 
-        item = wx.MenuItem(menuPop, 80, u"Supprimer")
+        item = wx.MenuItem(menuPop, 80, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -189,26 +192,26 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Tout sélectionner
-        item = wx.MenuItem(menuPop, 20, u"Tout sélectionner")
+        item = wx.MenuItem(menuPop, 20, _(u"Tout sélectionner"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=20)
 
         # Tout dé-sélectionner
-        item = wx.MenuItem(menuPop, 30, u"Tout dé-sélectionner")
+        item = wx.MenuItem(menuPop, 30, _(u"Tout dé-sélectionner"))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheRien, id=30)
         
         menuPop.AppendSeparator()
         
         # Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -217,14 +220,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -235,12 +238,12 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des périodes", intro="", total="", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des périodes"), intro="", total="", format="A", orientation=wx.LANDSCAPE)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -254,11 +257,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des périodes")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des périodes"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des périodes")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des périodes"))
 
     def Ajouter(self, event=None):
         self.MemoriseCoches() 
@@ -271,7 +274,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune période à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -280,7 +283,7 @@ class ListView(FastObjectListView):
         periode = track.periode
         
         dlg = DLG_Releve_prestations_saisie.Dialog(self)
-        dlg.SetTitle(u"Modification d'une période")
+        dlg.SetTitle(_(u"Modification d'une période"))
         dlg.SetDonnees(track.periode)
         if dlg.ShowModal() == wx.ID_OK:
             dictDonnees = dlg.GetDonnees()
@@ -290,7 +293,7 @@ class ListView(FastObjectListView):
         
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune période à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune période à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -298,7 +301,7 @@ class ListView(FastObjectListView):
         track = self.Selection()[0]
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette période ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette période ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.listePeriodes.pop(track.index)
             self.MAJ() 
@@ -325,7 +328,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

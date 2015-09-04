@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 
 
@@ -72,16 +75,16 @@ class Dialog(wx.Dialog):
         self.afficheElements = afficheElements
         
         # Action
-        self.box_action_staticbox = wx.StaticBox(self, -1, u"Action")
+        self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Action"))
         
-        self.label_action = wx.StaticText(self, -1, u"Action :")
-        self.radio_date = wx.RadioButton(self, -1, u"Copier le")
+        self.label_action = wx.StaticText(self, -1, _(u"Action :"))
+        self.radio_date = wx.RadioButton(self, -1, _(u"Copier le"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
-        self.radio_renitialisation = wx.RadioButton(self, -1, u"Réinitialisation")
+        self.radio_renitialisation = wx.RadioButton(self, -1, _(u"Réinitialisation"))
         
-        self.label_elements = wx.StaticText(self, -1, u"Eléments :")
-        self.check_ouvertures = wx.CheckBox(self, -1, u"Ouvertures")
-        self.check_places = wx.CheckBox(self, -1, u"Nbre de places max.")
+        self.label_elements = wx.StaticText(self, -1, _(u"Eléments :"))
+        self.check_ouvertures = wx.CheckBox(self, -1, _(u"Ouvertures"))
+        self.check_places = wx.CheckBox(self, -1, _(u"Nbre de places max."))
         
         if self.afficheElements == False :
             self.label_elements.Show(False)
@@ -89,26 +92,26 @@ class Dialog(wx.Dialog):
             self.check_places.Show(False)
         
         # Période
-        self.box_periode_staticbox = wx.StaticBox(self, -1, u"Période d'application")
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période d'application"))
         
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Jours
-        self.box_jours_staticbox = wx.StaticBox(self, -1, u"Jours")
+        self.box_jours_staticbox = wx.StaticBox(self, -1, _(u"Jours"))
         
-        self.label_scolaires = wx.StaticText(self, -1, u"Scolaires :")
+        self.label_scolaires = wx.StaticText(self, -1, _(u"Scolaires :"))
         self.ctrl_scolaires = CTRL_Jours(self, "scolaire")
-        self.label_vacances = wx.StaticText(self, -1, u"Vacances :")
+        self.label_vacances = wx.StaticText(self, -1, _(u"Vacances :"))
         self.ctrl_vacances = CTRL_Jours(self, "vacances")
-        self.label_feries = wx.StaticText(self, -1, u"Fériés :")
-        self.ctrl_feries = wx.CheckBox(self, -1, u"Inclure les jours fériés")
+        self.label_feries = wx.StaticText(self, -1, _(u"Fériés :"))
+        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les jours fériés"))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -127,18 +130,18 @@ class Dialog(wx.Dialog):
         self.ctrl_date.SetFocus()
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie et suppression par lot")
-        self.ctrl_date.SetToolTipString(u"Sélectionnez une date modèle. Les éléments de cette date seront copiés vers les dates cibles")
-        self.radio_date.SetToolTipString(u"Sélectionnez ce mode pour copier les éléments d'une date donnée")
-        self.radio_renitialisation.SetToolTipString(u"Sélectionnez ce mode pour réinitialiser les éléments des dates cibles")
-        self.check_ouvertures.SetToolTipString(u"Cochez cette case pour modifier les ouvertures")
-        self.check_places.SetToolTipString(u"Cochez cette case pour modifier les nbres de places max. (remplissage)")
-        self.ctrl_date_debut.SetToolTipString(u"Sélectionnez une date de début de période cible")
-        self.ctrl_date_fin.SetToolTipString(u"Sélectionnez une date de fin de période cible")
-        self.ctrl_feries.SetToolTipString(u"Cochez cette case pour modifier également les jours fériés")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie et suppression par lot"))
+        self.ctrl_date.SetToolTipString(_(u"Sélectionnez une date modèle. Les éléments de cette date seront copiés vers les dates cibles"))
+        self.radio_date.SetToolTipString(_(u"Sélectionnez ce mode pour copier les éléments d'une date donnée"))
+        self.radio_renitialisation.SetToolTipString(_(u"Sélectionnez ce mode pour réinitialiser les éléments des dates cibles"))
+        self.check_ouvertures.SetToolTipString(_(u"Cochez cette case pour modifier les ouvertures"))
+        self.check_places.SetToolTipString(_(u"Cochez cette case pour modifier les nbres de places max. (remplissage)"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Sélectionnez une date de début de période cible"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Sélectionnez une date de fin de période cible"))
+        self.ctrl_feries.SetToolTipString(_(u"Cochez cette case pour modifier également les jours fériés"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -219,7 +222,7 @@ class Dialog(wx.Dialog):
         if self.radio_date.GetValue() == True :
             date = self.ctrl_date.GetDate()
             if date == None :
-                dlg = wx.MessageDialog(self, u"Vous devez sélectionner une date modèle !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une date modèle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date.SetFocus() 
@@ -230,7 +233,7 @@ class Dialog(wx.Dialog):
         if self.check_ouvertures.GetValue() == True : elements.append("ouvertures")
         if self.check_places.GetValue() == True : elements.append("places")
         if len(elements) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un élément à modifier (ouvertures/places) !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un élément à modifier (ouvertures/places) !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -239,19 +242,19 @@ class Dialog(wx.Dialog):
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début de période !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin de période !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, u"La date de début ne peut pas être supérieure à la date de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -261,7 +264,7 @@ class Dialog(wx.Dialog):
         jours_scolaires = self.ctrl_scolaires.GetJours()
         jours_vacances = self.ctrl_vacances.GetJours()
         if len(jours_scolaires) == 0 and len(jours_vacances) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un jour scolaire ou de vacances !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un jour scolaire ou de vacances !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

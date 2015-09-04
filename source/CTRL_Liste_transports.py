@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import FonctionsPerso
 import wx.lib.agw.hypertreelist as HTL
@@ -32,8 +35,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -42,7 +45,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -96,7 +99,7 @@ class CTRL(HTL.HyperTreeList):
         self.DeleteAllItems()
         self.SupprimeColonnes() 
         self.CreationColonnes(listeDates) 
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage(listeDates, dictFiltres)
         
     def SupprimeColonnes(self):
@@ -315,7 +318,7 @@ class CTRL(HTL.HyperTreeList):
                 if heure != None :
                     label = heure.replace(":", "h")
                 else :
-                    label = u"Heure inconnue"
+                    label = _(u"Heure inconnue")
                 niveauHeure = self.AppendItem(niveauParent, label)
                 self.SetPyData(niveauHeure, {"type":"heures", "code":heure})
                 
@@ -344,7 +347,7 @@ class CTRL(HTL.HyperTreeList):
                     if dictIndividus.has_key(IDindividu) :
                         label = dictIndividus[IDindividu]
                     else :
-                        label = u"Individu inconnu"
+                        label = _(u"Individu inconnu")
                     listeIndividusTemp.append((label, IDindividu, dictDates))
                 listeIndividusTemp.sort() 
                 
@@ -359,8 +362,8 @@ class CTRL(HTL.HyperTreeList):
                         # Recherche la colonne date
                         if self.dictIndexColonnes.has_key(date) :
                             indexColonne = self.dictIndexColonnes[date]
-                            if sens == "depart" : label = u"Départ"
-                            elif sens == "arrivee" : label = u"Arrivée"
+                            if sens == "depart" : label = _(u"Départ")
+                            elif sens == "arrivee" : label = _(u"Arrivée")
                             else : label = u""
                             self.SetItemText(niveauIndividu, label, indexColonne)
                             dictImpressionColonnes[indexColonne] = label
@@ -394,7 +397,7 @@ class CTRL(HTL.HyperTreeList):
                 if dictLignes.has_key(IDligne) :
                     label = dictLignes[IDligne]
                 else :
-                    label = u"Ligne inconnue"
+                    label = _(u"Ligne inconnue")
                 listeLignes.append((label, IDligne))
             listeLignes.sort() 
 
@@ -409,7 +412,7 @@ class CTRL(HTL.HyperTreeList):
                     if dictArrets.has_key(IDarret) :
                         label = dictArrets[IDarret]["nom"]
                     else :
-                        label = u"Arrêt inconnu"
+                        label = _(u"Arrêt inconnu")
                     listeArrets.append((label, IDarret, dictArret))
                 listeArrets.sort() 
                 
@@ -428,7 +431,7 @@ class CTRL(HTL.HyperTreeList):
                 if dictLieux.has_key(IDlieu) :
                     label = dictLieux[IDlieu]
                 else :
-                    label = u"Lieu inconnu"
+                    label = _(u"Lieu inconnu")
                 listeLieux.append((label, IDlieu, dictLieu))
             listeLieux.sort() 
             
@@ -479,7 +482,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -493,7 +496,7 @@ class CTRL(HTL.HyperTreeList):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         dictItem = self.GetMainWindow().GetItemPyData(self.GetSelection())
         if dictItem == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -509,7 +512,7 @@ class CTRL(HTL.HyperTreeList):
     def Imprimer(self, event=None):
         listeDates = self.dictImpression["dates"]
         if len(listeDates) > 26 :
-            dlg = wx.MessageDialog(self, u"Désolé mais vous ne pouvez pas imprimer plus de 26 jours sur une feuille !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Désolé mais vous ne pouvez pas imprimer plus de 26 jours sur une feuille !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -540,8 +543,8 @@ class CTRL(HTL.HyperTreeList):
             largeurContenu = 770
 
         # Initialisation du PDF
-        nomDoc = "Temp/liste_transports_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        nomDoc = "Temp/liste_transports_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeurPage, hauteurPage), topMargin=30, bottomMargin=30)
         story = []
         
@@ -550,7 +553,7 @@ class CTRL(HTL.HyperTreeList):
             dataTableau = []
             largeursColonnes = ( (largeurContenu-100, 100) )
             dateDuJour = DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (u"Liste des transports", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Liste des transports"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -694,7 +697,7 @@ class MyFrame(wx.Frame):
             listeDates=[datetime.date(2012, 5, 22),], 
             dictFiltres={"lignes":[8,], "lieux":[5, 6, 4, 1], "categories":["avion", "taxi", "train", "bus",], "arrets":[1, 2]}
             )
-        boutonTest = wx.Button(panel, -1, u"Test d'impression PDF")
+        boutonTest = wx.Button(panel, -1, _(u"Test d'impression PDF"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(boutonTest, 0, wx.ALL|wx.EXPAND, 4)

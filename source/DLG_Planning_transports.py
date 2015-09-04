@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 
 import GestionDB
@@ -69,24 +72,24 @@ class ToolBar(wx.ToolBar):
         self.periodCount = 1
         
         # Boutons
-        self.AddLabelTool(ID_OUTIL_JOUR, u"Jour", wx.Bitmap("Images/32x32/Calendrier_jour.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Affichage quotidien", "")
-        self.AddLabelTool(ID_OUTIL_SEMAINE, u"Semaine", wx.Bitmap("Images/32x32/Calendrier_semaine.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Affichage hebdomadaire", "")
-        self.AddLabelTool(ID_OUTIL_MOIS, u"Mois", wx.Bitmap("Images/32x32/Calendrier_mois.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Affichage mensuel", "")
+        self.AddLabelTool(ID_OUTIL_JOUR, _(u"Jour"), wx.Bitmap("Images/32x32/Calendrier_jour.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage quotidien"), "")
+        self.AddLabelTool(ID_OUTIL_SEMAINE, _(u"Semaine"), wx.Bitmap("Images/32x32/Calendrier_semaine.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage hebdomadaire"), "")
+        self.AddLabelTool(ID_OUTIL_MOIS, _(u"Mois"), wx.Bitmap("Images/32x32/Calendrier_mois.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage mensuel"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_OUTIL_HORIZONTAL, u"Horizontal", wx.Bitmap("Images/32x32/Calendrier_horizontal.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Affichage horizontal", "")
-        self.AddLabelTool(ID_OUTIL_VERTICAL, u"Vertical", wx.Bitmap("Images/32x32/Calendrier_vertical.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, u"Affichage vertical", "")
+        self.AddLabelTool(ID_OUTIL_HORIZONTAL, _(u"Horizontal"), wx.Bitmap("Images/32x32/Calendrier_horizontal.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage horizontal"), "")
+        self.AddLabelTool(ID_OUTIL_VERTICAL, _(u"Vertical"), wx.Bitmap("Images/32x32/Calendrier_vertical.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Affichage vertical"), "")
         self.ToggleTool(ID_OUTIL_VERTICAL, True)
         self.AddSeparator()
-        self.AddLabelTool(ID_OUTIL_RECULER, u"Reculer", wx.Bitmap("Images/32x32/Precedent.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Reculer", "")
-        self.AddLabelTool(ID_OUTIL_AVANCER, u"Avancer", wx.Bitmap("Images/32x32/Suivant.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Avancer", "")
+        self.AddLabelTool(ID_OUTIL_RECULER, _(u"Reculer"), wx.Bitmap("Images/32x32/Precedent.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Reculer"), "")
+        self.AddLabelTool(ID_OUTIL_AVANCER, _(u"Avancer"), wx.Bitmap("Images/32x32/Suivant.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Avancer"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_OUTIL_MOINS, u"Moins", wx.Bitmap("Images/32x32/zoom_moins.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Afficher moins", "")
+        self.AddLabelTool(ID_OUTIL_MOINS, _(u"Moins"), wx.Bitmap("Images/32x32/zoom_moins.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher moins"), "")
         self.EnableTool(ID_OUTIL_MOINS, False)
-        self.AddLabelTool(ID_OUTIL_PLUS, u"Plus", wx.Bitmap("Images/32x32/zoom_plus.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Afficher plus", "")
+        self.AddLabelTool(ID_OUTIL_PLUS, _(u"Plus"), wx.Bitmap("Images/32x32/zoom_plus.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher plus"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_OUTIL_AUJOURDHUI, u"Aujourd'hui", wx.Bitmap("Images/32x32/Jour.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Aujourd'hui", "")
-        self.AddLabelTool(ID_OUTIL_CHERCHER, u"Chercher", wx.Bitmap("Images/32x32/Calendrier_zoom.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Chercher une date", "")
-        self.AddLabelTool(ID_OUTIL_APERCU, u"Aperçu", wx.Bitmap("Images/32x32/Apercu.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Aperçu avant impression", "")
+        self.AddLabelTool(ID_OUTIL_AUJOURDHUI, _(u"Aujourd'hui"), wx.Bitmap("Images/32x32/Jour.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aujourd'hui"), "")
+        self.AddLabelTool(ID_OUTIL_CHERCHER, _(u"Chercher"), wx.Bitmap("Images/32x32/Calendrier_zoom.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Chercher une date"), "")
+        self.AddLabelTool(ID_OUTIL_APERCU, _(u"Aperçu"), wx.Bitmap("Images/32x32/Apercu.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Aperçu avant impression"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.OnAffichageJour, id=ID_OUTIL_JOUR)
@@ -209,19 +212,19 @@ class ToolBar(wx.ToolBar):
         preview = wx.PrintPreview(rpt1, rpt2, data)
 ##        preview.SetZoom( 100 )
 ##        if preview.Ok():
-##            frame = wx.PreviewFrame(preview, None, u"Aperçu avant impression", size=wx.Size( 700, 500 ) )
+##            frame = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"), size=wx.Size( 700, 500 ) )
 ##            frame.Initialize()
 ##            frame.Show( True )
         
 ##        import UTILS_Printer
-##        preview_window = UTILS_Printer.PreviewFrame(preview, None, u"Aperçu avant impression", reglages["orientation"])
+##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"Aperçu avant impression"), reglages["orientation"])
 ##        preview_window.Initialize()
 ##        preview_window.MakeModal(False)
 ##        preview_window.Show(True)
         
         preview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
-        preview_window = wx.PreviewFrame(preview, None, u"Aperçu avant impression")
+        preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
         preview_window.Initialize()
         preview_window.MakeModal(False)
         preview_window.SetPosition(frame.GetPosition())
@@ -237,12 +240,12 @@ class DLG_Recherche_date(wx.Dialog):
         self.parent = parent
         # Contrôles
         self._date = wx.DatePickerCtrl(self, style=wx.DP_DROPDOWN | wx.DP_SHOWCENTURY )
-        btOk = wx.Button( self, wx.ID_OK, u"Ok" )
-        btCancel = wx.Button( self, wx.ID_CANCEL, u"Annuler" )
+        btOk = wx.Button( self, wx.ID_OK, _(u"Ok") )
+        btCancel = wx.Button( self, wx.ID_CANCEL, _(u"Annuler") )
         # Layout
         szAll = wx.BoxSizer( wx.VERTICAL )
         szDate = wx.BoxSizer( wx.HORIZONTAL )
-        szDate.Add( wx.StaticText( self, label=u"Sélectionnez une date :"), wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
+        szDate.Add( wx.StaticText( self, label=_(u"Sélectionnez une date :")), wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
         szDate.Add( self._date, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL, 5 )
         btSizer = wx.StdDialogButtonSizer()
         btSizer.Add( btOk, 0, wx.RIGHT, 5 )
@@ -321,17 +324,17 @@ class CTRL_Planning(wx.Panel):
         menuPop = wx.Menu()
         
         if schedule == None :
-            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, Ajouter, id=10)
         else :
-            item = wx.MenuItem(menuPop, 20, u"Modifier")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, Modifier, id=20)
             
-            item = wx.MenuItem(menuPop, 30, u"Supprimer")
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
             item.SetBitmap(wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, Supprimer, id=30)
@@ -372,7 +375,7 @@ class CTRL_Planning(wx.Panel):
 
 ##        print date
 ##        schedule = wxScheduler.wxSchedule()
-##        schedule.description = u"Ceci est un test sur 3 jours"
+##        schedule.description = _(u"Ceci est un test sur 3 jours")
 ##        schedule.start = wx.DateTimeFromHMS(15, 0, 0)
 ##        end = wx.DateTimeFromHMS(16, 0, 0)
 ##        end.AddDS(wx.DateSpan(days=2))
@@ -499,8 +502,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez consulter ici le planning complet des transports enregistrés pour un individu. Pour saisir un transport, double-cliquez sur le jour et l'heure souhaités dans ce planning. Double-cliquez sur un transport pour le modifier ou utilisez le bouton droit de la souris pour accéder au menu contextuel."
-        titre = u"Planning des transports"
+        intro = _(u"Vous pouvez consulter ici le planning complet des transports enregistrés pour un individu. Pour saisir un transport, double-cliquez sur le jour et l'heure souhaités dans ce planning. Double-cliquez sur un transport pour le modifier ou utilisez le bouton droit de la souris pour accéder au menu contextuel.")
+        titre = _(u"Planning des transports")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
@@ -508,10 +511,10 @@ class Dialog(wx.Dialog):
         self.ctrl_planning = CTRL_Planning(self, IDindividu=IDindividu)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_saisie_lot = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Saisie_lot_transports.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
-##        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_saisie_lot = CTRL_Bouton_image.CTRL(self, texte=_(u"Saisir un lot de transports"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
+##        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -521,10 +524,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_saisie_lot.SetToolTipString(u"Cliquez ici pour saisir un lot de transports")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-##        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_saisie_lot.SetToolTipString(_(u"Cliquez ici pour saisir un lot de transports"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+##        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((950, 850))
 
     def __do_layout(self):

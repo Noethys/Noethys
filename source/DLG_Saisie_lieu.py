@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import GestionDB
 
@@ -16,20 +19,20 @@ import CTRL_Saisie_adresse
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, titre=u"Saisie d'un lieu"):
+    def __init__(self, parent, titre=_(u"Saisie d'un lieu")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent   
         self.titre = titre
         
         self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_ville = wx.StaticText(self, -1, u"C.P. :")
+        self.label_ville = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -39,10 +42,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(self.titre)
-        self.ctrl_nom.SetToolTipString(u"Saisissez le nom du lieu")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom du lieu"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((420, 100))
 
     def __do_layout(self):
@@ -93,7 +96,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.GetNom() == "" :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun nom !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()

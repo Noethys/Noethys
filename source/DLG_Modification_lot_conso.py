@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -47,7 +50,7 @@ class CTRL_Groupes(wx.ListBox):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        self.listeDonnees.append( {"ID" : None, "nom" : u"Aucune modification"} )
+        self.listeDonnees.append( {"ID" : None, "nom" : _(u"Aucune modification")} )
         for ID, nom in listeDonnees :
             valeurs = { "ID" : ID, "nom" : nom }
             self.listeDonnees.append(valeurs)
@@ -89,10 +92,10 @@ class CTRL_Modes(wx.ListBox):
         self.listeDonnees = []
         if IDactivite == None : return
         self.listeDonnees = [
-            {"ID" : None, "nom" : u"Aucune modification"},
-            {"ID" : "reservation", "nom" : u"Réservation"},
-            {"ID" : "attente", "nom" : u"Attente"},
-            {"ID" : "refus", "nom" : u"Refus"},
+            {"ID" : None, "nom" : _(u"Aucune modification")},
+            {"ID" : "reservation", "nom" : _(u"Réservation")},
+            {"ID" : "attente", "nom" : _(u"Attente")},
+            {"ID" : "refus", "nom" : _(u"Refus")},
         ]
             
     def SetID(self, ID=None):
@@ -132,11 +135,11 @@ class CTRL_Etats(wx.ListBox):
         self.listeDonnees = []
         if IDactivite == None : return
         self.listeDonnees = [
-            {"ID" : None, "nom" : u"Aucune modification"},
-            {"ID" : "reservation", "nom" : u"Pointage en attente"},
-            {"ID" : "present", "nom" : u"Présent"},
-            {"ID" : "absentj", "nom" : u"Absence justifiée"},
-            {"ID" : "absenti", "nom" : u"Absence injustifiée"},
+            {"ID" : None, "nom" : _(u"Aucune modification")},
+            {"ID" : "reservation", "nom" : _(u"Pointage en attente")},
+            {"ID" : "present", "nom" : _(u"Présent")},
+            {"ID" : "absentj", "nom" : _(u"Absence justifiée")},
+            {"ID" : "absenti", "nom" : _(u"Absence injustifiée")},
         ]
             
     def SetID(self, ID=None):
@@ -161,13 +164,13 @@ class CTRL_Modifications(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.box_groupe_staticbox = wx.StaticBox(self, -1, u"Groupe")
+        self.box_groupe_staticbox = wx.StaticBox(self, -1, _(u"Groupe"))
         self.ctrl_groupe = CTRL_Groupes(self)
         
-        self.box_mode_staticbox = wx.StaticBox(self, -1, u"Mode")
+        self.box_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode"))
         self.ctrl_mode = CTRL_Modes(self)
 
-        self.box_etat_staticbox = wx.StaticBox(self, -1, u"Etat")
+        self.box_etat_staticbox = wx.StaticBox(self, -1, _(u"Etat"))
         self.ctrl_etat = CTRL_Etats(self)
 
         self.__set_properties()
@@ -218,22 +221,22 @@ class Dialog(wx.Dialog):
         self.dictResultats = {}
         
         # Bandeau
-        intro = u"Vous pouvez ici modifier un lot de consommations. Commencez par définir les paramètres de sélection des consommations puis sélectionnez un ou plusieurs paramètres à modifier. Remarquez que les modifications ne seront validées définitivement que lorsque vous vous quitterez la grille des consommations."
-        titre = u"Modification d'un lot de consommations"
+        intro = _(u"Vous pouvez ici modifier un lot de consommations. Commencez par définir les paramètres de sélection des consommations puis sélectionnez un ou plusieurs paramètres à modifier. Remarquez que les modifications ne seront validées définitivement que lorsque vous vous quitterez la grille des consommations.")
+        titre = _(u"Modification d'un lot de consommations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Forfait.png")
 
         # Panel Selection
-        self.box_selection_staticbox = wx.StaticBox(self, -1, u"Sélection des consommations")
+        self.box_selection_staticbox = wx.StaticBox(self, -1, _(u"Sélection des consommations"))
         self.ctrl_selection = CTRL_Selection_lot_conso.CTRL(self, IDfamille=self.IDfamille, mode="modification", listeDates=selectionPeriode, selectionIndividus=selectionIndividus, selectionActivite=selectionActivite)
         self.ctrl_selection.SetMinSize((500, -1))
         # Panel Modifications
-        self.box_modifications_staticbox = wx.StaticBox(self, -1, u"Modifications à appliquer")
+        self.box_modifications_staticbox = wx.StaticBox(self, -1, _(u"Modifications à appliquer"))
         self.ctrl_modifications = CTRL_Modifications(self)
         self.ctrl_modifications.SetBackgroundColour("#F0FBED")
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -245,10 +248,10 @@ class Dialog(wx.Dialog):
         self.ctrl_selection.OnChoixActivite(None)
 
     def __set_properties(self):
-        self.SetTitle(u"Modification des consommations par lot")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour appliquer les modifications")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Modification des consommations par lot"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour appliquer les modifications"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 640))
 
     def __do_layout(self):

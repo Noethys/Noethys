@@ -26,6 +26,7 @@ The drawing interface is implemented in the `DefaultDrawingAlgorithm` class in
 the `draw` method.
 """
 
+from UTILS_Traduction import _
 
 import math
 import logging
@@ -34,6 +35,7 @@ from datetime import timedelta
 from datetime import datetime
 
 import wx
+import CTRL_Bouton_image
 
 from CTRL_Timeline import sort_categories
 import UTILS_TL_drawing as drawing
@@ -49,10 +51,10 @@ BALLOON_RADIUS = 12
 DATA_INDICATOR_SIZE = 10
 
 
-LISTE_JOURS = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-LISTE_JOURS_ABREGE = (u"Lun", u"Mar", u"Mer", u"Jeu", u"Ven", u"Sam", u"Dim")
-LISTE_MOIS = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
-LISTE_MOIS_ABREGE = (u"Jan.", u"Fév.", u"Mars", u"Avr.", u"Mai", u"Juin", u"Juil.", u"Août", u"Sept.", u"Oct.", u"Nov.", u"Déc.")
+LISTE_JOURS = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+LISTE_JOURS_ABREGE = (_(u"Lun"), _(u"Mar"), _(u"Mer"), _(u"Jeu"), _(u"Ven"), _(u"Sam"), _(u"Dim"))
+LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
+LISTE_MOIS_ABREGE = (_(u"Jan."), _(u"Fév."), _(u"Mars"), _(u"Avr."), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Août"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Déc."))
 
 
 class Strip(object):
@@ -141,7 +143,7 @@ class StripWeek(Strip):
             next_first_weekday = self.increment(first_weekday)
             last_weekday = next_first_weekday - timedelta(days=1)
             range_string = self._time_range_string(first_weekday, last_weekday)
-            return (u"Semaine %s (%s)") % (time.isocalendar()[1], range_string)
+            return (_(u"Semaine %s (%s)")) % (time.isocalendar()[1], range_string)
         # This strip should never be used as minor
         return ""
 

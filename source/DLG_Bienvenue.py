@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 import FonctionsPerso
 import CTRL_Liste_fichiers
@@ -49,7 +52,7 @@ class MyHtml(html.HtmlWindow):
         self.SetBackgroundColour(couleurFond)
     
     def OnLinkClicked(self, link):
-        FonctionsPerso.LanceFichierExterne(u"http://www.noethys.com")
+        FonctionsPerso.LanceFichierExterne(_(u"http://www.noethys.com"))
         
 
 class MargeGauche(wx.Panel):
@@ -73,14 +76,14 @@ class Dialog(wx.Dialog):
         self.ctrl_html = MyHtml(self, texte=TEXTE_ACCUEIL, hauteur=230)
         
         # Liste Fichiers exemples
-        self.label_fichiers = wx.StaticText(self, -1, u"Sélectionnez un fichier exemple puis cliquez sur Ok :")
+        self.label_fichiers = wx.StaticText(self, -1, _(u"Sélectionnez un fichier exemple puis cliquez sur Ok :"))
         self.label_fichiers.SetFont(wx.Font(9, wx.SWISS, wx.NORMAL, wx.BOLD))
         self.ctrl_fichiers = CTRL_Liste_fichiers.CTRL(self, prefixe="EXEMPLE_", details=False, mode="local")
         self.ctrl_fichiers.SetMinSize((-1, 100))
         
         # Boutons de commande
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -92,9 +95,9 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(u"Bienvenue")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour fermer cette fenêtre")
+        self.SetTitle(_(u"Bienvenue"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer cette fenêtre"))
         self.SetMinSize((800, 640))
 
     def __do_layout(self):
@@ -135,7 +138,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun fichier dans la liste !\n\nSi vous ne souhaitez pas ouvrir de fichier maintenant, cliquez sur le bouton Fermer. Vous pourrez le faire ultérieurement depuis le menu Fichier > Ouvrir un fichier.", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun fichier dans la liste !\n\nSi vous ne souhaitez pas ouvrir de fichier maintenant, cliquez sur le bouton Fermer. Vous pourrez le faire ultérieurement depuis le menu Fichier > Ouvrir un fichier."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return 

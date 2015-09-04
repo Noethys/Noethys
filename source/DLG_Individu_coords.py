@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import FonctionsPerso
 
@@ -25,7 +28,7 @@ class Adresse_auto(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez ici un représentant de la famille.\n(Les individus sans adresse n'apparaissent pas)")
+        self.SetToolTipString(_(u"Sélectionnez ici un représentant de la famille.\n(Les individus sans adresse n'apparaissent pas)"))
         self.MAJlisteDonnees() 
     
     def MAJlisteDonnees(self):
@@ -98,7 +101,7 @@ class Categorie(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=self.GetListeDonnees()) 
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez la catégorie socio-professionnelle de l'individu")
+        self.SetToolTipString(_(u"Sélectionnez la catégorie socio-professionnelle de l'individu"))
     
     def GetListeDonnees(self):
         db = GestionDB.DB()
@@ -131,7 +134,7 @@ class Secteur(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=[]) 
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez le secteur géographique du lieu de résidence de l'individu")
+        self.SetToolTipString(_(u"Sélectionnez le secteur géographique du lieu de résidence de l'individu"))
         self.MAJ() 
     
     def MAJ(self):
@@ -146,8 +149,8 @@ class Secteur(wx.Choice):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        self.dictDonnees = { 0 : (None, u"--- Aucun secteur géographique ---") }
-        listeNoms = [ u"------ Aucun secteur géographique ------"]
+        self.dictDonnees = { 0 : (None, _(u"--- Aucun secteur géographique ---")) }
+        listeNoms = [ _(u"------ Aucun secteur géographique ------")]
         index = 1
         for IDsecteur, nom in listeDonnees :
             listeNoms.append(nom)
@@ -173,7 +176,7 @@ class CTRL_diff(wx.CheckListBox):
     def __init__(self, parent):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
-        self.SetToolTipString(u"Cochez les listes de diffusion souhaitées")
+        self.SetToolTipString(_(u"Cochez les listes de diffusion souhaitées"))
         self.listeDiff = []
         self.dictDiff = {}
         
@@ -247,51 +250,51 @@ class Panel_coords(wx.Panel):
         self.majEffectuee = False
                 
         # Adresse
-        self.staticbox_adresse = wx.StaticBox(self, -1, u"Adresse de résidence")
+        self.staticbox_adresse = wx.StaticBox(self, -1, _(u"Adresse de résidence"))
         self.radio_adresse_auto = wx.RadioButton(self, -1, "", style=wx.RB_GROUP)
-        self.label_adresse_auto = wx.StaticText(self, -1, u"L'adresse de :")
+        self.label_adresse_auto = wx.StaticText(self, -1, _(u"L'adresse de :"))
         self.ctrl_adresse_auto = Adresse_auto(self)
         self.radio_adresse_manuelle = wx.RadioButton(self, -1, "")
-        self.label_adresse_manuelle = wx.StaticText(self, -1, u"L'adresse suivante :")
-        self.label_rue = wx.StaticText(self, -1, u"Rue :")
+        self.label_adresse_manuelle = wx.StaticText(self, -1, _(u"L'adresse suivante :"))
+        self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
-        self.label_cp = wx.StaticText(self, -1, u"CP :")
+        self.label_cp = wx.StaticText(self, -1, _(u"CP :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.label_secteur = wx.StaticText(self, -1, u"Secteur :")
+        self.label_secteur = wx.StaticText(self, -1, _(u"Secteur :"))
         self.ctrl_secteur = Secteur(self)
         self.bouton_secteurs = wx.Button(self, -1, "...", size=(20, 20))
 
         # Coordonnées
-        self.staticbox_coords = wx.StaticBox(self, -1, u"Coordonnées")
-        self.label_tel_domicile = wx.StaticText(self, -1, u"Domicile :")
-        self.ctrl_tel_domicile = CTRL_Saisie_tel.Tel(self, intitule=u"Domicile")
-        self.label_tel_mobile = wx.StaticText(self, -1, u"Mobile :")
-        self.ctrl_tel_mobile = CTRL_Saisie_tel.Tel(self, intitule=u"mobile")
-        self.label_tel_fax = wx.StaticText(self, -1, u"Fax :")
-        self.ctrl_tel_fax = CTRL_Saisie_tel.Tel(self, intitule=u"fax")
-        self.label_mail = wx.StaticText(self, -1, u"Email :")
+        self.staticbox_coords = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.label_tel_domicile = wx.StaticText(self, -1, _(u"Domicile :"))
+        self.ctrl_tel_domicile = CTRL_Saisie_tel.Tel(self, intitule=_(u"Domicile"))
+        self.label_tel_mobile = wx.StaticText(self, -1, _(u"Mobile :"))
+        self.ctrl_tel_mobile = CTRL_Saisie_tel.Tel(self, intitule=_(u"mobile"))
+        self.label_tel_fax = wx.StaticText(self, -1, _(u"Fax :"))
+        self.ctrl_tel_fax = CTRL_Saisie_tel.Tel(self, intitule=_(u"fax"))
+        self.label_mail = wx.StaticText(self, -1, _(u"Email :"))
         self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
         self.bouton_mail_perso = wx.BitmapButton(self, 900, wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_ANY))
 
         # Activité professionnelle
-        self.staticbox_travail = wx.StaticBox(self, -1, u"Activité professionnelle")
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
+        self.staticbox_travail = wx.StaticBox(self, -1, _(u"Activité professionnelle"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie = Categorie(self)
-        self.label_travail_tel = wx.StaticText(self, -1, u"Tél :")
-        self.ctrl_travail_tel = CTRL_Saisie_tel.Tel(self, intitule=u"travail")
-        self.label_profession = wx.StaticText(self, -1, u"Profession :")
+        self.label_travail_tel = wx.StaticText(self, -1, _(u"Tél :"))
+        self.ctrl_travail_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"travail"))
+        self.label_profession = wx.StaticText(self, -1, _(u"Profession :"))
         self.ctrl_profession = wx.TextCtrl(self, -1, "")
-        self.label_travail_fax = wx.StaticText(self, -1, u"Fax :")
-        self.ctrl_travail_fax = CTRL_Saisie_tel.Tel(self, intitule=u"fax")
-        self.label_employeur = wx.StaticText(self, -1, u"Employeur :")
+        self.label_travail_fax = wx.StaticText(self, -1, _(u"Fax :"))
+        self.ctrl_travail_fax = CTRL_Saisie_tel.Tel(self, intitule=_(u"fax"))
+        self.label_employeur = wx.StaticText(self, -1, _(u"Employeur :"))
         self.ctrl_employeur = wx.TextCtrl(self, -1, "")
-        self.label_travail_mail = wx.StaticText(self, -1, u"Mail :")
+        self.label_travail_mail = wx.StaticText(self, -1, _(u"Mail :"))
         self.ctrl_travail_mail = CTRL_Saisie_mail.Mail(self)
         self.bouton_mail_travail = wx.BitmapButton(self, 800, wx.Bitmap("Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_ANY))
                 
         # Listes de diffusion
-        self.staticbox_listesdiff = wx.StaticBox(self, -1, u"Listes de diffusion")
-        self.label_listesdiff = wx.StaticText(self, -1, u"Inscrire aux listes suivantes :")
+        self.staticbox_listesdiff = wx.StaticBox(self, -1, _(u"Listes de diffusion"))
+        self.label_listesdiff = wx.StaticText(self, -1, _(u"Inscrire aux listes suivantes :"))
         self.ctrl_listesdiff = CTRL_diff(self)
 
         self.__set_properties()
@@ -318,14 +321,14 @@ class Panel_coords(wx.Panel):
                 
 
     def __set_properties(self):
-        self.radio_adresse_auto.SetToolTipString(u"Cliquez ici pour utiliser l'adresse d'un autre membre de la famille")
-        self.radio_adresse_manuelle.SetToolTipString(u"Cliquez ici pour saisir manuellement une adresse")
-        self.ctrl_rue.SetToolTipString(u"Saisissez la rue de l'adresse")
-        self.ctrl_profession.SetToolTipString(u"Saisissez la profession de l'individu")
-        self.ctrl_employeur.SetToolTipString(u"Saisissez le nom de l'employeur de l'individu")
-        self.bouton_secteurs.SetToolTipString(u"Cliquez ici pour accéder à la gestion des secteurs")
-        self.bouton_mail_travail.SetToolTipString(u"Cliquez ici pour envoyer un email à cette adresse internet")
-        self.bouton_mail_perso.SetToolTipString(u"Cliquez ici pour envoyer un email à cette adresse internet")
+        self.radio_adresse_auto.SetToolTipString(_(u"Cliquez ici pour utiliser l'adresse d'un autre membre de la famille"))
+        self.radio_adresse_manuelle.SetToolTipString(_(u"Cliquez ici pour saisir manuellement une adresse"))
+        self.ctrl_rue.SetToolTipString(_(u"Saisissez la rue de l'adresse"))
+        self.ctrl_profession.SetToolTipString(_(u"Saisissez la profession de l'individu"))
+        self.ctrl_employeur.SetToolTipString(_(u"Saisissez le nom de l'employeur de l'individu"))
+        self.bouton_secteurs.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des secteurs"))
+        self.bouton_mail_travail.SetToolTipString(_(u"Cliquez ici pour envoyer un email à cette adresse internet"))
+        self.bouton_mail_perso.SetToolTipString(_(u"Cliquez ici pour envoyer un email à cette adresse internet"))
 
     def __do_layout(self):
         grid_sizer_base0 = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -476,7 +479,7 @@ class Panel_coords(wx.Panel):
                 ville = self.ctrl_adresse_auto.dictDonnees[indexSelection]["ville"]
                 tel_domicile = self.ctrl_adresse_auto.dictDonnees[indexSelection]["tel_domicile"]
                 if rue == "" or rue == None : 
-                    texte = u"Rue inconnue "
+                    texte = _(u"Rue inconnue ")
                 else:
                     texte = rue + " "
                 if cp != "" and cp != None :
@@ -484,19 +487,19 @@ class Panel_coords(wx.Panel):
                 if ville != "" and ville != None :
                     texte +=  ville
                 if rue == "" and cp == None and ville == None :
-                    texte = u"Adresse inconnue"
+                    texte = _(u"Adresse inconnue")
                 # Envoie le numéro de téléphone de domicile vers le CTRL tel_domicile
 ##                if tel_domicile != None and self.ctrl_tel_domicile.GetNumero() == None :
 ##                    self.ctrl_tel_domicile.SetNumero(tel_domicile)
             else:
-                texte = u"Adresse inconnue"
+                texte = _(u"Adresse inconnue")
         else:
             # Adresse manuelle
             rue = self.ctrl_rue.GetValue()
             cp = self.ctrl_ville.GetValueCP()
             ville = self.ctrl_ville.GetValueVille()
             if rue == "" or rue == None : 
-                texte = u"Rue inconnue "
+                texte = _(u"Rue inconnue ")
             else:
                 texte = rue + " "
             if cp != "" and cp != None :
@@ -504,7 +507,7 @@ class Panel_coords(wx.Panel):
             if ville != "" and ville != None :
                 texte +=  ville
             if rue == "" and cp == None and ville == None :
-                texte = u"Adresse inconnue"
+                texte = _(u"Adresse inconnue")
         
         self.cp = cp
         self.ville = ville
@@ -527,12 +530,12 @@ class Panel_coords(wx.Panel):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, event.GetId()+1, u"Depuis l'éditeur d'Emails de Noethys")
+        item = wx.MenuItem(menuPop, event.GetId()+1, _(u"Depuis l'éditeur d'Emails de Noethys"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Editeur_email.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.EnvoyerEmail, id=event.GetId()+1)
         
-        item = wx.MenuItem(menuPop, event.GetId()+2, u"Depuis le client de messagerie par défaut")
+        item = wx.MenuItem(menuPop, event.GetId()+2, _(u"Depuis le client de messagerie par défaut"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Terminal.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.EnvoyerEmail, id=event.GetId()+2)
@@ -551,7 +554,7 @@ class Panel_coords(wx.Panel):
 
         # Vérifie l'adresse
         if adresse == "" or  valide == False :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord saisir une adresse internet valide !", "Information", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord saisir une adresse internet valide !"), "Information", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             ctrl.SetFocus()
@@ -652,14 +655,14 @@ class Panel_coords(wx.Panel):
         # Vérification des adresses mails
         valide, messageErreur = self.ctrl_mail.Validation()
         if valide == False :
-            dlg = wx.MessageDialog(self, u"L'adresse email personnelle n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'adresse email personnelle n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         valide, messageErreur = self.ctrl_travail_mail.Validation()
         if valide == False :
-            dlg = wx.MessageDialog(self, u"L'adresse email professionnelle n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"L'adresse email professionnelle n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

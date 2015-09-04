@@ -8,21 +8,24 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.combo
 import CTRL_Saisie_date
 import GestionDB
 
 
 LISTE_TYPES = [
-    (1, u"Maladie", "Medical.png"),
-    (2, u"Allergie alimentaire", "Medical.png"),
-    (3, u"Allergie médicamenteuse", "Medicament.png"),
-    (4, u"Autre type d'allergie", "Medical.png"),
-    (5, u"Accident", "Pansement.png"),
-    (6, u"Hospitalisation", "Hopital.png"),
-    (7, u"Opération", "Stethoscope.png"),
-    (8, u"Autre", "Medical.png"),
+    (1, _(u"Maladie"), "Medical.png"),
+    (2, _(u"Allergie alimentaire"), "Medical.png"),
+    (3, _(u"Allergie médicamenteuse"), "Medicament.png"),
+    (4, _(u"Autre type d'allergie"), "Medical.png"),
+    (5, _(u"Accident"), "Pansement.png"),
+    (6, _(u"Hospitalisation"), "Hopital.png"),
+    (7, _(u"Opération"), "Stethoscope.png"),
+    (8, _(u"Autre"), "Medical.png"),
     ]
 
 
@@ -65,50 +68,50 @@ class Dialog(wx.Dialog):
         self.IDprobleme = IDprobleme
                 
         # Caractéristiques
-        self.staticbox_gauche_staticbox = wx.StaticBox(self, -1, u"Caractéristiques")
-        self.label_type = wx.StaticText(self, -1, u"Type :")
+        self.staticbox_gauche_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
         self.ctrl_type = BitmapComboBox(self)
         self.ctrl_type.Remplissage(LISTE_TYPES)
-        self.label_intitule = wx.StaticText(self, -1, u"Intitulé :")
+        self.label_intitule = wx.StaticText(self, -1, _(u"Intitulé :"))
         self.ctrl_intitule = wx.TextCtrl(self, -1, u"")
-        self.label_periode = wx.StaticText(self, -1, u"Période :")
-        self.radio_indefinie = wx.RadioButton(self, -1, u"Indéfinie", style = wx.RB_GROUP)
+        self.label_periode = wx.StaticText(self, -1, _(u"Période :"))
+        self.radio_indefinie = wx.RadioButton(self, -1, _(u"Indéfinie"), style = wx.RB_GROUP)
         self.radio_definie = wx.RadioButton(self, -1, u"")
         self.label_periode_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_periode_debut = CTRL_Saisie_date.Date(self)
-        self.label_periode_au = wx.StaticText(self, -1, u"au")
+        self.label_periode_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_periode_fin = CTRL_Saisie_date.Date(self)
-        self.label_description = wx.StaticText(self, -1, u"Description :")
+        self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Traitement
-        self.staticbox_traitement_staticbox = wx.StaticBox(self, -1, u"Traitement médical")
-        self.ctrl_coche_traitement = wx.CheckBox(self, -1, u"Traitement médical")
+        self.staticbox_traitement_staticbox = wx.StaticBox(self, -1, _(u"Traitement médical"))
+        self.ctrl_coche_traitement = wx.CheckBox(self, -1, _(u"Traitement médical"))
         self.ctrl_description_traitement = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         self.ctrl_description_traitement.SetMinSize((-1, 60))
         self.label_traitement_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_traitement_debut = CTRL_Saisie_date.Date(self)
-        self.label_traitement_periode_au = wx.StaticText(self, -1, u"au")
+        self.label_traitement_periode_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_traitement_fin = CTRL_Saisie_date.Date(self)
         
         # Eviction
-        self.staticbox_eviction_staticbox = wx.StaticBox(self, -1, u"Eviction de l'activité")
-        self.ctrl_coche_eviction = wx.CheckBox(self, -1, u"Eviction de l'activité")
+        self.staticbox_eviction_staticbox = wx.StaticBox(self, -1, _(u"Eviction de l'activité"))
+        self.ctrl_coche_eviction = wx.CheckBox(self, -1, _(u"Eviction de l'activité"))
         self.label_eviction_du = wx.StaticText(self, -1, u"Du")
         self.ctrl_eviction_debut = CTRL_Saisie_date.Date(self)
-        self.label_eviction_au = wx.StaticText(self, -1, u"au")
+        self.label_eviction_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_eviction_fin = CTRL_Saisie_date.Date(self)
         
         # Diffusion de l'info
-        self.staticbox_diffusion_staticbox = wx.StaticBox(self, -1, u"Diffusion de l'information")
-        self.ctrl_listing_enfants = wx.CheckBox(self, -1, u"Afficher sur le listing des informations médicales")
-        self.ctrl_listing_presences = wx.CheckBox(self, -1, u"Afficher sur le listing des consommations")
-        self.ctrl_listing_repas = wx.CheckBox(self, -1, u"Afficher sur la commande des repas")
+        self.staticbox_diffusion_staticbox = wx.StaticBox(self, -1, _(u"Diffusion de l'information"))
+        self.ctrl_listing_enfants = wx.CheckBox(self, -1, _(u"Afficher sur le listing des informations médicales"))
+        self.ctrl_listing_presences = wx.CheckBox(self, -1, _(u"Afficher sur le listing des consommations"))
+        self.ctrl_listing_repas = wx.CheckBox(self, -1, _(u"Afficher sur la commande des repas"))
         
         # Commandes générales
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -133,28 +136,28 @@ class Dialog(wx.Dialog):
         self.ctrl_intitule.SetFocus() 
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une information médicale")
-        self.ctrl_type.SetToolTipString(u"Selectionnez un type d'information")
+        self.SetTitle(_(u"Saisie d'une information médicale"))
+        self.ctrl_type.SetToolTipString(_(u"Selectionnez un type d'information"))
         self.ctrl_intitule.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
-        self.ctrl_intitule.SetToolTipString(u"Saisissez l'intitule de l'information")
-        self.radio_indefinie.SetToolTipString(u"Sans période définie")
-        self.radio_definie.SetToolTipString(u"Définir une période")
-        self.ctrl_periode_debut.SetToolTipString(u"Saisissez une date de début")
-        self.ctrl_periode_fin.SetToolTipString(u"Saisissez une date de fin")
-        self.ctrl_description.SetToolTipString(u"Saisissez une description pour le problème de santé")
-        self.ctrl_coche_traitement.SetToolTipString(u"Cochez cette case pour saisir un traitement médical")
-        self.ctrl_description_traitement.SetToolTipString(u"Saisissez ici le détail du traitement médical")
-        self.ctrl_traitement_debut.SetToolTipString(u"Saisissez ici la date de debut du traitement")
-        self.ctrl_traitement_fin.SetToolTipString(u"Saisissez ici la date de fin de traitement")
-        self.ctrl_coche_eviction.SetToolTipString(u"Cochez cette case si cette information médicale nécessite une éviction de l'activité")
-        self.ctrl_eviction_debut.SetToolTipString(u"Saisissez ici la date de début de l'éviction")
-        self.ctrl_eviction_fin.SetToolTipString(u"Saisissez ici la date de fin de la periode d'éviction")
-        self.ctrl_listing_enfants.SetToolTipString(u"Cliquez ici pour diffuser l'information sur le listing enfants")
-        self.ctrl_listing_presences.SetToolTipString(u"Cliquez ici pour diffuser l'information sur le listing des consommations")
-        self.ctrl_listing_repas.SetToolTipString(u"Cliquez ici pour diffuser l'information sur la commande des repas")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour valider la saisie")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.ctrl_intitule.SetToolTipString(_(u"Saisissez l'intitule de l'information"))
+        self.radio_indefinie.SetToolTipString(_(u"Sans période définie"))
+        self.radio_definie.SetToolTipString(_(u"Définir une période"))
+        self.ctrl_periode_debut.SetToolTipString(_(u"Saisissez une date de début"))
+        self.ctrl_periode_fin.SetToolTipString(_(u"Saisissez une date de fin"))
+        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour le problème de santé"))
+        self.ctrl_coche_traitement.SetToolTipString(_(u"Cochez cette case pour saisir un traitement médical"))
+        self.ctrl_description_traitement.SetToolTipString(_(u"Saisissez ici le détail du traitement médical"))
+        self.ctrl_traitement_debut.SetToolTipString(_(u"Saisissez ici la date de debut du traitement"))
+        self.ctrl_traitement_fin.SetToolTipString(_(u"Saisissez ici la date de fin de traitement"))
+        self.ctrl_coche_eviction.SetToolTipString(_(u"Cochez cette case si cette information médicale nécessite une éviction de l'activité"))
+        self.ctrl_eviction_debut.SetToolTipString(_(u"Saisissez ici la date de début de l'éviction"))
+        self.ctrl_eviction_fin.SetToolTipString(_(u"Saisissez ici la date de fin de la periode d'éviction"))
+        self.ctrl_listing_enfants.SetToolTipString(_(u"Cliquez ici pour diffuser l'information sur le listing enfants"))
+        self.ctrl_listing_presences.SetToolTipString(_(u"Cliquez ici pour diffuser l'information sur le listing des consommations"))
+        self.ctrl_listing_repas.SetToolTipString(_(u"Cliquez ici pour diffuser l'information sur la commande des repas"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((686, 418))
 
     def __do_layout(self):
@@ -336,20 +339,20 @@ class Dialog(wx.Dialog):
         description = self.ctrl_description.GetValue()
         
         if intitule == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un intitulé", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un intitulé"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_intitule.SetFocus()
             return False
         if self.radio_definie.GetValue() == True : 
             if date_debut == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_periode_debut.SetFocus()
                 return False
             if date_fin == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_periode_fin.SetFocus()
@@ -368,19 +371,19 @@ class Dialog(wx.Dialog):
         
         if description_traitement == 1 : 
             if description_traitement == "" :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir le détail du traitement !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir le détail du traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_description_traitement.SetFocus()
                 return False
             if date_debut_traitement == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début pour le traitement !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour le traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_traitement_debut.SetFocus()
                 return False
             if date_fin_traitement == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin pour le traitement !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour le traitement !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_traitement_fin.SetFocus()
@@ -397,13 +400,13 @@ class Dialog(wx.Dialog):
         
         if eviction == 1 : 
             if date_debut_eviction == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début pour l'éviction !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début pour l'éviction !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_eviction_debut.SetFocus()
                 return False
             if date_fin_eviction == None :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin pour l'éviction !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour l'éviction !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_eviction_fin.SetFocus()

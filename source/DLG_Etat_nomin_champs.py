@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hyperlink as Hyperlink
 import datetime
 import OL_Etat_nomin_champs
@@ -51,7 +54,7 @@ class Dialog(wx.Dialog):
         self.listeSelections = listeSelections
         
         # Intro
-        self.label_intro = wx.StaticText(self, -1, u"Cochez les champs à insérer dans votre état :")
+        self.label_intro = wx.StaticText(self, -1, _(u"Cochez les champs à insérer dans votre état :"))
         
         # Données
         self.ctrl_donnees = OL_Etat_nomin_champs.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -62,13 +65,13 @@ class Dialog(wx.Dialog):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
-        self.hyper_select = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_select = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_deselect = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_deselect = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -81,13 +84,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Sélection des champs")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un champ personnalisé")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le champ personnalisé sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le champ personnalisé sélectionné dans la iste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Sélection des champs"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un champ personnalisé"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le champ personnalisé sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le champ personnalisé sélectionné dans la iste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((920, 700))
 
     def __do_layout(self):

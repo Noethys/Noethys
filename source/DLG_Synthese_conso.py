@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -152,7 +155,7 @@ class CTRL_Choix_donnees(wx.Choice):
         self.MAJ() 
     
     def MAJ(self):
-        self.listeLabels = [u"Quantité", u"Temps de présence", u"Temps facturé"]
+        self.listeLabels = [_(u"Quantité"), _(u"Temps de présence"), _(u"Temps facturé")]
         self.SetItems(self.listeLabels)
         self.Select(0)
 
@@ -169,35 +172,35 @@ class CTRL_Choix_regroupement(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeDonnees = [
-            {"label" : u"Jour", "code" : "jour"},
-            {"label" : u"Mois", "code" : "mois"},
-            {"label" : u"Année", "code" : "annee"},
-            {"label" : u"Activité", "code" : "activite"},
-            {"label" : u"Groupe", "code" : "groupe"},
-            {"label" : u"Catégorie de tarif", "code" : "categorie_tarif"},
-            {"label" : u"Ville de résidence", "code" : "ville_residence"},
-            {"label" : u"Secteur géographique", "code" : "secteur"},
-            {"label" : u"Genre (M/F)", "code" : "genre"},
-            {"label" : u"Age", "code" : "age"},
-            {"label" : u"Ville de naissance", "code" : "ville_naissance"},
-            {"label" : u"Ecole", "code" : "nom_ecole"},
-            {"label" : u"Classe", "code" : "nom_classe"},
-            {"label" : u"Niveau scolaire", "code" : "nom_niveau_scolaire"},
-            {"label" : u"Famille", "code" : "famille"},
-            {"label" : u"Individu", "code" : "individu"},
-            {"label" : u"Régime social", "code" : "regime"},
-            {"label" : u"Caisse d'allocations", "code" : "caisse"},
-            {"label" : u"Quotient familial", "code" : "qf"},
-            {"label" : u"Catégorie de travail", "code" : "categorie_travail"},
-            {"label" : u"Catégorie de travail du père", "code" : "categorie_travail_pere"},
-            {"label" : u"Catégorie de travail de la mère", "code" : "categorie_travail_mere"},
+            {"label" : _(u"Jour"), "code" : "jour"},
+            {"label" : _(u"Mois"), "code" : "mois"},
+            {"label" : _(u"Année"), "code" : "annee"},
+            {"label" : _(u"Activité"), "code" : "activite"},
+            {"label" : _(u"Groupe"), "code" : "groupe"},
+            {"label" : _(u"Catégorie de tarif"), "code" : "categorie_tarif"},
+            {"label" : _(u"Ville de résidence"), "code" : "ville_residence"},
+            {"label" : _(u"Secteur géographique"), "code" : "secteur"},
+            {"label" : _(u"Genre (M/F)"), "code" : "genre"},
+            {"label" : _(u"Age"), "code" : "age"},
+            {"label" : _(u"Ville de naissance"), "code" : "ville_naissance"},
+            {"label" : _(u"Ecole"), "code" : "nom_ecole"},
+            {"label" : _(u"Classe"), "code" : "nom_classe"},
+            {"label" : _(u"Niveau scolaire"), "code" : "nom_niveau_scolaire"},
+            {"label" : _(u"Famille"), "code" : "famille"},
+            {"label" : _(u"Individu"), "code" : "individu"},
+            {"label" : _(u"Régime social"), "code" : "regime"},
+            {"label" : _(u"Caisse d'allocations"), "code" : "caisse"},
+            {"label" : _(u"Quotient familial"), "code" : "qf"},
+            {"label" : _(u"Catégorie de travail"), "code" : "categorie_travail"},
+            {"label" : _(u"Catégorie de travail du père"), "code" : "categorie_travail_pere"},
+            {"label" : _(u"Catégorie de travail de la mère"), "code" : "categorie_travail_mere"},
             ]
         
         # Intégration des questionnaires
         q = UTILS_Questionnaires.Questionnaires() 
         for public in ("famille", "individu") :
             for dictTemp in q.GetQuestions(public) :
-                label = u"Question %s. : %s" % (public[:3], dictTemp["label"])
+                label = _(u"Question %s. : %s") % (public[:3], dictTemp["label"])
                 code = "question_%s_%d" % (public, dictTemp["IDquestion"])
                 self.listeDonnees.append({"label" : label, "code" : code})
 
@@ -223,7 +226,7 @@ class CTRL_Choix_mode(wx.Choice):
         self.MAJ() 
     
     def MAJ(self):
-        self.listeLabels = [u"Réservation", u"Attente", u"Refus"]
+        self.listeLabels = [_(u"Réservation"), _(u"Attente"), _(u"Refus")]
         self.SetItems(self.listeLabels)
         self.Select(0)
 
@@ -246,7 +249,7 @@ class CTRL_Choix_etat(wx.CheckListBox):
         self.MAJ() 
     
     def MAJ(self):
-        self.listeLabels = [u"Pointage en attente", u"Présent", u"Absence justifiée", u"Absence injustifiée"]
+        self.listeLabels = [_(u"Pointage en attente"), _(u"Présent"), _(u"Absence justifiée"), _(u"Absence injustifiée")]
         self.SetItems(self.listeLabels)
         self.Check(0)
         self.Check(1)
@@ -262,10 +265,10 @@ class CTRL_Choix_etat(wx.CheckListBox):
     def GetLabels(self):
         listeLabels = []
         for code in self.GetValeur() :
-            if code == "reservation" : listeLabels.append(u"Réservation")
-            if code == "present" : listeLabels.append(u"Présent")
-            if code == "absentj" : listeLabels.append(u"Absence justifiée")
-            if code == "absenti" : listeLabels.append(u"Absence injustifiée")
+            if code == "reservation" : listeLabels.append(_(u"Réservation"))
+            if code == "present" : listeLabels.append(_(u"Présent"))
+            if code == "absentj" : listeLabels.append(_(u"Absence justifiée"))
+            if code == "absenti" : listeLabels.append(_(u"Absence injustifiée"))
         return ", ".join(listeLabels)
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -277,37 +280,37 @@ class Parametres(wx.Panel):
         self.listview = listview
 
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, u"Période de référence")
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de référence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"Au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         self.ctrl_date_debut.SetDate(datetime.date(datetime.date.today().year, 1, 1))
         self.ctrl_date_fin.SetDate(datetime.date(datetime.date.today().year, 12, 31))
         
         # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, -1, u"Activité")
+        self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self)
         self.ctrl_activite.SetMinSize((200, -1))
         
         # Groupes
-        self.box_groupes_staticbox = wx.StaticBox(self, -1, u"Groupes")
+        self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
-        self.check_detail_groupes = wx.CheckBox(self, -1, u"Afficher détail par groupe")
+        self.check_detail_groupes = wx.CheckBox(self, -1, _(u"Afficher détail par groupe"))
         
         # Affichage
-        self.box_affichage_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.label_donnees = wx.StaticText(self, -1, u"Données :")
+        self.box_affichage_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.label_donnees = wx.StaticText(self, -1, _(u"Données :"))
         self.ctrl_donnees = CTRL_Choix_donnees(self)
-        self.label_regroupement = wx.StaticText(self, -1, u"Regroup. :")
+        self.label_regroupement = wx.StaticText(self, -1, _(u"Regroup. :"))
         self.ctrl_regroupement = CTRL_Choix_regroupement(self)
-        self.label_mode = wx.StaticText(self, -1, u"Mode :")
+        self.label_mode = wx.StaticText(self, -1, _(u"Mode :"))
         self.ctrl_mode = CTRL_Choix_mode(self)
-        self.label_etat = wx.StaticText(self, -1, u"Etat :")
+        self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Choix_etat(self)
 
         # Actualiser
-        self.bouton_actualiser = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -322,14 +325,14 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de période")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de période")
-        self.ctrl_activite.SetToolTipString(u"Sélectionnez une activité")
-        self.ctrl_groupes.SetToolTipString(u"Cochez les groupes à prendre en compte")
-        self.check_detail_groupes.SetToolTipString(u"Cochez cette case pour afficher le détail par groupe")
-        self.ctrl_donnees.SetToolTipString(u"Sélectionnez le type de données à afficher")
-        self.ctrl_regroupement.SetToolTipString(u"Sélectionnez le regroupement par période")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
+        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
+        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes à prendre en compte"))
+        self.check_detail_groupes.SetToolTipString(_(u"Cochez cette case pour afficher le détail par groupe"))
+        self.ctrl_donnees.SetToolTipString(_(u"Sélectionnez le type de données à afficher"))
+        self.ctrl_regroupement.SetToolTipString(_(u"Sélectionnez le regroupement par période"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -395,31 +398,31 @@ class Parametres(wx.Panel):
     def OnBoutonActualiser(self, event): 
         # Vérifications
         if self.ctrl_date_debut.GetDate()  == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucune date de début !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.ctrl_date_fin.GetDate()  == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucune date de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.ctrl_activite.GetActivite() == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(self.ctrl_groupes.GetListeGroupes()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un groupe !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(self.ctrl_etat.GetValeur()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un état !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un état !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -458,11 +461,11 @@ class Parametres(wx.Panel):
         
         # Label Paramètres
         listeParametres = [ 
-            u"Période du %s au %s" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))),
-            u"Activité : %s" % self.ctrl_activite.GetNomActivite(),
-            u"Groupes : %s" % self.ctrl_groupes.GetNomsGroupes(),
-            u"Mode : %s" % self.ctrl_mode.GetLabel(),
-            u"Etats : %s" % self.ctrl_etat.GetLabels(),
+            _(u"Période du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))),
+            _(u"Activité : %s") % self.ctrl_activite.GetNomActivite(),
+            _(u"Groupes : %s") % self.ctrl_groupes.GetNomsGroupes(),
+            _(u"Mode : %s") % self.ctrl_mode.GetLabel(),
+            _(u"Etats : %s") % self.ctrl_etat.GetLabels(),
             ]
         labelParametres = " | ".join(listeParametres)
         
@@ -480,13 +483,13 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici éditer une synthèse des consommations pour une période et une activité données. Commencez par sélectionner une date de début et de fin puis choisissez une activité. Vous pouvez affiner vos résultats et modifier l'affichage des données grâce aux options proposées."
-        titre = u"Synthèse des consommations"
+        intro = _(u"Vous pouvez ici éditer une synthèse des consommations pour une période et une activité données. Commencez par sélectionner une date de début et de fin puis choisissez une activité. Vous pouvez affiner vos résultats et modifier l'affichage des données grâce aux options proposées.")
+        titre = _(u"Synthèse des consommations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         
         # Liste
-        self.staticbox_resultats_staticbox = wx.StaticBox(self, -1, u"Résultats")
+        self.staticbox_resultats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
         self.ctrl_resultats = CTRL_Synthese_conso.CTRL(self)
         self.ctrl_resultats.SetMinSize((50, 50)) 
         
@@ -497,8 +500,8 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -510,11 +513,11 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste (PDF)")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste (PDF)"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):

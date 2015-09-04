@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -160,12 +163,12 @@ class Options(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_presents", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.radio_inscrits = wx.RadioButton(self, -1, u"Tous les inscrits", style=wx.RB_GROUP)
-        self.radio_presents = wx.RadioButton(self, -1, u"Uniquement les présents")
+        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Tous les inscrits"), style=wx.RB_GROUP)
+        self.radio_presents = wx.RadioButton(self, -1, _(u"Uniquement les présents"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.bouton_date_debut = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
-        self.label_date_fin = wx.StaticText(self, -1, u"Au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         self.bouton_date_fin = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
 
@@ -180,10 +183,10 @@ class Options(wx.Panel):
         self.OnRadio(None)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici une date de début")
-        self.bouton_date_debut.SetToolTipString(u"Cliquez ici pour saisir une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici une date de fin")
-        self.bouton_date_fin.SetToolTipString(u"Cliquez ici pour saisir une date de fin")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici une date de début"))
+        self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour saisir une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici une date de fin"))
+        self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour saisir une date de fin"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -238,7 +241,7 @@ class Options(wx.Panel):
             # Uniquement les présents
             date_debut = self.ctrl_date_debut.GetDate()
             if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-                dlg = wx.MessageDialog(self, u"La date de début ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de début ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
@@ -246,14 +249,14 @@ class Options(wx.Panel):
             
             date_fin = self.ctrl_date_fin.GetDate()
             if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-                dlg = wx.MessageDialog(self, u"La date de fin ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de fin ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
             
             if date_debut > date_fin :
-                dlg = wx.MessageDialog(self, u"La date de début est supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
@@ -269,20 +272,20 @@ class Parametres(wx.Panel):
         self.parent = parent
         
         # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites.SetMinSize((-1, 90))
         
         # Inscrits / Présents
-        self.staticbox_presents_staticbox = wx.StaticBox(self, -1, u"Options")
+        self.staticbox_presents_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.ctrl_options = Options(self)
 
         # Villes
-        self.staticbox_villes_staticbox = wx.StaticBox(self, -1, u"Filtre Villes")
+        self.staticbox_villes_staticbox = wx.StaticBox(self, -1, _(u"Filtre Villes"))
         self.ctrl_villes = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         
         # Boutons afficher
-        self.bouton_afficher = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_afficher = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_afficher.SetMinSize((-1, 50)) 
 
         self.__set_properties()
@@ -291,8 +294,8 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAfficher, self.bouton_afficher)
         
     def __set_properties(self):
-        self.bouton_afficher.SetToolTipString(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés")
-        self.ctrl_villes.SetToolTipString(u"Saisissez les noms de villes en les séparant d'un point-virgule")
+        self.bouton_afficher.SetToolTipString(_(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés"))
+        self.ctrl_villes.SetToolTipString(_(u"Saisissez les noms de villes en les séparant d'un point-virgule"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -331,7 +334,7 @@ class Parametres(wx.Panel):
         # Vérifie les activités sélectionnées
         listeActivites = self.GetActivites()
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -364,8 +367,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter et imprimer la liste des prestations par ville. Sélectionnez un ou plusieurs groupes d'activités ou certaines activités en particulier, puis saisissez une liste de villes à sélectionner, avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats."
-        titre = u"Liste des prestations par famille"
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des prestations par ville. Sélectionnez un ou plusieurs groupes d'activités ou certaines activités en particulier, puis saisissez une liste de villes à sélectionner, avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats.")
+        titre = _(u"Liste des prestations par famille")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
@@ -375,8 +378,8 @@ class Dialog(wx.Dialog):
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -388,10 +391,10 @@ class Dialog(wx.Dialog):
         self.MAJ() 
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu PDF de la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu PDF de la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):
@@ -451,21 +454,21 @@ class Dialog(wx.Dialog):
         # Activités
         activites = ", ".join(self.ctrl_parametres.ctrl_activites.GetLabelActivites())
         if activites == "" : 
-            activites = u"Aucune"
-        listeParametres.append(u"Activités : %s" % activites)
+            activites = _(u"Aucune")
+        listeParametres.append(_(u"Activités : %s") % activites)
         
         # Présents/Inscrits
         presents = self.ctrl_parametres.ctrl_options.GetPresents()
         if presents == None :
-            listeParametres.append(u"Tous les inscrits")
+            listeParametres.append(_(u"Tous les inscrits"))
         else :
-            listeParametres.append(u"Tous les présents du %s au %s" % (DateEngFr(str(presents[0])), DateEngFr(str(presents[1]))))
+            listeParametres.append(_(u"Tous les présents du %s au %s") % (DateEngFr(str(presents[0])), DateEngFr(str(presents[1]))))
         
         # Villes
         villes = self.ctrl_parametres.ctrl_villes.GetValue()
         villes = villes.replace(";", ", ")
         if len(villes) > 0 :
-            listeParametres.append(u"Uniquement les villes : %s" % villes)
+            listeParametres.append(_(u"Uniquement les villes : %s") % villes)
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

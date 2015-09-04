@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import time
 import sys
 import CTRL_Informations
@@ -42,8 +45,8 @@ class CTRL_Solde(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
         
-        self.SetToolTipString(u"Solde final du compte")
-        self.ctrl_solde.SetToolTipString(u"Solde final du compte")
+        self.SetToolTipString(_(u"Solde final du compte"))
+        self.ctrl_solde.SetToolTipString(_(u"Solde final du compte"))
     
     def SetSolde(self, montant=FloatToDecimal(0.0)):
         """ MAJ integrale du controle avec MAJ des donnees """
@@ -70,14 +73,14 @@ class Panel(wx.Panel):
         self.IDfamille = IDfamille
         
         # Informations
-        self.staticbox_infos = wx.StaticBox(self, -1, u"Messages")
+        self.staticbox_infos = wx.StaticBox(self, -1, _(u"Messages"))
         self.ctrl_infos = CTRL_Informations.CTRL(self, IDfamille=self.IDfamille)
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Etat de la facturation
-        self.staticbox_facturation = wx.StaticBox(self, -1, u"Etat du compte")
+        self.staticbox_facturation = wx.StaticBox(self, -1, _(u"Etat du compte"))
         self.ctrl_facturation = OL_Etat_compte.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_Etat_compte", style=wx.LC_REPORT|wx.LC_NO_HEADER|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_facturation.SetMinSize((220, 20))
         
@@ -85,7 +88,7 @@ class Panel(wx.Panel):
             UTILS_Linux.AdaptePolice(self.ctrl_facturation)
         
         # Solde du compte
-        self.staticbox_solde = wx.StaticBox(self, -1, u"Solde du compte")
+        self.staticbox_solde = wx.StaticBox(self, -1, _(u"Solde du compte"))
         self.ctrl_solde = CTRL_Solde(self)
         
         # Binds
@@ -94,9 +97,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir un mémo familial")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le mémo familial sélectionné")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le mémo familial sélectionné")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un mémo familial"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le mémo familial sélectionné"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le mémo familial sélectionné"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -162,7 +165,7 @@ class Panel(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_messages", "modifier") == False : return
         item = self.ctrl_infos.GetSelection()
         if not item or self.ctrl_infos.GetPyData(item)  == None or self.ctrl_infos.GetPyData(item)["type"] != "message":
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun message à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -177,11 +180,11 @@ class Panel(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_messages", "supprimer") == False : return
         item = self.ctrl_infos.GetSelection()
         if not item or self.ctrl_infos.GetPyData(item)  == None or self.ctrl_infos.GetPyData(item)["type"] != "message":
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun message à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce message ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce message ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDmessage = self.ctrl_infos.GetPyData(item)["IDmessage"]
             DB = GestionDB.DB()
@@ -229,7 +232,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Saisie_date
@@ -84,8 +87,8 @@ class CTRL_Caisse(wx.Choice):
     def GetListeDonnees(self):
         listeItems = []
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : None, "nom " : u"---------------- Aucune caisse ----------------" }
-        listeItems.append(u"---------------- Aucune caisse ---------------")
+        self.dictDonnees[0] = { "ID" : None, "nom " : _(u"---------------- Aucune caisse ----------------") }
+        listeItems.append(_(u"---------------- Aucune caisse ---------------"))
         db = GestionDB.DB()
         req = """SELECT IDcaisse, nom
         FROM caisses
@@ -197,48 +200,48 @@ class Dialog(wx.Dialog):
         self.listeInitialeUnites = []
                 
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"Nom de l'aide")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'aide"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Activité
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, u"Activité")
+        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self, IDfamille=self.IDfamille)
         
         # Caisse
-        self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, u"Caisse")
+        self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, _(u"Caisse"))
         self.ctrl_caisse = CTRL_Caisse(self, IDfamille=self.IDfamille)
         
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, u"Période de validité")
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de validité"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Bénéficiaires
-        self.staticbox_beneficiaires_staticbox = wx.StaticBox(self, -1, u"Bénéficiaires")
+        self.staticbox_beneficiaires_staticbox = wx.StaticBox(self, -1, _(u"Bénéficiaires"))
         self.ctrl_beneficiaires = CTRL_Beneficiaires(self, IDfamille=self.IDfamille, IDactivite=None)
         
         # Plafonds
-        self.staticbox_plafonds_staticbox = wx.StaticBox(self, -1, u"Plafonds")
-        self.checkbox_montant_max = wx.CheckBox(self, -1, u"Montant max. :")
+        self.staticbox_plafonds_staticbox = wx.StaticBox(self, -1, _(u"Plafonds"))
+        self.checkbox_montant_max = wx.CheckBox(self, -1, _(u"Montant max. :"))
         self.ctrl_montant_max = CTRL_Saisie_euros.CTRL(self, size=(65, -1))
-        self.checkbox_dates_max = wx.CheckBox(self, -1, u"Nbre dates max. :")
+        self.checkbox_dates_max = wx.CheckBox(self, -1, _(u"Nbre dates max. :"))
         self.ctrl_dates_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000, size=(60, -1))
         
         # Montants
-        self.staticbox_montants_staticbox = wx.StaticBox(self, -1, u"Montants")
+        self.staticbox_montants_staticbox = wx.StaticBox(self, -1, _(u"Montants"))
         self.ctrl_montants = OL_Aides_montants.ListView(self, id=-1, name="OL_montants", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_importer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Importer_modele.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_importer = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer un modèle"), cheminImage="Images/32x32/Fleche_bas.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -256,15 +259,15 @@ class Dialog(wx.Dialog):
         # Importation
         if self.IDaide != None :
             if self.IDfamille == None :
-                self.SetTitle(u"Modification d'un modèle d'aide")
+                self.SetTitle(_(u"Modification d'un modèle d'aide"))
             else:
-                self.SetTitle(u"Modification d'une aide")
+                self.SetTitle(_(u"Modification d'une aide"))
             self.Importation()
         else:
             if self.IDfamille == None :
-                self.SetTitle(u"Saisie d'un modèle d'aide")
+                self.SetTitle(_(u"Saisie d'un modèle d'aide"))
             else:
-                self.SetTitle(u"Saisie d'une aide")
+                self.SetTitle(_(u"Saisie d'une aide"))
             self.ctrl_montants.MAJ() 
         
         # Init contrôles
@@ -278,24 +281,24 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de l'aide")
-        self.ctrl_activite.SetToolTipString(u"Sélectionnez ici l'activité")
-        self.ctrl_caisse.SetToolTipString(u"Sélectionnez ici une caisse")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de validité")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de validité")
-        self.ctrl_beneficiaires.SetToolTipString(u"Cochez ici les bénéficiaires de l'aide")
-        self.checkbox_montant_max.SetToolTipString(u"Cliquez ici pour appliquer un montant maximal")
-        self.ctrl_montant_max.SetToolTipString(u"Saisissez ici le montant maximal")
-        self.checkbox_dates_max.SetToolTipString(u"Cliquez ici pour appliquer un nombre de dates maximal")
-        self.ctrl_dates_max.SetToolTipString(u"Cliquez ici le nombre maximal de dates")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un montant")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le montant sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le montant sélectionné dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_importer.SetToolTipString(u"Cliquez ici pour importer un modèle d'aide prédéfini")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
-        self.SetMinSize((490, 500))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'aide"))
+        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez ici l'activité"))
+        self.ctrl_caisse.SetToolTipString(_(u"Sélectionnez ici une caisse"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_beneficiaires.SetToolTipString(_(u"Cochez ici les bénéficiaires de l'aide"))
+        self.checkbox_montant_max.SetToolTipString(_(u"Cliquez ici pour appliquer un montant maximal"))
+        self.ctrl_montant_max.SetToolTipString(_(u"Saisissez ici le montant maximal"))
+        self.checkbox_dates_max.SetToolTipString(_(u"Cliquez ici pour appliquer un nombre de dates maximal"))
+        self.ctrl_dates_max.SetToolTipString(_(u"Cliquez ici le nombre maximal de dates"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un montant"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le montant sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le montant sélectionné dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer un modèle d'aide prédéfini"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.SetMinSize((600, 550))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -536,7 +539,7 @@ class Dialog(wx.Dialog):
         # Nom
         nom = self.ctrl_nom.GetValue()
         if nom == u"" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -545,7 +548,7 @@ class Dialog(wx.Dialog):
         # Activité
         IDactivite = self.ctrl_activite.GetID()
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_activite.SetFocus()
@@ -554,7 +557,7 @@ class Dialog(wx.Dialog):
         # Caisse
         IDcaisse = self.ctrl_caisse.GetID()
 ##        if IDcaisse == None :
-##            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une caisse !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une caisse !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            self.ctrl_caisse.SetFocus()
@@ -564,19 +567,19 @@ class Dialog(wx.Dialog):
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de validité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de validité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de validité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de validité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, u"Vous avez saisi une date de début supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez saisi une date de début supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -585,7 +588,7 @@ class Dialog(wx.Dialog):
         if self.checkbox_montant_max.GetValue() == True :
             montant_max = self.ctrl_montant_max.GetMontant()
             if montant_max == None or montant_max == 0.0 :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant plafond !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant plafond !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -594,7 +597,7 @@ class Dialog(wx.Dialog):
         if self.checkbox_dates_max.GetValue() == True :
             nbre_dates_max = int(self.ctrl_dates_max.GetValue())
             if nbre_dates_max == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un de nombre de dates maximal !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un de nombre de dates maximal !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -609,7 +612,7 @@ class Dialog(wx.Dialog):
         listeBeneficiaires = self.ctrl_beneficiaires.GetIDcoches()
         if self.IDfamille != None :
             if len(listeBeneficiaires) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous sélectionner au moins un bénéficiaire dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous sélectionner au moins un bénéficiaire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -617,7 +620,7 @@ class Dialog(wx.Dialog):
         # Montants
         listeMontants = self.ctrl_montants.GetListeMontants()
         if len(listeMontants) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun montant !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun montant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

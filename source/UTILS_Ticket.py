@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 LIB_CHARGEES = True
@@ -29,13 +32,13 @@ def GetListeImprimantes():
     return listeImprimantes
 
 
-def Impression(lignes=[], imprimante=None, titre=u"Ticket", nomPolice="Arial", taillePolice=15, interligne=5) :    
+def Impression(lignes=[], imprimante=None, titre=_(u"Ticket"), nomPolice="Arial", taillePolice=15, interligne=5) :    
     if len(lignes) == 0 : 
         return
 
     # Vérifie que les librairies windows ont bien été chargées
     if LIB_CHARGEES == False :
-        dlg = wx.MessageDialog(None, u"L'outil d'impression de ticket ne peut pas être chargé. Ce problème sera sûrement résolu en téléchargeant le Package redistribuable Microsoft Visual C++ 2008 (x86) de Microsoft. Rendez-vous sur http://www.microsoft.com/fr-fr/download/details.aspx?id=29.", u"Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"L'outil d'impression de ticket ne peut pas être chargé. Ce problème sera sûrement résolu en téléchargeant le Package redistribuable Microsoft Visual C++ 2008 (x86) de Microsoft. Rendez-vous sur http://www.microsoft.com/fr-fr/download/details.aspx?id=29."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
@@ -75,7 +78,7 @@ def Impression(lignes=[], imprimante=None, titre=u"Ticket", nomPolice="Arial", t
 
 
 
-def ImpressionModele(IDmodele=None, dictValeurs={}, titre=u"Ticket"):
+def ImpressionModele(IDmodele=None, dictValeurs={}, titre=_(u"Ticket")):
     if IDmodele == None : 
         return []
     
@@ -109,10 +112,10 @@ def ImpressionModele(IDmodele=None, dictValeurs={}, titre=u"Ticket"):
 
 if __name__ == "__main__":
     lignes = [
-        u"Ceci est la ligne 1",
-        u"Ceci est la ligne 2",
-        u"Ceci est la ligne 3",
-        u"Ceci est la ligne 4",
-        u"Ceci est la ligne 5",
+        _(u"Ceci est la ligne 1"),
+        _(u"Ceci est la ligne 2"),
+        _(u"Ceci est la ligne 3"),
+        _(u"Ceci est la ligne 4"),
+        _(u"Ceci est la ligne 5"),
         ]
-    Impression(lignes=lignes, imprimante=None, titre=u"Ticket")
+    Impression(lignes=lignes, imprimante=None, titre=_(u"Ticket"))

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Pays
 
@@ -22,18 +25,18 @@ class Dialog_pays(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.typeSelection = typeSelection
         if self.typeSelection == "pays" :
-            intro = u"Vous pouvez sélectionner ici un pays en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste."
-            titre = u"Sélection d'un pays"
+            intro = _(u"Vous pouvez sélectionner ici un pays en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste.")
+            titre = _(u"Sélection d'un pays")
         else:
-            intro = u"Vous pouvez sélectionner ici une nationalité en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste."
-            titre = u"Sélection d'une nationalité"
+            intro = _(u"Vous pouvez sélectionner ici une nationalité en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste.")
+            titre = _(u"Sélection d'une nationalité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Monde.png")
         self.ctrl_pays = OL_Pays.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_pays.MAJ()
         self.ctrl_barreRecherche = OL_Pays.CTRL_Outils(self, listview=self.ctrl_pays)
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -43,12 +46,12 @@ class Dialog_pays(wx.Dialog):
 
     def __set_properties(self):
         if self.typeSelection == "pays" :
-            self.SetTitle(u"Sélection d'un pays")
+            self.SetTitle(_(u"Sélection d'un pays"))
         else:
-            self.SetTitle(u"Sélection d'une nationalité")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+            self.SetTitle(_(u"Sélection d'une nationalité"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((500, 500))
 
     def __do_layout(self):
@@ -76,7 +79,7 @@ class Dialog_pays(wx.Dialog):
     def OnBoutonOk(self, event):
         selection = self.ctrl_pays.Selection()
         if len(selection) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun élément dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun élément dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

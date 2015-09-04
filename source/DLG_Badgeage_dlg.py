@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.gradientbutton as GB
 import wx.lib.platebtn as PB
 import textwrap
@@ -305,8 +308,8 @@ class CTRL_Choix(wx.Panel):
 
 class DLG_Question(wx.Dialog):
     def __init__(self, interface, message=u"", icone=None, couleurClaire=wx.Colour(206, 196, 190), couleurFoncee=wx.Colour(169, 156, 146),
-                                        bouton_non=True, texte_non=u"Non", image_non="Efface.png",
-                                        bouton_oui=True, texte_oui=u"Oui", image_oui="Validation.png",
+                                        bouton_non=True, texte_non=_(u"Non"), image_non="Efface.png",
+                                        bouton_oui=True, texte_oui=_(u"Oui"), image_oui="Validation.png",
                                         listeItems=[], multiSelection=True,
                                         ):
         wx.Dialog.__init__(self, interface, -1, style=wx.NO_BORDER|wx.FRAME_SHAPED|wx.STAY_ON_TOP)
@@ -376,7 +379,7 @@ class DLG_Question(wx.Dialog):
 
         # Texte d'attente
         self.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
-        self.label_attente = wx.StaticText(self, -1, u"Veuillez patienter...")
+        self.label_attente = wx.StaticText(self, -1, _(u"Veuillez patienter..."))
         self.label_attente.SetForegroundColour(couleurFoncee)
         if bouton_non == True or bouton_oui == True :
             self.label_attente.Show(False) 
@@ -480,7 +483,7 @@ class DLG_Question(wx.Dialog):
 class DLG_Choix(DLG_Question):
     """ DLG qui propose différents choix """
     def __init__(self, interface=None, message="", listeItems=[], multiSelection=True):
-        DLG_Question.__init__(self, interface, message, icone="question", texte_non=u"Annuler", texte_oui=u"Ok", 
+        DLG_Question.__init__(self, interface, message, icone="question", texte_non=_(u"Annuler"), texte_oui=_(u"Ok"), 
                                             listeItems=listeItems, multiSelection=multiSelection)
         
     def GetSelections(self):
@@ -520,7 +523,7 @@ if __name__ == "__main__":
 ##    dlg1 = DLG_Message(None, message="Bonjour Kévin", icone="commentaire", secondes=2)
     
     # Version QUESTION
-##    dlg = DLG_Question(None, message=u"Restes-tu manger à la cantine ce midi ?", icone="question")
+##    dlg = DLG_Question(None, message=_(u"Restes-tu manger à la cantine ce midi ?"), icone="question")
 ##    if dlg.ShowModal() == wx.ID_YES :
 ##        print "oui"
 ##    else :
@@ -528,8 +531,8 @@ if __name__ == "__main__":
 ##    dlg.Destroy()
 
     # Version CHOIX
-    listeItems = [u"Choix 1", u"Choix 2", u"Choix 3"]
-    dlg = DLG_Choix(None, message=u"Quel choix ?", listeItems=listeItems, multiSelection=False)
+    listeItems = [_(u"Choix 1"), _(u"Choix 2"), _(u"Choix 3")]
+    dlg = DLG_Choix(None, message=_(u"Quel choix ?"), listeItems=listeItems, multiSelection=False)
     if dlg.ShowModal() == wx.ID_YES :
         print dlg.GetSelections()  
     dlg.Destroy()

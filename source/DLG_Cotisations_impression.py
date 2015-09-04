@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import CTRL_Bandeau
 import CTRL_Liste_cotisations 
@@ -23,23 +26,23 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Cochez les cotisations à imprimer puis cliquez sur le bouton 'Aperçu' pour visualiser le ou les documents dans votre lecteur PDF."
-        titre = u"Impression de cotisations"
+        intro = _(u"Cochez les cotisations à imprimer puis cliquez sur le bouton 'Aperçu' pour visualiser le ou les documents dans votre lecteur PDF.")
+        titre = _(u"Impression de cotisations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
         
         # Factures
-        self.box_cotisations_staticbox = wx.StaticBox(self, -1, u"Liste des cotisations")
+        self.box_cotisations_staticbox = wx.StaticBox(self, -1, _(u"Liste des cotisations"))
         self.ctrl_liste_cotisations = CTRL_Liste_cotisations.CTRL(self, filtres=filtres)
         
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options d'impression")
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options d'impression"))
         self.ctrl_options = CTRL_Cotisations_options.CTRL(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -54,9 +57,9 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher le PDF")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((850, 700))
 
     def __do_layout(self):
@@ -91,7 +94,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Imprimerdescotisations")
 
     def OnBoutonAnnuler(self, event): 
         self.ctrl_options.MemoriserParametres() 
@@ -102,7 +105,7 @@ class Dialog(wx.Dialog):
         # Validation des données saisies
         tracks = self.ctrl_liste_cotisations.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune cotisation à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune cotisation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -17,13 +20,13 @@ class MyDialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=-1, title=title, size=(-1, -1))
         
         self.staticBox_staticbox = wx.StaticBox(self, -1, "")
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, "", size=(300, -1))
-        self.label_url = wx.StaticText(self, -1, u"URL :")
+        self.label_url = wx.StaticText(self, -1, _(u"URL :"))
         self.ctrl_url = wx.TextCtrl(self, -1, "")
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -31,11 +34,11 @@ class MyDialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une URL")
-        self.ctrl_label.SetToolTipString(u"Saisissez ici le label")
-        self.ctrl_url.SetToolTipString(u"Saisissez ici l'URL")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler la saisie")
+        self.SetTitle(_(u"Saisie d'une URL"))
+        self.ctrl_label.SetToolTipString(_(u"Saisissez ici le label"))
+        self.ctrl_url.SetToolTipString(_(u"Saisissez ici l'URL"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)
@@ -79,7 +82,7 @@ class MyDialog(wx.Dialog):
         
         label = self.ctrl_label.GetValue()
         if label == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir un label !", "Erreur", wx.OK)  
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir un label !"), "Erreur", wx.OK)  
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
@@ -87,7 +90,7 @@ class MyDialog(wx.Dialog):
         
         URL = self.ctrl_url.GetValue()
         if URL == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une URL !", "Erreur", wx.OK)  
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une URL !"), "Erreur", wx.OK)  
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_url.SetFocus()

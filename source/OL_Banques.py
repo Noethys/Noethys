@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
@@ -81,15 +84,15 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDbanque", typeDonnee="entier"),
-            ColumnDefn(u"Nom", 'left', 290, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Rue", "left", 220, "rue_resid", typeDonnee="texte"),
-            ColumnDefn(u"C.P.", "left", 45, "cp_resid", typeDonnee="texte"),
-            ColumnDefn(u"Ville", "left", 170, "ville_resid", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDbanque", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), 'left', 290, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Rue"), "left", 220, "rue_resid", typeDonnee="texte"),
+            ColumnDefn(_(u"C.P."), "left", 45, "cp_resid", typeDonnee="texte"),
+            ColumnDefn(_(u"Ville"), "left", 170, "ville_resid", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun établissement bancaire")
+        self.SetEmptyListMsg(_(u"Aucun établissement bancaire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -124,7 +127,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -133,7 +136,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -141,7 +144,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -151,14 +154,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -169,12 +172,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des établissements bancaires", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des établissements bancaires"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des établissements bancaires", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des établissements bancaires"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def Ajouter(self, event):
@@ -201,7 +204,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_banques", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun établissement dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun établissement dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -232,7 +235,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_banques", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun établissement dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun établissement dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -248,13 +251,13 @@ class ListView(FastObjectListView):
         nbreFamilles = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreFamilles > 0 :
-            dlg = wx.MessageDialog(self, u"Cet établissement bancaire a déjà été attribué à %d famille(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreFamilles, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet établissement bancaire a déjà été attribué à %d famille(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreFamilles, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cet établissement bancaire ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet établissement bancaire ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("banques", "IDbanque", IDbanque)
@@ -272,7 +275,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un établissement bancaire...")
+        self.SetDescriptiveText(_(u"Rechercher un établissement bancaire..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

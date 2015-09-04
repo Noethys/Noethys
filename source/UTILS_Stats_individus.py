@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -120,9 +123,9 @@ def GetDictGenres(DB, dictParametres) :
     import DATA_Civilites
     dictCivilites = DATA_Civilites.GetDictCivilites()
     dictGenres = { 
-        "M" : {"quantite" : 0, "label1" : u"Garçons", "label2" : u"garçons", "couleur" : (134, 172, 253) },
-        "F" : {"quantite" : 0, "label1" : u"Filles", "label2" : u"filles", "couleur" : (253, 172, 220) },
-        "None" : {"quantite" : 0, "label1" : u"N.C.", "label2" : u"individus dont le genre est inconnu", "couleur" : (170, 170, 170) },
+        "M" : {"quantite" : 0, "label1" : _(u"Garçons"), "label2" : _(u"garçons"), "couleur" : (134, 172, 253) },
+        "F" : {"quantite" : 0, "label1" : _(u"Filles"), "label2" : _(u"filles"), "couleur" : (253, 172, 220) },
+        "None" : {"quantite" : 0, "label1" : _(u"N.C."), "label2" : _(u"individus dont le genre est inconnu"), "couleur" : (170, 170, 170) },
         }
     for IDindividu, IDcivilite in listeDonnees :
         genre = str(dictCivilites[IDcivilite]["sexe"])
@@ -353,7 +356,7 @@ def GetListeActivitesPro(DB, dictParametres) :
     dictCategories = {}
     for IDcategorie, nomCategorie, IDindividu in listeDonnees :
         if nomCategorie == None :
-            nomCategorie = u"Catégorie inconnue"
+            nomCategorie = _(u"Catégorie inconnue")
         if dictCategories.has_key(IDcategorie) == False :
             dictCategories[IDcategorie] = {"nom" : nomCategorie, "nbre" : 0}
         dictCategories[IDcategorie]["nbre"] += 1
@@ -458,7 +461,7 @@ def GetListeEcoles(DB, dictParametres) :
     dictEcoles = {}
     for IDecole, nomEcole, IDindividu in listeDonnees :
         if nomEcole == None :
-            nomEcole = u"Ecole inconnue"
+            nomEcole = _(u"Ecole inconnue")
         if dictEcoles.has_key(IDecole) == False :
             dictEcoles[IDecole] = {"nom" : nomEcole, "nbre" : 0}
         dictEcoles[IDecole]["nbre"] += 1
@@ -509,7 +512,7 @@ def GetListeNiveauxScolaires(DB, dictParametres) :
     dictNiveaux = {}
     for IDniveau, ordre, nomNiveau, IDindividu in listeDonnees :
         if nomNiveau == None :
-            nomNiveau = u"Niveau inconnu"
+            nomNiveau = _(u"Niveau inconnu")
         if dictNiveaux.has_key(IDniveau) == False :
             dictNiveaux[IDniveau] = {"nom" : nomNiveau, "nbre" : 0, "ordre": ordre}
         dictNiveaux[IDniveau]["nbre"] += 1
@@ -529,7 +532,7 @@ class Texte_nombre_individus(MODELES.Texte):
     def __init__(self):
         """ Recherche du nombre d'individus présents """
         MODELES.Texte.__init__(self)
-        self.nom = u"Nombre d'individus"
+        self.nom = _(u"Nombre d'individus")
         self.code = "texte_nombre_individus"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -557,21 +560,21 @@ class Texte_nombre_individus(MODELES.Texte):
         listeDonnees = DB.ResultatReq()
         
         if dictParametres["mode"] == "presents" :
-            mot = u"présent"
+            mot = _(u"présent")
         else:
-            mot = u"inscrit"
+            mot = _(u"inscrit")
             
         if len(listeDonnees) == 0 or listeDonnees[0][0] == 0 : 
-            self.texte = u"Aucun individu %s." % mot
+            self.texte = _(u"Aucun individu %s.") % mot
         else:
-            self.texte = u"%d individus %ss." % (len(listeDonnees), mot)
+            self.texte = _(u"%d individus %ss.") % (len(listeDonnees), mot)
         
         
 class Tableau_nombre_individus(MODELES.Tableau):
     """ Répartition du nombre d'individus par activité """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition du nombre d'individus par activité"
+        self.nom = _(u"Répartition du nombre d'individus par activité")
         self.code = "tableau_nombre_individus"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -612,7 +615,7 @@ class Tableau_nombre_individus(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Activité", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Activité"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         for IDactivite, listeIndividus in dictActiTemp.iteritems() :
             nomActivite = dictParametres["dictActivites"][IDactivite]
@@ -621,7 +624,7 @@ class Tableau_nombre_individus(MODELES.Tableau):
 class Graphe_nombre_individus(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Comparatif du nombre d'individus"
+        self.nom = _(u"Comparatif du nombre d'individus")
         self.code = "graphe_nombre_individus"
         self.taille = (470, 360)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -662,7 +665,7 @@ class Graphe_nombre_individus(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Comparatif du nombre d'individus", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Comparatif du nombre d'individus"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.4, right=None, wspace=None, hspace=None)
@@ -678,7 +681,7 @@ class Tableau_repartition_genre(MODELES.Tableau):
     """ Répartition des individus par âge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition par genre"
+        self.nom = _(u"Répartition par genre")
         self.code = "tableau_repartition_genre"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -690,7 +693,7 @@ class Tableau_repartition_genre(MODELES.Tableau):
                 
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Genre", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Genre"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
         for IDgenre, dictTemp in dictGenres.iteritems() :
@@ -703,7 +706,7 @@ class Tableau_repartition_genre(MODELES.Tableau):
 class Graphe_repartition_genre(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition par genre"
+        self.nom = _(u"Répartition par genre")
         self.code = "graphe_repartition_genre"
         self.taille = (350, 250)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -723,7 +726,7 @@ class Graphe_repartition_genre(MODELES.Graphe):
                 listeCouleurs.append(MODELES.ConvertitCouleur2(dictTemp["couleur"]))
 
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(u"Répartition par genre", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par genre"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -739,7 +742,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
     """ Répartition des individus par âge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des individus par âge"
+        self.nom = _(u"Répartition des individus par âge")
         self.code = "tableau_repartition_ages"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -751,7 +754,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Age", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Age"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
         listeAges = dictAges.keys() 
@@ -760,7 +763,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
         for age in listeAges :
             nbreIndividus = dictAges[age]
             if age == None : 
-                age = u"Date de naissance inconnue"
+                age = _(u"Date de naissance inconnue")
             else :
                 age = str(age)
             self.lignes.append((age, nbreIndividus))
@@ -771,7 +774,7 @@ class Tableau_repartition_ages(MODELES.Tableau):
 class Graphe_repartition_ages(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition des individus par âge"
+        self.nom = _(u"Répartition des individus par âge")
         self.code = "graphe_repartition_ages"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -789,7 +792,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         for age in listeAges :
             nbreIndividus = dictAges[age]
             if age == None : 
-                age = u"N.C."
+                age = _(u"N.C.")
             else :
                 age = str(age)
             listeLabels.append(age)
@@ -801,7 +804,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_VERT_POMME))
         
         # Axe horizontal
-        ax.set_xlabel(u"Ages", fontsize=8)
+        ax.set_xlabel(_(u"Ages"), fontsize=8)
         ind = arange(len(listeLabels)) 
         ax.set_xticks(ind + width) 
         ax.set_xticklabels(listeLabels)
@@ -815,7 +818,7 @@ class Graphe_repartition_ages(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Répartition par âge", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par âge"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.12, right=None, wspace=None, hspace=None)
@@ -831,7 +834,7 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
     """ Répartition des individus par âge """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des individus par année de naissance"
+        self.nom = _(u"Répartition des individus par année de naissance")
         self.code = "tableau_repartition_annees_naiss"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -843,7 +846,7 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Année de naissance", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Année de naissance"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
         listeAnnees = dictAnnees.keys() 
@@ -852,7 +855,7 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
         for annee in listeAnnees :
             nbreIndividus = dictAnnees[annee]
             if annee == None : 
-                annee = u"Année de naissance inconnue"
+                annee = _(u"Année de naissance inconnue")
             else :
                 annee = str(annee)
             self.lignes.append((annee, nbreIndividus))
@@ -863,7 +866,7 @@ class Tableau_repartition_annees_naiss(MODELES.Tableau):
 class Graphe_repartition_annees_naiss(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition des individus par année de naissance"
+        self.nom = _(u"Répartition des individus par année de naissance")
         self.code = "graphe_repartition_annees_naiss"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -881,7 +884,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         for annee in listeAnnees :
             nbreIndividus = dictAnnees[annee]
             if annee == None : 
-                annee = u"N.C."
+                annee = _(u"N.C.")
             else :
                 annee = str(annee)
             listeLabels.append(annee)
@@ -893,7 +896,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         barres = ax.bar(ind, listeValeurs, width, color=MODELES.ConvertitCouleur2(MODELES.COULEUR_BLEU_CIEL))
         
         # Axe horizontal
-        ax.set_xlabel(u"Années", fontsize=8)
+        ax.set_xlabel(_(u"Années"), fontsize=8)
         
         ind = arange(len(listeLabels)) 
         ax.set_xticks(ind + width) 
@@ -909,7 +912,7 @@ class Graphe_repartition_annees_naiss(MODELES.Graphe):
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Répartition par année de naissance", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par année de naissance"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.2, right=None, wspace=None, hspace=None)
@@ -925,7 +928,7 @@ class Tableau_repartition_villes(MODELES.Tableau):
     """ Répartition des individus par villes de résidence """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des individus par ville de résidence"
+        self.nom = _(u"Répartition des individus par ville de résidence")
         self.code = "tableau_repartition_villes"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -937,7 +940,7 @@ class Tableau_repartition_villes(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Ville de résidence", "210"), (u"Distance", "70"), (u"Nombre d'individus", "120") ]
+        self.colonnes = [ (_(u"Ville de résidence"), "210"), (_(u"Distance"), "70"), (_(u"Nombre d'individus"), "120") ]
         self.lignes = []
         
         # Tri par nbre d'individus
@@ -951,7 +954,7 @@ class Tableau_repartition_villes(MODELES.Tableau):
         
         for nbreIndividus, nomVille, distance in listeVilles :
             if nomVille == None : 
-                nomVille = u"Ville inconnue"
+                nomVille = _(u"Ville inconnue")
             self.lignes.append((nomVille, distance, nbreIndividus))
 
 
@@ -959,7 +962,7 @@ class Tableau_repartition_villes(MODELES.Tableau):
 class Graphe_repartition_villes(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition par ville de résidence"
+        self.nom = _(u"Répartition par ville de résidence")
         self.code = "graphe_repartition_villes"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -990,12 +993,12 @@ class Graphe_repartition_villes(MODELES.Graphe):
             for nbreIndividus, nomVille in listeVilles[nbreMax:] :
                 nbreAutres += nbreIndividus
             listeVilles = listeVilles[:nbreMax]
-            listeVilles.append((nbreAutres, u"Autres"))
+            listeVilles.append((nbreAutres, _(u"Autres")))
         
         index = 1
         for nbreIndividus, nomVille in listeVilles :
             if nomVille == None : 
-                nomVille = u"N.C."
+                nomVille = _(u"N.C.")
 
             listeValeurs.append(nbreIndividus)
             listeLabels.append(nomVille)
@@ -1011,7 +1014,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
 ##            couleurHSV = (couleurHSV[0], couleurHSV[1]-20, couleurHSV[2])
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(u"Répartition par ville", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par ville"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1027,7 +1030,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
 ##class Graphe_distances_villes(Graphe):
 ##    def __init__(self):
 ##        Graphe.__init__(self)
-##        self.nom = u"Distances et répartition par ville"
+##        self.nom = _(u"Distances et répartition par ville")
 ##        self.code = "graphe_distances_villes"
 ##        self.taille = (450, 280)
 ##    def MAJ(self, DB=None, dictParametres={}):
@@ -1082,7 +1085,7 @@ class Graphe_repartition_villes(MODELES.Graphe):
 ##        for x, y, label in listeLabels :
 ##            ax.annotate(label, (x, y), va="center", ha="center", size=6)
 ##
-##        title = ax.set_title(u"Distances entre les villes", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+##        title = ax.set_title(_(u"Distances entre les villes"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
 ##        matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
 ##
 ##        ax.set_ylabel("Distances", fontsize=8)
@@ -1099,7 +1102,7 @@ class Tableau_activites_professionnelles(MODELES.Tableau):
     """ Répartition des individus par activité professionnelle """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des individus par activité professionnelle"
+        self.nom = _(u"Répartition des individus par activité professionnelle")
         self.code = "tableau_activites_professionnelles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1111,7 +1114,7 @@ class Tableau_activites_professionnelles(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Activité professionnelle", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Activité professionnelle"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
                 
         for nbreIndividus, nomCategorie in listeCategories :
@@ -1123,7 +1126,7 @@ class Tableau_activites_professionnelles(MODELES.Tableau):
 class Graphe_activites_professionnelles(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition par activité professionnelle"
+        self.nom = _(u"Répartition par activité professionnelle")
         self.code = "graphe_activites_professionnelles"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -1148,7 +1151,7 @@ class Graphe_activites_professionnelles(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(u"Répartition par activité professionnelle", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition par activité professionnelle"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1164,7 +1167,7 @@ class Tableau_nouveaux_individus(MODELES.Tableau):
     """ Ancienneté """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Nouveaux individus (selon le premier jour de présence)"
+        self.nom = _(u"Nouveaux individus (selon le premier jour de présence)")
         self.code = "tableau_nouveaux_individus"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1177,7 +1180,7 @@ class Tableau_nouveaux_individus(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Mois", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Mois"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
         
         for annee, mois in listeMoisPeriode :
@@ -1191,7 +1194,7 @@ class Tableau_nouveaux_individus(MODELES.Tableau):
 class Graphe_nouveaux_individus(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Nouveaux individus"
+        self.nom = _(u"Nouveaux individus")
         self.code = "graphe_nouveaux_individus"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -1227,13 +1230,13 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
         matplotlib.pyplot.setp(labelsx, rotation=45, fontsize=8, horizontalalignment='right')
         
         # Axe vertical
-        ax.set_ylabel(u"Nbre d'individus", fontsize=8)
+        ax.set_ylabel(_(u"Nbre d'individus"), fontsize=8)
         
         labels = ax.get_yticklabels()
         matplotlib.pyplot.setp(labels, rotation=0, fontsize=9) 
         
         # Titre
-        title = ax.set_title(u"Nouveaux individus sur la période", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Nouveaux individus sur la période"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
@@ -1248,7 +1251,7 @@ class Graphe_nouveaux_individus(MODELES.Graphe):
 class Graphe_arrivee_individus(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Arrivée des individus présents"
+        self.nom = _(u"Arrivée des individus présents")
         self.code = "graphe_arrivee_individus"
         self.taille = (470, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -1287,17 +1290,17 @@ class Graphe_arrivee_individus(MODELES.Graphe):
         figure.autofmt_xdate()
         
         # Axe vertical
-        ax.set_ylabel(u"Nbre d'individus", fontsize=8)
+        ax.set_ylabel(_(u"Nbre d'individus"), fontsize=8)
         labelsy = ax.get_yticklabels()
         matplotlib.pyplot.setp(labelsy, rotation=0, fontsize=9) 
         
         # Ligne moyenne
 ##        if len(listeY) > 4 :
 ##            ligne = MODELES.Ligne_moyenne(listeY, len(listeY) / 4, type='simple')
-##            ax.plot(listeX, ligne, color='red', lw=1, label=u"Evolution moyenne")
+##            ax.plot(listeX, ligne, color='red', lw=1, label=_(u"Evolution moyenne"))
 
         # Titre
-        title = ax.set_title(u"Arrivée des individus présents", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Arrivée des individus présents"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         
         figure.subplots_adjust(left=None, bottom=0.3, right=None, wspace=None, hspace=None)
@@ -1309,7 +1312,7 @@ class Tableau_repartition_ecoles(MODELES.Tableau):
     """ Répartition des individus par activité professionnelle """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des individus par école <BR>(au premier jour de la période)"
+        self.nom = _(u"Répartition des individus par école <BR>(au premier jour de la période)")
         self.code = "tableau_repartition_ecoles"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1321,7 +1324,7 @@ class Tableau_repartition_ecoles(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Ecole", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Ecole"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
                 
         for nbreIndividus, nomEcole in listeEcoles :
@@ -1333,7 +1336,7 @@ class Tableau_repartition_ecoles(MODELES.Tableau):
 class Graphe_repartition_ecoles(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition des individus par école <BR>(au premier jour de la période)"
+        self.nom = _(u"Répartition des individus par école <BR>(au premier jour de la période)")
         self.code = "graphe_repartition_ecoles"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -1358,7 +1361,7 @@ class Graphe_repartition_ecoles(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(u"Répartition des individus par école", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition des individus par école"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1375,7 +1378,7 @@ class Tableau_repartition_niveaux_scolaires(MODELES.Tableau):
     """ Répartition des individus par niveau scolaire """
     def __init__(self):
         MODELES.Tableau.__init__(self)
-        self.nom = u"Répartition des individus par niveau scolaire <BR>(au premier jour de la période)"
+        self.nom = _(u"Répartition des individus par niveau scolaire <BR>(au premier jour de la période)")
         self.code = "tableau_repartition_niveaux_scolaires"
     def MAJ(self, DB=None, dictParametres={}):
         self.dictParametres = dictParametres
@@ -1387,7 +1390,7 @@ class Tableau_repartition_niveaux_scolaires(MODELES.Tableau):
         
         # Création du tableau
         self.largeur = "400"
-        self.colonnes = [ (u"Niveau scolaire", "250"), (u"Nombre d'individus", "150") ]
+        self.colonnes = [ (_(u"Niveau scolaire"), "250"), (_(u"Nombre d'individus"), "150") ]
         self.lignes = []
                 
         for ordre, nbreIndividus, nomNiveau in listeNiveaux :
@@ -1399,7 +1402,7 @@ class Tableau_repartition_niveaux_scolaires(MODELES.Tableau):
 class Graphe_repartition_niveaux_scolaires(MODELES.Graphe):
     def __init__(self):
         MODELES.Graphe.__init__(self)
-        self.nom = u"Répartition des individus par niveau scolaire <BR>(au premier jour de la période)"
+        self.nom = _(u"Répartition des individus par niveau scolaire <BR>(au premier jour de la période)")
         self.code = "graphe_repartition_niveaux_scolaires"
         self.taille = (450, 280)
     def MAJ(self, figure=None, DB=None, dictParametres={}):
@@ -1424,7 +1427,7 @@ class Graphe_repartition_niveaux_scolaires(MODELES.Graphe):
             index += 1
         
         cam = ax.pie(listeValeurs, labels=listeLabels, colors=listeCouleurs, autopct='%1.1f%%', shadow=False)
-        title = ax.set_title(u"Répartition des individus par niveau scolaire", weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
+        title = ax.set_title(_(u"Répartition des individus par niveau scolaire"), weight="bold", horizontalalignment = 'center')#, position=(0.5, 0.97))
         matplotlib.pyplot.setp(title, rotation=0, fontsize=9)
         ax.set_aspect(1)
         labels, labelsPourcent = cam[1], cam[2]
@@ -1443,7 +1446,7 @@ if __name__ == '__main__':
         "mode" : "presents",
         "periode" : {"type":"annee", "annee":annee, "date_debut":datetime.date(annee, 1, 1), "date_fin":datetime.date(annee, 12, 31)}, 
         "listeActivites" : [1, 2, 3, 4, 5], 
-        "dictActivites" : {1 : u"Centre de Loisirs", 2 : u"Action 10-14 ans", 3 : u"Camp 4-6 ans", 4 : u"Camp 6-9 ans", 5 : u"Camp 10-14 ans", 6 : u"Art floral", 7 : u"Yoga"}, 
+        "dictActivites" : {1 : _(u"Centre de Loisirs"), 2 : _(u"Action 10-14 ans"), 3 : _(u"Camp 4-6 ans"), 4 : _(u"Camp 6-9 ans"), 5 : _(u"Camp 10-14 ans"), 6 : _(u"Art floral"), 7 : _(u"Yoga")}, 
         }
     frame_1 = MODELES.FrameTest(objet=Graphe_repartition_niveaux_scolaires(), dictParametres=dictParametres)
     app.SetTopWindow(frame_1)

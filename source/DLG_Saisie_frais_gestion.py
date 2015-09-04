@@ -8,14 +8,17 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import GestionDB
 import CTRL_Saisie_euros
 
 LISTE_METHODES_ARRONDI = [
-    (u"Arrondi au centime supérieur", "centimesup"),
-    (u"Arrondi au centime inférieur", "centimeinf"),
+    (_(u"Arrondi au centime supérieur"), "centimesup"),
+    (_(u"Arrondi au centime inférieur"), "centimeinf"),
     ]
 
 
@@ -26,11 +29,11 @@ class Dialog(wx.Dialog):
         self.dictFrais = dictFrais
         
         # Méthode de calcul
-        self.box_calcul = wx.StaticBox(self, -1, u"Méthode de calcul")
-        self.radio_frais_aucun = wx.RadioButton(self, -1, u"Aucun", style=wx.RB_GROUP)
-        self.radio_frais_fixe = wx.RadioButton(self, -1, u"Montant fixe :")
+        self.box_calcul = wx.StaticBox(self, -1, _(u"Méthode de calcul"))
+        self.radio_frais_aucun = wx.RadioButton(self, -1, _(u"Aucun"), style=wx.RB_GROUP)
+        self.radio_frais_fixe = wx.RadioButton(self, -1, _(u"Montant fixe :"))
         self.ctrl_frais_fixe = CTRL_Saisie_euros.CTRL(self)
-        self.radio_frais_prorata = wx.RadioButton(self, -1, u"Montant au prorata :")
+        self.radio_frais_prorata = wx.RadioButton(self, -1, _(u"Montant au prorata :"))
         self.ctrl_frais_prorata = wx.TextCtrl(self, -1, u"0.0", style=wx.TE_RIGHT)
         self.label_pourcentage = wx.StaticText(self, -1, u"%")
         listeLabelsArrondis = []
@@ -40,14 +43,14 @@ class Dialog(wx.Dialog):
         self.ctrl_frais_arrondi.SetSelection(0)
         
         # Label de la prestation
-        self.box_prestation = wx.StaticBox(self, -1, u"Prestation")
-        self.label_frais_label = wx.StaticText(self, -1, u"Label :")
-        self.ctrl_frais_label = wx.TextCtrl(self, -1, u"Frais de gestion")
+        self.box_prestation = wx.StaticBox(self, -1, _(u"Prestation"))
+        self.label_frais_label = wx.StaticText(self, -1, _(u"Label :"))
+        self.ctrl_frais_label = wx.TextCtrl(self, -1, _(u"Frais de gestion"))
                 
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -66,18 +69,18 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_frais_fixe.SetMinSize((60, -1))
         self.ctrl_frais_prorata.SetMinSize((50, -1))
-        self.radio_frais_aucun.SetToolTipString(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement")
-        self.radio_frais_fixe.SetToolTipString(u"Cochez ici si des frais d'un montant fixe sont applicables")
-        self.ctrl_frais_fixe.SetToolTipString(u"Saisissez le montant fixe des frais de gestion")
-        self.radio_frais_prorata.SetToolTipString(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable")
-        self.ctrl_frais_prorata.SetToolTipString(u"Saisissez ici le pourcentage du montant du règlement")
-        self.ctrl_frais_arrondi.SetToolTipString(u"Selectionnez une méthode de calcul de l'arrondi")
-        self.ctrl_frais_label.SetToolTipString(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider la saisie")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler la saisie")
+        self.radio_frais_aucun.SetToolTipString(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement"))
+        self.radio_frais_fixe.SetToolTipString(_(u"Cochez ici si des frais d'un montant fixe sont applicables"))
+        self.ctrl_frais_fixe.SetToolTipString(_(u"Saisissez le montant fixe des frais de gestion"))
+        self.radio_frais_prorata.SetToolTipString(_(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable"))
+        self.ctrl_frais_prorata.SetToolTipString(_(u"Saisissez ici le pourcentage du montant du règlement"))
+        self.ctrl_frais_arrondi.SetToolTipString(_(u"Selectionnez une méthode de calcul de l'arrondi"))
+        self.ctrl_frais_label.SetToolTipString(_(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
         self.SetMinSize((350, -1))
-        self.SetTitle(u"Appliquer des frais de gestion")
+        self.SetTitle(_(u"Appliquer des frais de gestion"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -171,7 +174,7 @@ class Dialog(wx.Dialog):
             frais_montant = self.ctrl_frais_fixe.GetMontant()
             validation, erreur = self.ctrl_frais_fixe.Validation()
             if frais_montant == 0.0 or validation == False :
-                dlg = wx.MessageDialog(self, u"Le montant que vous avez saisi pour les frais de gestion n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le montant que vous avez saisi pour les frais de gestion n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_fixe.SetFocus()
@@ -182,13 +185,13 @@ class Dialog(wx.Dialog):
             try :
                 frais_pourcentage = float(frais_pourcentage) 
             except :
-                dlg = wx.MessageDialog(self, u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_prorata.SetFocus()
                 return
             if frais_pourcentage == 0.0 :
-                dlg = wx.MessageDialog(self, u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_prorata.SetFocus()
@@ -197,7 +200,7 @@ class Dialog(wx.Dialog):
         if frais_gestion != None :
             frais_label = self.ctrl_frais_label.GetValue() 
             if frais_label == "" :
-                dlg = wx.MessageDialog(self, u"Le label de prestation que vous avez saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le label de prestation que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_label.SetFocus()

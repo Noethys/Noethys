@@ -8,7 +8,9 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
 import wx
+import CTRL_Bouton_image
 import os
 
 
@@ -23,6 +25,7 @@ class FichierConfig():
         dictDonnees = {}
         for key in db.keys():
             dictDonnees[key] = db[key]
+            #print key, db[key]
         db.close()
         return dictDonnees
     

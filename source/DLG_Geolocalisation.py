@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import GestionDB
 import UTILS_Gps
@@ -16,30 +19,30 @@ import CTRL_Saisie_adresse
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, titre=u"Géolocalisation GPS"):
+    def __init__(self, parent, titre=_(u"Géolocalisation GPS")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent   
         
         # Bandeau
-        intro = u"Cette fonctionnalité vous permet d'obtenir les coordonnées GPS d'un lieu. Saisissez une adresse complète ou une ville avant de cliquer sur Rechercher."
-        titre = u"Géolocalisation GPS"
+        intro = _(u"Cette fonctionnalité vous permet d'obtenir les coordonnées GPS d'un lieu. Saisissez une adresse complète ou une ville avant de cliquer sur Rechercher.")
+        titre = _(u"Géolocalisation GPS")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Carte.png")
         
         # Recherche
-        self.box_recherche_staticbox = wx.StaticBox(self, -1, u"Recherche")
-        self.label_rue = wx.StaticText(self, -1, u"Rue :")
+        self.box_recherche_staticbox = wx.StaticBox(self, -1, _(u"Recherche"))
+        self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
-        self.label_ville = wx.StaticText(self, -1, u"CP :")
+        self.label_ville = wx.StaticText(self, -1, _(u"CP :"))
         self.ctrl_ville = CTRL_Saisie_adresse.Adresse(self)
-        self.bouton_rechercher = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Rechercher.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_rechercher = CTRL_Bouton_image.CTRL(self, texte=_(u"Rechercher"), cheminImage="Images/32x32/Loupe.png")
         
         # Résultats
-        self.box_resultats_staticbox = wx.StaticBox(self, -1, u"Résultats")
+        self.box_resultats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
         self.ctrl_resultats = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -49,10 +52,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_rue.SetToolTipString(u"Saisissez un nom de rue [Optionnel]")
-        self.bouton_rechercher.SetToolTipString(u"Cliquez ici pour lancer la recherche")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_rue.SetToolTipString(_(u"Saisissez un nom de rue [Optionnel]"))
+        self.bouton_rechercher.SetToolTipString(_(u"Cliquez ici pour lancer la recherche"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((520, 500))
 
     def __do_layout(self):
@@ -97,7 +100,7 @@ class Dialog(wx.Dialog):
         cp = self.ctrl_ville.GetValueCP()
         ville = self.ctrl_ville.GetValueVille()
         if ville == None or ville == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir obligatoirement un nom de ville !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir obligatoirement un nom de ville !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -107,9 +110,9 @@ class Dialog(wx.Dialog):
         
         # Affichage des résultats
         if resultats == None :
-            texte = u"Aucun résultat \n"
+            texte = _(u"Aucun résultat \n")
         else :
-            texte = u"Lat : %s  Long : %s \n" % (str(resultats["lat"]), str(resultats["long"]))
+            texte = _(u"Lat : %s  Long : %s \n") % (str(resultats["lat"]), str(resultats["long"]))
         self.ctrl_resultats.write(texte)
 
     def OnBoutonAide(self, event):

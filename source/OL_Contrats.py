@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 ##import cStringIO
 import datetime
@@ -135,19 +138,19 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"IDcontrat", "left", 0, "IDcontrat", typeDonnee="entier"),
+            ColumnDefn(_(u"IDcontrat"), "left", 0, "IDcontrat", typeDonnee="entier"),
             ColumnDefn(u"Du", 'center', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
-            ColumnDefn(u"Au", 'center', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
-            ColumnDefn(u"Nom de l'activité", 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Montant", 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Au"), 'center', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(_(u"Nom de l'activité"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
         if self.IDindividu == None :
-            liste_Colonnes.insert(3, ColumnDefn(u"Individu", 'left', 200, "nomCompletIndividu", typeDonnee="texte"))
+            liste_Colonnes.insert(3, ColumnDefn(_(u"Individu"), 'left', 200, "nomCompletIndividu", typeDonnee="texte"))
             
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun contrat")
+        self.SetEmptyListMsg(_(u"Aucun contrat"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -184,14 +187,14 @@ class ListView(FastObjectListView):
 
         # Item Modifier
         if self.IDindividu != None :
-            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -199,7 +202,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -209,14 +212,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -225,14 +228,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -243,21 +246,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des contrats", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des contrats", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des contrats")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des contrats"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des contrats")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des contrats"))
 
     def Ajouter(self, event):
         # Sélection de l'activité
@@ -293,7 +296,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun contrat à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun contrat à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -307,7 +310,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun contrat à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun contrat à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -332,7 +335,7 @@ class ListView(FastObjectListView):
             if IDfacture != None :
                 listePrestationsFacturees.append(IDprestation)
         if len(listePrestationsFacturees) > 0 :
-            dlg = wx.MessageDialog(self, u"Il est impossible de supprimer ce contrat directement car %d prestations associées apparaissent déjà sur une facture !" % len(listePrestationsFacturees), u"Suppression impossible", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce contrat directement car %d prestations associées apparaissent déjà sur une facture !") % len(listePrestationsFacturees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close() 
@@ -351,13 +354,13 @@ class ListView(FastObjectListView):
             if etat in ("present", "absenti", "absentj"):
                 listeConsoPointees.append(IDconso)
         if len(listeConsoPointees) > 0 :
-            dlg = wx.MessageDialog(self, u"Il est impossible de supprimer ce contrat directement car %d consommations associées sont déjà pointées !" % len(listeConsoPointees), u"Suppression impossible", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer ce contrat directement car %d consommations associées sont déjà pointées !") % len(listeConsoPointees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce contrat ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce contrat ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("contrats", "IDcontrat", track.IDcontrat)
@@ -372,7 +375,7 @@ class ListView(FastObjectListView):
 ##                "IDindividu" : self.IDindividu,
 ##                "IDfamille" : IDfamille,
 ##                "IDcategorie" : 19, 
-##                "action" : u"Suppression de l'inscription à l'activité '%s'" % nomActivite
+##                "action" : _(u"Suppression de l'inscription à l'activité '%s'") % nomActivite
 ##                },])
                 
             # Actualise l'affichage
@@ -382,7 +385,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -403,7 +406,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -442,7 +445,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "date_fin" : {"mode" : "nombre", "singulier" : u"contrat", "pluriel" : u"contrats", "alignement" : wx.ALIGN_LEFT},
+            "date_fin" : {"mode" : "nombre", "singulier" : _(u"contrat"), "pluriel" : _(u"contrats"), "alignement" : wx.ALIGN_LEFT},
             "montant" : {"mode" : "total"},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

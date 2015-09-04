@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import os
 import datetime
@@ -26,7 +29,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 COULEUR_FOND_TITRE = (0.8, 0.8, 1)
 
-LISTE_MOIS = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + u"/" + str(textDate[5:7]) + u"/" + str(textDate[:4])
@@ -34,8 +37,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -59,31 +62,31 @@ class Dialog(wx.Dialog):
         self.IDfamille = IDfamille
         
         # Bandeau
-        intro = u"Vous pouvez éditer ici un état des prestations ou des factures pour la ou les périodes souhaitées."
-        titre = u"Edition d'un relevé des prestations"
+        intro = _(u"Vous pouvez éditer ici un état des prestations ou des factures pour la ou les périodes souhaitées.")
+        titre = _(u"Edition d'un relevé des prestations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
                 
         # Périodes
-        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, u"Périodes")
+        self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Périodes"))
         self.ctrl_periodes = OL_Releve_prestations.ListView(self, id=-1, IDfamille=self.IDfamille, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.check_memoriser_parametres = wx.CheckBox(self, -1, u"Mémoriser les périodes")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.check_memoriser_parametres = wx.CheckBox(self, -1, _(u"Mémoriser les périodes"))
         self.check_memoriser_parametres.SetValue(True) 
         
-        self.checkbox_couleur = wx.CheckBox(self, -1, u"Couleur de fond de titre :")
+        self.checkbox_couleur = wx.CheckBox(self, -1, _(u"Couleur de fond de titre :"))
         self.ctrl_couleur = csel.ColourSelect(self, -1, u"", COULEUR_FOND_TITRE, size=(60, 18))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_email = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Envoyer_par_email.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -111,15 +114,15 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une période")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la période sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la période sélectionnée dans la liste")
-        self.checkbox_couleur.SetToolTipString(u"Cochez cette case pour insérer une couleur")
-        self.check_memoriser_parametres.SetToolTipString(u"Cochez cette case pour mémoriser les périodes")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_email.SetToolTipString(u"Cliquez ici pour envoyer ce document par Email")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour créer un aperçu du document PDF")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une période"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la période sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la période sélectionnée dans la liste"))
+        self.checkbox_couleur.SetToolTipString(_(u"Cochez cette case pour insérer une couleur"))
+        self.check_memoriser_parametres.SetToolTipString(_(u"Cochez cette case pour mémoriser les périodes"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour créer un aperçu du document PDF"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((650, 400))
 
     def __do_layout(self):
@@ -195,7 +198,7 @@ class Dialog(wx.Dialog):
         # Création PDF
         listePeriodes = self.ctrl_periodes.GetListePeriodes() 
         if len(listePeriodes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez paramétrer au moins une période dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez paramétrer au moins une période dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -229,7 +232,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Releve_prestations.pdf", categorie="releve_prestations")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RELEVE%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="releve_prestations")
 
 
 class Impression():
@@ -425,7 +428,7 @@ class Impression():
         HAUTEUR_PAGE = TAILLE_PAGE[1]
         
         # Initialisation du document
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30, pagesize=TAILLE_PAGE, showBoundary=False)
         story = []
         dictChampsFusion = {}
@@ -454,7 +457,7 @@ class Impression():
                               spaceafter=0,
                             )
         
-        titreDocument = Paragraph(u"Relevé des prestations", paraStyleTitre)
+        titreDocument = Paragraph(_(u"Relevé des prestations"), paraStyleTitre)
         texteTitulaire = Paragraph(u"%s" % self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"], paraStyle)
         
         # Création du titre du document
@@ -462,7 +465,7 @@ class Impression():
         largeursColonnes = ( (420, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
         dictChampsFusion["{DATE_EDITION_RELEVE}"] = dateDuJour
-        dataTableau.append( ([titreDocument, texteTitulaire], u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( ([titreDocument, texteTitulaire], _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -477,7 +480,7 @@ class Impression():
         story.append(Spacer(0,20))       
         
         # Nom du compte
-##        texteTitulaire = Paragraph(u"Compte de %s" % self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"], paraStyle)
+##        texteTitulaire = Paragraph(_(u"Compte de %s") % self.dictTitulaires[self.IDfamille]["titulairesSansCivilite"], paraStyle)
 ##        dataTableau = []
 ##        largeursColonnes = ( (520,) )
 ##        dataTableau.append([texteTitulaire,])
@@ -529,9 +532,9 @@ class Impression():
                     else :
                         detail = True
                         
-                    if modeRegroupement == "date" : labelRegroupement = u"Date"
-                    if modeRegroupement == "mois" : labelRegroupement = u"Mois"
-                    if modeRegroupement == "annee" : labelRegroupement = u"Année"
+                    if modeRegroupement == "date" : labelRegroupement = _(u"Date")
+                    if modeRegroupement == "mois" : labelRegroupement = _(u"Mois")
+                    if modeRegroupement == "annee" : labelRegroupement = _(u"Année")
                     
                     # Affichage des conso
                     if dictOptions.has_key("conso") and dictOptions["conso"] == True :
@@ -542,9 +545,9 @@ class Impression():
                     # Dessin du tableau de titre pour cette période
                     dataTableau = []
                     if impayes == True :
-                        labelTitre = u"Prestations impayées - %s" % dictPeriode["label"]
+                        labelTitre = _(u"Prestations impayées - %s") % dictPeriode["label"]
                     else :
-                        labelTitre = u"Prestations - %s" % dictPeriode["label"]
+                        labelTitre = _(u"Prestations - %s") % dictPeriode["label"]
                     dataTableau.append([labelTitre,])
 
                     listeStyles = [
@@ -563,10 +566,10 @@ class Impression():
                     dataTableau = []
                     if detail == True :
                         largeursColonnes = [60, 190, 120, 50, 50, 50]
-                        dataTableau.append([labelRegroupement, u"Prestation", u"Individu", u"Total dû", u"Réglé", u"Reste dû"])
+                        dataTableau.append([labelRegroupement, _(u"Prestation"), _(u"Individu"), _(u"Total dû"), _(u"Réglé"), _(u"Reste dû")])
                     else :
                         largeursColonnes = [370, 50, 50, 50]
-                        dataTableau.append([labelRegroupement, u"Total dû", u"Réglé", u"Reste dû"])
+                        dataTableau.append([labelRegroupement, _(u"Total dû"), _(u"Réglé"), _(u"Reste dû")])
                     paraStyle = ParagraphStyle(name="standard",
                               fontName="Helvetica",
                               fontSize=8,
@@ -622,7 +625,7 @@ class Impression():
                         # Key
                         if type(key) == datetime.date : labelKey = DateEngFr(str(key))
                         if type(key) == tuple : labelKey = u"%s %d" % (LISTE_MOIS[key[1]-1], key[0])
-                        if type(key) == int : labelKey = u"Année %d" % key
+                        if type(key) == int : labelKey = _(u"Année %d") % key
                         texteKey = Paragraph(u"<para align='center'>%s</para>" % labelKey, paraStyle)
                         
                         listeLabels = []
@@ -720,7 +723,7 @@ class Impression():
                         # Insertion du total par période
                         dataTableau = []
                         listeLigne = [
-                            Paragraph(u"<para align='right'>Totaux :</para>", paraStyle),
+                            Paragraph(_(u"<para align='right'>Totaux :</para>"), paraStyle),
                             Paragraph(u"<para align='right'>%.02f %s</para>" % (total_du, SYMBOLE), paraStyle),
                             Paragraph(u"<para align='right'>%.02f %s</para>" % (total_regle, SYMBOLE), paraStyle),
                             Paragraph(u"<para align='right'><b>%.02f %s</b></para>" % (total_reste, SYMBOLE), paraStyle),
@@ -752,9 +755,9 @@ class Impression():
                     # Dessin du tableau de titre pour cette période
                     dataTableau = []
                     if impayes == True :
-                        labelTitre = u"Factures impayées - %s" % dictPeriode["label"]
+                        labelTitre = _(u"Factures impayées - %s") % dictPeriode["label"]
                     else :
-                        labelTitre = u"Factures - %s" % dictPeriode["label"]
+                        labelTitre = _(u"Factures - %s") % dictPeriode["label"]
                     dataTableau.append([labelTitre,])
 
                     listeStyles = [
@@ -772,7 +775,7 @@ class Impression():
                     # Dessin du tableau pour les prestations
                     dataTableau = []
                     largeursColonnes = [60, 110, 200, 50, 50, 50]
-                    dataTableau.append([u"Date d'édition", u"Numéro", u"Période", u"Total dû", u"Réglé", u"Reste dû"])
+                    dataTableau.append([_(u"Date d'édition"), _(u"Numéro"), _(u"Période"), _(u"Total dû"), _(u"Réglé"), _(u"Reste dû")])
                     
                     paraStyle = ParagraphStyle(name="standard",
                               fontName="Helvetica",
@@ -810,10 +813,10 @@ class Impression():
                             listeLigne.append(Paragraph(u"<para align='center'>%s</para>" % DateEngFr(str(date)), paraStyle))
 
                             # Numéro de facture
-                            listeLigne.append(Paragraph(u"Facture n°%s" % dictFacture["numero"], paraStyle))
+                            listeLigne.append(Paragraph(_(u"Facture n°%s") % dictFacture["numero"], paraStyle))
 
                             # Période facture
-                            listeLigne.append(Paragraph(u"Du %s au %s" % (DateEngFr(str(dictFacture["date_debut"])), DateEngFr(str(dictFacture["date_fin"]))), paraStyle))
+                            listeLigne.append(Paragraph(_(u"Du %s au %s") % (DateEngFr(str(dictFacture["date_debut"])), DateEngFr(str(dictFacture["date_fin"]))), paraStyle))
 
                             # Total dû
                             listeLigne.append(Paragraph(u"<para align='right'>%.02f %s</para>" % (montant, SYMBOLE), paraStyle))
@@ -856,7 +859,7 @@ class Impression():
                         # Insertion du total par période
                         dataTableau = []
                         listeLigne = [
-                            Paragraph(u"<para align='right'>Totaux :</para>", paraStyle),
+                            Paragraph(_(u"<para align='right'>Totaux :</para>"), paraStyle),
                             Paragraph(u"<para align='right'>%.02f %s</para>" % (total_du, SYMBOLE), paraStyle),
                             Paragraph(u"<para align='right'>%.02f %s</para>" % (total_regle, SYMBOLE), paraStyle),
                             Paragraph(u"<para align='right'><b>%.02f %s</b></para>" % (total_reste, SYMBOLE), paraStyle),
@@ -883,7 +886,7 @@ class Impression():
         # ---------------------------- Insertion du total du document ---------------------------
         dataTableau = []
         listeLigne = [
-            Paragraph(u"<para align='right'><b>Reste dû :</b></para>", paraStyle),
+            Paragraph(_(u"<para align='right'><b>Reste dû :</b></para>"), paraStyle),
             Paragraph(u"<para align='right'><b>%.02f %s</b></para>" % (total_reste_global, SYMBOLE), paraStyle),
             ]
         dataTableau.append(listeLigne)
@@ -912,10 +915,10 @@ class Impression():
                 nbreDoublons += 1
         if nbreDoublons > 0 :
             if nbreDoublons == 1 : 
-                texte = u"Une prestation apparaît simultanément dans plusieurs périodes. Vérifiez votre paramétrage des périodes !"
+                texte = _(u"Une prestation apparaît simultanément dans plusieurs périodes. Vérifiez votre paramétrage des périodes !")
             else :
-                texte = u"%d prestations apparaissent simultanément dans plusieurs périodes. Vérifiez votre paramétrage des périodes !" % nbreDoublons
-            dlg = wx.MessageDialog(None, texte, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                texte = _(u"%d prestations apparaissent simultanément dans plusieurs périodes. Vérifiez votre paramétrage des périodes !") % nbreDoublons
+            dlg = wx.MessageDialog(None, texte, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -927,7 +930,7 @@ class Impression():
         except Exception, err :
             print "Erreur dans ouverture PDF :", err
             if "Permission denied" in err :
-                dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

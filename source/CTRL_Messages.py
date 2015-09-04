@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import OL_Messages
 
@@ -26,9 +29,9 @@ class Panel(wx.Panel):
         self.bouton_messages_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG))
         self.bouton_messages_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
         
-        self.bouton_messages_ajouter.SetToolTipString(u"Cliquez ici pour saisir un message")
-        self.bouton_messages_modifier.SetToolTipString(u"Cliquez ici pour modifier le message sélectionné dans la liste")
-        self.bouton_messages_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le message sélectionné dans la liste")
+        self.bouton_messages_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un message"))
+        self.bouton_messages_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le message sélectionné dans la liste"))
+        self.bouton_messages_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le message sélectionné dans la liste"))
         
         self.__do_layout()
         

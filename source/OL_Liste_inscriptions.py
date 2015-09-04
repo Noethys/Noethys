@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import decimal
@@ -29,49 +32,49 @@ from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils, Panel
 
 
 LISTE_CHAMPS = [
-    {"label":u"IDindividu", "code":"IDindividu", "champ":"inscriptions.IDindividu", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":u"Nom complet", "code":"nomComplet", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":200, "stringConverter":None, "imageGetter":"civilite", "actif":True, "afficher":True},
+    {"label":_(u"IDindividu"), "code":"IDindividu", "champ":"inscriptions.IDindividu", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":_(u"Nom complet"), "code":"nomComplet", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":200, "stringConverter":None, "imageGetter":"civilite", "actif":True, "afficher":True},
 
-    {"label":u"Groupe", "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Catégorie", "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Date inscrip.", "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
+    {"label":_(u"Groupe"), "code":"nomGroupe", "champ":"groupes.nom", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Catégorie"), "code":"nomCategorie", "champ":"categories_tarifs.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Date inscrip."), "code":"dateInscription", "champ":"inscriptions.date_inscription", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":False},
     
-    {"label":u"Facturé", "code":"totalFacture", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
-    {"label":u"Réglé", "code":"totalRegle", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
-    {"label":u"Solde", "code":"totalSolde", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":85, "stringConverter":"solde", "imageGetter":"ventilation", "actif":True, "afficher":True},
+    {"label":_(u"Facturé"), "code":"totalFacture", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
+    {"label":_(u"Réglé"), "code":"totalRegle", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":65, "stringConverter":"montant", "actif":True, "afficher":True},
+    {"label":_(u"Solde"), "code":"totalSolde", "champ":None, "typeDonnee":"montant", "align":"right", "largeur":85, "stringConverter":"solde", "imageGetter":"ventilation", "actif":True, "afficher":True},
 
-    {"label":u"IDcivilite", "code":"IDcivilite", "champ":"IDcivilite", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":u"Nom", "code":"nomIndividu", "champ":"individus.nom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Prénom", "code":"prenomIndividu", "champ":"prenom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"IDcivilite"), "code":"IDcivilite", "champ":"IDcivilite", "typeDonnee":"entier", "align":"left", "largeur":65, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":_(u"Nom"), "code":"nomIndividu", "champ":"individus.nom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Prénom"), "code":"prenomIndividu", "champ":"prenom", "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
     
-    {"label":u"Rue", "code":"rue_resid", "champ":"rue_resid", "typeDonnee":"texte", "align":"left", "largeur":125, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"CP", "code":"cp_resid", "champ":"cp_resid", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Ville", "code":"ville_resid", "champ":"ville_resid", "typeDonnee":"texte", "align":"left", "largeur":110, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Rue"), "code":"rue_resid", "champ":"rue_resid", "typeDonnee":"texte", "align":"left", "largeur":125, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"CP"), "code":"cp_resid", "champ":"cp_resid", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Ville"), "code":"ville_resid", "champ":"ville_resid", "typeDonnee":"texte", "align":"left", "largeur":110, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":u"Num. Sécu.", "code":"num_secu", "champ":"num_secu", "typeDonnee":"texte", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Date naiss.", "code":"date_naiss", "champ":"date_naiss", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":True},
-    {"label":u"Age", "code":"age", "champ":None, "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":"age", "actif":True, "afficher":True},
-    {"label":u"CP naiss.", "code":"cp_naiss", "champ":"cp_naiss", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Ville naiss.", "code":"ville_naiss", "champ":"ville_naiss", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"adresse_auto", "code":"adresse_auto", "champ":"adresse_auto", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":False, "afficher":False},
-    {"label":u"Catégorie socio.", "code":"categorie_socio", "champ":"categories_travail.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Num. Sécu."), "code":"num_secu", "champ":"num_secu", "typeDonnee":"texte", "align":"left", "largeur":90, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Date naiss."), "code":"date_naiss", "champ":"date_naiss", "typeDonnee":"date", "align":"left", "largeur":75, "stringConverter":"date", "actif":True, "afficher":True},
+    {"label":_(u"Age"), "code":"age", "champ":None, "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":"age", "actif":True, "afficher":True},
+    {"label":_(u"CP naiss."), "code":"cp_naiss", "champ":"cp_naiss", "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Ville naiss."), "code":"ville_naiss", "champ":"ville_naiss", "typeDonnee":"texte", "align":"left", "largeur":85, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"adresse_auto"), "code":"adresse_auto", "champ":"adresse_auto", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":_(u"Catégorie socio."), "code":"categorie_socio", "champ":"categories_travail.nom", "typeDonnee":"texte", "align":"left", "largeur":95, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":u"Profession", "code":"profession", "champ":"profession", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Employeur", "code":"employeur", "champ":"employeur", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Tél pro.", "code":"travail_tel", "champ":"travail_tel", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Fax pro.", "code":"travail_fax", "champ":"travail_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Email pro.", "code":"travail_mail", "champ":"travail_mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Tél dom.", "code":"tel_domicile", "champ":"tel_domicile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Tél mobile", "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
-    {"label":u"Fax dom.", "code":"tel_fax", "champ":"tel_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Email", "code":"mail", "champ":"mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Profession"), "code":"profession", "champ":"profession", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Employeur"), "code":"employeur", "champ":"employeur", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Tél pro."), "code":"travail_tel", "champ":"travail_tel", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Fax pro."), "code":"travail_fax", "champ":"travail_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Email pro."), "code":"travail_mail", "champ":"travail_mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Tél dom."), "code":"tel_domicile", "champ":"tel_domicile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Tél mobile"), "code":"tel_mobile", "champ":"tel_mobile", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
+    {"label":_(u"Fax dom."), "code":"tel_fax", "champ":"tel_fax", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Email"), "code":"mail", "champ":"mail", "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":True},
     
-    {"label":u"Genre", "code":"genre", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Civilité court", "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"Civilité long", "code":"civiliteAbrege", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
-    {"label":u"nomImage", "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":_(u"Genre"), "code":"genre", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Civilité court"), "code":"civiliteLong", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":65, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"Civilité long"), "code":"civiliteAbrege", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":75, "stringConverter":None, "actif":True, "afficher":False},
+    {"label":_(u"nomImage"), "code":"nomImage", "champ":None, "typeDonnee":"texte", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
     
-    {"label":u"IDfamille", "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
+    {"label":_(u"IDfamille"), "code":"IDfamille", "champ":"inscriptions.IDfamille", "typeDonnee":"entier", "align":"left", "largeur":45, "stringConverter":None, "actif":False, "afficher":False},
     
     ]
 
@@ -82,8 +85,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -319,7 +322,7 @@ class ListView(GroupListView):
 
         def FormateAge(age):
             if age == None : return ""
-            return u"%d ans" % age
+            return _(u"%d ans") % age
 
         def rowFormatter(listItem, track):
             if track.valide == False :
@@ -371,7 +374,7 @@ class ListView(GroupListView):
         self.SetShowItemCounts(True)
         if len(self.columns) > 0 :
             self.SetSortColumn(self.columns[0])
-        self.SetEmptyListMsg(u"Aucune inscription")
+        self.SetEmptyListMsg(_(u"Aucune inscription"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
         
@@ -404,7 +407,7 @@ class ListView(GroupListView):
         else:
             self.selectionID = None
             self.selectionTrack = None
-        attente = wx.BusyInfo(u"Recherche des données...", self)
+        attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
         attente.Destroy() 
@@ -440,7 +443,7 @@ class ListView(GroupListView):
         menuPop = wx.Menu()
 
         # Item Ouverture fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -449,14 +452,14 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
         
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -465,14 +468,14 @@ class ListView(GroupListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -484,7 +487,7 @@ class ListView(GroupListView):
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -499,22 +502,22 @@ class ListView(GroupListView):
     def Apercu(self, event):
         nbreIndividus = len(self.donnees) 
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des inscriptions", intro=self.labelParametres, total=u"> %d individus" % nbreIndividus, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des inscriptions"), intro=self.labelParametres, total=_(u"> %d individus") % nbreIndividus, format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         nbreIndividus = len(self.donnees) 
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des inscriptions", intro=self.labelParametres, total=u"> %d individus" % nbreIndividus, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des inscriptions"), intro=self.labelParametres, total=_(u"> %d individus") % nbreIndividus, format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des inscriptions", autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des inscriptions"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des inscriptions", autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des inscriptions"), autoriseSelections=False)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -526,7 +529,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -564,7 +567,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nomComplet" : {"mode" : "nombre", "singulier" : u"individu", "pluriel" : u"individus", "alignement" : wx.ALIGN_CENTER},
+            "nomComplet" : {"mode" : "nombre", "singulier" : _(u"individu"), "pluriel" : _(u"individus"), "alignement" : wx.ALIGN_CENTER},
             "totalFacture" : {"mode" : "total"},
             "totalRegle" : {"mode" : "total"},
             "totalSolde" : {"mode" : "total"},

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import FonctionsPerso
 import wx.lib.agw.hypertreelist as HTL
@@ -21,6 +24,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 import UTILS_Utilisateurs
 import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites() 
+import FonctionsPerso
 
 try: import psyco; psyco.full()
 except: pass
@@ -34,8 +38,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -44,7 +48,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -65,10 +69,10 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( u"Famille/Individu/Prestations", 250, wx.ALIGN_LEFT),
-            ( u"Détail", 250, wx.ALIGN_LEFT),
-            ( u"Montant", 70, wx.ALIGN_RIGHT),
-            ( u"Qté", 60, wx.ALIGN_CENTER),
+            ( _(u"Famille/Individu/Prestations"), 250, wx.ALIGN_LEFT),
+            ( _(u"Détail"), 250, wx.ALIGN_LEFT),
+            ( _(u"Montant"), 70, wx.ALIGN_RIGHT),
+            ( _(u"Qté"), 60, wx.ALIGN_CENTER),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -137,7 +141,7 @@ class CTRL(HTL.HyperTreeList):
         dictStats = {"montant":0.0, "nombre":0, "familles":0, "individus":0, "prestations":{} }
         for IDprestation, date, categorie, label, montant, IDactivite, IDfamille, IDindividu, IDcategorie_tarif, nom, prenom, date_naiss, nomActivite, IDcivilite in listeDonnees :
             date = DateEngEnDateDD(date)
-            if nomActivite == None : nomActivite = u"Nom d'activité inconnu"
+            if nomActivite == None : nomActivite = _(u"Nom d'activité inconnu")
             
             if self.dictTitulaires.has_key(IDfamille) :
                 
@@ -191,7 +195,7 @@ class CTRL(HTL.HyperTreeList):
     def MAJ(self, listeActivites=[], presents=None, listeVilles=None, labelParametres=""):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage(listeActivites, presents, listeVilles)
         self.labelParametres = labelParametres
 
@@ -229,17 +233,17 @@ class CTRL(HTL.HyperTreeList):
                 # Niveau individu
                 nomIndividu = u"%s %s" % (dictIndividu["nom"], dictIndividu["prenom"])
                 if dictIndividu["date_naiss"] == None :
-                    datenaiss_str = u"Sans date de naissance"
+                    datenaiss_str = _(u"Sans date de naissance")
                 else:
                     if DICT_CIVILITES[dictIndividu["IDcivilite"]]["sexe"] == "M" :
-                        datenaiss_str = u"né le %s" % DateEngFr(dictIndividu["date_naiss"])
+                        datenaiss_str = _(u"né le %s") % DateEngFr(dictIndividu["date_naiss"])
                     else:
-                        datenaiss_str = u"née le %s" % DateEngFr(dictIndividu["date_naiss"])
+                        datenaiss_str = _(u"née le %s") % DateEngFr(dictIndividu["date_naiss"])
                 
                 if dictIndividu["nom"] != None :
                     labelIndividu = u"%s (%s)" % (nomIndividu, datenaiss_str)
                 else :
-                    labelIndividu = u"Prestations familiales"
+                    labelIndividu = _(u"Prestations familiales")
                 niveauIndividu = self.AppendItem(niveauFamille, labelIndividu)
                 self.SetPyData(niveauIndividu, {"type" : "individu", "valeur" : IDindividu})
                 
@@ -273,18 +277,18 @@ class CTRL(HTL.HyperTreeList):
             self.listeImpression["donnees"].append(impressionTempFamille)
             
         # Stats
-        niveauStats = self.AppendItem(self.root, u"TOTAL")
+        niveauStats = self.AppendItem(self.root, _(u"TOTAL"))
         self.SetPyData(niveauStats, {"type" : "stats", "valeur" : None})
         self.SetItemBold(niveauStats, True)
         self.SetItemBackgroundColour(niveauStats, COULEUR_FOND_REGROUPEMENT)
         
-        detail = u"%d familles et %s individus" % (dictStats["familles"], dictStats["individus"])
+        detail = _(u"%d familles et %s individus") % (dictStats["familles"], dictStats["individus"])
         montantStr = u"%.2f %s" % (dictStats["montant"], SYMBOLE)
         self.SetItemText(niveauStats, detail, 1)
         self.SetItemText(niveauStats, montantStr, 2)
         self.SetItemText(niveauStats, str(dictStats["nombre"]), 3)
         
-        self.listeImpression["totaux"].append((u"TOTAL", detail, montantStr, dictStats["nombre"]))
+        self.listeImpression["totaux"].append((_(u"TOTAL"), detail, montantStr, dictStats["nombre"]))
         
         # Tri par label
         listeLabels = []
@@ -322,7 +326,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -336,13 +340,13 @@ class CTRL(HTL.HyperTreeList):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         dictItem = self.GetMainWindow().GetItemPyData(self.GetSelection())
         if dictItem == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune famille dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         type = dictItem["type"]
         if type != "famille" : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune famille dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -369,8 +373,8 @@ class CTRL(HTL.HyperTreeList):
         # Initialisation du PDF
         PAGE_HEIGHT=defaultPageSize[1]
         PAGE_WIDTH=defaultPageSize[0]
-        nomDoc = "Temp/liste_prestations_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        nomDoc = "Temp/liste_prestations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30, leftMargin=40, rightMargin=40)
         story = []
         
@@ -380,7 +384,7 @@ class CTRL(HTL.HyperTreeList):
         dataTableau = []
         largeursColonnes = ( (420, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (u"Liste des prestations", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"Liste des prestations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 

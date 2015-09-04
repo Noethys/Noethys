@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hyperlink as Hyperlink
 
 import OL_Factures
@@ -63,9 +66,10 @@ class CTRL(wx.Panel):
         
         # Options de liste
         self.ctrl_recherche = OL_Factures.BarreRecherche(self, listview=self.ctrl_factures)
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.ctrl_afficher_annulations = wx.CheckBox(self, -1, u"Afficher les factures annulées")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, "|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
         self.__set_properties()
         self.__do_layout()
@@ -77,15 +81,17 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeImprimer, self.bouton_liste_imprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportTexte, self.bouton_liste_export_texte)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportExcel, self.bouton_liste_export_excel)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckAnnulations, self.ctrl_afficher_annulations)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée")
-        self.bouton_email.SetToolTipString(u"Cliquez ici envoyer la facture sélectionnée par Email")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées")
-        self.bouton_liste_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")
-        self.bouton_liste_imprimer.SetToolTipString(u"Cliquez ici pour imprimer cette liste")
-        self.bouton_liste_export_texte.SetToolTipString(u"Cliquez ici pour exporter cette liste au format Texte")
-        self.bouton_liste_export_excel.SetToolTipString(u"Cliquez ici pour exporter cette liste au format Excel")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici envoyer la facture sélectionnée par Email"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées"))
+        self.bouton_liste_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste"))
+        self.bouton_liste_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer cette liste"))
+        self.bouton_liste_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Texte"))
+        self.bouton_liste_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Excel"))
+        self.ctrl_afficher_annulations.SetToolTipString(_(u"Cochez cette case pour afficher les factures annulées dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -112,9 +118,11 @@ class CTRL(wx.Panel):
         grid_sizer_liste.Add(grid_sizer_commandes, 1, wx.EXPAND, 0)
         
         # Options de liste
-        grid_sizer_options_liste = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5) 
+        grid_sizer_options_liste = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5) 
         grid_sizer_options_liste.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
-        grid_sizer_options_liste.Add((40, 5), 0, wx.EXPAND, 0)
+        grid_sizer_options_liste.Add((10, 5), 0, wx.EXPAND, 0)
+        grid_sizer_options_liste.Add(self.ctrl_afficher_annulations, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options_liste.Add((10, 5), 0, wx.EXPAND, 0)
         grid_sizer_options_liste.Add(self.hyper_tout, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options_liste.Add(self.label_separation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options_liste.Add(self.hyper_rien, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -165,7 +173,9 @@ class CTRL(wx.Panel):
     def SetFiltres(self, filtres=[]):
         self.ctrl_factures.SetFiltres(filtres)
 
-
+    def OnCheckAnnulations(self, event=None):
+        self.ctrl_factures.afficherAnnulations = self.ctrl_afficher_annulations.GetValue() 
+        self.MAJ() 
 
 
 
@@ -179,7 +189,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)        
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -195,7 +205,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,11 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import datetime
 import os
 import  wx.grid as gridlib
@@ -18,6 +22,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import CTRL_Bandeau
 import CTRL_Choix_modele
+import FonctionsPerso
 
 import GestionDB
 import DATA_Civilites as Civilites
@@ -33,23 +38,23 @@ from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 LISTE_DONNEES = [
-    { "nom" : u"Reçu", "champs" : [ 
+    { "nom" : _(u"Reçu"), "champs" : [ 
         { "code" : "numero", "label" : "Numéro"}, 
         { "code" : "date", "label" : "Date d'édition"}, 
         { "code" : "lieu", "label" : "Lieu d'édition"},
         ] },
-    { "nom" : u"Destinataire", "champs" : [ 
+    { "nom" : _(u"Destinataire"), "champs" : [ 
         { "code" : "nom", "label" : "Nom"}, 
         { "code" : "rue", "label" : "Rue"}, 
         { "code" : "ville", "label" : "CP + Ville"},
         ] },
-    { "nom" : u"Organisme", "champs" : [ 
+    { "nom" : _(u"Organisme"), "champs" : [ 
         { "code" : "siret", "label" : "Numéro SIRET"}, 
         { "code" : "ape", "label" : "Code APE"}, 
         ] },
     ]
 
-TEXTE_INTRO = u"Je soussigné{GENRE} {NOM}, {FONCTION}, certifie avoir reçu pour la famille de {FAMILLE} la somme de {MONTANT}."
+TEXTE_INTRO = _(u"Je soussigné{GENRE} {NOM}, {FONCTION}, certifie avoir reçu pour la famille de {FAMILLE} la somme de {MONTANT}.")
 
 DICT_DONNEES = {}
 
@@ -57,8 +62,8 @@ DICT_DONNEES = {}
 def DateComplete(dateDD):
     u""" Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 u"""
     if dateDD == None or dateDD == "" : return ""
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -322,35 +327,35 @@ class Dialog(wx.Dialog):
         self.IDfamille = self.dictReglement["IDfamille"]
                 
         # Bandeau
-        intro = u"Vous pouvez ici éditer un reçu de règlement au format PDF. Pour un reçu standard, cliquez tout simplement sur 'Aperçu' ou sur 'Envoyer Par Email'."
-        titre = u"Edition d'un reçu de règlement"
+        intro = _(u"Vous pouvez ici éditer un reçu de règlement au format PDF. Pour un reçu standard, cliquez tout simplement sur 'Aperçu' ou sur 'Envoyer Par Email'.")
+        titre = _(u"Edition d'un reçu de règlement")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
         
         # Données
-        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, u"Données")
+        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
         self.ctrl_donnees = CTRL_Donnees(self)
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.label_modele = wx.StaticText(self, -1, u"Modèle :")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie="reglement")
         self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
-        self.label_signataire = wx.StaticText(self, -1, u"Signataire :")
+        self.label_signataire = wx.StaticText(self, -1, _(u"Signataire :"))
         self.ctrl_signataire = CTRL_Signataires(self)
         
-        self.label_intro = wx.StaticText(self, -1, u"Intro :")
+        self.label_intro = wx.StaticText(self, -1, _(u"Intro :"))
         self.ctrl_intro = wx.CheckBox(self, -1, u"")
         self.ctrl_intro.SetValue(True)
         self.ctrl_texte_intro = wx.TextCtrl(self, -1, TEXTE_INTRO)
-        self.label_prestations = wx.StaticText(self, -1, u"Prestations :")
-        self.ctrl_prestations = wx.CheckBox(self, -1, u"Afficher la liste des prestations payées avec ce règlement")
+        self.label_prestations = wx.StaticText(self, -1, _(u"Prestations :"))
+        self.ctrl_prestations = wx.CheckBox(self, -1, _(u"Afficher la liste des prestations payées avec ce règlement"))
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_email = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Envoyer_par_email.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -367,18 +372,18 @@ class Dialog(wx.Dialog):
         self.OnCheckIntro(None) 
 
     def __set_properties(self):
-        self.SetTitle(u"Edition d'un reçu de règlement")
-        self.ctrl_donnees.SetToolTipString(u"Vous pouvez modifier ici les données de base")
-        self.ctrl_modele.SetToolTipString(u"Selectionnez un modèle de documents")
-        self.ctrl_signataire.SetToolTipString(u"Sélectionnez ici le signataire du document")
-        self.ctrl_intro.SetToolTipString(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")
-        self.ctrl_texte_intro.SetToolTipString(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")
-        self.ctrl_prestations.SetToolTipString(u"Afficher la liste des prestations payées avec ce règlement")
-        self.bouton_gestion_modeles.SetToolTipString(u"Cliquez ici pour accéder à la gestion des modèles de documents")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_email.SetToolTipString(u"Cliquez ici pour envoyer ce document par Email")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher le PDF")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Edition d'un reçu de règlement"))
+        self.ctrl_donnees.SetToolTipString(_(u"Vous pouvez modifier ici les données de base"))
+        self.ctrl_modele.SetToolTipString(_(u"Selectionnez un modèle de documents"))
+        self.ctrl_signataire.SetToolTipString(_(u"Sélectionnez ici le signataire du document"))
+        self.ctrl_intro.SetToolTipString(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' "))
+        self.ctrl_texte_intro.SetToolTipString(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes."))
+        self.ctrl_prestations.SetToolTipString(_(u"Afficher la liste des prestations payées avec ce règlement"))
+        self.bouton_gestion_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles de documents"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((570, 500))
 
     def __do_layout(self):
@@ -522,7 +527,7 @@ class Dialog(wx.Dialog):
         
         # Demande la confirmation de sauvegarde
         if demander == True :
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous mémoriser le reçu édité ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)", u"Sauvegarde", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser le reçu édité ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -544,7 +549,7 @@ class Dialog(wx.Dialog):
         UTILS_Historique.InsertActions([{
                 "IDfamille" : self.IDfamille,
                 "IDcategorie" : 28, 
-                "action" : u"Edition d'un reçu pour le règlement ID%d" % self.dictSave["IDreglement"],
+                "action" : _(u"Edition d'un reçu pour le règlement ID%d") % self.dictSave["IDreglement"],
                 },])
 
     def OnBoutonOk(self, event): 
@@ -554,7 +559,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Recu_reglement.pdf", categorie="recu_reglement", listeAdresses=self.listeAdresses)
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RECU%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="recu_reglement", listeAdresses=self.listeAdresses)
     
     def GetPrestations(self):
         DB = GestionDB.DB()
@@ -668,7 +673,7 @@ class Dialog(wx.Dialog):
         # Récupération du signataire
         infosSignataire = self.ctrl_signataire.GetInfos()
         if infosSignataire == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun signataire !", u"Annulation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -728,7 +733,7 @@ class Dialog(wx.Dialog):
         # Récupération du modèle
         IDmodele = self.ctrl_modele.GetID() 
         if IDmodele == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un modèle !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

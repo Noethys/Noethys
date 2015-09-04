@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import DATA_Civilites as Civilites
 LISTE_CIVILITES = Civilites.LISTE_CIVILITES
@@ -17,7 +20,7 @@ class Civilite(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=self.GetListeCivilites()) 
         self.parent = parent
-        self.SetToolTipString(u"Sélectionnez ici la civilité de l'individu s'il s'agit\nd'un adulte ou le genre s'il s'agit d'un enfant")
+        self.SetToolTipString(_(u"Sélectionnez ici la civilité de l'individu s'il s'agit\nd'un adulte ou le genre s'il s'agit d'un enfant"))
     
     def GetListeCivilites(self):
         self.dictCivilites = {}

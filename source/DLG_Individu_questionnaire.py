@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Questionnaire
 import GestionDB
 
@@ -23,7 +26,7 @@ class Panel(wx.Panel):
         self.majEffectuee = False
         
         # Questionnaire
-        self.staticbox_inscriptions = wx.StaticBox(self, -1, u"Questionnaire")
+        self.staticbox_inscriptions = wx.StaticBox(self, -1, _(u"Questionnaire"))
         self.ctrl_questionnaire = CTRL_Questionnaire.CTRL(self, type="individu", IDindividu=IDindividu)
         self.ctrl_questionnaire.SetMinSize((20, 20)) 
         
@@ -116,7 +119,7 @@ class MyFrame(wx.Frame):
         self.IDindividu = 20
         self.ctrl = Panel(panel, IDindividu=self.IDindividu)
         self.ctrl.MAJ() 
-        self.bouton_1 = wx.BitmapButton(panel, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_1 = CTRL_Bouton_image.CTRL(panel, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.bouton_1, 0, wx.EXPAND|wx.ALL, 10)
@@ -131,7 +134,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

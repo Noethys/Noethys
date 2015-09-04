@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.combo
 import wx.lib.wordwrap as wordwrap
 
@@ -146,17 +149,17 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
 
         donnees = [
-            {"image" : wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_ANY), "label" : u"Item 1", "description" : u"Ceci est la description de l'item 1 qui est vraiment un texte très long qui devrait normalement dépasser."} ,
-            {"image" : wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_ANY), "label" : u"Item 2", "description" : u"Ceci est la description de l'item 2"} ,
-            {"image" : None, "label" : u"Item 3", "description" : u"Ceci est la description de l'item 3"} ,
-            {"label" : u"Item 4", "description" : u"Ceci est la description de l'item 4"} ,
+            {"image" : wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_ANY), "label" : _(u"Item 1"), "description" : _(u"Ceci est la description de l'item 1 qui est vraiment un texte très long qui devrait normalement dépasser.")} ,
+            {"image" : wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_ANY), "label" : _(u"Item 2"), "description" : _(u"Ceci est la description de l'item 2")} ,
+            {"image" : None, "label" : _(u"Item 3"), "description" : _(u"Ceci est la description de l'item 3")} ,
+            {"label" : _(u"Item 4"), "description" : _(u"Ceci est la description de l'item 4")} ,
             ]
         self.ctrl1 = CTRL(panel, donnees=donnees, nbreLignesDescription=1)
         self.ctrl1.Select(0)
         
         donnees = []
         for x in range(1, 100) :
-            donnees.append({"image" : wx.Bitmap("Images/32x32/Loupe.png", wx.BITMAP_TYPE_ANY), "label" : u"Item %d" % x, "description" : u"Ceci est la description de l'item %d" % x})
+            donnees.append({"image" : wx.Bitmap("Images/32x32/Loupe.png", wx.BITMAP_TYPE_ANY), "label" : _(u"Item %d") % x, "description" : _(u"Ceci est la description de l'item %d") % x})
         self.ctrl2 = CTRL(panel, donnees=donnees)
 ##        self.ctrl2.Select(0)
 

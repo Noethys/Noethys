@@ -8,9 +8,12 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
-import DLG_Saisie_operation
+import DLG_Saisie_operation_tresorerie
 import DLG_Saisie_virement
 import datetime
 
@@ -104,15 +107,15 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDcompte", typeDonnee="entier"),
-            ColumnDefn(u"Numéro", 'left', 120, "numero", typeDonnee="texte"),
-            ColumnDefn(u"Nom", 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Solde du jour", "right", 100, "solde_jour", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Solde pointé", "right", 100, "solde_pointe", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Solde final", "right", 100, "solde", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Numéro"), 'left', 120, "numero", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Solde du jour"), "right", 100, "solde_jour", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Solde pointé"), "right", 100, "solde_pointe", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Solde final"), "right", 100, "solde", typeDonnee="montant", stringConverter=FormateMontant),
             ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun compte bancaire")
+        self.SetEmptyListMsg(_(u"Aucun compte bancaire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
@@ -143,7 +146,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Accéder au compte")
+        item = wx.MenuItem(menuPop, 10, _(u"Accéder au compte"))
         bmp = wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -152,14 +155,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -168,14 +171,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -186,33 +189,33 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des comptes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des comptes"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des comptes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des comptes"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des comptes")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des comptes"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des comptes")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des comptes"))
 
 
     def Modifier(self, event):
 ##        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_categories_comptables", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun compte à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun compte à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        import DLG_Liste_operations
-        dlg = DLG_Liste_operations.Dialog(self, IDcompte_bancaire=track.IDcompte)
+        import DLG_Liste_operations_tresorerie
+        dlg = DLG_Liste_operations_tresorerie.Dialog(self, IDcompte_bancaire=track.IDcompte)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(track=track)
         dlg.Destroy()
@@ -226,7 +229,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = listview
@@ -265,7 +268,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nom" : {"mode" : "nombre", "singulier" : u"compte", "pluriel" : u"comptes", "alignement" : wx.ALIGN_LEFT},
+            "nom" : {"mode" : "nombre", "singulier" : _(u"compte"), "pluriel" : _(u"comptes"), "alignement" : wx.ALIGN_LEFT},
             "solde" : {"mode" : "total"},
             "solde_jour" : {"mode" : "total"},
             "solde_pointe" : {"mode" : "total"},

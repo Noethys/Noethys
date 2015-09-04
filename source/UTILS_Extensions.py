@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import sys
 import importlib
@@ -28,13 +31,13 @@ def Extensions(ext="py"):
             listeExtensions.append(titre)
     
     if len(listeExtensions) == 0 :
-        dlg = wx.MessageDialog(None, u"Aucune extension n'est installée !", u"Extensions", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Aucune extension n'est installée !"), _(u"Extensions"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return False
 
     # Demande l'extension à charger
-    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez une extension dans la liste proposée :", "Chargement d'une extension", listeExtensions)
+    dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez une extension dans la liste proposée :"), "Chargement d'une extension", listeExtensions)
     dlg.SetSize((500, 400))
     dlg.CenterOnScreen() 
     nomExtension = None

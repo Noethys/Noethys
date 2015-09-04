@@ -8,13 +8,16 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import textwrap
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, listeBoutons=[], titre=u"Quel type de prélèvement souhaitez-vous créer ?", intro=u"Cliquez sur la norme souhaitée...", minSize=(500, 400)):
+    def __init__(self, parent, listeBoutons=[], titre=_(u"Quel type de prélèvement souhaitez-vous créer ?"), intro=_(u"Cliquez sur la norme souhaitée..."), minSize=(500, 400)):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.minSize = minSize
@@ -32,7 +35,7 @@ class Dialog(wx.Dialog):
             index += 1
 
         # Boutons
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -41,7 +44,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
 
     def __set_properties(self):
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize(self.minSize)
 
     def __do_layout(self):
@@ -80,8 +83,8 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     listeBoutons = [
-        (u"Label 1", u"Description 1"),
-        (u"Label 2", u"Description 2"),
+        (_(u"Label 1"), _(u"Description 1")),
+        (_(u"Label 2"), _(u"Description 2")),
         ]
     dialog_1 = Dialog(None, listeBoutons=listeBoutons)
     app.SetTopWindow(dialog_1)

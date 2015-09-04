@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import calendar
 
@@ -25,18 +28,18 @@ def DateEngFr(textDate):
     return text
 
 
-LISTE_MOIS = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+LISTE_MOIS = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
 
 
 
 class CTRL_Vacances(wx.Choice):
     def __init__(self, parent):
-        self.listePeriodes = (u"Février", u"Pâques", u"Eté", u"Toussaint", u"Noël")
+        self.listePeriodes = (_(u"Février"), _(u"Pâques"), _(u"Eté"), _(u"Toussaint"), _(u"Noël"))
         wx.Choice.__init__(self, parent, -1, choices=self.listePeriodes)
         self.parent = parent
         self.Select(0)
     
-    def SetPeriode(self, nom=u"Février"):
+    def SetPeriode(self, nom=_(u"Février")):
         self.SetStringSelection(nom)
         
     def GetPeriode(self):
@@ -85,21 +88,21 @@ class CTRL_Mode(wx.Panel):
         self.mode = None
         self.periode = None
 
-        self.radio_inscrits = wx.RadioButton(self, -1, u"Inscrits", style=wx.RB_GROUP)
-        self.radio_presents = wx.RadioButton(self, -1, u"Présents sur la période suivante :")
+        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Inscrits"), style=wx.RB_GROUP)
+        self.radio_presents = wx.RadioButton(self, -1, _(u"Présents sur la période suivante :"))
         
-        self.radio_vacances = wx.RadioButton(self, -1, u"Vacances :", style=wx.RB_GROUP)
+        self.radio_vacances = wx.RadioButton(self, -1, _(u"Vacances :"), style=wx.RB_GROUP)
         self.ctrl_vacances = CTRL_Vacances(self)
         self.ctrl_vacances_annee = CTRL_Annee(self)
         
-        self.radio_mois = wx.RadioButton(self, -1, u"Mois :")
+        self.radio_mois = wx.RadioButton(self, -1, _(u"Mois :"))
         self.ctrl_mois = CTRL_Mois(self)
         self.ctrl_mois_annee = CTRL_Annee(self)
         
-        self.radio_annee = wx.RadioButton(self, -1, u"Année :")
+        self.radio_annee = wx.RadioButton(self, -1, _(u"Année :"))
         self.ctrl_annee =CTRL_Annee(self)
         
-        self.radio_dates = wx.RadioButton(self, -1, u"Dates :")
+        self.radio_dates = wx.RadioButton(self, -1, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_separation_dates = wx.StaticText(self, -1, u"à")
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
@@ -119,8 +122,8 @@ class CTRL_Mode(wx.Panel):
         self.OnRadioMethode()
 
     def __set_properties(self):
-        self.radio_inscrits.SetToolTipString(u"Cochez ici pour baser les calculs sur les inscrits")
-        self.radio_presents.SetToolTipString(u"Cochez ici pour baser les calculs sur les présents sur une période donnée")
+        self.radio_inscrits.SetToolTipString(_(u"Cochez ici pour baser les calculs sur les inscrits"))
+        self.radio_presents.SetToolTipString(_(u"Cochez ici pour baser les calculs sur les présents sur une période donnée"))
         self.ctrl_vacances_annee.SetMinSize((70, -1))
         self.ctrl_mois_annee.SetMinSize((70, -1))
         self.ctrl_annee.SetMinSize((70, -1))
@@ -221,7 +224,7 @@ class CTRL_Mode(wx.Panel):
 
         # Vérifie que la période de vacances existe dans la base
         DB = GestionDB.DB()        
-        req = u"SELECT nom, annee, date_debut, date_fin FROM vacances ORDER BY date_debut;"
+        req = _(u"SELECT nom, annee, date_debut, date_fin FROM vacances ORDER BY date_debut;")
         DB.ExecuterReq(req)
         listeVacances = DB.ResultatReq()
         DB.Close()
@@ -274,54 +277,54 @@ class CTRL_Mode(wx.Panel):
             if self.radio_vacances.GetValue() == True :
                 vacances, annee, date_debut, date_fin = self.GetPeriodeVacances() 
                 if date_debut == None or date_fin == None :
-                    dlg = wx.MessageDialog(self, u"La période de vacances que vous avez sélectionné n'a pas été paramétré !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"La période de vacances que vous avez sélectionné n'a pas été paramétré !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
-                label = u"Les vacances de %s %d (du %s au %s)" % (vacances, annee, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+                label = _(u"Les vacances de %s %d (du %s au %s)") % (vacances, annee, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
                 dictPeriode = {"type":"vacances", "vacances":vacances, "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":label}
 
             # Mois
             if self.radio_mois.GetValue() == True :
                 mois, annee, date_debut, date_fin = self.GetPeriodeMois() 
                 if mois == None :
-                    dlg = wx.MessageDialog(self, u"L'année que avez saisi n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'année que avez saisi n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
-                label = u"Le mois de %s %d (du %s au %s)" % (LISTE_MOIS[mois-1], annee, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+                label = _(u"Le mois de %s %d (du %s au %s)") % (LISTE_MOIS[mois-1], annee, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
                 dictPeriode = {"type":"mois", "mois":mois, "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":label}
 
             # Année
             if self.radio_annee.GetValue() == True :
                 annee, date_debut, date_fin = self.GetPeriodeAnnee() 
                 if annee == None :
-                    dlg = wx.MessageDialog(self, u"L'année que avez saisi n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"L'année que avez saisi n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
-                label = u"L'année %d (du %s au %s)" % (annee, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+                label = _(u"L'année %d (du %s au %s)") % (annee, DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
                 dictPeriode = {"type":"annee", "annee":annee, "date_debut":date_debut, "date_fin":date_fin, "label":label}
 
             # Dates
             if self.radio_dates.GetValue() == True :
                 date_debut, date_fin = self.GetPeriodeDates() 
                 if date_debut == None or self.ctrl_date_debut.Validation() == False :
-                    dlg = wx.MessageDialog(self, u"La date de début que avez saisi n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"La date de début que avez saisi n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
                 if date_fin == None or self.ctrl_date_fin.Validation() == False :
-                    dlg = wx.MessageDialog(self, u"La date de fin que avez saisi n'est pas valide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"La date de fin que avez saisi n'est pas valide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
                 if date_debut > date_fin :
-                    dlg = wx.MessageDialog(self, u"La date de début est supérieure à la date de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
-                label = u"Du %s au %s" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+                label = _(u"Du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
                 dictPeriode = {"type":"dates", "date_debut":date_debut, "date_fin":date_fin, "label":label}
 
         self.mode = mode
@@ -394,24 +397,24 @@ class Dialog(wx.Dialog):
         self.dictParametres = {}
         
         # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         
         # Mode
-        self.box_mode_staticbox = wx.StaticBox(self, -1, u"Mode de calcul")
+        self.box_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de calcul"))
         self.ctrl_mode = CTRL_Mode(self)
 
         # Options
-##        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options")
-##        self.label_presents = wx.StaticText(self, -1, u"Méthode de calcul :")
-##        self.radio_presents_1 = wx.RadioButton(self, -1, u"Présents", style = wx.RB_GROUP)
-##        self.radio_presents_2 = wx.RadioButton(self, -1, u"Inscrits")
+##        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+##        self.label_presents = wx.StaticText(self, -1, _(u"Méthode de calcul :"))
+##        self.radio_presents_1 = wx.RadioButton(self, -1, _(u"Présents"), style = wx.RB_GROUP)
+##        self.radio_presents_2 = wx.RadioButton(self, -1, _(u"Inscrits"))
 ##        self.radio_presents_1.SetValue(True) 
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -428,10 +431,10 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Sélection des paramètres")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Sélection des paramètres"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((460, 600))
 
     def __do_layout(self):
@@ -513,7 +516,7 @@ class Dialog(wx.Dialog):
         self.listeActivites.sort()
         self.dictActivites = self.ctrl_activites.GetDictActivites() 
         if len(self.listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

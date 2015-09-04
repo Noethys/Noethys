@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -30,31 +33,31 @@ class Dialog(wx.Dialog):
         self.dictDonnees = dictDonnees
         
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"Nom de l'unité")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unité"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Dates validité
-        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, u"Dates de validité")
+        self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du", style=wx.ALIGN_RIGHT)
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
                 
         # Prestation
-        self.staticbox_prestation_staticbox = wx.StaticBox(self, -1, u"Prestation")
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.staticbox_prestation_staticbox = wx.StaticBox(self, -1, _(u"Prestation"))
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self)
-        self.label_label_prestation = wx.StaticText(self, -1, u"Label de la\nprestation :", style=wx.ALIGN_RIGHT)
-        self.radio_label_defaut = wx.RadioButton(self, -1, u"Par défaut :", style=wx.RB_GROUP)
+        self.label_label_prestation = wx.StaticText(self, -1, _(u"Label de la\nprestation :"), style=wx.ALIGN_RIGHT)
+        self.radio_label_defaut = wx.RadioButton(self, -1, _(u"Par défaut :"), style=wx.RB_GROUP)
         self.ctrl_label_defaut = wx.StaticText(self, -1, u"")
-        self.radio_label_personnalise = wx.RadioButton(self, -1, u"Personnalisé :")
+        self.radio_label_personnalise = wx.RadioButton(self, -1, _(u"Personnalisé :"))
         self.ctrl_label_personnalise = wx.TextCtrl(self, -1, u"")
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -67,26 +70,26 @@ class Dialog(wx.Dialog):
         
         # Init contrôles
         if len(dictDonnees) == 0 :
-            self.SetTitle(u"Saisie d'une nouvelle unité de cotisation")
+            self.SetTitle(_(u"Saisie d'une nouvelle unité de cotisation"))
             self.SetLabelPrestationDefaut() 
         else:
-            self.SetTitle(u"Modification d'une unité de cotisation")
+            self.SetTitle(_(u"Modification d'une unité de cotisation"))
             self.Importation()
         self.OnRadioLabel(None) 
 
     def __set_properties(self):
         self.ctrl_label_defaut.SetForegroundColour((100, 100, 100))
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de l'unité")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'unité"))
         self.label_date_debut.SetMinSize((30, -1))
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de validité")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de validité")
-        self.ctrl_montant.SetToolTipString(u"Saisissez ici le montant en euros de l'unité de cotisation")
-        self.radio_label_defaut.SetToolTipString(u"Cochez cette case pour utiliser le label de prestation par défaut")
-        self.radio_label_personnalise.SetToolTipString(u"Cochez cette case pour utiliser un label de prestation personnalisé")
-        self.ctrl_label_personnalise.SetToolTipString(u"Saisissez ici un label personnalisé")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant en euros de l'unité de cotisation"))
+        self.radio_label_defaut.SetToolTipString(_(u"Cochez cette case pour utiliser le label de prestation par défaut"))
+        self.radio_label_personnalise.SetToolTipString(_(u"Cochez cette case pour utiliser un label de prestation personnalisé"))
+        self.ctrl_label_personnalise.SetToolTipString(_(u"Saisissez ici un label personnalisé"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((470, 360))
 
     def __do_layout(self):
@@ -162,27 +165,27 @@ class Dialog(wx.Dialog):
         
         # Vérification des données
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, u"La date de début de validité n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
         
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, u"La date de fin de validité n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return False
         
         if  date_debut > date_fin :
-            dlg = wx.MessageDialog(self, u"La date de début de validité est supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début de validité est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour cette unité de cotisation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette unité de cotisation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -192,7 +195,7 @@ class Dialog(wx.Dialog):
         try :
             montant = float(montant)
         except :
-            dlg = wx.MessageDialog(self, u"Le montant que vous avez saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le montant que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()

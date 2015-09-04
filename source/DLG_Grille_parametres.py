@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.propgrid as wxpg
 import sys
 
@@ -27,7 +30,7 @@ class EditeurAvecBoutons(wxpg.PyTextCtrlEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap("Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTipString(u"Cliquez ici pour rétablir la valeur par défaut")
+        buttons.GetButton(0).SetToolTipString(_(u"Cliquez ici pour rétablir la valeur par défaut"))
         
         # Create the 'primary' editor control (textctrl in this case)
         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
@@ -95,17 +98,17 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.listeDonnees = listeDonnees
         
-        intro = u"Vous pouvez ici modifier les hauteurs de lignes et largeurs des colonnes. Pour rétablir la valeur initiale d'une ligne, cliquez sur celle-ci et cliquez sur le bouton Réinitialiser situé à droite de la colonne."
-        titre = u"Paramètres de la grille"
+        intro = _(u"Vous pouvez ici modifier les hauteurs de lignes et largeurs des colonnes. Pour rétablir la valeur initiale d'une ligne, cliquez sur celle-ci et cliquez sur le bouton Réinitialiser situé à droite de la colonne.")
+        titre = _(u"Paramètres de la grille")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
         self.ctrl_proprietes = CTRL_Proprietes(self, listeDonnees)
                 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_reinit = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Reinitialiser.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -116,10 +119,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_reinit.SetToolTipString(u"Cliquez ici pour rétablir toutes les valeurs par défaut")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour rétablir toutes les valeurs par défaut"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((600, 550))
 
     def __do_layout(self):

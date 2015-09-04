@@ -8,11 +8,14 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import datetime
 import string
 from xml.dom.minidom import Document
 
 import wx
+import CTRL_Bouton_image
 import UTILS_Utilisateurs
 import FonctionsPerso
 
@@ -21,11 +24,11 @@ import FonctionsPerso
 def DemanderChoix(parent):
     """ Propose le choix entre ROLMRE et PES V2 ORMC """
     import DLG_Choix
-    titre = u"Quel protocole d'échanges souhaitez-vous utiliser ?"
-    intro = u"Cliquez sur le protocole d'échange souhaité afin d'accéder à la fonctionnalité dédiée..."
+    titre = _(u"Quel protocole d'échanges souhaitez-vous utiliser ?")
+    intro = _(u"Cliquez sur le protocole d'échange souhaité afin d'accéder à la fonctionnalité dédiée...")
     listeBoutons = [
-        (u"Bordereau PES Recette ORMC", u"Nouveau type de bordereau Recette ORMC (Ordre de Recette Multi Créanciers) fidèle au nouveau protocole d'échange PES V2 entre les collectivités locales et la DGFIP. Remplace le protocole ROLMRE à partir du 01/02/2014."),
-        (u"Rôle ROLMRE", u"Le protocole ROLMRE est une procédure d'échanges de données utilisée dans les collectivités qui devient obsolète à partir du 01/02/2014. Au delà de cette date, il faut utiliser le bordereau PES ORMC."),
+        (_(u"Bordereau PES Recette ORMC"), _(u"Nouveau type de bordereau Recette ORMC (Ordre de Recette Multi Créanciers) fidèle au nouveau protocole d'échange PES V2 entre les collectivités locales et la DGFIP. Remplace le protocole ROLMRE à partir du 01/02/2014.")),
+        (_(u"Rôle ROLMRE"), _(u"Le protocole ROLMRE est une procédure d'échanges de données utilisée dans les collectivités qui devient obsolète à partir du 01/02/2014. Au delà de cette date, il faut utiliser le bordereau PES ORMC.")),
         ]
     dlg = DLG_Choix.Dialog(parent, listeBoutons=listeBoutons, intro=intro, titre=titre)
     reponse = dlg.ShowModal() 
@@ -80,7 +83,7 @@ def GetXML(dictDonnees={}):
     
     versionLogiciel = FonctionsPerso.GetVersionLogiciel()
     Adresse = doc.createElement("Adresse")
-    Adresse.setAttribute("V", u"Noethys %s" % versionLogiciel)
+    Adresse.setAttribute("V", _(u"Noethys %s") % versionLogiciel)
     Emetteur.appendChild(Adresse)
 
     # EnTetePES
@@ -427,10 +430,10 @@ def GetCle_modulo23(elements=[]):
 if __name__ == "__main__":
 
     dictDonnees = {
-        "nom_fichier" : u"fichier.xml",
+        "nom_fichier" : _(u"fichier.xml"),
         "date_emission" : u"2014-01-06",
-        "id_poste" : u"IDPOSTE",
-        "id_collectivite" : u"IDCOLLECTIVITE",
+        "id_poste" : _(u"IDPOSTE"),
+        "id_collectivite" : _(u"IDCOLLECTIVITE"),
         "code_collectivite" : u"2",
         "code_budget" : u"CODEBUDGET",
         "exercice" : u"2013",
@@ -438,13 +441,13 @@ if __name__ == "__main__":
         "id_bordereau" : u"5",
         "montant_total" : u"22.50",
         "date_envoi" : u"2014-01-07",
-        "objet_dette" : u"Centre de Loisirs",
+        "objet_dette" : _(u"Centre de Loisirs"),
         "code_prodloc" : "CODEPRODLOC",
         "date_prelevement" : "2014-01-08",
         "pieces" : [
             {
             "id_piece" : "1",
-            "libelle" : u"FACT0000123",
+            "libelle" : _(u"FACT0000123"),
             "num_dette" : u"2013000017",
             "montant" : u"10.50",
             "sequence" : "RCUR",
@@ -453,13 +456,13 @@ if __name__ == "__main__":
             "prelevement_rum" : "123",
             "prelevement_bic" : "123456",
             "prelevement_iban" : "45665465423456",
-            "prelevement_titulaire" : u"DUPOND Gérard",
+            "prelevement_titulaire" : _(u"DUPOND Gérard"),
             "titulaire_civilite" : "Mr.",
-            "titulaire_nom" : u"DUPOND",
-            "titulaire_prenom" : u"Gérard",
-            "titulaire_rue" : u"10 rue des oiseaux",
+            "titulaire_nom" : _(u"DUPOND"),
+            "titulaire_prenom" : _(u"Gérard"),
+            "titulaire_rue" : _(u"10 rue des oiseaux"),
             "titulaire_cp" : u"29870",
-            "titulaire_ville" : u"LANNILIS",
+            "titulaire_ville" : _(u"LANNILIS"),
             }
             ],
         }

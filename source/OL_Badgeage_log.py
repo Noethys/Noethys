@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
 import GestionDB
@@ -22,8 +25,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -32,8 +35,8 @@ def DateEngEnDateDD(dateEng):
 
 def Purger():
     """ Purge de l'historique """
-    texte = u"La purge du journal de badgeage vous permet de réduire la taille de la base de données. Il est conseillé d'y procéder une fois que vous n'avez plus besoin de l'historique de badgeage (soit quelques mois après).\n\nCommencez par sélectionner une date maximale."
-    dlg = wx.MessageDialog(None, texte, u"Purge du journal de badgeage", wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
+    texte = _(u"La purge du journal de badgeage vous permet de réduire la taille de la base de données. Il est conseillé d'y procéder une fois que vous n'avez plus besoin de l'historique de badgeage (soit quelques mois après).\n\nCommencez par sélectionner une date maximale.")
+    dlg = wx.MessageDialog(None, texte, _(u"Purge du journal de badgeage"), wx.OK|wx.CANCEL|wx.ICON_INFORMATION)
     reponse = dlg.ShowModal()
     dlg.Destroy()
     if reponse != wx.ID_OK:
@@ -50,7 +53,7 @@ def Purger():
         return False
     
     # Demande de confirmation
-    dlg = wx.MessageDialog(None, u"Confirmez-vous la purge de l'historique de badgeage jusqu'au %s inclus ?" % DateEngFr(str(date)), u"Purge du journal de badgeage", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(None, _(u"Confirmez-vous la purge de l'historique de badgeage jusqu'au %s inclus ?") % DateEngFr(str(date)), _(u"Purge du journal de badgeage"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
     reponse = dlg.ShowModal()
     dlg.Destroy()
     if reponse != wx.ID_YES:
@@ -63,7 +66,7 @@ def Purger():
     DB.Commit()
     DB.Close() 
     # Fin
-    dlg = wx.MessageDialog(None, u"Purge du journal de badgeage terminée.", u"Information", wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Purge du journal de badgeage terminée."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
 
@@ -140,24 +143,24 @@ class ListView(FastObjectListView):
         if self.modeHistorique == True :
             liste_Colonnes = [
                 ColumnDefn(u"", "left", 0, ""),
-                ColumnDefn(u"Date", 'center', 88, "date", typeDonnee="date", stringConverter=FormateDate), 
-                ColumnDefn(u"Heure", 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
-                ColumnDefn(u"Action", 'left', 270, "action", typeDonnee="texte"), 
-                ColumnDefn(u"Individu", 'left', 150, "individu", typeDonnee="texte"), 
-                ColumnDefn(u"Résultat", 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
+                ColumnDefn(_(u"Date"), 'center', 88, "date", typeDonnee="date", stringConverter=FormateDate), 
+                ColumnDefn(_(u"Heure"), 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
+                ColumnDefn(_(u"Action"), 'left', 270, "action", typeDonnee="texte"), 
+                ColumnDefn(_(u"Individu"), 'left', 150, "individu", typeDonnee="texte"), 
+                ColumnDefn(_(u"Résultat"), 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
                 ]
         else :
             liste_Colonnes = [
                 ColumnDefn(u"", "left", 0, ""),
-                ColumnDefn(u"Date", 'center', 88, "date", typeDonnee="date", stringConverter=FormateDate), 
-                ColumnDefn(u"Heure", 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
-                ColumnDefn(u"Action", 'left', 270, "action", typeDonnee="texte"), 
-                ColumnDefn(u"Individu", 'left', 130, "individu", typeDonnee="texte"), 
-                ColumnDefn(u"Résultat", 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
+                ColumnDefn(_(u"Date"), 'center', 88, "date", typeDonnee="date", stringConverter=FormateDate), 
+                ColumnDefn(_(u"Heure"), 'center', 60, "heure", typeDonnee="texte", stringConverter=FormateHeure), 
+                ColumnDefn(_(u"Action"), 'left', 270, "action", typeDonnee="texte"), 
+                ColumnDefn(_(u"Individu"), 'left', 130, "individu", typeDonnee="texte"), 
+                ColumnDefn(_(u"Résultat"), 'left', 150, "texteResultat", typeDonnee="texte", imageGetter=GetImageStatut, isSpaceFilling=True), 
                 ]
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune action")
+        self.SetEmptyListMsg(_(u"Aucune action"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
 
@@ -168,14 +171,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -184,14 +187,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -202,25 +205,25 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Journal des actions", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Journal des actions"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Journal des actions", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Journal des actions"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Journal des actions")
+        UTILS_Export.ExportTexte(self, titre=_(u"Journal des actions"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Journal des actions")
+        UTILS_Export.ExportExcel(self, titre=_(u"Journal des actions"))
 
     def AjouterAction(self, individu=u"", IDindividu=None, heure=None, action="", resultat=None):
         """ Ajouter une action """
-        """ heure="14:45" (Si heure=None : heure actuelle automatique), individu=u"DUPOND Kévin", action="enregistrer", resultat=True """
+        """ heure="14:45" (Si heure=None : heure actuelle automatique), individu=_(u"DUPOND Kévin"), action="enregistrer", resultat=True """
         track = Track(self, date=None, heure=heure, action=action, individu=individu, IDindividu=IDindividu, resultat=resultat)
         self.AddObject(track)
         self.EnsureCellVisible(self.nbreActions, 0)
@@ -268,7 +271,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une action...")
+        self.SetDescriptiveText(_(u"Rechercher une action..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

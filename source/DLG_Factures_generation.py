@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import CTRL_Bandeau
@@ -23,8 +26,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Facturation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici générer des factures. Page 1 : Sélectionnez des paramètres puis cliquez sur Suite pour afficher les factures disponibles. Page 2 : Cochez les factures à générer puis cliquez sur Suite. Page 3 : Vous pouvez effectuer d'autres actions sur les factures générées."
-        titre = u"Génération de factures"
+        intro = _(u"Vous pouvez ici générer des factures. Page 1 : Sélectionnez des paramètres puis cliquez sur Suite pour afficher les factures disponibles. Page 2 : Cochez les factures à générer puis cliquez sur Suite. Page 3 : Vous pouvez effectuer d'autres actions sur les factures générées.")
+        titre = _(u"Génération de factures")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Generation.png")
         
@@ -32,10 +35,10 @@ class Dialog(wx.Dialog):
         
         self.static_line = wx.StaticLine(self, -1)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_retour = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Retour_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_suite = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Suite_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_retour = CTRL_Bouton_image.CTRL(self, texte=_(u"Retour"), cheminImage="Images/32x32/Fleche_gauche.png")
+        self.bouton_suite = CTRL_Bouton_image.CTRL(self, texte=_(u"Suite"), cheminImage="Images/32x32/Fleche_droite.png", margesImage=(0, 0, 4, 0), positionImage=wx.RIGHT)
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -63,10 +66,10 @@ class Dialog(wx.Dialog):
         self.sizer_pages.Layout()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_retour.SetToolTipString(u"Cliquez ici pour revenir à la page précédente")
-        self.bouton_suite.SetToolTipString(u"Cliquez ici pour passer à l'étape suivante")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
+        self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
         self.SetMinSize((760, 670))
 
     def __do_layout(self):
@@ -115,10 +118,10 @@ class Dialog(wx.Dialog):
         # Si on quitte l'avant-dernière page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.Enable(True)
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Fermer.png")
         else:
             self.bouton_suite.Enable(True)
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Suite_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Fleche_droite.png")
         # Si on revient à la première page, on désactive le bouton Retour
         if self.pageVisible == 1 :
             self.bouton_retour.Enable(False)
@@ -144,7 +147,8 @@ class Dialog(wx.Dialog):
         self.sizer_pages.Layout()
         # Si on arrive à la dernière page, on désactive le bouton Suivant
         if self.pageVisible == self.nbrePages :
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Fermer.png")
+            self.bouton_suite.SetTexte(_(u"Fermer"))
             self.bouton_annuler.Enable(False)
         # Si on quitte la première page, on active le bouton Retour
         if self.pageVisible > 1 :
@@ -174,8 +178,8 @@ if __name__ == "__main__":
     IDactivite = 1
     frame_1 = Dialog(None) 
     # TESTS
-    frame_1.page1.ctrl_date_debut.SetDate(datetime.date(2011, 1, 1))
-    frame_1.page1.ctrl_date_fin.SetDate(datetime.date(2011, 12, 31))
+    frame_1.page1.ctrl_date_debut.SetDate(datetime.date(2015, 7, 1))
+    frame_1.page1.ctrl_date_fin.SetDate(datetime.date(2015, 7, 31))
     
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()

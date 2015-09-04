@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import wx.lib.agw.floatspin as FS
@@ -34,40 +37,40 @@ class Dialog(wx.Dialog):
         self.parent = parent   
 
         # Bandeau
-        titre = u"Saisir un lot de déductions"
-        intro = u"Vous pouvez saisir ici un lot de déductions pour les prestations sélectionnées. Commencez par définir les caractéristiques de la déduction puis sélectionnez les prestations concernées."
+        titre = _(u"Saisir un lot de déductions")
+        intro = _(u"Vous pouvez saisir ici un lot de déductions pour les prestations sélectionnées. Commencez par définir les caractéristiques de la déduction puis sélectionnez les prestations concernées.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Impayes.png")
 
         # Déduction
-        self.box_deduction_staticbox = wx.StaticBox(self, -1, u"Paramètres de la déduction")
-        self.label_label = wx.StaticText(self, -1, u"Label :")
+        self.box_deduction_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de la déduction"))
+        self.label_label = wx.StaticText(self, -1, _(u"Label :"))
         self.ctrl_label = wx.TextCtrl(self, -1, "")
 
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
-        self.radio_montant_fixe = wx.RadioButton(self, -1, u"Montant fixe :", style=wx.RB_GROUP)
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
+        self.radio_montant_fixe = wx.RadioButton(self, -1, _(u"Montant fixe :"), style=wx.RB_GROUP)
         self.ctrl_montant_fixe = CTRL_Saisie_euros.CTRL(self)
-        self.radio_montant_pourcent = wx.RadioButton(self, -1, u"Pourcentage :")
+        self.radio_montant_pourcent = wx.RadioButton(self, -1, _(u"Pourcentage :"))
         self.ctrl_montant_pourcent = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
         self.ctrl_montant_pourcent.SetFormat("%f")
         self.ctrl_montant_pourcent.SetDigits(2)
         
         # Prestations
-        self.box_prestations_staticbox = wx.StaticBox(self, -1, u"Sélection des prestations")
+        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"Sélection des prestations"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, "au")
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.bouton_actualiser = wx.Button(self, -1, u"Actualiser la liste")
+        self.bouton_actualiser = wx.Button(self, -1, _(u"Actualiser la liste"))
 
         self.listviewAvecFooter = OL_Saisie_lot_deductions.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_prestations = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Saisie_lot_deductions.CTRL_Outils(self, listview=self.ctrl_prestations, afficherCocher=True)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -84,15 +87,15 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(u"Saisissez le label de la déduction")
-        self.radio_montant_fixe.SetToolTipString(u"Saisie d'un montant pour chaque déduction")
-        self.radio_montant_pourcent.SetToolTipString(u"Saisie d'un pourcentage du montant de la prestation")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez une date de fin")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_label.SetToolTipString(_(u"Saisissez le label de la déduction"))
+        self.radio_montant_fixe.SetToolTipString(_(u"Saisie d'un montant pour chaque déduction"))
+        self.radio_montant_pourcent.SetToolTipString(_(u"Saisie d'un pourcentage du montant de la prestation"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((690, 650))
 
     def __do_layout(self):
@@ -174,7 +177,7 @@ class Dialog(wx.Dialog):
     def OnBoutonActualiser(self, event): 
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus() 
@@ -182,7 +185,7 @@ class Dialog(wx.Dialog):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus() 
@@ -193,7 +196,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Saisirunlotdedeductions")
 
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)        
@@ -202,7 +205,7 @@ class Dialog(wx.Dialog):
         # Déduction
         label = self.ctrl_label.GetValue()
         if len(label) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un label pour la déduction !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la déduction !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus() 
@@ -212,7 +215,7 @@ class Dialog(wx.Dialog):
             montant = self.ctrl_montant_fixe.GetMontant()
             typeValeur = "montant"
             if montant == 0.0 :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_montant_fixe.SetFocus()
@@ -221,7 +224,7 @@ class Dialog(wx.Dialog):
             pourcent = self.ctrl_montant_pourcent.GetValue() 
             typeValeur = "pourcent"
             if pourcent == 0.0 :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un pourcentage !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un pourcentage !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_montant_pourcent.SetFocus()
@@ -230,7 +233,7 @@ class Dialog(wx.Dialog):
         # Tracks
         tracks = self.ctrl_prestations.GetTracksCoches() 
         if len(tracks) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins une ligne dans la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une ligne dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -244,7 +247,7 @@ class Dialog(wx.Dialog):
                 listeLabelsPrestations.append(dictPrestation["label"]) 
         listeLabelsPrestations.sort() 
         
-        dlg = wx.MultiChoiceDialog( self, u"Cochez les prestations auxquelles vous souhaitez appliquer les déductions :", u"Sélection des prestations", listeLabelsPrestations)
+        dlg = wx.MultiChoiceDialog( self, _(u"Cochez les prestations auxquelles vous souhaitez appliquer les déductions :"), _(u"Sélection des prestations"), listeLabelsPrestations)
         dlg.SetSelections(range(0, len(listeLabelsPrestations)))
         reponse = dlg.ShowModal() 
         selections = dlg.GetSelections()
@@ -259,7 +262,7 @@ class Dialog(wx.Dialog):
             if dictPrestation["label"] in listeSelectionPrestations :
                 nbrePrestations += 1
 
-        dlg = wx.MessageDialog(self, u"Confirmez-vous la création automatique de %d déductions ?" % nbrePrestations, u"Demande de confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la création automatique de %d déductions ?") % nbrePrestations, _(u"Demande de confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -292,18 +295,18 @@ class Dialog(wx.Dialog):
                 
                 # Détection anomalie
                 valide = True
-                labelPrestation = u"Famille ID%d - Prestation ID%d '%s' : " % (dictPrestation["IDfamille"], dictPrestation["IDprestation"], dictPrestation["label"])
+                labelPrestation = _(u"Famille ID%d - Prestation ID%d '%s' : ") % (dictPrestation["IDfamille"], dictPrestation["IDprestation"], dictPrestation["label"])
                 
                 if nouveauMontantPrestation < 0.0 :
-                    listeAnomalies.append(labelPrestation + u"La déduction est plus élevée que le montant de la prestation !")
+                    listeAnomalies.append(labelPrestation + _(u"La déduction est plus élevée que le montant de la prestation !"))
                     valide = False
 
                 if nouveauMontantPrestation < montantVentilation :
-                    listeAnomalies.append(labelPrestation + u"La ventilation est plus élevée que le nouveau montant de la prestation !")
+                    listeAnomalies.append(labelPrestation + _(u"La ventilation est plus élevée que le nouveau montant de la prestation !"))
                     valide = False
 
                 if dictPrestation["IDfacture"] != None :
-                    listeAnomalies.append(labelPrestation + u"La prestation ne peut être modifiée car elle apparaît sur une facture !")
+                    listeAnomalies.append(labelPrestation + _(u"La prestation ne peut être modifiée car elle apparaît sur une facture !"))
                     valide = False
 
                 # Mémorisation
@@ -314,7 +317,7 @@ class Dialog(wx.Dialog):
                     
         # Affichages anomalies
         if len(listeAnomalies) > 0 :
-            dlg = DLG_Messagebox.Dialog(self, titre=u"Anomalies", introduction=u"Les %d anomalies suivantes ont été détectées :" % len(listeAnomalies), detail=u"\n".join(listeAnomalies), conclusion=u"Souhaitez-vous continuer pour les %d déductions valides ?" % len(listeAjouts), icone=wx.ICON_EXCLAMATION, boutons=[u"Oui", u"Non", u"Annuler"])
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Anomalies"), introduction=_(u"Les %d anomalies suivantes ont été détectées :") % len(listeAnomalies), detail=u"\n".join(listeAnomalies), conclusion=_(u"Souhaitez-vous continuer pour les %d déductions valides ?") % len(listeAjouts), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse in (1, 2) :
@@ -325,7 +328,7 @@ class Dialog(wx.Dialog):
         if len(listeAjouts) > 0 :
             DB.Executermany(u"INSERT INTO deductions (IDprestation, IDcompte_payeur, date, montant, label) VALUES (?, ?, ?, ?, ?)", listeAjouts, commit=False)
         if len(listeModifications) > 0 :
-            DB.Executermany(u"UPDATE prestations SET montant=? WHERE IDprestation=?", listeModifications, commit=False)
+            DB.Executermany(_(u"UPDATE prestations SET montant=? WHERE IDprestation=?"), listeModifications, commit=False)
         if len(listeSupprVentilations) > 0 :
             if len(listeSupprVentilations) == 1 : conditionSuppressions = "(%d)" % listeSupprVentilations[0]
             else : conditionSuppressions = str(tuple(listeSupprVentilations))
@@ -334,7 +337,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         
         # Confirmation
-        dlg = wx.MessageDialog(self, u"%d déductions ont été créées avec succès." % len(listeAjouts), u"Confirmation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d déductions ont été créées avec succès.") % len(listeAjouts), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         

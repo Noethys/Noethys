@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import UTILS_Parametres
 
@@ -76,8 +79,8 @@ class Dialog(wx.Dialog):
         self.listeDonnees = listeDonnees
         self.listeDonneesDefaut = listeDonneesDefaut
         
-        intro = u"Vous pouvez configurer ici les colonnes de la liste. Utilisez les flèches pour modifier l'ordre des colonnes et décochez les colonnes à masquer."
-        titre = u"Configuration de la liste"
+        intro = _(u"Vous pouvez configurer ici les colonnes de la liste. Utilisez les flèches pour modifier l'ordre des colonnes et décochez les colonnes à masquer.")
+        titre = _(u"Configuration de la liste")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
@@ -89,9 +92,9 @@ class Dialog(wx.Dialog):
         self.bouton_dernier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_double_bas.png", wx.BITMAP_TYPE_ANY))
         self.bouton_reinitialiser = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Actualiser.png", wx.BITMAP_TYPE_ANY))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -108,14 +111,14 @@ class Dialog(wx.Dialog):
         self.Remplissage(listeDonnees) 
 
     def __set_properties(self):
-        self.bouton_premier.SetToolTipString(u"Cliquez ici pour déplacer la colonne sélectionnée au début de la liste")
-        self.bouton_monter.SetToolTipString(u"Cliquez ici pour déplacer la colonne sélectionnée vers le haut")
-        self.bouton_descendre.SetToolTipString(u"Cliquez ici pour déplacer la colonne sélectionnée vers le bas")
-        self.bouton_dernier.SetToolTipString(u"Cliquez ici pour déplacer la colonne sélectionnée à la fin de la liste")
-        self.bouton_reinitialiser.SetToolTipString(u"Cliquez ici restaurer les valeurs par défaut")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
+        self.bouton_premier.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée au début de la liste"))
+        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée vers le haut"))
+        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée vers le bas"))
+        self.bouton_dernier.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée à la fin de la liste"))
+        self.bouton_reinitialiser.SetToolTipString(_(u"Cliquez ici restaurer les valeurs par défaut"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.SetMinSize((500, 500))
 
     def __do_layout(self):
@@ -220,7 +223,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, listeDonnees=[(u"Colonne1", True), (u"Colonne 2", True), (u"Colonne 3", False)])
+    dialog_1 = Dialog(None, listeDonnees=[(_(u"Colonne1"), True), (_(u"Colonne 2"), True), (_(u"Colonne 3"), False)])
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

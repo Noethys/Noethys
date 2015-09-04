@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import datetime
 import wx.propgrid as wxpg
@@ -30,7 +33,7 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTipString(u"Cliquez ici pour accéder à la gestion des paramètres")
+        buttons.GetButton(0).SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des paramètres"))
         
         # Create the 'primary' editor control (textctrl in this case)
         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
@@ -93,93 +96,93 @@ class CTRL(wxpg.PropertyGrid) :
         self.Importation() 
         
 ##        # Bordereau
-##        self.Append( wxpg.PropertyCategory(u"Bordereau") )
+##        self.Append( wxpg.PropertyCategory(_(u"Bordereau")) )
 ##        
-##        propriete = wxpg.IntProperty(label=u"Exercice", name="exercice", value=datetime.date.today().year)
-##        propriete.SetHelpString(u"Saisissez l'année de l'exercice") 
+##        propriete = wxpg.IntProperty(label=_(u"Exercice"), name="exercice", value=datetime.date.today().year)
+##        propriete.SetHelpString(_(u"Saisissez l'année de l'exercice")) 
 ##        self.Append(propriete)
 ##        self.SetPropertyEditor("exercice", "SpinCtrl")
 ##        
-##        listeMois = [u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre"]
-##        propriete = wxpg.EnumProperty(label=u"Mois", name="mois", labels=listeMois, values=range(1, 13) , value=datetime.date.today().month)
-##        propriete.SetHelpString(u"Sélectionnez le mois") 
+##        listeMois = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
+##        propriete = wxpg.EnumProperty(label=_(u"Mois"), name="mois", labels=listeMois, values=range(1, 13) , value=datetime.date.today().month)
+##        propriete.SetHelpString(_(u"Sélectionnez le mois")) 
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.StringProperty(label=u"Objet", name="objet_dette", value=u"")
-##        propriete.SetHelpString(u"Saisissez l'objet du bordereau (Ex : 'Centre de Loisirs')") 
+##        propriete = wxpg.StringProperty(label=_(u"Objet"), name="objet_dette", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez l'objet du bordereau (Ex : 'Centre de Loisirs')")) 
 ##        self.Append(propriete)
 ##
 ##        # Dates
-##        self.Append( wxpg.PropertyCategory(u"Dates") )
+##        self.Append( wxpg.PropertyCategory(_(u"Dates")) )
 ##        
-##        propriete = wxpg.DateProperty(label=u"Date d'émission", name="date_emission", value=wx.DateTime_Now())
+##        propriete = wxpg.DateProperty(label=_(u"Date d'émission"), name="date_emission", value=wx.DateTime_Now())
 ##        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.DateProperty(label=u"Date du prélèvement", name="date_prelevement", value=wx.DateTime_Now())
+##        propriete = wxpg.DateProperty(label=_(u"Date du prélèvement"), name="date_prelevement", value=wx.DateTime_Now())
 ##        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.DateProperty(label=u"Avis d'envoi", name="date_envoi", value=wx.DateTime_Now())
+##        propriete = wxpg.DateProperty(label=_(u"Avis d'envoi"), name="date_envoi", value=wx.DateTime_Now())
 ##        propriete.SetAttribute(wxpg.PG_DATE_PICKER_STYLE, wx.DP_DROPDOWN|wx.DP_SHOWCENTURY )
 ##        self.Append(propriete)
 ##
 ##        # Collectivité
-##        self.Append( wxpg.PropertyCategory(u"Identification") )
+##        self.Append( wxpg.PropertyCategory(_(u"Identification")) )
 ##        
-##        propriete = wxpg.StringProperty(label=u"ID Bordereau", name="id_bordereau", value=u"")
-##        propriete.SetHelpString(u"Saisissez l'ID du bordereau") 
+##        propriete = wxpg.StringProperty(label=_(u"ID Bordereau"), name="id_bordereau", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez l'ID du bordereau")) 
 ##        self.Append(propriete)
-####        propriete.SetAttribute("Hint", u"Coucou !")
+####        propriete.SetAttribute("Hint", _(u"Coucou !"))
 ####        self.SetPropertyCell("id_bordereau", 0, bitmap = wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 ##        
-##        propriete = wxpg.StringProperty(label=u"ID Poste", name="id_poste", value=u"")
-##        propriete.SetHelpString(u"Saisissez l'ID du bordereau") 
+##        propriete = wxpg.StringProperty(label=_(u"ID Poste"), name="id_poste", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez l'ID du bordereau")) 
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.StringProperty(label=u"ID Collectivité", name="id_collectivite", value=u"")
-##        propriete.SetHelpString(u"Saisissez l'ID de la collectivité") 
+##        propriete = wxpg.StringProperty(label=_(u"ID Collectivité"), name="id_collectivite", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez l'ID de la collectivité")) 
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.StringProperty(label=u"Code Collectivité", name="code_collectivite", value=u"")
-##        propriete.SetHelpString(u"Saisissez le code Collectivité") 
+##        propriete = wxpg.StringProperty(label=_(u"Code Collectivité"), name="code_collectivite", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez le code Collectivité")) 
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.StringProperty(label=u"Code Budget", name="code_budget", value=u"")
-##        propriete.SetHelpString(u"Saisissez le code Budget") 
+##        propriete = wxpg.StringProperty(label=_(u"Code Budget"), name="code_budget", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez le code Budget")) 
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.StringProperty(label=u"Code Produit Local", name="code_prodloc", value=u"")
-##        propriete.SetHelpString(u"Saisissez le code Produit Local") 
+##        propriete = wxpg.StringProperty(label=_(u"Code Produit Local"), name="code_prodloc", value=u"")
+##        propriete.SetHelpString(_(u"Saisissez le code Produit Local")) 
 ##        self.Append(propriete)
 ##
 ##        # Libellés
-##        self.Append( wxpg.PropertyCategory(u"Libellés") )
+##        self.Append( wxpg.PropertyCategory(_(u"Libellés")) )
 ##
-##        propriete = wxpg.StringProperty(label=u"Objet de la pièce", name="objet_piece", value=u"FACTURE_NUM{NUM_FACTURE}_{MOIS_LETTRES}_{ANNEE}")
-##        propriete.SetHelpString(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.") 
+##        propriete = wxpg.StringProperty(label=_(u"Objet de la pièce"), name="objet_piece", value=_(u"FACTURE_NUM{NUM_FACTURE}_{MOIS_LETTRES}_{ANNEE}"))
+##        propriete.SetHelpString(_(u"Saisissez l'objet de la pièce (en majuscules et sans accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
 ##        self.Append(propriete)
 ##
-##        propriete = wxpg.StringProperty(label=u"Libellé du prélèvement", name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
-##        propriete.SetHelpString(u"Saisissez le libellé du prélèvement qui apparaîtra sur le relevé de compte de la famille. Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {OBJET_PIECE} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.") 
+##        propriete = wxpg.StringProperty(label=_(u"Libellé du prélèvement"), name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
+##        propriete.SetHelpString(_(u"Saisissez le libellé du prélèvement qui apparaîtra sur le relevé de compte de la famille. Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {OBJET_PIECE} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
 ##        self.Append(propriete)
 ##
 ##        # Règlement automatique
-##        self.Append( wxpg.PropertyCategory(u"Règlement automatique") )
+##        self.Append( wxpg.PropertyCategory(_(u"Règlement automatique")) )
 ##        
 ##        propriete = wxpg.BoolProperty(label="Régler automatiquement", name="reglement_auto", value=False)
-##        propriete.SetHelpString(u"Cochez cette case si vous souhaitez que Noethys créé un règlement automatiquement pour les prélèvements") 
+##        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys créé un règlement automatiquement pour les prélèvements")) 
 ##        propriete.SetAttribute("UseCheckbox", True)
 ##        self.Append(propriete)
 ##        
-##        propriete = wxpg.EnumProperty(label=u"Compte à créditer", name="IDcompte")
-##        propriete.SetHelpString(u"Sélectionnez le compte bancaire à créditer dans le cadre du règlement automatique")
+##        propriete = wxpg.EnumProperty(label=_(u"Compte à créditer"), name="IDcompte")
+##        propriete.SetHelpString(_(u"Sélectionnez le compte bancaire à créditer dans le cadre du règlement automatique"))
 ##        propriete.SetEditor("EditeurComboBoxAvecBoutons")
 ##        self.Append(propriete)
 ##        self.MAJ_comptes() 
 ##
-##        propriete = wxpg.EnumProperty(label=u"Mode de règlement", name="IDmode")
-##        propriete.SetHelpString(u"Sélectionnez le mode de règlement à utiliser dans le cadre du règlement automatique")
+##        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), name="IDmode")
+##        propriete.SetHelpString(_(u"Sélectionnez le mode de règlement à utiliser dans le cadre du règlement automatique"))
 ##        propriete.SetEditor("EditeurComboBoxAvecBoutons")
 ##        self.Append(propriete)
 ####        self.MAJ_modes() 
@@ -253,7 +256,7 @@ class CTRL(wxpg.PropertyGrid) :
 ##            self.parent.ctrl_pieces.reglement_auto = propriete.GetValue()
     
     def Reinitialisation(self):
-        dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment réinitialiser tous les paramètres ?", u"Paramètres par défaut", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser tous les paramètres ?"), _(u"Paramètres par défaut"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_YES :
@@ -276,7 +279,7 @@ class Bouton_reinitialisation(wx.BitmapButton):
     def __init__(self, parent, ctrl_parametres=None):
         wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(u"Images/16x16/Actualiser.png", wx.BITMAP_TYPE_ANY))
         self.ctrl_parametres = ctrl_parametres
-        self.SetToolTipString(u"Cliquez ici pour réinitialiser tous les paramètres")
+        self.SetToolTipString(_(u"Cliquez ici pour réinitialiser tous les paramètres"))
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
@@ -286,7 +289,7 @@ class Bouton_sauvegarde(wx.BitmapButton):
     def __init__(self, parent, ctrl_parametres=None):
         wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(u"Images/16x16/Sauvegarder.png", wx.BITMAP_TYPE_ANY))
         self.ctrl_parametres = ctrl_parametres
-        self.SetToolTipString(u"Cliquez ici pour mémoriser tous les paramètres")
+        self.SetToolTipString(_(u"Cliquez ici pour mémoriser tous les paramètres"))
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
@@ -302,169 +305,169 @@ class CTRL_TEST(CTRL) :
     
     def Remplissage(self):
         # Catégorie 
-        self.Append( wxpg.PropertyCategory(u"Mémorisation") )
+        self.Append( wxpg.PropertyCategory(_(u"Mémorisation")) )
         
         # Mémorisation des paramètres
-        propriete = wxpg.EnumProperty(label=u"Mémoriser les paramètres", name="memoriser_parametres", labels=[u"Non", u"Uniquement sur cet ordinateur", u"Pour tous les ordinateurs"], values=[0, 1, 3] , value=3)
-        propriete.SetHelpString(u"Mémoriser les paramètres") 
+        propriete = wxpg.EnumProperty(label=_(u"Mémoriser les paramètres"), name="memoriser_parametres", labels=[_(u"Non"), _(u"Uniquement sur cet ordinateur"), _(u"Pour tous les ordinateurs")], values=[0, 1, 3] , value=3)
+        propriete.SetHelpString(_(u"Mémoriser les paramètres")) 
         self.Append(propriete)
 
         # Répertoire de sauvegarde
-        propriete = wxpg.DirProperty(label=u"Répertoire pour copie unique", name="repertoire_copie", value="")
-        propriete.SetHelpString(u"Enregistrer une copie unique de chaque document dans le répertoire sélectionné") 
+        propriete = wxpg.DirProperty(label=_(u"Répertoire pour copie unique"), name="repertoire_copie", value="")
+        propriete.SetHelpString(_(u"Enregistrer une copie unique de chaque document dans le répertoire sélectionné")) 
         self.Append(propriete)
 
         # Catégorie 
-        self.Append( wxpg.PropertyCategory(u"Eléments à afficher") )
+        self.Append( wxpg.PropertyCategory(_(u"Eléments à afficher")) )
         
         # Afficher les coupons-réponse
         propriete = wxpg.BoolProperty(label="Afficher le coupon-réponse", name="coupon_reponse", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher un coupon-réponse dans le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher un coupon-réponse dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
         # Afficher les messages
         propriete = wxpg.BoolProperty(label="Afficher les messages", name="messages", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les messages dans le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les messages dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Afficher le rappel des impayés
         propriete = wxpg.BoolProperty(label="Afficher le rappel des impayés", name="impayes", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher le rappel des impayés dans le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le rappel des impayés dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
         # Afficher les codes-barres
         propriete = wxpg.BoolProperty(label="Afficher les codes-barres", name="codes_barres", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les codes-barres dans le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les codes-barres dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
         # Afficher les avis de prélèvements
         propriete = wxpg.BoolProperty(label="Afficher les avis de prélèvements", name="avis_prelevements", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher les avis de prélèvements dans le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les avis de prélèvements dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
         # Catégorie 
-        self.Append( wxpg.PropertyCategory(u"Titre") )
+        self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Afficher le titre
         propriete = wxpg.BoolProperty(label="Afficher le titre", name="afficher_titre", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher le titre du le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le titre du le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=u"Titre du document", name="titre_document", value=u"Facture")
-        propriete.SetHelpString(u"Saisissez le titre du document (Par défaut 'Facture')") 
+        propriete = wxpg.StringProperty(label=_(u"Titre du document"), name="titre_document", value=_(u"Facture"))
+        propriete.SetHelpString(_(u"Saisissez le titre du document (Par défaut 'Facture')")) 
         self.Append(propriete)
 
-        propriete = wxpg.IntProperty(label=u"Taille de texte du titre", name="taille_texte_titre", value=19)
-        propriete.SetHelpString(u"Saisissez la taille de texte du titre (29 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte du titre"), name="taille_texte_titre", value=19)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte du titre (29 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_titre", "SpinCtrl")
         
         propriete = wxpg.BoolProperty(label="Afficher la période de facturation", name="afficher_periode", value=True)
-        propriete.SetHelpString(u"Cochez cette case si vous souhaitez afficher la période de facturation dans le document") 
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher la période de facturation dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
         
-        propriete = wxpg.IntProperty(label=u"Taille de texte de la période", name="taille_texte_periode", value=8)
-        propriete.SetHelpString(u"Saisissez la taille de texte de la période (8 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de la période"), name="taille_texte_periode", value=8)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de la période (8 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_periode", "SpinCtrl")
 
         # Catégorie 
-        self.Append( wxpg.PropertyCategory(u"Tableau des prestations") )
+        self.Append( wxpg.PropertyCategory(_(u"Tableau des prestations")) )
 
         # Affichage condensé ou détaillé
-        propriete = wxpg.EnumProperty(label=u"Affichage des prestations", name="affichage_prestations", labels=[u"Détaillé", u"Condensé"], values=[0, 1] , value=0)
-        propriete.SetHelpString(u"Sélectionnez un type d'affichage") 
+        propriete = wxpg.EnumProperty(label=_(u"Affichage des prestations"), name="affichage_prestations", labels=[_(u"Détaillé"), _(u"Condensé")], values=[0, 1] , value=0)
+        propriete.SetHelpString(_(u"Sélectionnez un type d'affichage")) 
         self.Append(propriete)
 
         # Intitulés des prestations
-        labels = [u"Intitulé original", u"Intitulé original + état 'Absence injustifiée'", u"Nom du tarif", u"Nom de l'activité"]
-        propriete = wxpg.EnumProperty(label=u"Intitulés des prestations", name="intitules", labels=labels, values=[0, 1, 2, 3] , value=0)
-        propriete.SetHelpString(u"Sélectionnez le type d'intitulé à afficher pour les prestations") 
+        labels = [_(u"Intitulé original"), _(u"Intitulé original + état 'Absence injustifiée'"), _(u"Nom du tarif"), _(u"Nom de l'activité")]
+        propriete = wxpg.EnumProperty(label=_(u"Intitulés des prestations"), name="intitules", labels=labels, values=[0, 1, 2, 3] , value=0)
+        propriete.SetHelpString(_(u"Sélectionnez le type d'intitulé à afficher pour les prestations")) 
         self.Append(propriete)
         
         # Couleur 1
-        propriete = wxpg.ColourProperty(label=u"Couleur de fond 1", name="couleur_fond_1", value=wx.Colour(255, 0, 0) )
-        propriete.SetHelpString(u"Sélectionnez la couleur 1") 
+        propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 1"), name="couleur_fond_1", value=wx.Colour(255, 0, 0) )
+        propriete.SetHelpString(_(u"Sélectionnez la couleur 1")) 
         self.Append(propriete)
         
         # Couleur 2
-        propriete = wxpg.ColourProperty(label=u"Couleur de fond 2", name="couleur_fond_2", value=wx.Colour(255, 0, 0) )
-        propriete.SetHelpString(u"Sélectionnez la couleur 2") 
+        propriete = wxpg.ColourProperty(label=_(u"Couleur de fond 2"), name="couleur_fond_2", value=wx.Colour(255, 0, 0) )
+        propriete.SetHelpString(_(u"Sélectionnez la couleur 2")) 
         self.Append(propriete)
         
         # Largeur colonne Date
-        propriete = wxpg.IntProperty(label=u"Largeur de la colonne Date (ou Qté)", name="largeur_colonne_date", value=50)
-        propriete.SetHelpString(u"Saisissez la largeur de la colonne Date (50 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Date (ou Qté)"), name="largeur_colonne_date", value=50)
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Date (50 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_date", "SpinCtrl")
         
         # Largeur colonne Montant HT
-        propriete = wxpg.IntProperty(label=u"Largeur de la colonne Montant HT", name="largeur_colonne_montant_ht", value=50)
-        propriete.SetHelpString(u"Saisissez la largeur de la colonne Montant HT (50 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant HT"), name="largeur_colonne_montant_ht", value=50)
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant HT (50 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_ht", "SpinCtrl")
 
         # Largeur colonne Montant TVA
-        propriete = wxpg.IntProperty(label=u"Largeur de la colonne Montant TVA", name="largeur_colonne_montant_tva", value=50)
-        propriete.SetHelpString(u"Saisissez la largeur de la colonne Montant TVA (50 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant TVA"), name="largeur_colonne_montant_tva", value=50)
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TVA (50 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_tva", "SpinCtrl")
 
         # Largeur colonne Montant TTC
-        propriete = wxpg.IntProperty(label=u"Largeur de la colonne Montant TTC", name="largeur_colonne_montant_ttc", value=70)
-        propriete.SetHelpString(u"Saisissez la largeur de la colonne Montant TTC (70 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Largeur de la colonne Montant TTC"), name="largeur_colonne_montant_ttc", value=70)
+        propriete.SetHelpString(_(u"Saisissez la largeur de la colonne Montant TTC (70 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("largeur_colonne_montant_ttc", "SpinCtrl")
         
         # Taille de texte du nom de l'individu
-        propriete = wxpg.IntProperty(label=u"Taille de texte de l'individu", name="taille_texte_individu", value=9)
-        propriete.SetHelpString(u"Saisissez la taille de texte de l'individu (9 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'individu"), name="taille_texte_individu", value=9)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'individu (9 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_individu", "SpinCtrl")
 
         # Taille de texte du nom de l'activité
-        propriete = wxpg.IntProperty(label=u"Taille de texte de l'activité", name="taille_texte_activite", value=6)
-        propriete.SetHelpString(u"Saisissez la taille de texte de l'activité (6 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de l'activité"), name="taille_texte_activite", value=6)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de l'activité (6 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_activite", "SpinCtrl")
 
         # Taille de texte des noms de colonnes
-        propriete = wxpg.IntProperty(label=u"Taille de texte des noms de colonnes", name="taille_texte_noms_colonnes", value=5)
-        propriete.SetHelpString(u"Saisissez la taille de texte des noms de colonnes (5 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte des noms de colonnes"), name="taille_texte_noms_colonnes", value=5)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des noms de colonnes (5 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_noms_colonnes", "SpinCtrl")
 
         # Taille de texte des prestations
-        propriete = wxpg.IntProperty(label=u"Taille de texte de des prestations", name="taille_texte_prestation", value=7)
-        propriete.SetHelpString(u"Saisissez la taille de texte des prestations (7 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de des prestations"), name="taille_texte_prestation", value=7)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte des prestations (7 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_prestation", "SpinCtrl")
         
         # Catégorie 
-        self.Append( wxpg.PropertyCategory(u"Autres textes") )
+        self.Append( wxpg.PropertyCategory(_(u"Autres textes")) )
 
-        propriete = wxpg.LongStringProperty(label=u"Texte d'introduction", name="texte_introduction", value=u"")
-        propriete.SetHelpString(u"Saisissez un texte d'introduction (Aucun par défaut)") 
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name="texte_introduction", value=u"")
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction (Aucun par défaut)")) 
         self.Append(propriete)
 
-        propriete = wxpg.IntProperty(label=u"Taille de texte d'introduction", name="taille_texte_introduction", value=9)
-        propriete.SetHelpString(u"Saisissez la taille de texte d'introduction (9 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte d'introduction"), name="taille_texte_introduction", value=9)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte d'introduction (9 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_introduction", "SpinCtrl")
 
-        propriete = wxpg.LongStringProperty(label=u"Texte de conclusion", name="texte_conclusion", value=u"")
-        propriete.SetHelpString(u"Saisissez un texte de conclusion (Aucun par défaut)") 
+        propriete = wxpg.LongStringProperty(label=_(u"Texte de conclusion"), name="texte_conclusion", value=u"")
+        propriete.SetHelpString(_(u"Saisissez un texte de conclusion (Aucun par défaut)")) 
         self.Append(propriete)
 
-        propriete = wxpg.IntProperty(label=u"Taille de texte de conclusion", name="taille_texte_conclusion", value=9)
-        propriete.SetHelpString(u"Saisissez la taille de texte de conclusion (9 par défaut)") 
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte de conclusion"), name="taille_texte_conclusion", value=9)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte de conclusion (9 par défaut)")) 
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_conclusion", "SpinCtrl")
         
@@ -508,7 +511,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL_TEST(panel)
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         self.bouton_reinit = Bouton_reinitialisation(panel, self.ctrl)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
@@ -527,7 +530,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 600))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 600))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

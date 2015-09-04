@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Banques
 
@@ -23,13 +26,13 @@ class Dialog(wx.Dialog):
         self.mode = mode
         
         if self.mode == "selection" :
-            intro = u"Vous pouvez ici sélectionner un établissement bancaire. Double-cliquez sur une ligne pour effectuer rapidement la sélection."
-            titre = u"Sélection d'un établissement bancaire"
-            self.SetTitle(u"Sélection d'un établissement bancaire")
+            intro = _(u"Vous pouvez ici sélectionner un établissement bancaire. Double-cliquez sur une ligne pour effectuer rapidement la sélection.")
+            titre = _(u"Sélection d'un établissement bancaire")
+            self.SetTitle(_(u"Sélection d'un établissement bancaire"))
         else:
-            intro = u"Vous pouvez ici saisir, modifier ou supprimer des établissements bancaires. Ceux-ci sont utilisés lors de la saisie des coordonnées bancaires des comptes des familles pour les prélèvements automatiques."
-            titre = u"Gestion des établissements bancaires"
-            self.SetTitle(u"Gestion des établissements bancaires")
+            intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des établissements bancaires. Ceux-ci sont utilisés lors de la saisie des coordonnées bancaires des comptes des familles pour les prélèvements automatiques.")
+            titre = _(u"Gestion des établissements bancaires")
+            self.SetTitle(_(u"Gestion des établissements bancaires"))
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Banque.png")
         self.ctrl_listview = OL_Banques.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.MAJ()
@@ -38,14 +41,14 @@ class Dialog(wx.Dialog):
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         
         if self.mode == "selection" :
             imgFermer = "Images/BoutonsImages/Annuler_L72.png"
         else:
             imgFermer = "Images/BoutonsImages/Fermer_L72.png"
         self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(imgFermer, wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         if self.mode != "selection" :
             self.bouton_ok.Show(False)
             
@@ -61,12 +64,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un établissement bancaire")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'établissement sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'établissement sélectionné dans la iste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un établissement bancaire"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'établissement sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'établissement sélectionné dans la iste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
         self.SetMinSize((820, 600))
 
     def __do_layout(self):
@@ -120,7 +123,7 @@ class Dialog(wx.Dialog):
     def OnBouton_ok(self, event):
         IDbanque = self.GetIDbanque()
         if IDmedecin == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun établissement bancaire dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun établissement bancaire dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

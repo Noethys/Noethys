@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import CTRL_Bandeau
@@ -23,8 +26,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -32,7 +35,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -49,10 +52,10 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( u"Label/Famille", 400, wx.ALIGN_LEFT),
-            ( u"Date", 90, wx.ALIGN_LEFT),
-            ( u"Individu", 180, wx.ALIGN_LEFT),
-            ( u"IDprestation", 90, wx.ALIGN_LEFT),
+            ( _(u"Label/Famille"), 400, wx.ALIGN_LEFT),
+            ( _(u"Date"), 90, wx.ALIGN_LEFT),
+            ( _(u"Individu"), 180, wx.ALIGN_LEFT),
+            ( _(u"IDprestation"), 90, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -114,7 +117,7 @@ class CTRL(HTL.HyperTreeList):
                 
         listeDonnees = []
         for label, listePrestationsTemp in dictResultats.iteritems() :
-            texte = u"%s (%d prestations)" % (label, len(listePrestationsTemp))
+            texte = _(u"%s (%d prestations)") % (label, len(listePrestationsTemp))
             listeDonnees.append((texte, label, listePrestationsTemp))
         listeDonnees.sort() 
         
@@ -129,7 +132,7 @@ class CTRL(HTL.HyperTreeList):
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
 
     def Remplissage(self):
@@ -170,7 +173,7 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, u"Double-cliquez sur le nom de l'individu pour accéder à sa fiche famille !", u"Astuce", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Double-cliquez sur le nom de l'individu pour accéder à sa fiche famille !"), _(u"Astuce"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return            
@@ -179,7 +182,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -213,8 +216,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter la liste des prestations qui ne possèdent pas de consommations associées. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante."
-        titre = u"Prestations sans consommations"
+        intro = _(u"Vous pouvez ici consulter la liste des prestations qui ne possèdent pas de consommations associées. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante.")
+        titre = _(u"Prestations sans consommations")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
@@ -223,8 +226,8 @@ class Dialog(wx.Dialog):
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -233,9 +236,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((860, 600))
 
     def __do_layout(self):

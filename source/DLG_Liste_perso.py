@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -24,30 +27,30 @@ class Dialog(wx.Dialog):
         self.parent = parent  
 
         # Bandeau
-        intro = u"Vous pouvez afficher ici les résultats d'une requête SQL. Pour en savoir davantage sur le langage SQL, consultez les sites dédiés sur internet."
-        titre = u"Liste personnalisée"
+        intro = _(u"Vous pouvez afficher ici les résultats d'une requête SQL. Pour en savoir davantage sur le langage SQL, consultez les sites dédiés sur internet.")
+        titre = _(u"Liste personnalisée")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Sql.png")
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Requête SQL")
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Requête SQL"))
         self.ctrl_req = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         self.ctrl_req.SetMinSize((-1, 80))
-        self.bouton_actualiser = wx.Button(self, wx.ID_ANY, u"Actualiser la liste")
+        self.bouton_actualiser = wx.Button(self, wx.ID_ANY, _(u"Actualiser la liste"))
         
         # Liste
         self.ctrl_donnees = OL_Liste_perso.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_donnees.MAJ() 
         
-        self.bouton_apercu = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_excel = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_texte = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.ctrl_recherche = OL_Liste_perso.BarreRecherche(self, ctrl_listview=self.ctrl_donnees)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -62,13 +65,13 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.ctrl_req.SetToolTipString(u"")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour afficher les résultats de la requête")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour afficher les résultats de la requête"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):

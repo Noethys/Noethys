@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Selection_activites
 import UTILS_Config
 
@@ -20,26 +23,26 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Activités
-        self.box_activites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Sélection des activités")
+        self.box_activites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sélection des activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self, afficheToutes=True)
         
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Options")
-        self.label_tri = wx.StaticText(self, wx.ID_ANY, u"Critère de tri :")
-        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[u"Nom d'activité", u"Nombre d'inscrits", u"Nombre de places max", u"Date de début d'activité", u"Date de fin d'activité"])
+        self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
+        self.label_tri = wx.StaticText(self, wx.ID_ANY, _(u"Critère de tri :"))
+        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activité"), _(u"Nombre d'inscrits"), _(u"Nombre de places max"), _(u"Date de début d'activité"), _(u"Date de fin d'activité")])
         self.ctrl_tri.SetSelection(0)
 
-        self.label_sens = wx.StaticText(self, wx.ID_ANY, u"Sens de tri :")
-        self.ctrl_sens = wx.Choice(self, wx.ID_ANY, choices=[u"Croissant", u"Décroissant"])
+        self.label_sens = wx.StaticText(self, wx.ID_ANY, _(u"Sens de tri :"))
+        self.ctrl_sens = wx.Choice(self, wx.ID_ANY, choices=[_(u"Croissant"), _(u"Décroissant")])
         self.ctrl_sens.SetSelection(0)
 
-        self.label_alerte = wx.StaticText(self, wx.ID_ANY, u"Seuil d'alerte :")
+        self.label_alerte = wx.StaticText(self, wx.ID_ANY, _(u"Seuil d'alerte :"))
         self.ctrl_alerte = wx.SpinCtrl(self, wx.ID_ANY, "", min=0, max=100)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -52,13 +55,13 @@ class Dialog(wx.Dialog):
         self.Importation() 
 
     def __set_properties(self):
-        self.SetTitle(u"Paramètres d'affichage des inscriptions")
-        self.ctrl_tri.SetToolTipString(u"Sélectionner un critère de tri")
-        self.ctrl_sens.SetToolTipString(u"Sélectionner un sens de tri")
-        self.ctrl_alerte.SetToolTipString(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Paramètres d'affichage des inscriptions"))
+        self.ctrl_tri.SetToolTipString(_(u"Sélectionner un critère de tri"))
+        self.ctrl_sens.SetToolTipString(_(u"Sélectionner un sens de tri"))
+        self.ctrl_alerte.SetToolTipString(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((500, 570))
 
     def __do_layout(self):

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -97,12 +100,12 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 21, "IDresponsable", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Nom du responsable", 'left', 158, "nom", imageGetter=GetImageSexe),
-            ColumnDefn(u"Fonction", "left", 120, "fonction"),
+            ColumnDefn(_(u"Nom du responsable"), 'left', 158, "nom", imageGetter=GetImageSexe),
+            ColumnDefn(_(u"Fonction"), "left", 120, "fonction"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun responsable")
+        self.SetEmptyListMsg(_(u"Aucun responsable"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -137,7 +140,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -146,7 +149,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -154,7 +157,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -164,7 +167,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Par défaut
-        item = wx.MenuItem(menuPop, 40, u"Définir comme responsable par défaut")
+        item = wx.MenuItem(menuPop, 40, _(u"Définir comme responsable par défaut"))
         if noSelection == False :
             if self.Selection()[0].defaut == 1 :
                 bmp = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG)
@@ -176,14 +179,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -194,12 +197,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des responsables d'activités", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des responsables d'activités"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des responsables d'activités", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des responsables d'activités"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
@@ -228,7 +231,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun responsable dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -254,11 +257,11 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun responsable dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce responsable ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce responsable ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDresponsable = self.Selection()[0].IDresponsable
             DB = GestionDB.DB()
@@ -281,7 +284,7 @@ class ListView(FastObjectListView):
     
     def SetDefaut(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun responsable dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun responsable dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -308,34 +311,34 @@ class Saisie(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        self.label_sexe = wx.StaticText(self, -1, u"Genre du responsable :")
-        self.ctrl_sexe = wx.Choice(self, -1, choices=[u"Homme", u"Femme"])
+        self.label_sexe = wx.StaticText(self, -1, _(u"Genre du responsable :"))
+        self.ctrl_sexe = wx.Choice(self, -1, choices=[_(u"Homme"), _(u"Femme")])
         if sexe == "H" :
             self.ctrl_sexe.Select(0)
         else:
             self.ctrl_sexe.Select(1)
-        self.label_nom = wx.StaticText(self, -1, u"Nom du responsable :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom du responsable :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
         if nom != None :
             self.ctrl_nom.SetValue(nom)
-        self.label_fonction = wx.StaticText(self, -1, u"Fonction :")
+        self.label_fonction = wx.StaticText(self, -1, _(u"Fonction :"))
         self.ctrl_fonction = wx.TextCtrl(self, -1, "")
         if fonction !=None :
             self.ctrl_fonction.SetValue(fonction)
             
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         if nom == None :
-            self.SetTitle(u"Saisie d'un responsable")
+            self.SetTitle(_(u"Saisie d'un responsable"))
         else:
-            self.SetTitle(u"Modification d'un responsable")
+            self.SetTitle(_(u"Modification d'un responsable"))
         self.SetMinSize((400, -1))
         
-        self.ctrl_sexe.SetToolTipString(u"Sélectionnez ici le genre du responsable.")
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom du responsable. Ex.: 'David DUPOND' ")
-        self.ctrl_fonction.SetToolTipString(u"Saisissez ici la fonction du responsable. Ex. : 'Directeur'")
+        self.ctrl_sexe.SetToolTipString(_(u"Sélectionnez ici le genre du responsable."))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom du responsable. Ex.: 'David DUPOND' "))
+        self.ctrl_fonction.SetToolTipString(_(u"Saisissez ici la fonction du responsable. Ex. : 'Directeur'"))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -380,13 +383,13 @@ class Saisie(wx.Dialog):
         nom = self.ctrl_nom.GetValue()
         fonction = self.ctrl_fonction.GetValue()
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom de responsable !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de responsable !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
         if fonction == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une fonction pour ce responsable !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une fonction pour ce responsable !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_fonction.SetFocus()
@@ -406,7 +409,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un responsable...")
+        self.SetDescriptiveText(_(u"Rechercher un responsable..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

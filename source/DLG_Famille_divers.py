@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import UTILS_Utilisateurs
@@ -16,52 +19,52 @@ import wx.propgrid as wxpg
 
 
 LISTE_CATEGORIES_TIERS = [
-    ("01", u"Personne physique"),
-    ("20", u"Etat ou établissement public national"),
-    ("21", u"Région"),
-    ("22", u"Département"),
-    ("23", u"Commune"),
-    ("24", u"Groupement de collectivités"),
-    ("25", u"Caisse des écoles"),
-    ("26", u"CCAS"),
-    ("27", u"Etablissement public de santé"),
-    ("28", u"Ecole nationale de la santé publique"),
-    ("29", u"Autre établissement publique ou organisme international"),
-    ("50", u"Personne morale de droit privé autre qu'organisme social"),
-    ("60", u"Caisse de sécurité sociale régime général"),
-    ("61", u"Caisse de sécurité sociale régime agricole"),
-    ("62", u"Sécurité sociale des travailleurs non salariés et professions non agricoles"),
-    ("63", u"Autre régime obligatoire de sécurité sociale"),
-    ("64", u"Mutuelle ou organisme d'assurance"),
-    ("65", u"Autre tiers payant"),
-    ("70", u"CNRACL"),
-    ("71", u"IRCANTEC"),
-    ("72", u"ASSEDIC"),
-    ("73", u"Caisse mutualiste de retraite complémentaire"),
-    ("74", u"Autre organisme social"),
+    ("01", _(u"Personne physique")),
+    ("20", _(u"Etat ou établissement public national")),
+    ("21", _(u"Région")),
+    ("22", _(u"Département")),
+    ("23", _(u"Commune")),
+    ("24", _(u"Groupement de collectivités")),
+    ("25", _(u"Caisse des écoles")),
+    ("26", _(u"CCAS")),
+    ("27", _(u"Etablissement public de santé")),
+    ("28", _(u"Ecole nationale de la santé publique")),
+    ("29", _(u"Autre établissement publique ou organisme international")),
+    ("50", _(u"Personne morale de droit privé autre qu'organisme social")),
+    ("60", _(u"Caisse de sécurité sociale régime général")),
+    ("61", _(u"Caisse de sécurité sociale régime agricole")),
+    ("62", _(u"Sécurité sociale des travailleurs non salariés et professions non agricoles")),
+    ("63", _(u"Autre régime obligatoire de sécurité sociale")),
+    ("64", _(u"Mutuelle ou organisme d'assurance")),
+    ("65", _(u"Autre tiers payant")),
+    ("70", _(u"CNRACL")),
+    ("71", _(u"IRCANTEC")),
+    ("72", _(u"ASSEDIC")),
+    ("73", _(u"Caisse mutualiste de retraite complémentaire")),
+    ("74", _(u"Autre organisme social")),
     ]
 
 LISTE_NATURES_JURIDIQUES = [
-    ("00", u"Inconnu"),
-    ("01", u"Particulier"),
-    ("02", u"Artisan / commerçant / agriculteur"),
-    ("03", u"Société"),
-    ("04", u"CAM ou Caisse appliquant les mêmes règles"),
-    ("05", u"Caisse complémentaire"),
-    ("06", u"Association"),
-    ("07", u"Etat ou organisme d'état"),
-    ("08", u"Etablissement public national"),
-    ("09", u"Collectivité territoriale / EPL / EPS"),
-    ("10", u"Etat étranger"),
-    ("11", u"CAF"),
+    ("00", _(u"Inconnu")),
+    ("01", _(u"Particulier")),
+    ("02", _(u"Artisan / commerçant / agriculteur")),
+    ("03", _(u"Société")),
+    ("04", _(u"CAM ou Caisse appliquant les mêmes règles")),
+    ("05", _(u"Caisse complémentaire")),
+    ("06", _(u"Association")),
+    ("07", _(u"Etat ou organisme d'état")),
+    ("08", _(u"Etablissement public national")),
+    ("09", _(u"Collectivité territoriale / EPL / EPS")),
+    ("10", _(u"Etat étranger")),
+    ("11", _(u"CAF")),
     ]
 
 LISTE_TYPES_ID_TIERS = [
-    ("9999", u"Aucun"),
-    ("01", u"SIRET"),
-    ("02", u"SIREN"),
-    ("03", u"FINESS"),
-    ("04", u"NIR"),
+    ("9999", _(u"Aucun")),
+    ("01", _(u"SIRET")),
+    ("02", _(u"SIREN")),
+    ("03", _(u"FINESS")),
+    ("04", _(u"NIR")),
     ]
 
 def GetDonneesListe(liste):
@@ -90,41 +93,41 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         
         # Données Tiers pour Hélios
-        self.Append( wxpg.PropertyCategory(u"Données tiers pour Hélios") )
+        self.Append( wxpg.PropertyCategory(_(u"Données tiers pour Hélios")) )
         
-        propriete = wxpg.EnumProperty(label=u"Titulaire", name="titulaire_helios")
-        propriete.SetHelpString(u"Sélectionnez le titulaire du compte pour Hélios (Trésor Public)")
+        propriete = wxpg.EnumProperty(label=_(u"Titulaire"), name="titulaire_helios")
+        propriete.SetHelpString(_(u"Sélectionnez le titulaire du compte pour Hélios (Trésor Public)"))
         self.Append(propriete)
         self.MAJ_titulaire_helios() 
 
-        propriete = wxpg.StringProperty(label=u"Identifiant national", name="idtiers_helios", value=u"")
-        propriete.SetHelpString(u"[Facultatif] Saisissez l'identifiant national (SIRET ou SIREN ou FINESS ou NIR)") 
+        propriete = wxpg.StringProperty(label=_(u"Identifiant national"), name="idtiers_helios", value=u"")
+        propriete.SetHelpString(_(u"[Facultatif] Saisissez l'identifiant national (SIRET ou SIREN ou FINESS ou NIR)")) 
         self.Append(propriete)
 
         listeLabels, listeID = GetDonneesListe(LISTE_TYPES_ID_TIERS)
-        propriete = wxpg.EnumProperty(label=u"Type d'identifiant national", name="natidtiers_helios", labels=listeLabels, values=listeID, value=9999)
-        propriete.SetHelpString(u"[Facultatif] Sélectionnez le type d'identifiant national du tiers pour Hélios (Trésor Public)")
+        propriete = wxpg.EnumProperty(label=_(u"Type d'identifiant national"), name="natidtiers_helios", labels=listeLabels, values=listeID, value=9999)
+        propriete.SetHelpString(_(u"[Facultatif] Sélectionnez le type d'identifiant national du tiers pour Hélios (Trésor Public)"))
         self.Append(propriete)
 
-        propriete = wxpg.StringProperty(label=u"Référence locale", name="reftiers_helios", value="")
-        propriete.SetHelpString(u"[Facultatif] Saisissez la référence locale du tiers") 
+        propriete = wxpg.StringProperty(label=_(u"Référence locale"), name="reftiers_helios", value="")
+        propriete.SetHelpString(_(u"[Facultatif] Saisissez la référence locale du tiers")) 
         self.Append(propriete)
 
         listeLabels, listeID = GetDonneesListe(LISTE_CATEGORIES_TIERS)
-        propriete = wxpg.EnumProperty(label=u"Catégorie", name="cattiers_helios", labels=listeLabels, values=listeID, value=1)
-        propriete.SetHelpString(u"Sélectionnez la catégorie de tiers pour Hélios (Trésor Public)")
+        propriete = wxpg.EnumProperty(label=_(u"Catégorie"), name="cattiers_helios", labels=listeLabels, values=listeID, value=1)
+        propriete.SetHelpString(_(u"Sélectionnez la catégorie de tiers pour Hélios (Trésor Public)"))
         self.Append(propriete)
 
         listeLabels, listeID = GetDonneesListe(LISTE_NATURES_JURIDIQUES)
-        propriete = wxpg.EnumProperty(label=u"Nature juridique", name="natjur_helios", labels=listeLabels, values=listeID, value=1)
-        propriete.SetHelpString(u"Sélectionnez la nature juridique du tiers pour Hélios (Trésor Public)")
+        propriete = wxpg.EnumProperty(label=_(u"Nature juridique"), name="natjur_helios", labels=listeLabels, values=listeID, value=1)
+        propriete.SetHelpString(_(u"Sélectionnez la nature juridique du tiers pour Hélios (Trésor Public)"))
         self.Append(propriete)
 
         # Comptabilité
-        self.Append( wxpg.PropertyCategory(u"Comptabilité") )
+        self.Append( wxpg.PropertyCategory(_(u"Comptabilité")) )
 
-        propriete = wxpg.StringProperty(label=u"Code comptable", name="code_comptable", value=u"")
-        propriete.SetHelpString(u"Saisissez le code comptable de la famille (Utilisé pour les exports vers logiciels de compta)") 
+        propriete = wxpg.StringProperty(label=_(u"Code comptable"), name="code_comptable", value=u"")
+        propriete.SetHelpString(_(u"Saisissez le code comptable de la famille (Utilisé pour les exports vers logiciels de compta)")) 
         self.Append(propriete)
 
 
@@ -179,17 +182,17 @@ class Panel(wx.Panel):
         self.majEffectuee = False
         
         # Compte internet
-        self.staticBox_param = wx.StaticBox(self, -1, u"Paramètres du compte internet")
-        self.label_activation = wx.StaticText(self, -1, u"Activation :")
+        self.staticBox_param = wx.StaticBox(self, -1, _(u"Paramètres du compte internet"))
+        self.label_activation = wx.StaticText(self, -1, _(u"Activation :"))
         self.check_activation = wx.CheckBox(self, -1, u"")
-        self.label_identifiant = wx.StaticText(self, -1, u"Identifiant : ")
+        self.label_identifiant = wx.StaticText(self, -1, _(u"Identifiant : "))
         self.ctrl_identifiant = wx.TextCtrl(self, -1, "", size=(80, -1))
-        self.label_mdp = wx.StaticText(self, -1, u"Mot de passe : ")
+        self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe : "))
         self.ctrl_mdp = wx.TextCtrl(self, -1, "", size=(60, -1))
         self.MAJaffichage()
 
         # Paramètres divers
-        self.staticBox_divers = wx.StaticBox(self, -1, u"Paramètres divers")
+        self.staticBox_divers = wx.StaticBox(self, -1, _(u"Paramètres divers"))
         self.ctrl_parametres = CTRL_Parametres(self, IDfamille=IDfamille)
         
         self.__set_properties()
@@ -199,9 +202,9 @@ class Panel(wx.Panel):
                 
 
     def __set_properties(self):
-        self.check_activation.SetToolTipString(u"Cochez cette case pour activer le compte internet")
-        self.ctrl_identifiant.SetToolTipString(u"Code identifiant")
-        self.ctrl_mdp.SetToolTipString(u"Mot de passe")
+        self.check_activation.SetToolTipString(_(u"Cochez cette case pour activer le compte internet"))
+        self.ctrl_identifiant.SetToolTipString(_(u"Code identifiant"))
+        self.ctrl_mdp.SetToolTipString(_(u"Mot de passe"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -292,7 +295,7 @@ class Panel(wx.Panel):
             DB.Close()
             for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements:
                 if titulaire_helios == IDindividu and titulaire == 0 :
-                    dlg = wx.MessageDialog(self, u"Attention, le titulaire Hélios doit être obligatoirement un titulaire du dossier !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Attention, le titulaire Hélios doit être obligatoirement un titulaire du dossier !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -300,12 +303,12 @@ class Panel(wx.Panel):
         # Compte internet
         if self.check_activation.GetValue() == True :
             if self.ctrl_identifiant.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"L'identifiant internet saisi n'est pas valide !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"L'identifiant internet saisi n'est pas valide !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             if self.ctrl_mdp.GetValue() == "" :
-                dlg = wx.MessageDialog(self, u"Le mot de passe internet saisi n'est pas valide !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le mot de passe internet saisi n'est pas valide !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -359,7 +362,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

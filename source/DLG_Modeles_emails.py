@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Modeles_emails
 import CTRL_Editeur_email
@@ -55,20 +58,20 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        titre = u"Modèles d'Emails"
-        intro = u"Vous pouvez paramétrer ici des modèles d'Emails."
+        titre = _(u"Modèles d'Emails")
+        intro = _(u"Vous pouvez paramétrer ici des modèles d'Emails.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_modele.png")
         
         # Catégorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, u"Catégorie")
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
         if categorie != None :
             self.ctrl_categorie.SetCategorie(categorie)
         
         # Modèles
-        self.staticbox_modeles_staticbox = wx.StaticBox(self, -1, u"Modèles disponibles")
+        self.staticbox_modeles_staticbox = wx.StaticBox(self, -1, _(u"Modèles disponibles"))
         self.ctrl_modeles = OL_Modeles_emails.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -77,13 +80,13 @@ class Dialog(wx.Dialog):
         self.bouton_dupliquer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_defaut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY))
         
-##        self.hyper_telecharger = Hyperlien(self, label=u"Télécharger de nouveaux modèles", infobulle=u"Cliquez ici pour télécharger de nouveaux modèles de documents sur internet", URL="telecharger")
+##        self.hyper_telecharger = Hyperlien(self, label=_(u"Télécharger de nouveaux modèles"), infobulle=_(u"Cliquez ici pour télécharger de nouveaux modèles de documents sur internet"), URL="telecharger")
 ##        self.label_separation = wx.StaticText(self, -1, u"|")
-##        self.hyper_proposer = Hyperlien(self, label=u"Proposer un modèle", infobulle=u"Cliquez ici pour proposer un modèle à la communauté", URL="proposer")
+##        self.hyper_proposer = Hyperlien(self, label=_(u"Proposer un modèle"), infobulle=_(u"Cliquez ici pour proposer un modèle à la communauté"), URL="proposer")
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -101,14 +104,14 @@ class Dialog(wx.Dialog):
         self.OnChoixCategorie(None)
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez ici une catégorie")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer un nouveau modèle")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le modèle sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le modèle sélectionné dans la liste")
-        self.bouton_dupliquer.SetToolTipString(u"Cliquez ici pour dupliquer le modèle sélectionné dans la liste")
-        self.bouton_defaut.SetToolTipString(u"Cliquez ici pour définir ce modèle par défaut pour cette catégorie")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici une catégorie"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer un nouveau modèle"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le modèle sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le modèle sélectionné dans la liste"))
+        self.bouton_dupliquer.SetToolTipString(_(u"Cliquez ici pour dupliquer le modèle sélectionné dans la liste"))
+        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir ce modèle par défaut pour cette catégorie"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((650, 560))
 
     def __do_layout(self):

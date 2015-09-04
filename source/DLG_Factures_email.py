@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 
 import GestionDB
@@ -26,29 +29,31 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Cochez les factures à envoyer par Email puis cliquez sur le bouton 'Transférer vers l'éditeur d'Emails'."
-        titre = u"Envoi de factures par Email"
+        intro = _(u"Cochez les factures à envoyer par Email puis cliquez sur le bouton 'Transférer vers l'éditeur d'Emails'.")
+        titre = _(u"Envoi de factures par Email")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_piece.png")
         
         # Factures
-        self.box_factures_staticbox = wx.StaticBox(self, -1, u"Liste des factures")
+        self.box_factures_staticbox = wx.StaticBox(self, -1, _(u"Liste des factures"))
         self.ctrl_liste_factures = CTRL_Liste_factures.CTRL(self, filtres=filtres)
         
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options des factures")
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options des factures"))
         self.ctrl_options = CTRL_Factures_options.CTRL(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Transferer_editeur_emails.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_recap = CTRL_Bouton_image.CTRL(self, texte=_(u"Récapitulatif"), cheminImage="Images/32x32/Imprimante.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Transférer vers l'éditeur d'Emails"), cheminImage="Images/32x32/Emails_piece.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
         
         self.Bind(wx.EVT_CLOSE, self.OnBoutonAnnuler)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonRecap, self.bouton_recap)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
@@ -57,9 +62,10 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour transférer les factures vers l'éditeur d'Emails")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_recap.SetToolTipString(_(u"Cliquez ici pour imprimer un récapitulatif des factures cochées dans la liste"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour transférer les factures vers l'éditeur d'Emails"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((850, 700))
 
     def __do_layout(self):
@@ -77,12 +83,13 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(box_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_recap, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(2)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
         self.SetSizer(grid_sizer_base)
@@ -100,12 +107,26 @@ class Dialog(wx.Dialog):
         self.ctrl_options.MemoriserParametres() 
         self.EndModal(wx.ID_CANCEL)
 
+    def OnBoutonRecap(self, event): 
+        """ Aperçu PDF du récapitulatif des factures """
+        tracks = self.ctrl_liste_factures.GetTracksCoches() 
+        if len(tracks) == 0 : 
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une facture dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        import DLG_Impression_recap_factures
+        dlg = DLG_Impression_recap_factures.Dialog(self, dictOptions={}, tracks=tracks)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
     def OnBoutonOk(self, event): 
         """ Aperçu PDF des factures """
         # Validation des données saisies
         tracks = self.ctrl_liste_factures.GetTracksCoches() 
         if len(tracks) == 0 : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à envoyer par Email !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -113,7 +134,16 @@ class Dialog(wx.Dialog):
         # Création des factures sélectionnées
         listeIDfacture = []
         for track in tracks :
+            # Avertissements
+            if track.etat == "annulation" : 
+                dlg = wx.MessageDialog(self, _(u"La facture n°%s a été annulée.\n\nVous ne pouvez pas l'envoyer par Email !") % track.numero, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+            
+            # Ajout
             listeIDfacture.append(track.IDfacture) 
+            
         facturation = UTILS_Facturation.Facturation()
         dictOptions=self.ctrl_options.GetOptions()
         resultat = facturation.Impression(listeFactures=listeIDfacture, nomDoc=None, afficherDoc=False, dictOptions=dictOptions, repertoire=dictOptions["repertoire_copie"], repertoireTemp=True)
@@ -123,7 +153,10 @@ class Dialog(wx.Dialog):
         
         def SupprimerFichiersTemp():
             for IDfacture, fichier in dictPieces.iteritems() :
-                os.remove(fichier)  
+                try :
+                    os.remove(fichier)  
+                except :
+                    pass
 
         # Récupération de toutes les adresses Emails
         DB = GestionDB.DB()
@@ -168,9 +201,9 @@ class Dialog(wx.Dialog):
         
         # Annonce les anomalies trouvées
         if len(listeAnomalies) > 0 :
-            texte = u"%d des familles sélectionnées n'ont pas d'adresse Email.\n\n" % len(listeAnomalies)
-            texte += u"Souhaitez-vous quand même continuer avec les %d autres familles ?" % len(listeDonnees)
-            dlg = wx.MessageDialog(self, texte, u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            texte = _(u"%d des familles sélectionnées n'ont pas d'adresse Email.\n\n") % len(listeAnomalies)
+            texte += _(u"Souhaitez-vous quand même continuer avec les %d autres familles ?") % len(listeDonnees)
+            dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -179,9 +212,9 @@ class Dialog(wx.Dialog):
 
         # Annonce les envois non demandés
         if len(listeEnvoiNonDemande) > 0 :
-            texte = u"%d des familles sélectionnées n'ont pas demandé d'envoi par Email de leur facture :\n\n" % len(listeEnvoiNonDemande)
-            texte += u"Souhaitez-vous quand même leur envoyer une facture ?"
-            dlg = wx.MessageDialog(self, texte, u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            texte = _(u"%d des familles sélectionnées n'ont pas demandé d'envoi par Email de leur facture :\n\n") % len(listeEnvoiNonDemande)
+            texte += _(u"Souhaitez-vous quand même leur envoyer une facture ?")
+            dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -190,7 +223,7 @@ class Dialog(wx.Dialog):
         
         # Dernière vérification avant transfert
         if len(listeDonnees) == 0 : 
-            dlg = wx.MessageDialog(self, u"Il ne reste finalement aucune facture à envoyer par Email !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucune facture à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             SupprimerFichiersTemp()

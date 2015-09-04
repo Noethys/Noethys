@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Editeur_email
@@ -41,8 +44,8 @@ class Dialog(wx.Dialog):
         self.ctrl_editeur.SetEditable(False) 
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -60,15 +63,15 @@ class Dialog(wx.Dialog):
         self.MAJ_apercu()
 
     def __set_properties(self):
-        self.SetTitle(u"Aperçu de la fusion")
-        self.bouton_premier.SetToolTipString(u"Cliquez ici pour atteindre le premier")
+        self.SetTitle(_(u"Aperçu de la fusion"))
+        self.bouton_premier.SetToolTipString(_(u"Cliquez ici pour atteindre le premier"))
         self.bouton_reculer.SetMinSize((50, -1))
-        self.bouton_reculer.SetToolTipString(u"Cliquez ici pour atteindre le précédent")
+        self.bouton_reculer.SetToolTipString(_(u"Cliquez ici pour atteindre le précédent"))
         self.bouton_avancer.SetMinSize((50, -1))
-        self.bouton_avancer.SetToolTipString(u"Cliquez ici pour atteindre le suivant")
-        self.bouton_dernier.SetToolTipString(u"Cliquez ici pour atteindre le dernier")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_avancer.SetToolTipString(_(u"Cliquez ici pour atteindre le suivant"))
+        self.bouton_dernier.SetToolTipString(_(u"Cliquez ici pour atteindre le dernier"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((600, 500))
 
     def __do_layout(self):

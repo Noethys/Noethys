@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import os
@@ -160,12 +163,12 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, None),
-            ColumnDefn(u"Adresse", 'left', 150, "adresse", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Pièces jointes personnelles", 'left', 190, "texte_pieces", typeDonnee="texte", imageGetter=GetImagePiece),
+            ColumnDefn(_(u"Adresse"), 'left', 150, "adresse", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Pièces jointes personnelles"), 'left', 190, "texte_pieces", typeDonnee="texte", imageGetter=GetImagePiece),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun destinataire")
+        self.SetEmptyListMsg(_(u"Aucun destinataire"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -200,7 +203,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter ou retirer des destinataires")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter ou retirer des destinataires"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Email_destinataires.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Modifier, id=10)
@@ -210,7 +213,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Ajouter pièce jointe
-        item = wx.MenuItem(menuPop, 20, u"Ajouter une pièce personnelle")
+        item = wx.MenuItem(menuPop, 20, _(u"Ajouter une pièce personnelle"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.AjouterPiece, id=20)
@@ -218,7 +221,7 @@ class ListView(FastObjectListView):
             item.Enable(False)
         
         # Retirer pièce jointe
-        item = wx.MenuItem(menuPop, 30, u"Retirer une pièce personnelle")
+        item = wx.MenuItem(menuPop, 30, _(u"Retirer une pièce personnelle"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.RetirerPiece, id=30)
@@ -228,7 +231,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Ouvrir pièce jointe
-        item = wx.MenuItem(menuPop, 60, u"Ouvrir une pièce personnelle")
+        item = wx.MenuItem(menuPop, 60, _(u"Ouvrir une pièce personnelle"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirPiece, id=60)
@@ -238,14 +241,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -254,14 +257,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -314,7 +317,7 @@ class ListView(FastObjectListView):
     def AjouterPiece(self, event):
         """ Demande l'emplacement du fichier à joindre """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner un destinataire dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un destinataire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -322,7 +325,7 @@ class ListView(FastObjectListView):
 
         standardPath = wx.StandardPaths.Get()
         rep = standardPath.GetDocumentsDir()
-        dlg = wx.FileDialog(self, message=u"Veuillez sélectionner le ou les fichiers à joindre", defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
+        dlg = wx.FileDialog(self, message=_(u"Veuillez sélectionner le ou les fichiers à joindre"), defaultDir=rep, defaultFile="", style=wx.OPEN|wx.FD_MULTIPLE)
         if dlg.ShowModal() == wx.ID_OK:
             chemins = dlg.GetPaths()
         else:
@@ -332,7 +335,7 @@ class ListView(FastObjectListView):
         for fichier in chemins :
             valide = True
             if fichier in track.pieces :
-                dlg = wx.MessageDialog(self, u"Le fichier '%s' est déjà dans la liste !" % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+                dlg = wx.MessageDialog(self, _(u"Le fichier '%s' est déjà dans la liste !") % os.path.basename(fichier), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
                 dlg.ShowModal()
                 dlg.Destroy()
                 valide = False
@@ -344,18 +347,18 @@ class ListView(FastObjectListView):
     def RetirerPiece(self, event):
         """ Retirer pièces """
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner un destinataire dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un destinataire dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.pieces == [] :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune pièce à retirer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune pièce à retirer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        dlg = wx.MultiChoiceDialog(self, u"Cochez les pièces personnelles à retirer :", u"Retirer des pièces personnelles", track.listeLabelsPieces)
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les pièces personnelles à retirer :"), _(u"Retirer des pièces personnelles"), track.listeLabelsPieces)
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
             for index in selections :
@@ -366,19 +369,19 @@ class ListView(FastObjectListView):
 
     def OuvrirPiece(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner un destinataire à ouvrir dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un destinataire à ouvrir dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
         if track.pieces == [] :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune pièce à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune pièce à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         # Demande le fichier à ouvrir
         if len(track.pieces) > 1 :
-            dlg = wx.SingleChoiceDialog(self, u"Sélectionnez la pièce jointe personnelle à ouvrir :", u"Ouvrir une pièce jointe personnelle", track.pieces, wx.CHOICEDLG_STYLE)
+            dlg = wx.SingleChoiceDialog(self, _(u"Sélectionnez la pièce jointe personnelle à ouvrir :"), _(u"Ouvrir une pièce jointe personnelle"), track.pieces, wx.CHOICEDLG_STYLE)
             if dlg.ShowModal() == wx.ID_OK:
                 fichier = track.pieces[dlg.GetSelection()]
                 dlg.Destroy()
@@ -393,19 +396,19 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des destinataires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des destinataires"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des destinataires", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des destinataires"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event=None):
         """ Export de la liste au format texte """
         # Vérifie qu"il y a des adresses mails saisies
         if len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"La liste des destinataires est vide !", "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+            dlg = wx.MessageDialog(self, _(u"La liste des destinataires est vide !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -416,7 +419,7 @@ class ListView(FastObjectListView):
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.SAVE
@@ -430,7 +433,7 @@ class ListView(FastObjectListView):
             return
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -447,8 +450,8 @@ class ListView(FastObjectListView):
         f.write(texte.encode("iso-8859-15"))
         f.close()
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = u"Le fichier Texte a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?"
-        dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Le fichier Texte a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
@@ -458,10 +461,10 @@ class ListView(FastObjectListView):
         
     def ExportExcel(self, event=None):
         """ Export Excel """
-        titre = u"Destinataires"
+        titre = _(u"Destinataires")
         # Vérifie qu"il y a des adresses mails saisies
         if len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"La liste des destinataires est vide !", "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
+            dlg = wx.MessageDialog(self, _(u"La liste des destinataires est vide !"), "Erreur", wx.OK| wx.ICON_EXCLAMATION)  
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -472,7 +475,7 @@ class ListView(FastObjectListView):
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.SAVE
@@ -486,7 +489,7 @@ class ListView(FastObjectListView):
             return
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -506,8 +509,8 @@ class ListView(FastObjectListView):
         # Finalisation du fichier xls
         wb.save(cheminFichier)
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?"
-        dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
@@ -543,9 +546,9 @@ class MyFrame(wx.Frame):
         self.myOlv.MAJ() 
         
         listeDonnees = [
-            {"adresse" : "monadresse1@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : u"nom1", "{UTILISATEUR_PRENOM}" : u"prenom1" } },
-            {"adresse" : "monadresse2@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : u"nom2", "{UTILISATEUR_PRENOM}" : u"prenom2" } },
-            {"adresse" : "monadresse3@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : u"nom3", "{UTILISATEUR_PRENOM}" : u"prenom3" } },
+            {"adresse" : "monadresse1@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : _(u"nom1"), "{UTILISATEUR_PRENOM}" : _(u"prenom1") } },
+            {"adresse" : "monadresse2@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : _(u"nom2"), "{UTILISATEUR_PRENOM}" : _(u"prenom2") } },
+            {"adresse" : "monadresse3@gmail.com", "pieces" : [], "champs" : {"{UTILISATEUR_NOM}" : _(u"nom3"), "{UTILISATEUR_PRENOM}" : _(u"prenom3") } },
             ]
         self.myOlv.SetDonneesManuelles(listeDonnees, modificationAutorisee=True)
         

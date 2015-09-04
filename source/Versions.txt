@@ -1,3 +1,72 @@
+Version 1.1.5.0 (25/08/2015) :
+
+- Ajout de l'annulation des factures
+- Ajout de l'affichage du solde actuel dans les factures
+- Ajout des nouvelles zones scolaires
+- Optimisation de la recherche des pièces manquantes
+- Optimisation de l'affichage de plusieurs listes
+
+Version 1.1.4.9 (13/08/2015) :
+
+- Ajout de l'impression d'un récapitulatif des factures
+- Ajout d'un nouveau mode d'affichage condensé sur les factures
+- Ajout prise en charge des scanners à mémoire pour Linux (par Claude)
+- Ajout des index dans la base de données
+- Mise à jour des liens vers documentation
+- Correction de divers bugs
+
+Version 1.1.4.8 (22/06/2015) :
+
+- Correction d'un bug sur l'envoi des reçus de règlements par email
+
+Version 1.1.4.7 (21/06/2015) :
+
+- Ajout de la détection des codes-barres familles depuis page d'accueil
+- Ajout de la validation des horaires des conso avec Entrée
+- Ajout de la gestion des unités multihoraires incompatibles 
+- Amélioration de la gestion des pdf temporaires pour alfa3a
+- Correction de divers bugs
+
+Version 1.1.4.6 (12/06/2015) :
+
+- Ajout de la traduction multilingue
+- Ajout de l'envoi par email depuis le client de messagerie par défaut sur Linux (par Claude)
+- Conversion de tous les boutons images/textes
+- Correction d'un bug sur serveur Nomadhys
+- Correction de divers bugs
+
+Version 1.1.4.5 (24/05/2015) :
+
+- Ajout de la synchronisation avec Nomadhys
+
+Version 1.1.4.4 (08/05/2015) :
+
+- Correction d'un bug sur les IDinscription des conso
+
+Version 1.1.4.3 (05/05/2015) :
+
+- Ajout de la saisie des inscriptions par lot dans le menu Individus
+- Ajout de l'option impression des QF sur les factures (par Claude)
+- Ajout du choix de format des labels de lignes dans le gestionnaire des conso
+- Ajout de la purge des derniers fichiers ouverts dans les Préférences
+- Amélioration du choix du tarif dans les contrats (par Claude)
+- Correction d'un bug sur les entiers dans les filtres de listes
+- Correction de divers bugs
+
+Version 1.1.4.2 (29/03/2015) :
+
+- Ajout des opérations budgétaires dans la comptabilité
+- Ajout des déplacements par lot dans les dépôts
+- Ajout de l'affichage de la catégorie dans la liste des messages
+- Amélioration de la sélection des factures à générer
+- Amélioration de l'export vers Excel
+- Optimisation de la mémorisation de l'historique
+- Correction d'un bug sur le numéro de facture dans le détail des prestations
+- Correction d'un bug sur les coupons-réponses des lettres de rappel
+- Correction d'un bug sur le filtre des résultats de l'état nominatif
+- Correction d'un bug sur les relevés de prestations (par Claude)
+- Corrections de petits bugs
+
 Version 1.1.4.1 (25/01/2015) :
 
 - Ajout des boutons accès direct consos et fiche ind. depuis page d'accueil

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -264,9 +267,9 @@ class CTRL_Modes(wx.CheckListBox):
 
     def MAJ(self):
         listeDonnees = [
-            ("reservation", u"Réservation"),
-            ("attente", u"Attente"),
-            ("refus", u"Refus"),
+            ("reservation", _(u"Réservation")),
+            ("attente", _(u"Attente")),
+            ("refus", _(u"Refus")),
         ]
         listeValeurs = []
         for code, nom in listeDonnees :
@@ -323,10 +326,10 @@ class CTRL_Etats(wx.CheckListBox):
 
     def MAJ(self):
         listeDonnees = [
-            ("reservation", u"Pointage en attente"),
-            ("present", u"Présent"),
-            ("absentj", u"Absence justifiée"),
-            ("absenti", u"Absence injustifiée"),            
+            ("reservation", _(u"Pointage en attente")),
+            ("present", _(u"Présent")),
+            ("absentj", _(u"Absence justifiée")),
+            ("absenti", _(u"Absence injustifiée")),            
         ]
         listeValeurs = []
         for code, nom in listeDonnees :
@@ -386,37 +389,37 @@ class CTRL(wx.Panel):
         self.selectionActivite = selectionActivite
         
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.radio_periode_1 = wx.RadioButton(self, -1, u"")
-        self.label_periode = wx.StaticText(self, -1, u"La période affichée dans la grille")
+        self.label_periode = wx.StaticText(self, -1, _(u"La période affichée dans la grille"))
         self.radio_periode_2 = wx.RadioButton(self, -1, u"")
         self.radio_periode_2.Enable(False) # <<<<<<<<<<<<<<<< PROVISOIRE
         self.ctrl_periode = CTRL_Grille_periode.CTRL(self)
         self.ctrl_periode.SetMinSize((60, 110))
         
         # Individus
-        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, u"Individus")
+        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus"))
         self.ctrl_individus = CTRL_Individus(self, self.IDfamille, self.selectionIndividus)
         
         # Activité
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, u"Activité")
+        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self, self.selectionIndividus, self.selectionActivite)
         
         # Groupes
-        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, u"Groupes")
+        self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self, self.selectionActivite)
         
         # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, u"Unités")
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
         self.ctrl_unites = CTRL_Unites(self, self.selectionActivite)
         
         # Modes
-        self.staticbox_modes_staticbox = wx.StaticBox(self, -1, u"Modes")
+        self.staticbox_modes_staticbox = wx.StaticBox(self, -1, _(u"Modes"))
         self.ctrl_modes = CTRL_Modes(self)
         self.ctrl_modes.SetMinSize((60, 40))
         
         # Etats
-        self.staticbox_etats_staticbox = wx.StaticBox(self, -1, u"Etats")
+        self.staticbox_etats_staticbox = wx.StaticBox(self, -1, _(u"Etats"))
         self.ctrl_etats = CTRL_Etats(self)
         self.ctrl_etats.SetMinSize((60, 40))
 
@@ -434,14 +437,14 @@ class CTRL(wx.Panel):
         self.OnRadioPeriode(None)
 
     def __set_properties(self):
-        self.radio_periode_1.SetToolTipString(u"Cochez ici pour sélectionner la période affichée dans la grille des consommations")
-        self.radio_periode_2.SetToolTipString(u"Cochez ici pour sélectionner une autre période")
-        self.ctrl_individus.SetToolTipString(u"Cochez les individus souhaités")
-        self.ctrl_activite.SetToolTipString(u"Selectionnez l'activité souhaitée")
-        self.ctrl_groupes.SetToolTipString(u"Cochez les groupes souhaités")
-        self.ctrl_unites.SetToolTipString(u"Cochez les unités de consommations souhaitées")
-        self.ctrl_modes.SetToolTipString(u"Cochez les modes souhaités")
-        self.ctrl_etats.SetToolTipString(u"Cochez les etats souhaités")
+        self.radio_periode_1.SetToolTipString(_(u"Cochez ici pour sélectionner la période affichée dans la grille des consommations"))
+        self.radio_periode_2.SetToolTipString(_(u"Cochez ici pour sélectionner une autre période"))
+        self.ctrl_individus.SetToolTipString(_(u"Cochez les individus souhaités"))
+        self.ctrl_activite.SetToolTipString(_(u"Selectionnez l'activité souhaitée"))
+        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes souhaités"))
+        self.ctrl_unites.SetToolTipString(_(u"Cochez les unités de consommations souhaitées"))
+        self.ctrl_modes.SetToolTipString(_(u"Cochez les modes souhaités"))
+        self.ctrl_etats.SetToolTipString(_(u"Cochez les etats souhaités"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -603,7 +606,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel, IDfamille=7, mode="modification")
-        self.bouton_ok = wx.BitmapButton(panel, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(panel, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.EXPAND|wx.ALL, 10)
         sizer_2.Add(self.bouton_ok, 0, wx.EXPAND|wx.ALL, 10)

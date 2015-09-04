@@ -9,7 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import GestionDB
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -101,12 +104,12 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 29, "IDpays", typeDonnee="entier", imageGetter=GetImageDrapeau),
-            ColumnDefn(u"Nom du pays", 'left', 210, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Nationalité", "left", 200, "nationalite", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom du pays"), 'left', 210, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Nationalité"), "left", 200, "nationalite", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun pays")
+        self.SetEmptyListMsg(_(u"Aucun pays"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -137,7 +140,7 @@ class BarreRecherche(wx.SearchCtrl):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
 
-        self.SetDescriptiveText(u"Rechercher un pays ou une nationalité...")
+        self.SetDescriptiveText(_(u"Rechercher un pays ou une nationalité..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_pays

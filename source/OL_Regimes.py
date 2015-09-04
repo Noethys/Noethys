@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -74,12 +77,12 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
                     
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDregime", typeDonnee="entier"),
-            ColumnDefn(u"Nom", "left", 400, "nom", typeDonnee="texte"), 
+            ColumnDefn(_(u"ID"), "left", 0, "IDregime", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), "left", 400, "nom", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun régime social")
+        self.SetEmptyListMsg(_(u"Aucun régime social"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -114,7 +117,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -123,7 +126,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -131,7 +134,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -141,14 +144,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -159,22 +162,22 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des régimes sociaux", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des régimes sociaux"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des régimes sociaux", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des régimes sociaux"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regimes", "creer") == False : return
-        dlg = wx.TextEntryDialog(self, u"Saisissez le nom du nouveau régime social :", u"Saisie d'un nouveau régime", u"")
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom du nouveau régime social :"), _(u"Saisie d'un nouveau régime"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
-                dlg = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -189,17 +192,17 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regimes", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun régime à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun régime à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDregime = self.Selection()[0].IDregime
         nom = self.Selection()[0].nom
-        dlg = wx.TextEntryDialog(self, u"Modifiez le nom du régime social :", u"Modification d'un régime social", nom)
+        dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom du régime social :"), _(u"Modification d'un régime social"), nom)
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
             if nom == "":
-                dlg = wx.MessageDialog(self, u"Le nom que vous avez saisi n'est pas valide.", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -214,7 +217,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_regimes", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun régime social à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun régime social à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -230,13 +233,13 @@ class ListView(FastObjectListView):
         nbreCaisses = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbreCaisses > 0 :
-            dlg = wx.MessageDialog(self, u"Ce régime social a déjà été attribué à %d caisse(s).\n\nVous ne pouvez donc pas le supprimer !" % nbreCaisses, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce régime social a déjà été attribué à %d caisse(s).\n\nVous ne pouvez donc pas le supprimer !") % nbreCaisses, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce régime social ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce régime social ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("regimes", "IDregime", IDregime)
@@ -253,7 +256,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un régime social...")
+        self.SetDescriptiveText(_(u"Rechercher un régime social..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

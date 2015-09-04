@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import datetime
@@ -41,10 +44,10 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(u"Cochez les unités conditionnelles")
+        self.SetToolTipString(_(u"Cochez les unités conditionnelles"))
         
         # Création des colonnes
-        self.AddColumn(u"Unités")
+        self.AddColumn(_(u"Unités"))
         self.SetColumnWidth(0, 220)
 
         # Binds
@@ -113,7 +116,7 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
         self.dictUnites = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage(listeCoches)
         self.MAJenCours = False
 
@@ -181,20 +184,20 @@ class CTRL_Saisie_prog(wx.Panel):
         self.liste_jours = ("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")
         
         # Validité
-        self.box_validite_staticbox = wx.StaticBox(self, -1, u"Validité")
+        self.box_validite_staticbox = wx.StaticBox(self, -1, _(u"Validité"))
         self.label_date_debut = wx.StaticText(self, -1,u"Du :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1,u"Au :")
+        self.label_date_fin = wx.StaticText(self, -1,_(u"Au :"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        self.label_actif = wx.StaticText(self, -1,u"Actif :")
+        self.label_actif = wx.StaticText(self, -1,_(u"Actif :"))
         self.ctrl_actif = wx.CheckBox(self, -1, u"") 
         self.ctrl_actif.SetValue(True) 
         
         # Conditions
-        self.box_conditions_staticbox = wx.StaticBox(self, -1, u"Conditions")
+        self.box_conditions_staticbox = wx.StaticBox(self, -1, _(u"Conditions"))
 
         # Périodes scolaires
-        self.label_periodes_scolaires = wx.StaticText(self, -1,u"Périodes scolaires :")
+        self.label_periodes_scolaires = wx.StaticText(self, -1,_(u"Périodes scolaires :"))
         self.check_scolaire_lundi = wx.CheckBox(self, -1,u"L")
         self.check_scolaire_mardi = wx.CheckBox(self, -1,u"M")
         self.check_scolaire_mercredi = wx.CheckBox(self, -1,u"M")
@@ -205,7 +208,7 @@ class CTRL_Saisie_prog(wx.Panel):
         self.CheckJours("scolaire")
         
         # Périodes de vacances
-        self.label_periodes_vacances = wx.StaticText(self, -1,u"Périodes de vacances :")
+        self.label_periodes_vacances = wx.StaticText(self, -1,_(u"Périodes de vacances :"))
         self.check_vacances_lundi = wx.CheckBox(self, -1,u"L")
         self.check_vacances_mardi = wx.CheckBox(self, -1,u"M")
         self.check_vacances_mercredi = wx.CheckBox(self, -1,u"M")
@@ -216,7 +219,7 @@ class CTRL_Saisie_prog(wx.Panel):
         self.CheckJours("vacances")
         
         # Unités
-        self.label_unites = wx.StaticText(self, -1,u"Unités de consommation :")
+        self.label_unites = wx.StaticText(self, -1,_(u"Unités de consommation :"))
         self.ctrl_unites = CTRL_Choix_unites(self, IDindividu=self.IDindividu)
         
         self.__set_properties()
@@ -227,20 +230,20 @@ class CTRL_Saisie_prog(wx.Panel):
             self.Importation() 
 
     def __set_properties(self):
-        self.check_scolaire_lundi.SetToolTipString(u"Lundi")
-        self.check_scolaire_mardi.SetToolTipString(u"Mardi")
-        self.check_scolaire_mercredi.SetToolTipString(u"Mercredi")
-        self.check_scolaire_jeudi.SetToolTipString(u"Jeudi")
-        self.check_scolaire_vendredi.SetToolTipString(u"Vendredi")
-        self.check_scolaire_samedi.SetToolTipString(u"Samedi")
-        self.check_scolaire_dimanche.SetToolTipString(u"Dimanche")
-        self.check_vacances_lundi.SetToolTipString(u"Lundi")
-        self.check_vacances_mardi.SetToolTipString(u"Mardi")
-        self.check_vacances_mercredi.SetToolTipString(u"Mercredi")
-        self.check_vacances_jeudi.SetToolTipString(u"Jeudi")
-        self.check_vacances_vendredi.SetToolTipString(u"Vendredi")
-        self.check_vacances_samedi.SetToolTipString(u"Samedi")
-        self.check_vacances_dimanche.SetToolTipString(u"Dimanche")
+        self.check_scolaire_lundi.SetToolTipString(_(u"Lundi"))
+        self.check_scolaire_mardi.SetToolTipString(_(u"Mardi"))
+        self.check_scolaire_mercredi.SetToolTipString(_(u"Mercredi"))
+        self.check_scolaire_jeudi.SetToolTipString(_(u"Jeudi"))
+        self.check_scolaire_vendredi.SetToolTipString(_(u"Vendredi"))
+        self.check_scolaire_samedi.SetToolTipString(_(u"Samedi"))
+        self.check_scolaire_dimanche.SetToolTipString(_(u"Dimanche"))
+        self.check_vacances_lundi.SetToolTipString(_(u"Lundi"))
+        self.check_vacances_mardi.SetToolTipString(_(u"Mardi"))
+        self.check_vacances_mercredi.SetToolTipString(_(u"Mercredi"))
+        self.check_vacances_jeudi.SetToolTipString(_(u"Jeudi"))
+        self.check_vacances_vendredi.SetToolTipString(_(u"Vendredi"))
+        self.check_vacances_samedi.SetToolTipString(_(u"Samedi"))
+        self.check_vacances_dimanche.SetToolTipString(_(u"Dimanche"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -350,25 +353,25 @@ class CTRL_Saisie_prog(wx.Panel):
     def Validation(self):
         dictData = self.GetData() 
         if dictData["date_debut"] == None or self.ctrl_date_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
                 return False
         date_fin = self.ctrl_date_fin.GetDate()
         if dictData["date_fin"] == None or self.ctrl_date_fin.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
         if len(dictData["jours_scolaires"]) == 0 and len(dictData["jours_vacances"]) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un jour de la semaine !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un jour de la semaine !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
         if len(dictData["unites"]) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez cocher au moins une unité de consommation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité de consommation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -407,11 +410,11 @@ class CTRL_Planning(wx.Panel):
         # Période
         self.label_date_debut = wx.StaticText(self, -1,u"Du :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1,u"Au :")
+        self.label_date_fin = wx.StaticText(self, -1,_(u"Au :"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Périodes scolaires
-        self.label_periodes_scolaires = wx.StaticText(self, -1,u"Périodes scolaires :")
+        self.label_periodes_scolaires = wx.StaticText(self, -1,_(u"Périodes scolaires :"))
         self.check_scolaire_lundi = wx.CheckBox(self, -1,u"L")
         self.check_scolaire_mardi = wx.CheckBox(self, -1,u"M")
         self.check_scolaire_mercredi = wx.CheckBox(self, -1,u"M")
@@ -422,7 +425,7 @@ class CTRL_Planning(wx.Panel):
         self.CheckJours("scolaire")
         
         # Périodes de vacances
-        self.label_periodes_vacances = wx.StaticText(self, -1,u"Périodes de vacances :")
+        self.label_periodes_vacances = wx.StaticText(self, -1,_(u"Périodes de vacances :"))
         self.check_vacances_lundi = wx.CheckBox(self, -1,u"L")
         self.check_vacances_mardi = wx.CheckBox(self, -1,u"M")
         self.check_vacances_mercredi = wx.CheckBox(self, -1,u"M")
@@ -436,20 +439,20 @@ class CTRL_Planning(wx.Panel):
         self.__do_layout()
 
     def __set_properties(self):
-        self.check_scolaire_lundi.SetToolTipString(u"Lundi")
-        self.check_scolaire_mardi.SetToolTipString(u"Mardi")
-        self.check_scolaire_mercredi.SetToolTipString(u"Mercredi")
-        self.check_scolaire_jeudi.SetToolTipString(u"Jeudi")
-        self.check_scolaire_vendredi.SetToolTipString(u"Vendredi")
-        self.check_scolaire_samedi.SetToolTipString(u"Samedi")
-        self.check_scolaire_dimanche.SetToolTipString(u"Dimanche")
-        self.check_vacances_lundi.SetToolTipString(u"Lundi")
-        self.check_vacances_mardi.SetToolTipString(u"Mardi")
-        self.check_vacances_mercredi.SetToolTipString(u"Mercredi")
-        self.check_vacances_jeudi.SetToolTipString(u"Jeudi")
-        self.check_vacances_vendredi.SetToolTipString(u"Vendredi")
-        self.check_vacances_samedi.SetToolTipString(u"Samedi")
-        self.check_vacances_dimanche.SetToolTipString(u"Dimanche")
+        self.check_scolaire_lundi.SetToolTipString(_(u"Lundi"))
+        self.check_scolaire_mardi.SetToolTipString(_(u"Mardi"))
+        self.check_scolaire_mercredi.SetToolTipString(_(u"Mercredi"))
+        self.check_scolaire_jeudi.SetToolTipString(_(u"Jeudi"))
+        self.check_scolaire_vendredi.SetToolTipString(_(u"Vendredi"))
+        self.check_scolaire_samedi.SetToolTipString(_(u"Samedi"))
+        self.check_scolaire_dimanche.SetToolTipString(_(u"Dimanche"))
+        self.check_vacances_lundi.SetToolTipString(_(u"Lundi"))
+        self.check_vacances_mardi.SetToolTipString(_(u"Mardi"))
+        self.check_vacances_mercredi.SetToolTipString(_(u"Mercredi"))
+        self.check_vacances_jeudi.SetToolTipString(_(u"Jeudi"))
+        self.check_vacances_vendredi.SetToolTipString(_(u"Vendredi"))
+        self.check_vacances_samedi.SetToolTipString(_(u"Samedi"))
+        self.check_vacances_dimanche.SetToolTipString(_(u"Dimanche"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=8, hgap=8)
@@ -524,20 +527,20 @@ class CTRL_Planning(wx.Panel):
     def Validation(self):
         dictData = self.GetData() 
         if dictData["date_debut"] == None or self.ctrl_date_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de début de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_debut.SetFocus()
                 return False
         date_fin = self.ctrl_date_fin.GetDate()
         if dictData["date_fin"] == None or self.ctrl_date_fin.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date de fin de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
         if len(dictData["jours_scolaires"]) == 0 and len(dictData["jours_vacances"]) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un jour de la semaine !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un jour de la semaine !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -548,11 +551,11 @@ class CTRL_Mode_multiple(wx.Choicebook):
     def __init__(self, parent):
         wx.Choicebook.__init__(self, parent, id=-1)
         self.parent = parent
-        #self.SetToolTipString(u"Sélectionnez ici une localisation")
+        #self.SetToolTipString(_(u"Sélectionnez ici une localisation"))
         
         self.listePanels = [
-            ("CALENDRIER", u"Selon les dates sélectionnées", CTRL_Calendrier.CTRL(self, afficheBoutonAnnuel=False) ),
-            ("PLANNING", u"Selon le planning suivant", CTRL_Planning(self) ),
+            ("CALENDRIER", _(u"Selon les dates sélectionnées"), CTRL_Calendrier.CTRL(self, afficheBoutonAnnuel=False) ),
+            ("PLANNING", _(u"Selon le planning suivant"), CTRL_Planning(self) ),
             ]
         
         for code, label, ctrl in self.listePanels :
@@ -580,7 +583,7 @@ class CTRL_Mode_multiple(wx.Choicebook):
         dictData = self.GetData() 
         if dictData["mode"] == "CALENDRIER" :
             if dictData["dates"] == None or len(dictData["dates"]) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune date dans le calendrier !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune date dans le calendrier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -599,7 +602,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.parent = parent
         self.IDindividu = IDindividu
         self.MAJ() 
-        self.SetToolTipString(u"Sélectionnez ici une activité")
+        self.SetToolTipString(_(u"Sélectionnez ici une activité"))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -649,18 +652,18 @@ class CTRL_Saisie_multiple(wx.Panel):
         self.IDindividu = IDindividu
         
         # Mode
-        self.box_mode_staticbox = wx.StaticBox(self, -1, u"Mode de saisie")
-        self.radio_unique = wx.RadioButton(self, -1, u"Saisie unique", style=wx.RB_GROUP)
-        self.radio_multiple = wx.RadioButton(self, -1, u"Saisie multiple")
+        self.box_mode_staticbox = wx.StaticBox(self, -1, _(u"Mode de saisie"))
+        self.radio_unique = wx.RadioButton(self, -1, _(u"Saisie unique"), style=wx.RB_GROUP)
+        self.radio_multiple = wx.RadioButton(self, -1, _(u"Saisie multiple"))
         
         # Saisie multiple
-        self.box_multiple_staticbox = wx.StaticBox(self, -1, u"Saisie multiple")
+        self.box_multiple_staticbox = wx.StaticBox(self, -1, _(u"Saisie multiple"))
         self.ctrl_multiple = CTRL_Mode_multiple(self)
         
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.check_feries = wx.CheckBox(self, -1, u"Inclure les jours fériés")
-        self.check_activite = wx.CheckBox(self, -1, u"Uniquement si individu inscrit sur l'activité :")
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.check_feries = wx.CheckBox(self, -1, _(u"Inclure les jours fériés"))
+        self.check_activite = wx.CheckBox(self, -1, _(u"Uniquement si individu inscrit sur l'activité :"))
         self.ctrl_activite = CTRL_Choix_activite(self, IDindividu=self.IDindividu)
 
         self.__set_properties()
@@ -674,11 +677,11 @@ class CTRL_Saisie_multiple(wx.Panel):
         self.OnChoixMode(None)
 
     def __set_properties(self):
-        self.radio_unique.SetToolTipString(u"Sélectionnez ce mode pour saisir un seul transport")
-        self.radio_multiple.SetToolTipString(u"Sélectionnez ce mode pour saisir plusieurs transports à la fois")
-        self.check_feries.SetToolTipString(u"Cochez cette case pour saisir également des transports sur les jours fériés")
-        self.check_activite.SetToolTipString(u"Cochez cette case pour saisir ce transport uniquement les jours sur lesquels l'individu est inscrit sur une activité donnée")
-        self.ctrl_activite.SetToolTipString(u"Sélectionnez une activité")
+        self.radio_unique.SetToolTipString(_(u"Sélectionnez ce mode pour saisir un seul transport"))
+        self.radio_multiple.SetToolTipString(_(u"Sélectionnez ce mode pour saisir plusieurs transports à la fois"))
+        self.check_feries.SetToolTipString(_(u"Cochez cette case pour saisir également des transports sur les jours fériés"))
+        self.check_activite.SetToolTipString(_(u"Cochez cette case pour saisir ce transport uniquement les jours sur lesquels l'individu est inscrit sur une activité donnée"))
+        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -750,7 +753,7 @@ class CTRL_Saisie_multiple(wx.Panel):
                 return False
             # Validation Options
             if self.check_activite.GetValue() == True and self.ctrl_activite.GetID() == None :
-                dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_activite.SetFocus() 
@@ -769,8 +772,8 @@ class Dialog_prog(wx.Dialog):
         self.IDindividu = IDindividu
 
         # Bandeau
-        titre = u"Programmation d'un transport"
-        intro = u"Vous pouvez ici programmer un transport. Celui-ci sera ainsi créé automatiquement par Noethys à chaque fois qu'une consommation sera saisie pour cet individu en fonction des paramètres que vous aurez précisé ci-dessous."
+        titre = _(u"Programmation d'un transport")
+        intro = _(u"Vous pouvez ici programmer un transport. Celui-ci sera ainsi créé automatiquement par Noethys à chaque fois qu'une consommation sera saisie pour cet individu en fonction des paramètres que vous aurez précisé ci-dessous.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
@@ -780,9 +783,9 @@ class Dialog_prog(wx.Dialog):
         
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -794,9 +797,9 @@ class Dialog_prog(wx.Dialog):
         self.AffichageDates(False)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 660))
 
     def __do_layout(self):
@@ -870,8 +873,8 @@ class Dialog_multiple(wx.Dialog):
         self.IDindividu = IDindividu
 
         # Bandeau
-        titre = u"Saisie d'un ou plusieurs transports"
-        intro = u"Vous pouvez ici sélectionner toutes les caractéristiques du ou des transports à créer. Pour saisir un lot de transports identiques sur un ensemble de dates, sélectionnez le mode Saisie multiple."
+        titre = _(u"Saisie d'un ou plusieurs transports")
+        intro = _(u"Vous pouvez ici sélectionner toutes les caractéristiques du ou des transports à créer. Pour saisir un lot de transports identiques sur un ensemble de dates, sélectionnez le mode Saisie multiple.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
@@ -881,9 +884,9 @@ class Dialog_multiple(wx.Dialog):
         
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -892,9 +895,9 @@ class Dialog_multiple(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 660))
 
     def __do_layout(self):
@@ -975,10 +978,10 @@ class Dialog(wx.Dialog):
         
         # Bandeau
         if IDtransport == None :
-            titre = u"Saisie d'un transport"
+            titre = _(u"Saisie d'un transport")
         else:
-            titre = u"Modification d'un transport"
-        intro = u"Vous pouvez ici sélectionner toutes les caractéristiques du transport."
+            titre = _(u"Modification d'un transport")
+        intro = _(u"Vous pouvez ici sélectionner toutes les caractéristiques du transport.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
@@ -986,9 +989,9 @@ class Dialog(wx.Dialog):
         self.ctrl_saisie = CTRL_Saisie_transport.CTRL(self, IDtransport=IDtransport, IDindividu=IDindividu, dictDonnees=self.dictDonnees, verrouilleBoutons=verrouilleBoutons)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -997,9 +1000,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((450, 660))
 
     def __do_layout(self):

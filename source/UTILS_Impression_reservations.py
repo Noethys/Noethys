@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import FonctionsPerso
 import datetime
@@ -41,7 +44,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
     HAUTEUR_PAGE = TAILLE_PAGE[1]
     
     # Initialisation du document
-    if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+    if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
     doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30, pagesize=TAILLE_PAGE, showBoundary=False)
     story = []
     dictChampsFusion = {}
@@ -55,7 +58,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
         dataTableau = []
         largeursColonnes = ( (420, 100) )
         dateDuJour = DateEngFr(str(datetime.date.today()))
-        dataTableau.append( (u"Réservations", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+        dataTableau.append( (_(u"Réservations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                 ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -81,9 +84,9 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
         sexe = dictIndividu["sexe"]
         if date_naiss != None :
             if sexe == "M" : 
-                texteNaiss = u", né le %s" % DateEngFr(str(date_naiss))
+                texteNaiss = _(u", né le %s") % DateEngFr(str(date_naiss))
             else : 
-                texteNaiss = u", née le %s" % DateEngFr(str(date_naiss))
+                texteNaiss = _(u", née le %s") % DateEngFr(str(date_naiss))
         else:
             texteNaiss = u""
         texteIndividu = u"%s %s%s" % (nom, prenom, texteNaiss)
@@ -135,7 +138,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
             # Colonnes : Date, Consos, Etat, Prestations, Montant
             dataTableau = []
             largeursColonnes = [55, 165, 80, 160, 60]
-            dataTableau.append([u"Date", u"Consommations", u"Etat", u"Prestations", u"Total"])
+            dataTableau.append([_(u"Date"), _(u"Consommations"), _(u"Etat"), _(u"Prestations"), _(u"Total")])
             
             paraStyle = ParagraphStyle(name="standard",
                       fontName="Helvetica",
@@ -175,7 +178,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
                             heure_fin = dictUnite["heure_fin"]
                             if heure_fin == None : heure_fin = u"?"
                             heure_fin = heure_fin.replace(":", "h")
-                            labelUnite += u" (de %s à %s)" % (heure_debut, heure_fin)
+                            labelUnite += _(u" (de %s à %s)") % (heure_debut, heure_fin)
                         listeConso.append(labelUnite)
                         
                         if etat not in listeEtats :
@@ -210,7 +213,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
                     dataTableau.append([texteDate, texteConsos, texteEtat, textePrestations, texteMontants])
             
             if len(dataTableau) == 1 :
-                dlg = wx.MessageDialog(None, u"Il n'y a aucune consommation à imprimer !", u"Erreur", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(None, _(u"Il n'y a aucune consommation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -231,7 +234,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
         # Insertion du total par individu
         dataTableau = []
         montantIndividu = Paragraph(u"<para align='right'>%.02f %s</para>" % (totalFacturationIndividu, SYMBOLE), paraStyle)
-        dataTableau.append([Paragraph(u"<para align='right'>Total :</para>", paraStyle), montantIndividu])
+        dataTableau.append([Paragraph(_(u"<para align='right'>Total :</para>"), paraStyle), montantIndividu])
         
         listeStyles = [
                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -253,7 +256,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
     if nbreIndividus > 1 :
         dataTableau = []
         montantFamille = Paragraph(u"<para align='right'>%.02f %s</para>" % (totalFacturationFamille, SYMBOLE), paraStyle)
-        dataTableau.append([Paragraph(u"<para align='right'>TOTAL :</para>", paraStyle), montantFamille])
+        dataTableau.append([Paragraph(_(u"<para align='right'>TOTAL :</para>"), paraStyle), montantFamille])
         largeursColonnesTotal = [460, 60]
         tableau = Table(dataTableau, largeursColonnesTotal)
         tableau.setStyle(TableStyle(listeStyles))
@@ -268,7 +271,7 @@ def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True)
     except Exception, err :
         print "Erreur dans ouverture PDF :", err
         if "Permission denied" in err :
-            dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False

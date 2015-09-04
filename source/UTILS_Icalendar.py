@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import icalendar
 import urllib2
 import datetime
@@ -59,11 +61,11 @@ class Calendrier():
         listeEvents = self.GetEvents() 
         listeResultats = []
         listeCorrespondances = [
-            (u"hiver", u"Février"),
-            (u"printemps", u"Pâques"),
-            (u"été", u"Eté"),
-            (u"Toussaint", u"Toussaint"),
-            (u"Noël", u"Noël"),
+            (_(u"hiver"), _(u"Février")),
+            (_(u"printemps"), _(u"Pâques")),
+            (u"été", _(u"Eté")),
+            (_(u"Toussaint"), _(u"Toussaint")),
+            (_(u"Noël"), _(u"Noël")),
             ]
             
         for nomOriginal, nomFinal in listeCorrespondances :

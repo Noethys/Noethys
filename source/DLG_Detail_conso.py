@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 
 import CTRL_Bandeau
@@ -86,33 +89,33 @@ class Dialog(wx.Dialog):
         self.dictInfoConso = dictConso
         self.texteInfoBulle = texteInfoBulle
         
-        intro = u"Prenez connaissance des informations détaillées concernant cette consommation et modifier certains de ses paramètres."
-        titre = u"Détail d'une consommation"
+        intro = _(u"Prenez connaissance des informations détaillées concernant cette consommation et modifier certains de ses paramètres.")
+        titre = _(u"Détail d'une consommation")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_zoom.png")
 
         # Informations
         texteInfos = self.GetTexteInfos()
-        self.staticbox_infos = wx.StaticBox(self, -1, u"Informations")
+        self.staticbox_infos = wx.StaticBox(self, -1, _(u"Informations"))
         self.ctrl_infos = wx.TextCtrl(self, -1, texteInfos, style=wx.TE_MULTILINE) #MyHtml(self, texteInfos)
         
         # Paramètres
-        self.staticbox_param = wx.StaticBox(self, -1, u"Paramètres")
+        self.staticbox_param = wx.StaticBox(self, -1, _(u"Paramètres"))
         
-        self.label_groupe = wx.StaticText(self, -1, u"Groupe :")
+        self.label_groupe = wx.StaticText(self, -1, _(u"Groupe :"))
         self.ctrl_groupe = Groupe(self, IDactivite=self.dictInfoConso.IDactivite)
         self.ctrl_groupe.SetID(self.dictInfoConso.IDgroupe)
         
-        self.label_heure_debut = wx.StaticText(self, -1, u"Heure de début :")
+        self.label_heure_debut = wx.StaticText(self, -1, _(u"Heure de début :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.ctrl_heure_debut.SetHeure(self.dictInfoConso.heure_debut)
         
-        self.label_heure_fin = wx.StaticText(self, -1, u"Heure de fin :")
+        self.label_heure_fin = wx.StaticText(self, -1, _(u"Heure de fin :"))
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
         self.ctrl_heure_fin.SetHeure(self.dictInfoConso.heure_fin)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -122,10 +125,10 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.SetTitle(u"Détail d'une consommation")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Détail d'une consommation"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((400, 510))
         
     def __do_layout(self):
@@ -177,12 +180,12 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Vérification des données saisies
         if self.ctrl_heure_debut.Validation() == False or self.ctrl_heure_debut.GetHeure() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une heure de début !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if self.ctrl_heure_fin.Validation() == False or self.ctrl_heure_fin.GetHeure() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une heure de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -210,11 +213,11 @@ class Dialog(wx.Dialog):
         texte +="\n----------------------------------------------------\n"
         
         if self.dictInfoConso.IDconso == None :
-            texte += u"IDconso : Consommation non enregistrée\n"
+            texte += _(u"IDconso : Consommation non enregistrée\n")
         else:
-            texte += u"IDconso : %d\n" % self.dictInfoConso.IDconso
+            texte += _(u"IDconso : %d\n") % self.dictInfoConso.IDconso
         
-        texte += u"IDfamille : %d" % self.dictInfoConso.IDfamille
+        texte += _(u"IDfamille : %d") % self.dictInfoConso.IDfamille
         
         return texte
 

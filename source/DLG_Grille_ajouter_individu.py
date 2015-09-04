@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import OL_Individus_grille_ajouter
 
@@ -22,10 +25,10 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ() 
         self.ctrl_recherche = OL_Individus_grille_ajouter.CTRL_Outils(self, listview=self.ctrl_listview)
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
-        self.SetTitle(u"Ajouter un individu")
+        self.SetTitle(_(u"Ajouter un individu"))
         self.SetMinSize((410, 460))
         
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -64,7 +67,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonOk(self, event):
         if self.GetIDindividu() == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

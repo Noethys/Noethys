@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Bandeau
 import OL_Historique
@@ -37,7 +40,7 @@ class CTRL_Utilisateur(wx.Choice):
         self.SetItems(listeItems)
     
     def GetListeDonnees(self):
-        listeItems = [ u"<< Tous les utilisateurs >>",]
+        listeItems = [ _(u"<< Tous les utilisateurs >>"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         db = GestionDB.DB()
         req = """SELECT IDutilisateur, nom, prenom
@@ -84,7 +87,7 @@ class CTRL_Categorie(wx.Choice):
         self.SetItems(listeItems)
     
     def GetListeDonnees(self):
-        listeItems = [ u"<< Toutes les catégories >>",]
+        listeItems = [ _(u"<< Toutes les catégories >>"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         index = 1
         for IDcategorie, label in UTILS_Historique.CATEGORIES.iteritems() :
@@ -123,7 +126,7 @@ class CTRL_Famille(wx.Choice):
         self.SetItems(listeItems)
     
     def GetListeDonnees(self):
-        listeItems = [ u"<< Toutes les familles >>",]
+        listeItems = [ _(u"<< Toutes les familles >>"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         index = 1
         listeTitulaires = []
@@ -167,7 +170,7 @@ class CTRL_Individu(wx.Choice):
         self.SetItems(listeItems)
     
     def GetListeDonnees(self):
-        listeItems = [ u"<< Tous les individus >>",]
+        listeItems = [ _(u"<< Tous les individus >>"),]
         self.dictDonnees = { 0 : {"ID":None}, }
         db = GestionDB.DB()
         req = """SELECT IDindividu, nom, prenom
@@ -202,8 +205,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez ici consulter l'historique des actions effectuées dans Noethys."
-        titre = u"Historique"
+        intro = _(u"Vous pouvez ici consulter l'historique des actions effectuées dans Noethys.")
+        titre = _(u"Historique")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Historique.png")
         
         # Liste
@@ -213,14 +216,14 @@ class Dialog(wx.Dialog):
         self.ctrl_recherche = OL_Historique.CTRL_Outils(self, listview=self.ctrl_listview)
         
         # Filtres
-        self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, u"Filtres")
-        self.label_utilisateur = wx.StaticText(self, -1, u"Utilisateur :")
+        self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
+        self.label_utilisateur = wx.StaticText(self, -1, _(u"Utilisateur :"))
         self.ctrl_utilisateur = CTRL_Utilisateur(self)
-        self.label_famille = wx.StaticText(self, -1, u"Famille :")
+        self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = CTRL_Famille(self)
-        self.label_individu = wx.StaticText(self, -1, u"Individu :")
+        self.label_individu = wx.StaticText(self, -1, _(u"Individu :"))
         self.ctrl_individu = CTRL_Individu(self)
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
         
         if IDutilisateur != None : 
@@ -239,8 +242,8 @@ class Dialog(wx.Dialog):
 ##            self.label_individu.Show(False)
 ##            self.ctrl_individu.Show(False)
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -248,9 +251,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
     def __set_properties(self):
-        self.SetTitle(u"Historique")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Historique"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((1000, 700))
 
     def __do_layout(self):

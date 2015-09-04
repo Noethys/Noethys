@@ -8,16 +8,19 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
 LISTE_PERIODES = [
-    ( "1jour", u"1 journée"),
-    ( "1semaine", u"1 semaine"),
-    ( "1mois", u"1 mois"),
-    ( "1annee", u"1 année"),
-    ( "perso", u"Personnalisée"),
+    ( "1jour", _(u"1 journée")),
+    ( "1semaine", _(u"1 semaine")),
+    ( "1mois", _(u"1 mois")),
+    ( "1annee", _(u"1 année")),
+    ( "perso", _(u"Personnalisée")),
 ]
 
 
@@ -149,7 +152,7 @@ class ListBoxCombinaisons(wx.ListBox):
     def Modifier(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune combinaison à modifier dans la liste !", "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune combinaison à modifier dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -180,12 +183,12 @@ class ListBoxCombinaisons(wx.ListBox):
     def Supprimer(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune combinaison à supprimer dans la liste !", "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune combinaison à supprimer dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDcombi_tarif = self.GetClientData(index)
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette combinaison ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette combinaison ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             # Suppression
             self.listeDonnees.pop(index)
@@ -203,7 +206,7 @@ class ListBoxCombinaisons(wx.ListBox):
         listeUnites = db.ResultatReq()
         db.Close()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'existe aucune unité pour cette activité !", "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune unité pour cette activité !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -219,13 +222,13 @@ class ListBoxCombinaisons(wx.ListBox):
             index += 1
             
         # Boîte de dialogue pour choisir les combinaisons
-        dlg = wx.MultiChoiceDialog(self, u"Cochez les unités à combiner :", u"Combinaisons d'unités", listeItems)
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les unités à combiner :"), _(u"Combinaisons d'unités"), listeItems)
         if len(listeAnciennesSelections) > 0 :
             dlg.SetSelections(listeAnciennesSelections)
         if dlg.ShowModal() == wx.ID_OK :
             listeSelections = dlg.GetSelections()
             if len(listeSelections) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune unité !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune unité !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -246,7 +249,7 @@ class ListBoxCombinaisons(wx.ListBox):
                         if IDunite1 != IDunite2 :
                             for IDunite_incompat, IDunite, IDunite_incompatible in listeIncompatibilites :
                                 if (IDunite == IDunite1 and IDunite_incompatible == IDunite2) or (IDunite == IDunite2 and IDunite_incompatible == IDunite1) :
-                                    dlg = wx.MessageDialog(self, u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !" % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return None
@@ -264,7 +267,7 @@ class ListBoxCombinaisons(wx.ListBox):
         # Si c'est une modification, vérifie qu'une modification a été faite
         if listeAnciennesIDunites != None :
             if listeAnciennesIDunites == listeIDunites :
-                dlg = wx.MessageDialog(self, u"Vous n'avez effectué aucune modification !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez effectué aucune modification !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -276,7 +279,7 @@ class ListBoxCombinaisons(wx.ListBox):
                 listeUnitesTmp.append(IDuniteTmp)
             listeUnitesTmp.sort()
             if (listeUnitesTmp == listeIDunites)  :
-                dlg = wx.MessageDialog(self, u"Cette combinaison existe déjà !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette combinaison existe déjà !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -295,22 +298,22 @@ class Panel(wx.Panel):
         self.IDtarif = IDtarif
         self.nouveauTarif = nouveauTarif
         
-        self.label_intro = wx.StaticText(self, -1, u"Saisissez les combinaisons conditionnelles :")
+        self.label_intro = wx.StaticText(self, -1, _(u"Saisissez les combinaisons conditionnelles :"))
         self.ctrl_nbre = wx.SpinCtrl(self, -1, u"1", min=1, max=100)
-        self.label_ctrl = wx.StaticText(self, -1, u"des combinaisons d'unités suivantes :")
+        self.label_ctrl = wx.StaticText(self, -1, _(u"des combinaisons d'unités suivantes :"))
         self.ctrl_combinaisons = ListBoxCombinaisons(self, IDactivite=IDactivite, IDtarif=IDtarif)
         self.bouton_ajouter_combi = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_combi = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_combi = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.ctrl_non_facturees = wx.CheckBox(self, -1, u"Les consommations peuvent déjà avoir été facturées")
-        self.label_periode = wx.StaticText(self, -1, u"Sur la période suivante :")
+        self.ctrl_non_facturees = wx.CheckBox(self, -1, _(u"Les consommations peuvent déjà avoir été facturées"))
+        self.label_periode = wx.StaticText(self, -1, _(u"Sur la période suivante :"))
         periodes = []
         for code, label in LISTE_PERIODES :
             periodes.append(label)
         self.ctrl_periode = wx.Choice(self, -1, choices=periodes)
         self.ctrl_jours = wx.SpinCtrl(self, -1, u"", min=0, max=365)
-        self.label_jours = wx.StaticText(self, -1, u"jours")
-        self.ctrl_dates_continues = wx.CheckBox(self, -1, u"Les dates doivent être continues")
+        self.label_jours = wx.StaticText(self, -1, _(u"jours"))
+        self.ctrl_dates_continues = wx.CheckBox(self, -1, _(u"Les dates doivent être continues"))
         
         # Désactive temporairement les contrôels inutilisées
         self.ctrl_nbre.Show(False)
@@ -339,9 +342,9 @@ class Panel(wx.Panel):
 ##        self.label_intro.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL, 1, ""))
         self.label_periode.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL, 1, ""))
         self.ctrl_nbre.SetMinSize((55, -1))
-        self.bouton_ajouter_combi.SetToolTipString(u"Cliquez ici pour ajouter une combinaison d'unités")
-        self.bouton_modifier_combi.SetToolTipString(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste")
-        self.bouton_supprimer_combi.SetToolTipString(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste")
+        self.bouton_ajouter_combi.SetToolTipString(_(u"Cliquez ici pour ajouter une combinaison d'unités"))
+        self.bouton_modifier_combi.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste"))
+        self.bouton_supprimer_combi.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste"))
         self.ctrl_periode.SetSelection(0)
         self.ctrl_jours.SetMinSize((55, -1))
 
@@ -386,7 +389,7 @@ class Panel(wx.Panel):
         self.ctrl_combinaisons.Supprimer() 
 
     def OnChoixPeriode(self, event):
-        if self.ctrl_periode.GetStringSelection() == u"Personnalisée" :
+        if self.ctrl_periode.GetStringSelection() == _(u"Personnalisée") :
             self.ctrl_jours.Enable(True)
             self.label_jours.Enable(True)
             self.ctrl_combinaisons.Sauvegarde()
@@ -465,7 +468,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import CTRL_Informations
@@ -23,7 +26,7 @@ class Panel(wx.Panel):
         self.IDindividu = IDindividu
         self.dictFamillesRattachees = dictFamillesRattachees
         
-        self.staticbox_infos = wx.StaticBox(self, -1, u"Messages")
+        self.staticbox_infos = wx.StaticBox(self, -1, _(u"Messages"))
         
         # HTL
         self.ctrl_infos = CTRL_Informations.CTRL(self, IDfamille=None, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
@@ -40,9 +43,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir un mémo individuel")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le mémo individuel sélectionné")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le mémo individuel sélectionné")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un mémo individuel"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le mémo individuel sélectionné"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le mémo individuel sélectionné"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -84,7 +87,7 @@ class Panel(wx.Panel):
         except :
             dataItem = None
         if dataItem == None or dataItem["type"] != "message":
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun message à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -103,11 +106,11 @@ class Panel(wx.Panel):
         except :
             dataItem = None
         if dataItem == None or dataItem["type"] != "message":
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun message à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce message ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce message ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDmessage = dataItem["IDmessage"]
             DB = GestionDB.DB()
@@ -148,7 +151,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

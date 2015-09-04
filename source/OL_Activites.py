@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import GestionDB
 import UTILS_Export_tables
@@ -97,14 +100,14 @@ class Track(object):
         # Période
         if self.date_debut == "1977-01-01" and self.date_fin == "2999-01-01" :
             self.periode = "illimitee"
-            self.labelPeriode = u"Illimitée"
+            self.labelPeriode = _(u"Illimitée")
         else:
             if self.date_debut != None and self.date_fin != None :
                 self.periode = u"%s;%s" % (self.date_fin, self.date_debut)
-                self.labelPeriode = u"Du %s au %s" % (DateEngFr(self.date_debut), DateEngFr(self.date_fin))
+                self.labelPeriode = _(u"Du %s au %s") % (DateEngFr(self.date_debut), DateEngFr(self.date_fin))
             else:
                 self.periode = None
-                self.labelPeriode = u"Pas de période"
+                self.labelPeriode = _(u"Pas de période")
 
         
     
@@ -164,22 +167,22 @@ class ListView(FastObjectListView):
 
         def FormatePeriode(periode):
             if periode == None :
-                return u"Pas de période"
+                return _(u"Pas de période")
             if periode == "illimitee" :
-                return u"Illimitée"
+                return _(u"Illimitée")
             else:
                 date_fin, date_debut = periode.split(";")
-            return u"Du %s au %s" % (DateEngFr(date_debut), DateEngFr(date_fin))
+            return _(u"Du %s au %s") % (DateEngFr(date_debut), DateEngFr(date_fin))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDactivite", typeDonnee="entier"),
-            ColumnDefn(u"Nom de l'activité", 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Abrégé", 'left', 80, "abrege", typeDonnee="texte"),
-            ColumnDefn(u"Période de validité", 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
+            ColumnDefn(_(u"ID"), "left", 0, "IDactivite", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom de l'activité"), 'left', 220, "nom", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Abrégé"), 'left', 80, "abrege", typeDonnee="texte"),
+            ColumnDefn(_(u"Période de validité"), 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune activité")
+        self.SetEmptyListMsg(_(u"Aucune activité"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SortBy(3, False)
         self.SetObjects(self.donnees)
@@ -217,14 +220,14 @@ class ListView(FastObjectListView):
         if self.modificationAutorisee :
             
             # Item Ajouter
-            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
             # Item Modifier
-            item = wx.MenuItem(menuPop, 20, u"Modifier")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
             bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -232,7 +235,7 @@ class ListView(FastObjectListView):
             if noSelection == True : item.Enable(False)
             
             # Item Supprimer
-            item = wx.MenuItem(menuPop, 30, u"Supprimer")
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
             bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -242,7 +245,7 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
             
             # Item Dupliquer
-            item = wx.MenuItem(menuPop, 60, u"Dupliquer")
+            item = wx.MenuItem(menuPop, 60, _(u"Dupliquer"))
             bmp = wx.Bitmap("Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -252,14 +255,14 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
 
             # Item Importer
-            item = wx.MenuItem(menuPop, 80, u"Importer")
+            item = wx.MenuItem(menuPop, 80, _(u"Importer"))
             bmp = wx.Bitmap("Images/16x16/Document_import.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Importer, id=80)
 
             # Item Exporter
-            item = wx.MenuItem(menuPop, 90, u"Exporter")
+            item = wx.MenuItem(menuPop, 90, _(u"Exporter"))
             bmp = wx.Bitmap("Images/16x16/Document_export.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -268,14 +271,14 @@ class ListView(FastObjectListView):
             menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -284,14 +287,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -302,21 +305,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des activités", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des activités"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des activités", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des activités"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des activités")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des activités"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des activités")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des activités"))
 
 
     def Ajouter(self, event):        
@@ -331,7 +334,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -346,7 +349,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -362,21 +365,21 @@ class ListView(FastObjectListView):
         """ Dupliquer un modèle """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "creer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité à dupliquer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité à dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDactivite = self.Selection()[0].IDactivite
         nom = self.Selection()[0].nom
 
-        dlg = wx.MessageDialog(None, u"Confirmez-vous la duplication de l'activité '%s' ?" % nom, u"Duplication", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous la duplication de l'activité '%s' ?") % nom, _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return
 
         # Exportation
-        exportation = Exporter(categorie="activite", nouveauNom=u"Copie de %s" % nom)
+        exportation = Exporter(categorie="activite", nouveauNom=_(u"Copie de %s") % nom)
         exportation.Ajouter(ID=IDactivite, nom=nom)
         contenu = exportation.GetContenu()
         # Importation
@@ -390,10 +393,10 @@ class ListView(FastObjectListView):
         """ Importer """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_activites", "creer") == False : return
         # Ouverture de la fenêtre de dialogue
-        wildcard = u"Activité Noethys (*.nxa)|*.nxa|Tous les fichiers (*.*)|*.*"
+        wildcard = _(u"Activité Noethys (*.nxa)|*.nxa|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
-            self, message=u"Choisissez un fichier à importer",
+            self, message=_(u"Choisissez un fichier à importer"),
             defaultDir=sp.GetDocumentsDir(), 
             defaultFile="",
             wildcard=wildcard,
@@ -413,7 +416,7 @@ class ListView(FastObjectListView):
         
         # Confirmation
         if nbreChoix > 0 :
-            dlg = wx.MessageDialog(self, u"%d activité(s) ont été importées avec succès." % nbreChoix, u"Importation", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"%d activité(s) ont été importées avec succès.") % nbreChoix, _(u"Importation"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
         
@@ -431,7 +434,7 @@ class ListView(FastObjectListView):
             listeLabels.append(label)
             listeActivites.append((track.IDactivite, track.nom))
 
-        dlg = wx.MultiChoiceDialog(None, u"Sélectionnez les activités à exporter :", u"Exportation", listeLabels)
+        dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez les activités à exporter :"), _(u"Exportation"), listeLabels)
         dlg.SetSize((550, 500))
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
@@ -439,7 +442,7 @@ class ListView(FastObjectListView):
             selections = []
         dlg.Destroy()
         if len(selections) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité à exporter !\n\nExportation annulée.", u"Exportation", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité à exporter !\n\nExportation annulée."), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -450,9 +453,9 @@ class ListView(FastObjectListView):
 
         # Demande le chemin pour la sauvegarde du fichier
         standardPath = wx.StandardPaths.Get()
-        dlg = wx.FileDialog(self, message=u"Enregistrer le fichier sous...",
+        dlg = wx.FileDialog(self, message=_(u"Enregistrer le fichier sous..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile="activites.nxa",
-                            wildcard=u"Activité Noethys (*.nxa)|*.nxa", style=wx.SAVE)
+                            wildcard=_(u"Activité Noethys (*.nxa)|*.nxa"), style=wx.SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
@@ -464,7 +467,7 @@ class ListView(FastObjectListView):
 
         # Le fichier de destination existe déjà :
         if os.path.isfile(path) == True :
-            dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -478,7 +481,7 @@ class ListView(FastObjectListView):
         exportation.Enregistrer(fichier=path)
 
         # Confirmation
-        dlg = wx.MessageDialog(self, u"%d activité(s) ont été exportées avec succès." % len(listeSelection), u"Exportation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"%d activité(s) ont été exportées avec succès.") % len(listeSelection), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -492,7 +495,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une activité...")
+        self.SetDescriptiveText(_(u"Rechercher une activité..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

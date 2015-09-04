@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -41,9 +44,9 @@ class Track(object):
             self.tranche_horaire = u""
         
         if self.date_debut == "1977-01-01" and self.date_fin == "2999-01-01" :
-            self.periode_validite = u"Illimitée"
+            self.periode_validite = _(u"Illimitée")
         else:
-            self.periode_validite = u"Du %s au %s" % (DateEngFr(self.date_debut), DateEngFr(self.date_fin))
+            self.periode_validite = _(u"Du %s au %s") % (DateEngFr(self.date_debut), DateEngFr(self.date_fin))
         
         
     
@@ -102,17 +105,17 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDunite", typeDonnee="entier"),
-            ColumnDefn(u"Ordre", "left", 70, "ordre", typeDonnee="entier"),
-            ColumnDefn(u"Nom", 'left', 140, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Abrégé", "left", 60, "abrege", typeDonnee="texte"), 
-            ColumnDefn(u"Seuil alerte", "left", 70, "seuil_alerte", typeDonnee="texte"), 
-            ColumnDefn(u"Plage horaire", "left", 90, "tranche_horaire", typeDonnee="texte"), 
-            ColumnDefn(u"Période de validité", "left", 150, "periode_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"ID"), "left", 0, "IDunite", typeDonnee="entier"),
+            ColumnDefn(_(u"Ordre"), "left", 70, "ordre", typeDonnee="entier"),
+            ColumnDefn(_(u"Nom"), 'left', 140, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Abrégé"), "left", 60, "abrege", typeDonnee="texte"), 
+            ColumnDefn(_(u"Seuil alerte"), "left", 70, "seuil_alerte", typeDonnee="texte"), 
+            ColumnDefn(_(u"Plage horaire"), "left", 90, "tranche_horaire", typeDonnee="texte"), 
+            ColumnDefn(_(u"Période de validité"), "left", 150, "periode_validite", typeDonnee="texte"), 
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune unité de remplissage")
+        self.SetEmptyListMsg(_(u"Aucune unité de remplissage"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -147,7 +150,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -156,7 +159,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -164,7 +167,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -174,14 +177,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
         
         # Item Deplacer vers le haut
-        item = wx.MenuItem(menuPop, 40, u"Déplacer vers le haut")
+        item = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
         bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
 
         # Item Déplacer vers le bas
-        item = wx.MenuItem(menuPop, 50, u"Déplacer vers le bas")
+        item = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
         bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -190,14 +193,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 60, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 60, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=60)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop,70, u"Imprimer")
+        item = wx.MenuItem(menuPop,70, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -208,12 +211,12 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des unités de remplissage", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unités de remplissage"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des unités de remplissage", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des unités de remplissage"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def Ajouter(self, event):
@@ -226,7 +229,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune unité à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune unité à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -239,7 +242,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune unité à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune unité à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -255,13 +258,13 @@ class ListView(FastObjectListView):
         nbreRemplissages = int(DB.ResultatReq()[0][0])
         DB.Close()
 ##        if nbreRemplissages > 0 :
-##            dlg = wx.MessageDialog(self, u"Cette unité de remplissage a déjà été attribuée à %d remplissage(s).\n\nVous ne pouvez donc pas la supprimer !" % nbreRemplissages, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"Cette unité de remplissage a déjà été attribuée à %d remplissage(s).\n\nVous ne pouvez donc pas la supprimer !") % nbreRemplissages, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette unité de remplissage ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette unité de remplissage ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("unites_remplissage", "IDunite_remplissage", IDunite_remplissage)
@@ -283,7 +286,7 @@ class ListView(FastObjectListView):
 
     def Monter(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune unité dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune unité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -304,7 +307,7 @@ class ListView(FastObjectListView):
     
     def Descendre(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune unité dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune unité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -341,7 +344,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une unité de remplissage...")
+        self.SetDescriptiveText(_(u"Rechercher une unité de remplissage..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

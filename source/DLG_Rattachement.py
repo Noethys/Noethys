@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 
 import CTRL_Bandeau
@@ -89,16 +92,16 @@ class Dialog(wx.Dialog):
         self.nbreTitulaires = self.GetNbreTitulairesFamille() 
         
         # Bandeau
-        titre = u"Rattachement d'un individu"
-        intro = u"Commencez par sélectionner une catégorie de rattachement puis saisissez son nom et son prénom. Si l'individu apparait dans la liste, sélectionnez-le. Sinon créez une nouvelle fiche individuelle."
+        titre = _(u"Rattachement d'un individu")
+        intro = _(u"Commencez par sélectionner une catégorie de rattachement puis saisissez son nom et son prénom. Si l'individu apparait dans la liste, sélectionnez-le. Sinon créez une nouvelle fiche individuelle.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
         
         # Categorie
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, u"1. Sélection de la catégorie de rattachement")
-        self.bouton_categorie_1 = wx.ToggleButton(self, 1, u"Représentant")
-        self.bouton_categorie_2 = wx.ToggleButton(self, 2, u"Enfant")
-        self.bouton_categorie_3 = wx.ToggleButton(self, 3, u"Contact")
-        self.ctrl_titulaire = wx.CheckBox(self, -1, u"Titulaire du dossier famille")
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"1. Sélection de la catégorie de rattachement"))
+        self.bouton_categorie_1 = wx.ToggleButton(self, 1, _(u"Représentant"))
+        self.bouton_categorie_2 = wx.ToggleButton(self, 2, _(u"Enfant"))
+        self.bouton_categorie_3 = wx.ToggleButton(self, 3, _(u"Contact"))
+        self.ctrl_titulaire = wx.CheckBox(self, -1, _(u"Titulaire du dossier famille"))
         self.selection_categorie = None
         
         if self.nbreTitulaires == 0 :
@@ -106,11 +109,11 @@ class Dialog(wx.Dialog):
             self.bouton_categorie_3.Enable(False)
         
         # Sélection individu
-        self.staticbox_selection_staticbox = wx.StaticBox(self, -1, u"2. Saisie du nom de l'individu")
+        self.staticbox_selection_staticbox = wx.StaticBox(self, -1, _(u"2. Saisie du nom de l'individu"))
         self.ctrl_propositions = OL_Individus.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = CtrlRecherche(self, numColonne=1)
-        self.label_prenom = wx.StaticText(self, -1, u"Prénom :")
+        self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, "") #CtrlRecherche(self, numColonne=2)
         
         # Txt remarque
@@ -126,9 +129,9 @@ class Dialog(wx.Dialog):
         self.ctrl_html = MyHtml(self, texte=txtRemarque, hauteur=31)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -144,17 +147,17 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Rattachement d'un individu")
-        self.bouton_categorie_1.SetToolTipString(u"Représentants")
-        self.bouton_categorie_2.SetToolTipString(u"Enfants")
-        self.bouton_categorie_3.SetToolTipString(u"Contacts")
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de l'individu à rattacher (en majuscules et sans accents)")
-        self.ctrl_prenom.SetToolTipString(u"Saisissez ici le prénom de l'individu à rattacher")
-        self.ctrl_propositions.SetToolTipString(u"Double-cliquez sur le nom de l'individu à rattacher")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour rattacher l'individu selectionné dans la liste")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
-        self.ctrl_titulaire.SetToolTipString(u"Cochez cette case si l'individu doit être considéré comme titulaire du dossier")
+        self.SetTitle(_(u"Rattachement d'un individu"))
+        self.bouton_categorie_1.SetToolTipString(_(u"Représentants"))
+        self.bouton_categorie_2.SetToolTipString(_(u"Enfants"))
+        self.bouton_categorie_3.SetToolTipString(_(u"Contacts"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'individu à rattacher (en majuscules et sans accents)"))
+        self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prénom de l'individu à rattacher"))
+        self.ctrl_propositions.SetToolTipString(_(u"Double-cliquez sur le nom de l'individu à rattacher"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour rattacher l'individu selectionné dans la liste"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_titulaire.SetToolTipString(_(u"Cochez cette case si l'individu doit être considéré comme titulaire du dossier"))
         self.SetMinSize((500, 550))
 
     def __do_layout(self):
@@ -261,7 +264,7 @@ class Dialog(wx.Dialog):
     def CreationIDindividu(self):
         nom = self.ctrl_nom.GetValue()
         if nom  == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir le nom du nouvel individu à créer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom du nouvel individu à créer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -269,7 +272,7 @@ class Dialog(wx.Dialog):
         
         prenom = self.ctrl_prenom.GetValue()
         if prenom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir le prénom du nouvel individu à créer !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le prénom du nouvel individu à créer !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_prenom.SetFocus()
@@ -278,7 +281,7 @@ class Dialog(wx.Dialog):
         # Vérifie que l'individu n'existe pas déjà dans la liste
         for individu in self.ctrl_propositions.donnees :
             if Formate(individu.nom) == Formate(nom) and Formate(individu.prenom) == Formate(prenom) :
-                dlg = wx.MessageDialog(self, u"Un individu portant ce nom existe déjà dans la liste ! \n\nSi vous souhaitez quand même créer un nouvel individu avec ce nom, cliquez sur OUI.", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Un individu portant ce nom existe déjà dans la liste ! \n\nSi vous souhaitez quand même créer un nouvel individu avec ce nom, cliquez sur OUI."), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -291,7 +294,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         IDindividu = self.GetSelectionIDindividu()
         if IDindividu == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucun élément dans la liste !\n\n(Si vous souhaitez créer un individu, cliquez sur 'Saisir un nouvel individu')", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucun élément dans la liste !\n\n(Si vous souhaitez créer un individu, cliquez sur 'Saisir un nouvel individu')"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -304,7 +307,7 @@ class Dialog(wx.Dialog):
             listeRattachements = DB.ResultatReq()
             DB.Close()
             if len(listeRattachements) > 0 :
-                dlg = wx.MessageDialog(self, u"Rattachement Impossible : Cet individu est déjà rattaché à cette famille !", u"Erreur de rattachement", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Rattachement Impossible : Cet individu est déjà rattaché à cette famille !"), _(u"Erreur de rattachement"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

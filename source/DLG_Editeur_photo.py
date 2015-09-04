@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import Image
 import cStringIO
 import GestionDB
@@ -149,7 +152,7 @@ class ImgBox(wx.Window):
         dc.DrawRectangle(self.posxCadre, self.posyCadre, self.tailleCadre[0], self.tailleCadre[1])
         dc.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         dc.SetTextForeground("CYAN")
-        dc.DrawText(u"Cadre de sélection", self.posxCadre+3, self.posyCadre+1) 
+        dc.DrawText(_(u"Cadre de sélection"), self.posxCadre+3, self.posyCadre+1) 
         
         # Dessine l'aperçu
         largeurApercu = 100.0
@@ -160,7 +163,7 @@ class ImgBox(wx.Window):
         self.apercu = self.apercu.ConvertToBitmap()
         dc.DrawBitmap(self.apercu, posxApercu, posyApercu, 0)
         dc.SetTextForeground("RED")
-        texteApercu = u"Aperçu"
+        texteApercu = _(u"Aperçu")
         dc.DrawText(texteApercu, posxApercu+3, posyApercu+1) 
         
         # Dessine le cadre de l'aperçu
@@ -287,28 +290,28 @@ class ImgBox(wx.Window):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, image=None, tailleCadre=(384, 384), titre=u"Editeur photo", listeVisages=[]):
+    def __init__(self, parent, image=None, tailleCadre=(384, 384), titre=_(u"Editeur photo"), listeVisages=[]):
         wx.Dialog.__init__(self, parent, -1, title=titre, name="frm_photo", size=(700, 600))
         
         # Widgets
         self.imgbox = ImgBox(self,-1, image=image, tailleCadre=tailleCadre)
         
-        self.staticBox_rotation = wx.StaticBox(self, -1, u"Rotation")
+        self.staticBox_rotation = wx.StaticBox(self, -1, _(u"Rotation"))
         self.bouton_rotation_gauche = wx.BitmapButton(self, -1, wx.Bitmap("Images/22x22/RotationGauche.png", wx.BITMAP_TYPE_PNG))
         self.bouton_rotation_droite = wx.BitmapButton(self, -1, wx.Bitmap("Images/22x22/RotationDroite.png", wx.BITMAP_TYPE_PNG))
         
-        self.staticBox_zoom = wx.StaticBox(self, -1, u"Zoom")
+        self.staticBox_zoom = wx.StaticBox(self, -1, _(u"Zoom"))
         self.slider_zoom = wx.Slider(self, -1,  500, 1, 1000, size=(-1, -1), style=wx.SL_HORIZONTAL)
         self.img_loupe_plus = wx.StaticBitmap(self, -1, wx.Bitmap("Images/22x22/ZoomPlus.png", wx.BITMAP_TYPE_ANY))
         self.img_loupe_moins = wx.StaticBitmap(self, -1, wx.Bitmap("Images/22x22/ZoomMoins.png", wx.BITMAP_TYPE_ANY))
                 
-        self.staticBox_reinit = wx.StaticBox(self, -1, u"Réinitialisation")
+        self.staticBox_reinit = wx.StaticBox(self, -1, _(u"Réinitialisation"))
         self.bouton_reinit = wx.BitmapButton(self, -1, wx.Bitmap("Images/22x22/Photo.png", wx.BITMAP_TYPE_ANY), size=(70, -1))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -326,15 +329,15 @@ class Dialog(wx.Dialog):
             
             
     def __set_properties(self):
-        self.SetTitle(u"Editeur de photo")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider l'image")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Editeur de photo"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider l'image"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         
-        self.bouton_rotation_gauche.SetToolTipString(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens inverse des aiguilles d'une montre")
-        self.bouton_rotation_droite.SetToolTipString(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens des aiguilles d'une montre")
-        self.slider_zoom.SetToolTipString(u"Ajustez avec cette fonction zoom\nla taille de la photo")
-        self.bouton_reinit.SetToolTipString(u"Cliquez ici pour réinitialiser la position\net la taille de la photo initiale")
+        self.bouton_rotation_gauche.SetToolTipString(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens inverse des aiguilles d'une montre"))
+        self.bouton_rotation_droite.SetToolTipString(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens des aiguilles d'une montre"))
+        self.slider_zoom.SetToolTipString(_(u"Ajustez avec cette fonction zoom\nla taille de la photo"))
+        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour réinitialiser la position\net la taille de la photo initiale"))
         
         self.SetMinSize((700, 600))
 

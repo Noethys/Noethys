@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Badgeage_procedures
 
@@ -19,8 +22,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer des procédures de badgeage."
-        titre = u"Gestion des procédures de badgeage"
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des procédures de badgeage.")
+        titre = _(u"Gestion des procédures de badgeage")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Badgeage.png")
         self.ctrl_listview = OL_Badgeage_procedures.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -33,9 +36,9 @@ class Dialog(wx.Dialog):
         self.bouton_dupliquer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Dupliquer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_defaut = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_vocal = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Synthese_vocale.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_vocal = CTRL_Bouton_image.CTRL(self, texte=_(u"Configuration de la synthèse vocale"), cheminImage="Images/32x32/Vocal.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -49,14 +52,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une procédure")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la procédure sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la procédure sélectionnée dans la liste")
-        self.bouton_dupliquer.SetToolTipString(u"Cliquez ici pour dupliquer la procédure sélectionnée dans la liste")
-        self.bouton_defaut.SetToolTipString(u"Cliquez ici pour définir la procédure sélectionnée comme celle par défaut")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_vocal.SetToolTipString(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une procédure"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la procédure sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la procédure sélectionnée dans la liste"))
+        self.bouton_dupliquer.SetToolTipString(_(u"Cliquez ici pour dupliquer la procédure sélectionnée dans la liste"))
+        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir la procédure sélectionnée comme celle par défaut"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_vocal.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((650, 550))
 
     def __do_layout(self):

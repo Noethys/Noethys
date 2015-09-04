@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 LISTE_SUFFIXES = ("data", "photos", "documents")
@@ -24,31 +27,31 @@ class Dialog(wx.Dialog):
         self.nomBase = nomBase
         
         # Nom Utilisateur
-        self.sizer_nom_staticbox = wx.StaticBox(self, -1, u"Nom de l'utilisateur")
+        self.sizer_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'utilisateur"))
         self.label_nom = wx.StaticText(self, -1, "Nom :")
         self.ctrl_nom = wx.TextCtrl(self, -1, self.nomUtilisateur)
         
         # Mot de passe
-        self.sizer_mdp_staticbox = wx.StaticBox(self, -1, u"Mot de passe")
+        self.sizer_mdp_staticbox = wx.StaticBox(self, -1, _(u"Mot de passe"))
         self.label_mdp_1 = wx.StaticText(self, -1, "Mot de passe :")
         self.ctrl_mdp_1 = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         self.label_mdp_2 = wx.StaticText(self, -1, "Confirmation :")
         self.ctrl_mdp_2 = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         
         # Hotes utilisateur
-        self.sizer_hotes_staticbox = wx.StaticBox(self, -1, u"Hôtes de connexion")
-        self.radio_1 = wx.RadioButton(self, -1, u"Connexion depuis n'importe quel hôte (recommandé)", style=wx.RB_GROUP)
-        self.radio_2 = wx.RadioButton(self, -1, u"Connexion uniquement depuis le serveur principal")
-        self.radio_3 = wx.RadioButton(self, -1, u"Connexion uniquement depuis l'hôte suivant :")
+        self.sizer_hotes_staticbox = wx.StaticBox(self, -1, _(u"Hôtes de connexion"))
+        self.radio_1 = wx.RadioButton(self, -1, _(u"Connexion depuis n'importe quel hôte (recommandé)"), style=wx.RB_GROUP)
+        self.radio_2 = wx.RadioButton(self, -1, _(u"Connexion uniquement depuis le serveur principal"))
+        self.radio_3 = wx.RadioButton(self, -1, _(u"Connexion uniquement depuis l'hôte suivant :"))
         self.ctrl_hote = wx.TextCtrl(self, -1, "")
         
         # Autorisation d'accès au fichier
-        self.sizer_autorisation_staticbox = wx.StaticBox(self, -1, u"Autorisation d'accès au fichier '%s'" % self.nomBase)
-        self.ctrl_autorisation = wx.CheckBox(self, -1, u"Cet utilisateur est autorisé à se connecter au fichier")
+        self.sizer_autorisation_staticbox = wx.StaticBox(self, -1, _(u"Autorisation d'accès au fichier '%s'") % self.nomBase)
+        self.ctrl_autorisation = wx.CheckBox(self, -1, _(u"Cet utilisateur est autorisé à se connecter au fichier"))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -62,10 +65,10 @@ class Dialog(wx.Dialog):
         # Si Modification -> importation des données
         if self.nomUtilisateur == "" :
             self.mode = "creation"
-            self.SetTitle(u"Création d'un utilisateur réseau")
+            self.SetTitle(_(u"Création d'un utilisateur réseau"))
         else:
             self.mode = "modification"
-            self.SetTitle(u"Modification d'un utilisateur réseau")
+            self.SetTitle(_(u"Modification d'un utilisateur réseau"))
         
         # Importation
         if self.nomHote == "%" or self.nomHote == "" : 
@@ -83,14 +86,14 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici un nom pour l'utilisateur. \nIl est fortement conseillé de n'inclure aucun caractères spéciaux (accents, symboles...)")
-        self.radio_1.SetToolTipString(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir du serveur sur lequel se trouve la base de données.")
-        self.radio_2.SetToolTipString(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante.")
-        self.radio_3.SetToolTipString(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante.")
-        self.ctrl_mdp_1.SetToolTipString(u"Saisissez un mot de passe pour cet utilisateur")
-        self.ctrl_mdp_2.SetToolTipString(u"Confirmez le mot de passe en le tapant une seconde fois...")
-        self.ctrl_autorisation.SetToolTipString(u"Cochez cette case pour autoriser l'utilisateur à se connecter \nau fichier à partir de l'hôte indiqué ci-dessus.")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom pour l'utilisateur. \nIl est fortement conseillé de n'inclure aucun caractères spéciaux (accents, symboles...)"))
+        self.radio_1.SetToolTipString(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir du serveur sur lequel se trouve la base de données."))
+        self.radio_2.SetToolTipString(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante."))
+        self.radio_3.SetToolTipString(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante."))
+        self.ctrl_mdp_1.SetToolTipString(_(u"Saisissez un mot de passe pour cet utilisateur"))
+        self.ctrl_mdp_2.SetToolTipString(_(u"Confirmez le mot de passe en le tapant une seconde fois..."))
+        self.ctrl_autorisation.SetToolTipString(_(u"Cochez cette case pour autoriser l'utilisateur à se connecter \nau fichier à partir de l'hôte indiqué ci-dessus."))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -225,7 +228,7 @@ class Dialog(wx.Dialog):
         # Vérification des données saisies
         textNom = self.ctrl_nom.GetValue()
         if textNom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement donner un nom pour cet utilisateur !", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom pour cet utilisateur !"), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -237,7 +240,7 @@ class Dialog(wx.Dialog):
             if caract in u"ïîôûëê~&é(-è_çà)=~#{[|`\^@]}" :
                 erreur = True
         if erreur == True :
-            dlg = wx.MessageDialog(self, u"Le nom d'utilisateur ne devrait pas inclure de caractères spéciaux (accents, symboles...)", "Information", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Le nom d'utilisateur ne devrait pas inclure de caractères spéciaux (accents, symboles...)"), "Information", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
@@ -247,15 +250,15 @@ class Dialog(wx.Dialog):
         mdp1 = self.ctrl_mdp_1.GetValue()
         mdp2 = self.ctrl_mdp_2.GetValue()
         if mdp1 != mdp2 :
-            dlg = wx.MessageDialog(self, u"Le mot de passe ne correspond pas à la confirmation.", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Le mot de passe ne correspond pas à la confirmation."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Si pas de mot de passe
         if mdp1 == "" :
-            txtMessage = unicode(u"Attention, vous n'avez saisi aucun mot de passe pour cet utilisateur.\nCela peut être risqué pour la sécurité des données.\n\nVoulez-vous quand même valider la création de cet utilisateur sans mot de passe ?\n\n(Cliquez sur Non ou sur Annuler pour saisir un mot de de passe)")
-            dlgConfirm = wx.MessageDialog(self, txtMessage, u"Confirmation de suppression", wx.YES_NO|wx.CANCEL|wx.NO_DEFAULT|wx.ICON_QUESTION)
+            txtMessage = unicode(_(u"Attention, vous n'avez saisi aucun mot de passe pour cet utilisateur.\nCela peut être risqué pour la sécurité des données.\n\nVoulez-vous quand même valider la création de cet utilisateur sans mot de passe ?\n\n(Cliquez sur Non ou sur Annuler pour saisir un mot de de passe)"))
+            dlgConfirm = wx.MessageDialog(self, txtMessage, _(u"Confirmation de suppression"), wx.YES_NO|wx.CANCEL|wx.NO_DEFAULT|wx.ICON_QUESTION)
             reponse = dlgConfirm.ShowModal()
             dlgConfirm.Destroy()
             if reponse == wx.ID_NO or reponse == wx.ID_CANCEL :
@@ -264,7 +267,7 @@ class Dialog(wx.Dialog):
         # Vérification qu'un hôte spécifique a été saisi
         textHote = self.ctrl_hote.GetValue()
         if textHote == "" and self.radio_3.GetValue() == True :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un hote spécifique", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un hote spécifique"), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_hote.SetFocus()
@@ -305,7 +308,7 @@ class Dialog(wx.Dialog):
         else:
             print "L'utilisateur existe deja."
             DB.Close()
-            dlg = wx.MessageDialog(self, u"Cet utilisateur avec cet hôte existe déjà !", "Information", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Cet utilisateur avec cet hôte existe déjà !"), "Information", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -338,7 +341,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, nomUtilisateur=u"Bernard", nomHote="%", nomBase="test1")
+    dialog_1 = Dialog(None, nomUtilisateur=_(u"Bernard"), nomHote="%", nomBase="test1")
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

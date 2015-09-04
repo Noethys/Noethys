@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -57,7 +60,7 @@ class CTRL_Activite(wx.Choice):
     
     def GetLabelActivite(self):
         if self.GetActivite() == None :
-            return u"Aucune"
+            return _(u"Aucune")
         else :
             return self.GetStringSelection()
 
@@ -233,7 +236,7 @@ class CTRL_Regroupement(wx.Choice):
         self.Select(0)
     
     def MAJ(self):
-        self.listeLabels = [u"Aucun",]
+        self.listeLabels = [_(u"Aucun"),]
         listeChamps = self.listview.GetListeChamps() 
         for dictTemp in listeChamps :
             if dictTemp["afficher"] == True :
@@ -311,12 +314,12 @@ class CTRL_Colonnes(wx.CheckListBox):
     def Monter(self):
         index = self.GetSelection() 
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune colonne à déplacer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à déplacer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if index == 0 :
-            dlg = wx.MessageDialog(self, u"Cette colonne est déjà la première de la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette colonne est déjà la première de la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -325,12 +328,12 @@ class CTRL_Colonnes(wx.CheckListBox):
     def Descendre(self):
         index = self.GetSelection() 
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune colonne à déplacer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune colonne à déplacer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         if index == len(self.listeCodes)-1 :
-            dlg = wx.MessageDialog(self, u"Cette colonne est déjà la dernière de la liste !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette colonne est déjà la dernière de la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -366,32 +369,32 @@ class Parametres(wx.Panel):
         self.listview = listview
         
         # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, -1, u"Activité")
+        self.box_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self)
         self.ctrl_activite.SetMinSize((200, -1))
-        self.check_partis = wx.CheckBox(self, -1, u"Afficher les individus partis")
+        self.check_partis = wx.CheckBox(self, -1, _(u"Afficher les individus partis"))
         self.check_partis.SetValue(True) 
         
         # Groupes
-        self.box_groupes_staticbox = wx.StaticBox(self, -1, u"Groupes")
+        self.box_groupes_staticbox = wx.StaticBox(self, -1, _(u"Groupes"))
         self.ctrl_groupes = CTRL_Groupes(self)
         
         # Catégories
-        self.box_categories_staticbox = wx.StaticBox(self, -1, u"Catégories")
+        self.box_categories_staticbox = wx.StaticBox(self, -1, _(u"Catégories"))
         self.ctrl_categories = CTRL_Categories(self)
         
         # Regroupement
-        self.box_regroupement_staticbox = wx.StaticBox(self, -1, u"Regroupement")
+        self.box_regroupement_staticbox = wx.StaticBox(self, -1, _(u"Regroupement"))
         self.ctrl_regroupement = CTRL_Regroupement(self, listview=listview)
         
         # Colonnes
-        self.box_colonnes_staticbox = wx.StaticBox(self, -1, u"Colonnes")
+        self.box_colonnes_staticbox = wx.StaticBox(self, -1, _(u"Colonnes"))
         self.ctrl_colonnes = CTRL_Colonnes(self, listview=listview)
         self.bouton_haut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_ANY))
         self.bouton_bas = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         
         # Actualiser
-        self.bouton_actualiser = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -403,15 +406,15 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonBas, self.bouton_bas)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTipString(u"Sélectionnez une activité")
-        self.check_partis.SetToolTipString(u"Cochez cette case pour inclure dans la liste des individus partis")
-        self.ctrl_groupes.SetToolTipString(u"Cochez les groupes à afficher")
-        self.ctrl_categories.SetToolTipString(u"Cochez les catégories à afficher")
-        self.ctrl_regroupement.SetToolTipString(u"Sélectionnez un regroupement")
-        self.ctrl_colonnes.SetToolTipString(u"Cochez les colonnes souhaitées")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser la liste")
-        self.bouton_haut.SetToolTipString(u"Cliquez ici pour monter la colonne")
-        self.bouton_bas.SetToolTipString(u"Cliquez ici pour descendre la colonne")
+        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
+        self.check_partis.SetToolTipString(_(u"Cochez cette case pour inclure dans la liste des individus partis"))
+        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes à afficher"))
+        self.ctrl_categories.SetToolTipString(_(u"Cochez les catégories à afficher"))
+        self.ctrl_regroupement.SetToolTipString(_(u"Sélectionnez un regroupement"))
+        self.ctrl_colonnes.SetToolTipString(_(u"Cochez les colonnes souhaitées"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
+        self.bouton_haut.SetToolTipString(_(u"Cliquez ici pour monter la colonne"))
+        self.bouton_bas.SetToolTipString(_(u"Cliquez ici pour descendre la colonne"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -484,25 +487,25 @@ class Parametres(wx.Panel):
         
         # Vérifications
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un groupe !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(listeCategories) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins une catégorie !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une catégorie !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if len(listeColonnes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins une colonne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une colonne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -517,13 +520,13 @@ class Parametres(wx.Panel):
         listeParametres = []
         
         activite = self.ctrl_activite.GetLabelActivite()
-        listeParametres.append(u"Activité : %s" % activite)
+        listeParametres.append(_(u"Activité : %s") % activite)
 
         groupes = self.ctrl_groupes.GetLabelsGroupes()
-        listeParametres.append(u"Groupes : %s" % groupes)
+        listeParametres.append(_(u"Groupes : %s") % groupes)
 
         categories = self.ctrl_categories.GetLabelsCategories()
-        listeParametres.append(u"Catégories : %s" % categories)
+        listeParametres.append(_(u"Catégories : %s") % categories)
 
         labelParametres = " | ".join(listeParametres)
         return labelParametres
@@ -536,8 +539,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une activité avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel."
-        titre = u"Liste des inscriptions"
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une activité avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
+        titre = _(u"Liste des inscriptions")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
 
@@ -552,8 +555,8 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -570,13 +573,13 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ(listeColonnes=listeColonnes) 
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):

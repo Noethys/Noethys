@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.aui
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.agw.hyperlink as Hyperlink
@@ -50,10 +53,10 @@ class GetValeurs() :
     def GetDictCategories(self):
         # Dict des catégories :
         dictCategories = {
-            1 : u"Représentants",
-            2 : u"Enfants",
-            3 : u"Contacts",
-##            4 : u"Hors famille",
+            1 : _(u"Représentants"),
+            2 : _(u"Enfants"),
+            3 : _(u"Contacts"),
+##            4 : _(u"Hors famille"),
             }
         return dictCategories
             
@@ -135,12 +138,12 @@ class GetValeurs() :
             prenom = self.dictInfosIndividus[IDindividu]["prenom"]
             listeNoms.append(u"%s %s %s" % (civiliteAbrege, nom, prenom))
         if len(listeNoms) == 1 : return listeNoms[0]
-        if len(listeNoms) == 2 : return u"%s et %s" % (listeNoms[0], listeNoms[1])
+        if len(listeNoms) == 2 : return _(u"%s et %s") % (listeNoms[0], listeNoms[1])
         if len(listeNoms) > 2 :
             texteNoms = ""
             for nom in listeNoms[:-2] :
                 texteNoms += u"%s, " % nom
-            texteNoms += u" et " + listeNoms[-1]
+            texteNoms += _(u" et ") + listeNoms[-1]
             return texteNoms
     
     def GetListeIDindividusRattaches(self, IDfamille=None):
@@ -330,15 +333,15 @@ class Choice_liens(wx.Choice):
                     texte = valeurs["texte"][self.sexeIndividu]
 ##                    typeLien = valeurs[self.sexeIndividu]
 ##                    if self.sexeIndividu == "M" :
-##                        texte = u"est son %s" % typeLien
+##                        texte = _(u"est son %s") % typeLien
 ##                    else:
-##                        texte = u"est sa %s" % typeLien
+##                        texte = _(u"est sa %s") % typeLien
                     listeChoix.append((texte, IDtypeLien))
         listeChoix.sort()
         # Création de la liste de choix pour le wx.choice après le tri
         listeChoix2 = []
         index = 0
-        listeChoix2.append(u"n'a aucun lien")
+        listeChoix2.append(_(u"n'a aucun lien"))
         self.dictChoix[index] = None
         index += 1
         for texte, IDtypeLien in listeChoix :
@@ -544,16 +547,16 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         self.AssignImageList(il)
         
         # Creation des colonnes
-        self.AddColumn(u"Individu")
+        self.AddColumn(_(u"Individu"))
         self.SetColumnWidth(0, 230)
-        self.AddColumn(u"Type de lien")
+        self.AddColumn(_(u"Type de lien"))
         self.SetColumnWidth(1, 145)
-        self.AddColumn(u"Niveau d'autorisation")
+        self.AddColumn(_(u"Niveau d'autorisation"))
         self.SetColumnWidth(2, 200)
         self.SetMainColumn(0)
                         
         # Création des branches
-        self.root = self.AddRoot(u"Les liens")
+        self.root = self.AddRoot(_(u"Les liens"))
         self.CreationBranches()
         
         self.SetSpacing(10)
@@ -617,7 +620,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
         # Création des branche FAMILLES
         for IDfamille in self.donnees.listeIDfamillesRattachees :
             # Intégration de l'hyperlien NOM DE LA FAMILLE
-            label = u"Famille de %s" % self.donnees.GetNomsTitulairesFamille(IDfamille)
+            label = _(u"Famille de %s") % self.donnees.GetNomsTitulairesFamille(IDfamille)
             hl = Hyperlien(self.GetMainWindow(), label=label, URL="", IDfamille=IDfamille, IDindividu=None, infobulle=u"")
             famille = self.AppendItem(self.root, "", wnd=hl)
             self.SetPyData(famille, IDfamille)
@@ -652,7 +655,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                                             
                             if IDcategorie == 4 and IDindividu == None:
                                 # Intégration de l'hyperlien AJOUTER UN INDIVIDU
-                                hl = Hyperlien(self.GetMainWindow(), label=u"Ajouter un individu...", URL="", IDindividu=None, infobulle=u"")#u"Cliquez sur ce lien pour ajouter \n un individu hors famille")
+                                hl = Hyperlien(self.GetMainWindow(), label=_(u"Ajouter un individu..."), URL="", IDindividu=None, infobulle=u"")#_(u"Cliquez sur ce lien pour ajouter \n un individu hors famille"))
                                 individu = self.AppendItem(categorie, "", wnd=hl)
                                 self.SetPyData(individu, IDindividu)
                                 
@@ -662,7 +665,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                                 self.SetPyData(individu, IDindividu)
                             
                                 # Intégration du Choice LIENS
-                                infobulle = u"Sélectionnez le lien de %s vis-à-vis \nde %s" % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
+                                infobulle = _(u"Sélectionnez le lien de %s vis-à-vis \nde %s") % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
                                 ctrl_lien = Choice_liens(self.GetMainWindow(), -1, IDfamille, self.IDindividu, IDcategorie, IDindividu, prenom, type, sexe, IDtypeLien, infobulle)
                                 self.SetItemWindow(individu, ctrl_lien, 1)
                                 # Mémorisation du controle LIENS
@@ -671,7 +674,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                                 # Intégration de la case à cocher AUTORISATIONS
                                 IDcategorie_individu_objet, titulaire_individu_objet = self.donnees.GetInfoIndividuRattache(self.IDindividu, IDfamille) 
 
-                                infobulle = u"Sélectionnez le niveau d'autorisation de %s vis-à-vis de %s" % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
+                                infobulle = _(u"Sélectionnez le niveau d'autorisation de %s vis-à-vis de %s") % (prenom, self.donnees.dictInfosIndividus[self.IDindividu]["prenom"])
                                 ctrl_autorisations = Choice_autorisations(self.GetMainWindow(), -1, IDfamille, self.IDindividu, IDcategorie, IDindividu, prenom, type, sexe, IDautorisation, infobulle)
                                 self.SetItemWindow(individu, ctrl_autorisations, 2)
                                 self.donnees.dictLiens[IDfamille][self.IDindividu][IDcategorie][IDindividu]["ctrl_autorisations"] = ctrl_autorisations
@@ -768,11 +771,11 @@ class Panel_liens(wx.Panel):
         self.donnees = GetValeurs(self.IDindividu, self.IDfamille)
         self.donnees.InitValeurs()
         
-        self.staticbox_liens = wx.StaticBox(self, -1, u"Liens")
+        self.staticbox_liens = wx.StaticBox(self, -1, _(u"Liens"))
         self.ctrl_liens = CTRL_Saisie_Liens(self, IDindividu=self.IDindividu, IDfamille=self.IDfamille, donnees=self.donnees)
         self.ctrl_liens.SetMinSize((20, 20))
         
-        self.hyperlien_liensFamille = Hyperlien_LiensFamille(self, label=u"Afficher tous les liens de la famille", IDindividu=self.IDindividu, IDfamille=self.IDfamille, URL="", infobulle=u"Cliquez sur ce lien pour afficher tous les liens de la famille")
+        self.hyperlien_liensFamille = Hyperlien_LiensFamille(self, label=_(u"Afficher tous les liens de la famille"), IDindividu=self.IDindividu, IDfamille=self.IDfamille, URL="", infobulle=_(u"Cliquez sur ce lien pour afficher tous les liens de la famille"))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -888,14 +891,14 @@ class Dialog_liens(wx.Dialog):
     def __init__(self, parent, IDindividu=None, IDfamille=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         
-        intro = u"Vous bénéficiez ici d'une vue d'ensemble des liens unissant les membres de la famille sélectionnée. Vous pouvez utiliser un glisser-déposer avec votre souris sur chaque onglet pour afficher plusieurs individus à la fois."
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=u"Définition des liens", texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
+        intro = _(u"Vous bénéficiez ici d'une vue d'ensemble des liens unissant les membres de la famille sélectionnée. Vous pouvez utiliser un glisser-déposer avec votre souris sur chaque onglet pour afficher plusieurs individus à la fois.")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=_(u"Définition des liens"), texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
         
         self.ctrl_notebook = Notebook(self, IDindividu=IDindividu, IDfamille=IDfamille)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -906,10 +909,10 @@ class Dialog_liens(wx.Dialog):
         self.ctrl_notebook.MAJ() 
 
     def __set_properties(self):
-        self.SetTitle(u"Définition des liens")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider et fermer")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Définition des liens"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((650, 550))
 
     def __do_layout(self):

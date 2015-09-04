@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 ##import  wx.calendar
 import datetime
@@ -30,15 +33,15 @@ class Dialog(wx.Dialog):
         self.ctrl_calendrier = CTRL_Calendrier.CTRL(self, afficheAujourdhui=False, typeCalendrier="annuel", afficheBoutonAnnuel=True, multiSelections=False)
         self.ctrl_calendrier.Bind(CTRL_Calendrier.EVT_SELECT_DATES, self.OnDateSelected)
 
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok.Show(False) 
         
-        self.SetTitle(u"Cliquez sur une date pour la sélectionner...")
+        self.SetTitle(_(u"Cliquez sur une date pour la sélectionner..."))
         self.SetMinSize((800, 600))
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)

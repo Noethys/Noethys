@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import CTRL_Bandeau
@@ -38,7 +41,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     if len(listeDonnees) > 0 :
-        dlg = wx.MessageDialog(None, u"Vous ne pouvez pas supprimer cette activité car %d individus y sont déjà inscrits." % len(listeDonnees), u"Suppression impossible", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Vous ne pouvez pas supprimer cette activité car %d individus y sont déjà inscrits.") % len(listeDonnees), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         DB.Close()
@@ -46,14 +49,14 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
             
         
     # Demande de confirmation de la suppression
-    dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment supprimer cette activité ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment supprimer cette activité ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         DB.Close() 
         return False
     dlg.Destroy()
 
-    dlg = wx.MessageDialog(None, u"Vous êtes vraiment sûr de vouloir supprimer cette activité ?\n\nToute suppression sera irréversible !", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(None, _(u"Vous êtes vraiment sûr de vouloir supprimer cette activité ?\n\nToute suppression sera irréversible !"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         DB.Close() 
@@ -134,18 +137,18 @@ class Assistant(wx.Dialog):
             self.CreateIDactivite()
             self.nouvelleFiche = True
         
-        intro = u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez faire appel à l'auteur de Noethys pour bénéficier d'une aide gratuite et personnalisée au paramétrage."
-        titre = u"Paramétrage d'une activité"
+        intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez faire appel à l'auteur de Noethys pour bénéficier d'une aide gratuite et personnalisée au paramétrage.")
+        titre = _(u"Paramétrage d'une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
         self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page5", "Page6", "Page7")
         
         self.static_line = wx.StaticLine(self, -1)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_retour = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Retour_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_suite = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Suite_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_retour = CTRL_Bouton_image.CTRL(self, texte=_(u"Retour"), cheminImage="Images/32x32/Fleche_gauche.png")
+        self.bouton_suite = CTRL_Bouton_image.CTRL(self, texte=_(u"Suite"), cheminImage="Images/32x32/Fleche_droite.png", margesImage=(0, 0, 4, 0), positionImage=wx.RIGHT)
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         self.__set_properties()
         self.__do_layout()
                 
@@ -173,12 +176,12 @@ class Assistant(wx.Dialog):
         self.sizer_pages.Layout()
 
     def __set_properties(self):
-        self.SetTitle(u"Paramétrage d'une activité")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_retour.SetToolTipString(u"Cliquez ici pour revenir à la page précédente")
-        self.bouton_suite.SetToolTipString(u"Cliquez ici pour passer à l'étape suivante")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler")
-        self.SetMinSize((720, 700))
+        self.SetTitle(_(u"Paramétrage d'une activité"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
+        self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
+        self.SetMinSize((720, 730))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
@@ -234,10 +237,12 @@ class Assistant(wx.Dialog):
         # Si on quitte l'avant-dernière page, on active le bouton Suivant
         if self.pageVisible == self.nbrePages :
             self.bouton_suite.Enable(True)
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Valider_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Valider.png")
+            self.bouton_suite.SetTexte(_(u"Valider"))
         else:
             self.bouton_suite.Enable(True)
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Suite_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Fleche_droite.png")
+            self.bouton_suite.SetTexte(_(u"Suite"))
         # Si on revient à la première page, on désactive le bouton Retour
         if self.pageVisible == 1 :
             self.bouton_retour.Enable(False)
@@ -262,7 +267,8 @@ class Assistant(wx.Dialog):
         self.sizer_pages.Layout()
         # Si on arrive à la dernière page, on désactive le bouton Suivant
         if self.pageVisible == self.nbrePages :
-            self.bouton_suite.SetBitmapLabel(wx.Bitmap("Images/BoutonsImages/Valider_L72.png", wx.BITMAP_TYPE_ANY))
+            self.bouton_suite.SetImage("Images/32x32/Valider.png")
+            self.bouton_suite.SetTexte(_(u"Valider"))
             self.bouton_annuler.Enable(False)
         # Si on quitte la première page, on active le bouton Retour
         if self.pageVisible > 1 :
@@ -306,13 +312,13 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
          
         self.listePages = [
-            (u"generalites", u"Généralités", u"Page1(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Loupe.png"),
-            (u"agrements", u"Agréments", u"Page2(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
-            (u"groupes", u"Groupes", u"Page3(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Famille.png"),
-            (u"obligations", u"Renseignements", u"Page4(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Femme.png"),
-            (u"unites", u"Unités", u"Page5(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Mecanisme.png"),
-            (u"calendrier", u"Calendrier", u"Page6(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Calendrier.png"),
-            (u"tarification", u"Tarification", u"Page7(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Euro.png"),
+            (_(u"generalites"), _(u"Généralités"), u"Page1(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Loupe.png"),
+            (_(u"agrements"), _(u"Agréments"), u"Page2(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
+            (_(u"groupes"), _(u"Groupes"), u"Page3(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Famille.png"),
+            (_(u"obligations"), _(u"Renseignements"), u"Page4(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Femme.png"),
+            (u"unites", _(u"Unités"), u"Page5(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Mecanisme.png"),
+            (_(u"calendrier"), _(u"Calendrier"), u"Page6(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Calendrier.png"),
+            (_(u"tarification"), _(u"Tarification"), u"Page7(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Euro.png"),
             ]
             
         # ImageList pour le NoteBook
@@ -364,15 +370,15 @@ class Dialog(wx.Dialog):
             self.CreateIDactivite()
             self.nouvelleFiche = True
             
-        titre = u"Paramétrage d'une activité"
-        intro = u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez faire appel à l'auteur de Noethys pour bénéficier d'une aide gratuite et personnalisée au paramétrage."
+        titre = _(u"Paramétrage d'une activité")
+        intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez faire appel à l'auteur de Noethys pour bénéficier d'une aide gratuite et personnalisée au paramétrage.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
         self.ctrl_notebook = Notebook(self, IDactivite, nouvelleActivite=self.nouvelleFiche)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -384,11 +390,11 @@ class Dialog(wx.Dialog):
         
         
     def __set_properties(self):
-        self.SetTitle(u"Paramétrage d'une activité")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Paramétrage d'une activité"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

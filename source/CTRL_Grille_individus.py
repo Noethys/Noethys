@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os, sys
 import datetime
 import GestionDB
@@ -45,7 +48,7 @@ class CTRL_famille(html.HtmlWindow):
         self.IDfamille = IDfamille
         self.dictIndividus = dictIndividus
         
-        texte = u"Famille de %s" % self.GetNomsTitulaires()
+        texte = _(u"Famille de %s") % self.GetNomsTitulaires()
         self.SetTexte(texte)
     
     def SetTexte(self, texte=""):
@@ -62,7 +65,7 @@ class CTRL_famille(html.HtmlWindow):
                 listeTitulaires.append(u"%s %s" % (nom, prenom))
                 nbreTitulaires += 1
         if nbreTitulaires == 1 : return listeTitulaires[0]
-        if nbreTitulaires == 2 : return u"%s et %s" % (listeTitulaires[0], listeTitulaires[1])
+        if nbreTitulaires == 2 : return _(u"%s et %s") % (listeTitulaires[0], listeTitulaires[1])
         if nbreTitulaires > 2 :
             texteNoms = ""
             for nomTitulaire in listeTitulaires[:-2] :
@@ -89,7 +92,7 @@ class CTRL_famille(html.HtmlWindow):
 ##        db.ExecuterReq(req)
 ##        listeDonnees = db.ResultatReq()
 ##        db.Close()
-##        listeItems = [ u"-------- Aucun --------", ]
+##        listeItems = [ _(u"-------- Aucun --------"), ]
 ##        self.dictDonnees = { 0 : { "ID" : None } }
 ##        index = 1
 ##        for IDrestaurateur, nom in listeDonnees :

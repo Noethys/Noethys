@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import wx.lib.agw.hypertreelist as HTL
 import datetime
@@ -21,8 +24,8 @@ except: pass
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -49,14 +52,14 @@ class Informations():
         return self.listeDonnees
     
     def Categorie_general(self):
-        nomCategorie = u"Général"
+        nomCategorie = _(u"Général")
         listeItems = []
     
         # Récupération du nom du fichier
         nomFichier = self.DB.GetNomFichierDefaut() 
         if "[RESEAU]" in nomFichier :
             nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
-        listeItems.append((u"Nom du fichier", nomFichier))
+        listeItems.append((_(u"Nom du fichier"), nomFichier))
         
         # Récupération des paramètres du fichier
         req = """SELECT IDparametre, nom, parametre 
@@ -68,18 +71,18 @@ class Informations():
         for IDparametre, nom, parametre  in listeTemp :
             dictInfos[nom] = parametre
         
-        listeItems.append((u"Date de création", FonctionsPerso.DateEngFr(dictInfos["date_creation"])))
-        listeItems.append((u"Version de fichier", dictInfos["version"]))
-        listeItems.append((u"IDfichier", dictInfos["IDfichier"]))
+        listeItems.append((_(u"Date de création"), FonctionsPerso.DateEngFr(dictInfos["date_creation"])))
+        listeItems.append((_(u"Version de fichier"), dictInfos["version"]))
+        listeItems.append((_(u"IDfichier"), dictInfos["IDfichier"]))
         
         # Nbre de tables de données
         listeTables = self.DB.GetListeTables()
-        listeItems.append((u"Nombre de tables de données", str(len(listeTables)+2)))
+        listeItems.append((_(u"Nombre de tables de données"), str(len(listeTables)+2)))
         
         return nomCategorie, listeItems
     
     def Categorie_stats(self):
-        nomCategorie = u"Statistiques"
+        nomCategorie = _(u"Statistiques")
         listeItems = []
         
         def GetQuantite(label="", champID="", table=""):
@@ -89,28 +92,28 @@ class Informations():
             listeItems.append((label, str(nbre)))
         
         # Nbre individus
-        GetQuantite(u"Nombre d'individus", "IDindividu", "individus")
+        GetQuantite(_(u"Nombre d'individus"), "IDindividu", "individus")
         
         # Nbre familles
-        GetQuantite(u"Nombre de familles", "IDfamille", "familles")
+        GetQuantite(_(u"Nombre de familles"), "IDfamille", "familles")
 
         # Nbre de consommations
-        GetQuantite(u"Nombre de consommations", "IDconso", "consommations")
+        GetQuantite(_(u"Nombre de consommations"), "IDconso", "consommations")
 
         # Nbre de prestations
-        GetQuantite(u"Nombre de prestations", "IDprestation", "prestations")
+        GetQuantite(_(u"Nombre de prestations"), "IDprestation", "prestations")
 
         # Nbre de dépôts
-        GetQuantite(u"Nombre de dépôts bancaires", "IDdepot", "depots")
+        GetQuantite(_(u"Nombre de dépôts bancaires"), "IDdepot", "depots")
 
         # Nbre de factures
-        GetQuantite(u"Nombre de factures", "IDfacture", "factures")
+        GetQuantite(_(u"Nombre de factures"), "IDfacture", "factures")
 
         # Nbre de règlements
-        GetQuantite(u"Nombre de règlements", "IDreglement", "reglements")
+        GetQuantite(_(u"Nombre de règlements"), "IDreglement", "reglements")
 
         # Nbre de pièces
-        GetQuantite(u"Nombre de pièces", "IDpiece", "pieces")
+        GetQuantite(_(u"Nombre de pièces"), "IDpiece", "pieces")
         
         # Nbre de photos
         DBTemp = GestionDB.DB(suffixe="PHOTOS")
@@ -121,7 +124,7 @@ class Informations():
             nbre = donnees[0][0]
         else :
             nbre = "Base non installée"
-        listeItems.append((u"Nombre de photos", str(nbre)))
+        listeItems.append((_(u"Nombre de photos"), str(nbre)))
 
         # Nbre de documents scannés
         DBTemp = GestionDB.DB(suffixe="DOCUMENTS")
@@ -132,13 +135,13 @@ class Informations():
             nbre = donnees[0][0]
         else :
             nbre = "Base non installée"
-        listeItems.append((u"Nombre de documents scannés", str(nbre)))
+        listeItems.append((_(u"Nombre de documents scannés"), str(nbre)))
         
         return nomCategorie, listeItems
 
 
     def Categorie_historique(self):
-        nomCategorie = u"Historique"
+        nomCategorie = _(u"Historique")
         listeItems = []
         
         req = """SELECT IDcategorie, COUNT(IDaction) 
@@ -174,10 +177,10 @@ class CTRL_Infos(HTL.HyperTreeList):
         self.listeDonnees = listeDonnees
                       
         # Création des colonnes
-        self.AddColumn(u"Catégorie")
+        self.AddColumn(_(u"Catégorie"))
         self.SetMainColumn(0)
         self.SetColumnWidth(0, 300)
-        self.AddColumn(u"Valeur")
+        self.AddColumn(_(u"Valeur"))
         self.SetColumnWidth(1, 190)
         
         # ImageList
@@ -193,7 +196,7 @@ class CTRL_Infos(HTL.HyperTreeList):
         self.AssignImageList(il)
 
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches
         numCategorie = 0
@@ -224,15 +227,15 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter les informations concernant le fichier de données actuellement chargé. Cette liste propose trois catégories de données : les informations générales, les statistiques et l'historique."
-        titre = u"Informations sur le fichier"
+        intro = _(u"Vous pouvez ici consulter les informations concernant le fichier de données actuellement chargé. Cette liste propose trois catégories de données : les informations générales, les statistiques et l'historique.")
+        titre = _(u"Informations sur le fichier")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Information.png")
         
         self.ctrl_informations = CTRL_Infos(self)
                 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -245,8 +248,8 @@ class Dialog(wx.Dialog):
         self.ctrl_informations.MAJ(listeDonnees)
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((550, 550))
 
     def __do_layout(self):

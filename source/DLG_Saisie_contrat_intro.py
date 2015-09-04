@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Inscriptions
 import GestionDB
 import cPickle
@@ -56,7 +59,7 @@ class CTRL_Modeles(wx.Choice):
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             donnees = cPickle.loads(str(donnees))
             self.dictDonnees[index] = { "ID" : IDmodele, "nom " : nom, "IDactivite" : IDactivite, "date_debut" : date_debut, "date_fin" : date_fin, "IDtarif" : IDtarif, "donnees" : donnees}
-            label = u"%s - du %s au %s" % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
+            label = _(u"%s - du %s au %s") % (nom, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
             listeItems.append(label)
             index += 1
         return listeItems
@@ -123,7 +126,7 @@ class CTRL_Contrats(wx.Choice):
             nomIndividu = u"%s %s" % (nomIndividu, prenomIndividu)
             montantStr = u"%.2f %s" % (montant, SYMBOLE)
             self.dictDonnees[index] = { "ID" : IDcontrat, "nomIndividu " : nomIndividu}
-            label = u"%s - %s - %s - du %s au %s" % (nomIndividu, nomActivite, montantStr, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
+            label = _(u"%s - %s - %s - du %s au %s") % (nomIndividu, nomActivite, montantStr, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
             listeItems.append(label)
             index += 1
         return listeItems
@@ -146,24 +149,24 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_contrat_intro", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         
         # Activité
-        self.box_activite_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Sélection de l'activité")
+        self.box_activite_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sélection de l'activité"))
         self.ctrl_inscriptions = OL_Inscriptions.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, activeDoubleclick=False, id=-1, name="OL_inscriptions", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_inscriptions.SetMinSize((20, 20)) 
         self.ctrl_inscriptions.MAJ() 
 
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Options")
-        self.radio_vierge = wx.RadioButton(self, wx.ID_ANY, u"Contrat vierge", style=wx.RB_GROUP)
-        self.radio_modele = wx.RadioButton(self, wx.ID_ANY, u"Utiliser le modèle de contrat :")
+        self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
+        self.radio_vierge = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat vierge"), style=wx.RB_GROUP)
+        self.radio_modele = wx.RadioButton(self, wx.ID_ANY, _(u"Utiliser le modèle de contrat :"))
         self.ctrl_modele = CTRL_Modeles(self)
-        self.bouton_modeles = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-        self.radio_contrat = wx.RadioButton(self, wx.ID_ANY, u"Copier le contrat :")
+        self.bouton_modeles = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+        self.radio_contrat = wx.RadioButton(self, wx.ID_ANY, _(u"Copier le contrat :"))
         self.ctrl_contrat = CTRL_Contrats(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -182,17 +185,17 @@ class Dialog(wx.Dialog):
         self.OnRadio(None)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un nouveau contrat")
-        self.ctrl_inscriptions.SetToolTipString(u"Sélectionnez une activité pour laquelle créer le contrat")
-        self.radio_vierge.SetToolTipString(u"Cliquez ici pour créer un contrat vierge")
-        self.radio_modele.SetToolTipString(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat")
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez un modèle de contrat dans la liste")
-        self.bouton_modeles.SetToolTipString(u"Cliquez ici pour accéder à la gestion des contrats")
-        self.radio_contrat.SetToolTipString(u"Cliquez ici pour créer un contrat basé sur un autre contrat")
-        self.ctrl_contrat.SetToolTipString(u"Sélectionnez le contrat à copier")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'un nouveau contrat"))
+        self.ctrl_inscriptions.SetToolTipString(_(u"Sélectionnez une activité pour laquelle créer le contrat"))
+        self.radio_vierge.SetToolTipString(_(u"Cliquez ici pour créer un contrat vierge"))
+        self.radio_modele.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat"))
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de contrat dans la liste"))
+        self.bouton_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des contrats"))
+        self.radio_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un autre contrat"))
+        self.ctrl_contrat.SetToolTipString(_(u"Sélectionnez le contrat à copier"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((600, 450))
 
     def __do_layout(self):
@@ -236,7 +239,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Contrats")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)
@@ -264,19 +267,19 @@ class Dialog(wx.Dialog):
         
     def OnBoutonOk(self, event): 
         if len(self.ctrl_inscriptions.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une activité dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if self.radio_modele.GetValue() == True and self.ctrl_modele.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un modèle dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.radio_contrat.GetValue() == True and self.ctrl_contrat.GetID() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un contrat dans la liste proposée !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un contrat dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

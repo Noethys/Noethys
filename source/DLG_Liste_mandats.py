@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Mandats
 import GestionDB
@@ -22,8 +25,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Cette fonctionnalité liste tous les mandats SEPA enregistrés dans le logiciel. Vous pouvez notamment les modifier et les supprimer ou les exporter sous Excel par exemple..."
-        titre = u"Liste des mandats SEPA"
+        intro = _(u"Cette fonctionnalité liste tous les mandats SEPA enregistrés dans le logiciel. Vous pouvez notamment les modifier et les supprimer ou les exporter sous Excel par exemple...")
+        titre = _(u"Liste des mandats SEPA")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Prelevement.png")
         
@@ -41,8 +44,8 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -58,15 +61,15 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche famille du mandat sélectionné dans la liste")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le mandat sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le mandat sélectionné dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille du mandat sélectionné dans la liste"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le mandat sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le mandat sélectionné dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
         self.SetMinSize((975, 700))
 
     def __do_layout(self):
@@ -119,7 +122,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("ListedesmandatsSEPA")
 
 
 

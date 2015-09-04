@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import copy
@@ -259,7 +262,7 @@ class Donnees():
 
         # Vérification des codes comptables
         if len(dictCodesPrestations) > 0 :
-            dlg = Dialog_codes(None, dictCodes=dictCodesPrestations, keyStr=True, titre=u"Vérification des codes comptables des prestations")
+            dlg = Dialog_codes(None, dictCodes=dictCodesPrestations, keyStr=True, titre=_(u"Vérification des codes comptables des prestations"))
             if dlg.ShowModal() == wx.ID_OK :
                 dictCodesTemp = dlg.GetCodes() 
                 dlg.Destroy() 
@@ -366,7 +369,7 @@ class Donnees():
 
         # Vérification des codes comptables
         if len(dictModesReglements) > 0 :
-            dlg = Dialog_codes(None, dictCodes=dictModesReglements, keyStr=False, titre=u"Vérification des codes comptables des modes de règlements de type %s" % typeComptable)
+            dlg = Dialog_codes(None, dictCodes=dictModesReglements, keyStr=False, titre=_(u"Vérification des codes comptables des modes de règlements de type %s") % typeComptable)
             if dlg.ShowModal() == wx.ID_OK :
                 dictCodesTemp = dlg.GetCodes() 
                 dlg.Destroy() 
@@ -467,7 +470,7 @@ class Donnees():
         
         # Vérification des codes comptables
         if len(dictDepots) > 0 :
-            dlg = Dialog_codes(None, dictCodes=dictDepots, keyStr=False, titre=u"Vérification des codes comptables des dépôts de type %s" % typeComptable)
+            dlg = Dialog_codes(None, dictCodes=dictDepots, keyStr=False, titre=_(u"Vérification des codes comptables des dépôts de type %s") % typeComptable)
             if dlg.ShowModal() == wx.ID_OK :
                 dictCodesTemp = dlg.GetCodes() 
                 dlg.Destroy() 
@@ -681,7 +684,7 @@ class Donnees():
 ##    def GetVentes(self):
 ##        DB = GestionDB.DB() 
 ##        
-##        dlgAttente = PBI.PyBusyInfo(u"Recherche des données en cours...", parent=None, title=u"Patientez...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+##        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données en cours..."), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
 ##        wx.Yield() 
 ##        
 ##        # Récupération des factures
@@ -863,7 +866,7 @@ class Donnees():
 ##                
 ##                # Vérifie que le total des prestations correspond au montant de la facture
 ##                if dictFacture["total"] != totalPrestationsFacture :
-##                    listeAnomalies.append(u"- Le total des prestations de la facture n°%s du %s (%s) ne correspond pas au montant initial de la facture." % (dictFacture["numero"], FormateDate(dictFacture["date_edition"], "%d/%m/%Y"), nomFamille) )
+##                    listeAnomalies.append(_(u"- Le total des prestations de la facture n°%s du %s (%s) ne correspond pas au montant initial de la facture.") % (dictFacture["numero"], FormateDate(dictFacture["date_edition"], "%d/%m/%Y"), nomFamille) )
 ##                    
 ##        del dlgAttente
 ##        
@@ -871,7 +874,7 @@ class Donnees():
 ##        if len(listeAnomalies) > 0 :
 ##        
 ##            # Propose le correcteur d'anomalies
-##            dlg = wx.MessageDialog(None, u"Des anomalies ont été détectées dans certaines factures.\n\nSouhaitez-vous lancer le correcteur d'anomalies afin de les corriger dès à présent (Conseillé) ?", u"Anomalies", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+##            dlg = wx.MessageDialog(None, _(u"Des anomalies ont été détectées dans certaines factures.\n\nSouhaitez-vous lancer le correcteur d'anomalies afin de les corriger dès à présent (Conseillé) ?"), _(u"Anomalies"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
 ##            reponse = dlg.ShowModal() 
 ##            dlg.Destroy()
 ##            if reponse == wx.ID_YES :
@@ -916,16 +919,16 @@ class Donnees():
 ##            if self.dictTitulaires.has_key(IDfamille) :
 ##                nomFamille = self.dictTitulaires[IDfamille]["titulairesSansCivilite"]
 ##            else :
-##                nomFamille = u"Famille inconnue"
+##                nomFamille = _(u"Famille inconnue")
 ##            montant = u"%.2f %s" % (montant, SYMBOLE)
 ##            if abregeActivite != None :
 ##                label = u"%s - %s" % (abregeActivite, label)
 ##            listePrestationsSansFactures.append(u"- %s : %s (%s | %s)" % (date, label, montant, nomFamille))
 ##        
 ##        if len(listePrestationsSansFactures) > 0 :
-##            message1 = u"Attention, %d prestations (%s) de cette période n'apparaissent sur aucune facture. Ces prestations ne figureront pas dans les écritures comptables. Il est donc conseillé de quitter et générer depuis le menu Facturation les factures correspondantes avant de lancer l'export des écritures comptables.\n\nSouhaitez-vous quand même continuer ?" % (len(listePrestationsSansFactures), u"%.2f %s" % (totalPrestationsSansFactures, SYMBOLE))
+##            message1 = _(u"Attention, %d prestations (%s) de cette période n'apparaissent sur aucune facture. Ces prestations ne figureront pas dans les écritures comptables. Il est donc conseillé de quitter et générer depuis le menu Facturation les factures correspondantes avant de lancer l'export des écritures comptables.\n\nSouhaitez-vous quand même continuer ?") % (len(listePrestationsSansFactures), u"%.2f %s" % (totalPrestationsSansFactures, SYMBOLE))
 ##            message2 = u"\n" .join(listePrestationsSansFactures)
-##            dlg = dialogs.MultiMessageDialog(None, message1, caption=u"Avertissement", msg2=message2 + "\n\n\n", style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : u"Oui", wx.ID_CANCEL : u"Non"})
+##            dlg = dialogs.MultiMessageDialog(None, message1, caption=_(u"Avertissement"), msg2=message2 + "\n\n\n", style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : _(u"Oui"), wx.ID_CANCEL : _(u"Non")})
 ##            reponse = dlg.ShowModal() 
 ##            dlg.Destroy() 
 ##            if reponse != wx.ID_OK :
@@ -1072,9 +1075,9 @@ class CTRL_Logiciel(wx.combo.BitmapComboBox):
         wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.listeFormats = [
-            {"code" : "ebp_compta", "label" : u"EBP Compta", "image" : wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
-            {"code" : "ciel_compta_ebp", "label" : u"CIEL Compta (Format EBP)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
-            {"code" : "ciel_compta_ximport", "label" : u"CIEL Compta (Format XImport)", "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+            {"code" : "ebp_compta", "label" : _(u"EBP Compta"), "image" : wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
+            {"code" : "ciel_compta_ebp", "label" : _(u"CIEL Compta (Format EBP)"), "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+            {"code" : "ciel_compta_ximport", "label" : _(u"CIEL Compta (Format XImport)"), "image" : wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             ]
         for dictFormat in self.listeFormats :
             self.Append(dictFormat["label"], dictFormat["image"], dictFormat["label"])
@@ -1152,13 +1155,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
     def Validation(self):
         # Période
         if self.parent.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de début de période !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début de période !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         if self.parent.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de fin de période !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin de période !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1167,7 +1170,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         for valeur in self.listeDonnees :
             if type(valeur) == dict :
                 if valeur["type"] == "chaine" and valeur["obligatoire"] == True and self.GetPropertyValue(valeur["code"]) == "" :
-                    dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner l'information '%s' !" % valeur["description"], u"Information", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner l'information '%s' !") % valeur["description"], _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -1186,7 +1189,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.SAVE
@@ -1201,7 +1204,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -1214,8 +1217,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
         f.close()
         
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = u"Le fichier a été créé avec succès.\n\nSouhaitez-vous l'ouvrir dès maintenant ?"
-        dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Le fichier a été créé avec succès.\n\nSouhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
@@ -1228,20 +1231,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
 ##class CTRL_Parametres_ebp(CTRL_Parametres) :
 ##    def __init__(self, parent):
 ##        self.listeDonnees = [
-##            u"Codes journaux",
-##            {"type":"chaine", "label":u"Ventes", "description":u"Code journal des ventes", "code":"journal_ventes", "tip":u"Saisissez le code journal des ventes", "defaut":u"VE"},
-##            {"type":"chaine", "label":u"Banque", "description":u"Code journal de la banque", "code":"journal_banque", "tip":u"Saisissez le code journal de la banque", "defaut":u"BP"},
-##            {"type":"chaine", "label":u"Caisse", "description":u"Code journal de la caisse", "code":"journal_caisse", "tip":u"Saisissez le code journal de la caisse", "defaut":u"CA"},
-##            u"Codes comptables",
-##            {"type":"chaine", "label":u"Ventes", "description":u"Code comptable des ventes", "code":"code_ventes", "tip":u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)", "defaut":u"706"},
-##            {"type":"chaine", "label":u"Clients", "description":u"Code comptable des clients", "code":"code_clients", "tip":u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)", "defaut":u"411"},
-##            {"type":"chaine", "label":u"Banque", "description":u"Code comptable de la banque", "code":"code_banque", "tip":u"Saisissez le code comptable de la banque", "defaut":u"512"},
-##            {"type":"chaine", "label":u"Caisse", "description":u"Code comptable de la caisse", "code":"code_caisse", "tip":u"Saisissez le code comptable de la caisse", "defaut":u"531"},
-##            u"Formats libellés",
-##            {"type":"chaine", "label":u"Facture", "description":u"Format du libellé des factures", "code":"format_facture", "tip":u"Saisissez le format du libellé des factures. Vous pouvez utiliser les mots-clés suivants : {IDFACTURE} {NOM_FAMILLE} {NUMERO} {DATE_EDITION} {DATE_ECHEANCE} {DATE_DEBUT} {DATE_FIN} {NOM_LOT}.", "defaut":u"Facture {NOM_FAMILLE}"},
-##            {"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"},
-##            {"type":"chaine", "label":u"Dépôt", "description":u"Format du libellé des dépôts", "code":"format_depot", "tip":u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}.", "defaut":u"{NOM_DEPOT}"},
-##            {"type":"chaine", "label":u"Règlement", "description":u"Format du libellé des règlements", "code":"format_reglement", "tip":u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}.", "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}"},
+##            _(u"Codes journaux"),
+##            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code journal des ventes"), "code":"journal_ventes", "tip":_(u"Saisissez le code journal des ventes"), "defaut":_(u"VE")},
+##            {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code journal de la banque"), "code":"journal_banque", "tip":_(u"Saisissez le code journal de la banque"), "defaut":_(u"BP")},
+##            {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code journal de la caisse"), "code":"journal_caisse", "tip":_(u"Saisissez le code journal de la caisse"), "defaut":_(u"CA")},
+##            _(u"Codes comptables"),
+##            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code comptable des ventes"), "code":"code_ventes", "tip":_(u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)"), "defaut":u"706"},
+##            {"type":"chaine", "label":_(u"Clients"), "description":_(u"Code comptable des clients"), "code":"code_clients", "tip":_(u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)"), "defaut":u"411"},
+##            {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code comptable de la banque"), "code":"code_banque", "tip":_(u"Saisissez le code comptable de la banque"), "defaut":u"512"},
+##            {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code comptable de la caisse"), "code":"code_caisse", "tip":_(u"Saisissez le code comptable de la caisse"), "defaut":u"531"},
+##            _(u"Formats libellés"),
+##            {"type":"chaine", "label":_(u"Facture"), "description":_(u"Format du libellé des factures"), "code":"format_facture", "tip":_(u"Saisissez le format du libellé des factures. Vous pouvez utiliser les mots-clés suivants : {IDFACTURE} {NOM_FAMILLE} {NUMERO} {DATE_EDITION} {DATE_ECHEANCE} {DATE_DEBUT} {DATE_FIN} {NOM_LOT}."), "defaut":_(u"Facture {NOM_FAMILLE}")},
+##            {"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellé des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"), "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"},
+##            {"type":"chaine", "label":_(u"Dépôt"), "description":_(u"Format du libellé des dépôts"), "code":"format_depot", "tip":_(u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_DEPOT}"},
+##            {"type":"chaine", "label":_(u"Règlement"), "description":_(u"Format du libellé des règlements"), "code":"format_reglement", "tip":_(u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}."), "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}"},
 ##            ]
 ##        CTRL_Parametres.__init__(self, parent, self.listeDonnees)
 ##
@@ -1350,7 +1353,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
 ##        
 ##        # Finalisation du texte
 ##        texte = "\n".join(listeLignesTxt)
-##        self.CreationFichier(nomFichier=u"Export.txt", texte=texte)
+##        self.CreationFichier(nomFichier=_(u"Export.txt"), texte=texte)
 
 
 
@@ -1358,29 +1361,29 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL):#(wxpg.PropertyGrid) :
 class CTRL_Parametres_defaut(CTRL_Parametres) :
     def __init__(self, parent):
         self.listeDonnees = [
-            u"Options générales",
-            {"type":"choix", "label":u"Regroupement des prestations", "description":u"Mode de regroupement des prestations", "code":"option_regroupement_prestations", "tip":u"Sélectionnez le mode de regroupement des prestations", "choix":[u"Par nom de prestation", u"Par nom d'activité"], "defaut":0, "obligatoire":True},
-            {"type":"choix", "label":u"Regroupement des règlements", "description":u"Mode de regroupement des règlements", "code":"option_regroupement_reglements", "tip":u"Sélectionnez le mode de regroupement des règlements", "choix":[u"Par mode de règlement", u"Par dépôt de règlement"], "defaut":0, "obligatoire":True},
-            {"type":"choix", "label":u"Sélection des règlements", "description":u"Sélection des règlements", "code":"option_selection_reglements", "tip":u"Sélectionnez le mode de sélection des règlements", "choix":[u"Règlements déposés sur la période", u"Règlements saisis sur la période"], "defaut":0, "obligatoire":True},
-            {"type":"check", "label":u"Insérer entête noms des champs", "description":u"Insérer ligne noms des champs", "code":"ligne_noms_champs", "tip":u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs", "defaut":False, "obligatoire":True},
-            {"type":"check", "label":u"Mémoriser les paramètres", "description":u"Mémoriser les paramètres", "code":"memoriser_parametres", "tip":u"Cochez cette case pour mémoriser les paramètres", "defaut":True, "obligatoire":True},
-            u"Codes journaux par défaut",
-            {"type":"chaine", "label":u"Ventes", "description":u"Code journal des ventes", "code":"journal_ventes", "tip":u"Saisissez le code journal des ventes", "defaut":u"VE", "obligatoire":True},
-            {"type":"chaine", "label":u"Banque", "description":u"Code journal de la banque", "code":"journal_banque", "tip":u"Saisissez le code journal de la banque", "defaut":u"BP", "obligatoire":True},
-            {"type":"chaine", "label":u"Caisse", "description":u"Code journal de la caisse", "code":"journal_caisse", "tip":u"Saisissez le code journal de la caisse", "defaut":u"CA", "obligatoire":False},
-            u"Codes comptables par défaut",
-            {"type":"chaine", "label":u"Ventes", "description":u"Code comptable des ventes", "code":"code_ventes", "tip":u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)", "defaut":u"706", "obligatoire":True},
-            {"type":"chaine", "label":u"Clients", "description":u"Code comptable des clients", "code":"code_clients", "tip":u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)", "defaut":u"411", "obligatoire":True},
-            {"type":"chaine", "label":u"Banque", "description":u"Code comptable de la banque", "code":"code_banque", "tip":u"Saisissez le code comptable de la banque", "defaut":u"512", "obligatoire":True},
-            {"type":"chaine", "label":u"Caisse", "description":u"Code comptable de la caisse", "code":"code_caisse", "tip":u"Saisissez le code comptable de la caisse", "defaut":u"531", "obligatoire":False},
-            u"Formats des libellés",
-            {"type":"chaine", "label":u"Total des prestations", "description":u"Format du libellé du total des ventes", "code":"format_total_ventes", "tip":u"Saisissez le format du libellé du total des ventes. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}.", "defaut":u"Prestations du {DATE_DEBUT} au {DATE_FIN}", "obligatoire":True},
-            {"type":"chaine", "label":u"Total des règlements", "description":u"Format du libellé du total des règlements", "code":"format_total_reglements", "tip":u"Saisissez le format du libellé du total des règlements. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}.", "defaut":u"Règlements du {DATE_DEBUT} au {DATE_FIN}", "obligatoire":True},
-            #{"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "obligatoire":True},
-            {"type":"chaine", "label":u"Prestation", "description":u"Format du libellé des prestations", "code":"format_prestation", "tip":u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {NOM_PRESTATION} {DATE_DEBUT} {DATE_FIN}.", "defaut":u"{NOM_PRESTATION}", "obligatoire":True},
-            {"type":"chaine", "label":u"Mode de règlement", "description":u"Format du libellé des modes de règlements", "code":"format_mode", "tip":u"Saisissez le format du libellé des modes de règlements. Vous pouvez utiliser les mots-clés suivants : {IDMODE} {NOM_MODE} {CODE_COMPTABLE} {NBRE_REGLEMENTS}.", "defaut":u"{NOM_MODE}", "obligatoire":True},
-            {"type":"chaine", "label":u"Dépôt", "description":u"Format du libellé des dépôts", "code":"format_depot", "tip":u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}.", "defaut":u"{NOM_DEPOT} - {DATE_DEPOT}", "obligatoire":True},
-            #{"type":"chaine", "label":u"Règlement", "description":u"Format du libellé des règlements", "code":"format_reglement", "tip":u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}.", "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}", "obligatoire":True},
+            _(u"Options générales"),
+            {"type":"choix", "label":_(u"Regroupement des prestations"), "description":_(u"Mode de regroupement des prestations"), "code":"option_regroupement_prestations", "tip":_(u"Sélectionnez le mode de regroupement des prestations"), "choix":[_(u"Par nom de prestation"), _(u"Par nom d'activité")], "defaut":0, "obligatoire":True},
+            {"type":"choix", "label":_(u"Regroupement des règlements"), "description":_(u"Mode de regroupement des règlements"), "code":"option_regroupement_reglements", "tip":_(u"Sélectionnez le mode de regroupement des règlements"), "choix":[_(u"Par mode de règlement"), _(u"Par dépôt de règlement")], "defaut":0, "obligatoire":True},
+            {"type":"choix", "label":_(u"Sélection des règlements"), "description":_(u"Sélection des règlements"), "code":"option_selection_reglements", "tip":_(u"Sélectionnez le mode de sélection des règlements"), "choix":[_(u"Règlements déposés sur la période"), _(u"Règlements saisis sur la période")], "defaut":0, "obligatoire":True},
+            {"type":"check", "label":_(u"Insérer entête noms des champs"), "description":_(u"Insérer ligne noms des champs"), "code":"ligne_noms_champs", "tip":_(u"Cochez cette case pour insérer en début de fichier une ligne avec les noms des champs"), "defaut":False, "obligatoire":True},
+            {"type":"check", "label":_(u"Mémoriser les paramètres"), "description":_(u"Mémoriser les paramètres"), "code":"memoriser_parametres", "tip":_(u"Cochez cette case pour mémoriser les paramètres"), "defaut":True, "obligatoire":True},
+            _(u"Codes journaux par défaut"),
+            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code journal des ventes"), "code":"journal_ventes", "tip":_(u"Saisissez le code journal des ventes"), "defaut":_(u"VE"), "obligatoire":True},
+            {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code journal de la banque"), "code":"journal_banque", "tip":_(u"Saisissez le code journal de la banque"), "defaut":_(u"BP"), "obligatoire":True},
+            {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code journal de la caisse"), "code":"journal_caisse", "tip":_(u"Saisissez le code journal de la caisse"), "defaut":_(u"CA"), "obligatoire":False},
+            _(u"Codes comptables par défaut"),
+            {"type":"chaine", "label":_(u"Ventes"), "description":_(u"Code comptable des ventes"), "code":"code_ventes", "tip":_(u"Saisissez le code comptable des ventes (Peut être ajusté en détail dans le paramétrage des activités, des cotisations, des tarifs et des prestations)"), "defaut":u"706", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Clients"), "description":_(u"Code comptable des clients"), "code":"code_clients", "tip":_(u"Saisissez le code comptable des clients (Peut- être ajusté en détail dans la fiche famille)"), "defaut":u"411", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Banque"), "description":_(u"Code comptable de la banque"), "code":"code_banque", "tip":_(u"Saisissez le code comptable de la banque"), "defaut":u"512", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Caisse"), "description":_(u"Code comptable de la caisse"), "code":"code_caisse", "tip":_(u"Saisissez le code comptable de la caisse"), "defaut":u"531", "obligatoire":False},
+            _(u"Formats des libellés"),
+            {"type":"chaine", "label":_(u"Total des prestations"), "description":_(u"Format du libellé du total des ventes"), "code":"format_total_ventes", "tip":_(u"Saisissez le format du libellé du total des ventes. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}."), "defaut":_(u"Prestations du {DATE_DEBUT} au {DATE_FIN}"), "obligatoire":True},
+            {"type":"chaine", "label":_(u"Total des règlements"), "description":_(u"Format du libellé du total des règlements"), "code":"format_total_reglements", "tip":_(u"Saisissez le format du libellé du total des règlements. Vous pouvez utiliser les mots-clés suivants : {DATE_DEBUT} {DATE_FIN}."), "defaut":_(u"Règlements du {DATE_DEBUT} au {DATE_FIN}"), "obligatoire":True},
+            #{"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellé des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {IDPRESTATION} {DATE} {LIBELLE} {ACTIVITE} {ACTIVITE_ABREGE} {TARIF} {INDIVIDU_NOM} {INDIVIDU_PRENOM}"), "defaut":u"{LIBELLE} {INDIVIDU_NOM} {INDIVIDU_PRENOM}", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Prestation"), "description":_(u"Format du libellé des prestations"), "code":"format_prestation", "tip":_(u"Saisissez le format du libellé des prestations. Vous pouvez utiliser les mots-clés suivants : {NOM_PRESTATION} {DATE_DEBUT} {DATE_FIN}."), "defaut":u"{NOM_PRESTATION}", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Mode de règlement"), "description":_(u"Format du libellé des modes de règlements"), "code":"format_mode", "tip":_(u"Saisissez le format du libellé des modes de règlements. Vous pouvez utiliser les mots-clés suivants : {IDMODE} {NOM_MODE} {CODE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_MODE}", "obligatoire":True},
+            {"type":"chaine", "label":_(u"Dépôt"), "description":_(u"Format du libellé des dépôts"), "code":"format_depot", "tip":_(u"Saisissez le format du libellé des dépôts. Vous pouvez utiliser les mots-clés suivants : {IDDEPOT} {NOM_DEPOT} {DATE_DEPOT} {MODE_REGLEMENT} {TYPE_COMPTABLE} {NBRE_REGLEMENTS}."), "defaut":u"{NOM_DEPOT} - {DATE_DEPOT}", "obligatoire":True},
+            #{"type":"chaine", "label":_(u"Règlement"), "description":_(u"Format du libellé des règlements"), "code":"format_reglement", "tip":_(u"Saisissez le format du libellé des règlements. Vous pouvez utiliser les mots-clés suivants : {IDREGLEMENT} {DATE} {MODE_REGLEMENT} {NOM_FAMILLE} {NUMERO_PIECE} {NOM_PAYEUR} {NUMERO_QUITTANCIER} {DATE_DEPOT} {NOM_DEPOT}."), "defaut":u"{MODE_REGLEMENT} {NOM_FAMILLE}", "obligatoire":True},
             ]
         CTRL_Parametres.__init__(self, parent, self.listeDonnees)
 
@@ -1430,7 +1433,7 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
         
         # Finalisation du texte
         texte = "\n".join(listeLignesTxt)
-        nomFichier = u"Export_%s_%s_%s" % (format, dictParametres["date_debut"].strftime("%d-%m-%Y"), dictParametres["date_fin"].strftime("%d-%m-%Y"))
+        nomFichier = _(u"Export_%s_%s_%s") % (format, dictParametres["date_debut"].strftime("%d-%m-%Y"), dictParametres["date_fin"].strftime("%d-%m-%Y"))
         self.CreationFichier(nomFichier=nomFichier, texte=texte)
     
     def FormateLigne(self, format, ligne, dictParametres, numLigne, typeComptable=None):
@@ -1449,24 +1452,24 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         # Bandeau
-        intro = u"Sélectionnez les dates de la période à exporter, choisissez le format d'export correspondant à votre logiciel de compatibilité puis renseignez les paramètres nécessaires avant cliquer sur Générer. Vous obtiendrez un fichier qu'il vous suffira d'importer depuis votre logiciel de comptabilité."
-        titre = u"Export des écritures comptables"
+        intro = _(u"Sélectionnez les dates de la période à exporter, choisissez le format d'export correspondant à votre logiciel de compatibilité puis renseignez les paramètres nécessaires avant cliquer sur Générer. Vous obtiendrez un fichier qu'il vous suffira d'importer depuis votre logiciel de comptabilité.")
+        titre = _(u"Export des écritures comptables")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Export_comptable.png")
         
         # Période
-        self.box_periode_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Période")
+        self.box_periode_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Période"))
         self.label_date_debut = wx.StaticText(self, wx.ID_ANY, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_date_fin = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
         # Logiciel de sortie
-        self.box_logiciel_staticbox = wx.StaticBox(self, -1, u"Format d'export")
+        self.box_logiciel_staticbox = wx.StaticBox(self, -1, _(u"Format d'export"))
         self.ctrl_logiciel = CTRL_Logiciel(self)
 
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Paramètres")
+        self.box_parametres_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres_defaut(self)
 ##        self.ctrl_labelbook = LB.FlatImageBook(self, -1, agwStyle=LB.INB_LEFT | LB.INB_BORDER | LB.INB_BOLD_TAB_SELECTION)
 ##        self.InitLabelbook() 
@@ -1475,9 +1478,9 @@ class Dialog(wx.Dialog):
         self.bouton_sauvegarde = CTRL_Propertygrid.Bouton_sauvegarde(self, self.ctrl_parametres)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fichier_generer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer le fichier"), cheminImage="Images/32x32/Disk.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -1491,11 +1494,11 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.ctrl_date_debut.SetFocus)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de la période à exporter")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de la période à exporter")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour lancer la génération des fichiers d'exportation")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période à exporter"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période à exporter"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la génération des fichiers d'exportation"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((700, 680))
 
     def __do_layout(self):
@@ -1554,8 +1557,8 @@ class Dialog(wx.Dialog):
 
     def InitLabelbook(self):
         self.listePages = [
-            {"index":0, "label":u"EBP Compta", "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
-            {"index":1, "label":u"CIEL Compta", "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
+            {"index":0, "label":_(u"EBP Compta"), "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap('Images/48x48/Logiciel_ebp.png', wx.BITMAP_TYPE_PNG)},
+            {"index":1, "label":_(u"CIEL Compta"), "ctrl":CTRL_Parametres_ebp(self), "image":wx.Bitmap('Images/48x48/Logiciel_ciel.png', wx.BITMAP_TYPE_PNG)},
             ]
         # Création de l'ImageList
         il = wx.ImageList(48, 48)
@@ -1603,7 +1606,7 @@ Merci de signaler tout bug rencontré dans la rubrique "Signaler un bug " du foru
 </CENTER>
 """
         import DLG_Message_html
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=u"Information", nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), nePlusAfficher=True)
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
         dlg.Destroy()
@@ -1653,7 +1656,7 @@ class CTRL_Codes(wxpg.PropertyGrid) :
                     ID = int(label)
                     if self.dictCodes[ID].has_key("label") : label = self.dictCodes[ID]["label"]
                     if self.dictCodes[ID].has_key("intitule") : label = self.dictCodes[ID]["intitule"]
-                dlg = wx.MessageDialog(None, u"Vous n'avez pas renseigné le code comptable de la ligne '%s'.\n\nSouhaitez-vous tout de même continuer ? (Si oui, cette ligne ne sera pas exportée)" % label, u"Information manquante", wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(None, _(u"Vous n'avez pas renseigné le code comptable de la ligne '%s'.\n\nSouhaitez-vous tout de même continuer ? (Si oui, cette ligne ne sera pas exportée)") % label, _(u"Information manquante"), wx.YES_NO|wx.YES_DEFAULT|wx.ICON_EXCLAMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse == wx.ID_NO:
@@ -1669,19 +1672,19 @@ class CTRL_Codes(wxpg.PropertyGrid) :
 
 
 class Dialog_codes(wx.Dialog):
-    def __init__(self, parent, dictCodes=None, keyStr=False, titre=u"Vérification des codes comptables"):
+    def __init__(self, parent, dictCodes=None, keyStr=False, titre=_(u"Vérification des codes comptables")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.dictCodes = dictCodes
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, u"Veuillez vérifier ci-dessous que les codes comptables attribués sont exacts. \nLaissez la ligne vide si vous souhaitez exclure celle-ci de l'export.")
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Veuillez vérifier ci-dessous que les codes comptables attribués sont exacts. \nLaissez la ligne vide si vous souhaitez exclure celle-ci de l'export."))
         self.ctrl_codes = CTRL_Codes(self, dictCodes=dictCodes, keyStr=keyStr)
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         # Propriétés
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((590, 600))
         self.SetTitle(titre)
         
@@ -1736,8 +1739,8 @@ if __name__ == u"__main__":
 
 
 ##    donnees = {
-##        u"journée sans repas" : None,
-##        u"Demi-journée avec repas" : u"706ALSH",
+##        _(u"journée sans repas") : None,
+##        _(u"Demi-journée avec repas") : _(u"706ALSH"),
 ##        }
 ##    dlg = Dialog_codes(None, donnees=donnees)
 ##    app.SetTopWindow(dlg)

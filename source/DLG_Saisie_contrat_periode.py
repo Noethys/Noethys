@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_euros
 import UTILS_Dates
@@ -25,38 +28,38 @@ class Dialog(wx.Dialog):
         self.listeTracks = listeTracks
 
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_dates = wx.StaticText(self, wx.ID_ANY, u"Dates :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_dates = wx.StaticText(self, wx.ID_ANY, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Prestation
-        self.box_prestation_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Prestation")
-        self.label_label_prestation = wx.StaticText(self, wx.ID_ANY, u"Label :")
+        self.box_prestation_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Prestation"))
+        self.label_label_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Label :"))
         self.ctrl_label_prestation = wx.TextCtrl(self, wx.ID_ANY, u"")
-        self.label_date_prestation = wx.StaticText(self, wx.ID_ANY, u"Date :")
+        self.label_date_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Date :"))
         self.ctrl_date_prestation = CTRL_Saisie_date.Date2(self)
-        self.label_montant_prestation = wx.StaticText(self, wx.ID_ANY, u"Montant :")
+        self.label_montant_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Montant :"))
         self.ctrl_montant_prestation = CTRL_Saisie_euros.CTRL(self)
 
         # Consommations
-        self.box_conso_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Consommations")
+        self.box_conso_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Consommations"))
 
         self.listviewAvecFooter = OL_Contrats_conso.ListviewAvecFooter(self, kwargs={"IDactivite" : self.IDactivite}) 
         self.ctrl_conso = self.listviewAvecFooter.GetListview()
         
-##        self.bouton_generer_conso = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Magique.png", wx.BITMAP_TYPE_ANY))
-##        self.bouton_ajouter_conso = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-##        self.bouton_modifier_conso = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_supprimer_conso = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_cocher_conso = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Cocher.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_decocher_conso = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/16x16/Decocher.png", wx.BITMAP_TYPE_ANY))
+##        self.bouton_generer_conso = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Magique.png", wx.BITMAP_TYPE_ANY))
+##        self.bouton_ajouter_conso = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+##        self.bouton_modifier_conso = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer_conso = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_cocher_conso = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Cocher.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_decocher_conso = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Decocher.png", wx.BITMAP_TYPE_ANY))
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
@@ -70,9 +73,9 @@ class Dialog(wx.Dialog):
         
         # Init
         if self.track == None :
-            self.SetTitle(u"Saisie d'une période de facturation")
+            self.SetTitle(_(u"Saisie d'une période de facturation"))
         else :
-            self.SetTitle(u"Modification d'une période de facturation")
+            self.SetTitle(_(u"Modification d'une période de facturation"))
             self.Importation()
         
         if self.track != None :
@@ -83,20 +86,20 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de la période")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de la période")
-        self.ctrl_label_prestation.SetToolTipString(u"Saisissez le label de la prestation")
-        self.ctrl_date_prestation.SetToolTipString(u"Saisissez la date de la prestation")
-        self.ctrl_montant_prestation.SetToolTipString(u"Saisissez le montant de la prestation")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
-##        self.bouton_generer_conso.SetToolTipString(u"Cliquez ici pour générer automatiquement des consommations")
-##        self.bouton_ajouter_conso.SetToolTipString(u"Cliquez ici pour ajouter une consommation")
-##        self.bouton_modifier_conso.SetToolTipString(u"Cliquez ici pour modifier la consommation sélectionnée")
-        self.bouton_supprimer_conso.SetToolTipString(u"Cliquez ici pour supprimer les consommations sélectionnées ou cochées")
-        self.bouton_cocher_conso.SetToolTipString(u"Cliquez ici pour tout cocher")
-        self.bouton_decocher_conso.SetToolTipString(u"Cliquez ici pour tout décocher")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période"))
+        self.ctrl_label_prestation.SetToolTipString(_(u"Saisissez le label de la prestation"))
+        self.ctrl_date_prestation.SetToolTipString(_(u"Saisissez la date de la prestation"))
+        self.ctrl_montant_prestation.SetToolTipString(_(u"Saisissez le montant de la prestation"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+##        self.bouton_generer_conso.SetToolTipString(_(u"Cliquez ici pour générer automatiquement des consommations"))
+##        self.bouton_ajouter_conso.SetToolTipString(_(u"Cliquez ici pour ajouter une consommation"))
+##        self.bouton_modifier_conso.SetToolTipString(_(u"Cliquez ici pour modifier la consommation sélectionnée"))
+        self.bouton_supprimer_conso.SetToolTipString(_(u"Cliquez ici pour supprimer les consommations sélectionnées ou cochées"))
+        self.bouton_cocher_conso.SetToolTipString(_(u"Cliquez ici pour tout cocher"))
+        self.bouton_decocher_conso.SetToolTipString(_(u"Cliquez ici pour tout décocher"))
         self.SetMinSize((500, 550))
 
     def __do_layout(self):
@@ -193,7 +196,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Contrats")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)
@@ -201,38 +204,38 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):  
         date_debut = self.ctrl_date_debut.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de début !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         date_fin = self.ctrl_date_fin.GetDate()
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if date_fin < date_debut :
-            dlg = wx.MessageDialog(self, u"La date de début ne doit pas être supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne doit pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.ctrl_label_prestation.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner le label de la prestation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le label de la prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.ctrl_date_prestation.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de la prestation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de la prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if self.ctrl_montant_prestation.GetMontant() == 0.0 :
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment appliquer un montant de 0.00 ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment appliquer un montant de 0.00 ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse != wx.ID_YES :
@@ -241,7 +244,7 @@ class Dialog(wx.Dialog):
         # Vérifie que cette période ne chevauche pas une autre période
         for track in self.listeTracks :
             if track != self.track and date_fin >= track.date_debut and date_debut <= track.date_fin :
-                dlg = wx.MessageDialog(self, u"Création impossible !\n\nCette période chevauche la période existante '%s' (du %s au %s)." % (track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Création impossible !\n\nCette période chevauche la période existante '%s' (du %s au %s).") % (track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

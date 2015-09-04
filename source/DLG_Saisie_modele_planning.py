@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import OL_Contrats_planning_elements
@@ -35,21 +38,21 @@ class Dialog(wx.Dialog):
         self.IDactivite = IDactivite
 
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_nom = wx.StaticText(self, wx.ID_ANY, u"Nom :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_nom = wx.StaticText(self, wx.ID_ANY, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
         # Planning
-        self.box_planning_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Planning")
+        self.box_planning_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Planning"))
         self.ctrl_planning = OL_Contrats_planning_elements.ListView(self, id=-1, IDactivite=self.IDactivite, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.bouton_ajouter = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_supprimer = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -66,20 +69,20 @@ class Dialog(wx.Dialog):
         
         # Importation
         if self.IDmodele == None :
-            self.SetTitle(u"Saisie d'un modèle de planning")
+            self.SetTitle(_(u"Saisie d'un modèle de planning"))
         else :
-            self.SetTitle(u"Modification d'un modèle de planning")
+            self.SetTitle(_(u"Modification d'un modèle de planning"))
             self.Importation() 
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce modèle")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un paramètre")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier un paramètre")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer un paramètre")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un paramètre"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier un paramètre"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer un paramètre"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((600, 500))
 
     def __do_layout(self):
@@ -135,25 +138,25 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer.Enable(self.radio_planning_detail.GetValue())
         
     def OnBoutonModele(self, event):  
-        print u"Event handler 'OnBoutonModele' not implemented!"
+        print "Event handler 'OnBoutonModele' not implemented!"
         event.Skip()
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide("")
+        UTILS_Aide.Aide("Modelesdeplannings")
 
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)   
 
     def OnBoutonOk(self, event):
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour ce modèle !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour ce modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if len(self.ctrl_planning.GetDonnees()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un élément de planning !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un élément de planning !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -199,17 +202,17 @@ class Dialog_selection_activite(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
-        self.SetTitle(u"Sélection d'une activité")
+        self.SetTitle(_(u"Sélection d'une activité"))
         
-        self.label_intro = wx.StaticText(self, wx.ID_ANY, u"Sélectionnez l'activité pour laquelle vous souhaitez créer un modèle de planning puis cliquez sur OK :")
+        self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Sélectionnez l'activité pour laquelle vous souhaitez créer un modèle de planning puis cliquez sur OK :"))
         self.ctrl_activites = OL_Activites.ListView(self, modificationAutorisee=False, id=-1, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_activites.SetMinSize((150, 50))
         self.ctrl_activites.MAJ() 
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -219,9 +222,9 @@ class Dialog_selection_activite(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((600, 400))
 
     def __do_layout(self):
@@ -248,14 +251,14 @@ class Dialog_selection_activite(wx.Dialog):
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Modelesdeplannings")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event):  
         if len(self.ctrl_activites.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une activité dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

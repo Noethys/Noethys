@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Utilisateurs
 import OL_Filtres_listes
@@ -20,8 +23,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.ctrl_listview = ctrl_listview
         
-        intro = u"Cliquez sur le bouton Ajouter situé à droite de la liste pour saisir de nouveaux filtres."
-        titre = u"Filtrer"
+        intro = _(u"Cliquez sur le bouton Ajouter situé à droite de la liste pour saisir de nouveaux filtres.")
+        titre = _(u"Filtrer")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Filtre.png")
         
@@ -33,9 +36,9 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_tout_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Filtre_supprimer.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -48,13 +51,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter un filtre")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier le filtre sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste")
-        self.bouton_tout_supprimer.SetToolTipString(u"Cliquez ici pour supprimer TOUS les filtres de cette liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un filtre"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste"))
+        self.bouton_tout_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer TOUS les filtres de cette liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((600, 400))
 
     def __do_layout(self):

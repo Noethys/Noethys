@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 """
 IMPORTANT :
 J'ai rajoute la ligne 101 de gridlabelrenderer.py dans wxPython mixins :
@@ -15,6 +17,7 @@ if rows == [-1] : return
 """
 
 import wx
+import CTRL_Bouton_image
 import wx.grid as gridlib
 import wx.lib.wordwrap as wordwrap
 import Outils.gridlabelrenderer as glr
@@ -51,8 +54,8 @@ COULEUR_FERME = (220, 220, 220)
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -78,7 +81,7 @@ class CaseSeparationActivite():
             if grid.dictActivites != None :
                 labelActivite = grid.dictActivites[IDactivite]["nom"]
             else:
-                labelActivite = u"Activité ID%d" % IDactivite
+                labelActivite = _(u"Activité ID%d") % IDactivite
         grid.SetCellValue(numLigne, numColonne, labelActivite)
         grid.SetCellAlignment(numLigne, numColonne, wx.ALIGN_RIGHT, wx.ALIGN_CENTRE)
         grid.SetCellRenderer(numLigne, numColonne, self.renderer)
@@ -233,15 +236,15 @@ class Case():
         # Heures de la consommation
         if self.etat in ("reservation", "attente", "present") :
             if self.heure_debut == None or self.heure_fin == None :
-                texte += u"Horaire de la consommation non spécifié\n"
+                texte += _(u"Horaire de la consommation non spécifié\n")
             else:
-                texte += u"De %s à %s\n" % (self.heure_debut.replace(":","h"), self.heure_fin.replace(":","h"))
-            texte += u"Sur le groupe %s \n" % self.grid.dictGroupes[self.IDgroupe]["nom"]
+                texte += _(u"De %s à %s\n") % (self.heure_debut.replace(":","h"), self.heure_fin.replace(":","h"))
+            texte += _(u"Sur le groupe %s \n") % self.grid.dictGroupes[self.IDgroupe]["nom"]
         texte += u"-------------------------------------------------------------------\n" 
         
         # Si unité fermée
         if self.ouvert == False :
-            return u"Unité fermée"
+            return _(u"Unité fermée")
         # Nbre de places
         if self.dictInfosPlaces != None :
             nbrePlacesInitial = self.dictInfosPlaces["nbrePlacesInitial"]
@@ -249,40 +252,40 @@ class Case():
             nbrePlacesRestantes = self.dictInfosPlaces["nbrePlacesRestantes"]
             seuil_alerte = self.dictInfosPlaces["seuil_alerte"]
             nbreAttente = self.dictInfosPlaces["nbreAttente"]
-            texte += u"Nbre initial de places  : %d \n" % nbrePlacesInitial
-            texte += u"Nbre de places prises : %d \n" % nbrePlacesPrises
-            texte += u"Nbre de places disponibles : %d \n" % nbrePlacesRestantes
-            texte += u"Seuil d'alerte : %d \n" % seuil_alerte
-            texte += u"Nbre d'individus sur liste d'attente : %d \n" % nbreAttente
+            texte += _(u"Nbre initial de places  : %d \n") % nbrePlacesInitial
+            texte += _(u"Nbre de places prises : %d \n") % nbrePlacesPrises
+            texte += _(u"Nbre de places disponibles : %d \n") % nbrePlacesRestantes
+            texte += _(u"Seuil d'alerte : %d \n") % seuil_alerte
+            texte += _(u"Nbre d'individus sur liste d'attente : %d \n") % nbreAttente
         else:
-            texte += u"Aucune limitation du nombre de places\n"
+            texte += _(u"Aucune limitation du nombre de places\n")
         # Etat de la case
         texte += "-------------------------------------------------------------------\n"
         if self.etat in ("reservation", "attente", "present") :
             date_saisie_FR = DateComplete(self.date_saisie)
-            if self.etat == "reservation" or self.etat == "present" : texte += u"Consommation réservée le %s\n" % date_saisie_FR
-            if self.etat == "attente" : texte += u"Consommation mise en attente le %s\n" % date_saisie_FR
+            if self.etat == "reservation" or self.etat == "present" : texte += _(u"Consommation réservée le %s\n") % date_saisie_FR
+            if self.etat == "attente" : texte += _(u"Consommation mise en attente le %s\n") % date_saisie_FR
             if self.IDutilisateur != None :
-                texte += u"Par l'utilisateur ID%d\n" % self.IDutilisateur
+                texte += _(u"Par l'utilisateur ID%d\n") % self.IDutilisateur
             texte += "-------------------------------------------------------------------\n"
         # Infos Individu
         nom = self.grid.dictInfosIndividus[self.IDindividu]["nom"]
         prenom = self.grid.dictInfosIndividus[self.IDindividu]["prenom"]
-        texte += u"Informations concernant %s %s : \n" % (prenom, nom)
+        texte += _(u"Informations concernant %s %s : \n") % (prenom, nom)
         date_naiss = self.grid.dictInfosIndividus[self.IDindividu]["date_naiss"]
         if date_naiss != None :
             ageActuel = CalculeAge(datetime.date.today(), date_naiss)
-            texte += u"Age actuel : %d ans \n" % ageActuel
+            texte += _(u"Age actuel : %d ans \n") % ageActuel
             if self.etat != None :
                 ageConso = CalculeAge(self.date, date_naiss)
-                texte += u"Age lors de la consommation : %d ans \n" % ageConso
+                texte += _(u"Age lors de la consommation : %d ans \n") % ageConso
         else:
-            texte += u"Date de naissance inconnue ! \n"
+            texte += _(u"Date de naissance inconnue ! \n")
         # Infos inscription :
         nom_categorie_tarif = self.dictInfosInscriptions["nom_categorie_tarif"]
         if self.etat in ("reservation", "absent", "present") :
             texte += "-------------------------------------------------------------------\n"
-            texte += u"Catégorie de tarif : '%s'\n" % nom_categorie_tarif
+            texte += _(u"Catégorie de tarif : '%s'\n") % nom_categorie_tarif
         
         return texte
     
@@ -304,30 +307,30 @@ class Case():
         # Etat de la consommation
         if self.etat in ("reservation", "present", "absent") :
             menuPop.AppendSeparator()
-            item = wx.MenuItem(menuPop, 60, u"Pointage en attente", kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 60, _(u"Pointage en attente"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "reservation" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=60)
-            item = wx.MenuItem(menuPop, 70, u"Présent", kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 70, _(u"Présent"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "present" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=70)
-            item = wx.MenuItem(menuPop, 80, u"Absent", kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 80, _(u"Absent"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "absent" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=80)
         
         if self.etat in ("reservation", "attente", "refus") :
             menuPop.AppendSeparator()
-            item = wx.MenuItem(menuPop, 30, u"Réservation", kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 30, _(u"Réservation"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "reservation" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=30)
-            item = wx.MenuItem(menuPop, 40, u"Attente", kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 40, _(u"Attente"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "attente" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=40)
-            item = wx.MenuItem(menuPop, 50, u"Refus", kind=wx.ITEM_RADIO)
+            item = wx.MenuItem(menuPop, 50, _(u"Refus"), kind=wx.ITEM_RADIO)
             menuPop.AppendItem(item)
             if self.etat == "refus" : item.Check(True)
             self.grid.Bind(wx.EVT_MENU, self.SetEtat, id=50)
@@ -350,7 +353,7 @@ class Case():
         # Détail de la consommation
         if self.etat in ("reservation", "present", "absent", "attente", "refus") :
             menuPop.AppendSeparator()
-            item = wx.MenuItem(menuPop, 20, u"Détail de la consommation")
+            item = wx.MenuItem(menuPop, 20, _(u"Détail de la consommation"))
             bmp = wx.Bitmap("Images/16x16/Calendrier_zoom.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -358,13 +361,13 @@ class Case():
             
         # Item Verrouillage
 ##        if self.verrouillage == 0 and self.etat != None :
-##            item = wx.MenuItem(menuPop, 10, u"Verrouiller cette consommation")
+##            item = wx.MenuItem(menuPop, 10, _(u"Verrouiller cette consommation"))
 ##            bmp = wx.Bitmap("Images/16x16/Cadenas_ferme.png", wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
 ##            self.grid.Bind(wx.EVT_MENU, self.Verrouillage, id=10)
 ##        if self.verrouillage == 1 and self.etat != None :
-##            item = wx.MenuItem(menuPop, 10, u"Déverrouiller cette consommation")
+##            item = wx.MenuItem(menuPop, 10, _(u"Déverrouiller cette consommation"))
 ##            bmp = wx.Bitmap("Images/16x16/Cadenas.png", wx.BITMAP_TYPE_PNG)
 ##            item.SetBitmap(bmp)
 ##            menuPop.AppendItem(item)
@@ -462,13 +465,13 @@ class Ligne():
         menuPop.AppendSeparator()
 
 ##        # Item Verrouillage
-##        item = wx.MenuItem(menuPop, 10, u"Verrouiller toutes les consommations")
+##        item = wx.MenuItem(menuPop, 10, _(u"Verrouiller toutes les consommations"))
 ##        bmp = wx.Bitmap("Images/16x16/Cadenas_ferme.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
 ##        self.grid.Bind(wx.EVT_MENU, self.Verrouillage, id=10)
 ##        
-##        item = wx.MenuItem(menuPop, 20, u"Déverrouiller toutes les consommations")
+##        item = wx.MenuItem(menuPop, 20, _(u"Déverrouiller toutes les consommations"))
 ##        bmp = wx.Bitmap("Images/16x16/Cadenas.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -482,15 +485,15 @@ class Ligne():
                     nbreCasesReservations += 1
                     
         if nbreCasesReservations > 0 :
-            item = wx.MenuItem(menuPop, 30, u"Définir toutes les pointages de la ligne comme 'Pointage en attente'")
+            item = wx.MenuItem(menuPop, 30, _(u"Définir toutes les pointages de la ligne comme 'Pointage en attente'"))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=30)
-            item = wx.MenuItem(menuPop, 40, u"Pointer toutes les consommations de la ligne sur 'Présent'")
+            item = wx.MenuItem(menuPop, 40, _(u"Pointer toutes les consommations de la ligne sur 'Présent'"))
             bmp = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.SetPresentAbsent, id=40)
-            item = wx.MenuItem(menuPop, 50, u"Pointer toutes les consommations de la ligne sur 'Absent'")
+            item = wx.MenuItem(menuPop, 50, _(u"Pointer toutes les consommations de la ligne sur 'Absent'"))
             bmp = wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -840,7 +843,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             renderer = MyColLabelRenderer("unite", None)
                             self.SetColLabelRenderer(numColonne, renderer)
                             nomUniteRemplissage = self.dictRemplissage[IDunite_remplissage]["abrege"]
-                            labelColonne = u"Total\n%s" % nomUniteRemplissage
+                            labelColonne = _(u"Total\n%s") % nomUniteRemplissage
                             self.SetColSize(numColonne, largeurColonne)
                             self.SetColLabelValue(numColonne, labelColonne)
                             numColonne += 1
@@ -1074,17 +1077,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictRemplissage[IDunite_remplissage][dateDD] = {}
             if dictRemplissage[IDunite_remplissage][dateDD].has_key(IDgroupe) == False:
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
-            
+
         # Récupération des consommations existantes 
-        req = """SELECT IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, quantite
+        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite
         FROM consommations 
-        WHERE IDactivite IN %s %s
-        ORDER BY date; """ % (conditionActivites, conditionDates)
+        WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
         db.ExecuterReq(req)
         listeConso = db.ResultatReq()
-        for IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, quantite in listeConso :
+        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite in listeConso :
             dateDD = DateEngEnDateDD(date)
-            date_saisieDD = DateEngEnDateDD(date)
             
             # Quantité
             if quantite == None :
@@ -1153,7 +1154,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        dictGroupes[0] = { "IDactivite" : 0, "nom" : u"Sans groupe", "ordre" : 0, "abrege" : u"SANS"}
+        dictGroupes[0] = { "IDactivite" : 0, "nom" : _(u"Sans groupe"), "ordre" : 0, "abrege" : _(u"SANS")}
         for IDgroupe, IDactivite, nom, ordre, abrege in listeDonnees :
             if IDgroupe in self.listeGroupesUtilises :
                 if abrege == None : abrege = u""
@@ -1244,7 +1245,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         nbreLignes = self.GetNumberRows()
         nbreColonnes = self.GetNumberCols()
         if nbreLignes == 0 or nbreColonnes == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a rien à imprimer !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a rien à imprimer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -1294,7 +1295,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             numLigne, numCol = coords
             prt.SetCellColour(numLigne+1, numCol+1, couleur)
             
-        prt.SetHeader(u"Effectifs", colour = wx.NamedColour('BLACK'))
+        prt.SetHeader(_(u"Effectifs"), colour = wx.NamedColour('BLACK'))
 ##        prt.SetHeader("Le ", type = "Date & Time", align=wx.ALIGN_RIGHT, indent = -1, colour = wx.NamedColour('BLACK'))
         prt.SetFooter("Page ", colour = wx.NamedColour('BLACK'), type ="Num")
         return prt
@@ -1309,11 +1310,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         printout2 = prt.GetPrintout()
         preview = wx.PrintPreview(printout, printout2, data)
         if not preview.Ok():
-            wx.MessageBox(u"Désolé, un problème a été rencontré dans l'aperçu avant impression...", "Erreur", wx.OK)
+            wx.MessageBox(_(u"Désolé, un problème a été rencontré dans l'aperçu avant impression..."), "Erreur", wx.OK)
             return
 ##        frm = UTILS_Printer.PreviewFrame(preview, None)
         frame = wx.GetApp().GetTopWindow() 
-        frm = wx.PreviewFrame(preview, None, u"Aperçu avant impression")
+        frm = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
         frm.Initialize()
         frm.MakeModal(False)
         frm.SetPosition(frame.GetPosition())
@@ -1327,11 +1328,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(grid=self, titre=u"Remplissage")
+        UTILS_Export.ExportTexte(grid=self, titre=_(u"Remplissage"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(grid=self, titre=u"Remplissage")
+        UTILS_Export.ExportExcel(grid=self, titre=_(u"Remplissage"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

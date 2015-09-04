@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import cStringIO
 
@@ -60,7 +63,7 @@ class CTRL(wx.StaticBitmap):
         # Propriétés
         self.SetMinSize(size)
         self.SetBackgroundColour(self.couleurFond)
-        self.SetToolTipString(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions")
+        self.SetToolTipString(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions"))
         
         #Binds
         self.Bind(wx.EVT_LEFT_DOWN, self.Menu)
@@ -75,13 +78,13 @@ class CTRL(wx.StaticBitmap):
         # Création du menu contextuel
         menuPop = wx.Menu()
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Importer une image")
+        item = wx.MenuItem(menuPop, 10, _(u"Importer une image"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Menu_Ajouter, id=10)
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -106,7 +109,7 @@ class CTRL(wx.StaticBitmap):
         
         # Ouverture dela fenêtre de dialogue
         dlg = wx.FileDialog(
-            self, message=u"Sélectionnez une image",
+            self, message=_(u"Sélectionnez une image"),
             defaultDir=cheminDefaut, 
             defaultFile="", 
             wildcard=wildcard,
@@ -168,12 +171,12 @@ class CTRL(wx.StaticBitmap):
     
     def Supprimer(self):
         if self.imagewx == None :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune image à supprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image à supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         # Confirmation
-        dlg = wx.MessageDialog(self, u"Confirmez-vous la suppression de cette image ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la suppression de cette image ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -201,7 +204,7 @@ class CTRL(wx.StaticBitmap):
     
     def Visualiser(self):
         if self.imagewx == None :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune image à visualiser !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune image à visualiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

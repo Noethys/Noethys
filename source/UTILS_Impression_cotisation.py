@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import FonctionsPerso
@@ -106,7 +109,7 @@ class Impression():
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = "Temp/Cotisations_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+            nomDoc = "Temp/Cotisations_%s.pdf" % FonctionsPerso.GenerationIDdoc()
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
@@ -146,7 +149,7 @@ class Impression():
 ##                largeursColonnes = [ TAILLE_CADRE_CONTENU[2], ]
 ##                dataTableau.append((dictCompte["titre"],))
 ##                texteDateReference = UTILS_Dates.DateEngFr(str(datetime.date.today()))
-##                dataTableau.append((u"Situation au %s" % texteDateReference,))
+##                dataTableau.append((_(u"Situation au %s") % texteDateReference,))
 ##                style = TableStyle([
 ##                        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
 ##                        ('FONT',(0,0),(0,0), "Helvetica-Bold", 19), 

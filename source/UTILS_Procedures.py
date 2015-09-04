@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import sys
 
@@ -17,39 +20,46 @@ import GestionDB
 
 
 DICT_PROCEDURES = {
-    "A3687" : u"Transformation des QF de tarifs_lignes unicode->float",
-    "A3688" : u"Suppression des ouvertures avec IDunite=5",
-    "X1234" : u"Exportation des données d'une table dans la table DEFAUT",
-    "S1290" : u"Modification du IDcategorie_tarif",
-    "D1051" : u"Ajout du champ type dans la table Documents",
-    "E4072" : u"Suppression des prestations sans consommations associées",
-    "X0202" : u"Ajout de du champ forfait_date_debut à la table Prestations",
-    "G2345" : u"Attribution d'un ordre aux groupes",
-    "A4567" : u"Suppression de toutes les perspectives de la page d'accueil",
-    "A5000" : u"Réalisation d'une requête",
-    "A5134" : u"Exécution de l'ancienne version de l'état global des consommations",
-    "A5200" : u"Correction des arrondis",
-    "A5300" : u"Nettoyage des groupes d'activités",
-    "A5400" : u"Réparation de l'autoincrement sqlite de la table tarifs_lignes",
-    "A5500" : u"Réparation des liens prestations/factures",
-    "A7650" : u"Renseignement automatique du titulaire Hélios dans toutes les fiches familles",
-    "A8120" : u"Renseignement automatique du type comptable du mode de règlement (banque ou caisse)",
-    "A8260" : u"Modification de la table Paramètres",
-    "A8452" : u"Nettoyage des liens superflus",
+    "A3687" : _(u"Transformation des QF de tarifs_lignes unicode->float"),
+    "A3688" : _(u"Suppression des ouvertures avec IDunite=5"),
+    "X1234" : _(u"Exportation des données d'une table dans la table DEFAUT"),
+    "S1290" : _(u"Modification du IDcategorie_tarif"),
+    "D1051" : _(u"Ajout du champ type dans la table Documents"),
+    "E4072" : _(u"Suppression des prestations sans consommations associées"),
+    "X0202" : _(u"Ajout de du champ forfait_date_debut à la table Prestations"),
+    "G2345" : _(u"Attribution d'un ordre aux groupes"),
+    "A4567" : _(u"Suppression de toutes les perspectives de la page d'accueil"),
+    "A5000" : _(u"Réalisation d'une requête"),
+    "A5134" : _(u"Exécution de l'ancienne version de l'état global des consommations"),
+    "A5200" : _(u"Correction des arrondis"),
+    "A5300" : _(u"Nettoyage des groupes d'activités"),
+    "A5400" : _(u"Réparation de l'autoincrement sqlite de la table tarifs_lignes"),
+    "A5500" : _(u"Réparation des liens prestations/factures"),
+    "A7650" : _(u"Renseignement automatique du titulaire Hélios dans toutes les fiches familles"),
+    "A8120" : _(u"Renseignement automatique du type comptable du mode de règlement (banque ou caisse)"),
+    "A8260" : _(u"Modification de la table Paramètres"),
+    "A8452" : _(u"Nettoyage des liens superflus"),
+    "A8574" : _(u"Mise à niveau de la base de données"),
+    "A8623" : _(u"Remplacement des exercices comptables par les dates budgétaires"),
+    "A8733" : _(u"Correction des IDinscription disparus"),
+    "A8823" : _(u"Création de tous les index"),
+    "A8836" : _(u"Suppression des consommations avec prestation disparue"),
     }
+
+
 
 # -------------------------------------------------------------------------------------------------------------------------
 
 def Procedure(code=""):
     # Recherche si procédure existe
     if DICT_PROCEDURES.has_key(code) == False :
-        dlg = wx.MessageDialog(None, u"Désolé, cette procédure n'existe pas...", u"Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Désolé, cette procédure n'existe pas..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
     titre = DICT_PROCEDURES[code]
     # Demande de confirmation de lancement
-    dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment lancer la procédure suivante ?\n\n   -> %s   " % titre, u"Lancement de la procédure", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment lancer la procédure suivante ?\n\n   -> %s   ") % titre, _(u"Lancement de la procédure"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
     reponse = dlg.ShowModal() 
     dlg.Destroy()
     if reponse != wx.ID_YES :
@@ -59,12 +69,12 @@ def Procedure(code=""):
     try :
         exec("%s()" % code)
     except Exception, err :
-        dlg = wx.MessageDialog(None, u"Désolé, une erreur a été rencontrée :\n\n-> %s  " % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+        dlg = wx.MessageDialog(None, _(u"Désolé, une erreur a été rencontrée :\n\n-> %s  ") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
         return
     # Fin
-    dlg = wx.MessageDialog(None, u"La procédure s'est terminée avec succès.", u"Procédure terminée", wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"La procédure s'est terminée avec succès."), _(u"Procédure terminée"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
     print "Fin de la procedure '%s'." % code
@@ -108,7 +118,7 @@ def X1234():
     listeTables = []
     for donnees in listeTablesTemp :
         listeTables.append(donnees[0])
-    dlg = wx.MultiChoiceDialog(None, u"Cochez les tables à exporter :", u"Exportation vers la table DEFAUT", listeTables)
+    dlg = wx.MultiChoiceDialog(None, _(u"Cochez les tables à exporter :"), _(u"Exportation vers la table DEFAUT"), listeTables)
     if dlg.ShowModal() == wx.ID_OK :
         selections = dlg.GetSelections()
         nomsTable = [listeTables[x] for x in selections]
@@ -214,7 +224,7 @@ def E4072():
     
     listeDonnees = []
     for label, listePrestationsTemp in dictResultats.iteritems() :
-        texte = u"%s (%d prestations)" % (label, len(listePrestationsTemp))
+        texte = _(u"%s (%d prestations)") % (label, len(listePrestationsTemp))
         listeDonnees.append((texte, label, listePrestationsTemp))
     listeDonnees.sort() 
     
@@ -222,14 +232,14 @@ def E4072():
     for texte, label, listePrestationsTemp in listeDonnees :
         listeLabels.append(texte)
     
-    message = u"Cochez les prestations sans consommations associées que vous souhaitez supprimer.\n(Pensez à sauvegarder votre fichier avant d'effectuer cette procédure !)"
-    dlg = wx.MultiChoiceDialog(None, message, u"Suppression des prestations sans consommations associées", listeLabels)
+    message = _(u"Cochez les prestations sans consommations associées que vous souhaitez supprimer.\n(Pensez à sauvegarder votre fichier avant d'effectuer cette procédure !)")
+    dlg = wx.MultiChoiceDialog(None, message, _(u"Suppression des prestations sans consommations associées"), listeLabels)
     dlg.SetSize((450, 500))
     dlg.CenterOnScreen() 
     if dlg.ShowModal() == wx.ID_OK:
         import wx.lib.agw.pybusyinfo as PBI
-        message = u"Veuillez patienter durant la procédure..."
-        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=u"Procédure", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        message = _(u"Veuillez patienter durant la procédure...")
+        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Procédure"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         selections = dlg.GetSelections()
         DB = GestionDB.DB()
@@ -276,7 +286,7 @@ def A4567():
 def A5000():
     """ Requete sur base de données active """
     # Demande la requête souhaitée
-    dlg = wx.TextEntryDialog(None, u"Saisissez la requête :", u"Requête", "")
+    dlg = wx.TextEntryDialog(None, _(u"Saisissez la requête :"), _(u"Requête"), "")
     if dlg.ShowModal() == wx.ID_OK:
         req = dlg.GetValue()
         dlg.Destroy()
@@ -305,7 +315,7 @@ def A5200():
     from UTILS_Decimal import FloatToDecimal as FloatToDecimal
     DB = GestionDB.DB() 
 
-    dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant la procédure... Celle-ci peut nécessiter quelques minutes...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+    dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant la procédure... Celle-ci peut nécessiter quelques minutes..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
     wx.Yield() 
 
     # Récupère les prestations
@@ -323,12 +333,12 @@ def A5200():
     index = 0
     
     for IDprestation, montant in listePrestations :
-        EcritStatusbar(u"Correction des arrondis... Merci de patienter...             -> %d %% effectués" % (index * 100 / total))
+        EcritStatusbar(_(u"Correction des arrondis... Merci de patienter...             -> %d %% effectués") % (index * 100 / total))
         DB.ReqMAJ("prestations", [("montant", FloatToDecimal(montant, plusProche=True)),], "IDprestation", IDprestation)
         index += 1
     
     for IDventilation, montant in listeVentilations :
-        EcritStatusbar(u"Correction des arrondis... Merci de patienter...             - > %d %% effectués" % (index * 100 / total))
+        EcritStatusbar(_(u"Correction des arrondis... Merci de patienter...             - > %d %% effectués") % (index * 100 / total))
         DB.ReqMAJ("ventilation", [("montant", FloatToDecimal(montant, plusProche=True)),], "IDventilation", IDventilation)
         index += 1
         
@@ -411,7 +421,7 @@ def A5500():
     nbrePrestations = len(listePrestations)
     
     # Demande de confirmation
-    dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment lancer cette procédure pour %d prestations ?\n\n(Vous pourrez suivre la progression dans la barre d'état)" % nbrePrestations, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment lancer cette procédure pour %d prestations ?\n\n(Vous pourrez suivre la progression dans la barre d'état)") % nbrePrestations, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
     if dlg.ShowModal() != wx.ID_YES :
         dlg.Destroy()
         return
@@ -430,7 +440,7 @@ def A5500():
                     IDfacture = dictFacture["IDfacture"]
                     DB.ReqMAJ("prestations", [("IDfacture", IDfacture),], "IDprestation", IDprestation)
 ##                    print "Traitement en cours...   %d/%d ....  Prestation ID%d -> Facture ID%d" % (index, nbrePrestations, IDprestation, IDfacture)
-                    EcritStatusbar(u"Traitement en cours...   %d/%d ....  Prestation ID%d -> Facture ID%d" % (index, nbrePrestations, IDprestation, IDfacture))
+                    EcritStatusbar(_(u"Traitement en cours...   %d/%d ....  Prestation ID%d -> Facture ID%d") % (index, nbrePrestations, IDprestation, IDfacture))
                     nbreSucces += 1
                     time.sleep(0.05)
         
@@ -439,7 +449,7 @@ def A5500():
     DB.Close()
     
     # Fin du traitement
-    dlg = wx.MessageDialog(None, u"Procédure terminée !\n\n%d prestations sur %s ont été rattachées avec succès !" % (nbreSucces, nbrePrestations), u"Fin", wx.OK | wx.ICON_INFORMATION)
+    dlg = wx.MessageDialog(None, _(u"Procédure terminée !\n\n%d prestations sur %s ont été rattachées avec succès !") % (nbreSucces, nbrePrestations), _(u"Fin"), wx.OK | wx.ICON_INFORMATION)
     dlg.ShowModal()
     dlg.Destroy()
     
@@ -537,7 +547,127 @@ def A8452():
     print "Nbre de liens supprimes :", len(listeLiensASupprimer)
     print listeIDfamille
     
+def A8574():
+    """ Mise à niveau de la base de données """
+    import FonctionsPerso
+    versionApplication = FonctionsPerso.GetVersionLogiciel()
+    dlg = wx.TextEntryDialog(None, _(u"Saisissez le numéro de version à partir duquel vous souhaitez \neffectuer la mise à niveau ('x.x.x.x'):"), _(u"Mise à niveau de la base de données"), versionApplication)
+    reponse = dlg.ShowModal() 
+    version = dlg.GetValue()
+    dlg.Destroy()
+    if reponse != wx.ID_OK:
+        return
     
+    valide = True
+    try :
+        version = [int(x) for x in version.split(".")]
+    except :
+        valide = False
+    if len(version) != 4 :
+        valide = False
+    
+    if valide == False :
+        dlg = wx.MessageDialog(None, _(u"Impossible d'effectuer la procédure !\n\nLe numéro de version que vous avez saisi semble erroné. Vérifiez qu'il est formaté de la façon suivante : 'x.x.x.x'"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return False
+    
+    print "Procedure manuelle de mise a niveau de la base de donnee depuis la version : ", version
+    DB = GestionDB.DB()        
+    resultat = DB.ConversionDB(version)
+    DB.Close()
+    print resultat
+    
+def A8623():
+    """ Remplacement des exercices comptables par les dates budgétaires """
+    DB = GestionDB.DB()
+    
+    # Remplacement dans la ventilation des opérations de trésorerie
+    req = """SELECT IDventilation, compta_ventilation.IDexercice, date_budget, compta_exercices.date_debut
+    FROM compta_ventilation
+    LEFT JOIN compta_exercices ON compta_exercices.IDexercice = compta_ventilation.IDexercice
+    WHERE date_budget IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    for IDventilation, IDexercice, date_budget, date_debut_exercice in listeDonnees :
+        DB.ReqMAJ("compta_ventilation", [("date_budget", date_debut_exercice),], "IDventilation", IDventilation)
+    
+    # Remplacement dans les budgets
+    req = """SELECT IDbudget, compta_budgets.IDexercice, compta_budgets.date_debut, compta_budgets.date_fin, compta_exercices.date_debut, compta_exercices.date_fin
+    FROM compta_budgets
+    LEFT JOIN compta_exercices ON compta_exercices.IDexercice = compta_budgets.IDexercice
+    WHERE compta_budgets.date_debut IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    for IDbudget, IDexercice, date_debut, date_fin, date_debut_exercice, date_fin_exercice in listeDonnees :
+        DB.ReqMAJ("compta_budgets", [("date_debut", date_debut_exercice), ("date_fin", date_fin_exercice)], "IDbudget", IDbudget)
+    
+    DB.Close() 
+    
+def A8733():
+    """ Correction des IDinscription disparus """
+    DB = GestionDB.DB()
+    
+    # Récupération des tous les IDinscription
+    req = """SELECT IDinscription, IDindividu, IDactivite, IDcompte_payeur
+    FROM inscriptions;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    dictInscriptions = {}
+    for IDinscription, IDindividu, IDactivite, IDcompte_payeur in listeDonnees :
+        dictInscriptions[(IDindividu, IDactivite, IDcompte_payeur)] = IDinscription
+            
+    # Recherche des IDinscription NULL dans les consommations
+    req = """SELECT IDconso, IDindividu, IDactivite, IDcompte_payeur
+    FROM consommations
+    WHERE IDinscription IS NULL;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    print "%d IDinscription NULL sont a corriger..." % len(listeDonnees)
+    
+    listeModifications = []
+    for IDconso, IDindividu, IDactivite, IDcompte_payeur in listeDonnees :
+        if dictInscriptions.has_key((IDindividu, IDactivite, IDcompte_payeur)) :
+            IDinscription = dictInscriptions[(IDindividu, IDactivite, IDcompte_payeur)]
+            listeModifications.append((IDinscription, IDconso)) 
+            
+    # Enregistrement du IDinscription dans la consommation
+    if len(listeModifications) > 0 :
+        DB.Executermany(_(u"UPDATE consommations SET IDinscription=? WHERE IDconso=?"), listeModifications, commit=False)
+        DB.Commit() 
+    
+    DB.Close() 
+    
+    
+def A8823():
+    """ Creation de tous les index """
+    DB = GestionDB.DB(suffixe="DATA")
+    DB.CreationTousIndex() 
+    DB.Close() 
+    DB = GestionDB.DB(suffixe="PHOTOS")
+    DB.CreationTousIndex() 
+    DB.Close() 
+
+def A8836():
+    """ Suppression des consommations dont la prestation a été supprimée """
+    # Recherche
+    DB = GestionDB.DB()
+    req = """SELECT IDconso, consommations.IDindividu, IDinscription, consommations.date, IDunite, consommations.IDprestation, prestations.IDprestation, consommations.etat FROM consommations
+    LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
+    WHERE consommations.IDprestation IS NOT NULL AND prestations.IDprestation IS NULL AND etat='reservation'
+    ORDER BY consommations.IDindividu, IDunite;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    DB.Close() 
+    print "Nbre consommations avec prestations supprimées : ", len(listeDonnees)
+    listeConso = []
+    for listeTemp in listeDonnees :
+        listeConso.append(listeTemp[0])
+    # Suppression
+    DB = GestionDB.DB()
+    for IDconso in listeConso :
+        DB.ReqDEL("consommations", "IDconso", IDconso)
+    DB.Close()
     
 
 ##def A8360():
@@ -552,7 +682,7 @@ def A8452():
 ##    listeNomsFichiers.sort() 
 ##    
 ##    # Demande le fichier à importer
-##    dlg = wx.SingleChoiceDialog(None, u"Sélectionnez le fichier contenant les données à importer :", u"Importation", listeNomsFichiers)
+##    dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez le fichier contenant les données à importer :"), _(u"Importation"), listeNomsFichiers)
 ##    dlg.SetSize((500, 400))
 ##    dlg.CenterOnScreen() 
 ##    nomExtension = None
@@ -565,16 +695,16 @@ def A8452():
 ##    
 ##    # Demande les options
 ##    listeOptions = [
-##        ("abonnements", u"Listes de diffusion et abonnements"),
-##        ("scolarite", u"Données de scolarité : étapes, écoles, classes..."),
-##        ("questionnaire", u"Questionnaires familiaux et individuels"),
-##        ("pieces", u"Pièces et types de pièces"),
-##        ("messages", u"Messages de type famille, individuel ou accueil"),
-##        ("quotients", u"Quotients familiaux des familles"),
-##        ("mandats", u"Mandats SEPA des familles"),
+##        ("abonnements", _(u"Listes de diffusion et abonnements")),
+##        ("scolarite", _(u"Données de scolarité : étapes, écoles, classes...")),
+##        ("questionnaire", _(u"Questionnaires familiaux et individuels")),
+##        ("pieces", _(u"Pièces et types de pièces")),
+##        ("messages", _(u"Messages de type famille, individuel ou accueil")),
+##        ("quotients", _(u"Quotients familiaux des familles")),
+##        ("mandats", _(u"Mandats SEPA des familles")),
 ##        ]
 ##        
-##    dlg = wx.MultiChoiceDialog(None, u"Cochez les données optionnelles à inclure :", u"Importation", [x[1] for x in listeOptions])
+##    dlg = wx.MultiChoiceDialog(None, _(u"Cochez les données optionnelles à inclure :"), _(u"Importation"), [x[1] for x in listeOptions])
 ##    if dlg.ShowModal() == wx.ID_OK :
 ##        selections = dlg.GetSelections()
 ##        options = [listeOptions[x][0] for x in selections]
@@ -584,7 +714,7 @@ def A8452():
 ##        return
 ##
 ##    # Demande de confirmation
-##    dlg = wx.MessageDialog(None, u"Souhaitez-vous vraiment lancer l'importation des familles du fichier '%s' ?\n\nAttention, toutes les données actuelles seront écrasées !" % nomFichier, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+##    dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment lancer l'importation des familles du fichier '%s' ?\n\nAttention, toutes les données actuelles seront écrasées !") % nomFichier, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
 ##    if dlg.ShowModal() != wx.ID_YES :
 ##        dlg.Destroy()
 ##        return
@@ -624,5 +754,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8452()
+    A8836()
     app.MainLoop()

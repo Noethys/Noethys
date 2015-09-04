@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import datetime
 import UTILS_Titulaires
@@ -197,7 +200,7 @@ class ListView(FastObjectListView):
         
         def FormateAge(age):
             if age == None : return ""
-            return u"%d ans" % age
+            return _(u"%d ans") % age
         
         # Couleur en alternance des lignes
         self.oddRowsBackColor = "#F0FBED" 
@@ -206,17 +209,17 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
-            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
-            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
-            ColumnDefn(u"Niveau", "left", 60, "abregeNiveau", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
+            ColumnDefn(_(u"Niveau"), "left", 60, "abregeNiveau", typeDonnee="texte"),
             ColumnDefn(u"Du", "left", 72, "date_debut", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Au", "left", 72, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Au"), "left", 72, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun inscrit")
+        self.SetEmptyListMsg(_(u"Aucun inscrit"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -242,7 +245,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -251,7 +254,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -259,7 +262,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -269,14 +272,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -285,14 +288,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -303,14 +306,14 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import UTILS_Printer
         dictInfosClasse = self.GetInfosClasse(self.IDclasse) 
         titre = dictInfosClasse["nom"]
-        intro = u"> %s - %d inscrits" % (dictInfosClasse["periode"], len(self.donnees))
+        intro = _(u"> %s - %d inscrits") % (dictInfosClasse["periode"], len(self.donnees))
         prt = UTILS_Printer.ObjectListViewPrinter(self, titre=titre, intro=intro, total="", format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
@@ -325,11 +328,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des inscrits")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des inscrits"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des inscrits")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des inscrits"))
     
     def GetInfosClasse(self, IDclasse=None):
         # Recherche les caractéristiques de la classe
@@ -351,7 +354,7 @@ class ListView(FastObjectListView):
             listeTemp = niveaux.split(";")
             for IDniveau in listeTemp :
                 listeNiveaux.append(int(IDniveau))
-        periode = u"Du %s au %s" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
+        periode = _(u"Du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
         nomComplet = u"%s (%s)" % (nom, periode)
         
         dictInfos = {"IDecole":IDecole, "nom":nom, "nomComplet":nomComplet, "date_debut":date_debut, "date_fin":date_fin, "periode":periode, "listeNiveaux":listeNiveaux}
@@ -380,7 +383,7 @@ class ListView(FastObjectListView):
 
     def Modifier(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -400,7 +403,7 @@ class ListView(FastObjectListView):
         
         import DLG_Saisie_scolarite
         dlg = DLG_Saisie_scolarite.Dialog(self, IDscolarite=IDscolarite, donneesScolarite=listeDonneesIndividu)
-        dlg.SetTitle(u"Modification d'une étape de la scolarité de %s %s" % (prenom, nom))
+        dlg.SetTitle(_(u"Modification d'une étape de la scolarité de %s %s") % (prenom, nom))
         dlg.SetDateDebut(date_debut)
         dlg.SetDateFin(date_fin)
         dlg.SetEcole(IDecole)
@@ -433,7 +436,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : IDindividu,
                 "IDfamille" : None,
                 "IDcategorie" : 31, 
-                "action" : u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
+                "action" : _(u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
                 },])
 
             # Actualise l'affichage
@@ -443,7 +446,7 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event=None):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune inscription à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune inscription à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -458,7 +461,7 @@ class ListView(FastObjectListView):
         abregeNiveau = self.Selection()[0].abregeNiveau
         
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer l'inscription scolaire de %s %s dans cette classe ?" % (prenom, nom), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer l'inscription scolaire de %s %s dans cette classe ?") % (prenom, nom), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("scolarite", "IDscolarite", IDscolarite)
@@ -469,7 +472,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : IDindividu,
                 "IDfamille" : None,
                 "IDcategorie" : 32, 
-                "action" : u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, abregeNiveau)
+                "action" : _(u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, abregeNiveau)
                 },])
 
             self.MAJ(IDclasse=self.IDclasse)
@@ -486,7 +489,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un individu...")
+        self.SetDescriptiveText(_(u"Rechercher un individu..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_inscrits

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 import datetime
 import GestionDB
@@ -41,11 +44,11 @@ class Dialog(wx.Dialog):
         self.IDaction = None
         
         # Conditions
-        self.box_conditions_staticbox = wx.StaticBox(self, -1, u"Conditions")
+        self.box_conditions_staticbox = wx.StaticBox(self, -1, _(u"Conditions"))
         self.ctrl_conditions = CTRL_Badgeage_conditions.Panel(self)
         
         # Mémo des mots-clés
-        self.box_motscles_staticbox = wx.StaticBox(self, -1, u"Mots-clés disponibles pour les messages")
+        self.box_motscles_staticbox = wx.StaticBox(self, -1, _(u"Mots-clés disponibles pour les messages"))
         texte = u"""
         <FONT SIZE=-2>
         {NOM} -> Nom, {PRENOM} -> Prénom, 
@@ -55,12 +58,12 @@ class Dialog(wx.Dialog):
         self.ctrl_motscles = MyHtml(self, texte=texte, hauteur=50)
         
         # Action
-        self.box_action_staticbox = wx.StaticBox(self, -1, u"Action")
+        self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Action"))
         self.ctrl_action = CTRL_Badgeage_action.Panel(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -70,10 +73,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une action")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une action"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.ctrl_conditions.SetMinSize((400, -1))
         self.SetMinSize((-1, 580))
 

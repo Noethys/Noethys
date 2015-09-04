@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_heure
 import CTRL_Bandeau
@@ -162,10 +165,10 @@ class CTRL_Semaines(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeEtats = [
-            (1, u"Toutes les semaines"),
-            (2, u"Une semaine sur deux"),
-            (3, u"Une semaine sur trois"),
-            (4, u"Une semaine sur quatre"),
+            (1, _(u"Toutes les semaines")),
+            (2, _(u"Une semaine sur deux")),
+            (3, _(u"Une semaine sur trois")),
+            (4, _(u"Une semaine sur quatre")),
             ]
         self.MAJ() 
     
@@ -246,7 +249,7 @@ class CTRL_Horaire(wx.Panel):
         self.SetBackgroundColour((255, 255, 255))
                 
         # Contrôles
-        self.label_heure_debut = wx.StaticText(self, -1, u"Horaire :")
+        self.label_heure_debut = wx.StaticText(self, -1, _(u"Horaire :"))
         self.ctrl_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.label_heure_fin = wx.StaticText(self, -1, u"à")
         self.ctrl_heure_fin = CTRL_Saisie_heure.Heure(self)
@@ -300,13 +303,13 @@ class CTRL_Horaire(wx.Panel):
         heure_debut = self.GetHeureDebut() 
         heure_fin = self.GetHeureFin() 
         if heure_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une heure de début pour l'unité '%s' !" % self.labelUnite, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de début pour l'unité '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_debut.SetFocus() 
             return False
         if heure_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une heure de fin pour l'unité '%s' !" % self.labelUnite, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une heure de fin pour l'unité '%s' !") % self.labelUnite, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_heure_fin.SetFocus() 
@@ -339,7 +342,7 @@ class CTRL_Quantite(wx.Panel):
         self.SetBackgroundColour((255, 255, 255))
                 
         # Contrôles
-        self.label_quantite = wx.StaticText(self, -1, u"Quantité :")
+        self.label_quantite = wx.StaticText(self, -1, _(u"Quantité :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "1", min=1, max=500, size=(70, -1))
 
         # Layout
@@ -387,7 +390,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.EnableSelectionVista(True)
         
         # Création des colonnes
-        self.AddColumn(u"Unités")
+        self.AddColumn(_(u"Unités"))
         self.SetColumnWidth(0, 300)
 
         # Binds
@@ -415,7 +418,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.listeUnites = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
 
@@ -505,7 +508,7 @@ class CTRL_Unites(HTL.HyperTreeList):
     def RetirerHoraires(self, niveauUnite=None, ctrl=None, item=None):
         data = self.GetPyData(niveauUnite)
         if len(data["controles"]) == 1 :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas retirer le dernier horaire !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas retirer le dernier horaire !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -532,12 +535,12 @@ class CTRL_Etat(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeEtats = [
-            ("reservation", u"Réservation - Pointage en attente"),
-            ("present", u"Réservation - Présent"),
-            ("absentj", u"Réservation - Absence justifiée"),
-            ("absenti", u"Réservation - Absence injustifiée"),
-            ("attente", u"Attente"),
-            ("refus", u"Refus"),
+            ("reservation", _(u"Réservation - Pointage en attente")),
+            ("present", _(u"Réservation - Présent")),
+            ("absentj", _(u"Réservation - Absence justifiée")),
+            ("absenti", _(u"Réservation - Absence injustifiée")),
+            ("attente", _(u"Attente")),
+            ("refus", _(u"Refus")),
             ]
         self.MAJ() 
     
@@ -571,53 +574,53 @@ class Dialog(wx.Dialog):
         self.resultats = {}
 
         # Bandeau
-        titre = u"Traitement par lot"
-        intro = u"Vous pouvez ici saisir, modifier ou supprimer un lot de consommations selon les critères de votre choix. Sélectionnez un type d'action puis renseignez les paramètres demandés."
+        titre = _(u"Traitement par lot")
+        intro = _(u"Vous pouvez ici saisir, modifier ou supprimer un lot de consommations selon les critères de votre choix. Sélectionnez un type d'action puis renseignez les paramètres demandés.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
 
         # Action
-        self.box_action_staticbox = wx.StaticBox(self, -1, u"Action")
-        self.radio_saisie = wx.RadioButton(self, -1, u"Saisie", style=wx.RB_GROUP)
-        self.radio_modification = wx.RadioButton(self, -1, u"Modification")
-        self.radio_suppression = wx.RadioButton(self, -1, u"Suppression")
-        self.radio_etat = wx.RadioButton(self, -1, u"Changement d'état")
+        self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Action"))
+        self.radio_saisie = wx.RadioButton(self, -1, _(u"Saisie"), style=wx.RB_GROUP)
+        self.radio_modification = wx.RadioButton(self, -1, _(u"Modification"))
+        self.radio_suppression = wx.RadioButton(self, -1, _(u"Suppression"))
+        self.radio_etat = wx.RadioButton(self, -1, _(u"Changement d'état"))
 
         # Individus
-        self.box_individus_staticbox = wx.StaticBox(self, -1, u"Individus")
+        self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus"))
         self.ctrl_individus = CTRL_Individus(self, listeIndividus)
         
         # Periode
-        self.box_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Jours
-        self.box_jours_staticbox = wx.StaticBox(self, -1, u"Jours")
-        self.label_scolaires = wx.StaticText(self, -1, u"Scolaires :")
+        self.box_jours_staticbox = wx.StaticBox(self, -1, _(u"Jours"))
+        self.label_scolaires = wx.StaticText(self, -1, _(u"Scolaires :"))
         self.ctrl_scolaires = CTRL_Jours(self, "scolaires")
-        self.label_vacances = wx.StaticText(self, -1, u"Vacances :")
+        self.label_vacances = wx.StaticText(self, -1, _(u"Vacances :"))
         self.ctrl_vacances = CTRL_Jours(self, "vacances")
-        self.label_semaines = wx.StaticText(self, -1, u"Semaines :")
+        self.label_semaines = wx.StaticText(self, -1, _(u"Semaines :"))
         self.ctrl_semaines = CTRL_Semaines(self)
-        self.label_feries = wx.StaticText(self, -1, u"Fériés :")
-        self.ctrl_feries = wx.CheckBox(self, -1, u"Inclure les jours fériés")
+        self.label_feries = wx.StaticText(self, -1, _(u"Fériés :"))
+        self.ctrl_feries = wx.CheckBox(self, -1, _(u"Inclure les jours fériés"))
 
         # Unites
-        self.box_unites_staticbox = wx.StaticBox(self, -1, u"Unités")
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
+        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Activite(self)
-        self.label_unites = wx.StaticText(self, -1, u"Unités :")
+        self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
         self.ctrl_unites = CTRL_Unites(self)
-        self.label_etat = wx.StaticText(self, -1, u"Etat :")
+        self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Etat(self)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -649,20 +652,20 @@ class Dialog(wx.Dialog):
         self.OnChoixActivite(None)
 
     def __set_properties(self):
-        self.radio_saisie.SetToolTipString(u"Cochez ici pour saisir un lot de consommations")
-        self.radio_modification.SetToolTipString(u"Cochez ici pour modifier un lot de consommations")
-        self.radio_suppression.SetToolTipString(u"Cochez ici pour supprimer un lot de consommations")
-        self.radio_etat.SetToolTipString(u"Cochez ici pour modifier l'état d'un lot de consommations")
-        self.ctrl_individus.SetToolTipString(u"Sélectionnez les individus visés")
-        self.ctrl_date_debut.SetToolTipString(u"Sélectionnez une date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Sélectionnez une date de fin")
-        self.ctrl_semaines.SetToolTipString(u"Sélectionnez une fréquence")
-        self.ctrl_feries.SetToolTipString(u"Cochez cette case pour inclure les jours fériés dans le processus")
-        self.ctrl_activite.SetToolTipString(u"Sélectionnez une activité")
-        self.ctrl_etat.SetToolTipString(u"Sélectionnez une état pour les consommations")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.radio_saisie.SetToolTipString(_(u"Cochez ici pour saisir un lot de consommations"))
+        self.radio_modification.SetToolTipString(_(u"Cochez ici pour modifier un lot de consommations"))
+        self.radio_suppression.SetToolTipString(_(u"Cochez ici pour supprimer un lot de consommations"))
+        self.radio_etat.SetToolTipString(_(u"Cochez ici pour modifier l'état d'un lot de consommations"))
+        self.ctrl_individus.SetToolTipString(_(u"Sélectionnez les individus visés"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Sélectionnez une date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Sélectionnez une date de fin"))
+        self.ctrl_semaines.SetToolTipString(_(u"Sélectionnez une fréquence"))
+        self.ctrl_feries.SetToolTipString(_(u"Cochez cette case pour inclure les jours fériés dans le processus"))
+        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
+        self.ctrl_etat.SetToolTipString(_(u"Sélectionnez une état pour les consommations"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((800, 600))
 
     def __do_layout(self):
@@ -787,7 +790,7 @@ class Dialog(wx.Dialog):
         # Individus
         listeIndividus = self.ctrl_individus.GetCoches() 
         if len(listeIndividus) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un individu !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un individu !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -796,19 +799,19 @@ class Dialog(wx.Dialog):
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
         if date_debut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de début de période !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         if date_fin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez saisir une date de fin de période !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin de période !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
         if date_debut > date_fin :
-            dlg = wx.MessageDialog(self, u"La date de début ne peut pas être supérieure à la date de fin !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à la date de fin !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -818,7 +821,7 @@ class Dialog(wx.Dialog):
         jours_scolaires = self.ctrl_scolaires.GetJours()
         jours_vacances = self.ctrl_vacances.GetJours()
         if len(jours_scolaires) == 0 and len(jours_vacances) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins un jour scolaire ou de vacances !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un jour scolaire ou de vacances !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -833,7 +836,7 @@ class Dialog(wx.Dialog):
         IDactivite = self.ctrl_activite.GetActivite()
         nomActivite = self.ctrl_activite.GetNomActivite() 
         if IDactivite == None :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner une activité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_activite.SetFocus() 
@@ -842,7 +845,7 @@ class Dialog(wx.Dialog):
         # Vérifie si individus inscrits à l'activité :
         for dictIndividu in listeIndividus :
             if IDactivite not in dictIndividu["inscriptions"] :
-                dlg = wx.MessageDialog(self, u"%s n'est pas inscrit à l'activité '%s' !" % (dictIndividu["label"], nomActivite), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"%s n'est pas inscrit à l'activité '%s' !") % (dictIndividu["label"], nomActivite), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -850,7 +853,7 @@ class Dialog(wx.Dialog):
         # Unités
         listeCoches = self.ctrl_unites.GetCoches() 
         if len(listeCoches) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins une unité !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une unité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

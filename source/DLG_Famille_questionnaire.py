@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Questionnaire
 import GestionDB
 import UTILS_Utilisateurs
@@ -23,12 +26,12 @@ class Panel(wx.Panel):
         self.majEffectuee = False
         
         # Questionnaire
-        self.staticbox_questionnaire = wx.StaticBox(self, -1, u"Questionnaire")
+        self.staticbox_questionnaire = wx.StaticBox(self, -1, _(u"Questionnaire"))
         self.ctrl_questionnaire = CTRL_Questionnaire.CTRL(self, type="famille", IDfamille=IDfamille)
         self.ctrl_questionnaire.SetMinSize((620, -1))
 
         # Mémo
-        self.staticbox_memo = wx.StaticBox(self, -1, u"Mémo")
+        self.staticbox_memo = wx.StaticBox(self, -1, _(u"Mémo"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Layout
@@ -157,7 +160,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

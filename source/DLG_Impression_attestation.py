@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import  wx.grid as gridlib
 
@@ -23,6 +26,7 @@ import UTILS_Titulaires
 import CTRL_Choix_modele
 import UTILS_Config
 import UTILS_Questionnaires
+import FonctionsPerso
 import CTRL_Attestations_options
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -33,31 +37,31 @@ import UTILS_Infos_individus
 
 
 LISTE_DONNEES = [
-    { "nom" : u"Attestation", "champs" : [ 
-        { "code" : "numero", "label" : u"Numéro"}, 
-        { "code" : "date", "label" : u"Date d'édition"}, 
-        { "code" : "lieu", "label" : u"Lieu d'édition"},
+    { "nom" : _(u"Attestation"), "champs" : [ 
+        { "code" : "numero", "label" : _(u"Numéro")}, 
+        { "code" : "date", "label" : _(u"Date d'édition")}, 
+        { "code" : "lieu", "label" : _(u"Lieu d'édition")},
         ] },
-    { "nom" : u"Destinataire", "champs" : [ 
-        { "code" : "nom", "label" : u"Nom"}, 
-        { "code" : "rue", "label" : u"Rue"}, 
-        { "code" : "ville", "label" : u"CP + Ville"},
+    { "nom" : _(u"Destinataire"), "champs" : [ 
+        { "code" : "nom", "label" : _(u"Nom")}, 
+        { "code" : "rue", "label" : _(u"Rue")}, 
+        { "code" : "ville", "label" : _(u"CP + Ville")},
         ] },
-    { "nom" : u"Organisme", "champs" : [ 
-        { "code" : "siret", "label" : u"Numéro SIRET"}, 
-        { "code" : "ape", "label" : u"Code APE"}, 
+    { "nom" : _(u"Organisme"), "champs" : [ 
+        { "code" : "siret", "label" : _(u"Numéro SIRET")}, 
+        { "code" : "ape", "label" : _(u"Code APE")}, 
         ] },
     ]
 
-TEXTE_INTRO = u"Je soussigné{GENRE} {NOM}, {FONCTION}, atteste avoir accueilli {ENFANTS} sur la période du {DATE_DEBUT} au {DATE_FIN} selon le détail suivant :"
+TEXTE_INTRO = _(u"Je soussigné{GENRE} {NOM}, {FONCTION}, atteste avoir accueilli {ENFANTS} sur la période du {DATE_DEBUT} au {DATE_FIN} selon le détail suivant :")
 
 DICT_DONNEES = {}
 
 
 def DateComplete(dateDD):
     u""" Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 u"""
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -186,11 +190,11 @@ class CTRL_Individus(wx.CheckListBox):
         nbreIndividus = len(listeNoms)
         if nbreIndividus == 0 : texteNoms = u""
         if nbreIndividus == 1 : texteNoms = listeNoms[0]
-        if nbreIndividus == 2 : texteNoms = u"%s et %s" % (listeNoms[0], listeNoms[1])
+        if nbreIndividus == 2 : texteNoms = _(u"%s et %s") % (listeNoms[0], listeNoms[1])
         if nbreIndividus > 2 :
             for texteNom in listeNoms[:-2] :
                 texteNoms += u"%s, " % texteNom
-            texteNoms += u"%s et %s" % (listeNoms[-2], listeNoms[-1])
+            texteNoms += _(u"%s et %s") % (listeNoms[-2], listeNoms[-1])
         
         return texteNoms
 
@@ -624,17 +628,17 @@ class CTRL_Donnees(gridlib.Grid):
 ##            listeTitulaires.append(nomIndividu)
 ##        nbreTitulaires = len(listeTitulaires)
 ##        if nbreTitulaires == 0 : 
-##            nomTitulaires = u"Pas de titulaires !"
+##            nomTitulaires = _(u"Pas de titulaires !")
 ##            IDcompte_payeur = None
 ##        if nbreTitulaires == 1 : 
 ##            nomTitulaires = listeTitulaires[0]
 ##        if nbreTitulaires == 2 : 
-##            nomTitulaires = u"%s et %s" % (listeTitulaires[0], listeTitulaires[1])
+##            nomTitulaires = _(u"%s et %s") % (listeTitulaires[0], listeTitulaires[1])
 ##        if nbreTitulaires > 2 :
 ##            nomTitulaires = ""
 ##            for nomTitulaire in listeTitulaires[:-2] :
 ##                nomTitulaires += u"%s, " % nomTitulaire
-##            nomTitulaires += u" et %s" % listeTitulaires[-1]
+##            nomTitulaires += _(u" et %s") % listeTitulaires[-1]
         
         nomTitulaires = UTILS_Titulaires.GetTitulaires([self.parent.IDfamille,]) 
         
@@ -655,48 +659,48 @@ class Dialog(wx.Dialog):
         self.dictSave = {}
                 
         # Bandeau
-        intro = u"Vous pouvez ici éditer une attestation de présence au format PDF. Saisissez une période, sélectionnez les éléments de votre choix, puis cliquez sur 'Aperçu'."
-        titre = u"Edition d'une attestation de présence"
+        intro = _(u"Vous pouvez ici éditer une attestation de présence au format PDF. Saisissez une période, sélectionnez les éléments de votre choix, puis cliquez sur 'Aperçu'.")
+        titre = _(u"Edition d'une attestation de présence")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
         
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, u"Période")
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.bouton_date_debut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
-        self.label_date_fin = wx.StaticText(self, -1, u"au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         self.bouton_date_fin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
 
         # Individus
-        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, u"Sélection des individus")
+        self.staticbox_individus_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
         self.ctrl_individus = CTRL_Individus(self)
         self.ctrl_individus.SetMinSize((170, 60))
 
         # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Sélection des activités")
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Sélection des activités"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((-1, 80))
         
         # Unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, u"Sélection des prestations")
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Sélection des prestations"))
         self.ctrl_unites = CTRL_Unites(self)
         self.ctrl_unites.SetMinSize((-1, 80))
-        self.ctrl_afficher_conso = wx.CheckBox(self, -1, u"Afficher uniquement les conso")
+        self.ctrl_afficher_conso = wx.CheckBox(self, -1, _(u"Afficher uniquement les conso"))
         self.ctrl_afficher_conso.SetValue(True) 
         
         # Données
-        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, u"Données")
+        self.staticbox_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
         self.ctrl_donnees = CTRL_Donnees(self)
 
         # Options
         self.ctrl_parametres = CTRL_Attestations_options.CTRL(self)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_email = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Envoyer_par_email.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer par Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -727,20 +731,20 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Edition d'une attestation de présence")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début")
-        self.bouton_date_debut.SetToolTipString(u"Cliquez ici pour sélectionner la date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin")
-        self.bouton_date_fin.SetToolTipString(u"Cliquez ici pour sélectionner la date de fin")
-        self.ctrl_individus.SetToolTipString(u"Cochez les individus")
-        self.ctrl_activites.SetToolTipString(u"Cochez les activités")
-        self.ctrl_unites.SetToolTipString(u"Cochez les unites")
-        self.ctrl_donnees.SetToolTipString(u"Vous pouvez modifier ici les données de base")
-        self.ctrl_afficher_conso.SetToolTipString(u"Cochez cette case pour afficher uniquement les consommations dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_email.SetToolTipString(u"Cliquez ici pour envoyer ce document par Email")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher le PDF")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Edition d'une attestation de présence"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
+        self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
+        self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de fin"))
+        self.ctrl_individus.SetToolTipString(_(u"Cochez les individus"))
+        self.ctrl_activites.SetToolTipString(_(u"Cochez les activités"))
+        self.ctrl_unites.SetToolTipString(_(u"Cochez les unites"))
+        self.ctrl_donnees.SetToolTipString(_(u"Vous pouvez modifier ici les données de base"))
+        self.ctrl_afficher_conso.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les consommations dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((760, 660))
 
     def __do_layout(self):
@@ -874,7 +878,7 @@ class Dialog(wx.Dialog):
             return
         
         # Demande la confirmation de sauvegarde
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous mémoriser l'attestation créée ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)", u"Sauvegarde", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous mémoriser l'attestation créée ?\n\n(Cliquez NON si c'était juste un test sinon cliquez OUI)"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -902,7 +906,7 @@ class Dialog(wx.Dialog):
         UTILS_Historique.InsertActions([{
                 "IDfamille" : self.IDfamille,
                 "IDcategorie" : 27, 
-                "action" : u"Edition d'une attestation de présence pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤" % (DateEngFr(self.dictSave["date_debut"]), DateEngFr(self.dictSave["date_fin"]), self.dictSave["total"], self.dictSave["solde"] ),
+                "action" : _(u"Edition d'une attestation de présence pour la période du %s au %s pour un total de %.02f ¤ et un solde de %.02f ¤") % (DateEngFr(self.dictSave["date_debut"]), DateEngFr(self.dictSave["date_fin"]), self.dictSave["total"], self.dictSave["solde"] ),
                 },])
         
         # Mémorisation des paramètres
@@ -917,12 +921,12 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/Attestation_presence.pdf", categorie="attestation_presence")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/ATTESTATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="attestation_presence")
 
     def OnBoutonOk(self, event): 
         self.CreationPDF() 
 
-    def CreationPDF(self, nomDoc="Temp/Attestation_presence.pdf", afficherDoc=True):        
+    def CreationPDF(self, nomDoc="Temp/ATTESTATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), afficherDoc=True):        
         # Récupération du dictOptions
         dictOptions = self.ctrl_parametres.GetOptions() 
         if dictOptions == False :
@@ -931,7 +935,7 @@ class Dialog(wx.Dialog):
         # Récupération du signataire
         infosSignataire = self.ctrl_parametres.ctrl_parametres.GetInfosSignataire() 
         if infosSignataire == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun signataire !", u"Annulation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun signataire !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1016,7 +1020,7 @@ class Dialog(wx.Dialog):
                 listePrestations.append(donnees)
         
         if len(listePrestations) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'existe aucune prestation avec les paramètres donnés !", u"Annulation", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune prestation avec les paramètres donnés !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1220,17 +1224,17 @@ class Dialog(wx.Dialog):
                     dateNaiss = dictIndividus[IDindividu]["date_naiss"]
                     if dateNaiss != None : 
                         if DICT_CIVILITES[IDcivilite]["sexe"] == "M" :
-                            texteDateNaiss = u", né le %s" % DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", né le %s") % DateEngFr(str(dateNaiss))
                         else:
-                            texteDateNaiss = u", née le %s" % DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", née le %s") % DateEngFr(str(dateNaiss))
                     else:
                         texteDateNaiss = u""
-                    texteIndividu = u"<b>%s %s</b><font size=7>%s</font>" % (nomIndividu, prenomIndividu, texteDateNaiss)
+                    texteIndividu = _(u"<b>%s %s</b><font size=7>%s</font>") % (nomIndividu, prenomIndividu, texteDateNaiss)
                     nom = u"%s %s" % (nomIndividu, prenomIndividu)
                     
                 else:
                     # Si c'est pour une prestation familiale on créé un individu ID 0 :
-                    nom = u"Prestations familiales"
+                    nom = _(u"Prestations familiales")
                     texteIndividu = u"<b>%s</b>" % nom
                     
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
@@ -1240,7 +1244,7 @@ class Dialog(wx.Dialog):
                 texteActivite = nomActivite
                 agrement = RechercheAgrement(listeAgrements, IDactivite, date)
                 if agrement != None :
-                    texteActivite += u" - n° agrément : %s" % agrement
+                    texteActivite += _(u" - n° agrément : %s") % agrement
                 dictValeurs[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
             # Ajout de la présence

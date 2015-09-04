@@ -8,11 +8,14 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.toasterbox as Toaster
 
 
-def ToasterUtilisateur(parent, titre=u"", prenom=u"Philippe", nomImage="Femme", taille=(200, 100), couleurFond="#000000"):
+def ToasterUtilisateur(parent, titre=u"", prenom=_(u"Philippe"), nomImage="Femme", taille=(200, 100), couleurFond="#000000"):
     """ Affiche une boîte de dialogue temporaire """
     largeur, hauteur = (400, 148) #taille
     tb = Toaster.ToasterBox(parent, Toaster.TB_COMPLEX, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME) # TB_CAPTION
@@ -36,7 +39,7 @@ def ToasterUtilisateur(parent, titre=u"", prenom=u"Philippe", nomImage="Femme", 
     sizerHoriz.Add(bmp, 0, wx.ALL, 10)
     
     # Texte1
-    texte1 = u"Bonjour"
+    texte1 = _(u"Bonjour")
     label1 = wx.StaticText(panel, -1, texte1, style=wx.ALIGN_CENTER)
     label1.SetFont(wx.Font(10, wx.SWISS, wx.NORMAL, wx.BOLD))
     label1.SetForegroundColour('Grey')

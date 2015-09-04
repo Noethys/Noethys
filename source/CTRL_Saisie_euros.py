@@ -8,14 +8,17 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
     
 class CTRL(wx.TextCtrl):
     def __init__(self, parent, font=None, size=(-1, -1), style=wx.TE_RIGHT):
         wx.TextCtrl.__init__(self, parent, -1, u"0.00", size=size, style=style)
         self.parent = parent
-        self.SetToolTipString(u"Saisissez un montant")   
+        self.SetToolTipString(_(u"Saisissez un montant"))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         if font != None :
             self.SetFont(font)
@@ -35,7 +38,7 @@ class CTRL(wx.TextCtrl):
         try :
             test = float(montantStr)
         except :
-            message = u"Le montant que vous avez saisi n'est pas valide."
+            message = _(u"Le montant que vous avez saisi n'est pas valide.")
             return False, message
         return True, None
     

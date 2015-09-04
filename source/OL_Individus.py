@@ -9,7 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import DATA_Civilites as Civilites
@@ -86,7 +89,7 @@ class Track(object):
         if len(listeRattachements) == 0 :
             rattachements = None
             dictTitulaires = {}
-            txtTitulaires = u"Rattaché à aucune famille"
+            txtTitulaires = _(u"Rattaché à aucune famille")
         elif len(listeRattachements) == 1 :
             IDfamille = listeRattachements[0][2]
             IDcategorie = listeRattachements[0][3]
@@ -130,7 +133,7 @@ class ListView(FastObjectListView):
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        self.SetEmptyListMsg(u"Aucun individu")
+        self.SetEmptyListMsg(_(u"Aucun individu"))
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
@@ -282,7 +285,7 @@ class ListView(FastObjectListView):
         
         def FormateAge(age):
             if age == None : return ""
-            return u"%d ans" % age
+            return _(u"%d ans") % age
         
         # Couleur en alternance des lignes
         self.oddRowsBackColor = "#F0FBED" 
@@ -291,17 +294,17 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
-            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
-            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
-            ColumnDefn(u"Rue", "left", 150, "rue_resid", typeDonnee="texte"),
-            ColumnDefn(u"C.P.", "left", 50, "cp_resid", typeDonnee="texte"),
-            ColumnDefn(u"Ville", "left", 100, "ville_resid", typeDonnee="texte"),
-            ColumnDefn(u"Tél. domicile", "left", 100, "tel_domicile", typeDonnee="texte"),
-            ColumnDefn(u"Tél. mobile", "left", 100, "tel_mobile", typeDonnee="texte"),
-            ColumnDefn(u"Email", "left", 150, "mail", typeDonnee="texte"),
-            ColumnDefn(u"Recherche", "left", 0, "champ_recherche", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
+            ColumnDefn(_(u"Rue"), "left", 150, "rue_resid", typeDonnee="texte"),
+            ColumnDefn(_(u"C.P."), "left", 50, "cp_resid", typeDonnee="texte"),
+            ColumnDefn(_(u"Ville"), "left", 100, "ville_resid", typeDonnee="texte"),
+            ColumnDefn(_(u"Tél. domicile"), "left", 100, "tel_domicile", typeDonnee="texte"),
+            ColumnDefn(_(u"Tél. mobile"), "left", 100, "tel_mobile", typeDonnee="texte"),
+            ColumnDefn(_(u"Email"), "left", 150, "mail", typeDonnee="texte"),
+            ColumnDefn(_(u"Recherche"), "left", 0, "champ_recherche", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -352,14 +355,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter une fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter une fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille_ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
         
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier la fiche famille")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille_modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -367,7 +370,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer la fiche famille")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer la fiche famille"))
         bmp = wx.Bitmap("Images/16x16/Famille_supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -377,7 +380,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 60, u"Ouvrir la grille des consommations")
+        item = wx.MenuItem(menuPop, 60, _(u"Ouvrir la grille des consommations"))
         bmp = wx.Bitmap("Images/16x16/Calendrier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -385,7 +388,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 70, u"Ouvrir la fiche individuelle")
+        item = wx.MenuItem(menuPop, 70, _(u"Ouvrir la fiche individuelle"))
         bmp = wx.Bitmap("Images/16x16/Personnes.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -395,14 +398,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -411,14 +414,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -429,21 +432,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des individus", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus"), format="A", orientation=wx.LANDSCAPE)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des individus", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des individus"), format="A", orientation=wx.LANDSCAPE)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des individus")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des individus"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des individus")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des individus"))
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "creer") == False : return
@@ -470,7 +473,7 @@ class ListView(FastObjectListView):
             return
         # Si on est dans le panel de recherche d'individus
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -493,7 +496,7 @@ class ListView(FastObjectListView):
     
     def OuvrirFicheFamille(self, track=None, ouvrirGrille=False, ouvrirFicheInd=False):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
-        import DLG_Famille
+        
         IDindividu = track.IDindividu
         
         rattachements, dictTitulaires, txtTitulaires = track.GetRattachements() 
@@ -502,7 +505,7 @@ class ListView(FastObjectListView):
             
         # Rattaché à aucune famille
         if rattachements == None :
-            dlg = wx.MessageDialog(self, u"Cet individu n'est rattaché à aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?", u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Cet individu n'est rattaché à aucune famille.\n\nSouhaitez-vous ouvrir sa fiche individuelle ?"), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse !=  wx.ID_YES :
@@ -526,13 +529,13 @@ class ListView(FastObjectListView):
             for IDcategorie, IDfamille, titulaire in rattachements :
                 nomTitulaires = dictTitulaires[IDfamille]
                 if IDcategorie == 1 : 
-                    nomCategorie = u"représentant"
+                    nomCategorie = _(u"représentant")
                     if titulaire == 1 : 
-                        nomCategorie += u" titulaire"
-                if IDcategorie == 2 : nomCategorie = u"enfant"
-                if IDcategorie == 3 : nomCategorie = u"contact"
-                listeNoms.append(u"%s (en tant que %s)" % (nomTitulaires, nomCategorie))
-            dlg = wx.SingleChoiceDialog(self, u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?" % len(listeNoms), u"Rattachements multiples", listeNoms, wx.CHOICEDLG_STYLE)
+                        nomCategorie += _(u" titulaire")
+                if IDcategorie == 2 : nomCategorie = _(u"enfant")
+                if IDcategorie == 3 : nomCategorie = _(u"contact")
+                listeNoms.append(_(u"%s (en tant que %s)") % (nomTitulaires, nomCategorie))
+            dlg = wx.SingleChoiceDialog(self, _(u"Cet individu est rattaché à %d familles.\nLa fiche de quelle famille souhaitez-vous ouvrir ?") % len(listeNoms), _(u"Rattachements multiples"), listeNoms, wx.CHOICEDLG_STYLE)
             IDfamilleSelection = None
             if dlg.ShowModal() == wx.ID_OK:
                 indexSelection = dlg.GetSelection()
@@ -544,6 +547,7 @@ class ListView(FastObjectListView):
             
         # Ouverture de la fiche famille
         if IDfamille != None and IDfamille != -1 :
+            import DLG_Famille
             dlg = DLG_Famille.Dialog(self, IDfamille)
             # Ouverture grille de l'individ
             if ouvrirGrille == True :
@@ -570,7 +574,7 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun individu dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun individu dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -587,14 +591,14 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         if len(listeDonnees) > 0 :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas supprimer cette fiche car elle est rattachée à au moins une famille.\n\nSi vous souhaitez vraiment la supprimer, veuillez effectuer cette action à partir de la fiche famille !", u"Suppression impossible", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer cette fiche car elle est rattachée à au moins une famille.\n\nSi vous souhaitez vraiment la supprimer, veuillez effectuer cette action à partir de la fiche famille !"), _(u"Suppression impossible"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             DB.Close()
             return False
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cet individu ?", u"Confirmation de suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet individu ?"), _(u"Confirmation de suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() != wx.ID_YES :
             DB.Close()
             dlg.Destroy()
@@ -626,7 +630,7 @@ class ListView(FastObjectListView):
         DB.Commit() 
         DB.Close()
                 
-        dlg = wx.MessageDialog(self, u"La fiche individuelle a été supprimée avec succès.", u"Suppression", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"La fiche individuelle a été supprimée avec succès."), _(u"Suppression"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -652,7 +656,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.historique = historique
         
-        self.SetDescriptiveText(u"Rechercher un individu...")
+        self.SetDescriptiveText(_(u"Rechercher un individu..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview
@@ -702,20 +706,51 @@ class BarreRecherche(wx.SearchCtrl):
         self.Recherche(self.GetValue())
 
     def OnText(self, evt):
-        # Si code-barres individu saisi
         txtSearch = self.GetValue()
+        
+        # Si code-barres individu saisi
         if len(txtSearch) > 6 and txtSearch.startswith("I") :
             txtSearch = txtSearch[1:]
+            IDindividu = None
             try :
                 IDindividu = int(txtSearch)
-                if self.listView.dictTracks.has_key(IDindividu) :
-                    track = self.listView.dictTracks[IDindividu]
-                    self.listView.SelectObject(track)
-                    self.listView.OuvrirFicheFamille(track)
+            except :
+                IDfamille = None
+            if IDindividu != None and self.listView.dictTracks.has_key(IDindividu) :
+                track = self.listView.dictTracks[IDindividu]
+                self.listView.SelectObject(track)
+                self.listView.OuvrirFicheFamille(track)
+                self.OnCancel(None)
+                return
+                
+        # Si code-barres famille saisi
+        if len(txtSearch) > 6 and txtSearch.startswith("A") :
+            txtSearch = txtSearch[1:]
+            IDfamille = None
+            try :
+                IDfamille = int(txtSearch)
+            except :
+                IDfamille = None
+            if IDfamille != None :
+                DB = GestionDB.DB()
+                req = """SELECT IDfamille FROM Familles WHERE IDfamille=%d
+                ;""" % IDfamille
+                DB.ExecuterReq(req)
+                listeDonnees = DB.ResultatReq()
+                DB.Close()
+                if len(listeDonnees) > 0 :
+                    import DLG_Famille
+                    dlg = DLG_Famille.Dialog(self, IDfamille)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    # MAJ du remplissage
+                    if self.GetGrandParent().GetName() == "general" :
+                        self.GetGrandParent().MAJ() 
+                    else:
+                        self.MAJ() 
                     self.OnCancel(None)
                     return
-            except :
-                pass            
+                       
         # Filtre la liste normalement
         self.Recherche(self.GetValue())
         
@@ -728,9 +763,9 @@ class BarreRecherche(wx.SearchCtrl):
     def MakeMenu(self):
         menu = wx.Menu()
         if len(self.listView.historique) == 0 :
-            label = u"L'historique des fiches ouvertes est vide"
+            label = _(u"L'historique des fiches ouvertes est vide")
         else:
-            label = u"----- Historique des fiches ouvertes -----"
+            label = _(u"----- Historique des fiches ouvertes -----")
         item = menu.Append(-1, label)
         item.Enable(False)
         index = 0

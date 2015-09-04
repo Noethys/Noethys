@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Bandeau
 import UTILS_Historique
@@ -57,7 +60,7 @@ class Track(object):
         self.nomCategorie = UTILS_Historique.CATEGORIES[self.IDcategorie]
         # Texte de l'action
         self.action = donnees[7]
-        self.description = u"%s \n\n- par %s -" % (self.action, self.nomComplet_utilisateur)
+        self.description = _(u"%s \n\n- par %s -") % (self.action, self.nomComplet_utilisateur)
         if self.nomComplet_individu != "" :
             self.description = u"%s : %s" % (self.nomComplet_individu, self.description)
             
@@ -168,7 +171,7 @@ class Timeline(TL.TimelinePerso):
             dateFin = datetime.datetime(date.year, date.month, date.day, heure_fin.hour, heure_fin.minute, heure_fin.second)
             texte = prenom
             categorie = None
-            description = u"Activité : %s\nGroupe : %s" % (nomActivite, nomGroupe)
+            description = _(u"Activité : %s\nGroupe : %s") % (nomActivite, nomGroupe)
             icon = None
             
             evt = TL.Event(dateDebut, dateFin, texte, categorie)
@@ -187,8 +190,8 @@ class Dialog(wx.Dialog):
         self.IDindividu = IDindividu
         
         # Bandeau
-        intro = u"Vous pouvez ici consulter l'historique des évènements et des consommations sous forme chronologique. Vous pouvez déplacer le graphique vers la droite ou vers la gauche en le faisant glisser avec la souris ou en utilisant sa molette, et basculer entre un affichage annuel, mensuel, hebdomadaire ou quotidien. Les évènements de l'historique apparaissent au-dessus de la ligne et les consommations individuelles au-dessous."
-        titre = u"Chronologie"
+        intro = _(u"Vous pouvez ici consulter l'historique des évènements et des consommations sous forme chronologique. Vous pouvez déplacer le graphique vers la droite ou vers la gauche en le faisant glisser avec la souris ou en utilisant sa molette, et basculer entre un affichage annuel, mensuel, hebdomadaire ou quotidien. Les évènements de l'historique apparaissent au-dessus de la ligne et les consommations individuelles au-dessous.")
+        titre = _(u"Chronologie")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Timeline.png")
         
         # Timeline
@@ -201,8 +204,8 @@ class Dialog(wx.Dialog):
         self.ctrl_timeline.MAJ() 
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -210,9 +213,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
     def __set_properties(self):
-        self.SetTitle(u"Chronologie")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Chronologie"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):

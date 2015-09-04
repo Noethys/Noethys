@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hyperlink as Hyperlink
 import GestionDB
 
@@ -34,7 +37,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
         listeLabels = []
         for code, label in self.parent.listeChamps :
             listeLabels.append(u"%s (%s)" % (label, code))
-        dlg = wx.SingleChoiceDialog(None, u"Sélectionnez un champ à insérer :", u"Insérer un champ", listeLabels, wx.CHOICEDLG_STYLE)
+        dlg = wx.SingleChoiceDialog(None, _(u"Sélectionnez un champ à insérer :"), _(u"Insérer un champ"), listeLabels, wx.CHOICEDLG_STYLE)
         dlg.SetSize((580, 700))
         dlg.CenterOnScreen()
         if dlg.ShowModal() == wx.ID_OK:
@@ -56,23 +59,23 @@ class Dialog(wx.Dialog):
         self.listeChamps = listeChamps
         self.IDchamp = IDchamp
         
-        self.label_code = wx.StaticText(self, -1, u"Code :")
+        self.label_code = wx.StaticText(self, -1, _(u"Code :"))
         self.ctrl_code = wx.TextCtrl(self, -1, code, size=(160, -1))
-        self.label_code_info = wx.StaticText(self, -1, u"(En majuscules et sans espaces)")
+        self.label_code_info = wx.StaticText(self, -1, _(u"(En majuscules et sans espaces)"))
         
-        self.label_nom = wx.StaticText(self, -1, u"Description :")
+        self.label_nom = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, nom)
 
-        self.label_titre = wx.StaticText(self, -1, u"Titre de colonne :")
+        self.label_titre = wx.StaticText(self, -1, _(u"Titre de colonne :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, titre)
 
-        self.label_formule = wx.StaticText(self, -1, u"Formule :")
+        self.label_formule = wx.StaticText(self, -1, _(u"Formule :"))
         self.ctrl_formule = wx.TextCtrl(self, -1, formule, style=wx.TE_MULTILINE)
-        self.hyper_formule = Hyperlien(self, label=u"Insérer un champ", infobulle=u"Cliquez ici pour insérer un champ", URL="")
+        self.hyper_formule = Hyperlien(self, label=_(u"Insérer un champ"), infobulle=_(u"Cliquez ici pour insérer un champ"), URL="")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -82,14 +85,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un champ personnalisé")
-        self.ctrl_code.SetToolTipString(u"Saisissez un code pour ce champ. Ex : 'MONCHAMP1' [OBLIGATOIRE]")
-        self.ctrl_nom.SetToolTipString(u"Saisissez un nom pour ce champ. Ex : 'Total des présences' [OBLIGATOIRE]")
-        self.ctrl_titre.SetToolTipString(u"Saisissez un titre de colonne pour ce champ [OBLIGATOIRE]")
-        self.ctrl_formule.SetToolTipString(u"Saisissez une formule pour ce champ [OPTIONNEL]")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'un champ personnalisé"))
+        self.ctrl_code.SetToolTipString(_(u"Saisissez un code pour ce champ. Ex : 'MONCHAMP1' [OBLIGATOIRE]"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce champ. Ex : 'Total des présences' [OBLIGATOIRE]"))
+        self.ctrl_titre.SetToolTipString(_(u"Saisissez un titre de colonne pour ce champ [OBLIGATOIRE]"))
+        self.ctrl_formule.SetToolTipString(_(u"Saisissez une formule pour ce champ [OPTIONNEL]"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.label_code_info.SetFont(wx.Font(6, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         self.SetMinSize((550, 350))
 
@@ -156,21 +159,21 @@ class Dialog(wx.Dialog):
         # Validation de la saisie
         code = self.ctrl_code.GetValue().upper()
         if code == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un code !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un code !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code.SetFocus()
             return
 
         if self.ctrl_nom.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un descriptif !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un descriptif !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
 
         if self.ctrl_titre.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un titre de colonne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre de colonne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_titre.SetFocus()
@@ -187,7 +190,7 @@ class Dialog(wx.Dialog):
         DB.Close() 
         for IDchamp, code in listeDonnees :
             if self.IDchamp != IDchamp : 
-                dlg = wx.MessageDialog(self, u"Ce code a déjà été attribué à un autre champ. Veuillez le modifier !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Ce code a déjà été attribué à un autre champ. Veuillez le modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_code.SetFocus()
@@ -218,7 +221,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, listeChamps=[(u"CODE1", u"Label du champ 1"),])
+    dialog_1 = Dialog(None, listeChamps=[(u"CODE1", _(u"Label du champ 1")),])
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

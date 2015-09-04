@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 
 import GestionDB
@@ -21,23 +24,23 @@ class Dialog(wx.Dialog):
         self.parent = parent   
         
         # Dates
-        self.staticbox_dates_staticbox = wx.StaticBox(self, -1, u"Dates de validité")
+        self.staticbox_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, u"au :")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au :"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Paramètres
-        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
-        self.label_quotient = wx.StaticText(self, -1, u"Quotient familial :")
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.label_quotient = wx.StaticText(self, -1, _(u"Quotient familial :"))
         self.ctrl_quotient = wx.TextCtrl(self, -1, u"")
-        self.label_observations = wx.StaticText(self, -1, u"Observations :")
+        self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -46,13 +49,13 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de validité")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de validité")
-        self.ctrl_quotient.SetToolTipString(u"Saisissez ici le quotient familial")
-        self.ctrl_observations.SetToolTipString(u"[Optionnel] Saisissez ici des commentaires sur ce quotient")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_quotient.SetToolTipString(_(u"Saisissez ici le quotient familial"))
+        self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -120,13 +123,13 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         if self.ctrl_date_debut.FonctionValiderDate() == False or self.GetDateDebut() == None :
-            dlg = wx.MessageDialog(self, u"La date de début de validité n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         if self.ctrl_date_fin.FonctionValiderDate() == False or self.GetDateFin() == None :
-            dlg = wx.MessageDialog(self, u"La date de fin de validité n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -135,7 +138,7 @@ class Dialog(wx.Dialog):
         try :
             test = int(quotient)
         except :
-            dlg = wx.MessageDialog(self, u"Le quotient familial que vous avez saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le quotient familial que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_quotient.SetFocus()

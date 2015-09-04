@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import OL_Factures
@@ -21,7 +24,7 @@ class Panel(wx.Panel):
         self.parent = parent
         
         # Liste de factures
-        self.box_factures_staticbox = wx.StaticBox(self, -1, u"Factures")
+        self.box_factures_staticbox = wx.StaticBox(self, -1, _(u"Factures"))
 
         codesColonnes = ["IDfacture", "date", "numero", "famille", "prelevement", "email", "total", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = False
@@ -38,16 +41,16 @@ class Panel(wx.Panel):
         self.bouton_export_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
         
         # Actions
-        self.box_actions_staticbox = wx.StaticBox(self, -1, u"Autres actions possibles")
+        self.box_actions_staticbox = wx.StaticBox(self, -1, _(u"Autres actions possibles"))
         
         self.image_fleche1 = wx.StaticBitmap(self, -1, wx.Bitmap("Images/16x16/Fleche_droite.png", wx.BITMAP_TYPE_ANY))
         self.image_fleche2 = wx.StaticBitmap(self, -1, wx.Bitmap("Images/16x16/Fleche_droite.png", wx.BITMAP_TYPE_ANY))
         self.image_fleche3 = wx.StaticBitmap(self, -1, wx.Bitmap("Images/16x16/Fleche_droite.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_helios = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Factures_helios.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_prelevements = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Factures_prelevement.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_email = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Factures_email.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Factures_imprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_helios = CTRL_Bouton_image.CTRL(self, texte=_(u"Exporter\nvers Hélios"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Helios.png")
+        self.bouton_prelevements = CTRL_Bouton_image.CTRL(self, texte=_(u"Prélèvement\nautomatique"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Prelevement.png")
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Transmettre\npar Email"), tailleImage=(32, 32), margesImage=(4, 4, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), tailleImage=(32, 32), margesImage=(4, 0, 0, 0), margesTexte=(-5, 1), cheminImage="Images/32x32/Imprimante.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -65,17 +68,17 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée")
-        self.bouton_email_facture.SetToolTipString(u"Cliquez ici envoyer la facture sélectionnée par Email")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées")
-        self.bouton_apercu_liste.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression de la liste")
-        self.bouton_imprimer_liste.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_export_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format texte")
-        self.bouton_export_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_prelevements.SetToolTipString(u"Cliquez ici pour accéder à la gestion des prélèvements automatiques")
-        self.bouton_email.SetToolTipString(u"Cliquez ici pour accéder à l'envoi des factures par Email")
-        self.bouton_helios.SetToolTipString(u"Cliquez ici pour accéder à l'export HELIOS des factures")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer les factures générées")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée"))
+        self.bouton_email_facture.SetToolTipString(_(u"Cliquez ici envoyer la facture sélectionnée par Email"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées"))
+        self.bouton_apercu_liste.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer_liste.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format texte"))
+        self.bouton_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_prelevements.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des prélèvements automatiques"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour accéder à l'envoi des factures par Email"))
+        self.bouton_helios.SetToolTipString(_(u"Cliquez ici pour accéder à l'export HELIOS des factures"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer les factures générées"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -166,7 +169,7 @@ class Panel(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_prelevements", "creer") == False : return
         
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous utiliser l'assistant de préparation des lots de prélèvements automatiques (Conseillé) ?\n\nSinon, le gestionnaire des prélèvements sera simplement ouvert.", u"Prélèvement automatique", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de préparation des lots de prélèvements automatiques (Conseillé) ?\n\nSinon, le gestionnaire des prélèvements sera simplement ouvert."), _(u"Prélèvement automatique"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -206,7 +209,7 @@ class Panel(wx.Panel):
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "creer") == False : return
             
             # Demande d'application automatique de filtres
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous utiliser l'assistant de préparation des bordereaux PES (Conseillé) ?\n\nSinon, le gestionnaire des bordereaux PES sera simplement ouvert.", u"Hélios", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous utiliser l'assistant de préparation des bordereaux PES (Conseillé) ?\n\nSinon, le gestionnaire des bordereaux PES sera simplement ouvert."), _(u"Hélios"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse == wx.ID_CANCEL :
@@ -227,7 +230,7 @@ class Panel(wx.Panel):
         """ Envoi par Email des factures """
         filtres = [self.GetFiltreNumerosFactures(),]
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)", u"Application automatique de filtres", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -244,7 +247,7 @@ class Panel(wx.Panel):
         """ Impression des factures """
         filtres = [self.GetFiltreNumerosFactures(),]
         # Demande d'application automatique de filtres
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)", u"Application automatique de filtres", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse == wx.ID_CANCEL :
@@ -262,7 +265,7 @@ class Panel(wx.Panel):
             IDfacture_min = min(self.parent.listeFacturesGenerees)
             IDfacture_max = max(self.parent.listeFacturesGenerees)
             self.ctrl_factures.SetFiltres([{"type" : "IDfacture_intervalle", "IDfacture_min" : IDfacture_min, "IDfacture_max" : IDfacture_max},])
-            self.box_factures_staticbox.SetLabel(u"%d factures générées" % len(self.parent.listeFacturesGenerees))
+            self.box_factures_staticbox.SetLabel(_(u"%d factures générées") % len(self.parent.listeFacturesGenerees))
         self.ctrl_factures.MAJ() 
         self.ctrl_factures.DefilePremier()
         
@@ -285,7 +288,7 @@ class MyFrame(wx.Frame):
         
         self.ctrl = Panel(panel)
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -301,7 +304,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

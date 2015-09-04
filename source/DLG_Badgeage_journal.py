@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -25,20 +28,20 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Vous pouvez consulter ici la liste des actions des procédures de badgeage. Commencez par sélectionner une date de référence puis actualisez l'affichage de la liste."
-        titre = u"Journal de badgeage"
+        intro = _(u"Vous pouvez consulter ici la liste des actions des procédures de badgeage. Commencez par sélectionner une date de référence puis actualisez l'affichage de la liste.")
+        titre = _(u"Journal de badgeage")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Badgeage.png")
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
         self.ctrl_date.SetDate(datetime.date.today())
-        self.bouton_actualiser = wx.Button(self, -1, u"Actualiser")
+        self.bouton_actualiser = wx.Button(self, -1, _(u"Actualiser"))
         
         # Log
-        self.box_log_staticbox = wx.StaticBox(self, -1, u"Journal")
+        self.box_log_staticbox = wx.StaticBox(self, -1, _(u"Journal"))
         
         self.ctrl_log = OL_Badgeage_log.ListView(self, modeHistorique=True, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_VRULES)
         self.log = self.ctrl_log
@@ -49,8 +52,8 @@ class Dialog(wx.Dialog):
         self.bouton_log_texte = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Texte.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -67,13 +70,13 @@ class Dialog(wx.Dialog):
         self.Actualiser() 
         
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(u"Sélectionnez une date")
-        self.bouton_log_apercu.SetToolTipString(u"Cliquez ici pour afficher un apercu avant impression")
-        self.bouton_log_imprimer.SetToolTipString(u"Cliquez ici pour imprimer")
-        self.bouton_log_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_log_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_date.SetToolTipString(_(u"Sélectionnez une date"))
+        self.bouton_log_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un apercu avant impression"))
+        self.bouton_log_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer"))
+        self.bouton_log_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_log_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((870, 700))
 
     def __do_layout(self):

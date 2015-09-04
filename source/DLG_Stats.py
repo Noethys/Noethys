@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import datetime
 
@@ -96,17 +99,17 @@ class CTRL_Parametres(wx.html.HtmlWindow):
         
         # Période
         if self.dictParametres["mode"] == "inscrits" :
-            html += u"<U><B>Période :</B></U> Aucune"
+            html += _(u"<U><B>Période :</B></U> Aucune")
         else:
-            html += u"<U><B>Période :</B></U> %s" % self.dictParametres["periode"]["label"]
+            html += _(u"<U><B>Période :</B></U> %s") % self.dictParametres["periode"]["label"]
         html += u"<BR><BR>"
         
         # Activités
         listeActivites = self.dictParametres["listeActivites"]
         if len(listeActivites) == 0 :
-            html += u"<U><B>Activités :</B></U> Aucune"
+            html += _(u"<U><B>Activités :</B></U> Aucune")
         else :
-            html += u"<U><B>Activités : </B></U><UL>"
+            html += _(u"<U><B>Activités : </B></U><UL>")
             for IDactivite in listeActivites :
                 nomActivite = self.dictParametres["dictActivites"][IDactivite]
                 html += u"<LI>%s</LI>" % nomActivite
@@ -117,7 +120,7 @@ class CTRL_Parametres(wx.html.HtmlWindow):
         
         
         # Finalisation du html
-        html = u"<html><head><title>Paramètres</title></head><body><FONT SIZE=-1>%s</FONT></body></html>" % html
+        html = _(u"<html><head><title>Paramètres</title></head><body><FONT SIZE=-1>%s</FONT></body></html>") % html
         self.SetPage(html)
 
 
@@ -150,70 +153,70 @@ class Dialog(wx.Dialog):
 ####Liste d'objets ici
         self.listeObjets = [
 
-            {"nom" : u"Individus", "code" : "individus", "image" : None, "ctrl_notebook" : None, "visible" : True, "pages" : [
+            {"nom" : _(u"Individus"), "code" : "individus", "image" : None, "ctrl_notebook" : None, "visible" : True, "pages" : [
             
-                    {"nom" : u"Nombre", "code" : "individus_nombre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Nombre"), "code" : "individus_nombre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Texte_nombre_individus(),
                             INDIVIDUS.Tableau_nombre_individus(),
                             INDIVIDUS.Graphe_nombre_individus(),
                             ]},
 
-                    {"nom" : u"Ancienneté", "code" : "individus_anciennete", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Ancienneté"), "code" : "individus_anciennete", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_nouveaux_individus(),
                             INDIVIDUS.Graphe_nouveaux_individus(),
                             INDIVIDUS.Graphe_arrivee_individus(),
                             ]},
 
-                    {"nom" : u"Genre", "code" : "individus_genre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Genre"), "code" : "individus_genre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_genre(),
                             INDIVIDUS.Graphe_repartition_genre(),
                             ]},
 
-                    {"nom" : u"Âge", "code" : "individus_age", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Âge"), "code" : "individus_age", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_ages(),
                             INDIVIDUS.Graphe_repartition_ages(),
                             INDIVIDUS.Tableau_repartition_annees_naiss(),
                             INDIVIDUS.Graphe_repartition_annees_naiss(),
                             ]},
 
-                    {"nom" : u"Coordonnées", "code" : "individus_coordonnees", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Coordonnées"), "code" : "individus_coordonnees", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_villes(),
                             INDIVIDUS.Graphe_repartition_villes(),
                             ]},
 
-                    {"nom" : u"Scolarité", "code" : "individus_scolarite", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Scolarité"), "code" : "individus_scolarite", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_repartition_ecoles(),
                             INDIVIDUS.Graphe_repartition_ecoles(),
                             INDIVIDUS.Tableau_repartition_niveaux_scolaires(),
                             INDIVIDUS.Graphe_repartition_niveaux_scolaires(),
                             ]},
 
-                    {"nom" : u"Profession", "code" : "individus_profession", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Profession"), "code" : "individus_profession", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             INDIVIDUS.Tableau_activites_professionnelles(),
                             INDIVIDUS.Graphe_activites_professionnelles(),
                             ]},
 
                     ]},
 
-            {"nom" : u"Familles", "code" : "familles", "image" : None, "ctrl_notebook" : None, "visible" : True, "pages" : [
+            {"nom" : _(u"Familles"), "code" : "familles", "image" : None, "ctrl_notebook" : None, "visible" : True, "pages" : [
 
-                    {"nom" : u"Nombre", "code" : "familles_nombre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Nombre"), "code" : "familles_nombre", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             FAMILLES.Texte_nombre_familles(),
                             FAMILLES.Tableau_nombre_familles(),
                             FAMILLES.Graphe_nombre_familles(),
                             ]},
 
-                    {"nom" : u"Caisse", "code" : "familles_caisse", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Caisse"), "code" : "familles_caisse", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             FAMILLES.Tableau_repartition_caisses(),
                             FAMILLES.Graphe_repartition_caisses(),
                             ]},
 
-                    {"nom" : u"Composition", "code" : "familles_composition", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Composition"), "code" : "familles_composition", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             FAMILLES.Tableau_nombre_membres(),
                             FAMILLES.Graphe_nombre_membres(),
                             ]},
 
-                    {"nom" : u"Quotient familial", "code" : "familles_qf", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
+                    {"nom" : _(u"Quotient familial"), "code" : "familles_qf", "image" : None, "ctrl_html" : None, "visible" : True, "objets" : [
                             FAMILLES.Tableau_qf_tarifs(),
                             FAMILLES.Graphe_qf_tarifs(),
                             FAMILLES.Tableau_qf_defaut(),
@@ -226,13 +229,13 @@ class Dialog(wx.Dialog):
 
 
         # Bandeau
-        intro = u"Vous pouvez ici consulter des statistiques complètes sur les activités et la période de votre choix. Ces informations sont présentées sous forme de rubrique, de pages et d'items que vous pouvez choisir d'afficher ou non. Vous pouvez ensuite imprimer ces informations sous forme de rapport hierarchisé. Cliquez sur les graphes pour accéder aux outils spécifiques."
-        titre = u"Statistiques"
+        intro = _(u"Vous pouvez ici consulter des statistiques complètes sur les activités et la période de votre choix. Ces informations sont présentées sous forme de rubrique, de pages et d'items que vous pouvez choisir d'afficher ou non. Vous pouvez ensuite imprimer ces informations sous forme de rapport hierarchisé. Cliquez sur les graphes pour accéder aux outils spécifiques.")
+        titre = _(u"Statistiques")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Barres.png")
         
         # Labelbook
-        self.box_informations_staticbox = wx.StaticBox(self, -1, u"Informations")
+        self.box_informations_staticbox = wx.StaticBox(self, -1, _(u"Informations"))
         self.ctrl_labelbook = LB.LabelBook(self, -1, agwStyle=LB.INB_DRAW_SHADOW | LB.INB_LEFT)
 
         self.baseHTML = MODELES.HTML(liste_objets=self.listeObjets) 
@@ -240,25 +243,25 @@ class Dialog(wx.Dialog):
         self.ctrl_labelbook.SetSelection(0) 
 
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres(self)
         self.ctrl_parametres.MAJ() 
-        self.hyper_parametres = Hyperlien(self, label=u"Modifier les paramètres", infobulle=u"Modifier les paramètres", URL="parametres")
+        self.hyper_parametres = Hyperlien(self, label=_(u"Modifier les paramètres"), infobulle=_(u"Modifier les paramètres"), URL="parametres")
 
         # impression
-        self.box_impression_staticbox = wx.StaticBox(self, -1, u"Impression")
+        self.box_impression_staticbox = wx.StaticBox(self, -1, _(u"Impression"))
         self.ctrl_impression = CTRL_Stats_objets.CTRL_Objets(self, liste_objets=self.listeObjets)
         self.ctrl_impression.MAJ() 
         
-        self.hyper_selectionner = Hyperlien(self, label=u"Tout sélectionner", infobulle=u"Tout sélectionner", URL="selectionner")
+        self.hyper_selectionner = Hyperlien(self, label=_(u"Tout sélectionner"), infobulle=_(u"Tout sélectionner"), URL="selectionner")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_deselectionner = Hyperlien(self, label=u"Tout dé-sélectionner", infobulle=u"Tout dé-sélectionner", URL="deselectionner")
+        self.hyper_deselectionner = Hyperlien(self, label=_(u"Tout dé-sélectionner"), infobulle=_(u"Tout dé-sélectionner"), URL="deselectionner")
         
-        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Imprimer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = CTRL_Bouton_image.CTRL(self, texte=_(u"Imprimer"), cheminImage="Images/32x32/Imprimante.png")
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -273,9 +276,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_impression.SetMinSize((250, -1))
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):
@@ -351,19 +354,19 @@ class Dialog(wx.Dialog):
         # Demande le type d'impression
         menuPop = wx.Menu()
 
-        item = wx.MenuItem(menuPop, 10, u"Tout")
+        item = wx.MenuItem(menuPop, 10, _(u"Tout"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=10)
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 20, u"La rubrique affichée")
+        item = wx.MenuItem(menuPop, 20, _(u"La rubrique affichée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=20)
 
-        item = wx.MenuItem(menuPop, 30, u"La page affichée")
+        item = wx.MenuItem(menuPop, 30, _(u"La page affichée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=30)
@@ -376,7 +379,7 @@ class Dialog(wx.Dialog):
         listeCodes = self.ctrl_impression.GetCoches() 
         
         # Imprimer tout
-        dlgAttente = PBI.PyBusyInfo(u"Création du rapport...", parent=None, title=u"Patientez", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Création du rapport..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         if ID == 10 : 
@@ -392,7 +395,7 @@ class Dialog(wx.Dialog):
             html = self.baseHTML.GetHTML(mode="impression", rubrique=codeRubrique, page=codePage, selectionsCodes=listeCodes)
         
         if len(listeCodes) == 0 or len(html) <= 50 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune information à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune information à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -405,14 +408,14 @@ class Dialog(wx.Dialog):
         preview = wx.PrintPreview(printout, printout2)
         
 ##        import UTILS_Printer
-##        preview_window = UTILS_Printer.PreviewFrame(preview, None, u"Aperçu avant impression")
+##        preview_window = UTILS_Printer.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
 ##        preview_window.Initialize()
 ##        preview_window.MakeModal(False)
 ##        preview_window.Show(True)
 
         preview.SetZoom(100)
         frame = wx.GetApp().GetTopWindow() 
-        preview_window = wx.PreviewFrame(preview, None, u"Aperçu avant impression")
+        preview_window = wx.PreviewFrame(preview, None, _(u"Aperçu avant impression"))
         preview_window.Initialize()
         preview_window.MakeModal(False)
         preview_window.SetPosition(frame.GetPosition())
@@ -522,7 +525,7 @@ class Dialog(wx.Dialog):
 
     def MAJpage(self, indexRubrique=None, indexPage=None):
         """ Met à jour le contenu d'une page """
-        dlgAttente = PBI.PyBusyInfo(u"Actualisation des données...", parent=None, title=u"Patientez", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Actualisation des données..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         codeRubrique = None

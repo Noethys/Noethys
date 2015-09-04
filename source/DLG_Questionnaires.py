@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import GestionDB
 import CTRL_Bandeau
@@ -23,16 +26,16 @@ class Dialog(wx.Dialog):
         self.parent = parent      
         self.type = type
         
-        intro = u"Vous pouvez ici concevoir des questionnaires personnalisés pour les fiches individuelles et familiales. Commencez par créer des catégories puis paramétrez des questions basées sur les contrôles de votre choix en fonction des données à saisir : texte, liste, entier, etc..."
-        titre = u"Questionnaires"
+        intro = _(u"Vous pouvez ici concevoir des questionnaires personnalisés pour les fiches individuelles et familiales. Commencez par créer des catégories puis paramétrez des questions basées sur les contrôles de votre choix en fonction des données à saisir : texte, liste, entier, etc...")
+        titre = _(u"Questionnaires")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Questionnaire.png")
         
         # Type
-        self.box_questionnaire_staticbox = wx.StaticBox(self, -1, u"Questionnaire")
-        self.box_type_staticbox = wx.StaticBox(self, -1, u"Type de fiche")
-        self.label_type = wx.StaticText(self, -1, u"Type de fiche :")
-        self.ctrl_type = wx.Choice(self, -1, choices=[u"Individu", u"Famille"])
+        self.box_questionnaire_staticbox = wx.StaticBox(self, -1, _(u"Questionnaire"))
+        self.box_type_staticbox = wx.StaticBox(self, -1, _(u"Type de fiche"))
+        self.label_type = wx.StaticText(self, -1, _(u"Type de fiche :"))
+        self.ctrl_type = wx.Choice(self, -1, choices=[_(u"Individu"), _(u"Famille")])
         if type == "individu" : self.ctrl_type.Select(0)
         if type == "famille" : self.ctrl_type.Select(1)
 
@@ -46,8 +49,8 @@ class Dialog(wx.Dialog):
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -66,14 +69,14 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_type.SetToolTipString(u"Sélectionnez ici le type")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une catégorie ou une question")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la catégorie ou la question sélectionnée")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la catégorie ou la question sélectionnée")
-        self.bouton_monter.SetToolTipString(u"Cliquez ici pour monter la catégorie ou la question sélectionnée")
-        self.bouton_descendre.SetToolTipString(u"Cliquez ici pour descendre la catégorie ou la question sélectionnée")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_type.SetToolTipString(_(u"Sélectionnez ici le type"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une catégorie ou une question"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la catégorie ou la question sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la catégorie ou la question sélectionnée"))
+        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter la catégorie ou la question sélectionnée"))
+        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre la catégorie ou la question sélectionnée"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((690, 700))
 
     def __do_layout(self):

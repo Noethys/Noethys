@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Villes
 
@@ -22,11 +25,11 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.panel_saisie = wx.Panel(self, -1)
         
-        titre = u"Villes et codes postaux"
+        titre = _(u"Villes et codes postaux")
         if modeImportation == True :
-            intro = u"Vous pouvez ici rechercher une ville ou un code postal grâce à la barre de recherche. Cliquez sur 'Importer la ville' pour importer la ville saisie ou sélectionnée."
+            intro = _(u"Vous pouvez ici rechercher une ville ou un code postal grâce à la barre de recherche. Cliquez sur 'Importer la ville' pour importer la ville saisie ou sélectionnée.")
         else:
-            intro =u"Vous pouvez ici rechercher une ville ou un code postal. La barre de recherche vous permet d'effectuer une recherche sur une partie du nom ou du code postal."
+            intro =_(u"Vous pouvez ici rechercher une ville ou un code postal. La barre de recherche vous permet d'effectuer une recherche sur une partie du nom ou du code postal.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Carte.png")
         self.ctrl_villes = OL_Villes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -34,7 +37,7 @@ class Dialog(wx.Dialog):
 
         self.ctrl_barreRecherche = OL_Villes.CTRL_Outils(self, listview=self.ctrl_villes)
 
-        self.staticbox_saisie_staticbox = wx.StaticBox(self.panel_saisie, -1, u"Insertion manuelle d'une ville dans le champ Adresse")
+        self.staticbox_saisie_staticbox = wx.StaticBox(self.panel_saisie, -1, _(u"Insertion manuelle d'une ville dans le champ Adresse"))
         self.label_cp = wx.StaticText(self.panel_saisie, -1, "Code postal :")
         self.ctrl_cp = wx.TextCtrl(self.panel_saisie, -1, "")
         self.label_ville = wx.StaticText(self.panel_saisie, -1, "Ville :")
@@ -44,9 +47,9 @@ class Dialog(wx.Dialog):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_importer = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Importer_ville.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_importer = CTRL_Bouton_image.CTRL(self, texte=_(u"Importer la ville"), cheminImage="Images/32x32/Fleche_bas.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         if modeImportation == False :
             self.panel_saisie.Show(False)
@@ -64,14 +67,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_cp.SetMinSize((60, -1))
-        self.ctrl_cp.SetToolTipString(u"Saisissez ici un code postal")
-        self.ctrl_ville.SetToolTipString(u"Saisissez ici le nom d'une ville")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une ville")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la ville sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la ville sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_importer.SetToolTipString(u"Cliquez ici pour importer la ville saisie manuellement ou sélectionnée dans la liste")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_cp.SetToolTipString(_(u"Saisissez ici un code postal"))
+        self.ctrl_ville.SetToolTipString(_(u"Saisissez ici le nom d'une ville"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une ville"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la ville sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la ville sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer la ville saisie manuellement ou sélectionnée dans la liste"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((480, 600))
 
     def __do_layout(self):
@@ -149,17 +152,17 @@ class Dialog(wx.Dialog):
         saisie_cp = self.ctrl_cp.GetValue()
         saisie_ville = self.ctrl_ville.GetValue()
         if saisie_ville == "" and saisie_cp == "" and len(selectionListe) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez effectué aucune saisie manuelle ou sélection dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez effectué aucune saisie manuelle ou sélection dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if saisie_ville != "" and saisie_cp == "":
-            dlg = wx.MessageDialog(self, u"Vous avez saisi le nom d'une ville sans saisir le code postal !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez saisi le nom d'une ville sans saisir le code postal !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         if saisie_ville == "" and saisie_cp != "":
-            dlg = wx.MessageDialog(self, u"Vous avez saisi le code postal sans saisir le nom de la ville !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez saisi le code postal sans saisir le nom de la ville !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

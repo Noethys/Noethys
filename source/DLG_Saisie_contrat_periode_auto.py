@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_euros
 import GestionDB
@@ -19,7 +22,7 @@ from dateutil import relativedelta
 from dateutil import rrule
 
 
-LISTE_MOIS = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
 
 
 class Dialog(wx.Dialog):
@@ -31,29 +34,29 @@ class Dialog(wx.Dialog):
         self.listeResultats = []
 
         # Généralités
-        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Généralités")
-        self.label_dates = wx.StaticText(self, wx.ID_ANY, u"Dates :")
+        self.box_generalites_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Généralités"))
+        self.label_dates = wx.StaticText(self, wx.ID_ANY, _(u"Dates :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, wx.ID_ANY, u"au")
+        self.label_au = wx.StaticText(self, wx.ID_ANY, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Prestation
-        self.box_prestation_staticbox = wx.StaticBox(self, wx.ID_ANY, u"Prestation")
-        self.label_periodicite = wx.StaticText(self, wx.ID_ANY, u"Périodicité :")
-        self.ctrl_periodicite = wx.Choice(self, -1, choices=[u"Annuelle", u"Mensuelle", u"Hebdomadaire"])
+        self.box_prestation_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Prestation"))
+        self.label_periodicite = wx.StaticText(self, wx.ID_ANY, _(u"Périodicité :"))
+        self.ctrl_periodicite = wx.Choice(self, -1, choices=[_(u"Annuelle"), _(u"Mensuelle"), _(u"Hebdomadaire")])
         self.ctrl_periodicite.SetSelection(1) 
-        self.label_date_prestation = wx.StaticText(self, wx.ID_ANY, u"Date :")
-        self.ctrl_date_prestation = wx.Choice(self, -1, choices=[u"Début de période", u"Fin de période"])
+        self.label_date_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Date :"))
+        self.ctrl_date_prestation = wx.Choice(self, -1, choices=[_(u"Début de période"), _(u"Fin de période")])
         self.ctrl_date_prestation.SetSelection(0)
-        self.label_label_prestation = wx.StaticText(self, wx.ID_ANY, u"Label :")
+        self.label_label_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Label :"))
         self.ctrl_label_prestation = wx.TextCtrl(self, wx.ID_ANY, u"{LABEL_AUTO}")
-        self.label_montant_prestation = wx.StaticText(self, wx.ID_ANY, u"Montant :")
+        self.label_montant_prestation = wx.StaticText(self, wx.ID_ANY, _(u"Montant :"))
         self.ctrl_montant_prestation = CTRL_Saisie_euros.CTRL(self)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_ANY, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -66,16 +69,16 @@ class Dialog(wx.Dialog):
         self.Importation(dictValeurs)
 
     def __set_properties(self):
-        self.SetTitle(u"Génération automatique de périodes")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de la période")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de la période")
-        self.ctrl_periodicite.SetToolTipString(u"Sélectionnez la périodicité à appliquer")
-        self.ctrl_label_prestation.SetToolTipString(u"Saisissez le label de la prestation. Le mot-clé {LABEL_AUTO} permet d'insérer un label automatiquement (Ex : 'Janvier 2014'). Les mots-clés suivants sont également disponibles : {ANNEE} {NUM_MOIS} {NOM_MOIS} {NUM_SEMAINE}.")
-        self.ctrl_date_prestation.SetToolTipString(u"Sélectionnez la date de la prestation")
-        self.ctrl_montant_prestation.SetToolTipString(u"Saisissez le montant de la prestation")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Génération automatique de périodes"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période"))
+        self.ctrl_periodicite.SetToolTipString(_(u"Sélectionnez la périodicité à appliquer"))
+        self.ctrl_label_prestation.SetToolTipString(_(u"Saisissez le label de la prestation. Le mot-clé {LABEL_AUTO} permet d'insérer un label automatiquement (Ex : 'Janvier 2014'). Les mots-clés suivants sont également disponibles : {ANNEE} {NUM_MOIS} {NOM_MOIS} {NUM_SEMAINE}."))
+        self.ctrl_date_prestation.SetToolTipString(_(u"Sélectionnez la date de la prestation"))
+        self.ctrl_montant_prestation.SetToolTipString(_(u"Saisissez le montant de la prestation"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
@@ -141,38 +144,38 @@ class Dialog(wx.Dialog):
         
     def OnBoutonAide(self, event): 
         import UTILS_Aide
-        UTILS_Aide.Aide(u"")
+        UTILS_Aide.Aide("Contrats")
 
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOk(self, event):  
         if self.ctrl_date_debut.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de début !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de début !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if self.ctrl_date_fin.GetDate() == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.ctrl_date_fin.GetDate() < self.ctrl_date_debut.GetDate() :
-            dlg = wx.MessageDialog(self, u"La date de début ne doit pas être supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne doit pas être supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         if self.ctrl_label_prestation.GetValue() == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement renseigner le label de la prestation !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le label de la prestation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         if self.ctrl_montant_prestation.GetMontant() == 0.0 :
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment appliquer un montant de 0.00 ?", u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment appliquer un montant de 0.00 ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
             if reponse != wx.ID_YES :
@@ -228,7 +231,7 @@ class Dialog(wx.Dialog):
             if dictParametres["periodicite"] == 1 :
                 nom_auto = u"%s %d" % (LISTE_MOIS[date1.month-1].capitalize(), date1.year)
             if dictParametres["periodicite"] == 2 :
-                nom_auto = u"Semaine %d" % date1.isocalendar()[1]
+                nom_auto = _(u"Semaine %d") % date1.isocalendar()[1]
             
             label_prestation = label_prestation.replace("{LABEL_AUTO}", nom_auto)
             label_prestation = label_prestation.replace("{ANNEE}", str(date1.year))
@@ -261,7 +264,7 @@ class Dialog(wx.Dialog):
         for dictPeriode in listePeriodes :
             for track in self.listeTracks :
                 if dictPeriode["date_fin"] >= track.date_debut and dictPeriode["date_debut"] <= track.date_fin :
-                    dlg = wx.MessageDialog(self, u"Génération impossible !\n\nLa période '%s' chevauche la période existante '%s' (du %s au %s)." % (dictPeriode["label_prestation"], track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Génération impossible !\n\nLa période '%s' chevauche la période existante '%s' (du %s au %s).") % (dictPeriode["label_prestation"], track.label_prestation, UTILS_Dates.DateDDEnFr(track.date_debut), UTILS_Dates.DateDDEnFr(track.date_fin)), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -281,7 +284,7 @@ if __name__ == u"__main__":
     dlg = Dialog(None, IDactivite=1)
     dlg.ctrl_date_debut.SetDate("2014-01-01")
     dlg.ctrl_date_fin.SetDate("2014-12-31")
-    dlg.ctrl_label_prestation.SetLabel(u"Centre de Loisirs - {LABEL_AUTO}")
+    dlg.ctrl_label_prestation.SetLabel(_(u"Centre de Loisirs - {LABEL_AUTO}"))
     dlg.ctrl_montant_prestation.SetMontant(50.0)
     app.SetTopWindow(dlg)
     dlg.ShowModal()

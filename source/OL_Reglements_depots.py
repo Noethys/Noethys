@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
@@ -33,8 +36,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -78,10 +81,10 @@ class ListView(FastObjectListView):
     def Deplacer(self):
         if len(self.Selection()) == 0 :
             if self.inclus == True :
-                message = u"Vous devez d'abord sélectionner un règlement à retirer du dépôt !"
+                message = _(u"Vous devez d'abord sélectionner un règlement à retirer du dépôt !")
             else:
-                message = u"Vous devez d'abord sélectionner un règlement disponible à ajouter au dépôt !"
-            dlg = wx.MessageDialog(self, message, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                message = _(u"Vous devez d'abord sélectionner un règlement disponible à ajouter au dépôt !")
+            dlg = wx.MessageDialog(self, message, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -119,7 +122,7 @@ class ListView(FastObjectListView):
                 listeTracks.append(track)
         self.donnees = listeTracks
     
-    def GetLabelListe(self, texte=u"règlements"):
+    def GetLabelListe(self, texte=_(u"règlements")):
         """ Récupère le nombre de règlements et le montant total de la liste """
         nbre = 0
         montant = 0.0
@@ -279,7 +282,7 @@ class ListView(FastObjectListView):
         
         def FormateAttente(attente):
             if attente == True :
-                return u"Attente !"
+                return _(u"Attente !")
             return ""
 
         def rowFormatter(listItem, track):
@@ -295,28 +298,28 @@ class ListView(FastObjectListView):
                     listItem.SetTextColour((255, 0, 0))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDreglement", typeDonnee="entier"),
-            ColumnDefn(u"Date", 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Mode", 'left', 120, "nom_mode", typeDonnee="texte", imageGetter=GetImageMode),
-            ColumnDefn(u"Emetteur", 'left', 145, "nom_emetteur", typeDonnee="texte", imageGetter=GetImageEmetteur),
-            ColumnDefn(u"Numéro", 'left', 60, "numero_piece", typeDonnee="texte"),
-            ColumnDefn(u"Quittancier", 'left', 65, "numero_quittancier", typeDonnee="texte"),
-            ColumnDefn(u"Payeur", 'left', 160, "nom_payeur", typeDonnee="texte"),
-            ColumnDefn(u"Montant", 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            #ColumnDefn(u"Ventilé", 'right', 80, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
-            ColumnDefn(u"Avis", 'left', 35, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
-            ColumnDefn(u"Compte", 'left', 100, "nom_compte", typeDonnee="texte"),
-            ColumnDefn(u"Différé", 'left', 85, "date_differe", typeDonnee="date", stringConverter=FormateDateCourt), #, imageGetter=GetImageDiffere),
-            ColumnDefn(u"Attente", 'left', 65, "encaissement_attente", typeDonnee="texte", stringConverter=FormateAttente), #, imageGetter=GetImageAttente),
-            ColumnDefn(u"Observations", 'left', 200, "observations", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDreglement", typeDonnee="entier"),
+            ColumnDefn(_(u"Date"), 'left', 80, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Mode"), 'left', 120, "nom_mode", typeDonnee="texte", imageGetter=GetImageMode),
+            ColumnDefn(_(u"Emetteur"), 'left', 145, "nom_emetteur", typeDonnee="texte", imageGetter=GetImageEmetteur),
+            ColumnDefn(_(u"Numéro"), 'left', 60, "numero_piece", typeDonnee="texte"),
+            ColumnDefn(_(u"Quittancier"), 'left', 65, "numero_quittancier", typeDonnee="texte"),
+            ColumnDefn(_(u"Payeur"), 'left', 160, "nom_payeur", typeDonnee="texte"),
+            ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
+            #ColumnDefn(_(u"Ventilé"), 'right', 80, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"Avis"), 'left', 35, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
+            ColumnDefn(_(u"Compte"), 'left', 100, "nom_compte", typeDonnee="texte"),
+            ColumnDefn(_(u"Différé"), 'left', 85, "date_differe", typeDonnee="date", stringConverter=FormateDateCourt), #, imageGetter=GetImageDiffere),
+            ColumnDefn(_(u"Attente"), 'left', 65, "encaissement_attente", typeDonnee="texte", stringConverter=FormateAttente), #, imageGetter=GetImageAttente),
+            ColumnDefn(_(u"Observations"), 'left', 200, "observations", typeDonnee="texte"),
             ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         if self.inclus == True :
-            self.SetEmptyListMsg(u"Aucun règlement dans ce dépôt")
+            self.SetEmptyListMsg(_(u"Aucun règlement dans ce dépôt"))
         else:
-            self.SetEmptyListMsg(u"Aucun règlement disponible")
+            self.SetEmptyListMsg(_(u"Aucun règlement disponible"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
@@ -349,7 +352,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
 ##        # Item Modifier
-##        item = wx.MenuItem(menuPop, 10, u"Modifier")
+##        item = wx.MenuItem(menuPop, 10, _(u"Modifier"))
 ##        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -357,7 +360,7 @@ class ListView(FastObjectListView):
 ##        if noSelection == True : item.Enable(False)
 ##                
 ##        # Item Supprimer
-##        item = wx.MenuItem(menuPop, 20, u"Supprimer")
+##        item = wx.MenuItem(menuPop, 20, _(u"Supprimer"))
 ##        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
 ##        item.SetBitmap(bmp)
 ##        menuPop.AppendItem(item)
@@ -367,14 +370,14 @@ class ListView(FastObjectListView):
 ##        menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -383,14 +386,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -416,7 +419,7 @@ class ListView(FastObjectListView):
                 dictDetails[track.IDmode]["nbre"] += 1
                 dictDetails[track.IDmode]["montant"] += track.montant
         # Création du texte
-        texte = u"%d règlements (%.2f ¤) : " % (nbreTotal, montantTotal)
+        texte = _(u"%d règlements (%.2f ¤) : ") % (nbreTotal, montantTotal)
         for IDmode, dictDetail in dictDetails.iteritems() :
             texteDetail = u"%d %s (%.2f ¤), " % (dictDetail["nbre"], dictDetail["label"], dictDetail["montant"])
             texte += texteDetail
@@ -438,7 +441,7 @@ class ListView(FastObjectListView):
             total += track.montant
         txtTotal = self.GetDetailReglements() 
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des règlements", intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des règlements"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.LANDSCAPE)
         return prt
         
     def Apercu(self, event):
@@ -449,15 +452,15 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des règlements")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des règlements"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des règlements")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des règlements"))
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun règlement à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -474,12 +477,12 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun règlement à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun règlement à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         IDreglement = self.Selection()[0].IDreglement
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer ce règlement ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce règlement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("reglements", "IDreglement", IDreglement)
@@ -507,7 +510,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher un règlement...")
+        self.SetDescriptiveText(_(u"Rechercher un règlement..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements
@@ -545,7 +548,7 @@ class BarreRecherche(wx.SearchCtrl):
 class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
-            "nom_mode" : {"mode" : "nombre", "singulier" : u"règlement", "pluriel" : u"règlements", "alignement" : wx.ALIGN_CENTER},
+            "nom_mode" : {"mode" : "nombre", "singulier" : _(u"règlement"), "pluriel" : _(u"règlements"), "alignement" : wx.ALIGN_CENTER},
             "montant" : {"mode" : "total"},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

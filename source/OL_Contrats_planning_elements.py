@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import UTILS_Dates
@@ -18,7 +21,7 @@ import cPickle
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
-LISTE_JOURS = [u"LU", u"MA", u"ME", u"JE", u"VE", u"SA", u"DI"]
+LISTE_JOURS = [_(u"LU"), _(u"MA"), _(u"ME"), _(u"JE"), _(u"VE"), _(u"SA"), _(u"DI")]
 
 def ConvertJoursStr(listeJours):
     listeStr = []
@@ -46,7 +49,7 @@ class Track(object):
                 listeTemp.append(label)
         if len(self.jours_scolaires) > 0 : listeTemp.append(ConvertJoursStr(self.jours_scolaires) + " (scol)")
         if len(self.jours_vacances) > 0 : listeTemp.append(ConvertJoursStr(self.jours_vacances) + " (vac)")
-        if self.feries == True : listeTemp.append(u"Fériés inclus")
+        if self.feries == True : listeTemp.append(_(u"Fériés inclus"))
         self.criteres_txt = ", ".join(listeTemp)
         
         # Texte unités
@@ -131,12 +134,12 @@ class ListView(FastObjectListView):
             
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "", typeDonnee="entier"),
-            ColumnDefn(u"Unités", 'left', 200, "unites_txt", typeDonnee="texte"),
-            ColumnDefn(u"Conditions", 'left', 200, "criteres_txt", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Unités"), 'left', 200, "unites_txt", typeDonnee="texte"),
+            ColumnDefn(_(u"Conditions"), 'left', 200, "criteres_txt", typeDonnee="texte", isSpaceFilling=True),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun paramètre")
+        self.SetEmptyListMsg(_(u"Aucun paramètre"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(0)
         
@@ -169,14 +172,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -184,7 +187,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -194,14 +197,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -210,14 +213,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -228,21 +231,21 @@ class ListView(FastObjectListView):
             
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des périodes de contrats", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des périodes de contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des périodes de contrats", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des périodes de contrats"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des périodes de contrats", autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des périodes de contrats"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des périodes de contrats", autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des périodes de contrats"), autoriseSelections=False)
 
     def Ajouter(self, event):  
         dlg = DLG_Saisie_contrat_conso_detail.Dialog(self, IDactivite=self.IDactivite)
@@ -254,7 +257,7 @@ class ListView(FastObjectListView):
         
     def Modifier(self, event):  
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun élément de planning à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun élément de planning à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -268,13 +271,13 @@ class ListView(FastObjectListView):
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun élément de planning à supprimer dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun élément de planning à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         track = self.Selection()[0]     
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer l'élément de planning sélectionné ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer l'élément de planning sélectionné ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -319,7 +322,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_soldes
@@ -365,7 +368,7 @@ class MyFrame(wx.Frame):
         listview = ListView(panel, id=-1, IDactivite=1, IDmodele=1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         listview.MAJ() 
         
-        self.bouton_test = wx.Button(panel, -1, u"Test de sauvegarde")
+        self.bouton_test = wx.Button(panel, -1, _(u"Test de sauvegarde"))
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(listview, 1, wx.ALL|wx.EXPAND, 10)

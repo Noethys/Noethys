@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.html as html
 import GestionDB
 
@@ -28,7 +31,7 @@ class CTRL_Medecin(html.HtmlWindow):
             self.SetStandardFonts()
         self.SetBorders(0)
         self.SetMinSize((-1, hauteur))
-        self.SetToolTipString(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")
+        self.SetToolTipString(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin"))
 ##        couleurFond = wx.SystemSettings.GetColour(30)
 ##        self.SetBackgroundColour("#F0FBED" )
     
@@ -83,12 +86,12 @@ class CTRL_Medecin(html.HtmlWindow):
             if mobile == None : mobile = ""
             tel = listeMedecins[0][6]
             if tel == None : tel = ""
-            texteMedecin = u"Dr %s %s<BR>%s" % (nom, prenom, tel)
-            txtToolTip = u"Dr %s %s\n\n%s\n%s %s\n\nTél. Cabinet : %s\nTél. Mobile : %s" % (nom, prenom, rue, cp, ville, tel, mobile)
+            texteMedecin = _(u"Dr %s %s<BR>%s") % (nom, prenom, tel)
+            txtToolTip = _(u"Dr %s %s\n\n%s\n%s %s\n\nTél. Cabinet : %s\nTél. Mobile : %s") % (nom, prenom, rue, cp, ville, tel, mobile)
             self.SetToolTipString(txtToolTip)
         else:
             texteMedecin = None
-            self.SetToolTipString(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")
+            self.SetToolTipString(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin"))
         self.SetTexteMedecin(texteMedecin)
     
     def DetacherMedecin(self):
@@ -98,7 +101,7 @@ class CTRL_Medecin(html.HtmlWindow):
         self.IDmedecin = None
         db.Close()
         self.SetTexteMedecin(None)
-        self.SetToolTipString(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")
+        self.SetToolTipString(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin"))
         
     def SetTexteMedecin(self, texteMedecin=""):
         if texteMedecin == None or texteMedecin == "" :
@@ -128,7 +131,7 @@ class Panel(wx.Panel):
         self.IDindividu = IDindividu
         
         # Vaccinations
-        self.staticbox_vaccinations_staticbox = wx.StaticBox(self, -1, u"Vaccinations")
+        self.staticbox_vaccinations_staticbox = wx.StaticBox(self, -1, _(u"Vaccinations"))
         self.ctrl_maladies = OL_Vaccins_obligatoires.ListView(self, IDindividu=IDindividu, id=-1, name="OL_maladies", style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_maladies.SetMinSize((150, 20))
         self.ctrl_maladies.SetBackgroundColour("#F0FBED")
@@ -140,7 +143,7 @@ class Panel(wx.Panel):
         self.bouton_supprimer_vaccin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Problemes de santé
-        self.staticbox_problemes_staticbox = wx.StaticBox(self, -1, u"Informations médicales")
+        self.staticbox_problemes_staticbox = wx.StaticBox(self, -1, _(u"Informations médicales"))
         self.ctrl_problemes = OL_Pb_sante.ListView(self, IDindividu=IDindividu, id=-1, name="OL_problemes", style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_problemes.SetMinSize((150, 20))
         self.bouton_ajouter_probleme = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -148,7 +151,7 @@ class Panel(wx.Panel):
         self.bouton_supprimer_probleme = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
        
         # Médecin traitant
-        self.staticbox_medecin_staticbox = wx.StaticBox(self, -1, u"Médecin traitant")
+        self.staticbox_medecin_staticbox = wx.StaticBox(self, -1, _(u"Médecin traitant"))
         self.bouton_medecin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY)) #wx.BitmapButton(self, -1, wx.Bitmap(u"Images/32x32/Medecin.png", wx.BITMAP_TYPE_ANY))
         self.bouton_detacher_medecin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
@@ -174,15 +177,15 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimer_probleme, self.bouton_supprimer_probleme)
 
     def __set_properties(self):
-        self.ctrl_maladies.SetToolTipString(u"Liste des maladies dont le vaccin est obligatoire")
-        self.bouton_ajouter_vaccin.SetToolTipString(u"Cliquez ici pour ajouter un vaccin")
-        self.bouton_modifier_vaccin.SetToolTipString(u"Cliquez ici pour modifier le vaccin sélectionné")
-        self.bouton_supprimer_vaccin.SetToolTipString(u"Cliquez ici pour supprimer le vaccin sélectionné")
-        self.bouton_ajouter_probleme.SetToolTipString(u"Cliquez ici pour ajouter une information médicale")
-        self.bouton_modifier_probleme.SetToolTipString(u"Cliquez ici pour modifier l'information médicale sélectionnée dans la liste")
-        self.bouton_supprimer_probleme.SetToolTipString(u"Cliquez ici pour supprimer l'information médicale sélectionnée dans la liste")
-        self.bouton_medecin.SetToolTipString(u"Cliquez ici pour sélectionner un médecin traitant")
-        self.bouton_detacher_medecin.SetToolTipString(u"Cliquez ici pour détacher le médecin de cette fiche individuelle")
+        self.ctrl_maladies.SetToolTipString(_(u"Liste des maladies dont le vaccin est obligatoire"))
+        self.bouton_ajouter_vaccin.SetToolTipString(_(u"Cliquez ici pour ajouter un vaccin"))
+        self.bouton_modifier_vaccin.SetToolTipString(_(u"Cliquez ici pour modifier le vaccin sélectionné"))
+        self.bouton_supprimer_vaccin.SetToolTipString(_(u"Cliquez ici pour supprimer le vaccin sélectionné"))
+        self.bouton_ajouter_probleme.SetToolTipString(_(u"Cliquez ici pour ajouter une information médicale"))
+        self.bouton_modifier_probleme.SetToolTipString(_(u"Cliquez ici pour modifier l'information médicale sélectionnée dans la liste"))
+        self.bouton_supprimer_probleme.SetToolTipString(_(u"Cliquez ici pour supprimer l'information médicale sélectionnée dans la liste"))
+        self.bouton_medecin.SetToolTipString(_(u"Cliquez ici pour sélectionner un médecin traitant"))
+        self.bouton_detacher_medecin.SetToolTipString(_(u"Cliquez ici pour détacher le médecin de cette fiche individuelle"))
 ##        self.ctrl_maladies.SetMinSize((130, -1))
         self.ctrl_medecin.SetMinSize((90, 100))
 
@@ -273,7 +276,7 @@ class Panel(wx.Panel):
     
     def Detacher_medecin(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_medecin", "modifier") == False : return
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment détacher ce médecin ?", u"Détacher un médecin", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment détacher ce médecin ?"), _(u"Détacher un médecin"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.ctrl_medecin.DetacherMedecin() 
         dlg.Destroy()
@@ -315,7 +318,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

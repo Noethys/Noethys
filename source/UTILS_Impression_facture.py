@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import datetime
 import FonctionsPerso
@@ -48,7 +51,7 @@ def DateEngFr(textDate):
     return text
 
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -109,7 +112,7 @@ class MyPageTemplate(PageTemplate):
             # Textes
             canvas.rotate(90)
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(y+2*mm, -x-4*mm, u"Merci de joindre ce coupon à votre règlement")
+            canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
             canvas.setFont("Helvetica", 7)
             solde = dictValeur["total"] - dictValeur["ventilation"]
             numero = dictValeur["numero"]
@@ -134,7 +137,7 @@ class MyPageTemplate(PageTemplate):
             canvas.rect(x, y, largeur, hauteur, fill=0)
             # Textes
             canvas.setFont("Helvetica", 8)
-            canvas.drawString(x+2*mm, y+hauteur-4*mm, u"Merci de joindre ce coupon à votre règlement")
+            canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
             canvas.setFont("Helvetica", 7)
             solde = dictValeur["total"] - dictValeur["ventilation"]
             numero = dictValeur["numero"]
@@ -201,14 +204,13 @@ class Impression():
         DICT_OPTIONS = dictOptions
         self.mode = mode
         
-        if dictOptions["affichage_prestations"] == 0 : 
-            detail = True
-        else :
-            detail = False
+        detail = 0
+        if dictOptions["affichage_prestations"] != None :
+            detail = dictOptions["affichage_prestations"]
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = u"Temp/%ss_%s.pdf" % (mode, datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+            nomDoc = _(u"Temp/%ss_%s.pdf") % (mode, FonctionsPerso.GenerationIDdoc())
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)
@@ -254,8 +256,8 @@ class Impression():
                 # ------------------- TITRE -----------------
                 if dictOptions["afficher_titre"] == True :
                     if titre == None :
-                        if mode == "facture" : titre = u"Facture"
-                        if mode == "attestation" : titre = u"Attestation de présence"
+                        if mode == "facture" : titre = _(u"Facture")
+                        if mode == "attestation" : titre = _(u"Attestation de présence")
                         if dictValeur.has_key("texte_titre") : 
                             titre = dictValeur["texte_titre"]
                     dataTableau = []
@@ -264,7 +266,7 @@ class Impression():
                     texteDateDebut = DateEngFr(str(dictValeur["date_debut"]))
                     texteDateFin = DateEngFr(str(dictValeur["date_fin"]))
                     if dictOptions["afficher_periode"] == True :
-                        dataTableau.append((u"Période du %s au %s" % (texteDateDebut, texteDateFin),))
+                        dataTableau.append((_(u"Période du %s au %s") % (texteDateDebut, texteDateFin),))
                     styles = [
                             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
                             ('FONT',(0,0),(0,0), "Helvetica-Bold", dictOptions["taille_texte_titre"]), 
@@ -351,11 +353,11 @@ class Impression():
                         largeurColonneMontantTTC = dictOptions["largeur_colonne_montant_ttc"]
                         largeurColonneBaseTTC = largeurColonneMontantTTC
                         
-                        if activeTVA == True and detail == True :
+                        if activeTVA == True and detail == 0 :
                             largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneMontantHT - largeurColonneTVA - largeurColonneMontantTTC
                             largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneMontantHT, largeurColonneTVA, largeurColonneMontantTTC]
                         else :
-                            if detail == False :
+                            if detail != 0 :
                                 largeurColonneIntitule = CADRE_CONTENU[2] - largeurColonneDate - largeurColonneBaseTTC - largeurColonneMontantTTC
                                 largeursColonnes = [ largeurColonneDate, largeurColonneIntitule, largeurColonneBaseTTC, largeurColonneMontantTTC]
                             else :
@@ -418,7 +420,7 @@ class Impression():
                                           )
                                 
 
-                            if detail == False :
+                            if detail != 0 :
                                 
                                 # -------------- MODE REGROUPE ----------------
                                 
@@ -432,31 +434,36 @@ class Impression():
                                         montant = dictPrestation["montant"]
                                         deductions = dictPrestation["deductions"]
                                         tva = dictPrestation["tva"]
-                                        labelkey=label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
                                         
+                                        if detail == 1 : labelkey = label
+                                        if detail == 2 : labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
+                                            
                                         if dictRegroupement.has_key(labelkey) == False :
                                             dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
                                             dictRegroupement[labelkey]["base"] = montant
                                         
                                         dictRegroupement[labelkey]["total"] += montant
                                         dictRegroupement[labelkey]["nbre"] += 1
+                                        
+                                        if detail == 1 :
+                                            dictRegroupement[labelkey]["base"] = dictRegroupement[labelkey]["total"] / dictRegroupement[labelkey]["nbre"]
  
                                         if len(listeDatesUnite) > 1 :
                                             listeDatesUnite.sort()
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
-                                            dictRegroupement[labelkey]["dates_forfait"] = u"<BR/><font size=5>Du %s au %s soit %d jours</font>" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
+                                            dictRegroupement[labelkey]["dates_forfait"] = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
         
                                 # Insertion des prestations regroupées
                                 listeLabels = dictRegroupement.keys() 
                                 listeLabels.sort() 
 
                                 dataTableau = [(
-                                    Paragraph(u"<para align='center'>Quantité</para>", paraLabelsColonnes), 
-                                    Paragraph(u"<para align='center'>Prestation</para>", paraLabelsColonnes),
-                                    Paragraph(u"<para align='center'>Base</para>", paraLabelsColonnes),
-                                    Paragraph(u"<para align='center'>Montant</para>", paraLabelsColonnes), 
+                                    Paragraph(_(u"<para align='center'>Quantité</para>"), paraLabelsColonnes), 
+                                    Paragraph(_(u"<para align='center'>Prestation</para>"), paraLabelsColonnes),
+                                    Paragraph(_(u"<para align='center'>Base</para>"), paraLabelsColonnes),
+                                    Paragraph(_(u"<para align='center'>Montant</para>"), paraLabelsColonnes), 
                                     ),]
 
                                 for labelkey in listeLabels :
@@ -505,11 +512,11 @@ class Impression():
 
                                 if activeTVA == True :
                                     dataTableau.append([
-                                        Paragraph(u"<para align='center'>Date</para>", paraLabelsColonnes), 
-                                        Paragraph(u"<para align='center'>Prestation</para>", paraLabelsColonnes), 
-                                        Paragraph(u"<para align='center'>Montant HT</para>", paraLabelsColonnes), 
-                                        Paragraph(u"<para align='center'>Taux TVA</para>", paraLabelsColonnes), 
-                                        Paragraph(u"<para align='center'>Montant TTC</para>", paraLabelsColonnes), 
+                                        Paragraph(_(u"<para align='center'>Date</para>"), paraLabelsColonnes), 
+                                        Paragraph(_(u"<para align='center'>Prestation</para>"), paraLabelsColonnes), 
+                                        Paragraph(_(u"<para align='center'>Montant HT</para>"), paraLabelsColonnes), 
+                                        Paragraph(_(u"<para align='center'>Taux TVA</para>"), paraLabelsColonnes), 
+                                        Paragraph(_(u"<para align='center'>Montant TTC</para>"), paraLabelsColonnes), 
                                         ])
 
                                 for date in listeDates :
@@ -555,7 +562,7 @@ class Impression():
                                             date_debut = listeDatesUnite[0]
                                             date_fin = listeDatesUnite[-1]
                                             nbreDates = len(listeDatesUnite)
-                                            label = u"<BR/><font size=5>Du %s au %s soit %d jours</font>" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
+                                            label = _(u"<BR/><font size=5>Du %s au %s soit %d jours</font>") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nbreDates)
                                             listeIntitules.append(Paragraph(label, paraStyle)) 
                                                                                 
                                         # TVA
@@ -614,10 +621,10 @@ class Impression():
                         
                         # Insertion des totaux
                         dataTableau = []
-                        if activeTVA == True and detail == True :
+                        if activeTVA == True and detail == 0 :
                             dataTableau.append(["", "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         else :
-                            if detail == False :
+                            if detail != 0 :
                                 dataTableau.append(["", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                             else :
                                 dataTableau.append(["", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
@@ -638,7 +645,7 @@ class Impression():
                         story.append(tableau)
                         story.append(Spacer(0, 10))
                 
-                # Intégration des messages et des reports
+                # Intégration des messages, des reports et des qf
                 listeMessages = []
                 paraStyle = ParagraphStyle(name="message",
                                           fontName="Helvetica",
@@ -651,6 +658,17 @@ class Impression():
                 # Date d'échéance
 ##                if dictOptions["echeance"] != None :
 ##                    listeMessages.append(Paragraph(dictOptions["echeance"], paraStyle))
+
+               # QF aux dates de facture
+                if mode == "facture" and dictOptions["afficher_qf_dates"] == True :
+                    dictQfdates = dictValeur["qfdates"]
+                    listeDates = dictQfdates.keys() 
+                    listeDates.sort() 
+                    if len(listeDates) > 0 :
+                        for dates in listeDates :
+                            texteQf = _(u"--- Votre QF %s : <b>%s</b> ---") % (dates, dictQfdates[dates])
+                            listeMessages.append(Paragraph(texteQf, paraStyle))
+                
                 
                 # Reports
                 if mode == "facture" and dictOptions["afficher_impayes"] == True :
@@ -658,7 +676,7 @@ class Impression():
                     listePeriodes = dictReports.keys() 
                     listePeriodes.sort() 
                     if len(listePeriodes) > 0 :
-                        texteReport = u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations antérieures : "
+                        texteReport = _(u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations antérieures : ")
                         for periode in listePeriodes :
                             annee, mois = periode
                             nomPeriode = PeriodeComplete(mois, annee)
@@ -677,20 +695,20 @@ class Impression():
                             texte = message_familial["texte"]
                             if len(texte) > 0 and texte[-1] not in ".!?" : 
                                 texte = texte + u"."
-                            texte = u"<b>Message : </b>%s" % texte
+                            texte = _(u"<b>Message : </b>%s") % texte
                             listeMessages.append(Paragraph(texte, paraStyle))
                             
-                        if len(listeMessages) > 0 :
-                            listeMessages.insert(0, Paragraph(u"<u>Informations :</u>", paraStyle))
+                if len(listeMessages) > 0 :
+                    listeMessages.insert(0, Paragraph(_(u"<u>Informations :</u>"), paraStyle))
                 
                 # ------------------ CADRE TOTAUX ------------------------
                 dataTableau = []
                 largeurColonneLabel = 110
                 largeursColonnes = [ CADRE_CONTENU[2] - largeurColonneMontantTTC - largeurColonneLabel, largeurColonneLabel, largeurColonneMontantTTC]
 
-                dataTableau.append((listeMessages, u"TOTAL période:", u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
-                dataTableau.append(("", u"Montant déjà réglé :", u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
-                dataTableau.append(("", u"Reste à régler :", u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
+                dataTableau.append((listeMessages, _(u"TOTAL période:"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
+                dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
+                dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
 
                 style = [
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
@@ -764,7 +782,7 @@ class Impression():
                         img = Image(cheminImage)
                         largeur, hauteur = int(img.drawWidth * 1.0 * dictOptions["taille_image_signature"] / 100.0), int(img.drawHeight * 1.0 * dictOptions["taille_image_signature"] / 100.0)
                         if largeur > CADRE_CONTENU[2] or hauteur > CADRE_CONTENU[3] :
-                            raise Exception(u"L'image de signature est trop grande. Veuillez diminuer sa taille avec le parametre Taille.")
+                            raise Exception(_(u"L'image de signature est trop grande. Veuillez diminuer sa taille avec le parametre Taille."))
                         img.drawWidth, img.drawHeight = largeur, hauteur
                         if dictOptions["alignement_image_signature"] == 0 : img.hAlign = "LEFT"
                         if dictOptions["alignement_image_signature"] == 1 : img.hAlign = "CENTER"
@@ -783,7 +801,7 @@ class Impression():
 ##        except Exception, err :
 ##            print "Erreur dans ouverture PDF :", err
 ##            if "Permission denied" in err :
-##                dlg = wx.MessageDialog(None, u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan...", u"Erreur d'édition", wx.OK | wx.ICON_ERROR)
+##                dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas créer le PDF.\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."), _(u"Erreur d'édition"), wx.OK | wx.ICON_ERROR)
 ##                dlg.ShowModal()
 ##                dlg.Destroy()
 ##                return

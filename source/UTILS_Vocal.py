@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 try :
     import pyttsx
 except :
@@ -112,4 +114,4 @@ class Vocal() :
 
 if __name__ == "__main__":
     vocal = Vocal() 
-    vocal.Parle(u"Bonjour Kévin")
+    vocal.Parle(_(u"Bonjour Kévin"))

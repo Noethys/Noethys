@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import OL_Individus
 import UTILS_Config
 
@@ -34,16 +37,16 @@ class ToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, *args, **kwds)
         
         # Boutons
-        self.AddLabelTool(ID_CREER_FAMILLE, u"Ajouter", wx.Bitmap("Images/32x32/Famille_ajouter.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Créer une nouvelle famille", "")
+        self.AddLabelTool(ID_CREER_FAMILLE, _(u"Ajouter"), wx.Bitmap("Images/32x32/Famille_ajouter.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Créer une nouvelle famille"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_MODIFIER_FAMILLE, u"Modifier", wx.Bitmap("Images/32x32/Famille_modifier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Modifier la fiche famille de l'individu sélectionné", "")
-        self.AddLabelTool(ID_SUPPRIMER_FAMILLE, u"Supprimer", wx.Bitmap("Images/32x32/Famille_supprimer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Supprimer ou détacher l'individu sélectionné", "")
+        self.AddLabelTool(ID_MODIFIER_FAMILLE, _(u"Modifier"), wx.Bitmap("Images/32x32/Famille_modifier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Modifier la fiche famille de l'individu sélectionné"), "")
+        self.AddLabelTool(ID_SUPPRIMER_FAMILLE, _(u"Supprimer"), wx.Bitmap("Images/32x32/Famille_supprimer.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Supprimer ou détacher l'individu sélectionné"), "")
         self.AddSeparator()
-        self.AddLabelTool(ID_OUVRIR_GRILLE, u"Calendrier", wx.Bitmap("Images/32x32/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)", "")
-        self.AddLabelTool(ID_OUVRIR_FICHE_IND, u"Fiche ind.", wx.Bitmap("Images/32x32/Personnes.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)", "")
+        self.AddLabelTool(ID_OUVRIR_GRILLE, _(u"Calendrier"), wx.Bitmap("Images/32x32/Calendrier.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)"), "")
+        self.AddLabelTool(ID_OUVRIR_FICHE_IND, _(u"Fiche ind."), wx.Bitmap("Images/32x32/Personnes.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)"), "")
         self.AddSeparator()
-##        self.AddLabelTool(ID_PARAMETRES, u"Paramètres", wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Sélectionner les paramètres d'affichage", "")
-        self.AddLabelTool(ID_OUTILS, u"Outils", wx.Bitmap("Images/32x32/Configuration.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, u"Outils", "")
+##        self.AddLabelTool(ID_PARAMETRES, _(u"Paramètres"), wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Sélectionner les paramètres d'affichage"), "")
+        self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap("Images/32x32/Configuration.png", wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.Ajouter_famille, id=ID_CREER_FAMILLE)
@@ -75,7 +78,7 @@ class ToolBar(wx.ToolBar):
     def Parametres(self, event):
         import DLG_Selection_individus
         dlg = DLG_Selection_individus.Dialog(self, afficherPresents=False)
-        dlg.SetTitle(u"Paramètres d'affichage de la liste d'individus")
+        dlg.SetTitle(_(u"Paramètres d'affichage de la liste d'individus"))
         parametres = UTILS_Config.GetParametre("liste_individus_parametre_activites", defaut=None)
         if parametres != None :
             dlg.radio_inscrits.SetValue(True)
@@ -116,38 +119,38 @@ class ToolBar(wx.ToolBar):
         # Création du menu Outils
         menuPop = wx.Menu()
             
-        item = wx.MenuItem(menuPop, ID_APERCU, u"Aperçu avant impression", u"Imprimer la liste des effectifs affichée")
+        item = wx.MenuItem(menuPop, ID_APERCU, _(u"Aperçu avant impression"), _(u"Imprimer la liste des effectifs affichée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=ID_APERCU)
         
-        item = wx.MenuItem(menuPop, ID_IMPRIMER, u"Imprimer", u"Imprimer la liste des effectifs affichée")
+        item = wx.MenuItem(menuPop, ID_IMPRIMER, _(u"Imprimer"), _(u"Imprimer la liste des effectifs affichée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=ID_IMPRIMER)
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_EXPORT_TEXTE, u"Exporter au format Texte", u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, ID_EXPORT_TEXTE, _(u"Exporter au format Texte"), _(u"Exporter au format Texte"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.GetParent().ctrl_listview.ExportTexte, id=ID_EXPORT_TEXTE)
         
-        item = wx.MenuItem(menuPop, ID_EXPORT_EXCEL, u"Exporter au format Excel", u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, ID_EXPORT_EXCEL, _(u"Exporter au format Excel"), _(u"Exporter au format Excel"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.GetParent().ctrl_listview.ExportExcel, id=ID_EXPORT_EXCEL)
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, ID_ACTUALISER, u"Actualiser", u"Actualiser l'affichage")
+        item = wx.MenuItem(menuPop, ID_ACTUALISER, _(u"Actualiser"), _(u"Actualiser l'affichage"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Actualiser, id=ID_ACTUALISER)
 
         menuPop.AppendSeparator()
         
-        item = wx.MenuItem(menuPop, ID_AIDE, u"Aide", u"Aide")
+        item = wx.MenuItem(menuPop, ID_AIDE, _(u"Aide"), _(u"Aide"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Aide.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Aide, id=ID_AIDE)

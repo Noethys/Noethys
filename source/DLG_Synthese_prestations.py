@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import time
 import sys
@@ -40,20 +43,20 @@ class CTRL_Mode(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeDonnees = [
-            (u"Nombre de prestations", "nbre"),
-            (u"Montant des prestations", "facture"),
-            (u"Montant des prestations réglées", "regle"),
-            (u"Montant des prestations impayées", "impaye"),
+            (_(u"Nombre de prestations"), "nbre"),
+            (_(u"Montant des prestations"), "facture"),
+            (_(u"Montant des prestations réglées"), "regle"),
+            (_(u"Montant des prestations impayées"), "impaye"),
             (u"--------------------------------------------------------------------------------", None),
-            (u"Nombre de prestations facturées", "nbre_facturees"),
-            (u"Montant des prestations facturées", "facture_facturees"),
-            (u"Montant des prestations réglées et facturées", "regle_facturees"),
-            (u"Montant des prestations impayées et facturées", "impaye_facturees"),
+            (_(u"Nombre de prestations facturées"), "nbre_facturees"),
+            (_(u"Montant des prestations facturées"), "facture_facturees"),
+            (_(u"Montant des prestations réglées et facturées"), "regle_facturees"),
+            (_(u"Montant des prestations impayées et facturées"), "impaye_facturees"),
             (u"--------------------------------------------------------------------------------", None),
-            (u"Nombre de prestations non facturées", "nbre_nonfacturees"),
-            (u"Montant des prestations non facturées", "facture_nonfacturees"),
-            (u"Montant des prestations réglées et non facturées", "regle_nonfacturees"),
-            (u"Montant des prestations impayées et non facturées", "impaye_nonfacturees"),
+            (_(u"Nombre de prestations non facturées"), "nbre_nonfacturees"),
+            (_(u"Montant des prestations non facturées"), "facture_nonfacturees"),
+            (_(u"Montant des prestations réglées et non facturées"), "regle_nonfacturees"),
+            (_(u"Montant des prestations impayées et non facturées"), "impaye_nonfacturees"),
             ]
         self.Remplissage() 
     
@@ -91,13 +94,13 @@ class ChoixPeriode(wx.Panel):
         self.check = wx.CheckBox(self, -1, label)
         self.label_du = wx.StaticText(self, -1, u"du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         
         # Propriétés
         self.check.SetToolTipString(infobulle)
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
         self.ctrl_date_debut.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
         self.ctrl_date_debut.SetMinSize((70, 18))
         self.ctrl_date_fin.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -148,36 +151,36 @@ class Parametres(wx.Panel):
         self.parent = parent
         
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, u"Période de référence")
+        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de référence"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.bouton_date_debut = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
-        self.label_date_fin = wx.StaticText(self, -1, u"Au")
+        self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         self.bouton_date_fin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
         
         # Filtres
-        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, u"Types de prestations")
-        self.radio_cotisations = wx.CheckBox(self, -1, u"Cotisations")
-        self.radio_consommations = wx.CheckBox(self, -1, u"Consommations")
-        self.radio_autres = wx.CheckBox(self, -1, u"Autres")
+        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, _(u"Types de prestations"))
+        self.radio_cotisations = wx.CheckBox(self, -1, _(u"Cotisations"))
+        self.radio_consommations = wx.CheckBox(self, -1, _(u"Consommations"))
+        self.radio_autres = wx.CheckBox(self, -1, _(u"Autres"))
         self.radio_cotisations.SetValue(True)
         self.radio_consommations.SetValue(True)
         self.radio_autres.SetValue(True)
         
         # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Activités")
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         self.ctrl_activites.SetMinSize((-1, 90))
         
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
-##        self.options_cotisations = ChoixPeriode(self, type="cotisations", label=u"Uniquement les cotisations déposées")
-        self.options_reglements = ChoixPeriode(self, type="reglements", label=u"Uniquement les règlements saisis", infobulle=u"Ne seront considérés dans le calcul que les règlements saisis sur la période indiquée")
-        self.options_depots = ChoixPeriode(self, type="depots", label=u"Uniquement les règlements déposés", infobulle=u"Ne seront considérés dans le calcul que les règlements qui ont été déposés en banque sur la période indiquée")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+##        self.options_cotisations = ChoixPeriode(self, type="cotisations", label=_(u"Uniquement les cotisations déposées"))
+        self.options_reglements = ChoixPeriode(self, type="reglements", label=_(u"Uniquement les règlements saisis"), infobulle=_(u"Ne seront considérés dans le calcul que les règlements saisis sur la période indiquée"))
+        self.options_depots = ChoixPeriode(self, type="depots", label=_(u"Uniquement les règlements déposés"), infobulle=_(u"Ne seront considérés dans le calcul que les règlements qui ont été déposés en banque sur la période indiquée"))
         
         # Boutons Actualiser
-        self.bouton_actualiser = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Rafraichir_liste.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_actualiser = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_actualiser.SetMinSize((-1, 50)) 
 
         self.__set_properties()
@@ -191,14 +194,14 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de période")
-        self.bouton_date_debut.SetToolTipString(u"Cliquez ici pour sélectionner la date de début dans un calendrier")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez la date de fin de période")
-        self.bouton_date_fin.SetToolTipString(u"Cliquez ici pour sélectionner la date de fin dans un calendrier")
-        self.radio_cotisations.SetToolTipString(u"Cochez cette case pour afficher les cotisations dans la synthèse")
-        self.radio_consommations.SetToolTipString(u"Cochez cette case pour afficher les consommations dans la synthèse")
-        self.radio_autres.SetToolTipString(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse")
-        self.bouton_actualiser.SetToolTipString(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés")
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
+        self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de début dans un calendrier"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
+        self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de fin dans un calendrier"))
+        self.radio_cotisations.SetToolTipString(_(u"Cochez cette case pour afficher les cotisations dans la synthèse"))
+        self.radio_consommations.SetToolTipString(_(u"Cochez cette case pour afficher les consommations dans la synthèse"))
+        self.radio_autres.SetToolTipString(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse"))
+        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés"))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -278,7 +281,7 @@ class Parametres(wx.Panel):
         # Vérifie date de référence
         date_debut = self.ctrl_date_debut.GetDate()
         if self.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
-            dlg = wx.MessageDialog(self, u"La date de début de période ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
@@ -286,7 +289,7 @@ class Parametres(wx.Panel):
 
         date_fin = self.ctrl_date_fin.GetDate()
         if self.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
-            dlg = wx.MessageDialog(self, u"La date de fin de période ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de fin de période ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
@@ -312,8 +315,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = u"Cette fonction vous permet de quantifier précisément les prestations facturées sur une période donnée. Commencez par saisir une période puis sélectionnez un groupe d'activités. Le résultat peut afficher types de prestations possibles : les cotisations et les consommations. Cochez 'Créances' pour afficher le récapitulatif des impayés de la période."
-        titre = u"Synthèse des prestations"
+        intro = _(u"Cette fonction vous permet de quantifier précisément les prestations facturées sur une période donnée. Commencez par saisir une période puis sélectionnez un groupe d'activités. Le résultat peut afficher types de prestations possibles : les cotisations et les consommations. Cochez 'Créances' pour afficher le récapitulatif des impayés de la période.")
+        titre = _(u"Synthèse des prestations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         self.SetTitle(titre)
         
@@ -321,8 +324,8 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres = Parametres(self)
         
         # CTRL résultats
-        self.staticbox_stats_staticbox = wx.StaticBox(self, -1, u"Résultats")
-        self.label_mode_affichage = wx.StaticText(self, -1, u"Mode d'affichage :")
+        self.staticbox_stats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
+        self.label_mode_affichage = wx.StaticText(self, -1, _(u"Mode d'affichage :"))
         self.label_mode_affichage.Show(False)
         self.ctrl_mode = CTRL_Mode(self)
         self.ctrl_stats = CTRL_Synthese_prestations.CTRL(self)
@@ -332,7 +335,7 @@ class Dialog(wx.Dialog):
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
         # Commandes de résultats
-        self.check_details = wx.CheckBox(self, -1, u"Afficher détails")
+        self.check_details = wx.CheckBox(self, -1, _(u"Afficher détails"))
         self.check_details.SetValue(True) 
 
         self.hyper_developper = self.Build_Hyperlink_developper()
@@ -340,8 +343,8 @@ class Dialog(wx.Dialog):
         self.hyper_reduire = self.Build_Hyperlink_reduire()
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
@@ -363,12 +366,12 @@ class Dialog(wx.Dialog):
         self.MAJ() 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter les résultats au format MS Excel")
-        self.ctrl_mode.SetToolTipString(u"Sélectionnez le mode d'affichage souhaité")
-        self.check_details.SetToolTipString(u"Cliquez ici pour afficher les détails dans les résultats")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter les résultats au format MS Excel"))
+        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez le mode d'affichage souhaité"))
+        self.check_details.SetToolTipString(_(u"Cliquez ici pour afficher les détails dans les résultats"))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):
@@ -438,14 +441,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_developper(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, u"Tout développer", URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout développer"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_developper)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(u"Tout développer"))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout développer")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
@@ -456,14 +459,14 @@ class Dialog(wx.Dialog):
     def Build_Hyperlink_reduire(self) :
         """ Construit un hyperlien """
         self.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        hyper = hl.HyperLinkCtrl(self, -1, u"Tout réduire", URL="")
+        hyper = hl.HyperLinkCtrl(self, -1, _(u"Tout réduire"), URL="")
         hyper.Bind(hl.EVT_HYPERLINK_LEFT, self.OnLeftLink_reduire)
         hyper.AutoBrowse(False)
         hyper.SetColours("BLUE", "BLUE", "BLUE")
         hyper.EnableRollover(True)
         hyper.SetUnderlines(False, False, True)
         hyper.SetBold(False)
-        hyper.SetToolTip(wx.ToolTip(u"Tout réduire"))
+        hyper.SetToolTip(wx.ToolTip(_(u"Tout réduire")))
         hyper.UpdateLink()
         hyper.DoPopup(False)
         return hyper
@@ -521,7 +524,7 @@ class Dialog(wx.Dialog):
         date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         if date_debut == None : date_debut = "---"
         if date_fin == None : date_fin= "---"
-        listeParametres.append(u"Période du %s au %s" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
+        listeParametres.append(_(u"Période du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin))))
         
         # Affichage
         listeAffichage = []
@@ -529,13 +532,13 @@ class Dialog(wx.Dialog):
         if self.ctrl_parametres.radio_cotisations.GetValue() : listeAffichage.append("Cotisations")
         if self.ctrl_parametres.radio_autres.GetValue() : listeAffichage.append("Autres")
         affichage = ", ".join(listeAffichage)
-        listeParametres.append(u"Eléments affichés : %s" % affichage)
+        listeParametres.append(_(u"Eléments affichés : %s") % affichage)
         
         # Activités
         activites = ", ".join(self.ctrl_parametres.ctrl_activites.GetLabelActivites())
         if activites == "" : 
-            activites = u"Aucune"
-        listeParametres.append(u"Activités : %s" % activites)
+            activites = _(u"Aucune")
+        listeParametres.append(_(u"Activités : %s") % activites)
         
         # Règlements
         if self.ctrl_parametres.options_reglements.GetEtat() == True :
@@ -543,7 +546,7 @@ class Dialog(wx.Dialog):
             if date_debut_reglement == None : date_debut_reglement = "---"
             date_fin_reglement = self.ctrl_parametres.options_reglements.GetDateFin()
             if date_fin_reglement == None : date_fin_reglement = "---"
-            listeParametres.append(u"Uniquement les règlements saisis du %s au %s" % (date_debut_reglement, date_fin_reglement))
+            listeParametres.append(_(u"Uniquement les règlements saisis du %s au %s") % (date_debut_reglement, date_fin_reglement))
         
         # Dépôts
         if self.ctrl_parametres.options_depots.GetEtat() == True :
@@ -551,11 +554,11 @@ class Dialog(wx.Dialog):
             if date_debut_depot == None : date_debut_depot = "---"
             date_fin_depot = self.ctrl_parametres.options_depots.GetDateFin()
             if date_fin_depot == None : date_fin_depot = "---"
-            listeParametres.append(u"Uniquement les règlements déposés du %s au %s" % (date_debut_depot, date_fin_depot))
+            listeParametres.append(_(u"Uniquement les règlements déposés du %s au %s") % (date_debut_depot, date_fin_depot))
         
         # Mode d'affichage
         mode = self.ctrl_mode.GetLabel()
-        listeParametres.append(u"Mode d'affichage : %s" % mode)
+        listeParametres.append(_(u"Mode d'affichage : %s") % mode)
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

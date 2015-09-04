@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import wx.lib.agw.hyperlink as Hyperlink
 import OL_Avis_depots
@@ -44,8 +47,8 @@ class Dialog(wx.Dialog):
         self.listeDonnees = listeDonnees
         
         # Bandeau
-        intro = u"Sélectionnez les avis de dépôts à envoyer par Email et cliquez sur le bouton OK pour accéder à l'éditeur d'Emails. Si cette liste est vide, c'est qu'aucune famille concernée n'est abonnée à ce service. Les cases non cochées par défaut indiquent qu'un avis a déjà été envoyé."
-        titre = u"Sélection des avis de dépôts à envoyer"
+        intro = _(u"Sélectionnez les avis de dépôts à envoyer par Email et cliquez sur le bouton OK pour accéder à l'éditeur d'Emails. Si cette liste est vide, c'est qu'aucune famille concernée n'est abonnée à ce service. Les cases non cochées par défaut indiquent qu'un avis a déjà été envoyé.")
+        titre = _(u"Sélection des avis de dépôts à envoyer")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
 
@@ -58,13 +61,13 @@ class Dialog(wx.Dialog):
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_ANY))
 
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -81,13 +84,13 @@ class Dialog(wx.Dialog):
         self.ctrl_donnees.MAJ() 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Cliquez ici pour imprimer la liste")
-        self.bouton_texte.SetToolTipString(u"Cliquez ici pour exporter la liste au format Texte")
-        self.bouton_excel.SetToolTipString(u"Cliquez ici pour exporter la liste au format Excel")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((750, 600))
 
     def __do_layout(self):
@@ -153,7 +156,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         if len(self.GetListeSelections()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins un avis à envoyer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un avis à envoyer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -163,7 +166,7 @@ class Dialog(wx.Dialog):
             if track.adresse == None :
                 nbreAnomalies += 1
         if nbreAnomalies > 0 :
-            dlg = wx.MessageDialog(self, u"Vous avez sélectionné %d lignes dont l'adresse Email est inconnue !" % nbreAnomalies, u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné %d lignes dont l'adresse Email est inconnue !") % nbreAnomalies, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

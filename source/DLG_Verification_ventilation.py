@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import OL_Verification_ventilation
 
@@ -25,8 +28,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Vous pouvez ici consulter la liste des familles pour lesquelles il est possible de ventiler un ou plusieurs règlements. Cette opération est nécessaire avant l'édition de documents tels que les factures ou les attestations de présence. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante."
-        titre = u"Vérification de la ventilation"
+        intro = _(u"Vous pouvez ici consulter la liste des familles pour lesquelles il est possible de ventiler un ou plusieurs règlements. Cette opération est nécessaire avant l'édition de documents tels que les factures ou les attestations de présence. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante.")
+        titre = _(u"Vérification de la ventilation")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repartition.png")
         
         self.listviewAvecFooter = OL_Verification_ventilation.ListviewAvecFooter(self, kwargs={"tracks" : tracks, "IDcompte_payeur" : IDcompte_payeur, "onlyNonVentiles" : True}) 
@@ -39,9 +42,9 @@ class Dialog(wx.Dialog):
 
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ventilation = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ventilation_automatique.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ventilation = CTRL_Bouton_image.CTRL(self, texte=_(u"Ventilation automatique"), cheminImage="Images/32x32/Magique.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -51,10 +54,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonVentilation, self.bouton_ventilation)
 
     def __set_properties(self):
-        self.SetTitle(u"Vérification de la ventilation")
-        self.bouton_ouvrir_fiche.SetToolTipString(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Vérification de la ventilation"))
+        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((780, 600))
 
     def __do_layout(self):
@@ -115,19 +118,19 @@ class Dialog(wx.Dialog):
         # Création du menu contextuel
         menuPop = wx.Menu()
         
-        item = wx.MenuItem(menuPop, 201, u"Uniquement la ligne sélectionnée")
+        item = wx.MenuItem(menuPop, 201, _(u"Uniquement la ligne sélectionnée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_reglements.VentilationAuto, id=201)
         if noSelection == True : item.Enable(False)
         
-        item = wx.MenuItem(menuPop, 202, u"Uniquement les lignes cochées")
+        item = wx.MenuItem(menuPop, 202, _(u"Uniquement les lignes cochées"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_reglements.VentilationAuto, id=202)
         if len(self.ctrl_reglements.GetTracksCoches()) == 0 : item.Enable(False)
 
-        item = wx.MenuItem(menuPop, 203, u"Toutes les lignes")
+        item = wx.MenuItem(menuPop, 203, _(u"Toutes les lignes"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ctrl_reglements.VentilationAuto, id=203)

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import datetime
 import traceback
@@ -27,7 +30,7 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="DLG_Factures_generation_selection", style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.box_factures_staticbox = wx.StaticBox(self, -1, u"Factures à générer")
+        self.box_factures_staticbox = wx.StaticBox(self, -1, _(u"Factures à générer"))
 
         self.listviewAvecFooter = OL_Factures_generation_selection.ListviewAvecFooter(self) 
         self.ctrl_factures = self.listviewAvecFooter.GetListview()
@@ -40,7 +43,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_factures.AfficherApercu, self.bouton_apercu)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu PDF de la facture sélectionnée")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu PDF de la facture sélectionnée"))
 
     def __do_layout(self):
         box_factures = wx.StaticBoxSizer(self.box_factures_staticbox, wx.VERTICAL)
@@ -67,17 +70,17 @@ class Panel(wx.Panel):
         # Validation de la saisie
         nbreCoches = len(self.ctrl_factures.GetTracksCoches())
         if nbreCoches == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune facture à générer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture à générer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         # Demande de confirmation
         if nbreCoches == 1 :
-            texte = u"Confirmez-vous la génération de 1 facture ?"
+            texte = _(u"Confirmez-vous la génération de 1 facture ?")
         else :
-            texte = u"Confirmez-vous la génération de %d factures ?" % nbreCoches
-        dlg = wx.MessageDialog(self, texte, u"Confirmation", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            texte = _(u"Confirmez-vous la génération de %d factures ?") % nbreCoches
+        dlg = wx.MessageDialog(self, texte, _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
@@ -102,7 +105,7 @@ class Panel(wx.Panel):
 
     def SauvegardeFactures(self):
         """ Sauvegarde des factures """
-        dlgAttente = PBI.PyBusyInfo(u"Génération des factures en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Génération des factures en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         # Récupère Utilisateur en cours
@@ -120,6 +123,18 @@ class Panel(wx.Panel):
         # Sélection du prochain numéro de facture
         numero = self.parent.dictParametres["prochain_numero"]
         
+        if numero == None :
+            # Recherche du prochain numéro de facture si mode AUTO
+            DB = GestionDB.DB()
+            req = """SELECT MAX(numero) FROM factures;""" 
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()  
+            DB.Close() 
+            if listeDonnees[0][0] == None :
+                numero = 1
+            else:
+                numero = listeDonnees[0][0] + 1
+            
         # Sauvegarde
         DB = GestionDB.DB()
         try :
@@ -127,7 +142,7 @@ class Panel(wx.Panel):
             index = 0
             for nomTitulaires, IDcompte_payeur in listeComptes :
                 dictCompte = self.ctrl_factures.dictComptes[IDcompte_payeur]
-                self.EcritStatusbar(u"Génération de la facture %d sur %d..." % (index+1, len(listeComptes)))
+                self.EcritStatusbar(_(u"Génération de la facture %d sur %d...") % (index+1, len(listeComptes)))
                 
                 listePrestations = dictCompte["listePrestations"] 
                 total = dictCompte["total"] 
@@ -185,7 +200,7 @@ class Panel(wx.Panel):
             DB.Close() 
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, u"Désolé, le problème suivant a été rencontré : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             self.EcritStatusbar(u"")
@@ -208,7 +223,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = Panel(panel)
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -224,7 +239,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

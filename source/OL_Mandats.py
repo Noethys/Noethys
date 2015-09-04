@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import UTILS_Utilisateurs
@@ -29,9 +32,9 @@ class Track(object):
         self.rum = donnees[2]
         self.typeMandat = donnees[3]
         if self.typeMandat == "recurrent" :
-            self.typeMandatStr = u"Récurrent"
+            self.typeMandatStr = _(u"Récurrent")
         else :
-            self.typeMandatStr = u"Ponctuel"
+            self.typeMandatStr = _(u"Ponctuel")
         self.date = donnees[4]
         if self.date != None :
             self.date = UTILS_Dates.DateEngEnDateDD(self.date)
@@ -174,24 +177,24 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateEngFr(str(dateDD))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDmandat", typeDonnee="entier"),
-            ColumnDefn(u"Date", 'left', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"RUM", 'left', 60, "rum", typeDonnee="texte"),
-            ColumnDefn(u"Type", 'left', 70, "typeMandatStr", typeDonnee="texte"),
-            ColumnDefn(u"Nbre prélèv.", 'center', 80, "nbrePrelevements", typeDonnee="entier"),
-            ColumnDefn(u"IBAN", 'left', 180, "iban", typeDonnee="texte"),
-            ColumnDefn(u"BIC", 'left', 100, "bic", typeDonnee="texte"),
-            ColumnDefn(u"Titulaire", 'left', 110, "individu_nom_complet", typeDonnee="texte"),
-            ColumnDefn(u"Séquence suiv.", 'left', 100, "sequenceStr", typeDonnee="texte"),
-            ColumnDefn(u"Observations", 'left', 120, "memo", typeDonnee="texte"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDmandat", typeDonnee="entier"),
+            ColumnDefn(_(u"Date"), 'left', 75, "date", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"RUM"), 'left', 60, "rum", typeDonnee="texte"),
+            ColumnDefn(_(u"Type"), 'left', 70, "typeMandatStr", typeDonnee="texte"),
+            ColumnDefn(_(u"Nbre prélèv."), 'center', 80, "nbrePrelevements", typeDonnee="entier"),
+            ColumnDefn(_(u"IBAN"), 'left', 180, "iban", typeDonnee="texte"),
+            ColumnDefn(_(u"BIC"), 'left', 100, "bic", typeDonnee="texte"),
+            ColumnDefn(_(u"Titulaire"), 'left', 110, "individu_nom_complet", typeDonnee="texte"),
+            ColumnDefn(_(u"Séquence suiv."), 'left', 100, "sequenceStr", typeDonnee="texte"),
+            ColumnDefn(_(u"Observations"), 'left', 120, "memo", typeDonnee="texte"),
             ]
         
         if self.mode == "liste" :
-            liste_Colonnes.insert(4, ColumnDefn(u"Famille", 'left', 150, "titulairesFamille", typeDonnee="texte"))
+            liste_Colonnes.insert(4, ColumnDefn(_(u"Famille"), 'left', 150, "titulairesFamille", typeDonnee="texte"))
             
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun mandat")
+        self.SetEmptyListMsg(_(u"Aucun mandat"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -230,14 +233,14 @@ class ListView(FastObjectListView):
         if self.mode == "famille" :
 
             # Item Ajouter
-            item = wx.MenuItem(menuPop, 10, u"Ajouter")
+            item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
             bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -245,7 +248,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -255,14 +258,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
             
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -271,14 +274,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -290,12 +293,12 @@ class ListView(FastObjectListView):
 
     def Impression(self, mode="preview"):
         if self.donnees == None or len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des mandats", format="A", orientation=wx.LANDSCAPE)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des mandats"), format="A", orientation=wx.LANDSCAPE)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -309,11 +312,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des mandats")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des mandats"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des mandats")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des mandats"))
 
     def Ajouter(self, event):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "creer") == False : return
@@ -328,14 +331,14 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "modifier") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun mandat à modifier dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun mandat à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         track = self.Selection()[0]
 
         if track.nbrePrelevements > 0 :
-            dlg = wx.MessageDialog(self, u"Ce mandat a déjà été utilisé pour %d prélèvements. Souhaitez-vous tout de même l'ouvrir ?\n\nAttention, il est déconseillé de modifier un mandat déjà utilisé." % track.nbrePrelevements, u"Avertissement", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce mandat a déjà été utilisé pour %d prélèvements. Souhaitez-vous tout de même l'ouvrir ?\n\nAttention, il est déconseillé de modifier un mandat déjà utilisé.") % track.nbrePrelevements, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -351,7 +354,7 @@ class ListView(FastObjectListView):
         if self.IDfamille != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "supprimer") == False : return
         
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun mandat à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun mandat à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -359,13 +362,13 @@ class ListView(FastObjectListView):
         
         # Avertissement si appartient à un prélèvement
         if track.nbrePrelevements > 0 :
-            dlg = wx.MessageDialog(self, u"Suppression impossible ! \n\nCe mandat est déjà rattaché à %d prélèvements." % track.nbrePrelevements, u"Suppression impossible", wx.OK|wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Suppression impossible ! \n\nCe mandat est déjà rattaché à %d prélèvements.") % track.nbrePrelevements, _(u"Suppression impossible"), wx.OK|wx.ICON_ERROR)
             dlg.ShowModal() 
             dlg.Destroy()
             return
         
         # Demande de confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Confirmez-vous la suppression de ce mandat ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la suppression de ce mandat ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("mandats", "IDmandat", track.IDmandat)
@@ -377,7 +380,7 @@ class ListView(FastObjectListView):
 ##            UTILS_Historique.InsertActions([{
 ##                "IDfamille" : IDfamille,
 ##                "IDcategorie" : 8, 
-##                "action" : u"Suppression du règlement ID%d : %s en %s payé par %s" % (IDreglement, montant, texteMode, textePayeur),
+##                "action" : _(u"Suppression du règlement ID%d : %s en %s payé par %s") % (IDreglement, montant, texteMode, textePayeur),
 ##                },])
             
             DB.Close()
@@ -389,7 +392,7 @@ class ListView(FastObjectListView):
     def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -411,7 +414,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.listView = listView
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher...")
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         nbreColonnes = self.listView.GetColumnCount()

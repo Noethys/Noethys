@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Saisie_euros
@@ -91,7 +94,7 @@ class ListBoxCombinaisons(wx.ListBox):
     def Modifier(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune combinaison à modifier dans la liste !", "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune combinaison à modifier dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -125,12 +128,12 @@ class ListBoxCombinaisons(wx.ListBox):
     def Supprimer(self):
         index = self.GetSelection()
         if index == -1 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune combinaison à supprimer dans la liste !", "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune combinaison à supprimer dans la liste !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         index = self.GetClientData(index)
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette combinaison ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette combinaison ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             # Suppression
             self.dictMontant["combinaisons"].pop(index)
@@ -148,7 +151,7 @@ class ListBoxCombinaisons(wx.ListBox):
         listeUnites = db.ResultatReq()
         db.Close()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'existe aucune unité pour cette activité !", "Information", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'existe aucune unité pour cette activité !"), "Information", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return None
@@ -164,13 +167,13 @@ class ListBoxCombinaisons(wx.ListBox):
             index += 1
             
         # Boîte de dialogue pour choisir les combinaisons
-        dlg = wx.MultiChoiceDialog(self, u"Cochez les unités à combiner :", u"Combinaisons d'unités", listeItems)
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les unités à combiner :"), _(u"Combinaisons d'unités"), listeItems)
         if len(listeAnciennesSelections) > 0 :
             dlg.SetSelections(listeAnciennesSelections)
         if dlg.ShowModal() == wx.ID_OK :
             listeSelections = dlg.GetSelections()
             if len(listeSelections) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune unité !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune unité !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -191,7 +194,7 @@ class ListBoxCombinaisons(wx.ListBox):
                         if IDunite1 != IDunite2 :
                             for IDunite_incompat, IDunite, IDunite_incompatible in listeIncompatibilites :
                                 if (IDunite == IDunite1 and IDunite_incompatible == IDunite2) or (IDunite == IDunite2 and IDunite_incompatible == IDunite1) :
-                                    dlg = wx.MessageDialog(self, u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !" % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                                    dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas créer cette combinaison car les\nunités '%s' et '%s' sont incompatibles entre elles !") % (nomUnite1, nomUnite2), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return None
@@ -209,7 +212,7 @@ class ListBoxCombinaisons(wx.ListBox):
         # Si c'est une modification, vérifie qu'une modification a été faite
         if listeAnciennesIDunites != None :
             if listeAnciennesIDunites == listeIDunites :
-                dlg = wx.MessageDialog(self, u"Vous n'avez effectué aucune modification !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez effectué aucune modification !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -227,7 +230,7 @@ class ListBoxCombinaisons(wx.ListBox):
                 
             listeUnitesTmp.sort()
             if (listeUnitesTmp == listeIDunites)  :
-                dlg = wx.MessageDialog(self, u"Cette combinaison existe déjà !", "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Cette combinaison existe déjà !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return None
@@ -249,19 +252,19 @@ class Dialog(wx.Dialog):
             self.dictMontant = { "IDaide_montant" : None, "montant" : 0.0, "combinaisons" : [] }
         
         # Contrôles
-        self.label_montant = wx.StaticText(self, -1, u"Montant :")
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant :"))
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, size=(70, -1))
         self.ctrl_montant.SetMontant(self.dictMontant["montant"])
-        self.label_combinaisons = wx.StaticText(self, -1, u"Combinaisons :")
+        self.label_combinaisons = wx.StaticText(self, -1, _(u"Combinaisons :"))
         self.ctrl_combinaisons = ListBoxCombinaisons(self, IDactivite=self.IDactivite, dictMontant=self.dictMontant)
         
         # Boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -273,14 +276,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'un montant")
-        self.ctrl_montant.SetToolTipString(u"Saisissez ici un montant en euros")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour ajouter une combinaisons d'unités")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la combinaison d'unités sélectionnées dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la combinaison d'unités sélectionnées dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.SetTitle(_(u"Saisie d'un montant"))
+        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici un montant en euros"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une combinaisons d'unités"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités sélectionnées dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités sélectionnées dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
         self.SetMinSize((380, 250))
 
     def __do_layout(self):
@@ -336,7 +339,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         montant = self.ctrl_montant.GetMontant()
         if montant == None or montant == 0.0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un montant !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus() 
@@ -344,7 +347,7 @@ class Dialog(wx.Dialog):
         
         dictMontant = self.GetDictMontant() 
         if len(dictMontant["combinaisons"]) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez créer obligatoirement une combinaison d'unités !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez créer obligatoirement une combinaison d'unités !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

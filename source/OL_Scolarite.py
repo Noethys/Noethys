@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import os
 import cStringIO
 import datetime
@@ -132,17 +135,17 @@ class ListView(FastObjectListView):
                 listItem.SetTextColour((180, 180, 180))
 
         liste_Colonnes = [
-            ColumnDefn(u"ID", "left", 0, "IDscolarite", typeDonnee="entier"),
+            ColumnDefn(_(u"ID"), "left", 0, "IDscolarite", typeDonnee="entier"),
             ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
-            ColumnDefn(u"Au", 'left', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
-            ColumnDefn(u"Ecole", 'left', 160, "nomEcole", typeDonnee="texte"),
-            ColumnDefn(u"Classe", 'left', 100, "nomClasse", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(u"Niveau", 'left', 60, "abregeNiveau", typeDonnee="texte"),
+            ColumnDefn(_(u"Au"), 'left', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(_(u"Ecole"), 'left', 160, "nomEcole", typeDonnee="texte"),
+            ColumnDefn(_(u"Classe"), 'left', 100, "nomClasse", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Niveau"), 'left', 60, "abregeNiveau", typeDonnee="texte"),
             ]
 
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune classe")
+        self.SetEmptyListMsg(_(u"Aucune classe"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -178,7 +181,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Modifier
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -187,7 +190,7 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -195,7 +198,7 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
         
         # Item Supprimer
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -205,14 +208,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -221,14 +224,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -239,21 +242,21 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Scolarité", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Scolarité"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Scolarité", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Scolarité"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Scolarité")
+        UTILS_Export.ExportTexte(self, titre=_(u"Scolarité"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Scolarité")
+        UTILS_Export.ExportExcel(self, titre=_(u"Scolarité"))
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_scolarite", "creer") == False : return
@@ -306,7 +309,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : None,
                 "IDcategorie" : 30, 
-                "action" : u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
+                "action" : _(u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
                 },])
             
             # Actualise l'affichage
@@ -316,7 +319,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_scolarite", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune étape de scolarité à modifier dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune étape de scolarité à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -330,7 +333,7 @@ class ListView(FastObjectListView):
         
         import DLG_Saisie_scolarite
         dlg = DLG_Saisie_scolarite.Dialog(self, IDscolarite=IDscolarite, donneesScolarite=self.donnees)
-        dlg.SetTitle(u"Modification d'une étape de la scolarité")
+        dlg.SetTitle(_(u"Modification d'une étape de la scolarité"))
         dlg.SetDateDebut(date_debut)
         dlg.SetDateFin(date_fin)
         dlg.SetEcole(IDecole)
@@ -363,7 +366,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : None,
                 "IDcategorie" : 31, 
-                "action" : u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
+                "action" : _(u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
                 },])
 
             # Actualise l'affichage
@@ -374,7 +377,7 @@ class ListView(FastObjectListView):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_scolarite", "supprimer") == False : return
 
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune étape de scolarité à supprimer dans la liste", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune étape de scolarité à supprimer dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -386,7 +389,7 @@ class ListView(FastObjectListView):
         nomClasse = self.Selection()[0].nomClasse
         nomNiveau = self.Selection()[0].nomNiveau
         
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette étape de scolarité ?\n\nPériode : Du %s au %s\nEcole : %s\nClasse : %s\nNiveau : %s" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau), u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette étape de scolarité ?\n\nPériode : Du %s au %s\nEcole : %s\nClasse : %s\nNiveau : %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("scolarite", "IDscolarite", IDscolarite)
@@ -397,7 +400,7 @@ class ListView(FastObjectListView):
                 "IDindividu" : self.IDindividu,
                 "IDfamille" : None,
                 "IDcategorie" : 32, 
-                "action" : u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
+                "action" : _(u"Inscription scolaire du %s au %s. Ecole : '%s'. Classe : '%s'. Niveau : '%s'") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)), nomEcole, nomClasse, nomNiveau)
                 },])
                 
             # Actualise l'affichage
@@ -413,7 +416,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une étape de la scolarité...")
+        self.SetDescriptiveText(_(u"Rechercher une étape de la scolarité..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

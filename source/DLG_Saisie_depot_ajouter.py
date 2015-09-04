@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import OL_Reglements_depots
@@ -33,7 +36,7 @@ class CTRL_Compte(wx.Choice):
         self.SetID(None)
     
     def SetListeDonnees(self):
-        self.listeNoms = [u"Tous les comptes"]
+        self.listeNoms = [_(u"Tous les comptes")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDcompte, nom, numero
@@ -80,7 +83,7 @@ class CTRL_Modes(wx.Choice):
         self.SetID(None)
     
     def SetListeDonnees(self):
-        self.listeNoms = [u"Tous les modes"]
+        self.listeNoms = [_(u"Tous les modes")]
         self.listeID = [None,]
         DB = GestionDB.DB()
         req = """SELECT IDmode, label
@@ -117,27 +120,27 @@ class Dialog(wx.Dialog):
         self.tracks= tracks
         self.IDcompte = IDcompte
         
-        self.label_intro = wx.StaticText(self, -1, u"Double-cliquez sur un règlement pour l'affecter ou non au dépôt.", style=wx.ALIGN_CENTER)
+        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur un règlement pour l'affecter ou non au dépôt."), style=wx.ALIGN_CENTER)
 
-        self.label_compte = wx.StaticText(self, -1, u"Compte :")
+        self.label_compte = wx.StaticText(self, -1, _(u"Compte :"))
         self.ctrl_compte = CTRL_Compte(self)
         self.ctrl_compte.SetMinSize((130, -1))
         self.ctrl_compte.SetID(self.IDcompte)
 
-        self.label_mode = wx.StaticText(self, -1, u"Mode :")
+        self.label_mode = wx.StaticText(self, -1, _(u"Mode :"))
         self.ctrl_mode = CTRL_Modes(self)
         self.ctrl_mode.SetMinSize((130, -1))
 
-        self.label_tri = wx.StaticText(self, -1, u"Tri :")
-        self.ctrl_tri = wx.Choice(self, -1, choices = (u"Ordre de saisie", u"Date", u"Mode de règlement", u"Emetteur", u"Numéro de pièce", u"Nom de payeur", "Montant"))
+        self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Nom de payeur"), "Montant"))
         self.ctrl_tri.Select(0) 
         
-        self.label_ordre = wx.StaticText(self, -1, u"Ordre :")
-        self.ctrl_ordre = wx.Choice(self, -1, choices = (u"Ascendant", u"Descendant"))
+        self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
+        self.ctrl_ordre = wx.Choice(self, -1, choices = (_(u"Ascendant"), _(u"Descendant")))
         self.ctrl_ordre.Select(0) 
         
         # Reglements disponibles
-        self.staticbox_reglements_disponibles_staticbox = wx.StaticBox(self, -1, u"Règlements disponibles")
+        self.staticbox_reglements_disponibles_staticbox = wx.StaticBox(self, -1, _(u"Règlements disponibles"))
 ##        self.ctrl_reglements_disponibles = OL_Reglements_depots.ListView(self, id=-1, inclus=False, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False}) 
         self.ctrl_reglements_disponibles = self.listviewAvecFooter1.GetListview()
@@ -149,15 +152,15 @@ class Dialog(wx.Dialog):
         self.bouton_haut_tout = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_double_haut_rouge.png", wx.BITMAP_TYPE_ANY))
 
         # Reglements du dépôt
-        self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, u"Règlements du dépôt")
+        self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, _(u"Règlements du dépôt"))
 ##        self.ctrl_reglements_depot = OL_Reglements_depots.ListView(self, id=-1, inclus=True, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.listviewAvecFooter2 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True}) 
         self.ctrl_reglements_depot = self.listviewAvecFooter2.GetListview()
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -180,22 +183,22 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Ajouter ou retirer des règlements")
-        self.ctrl_compte.SetToolTipString(u"Sélectionnez un filtre de compte")
-        self.ctrl_mode.SetToolTipString(u"Sélectionnez un filtre de mode de règlement")
-        self.ctrl_tri.SetToolTipString(u"Sélectionnez le critère de tri")
-        self.ctrl_ordre.SetToolTipString(u"Sélectionnez l'ordre de tri")
-        self.bouton_bas_tout.SetToolTipString(u"Cliquez ici pour ajouter tous les règlements dans le dépôt")
-        self.bouton_bas.SetToolTipString(u"Cliquez ici pour ajouter le règlement disponible selectionné dans le dépôt")
+        self.SetTitle(_(u"Ajouter ou retirer des règlements"))
+        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez un filtre de compte"))
+        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez un filtre de mode de règlement"))
+        self.ctrl_tri.SetToolTipString(_(u"Sélectionnez le critère de tri"))
+        self.ctrl_ordre.SetToolTipString(_(u"Sélectionnez l'ordre de tri"))
+        self.bouton_bas_tout.SetToolTipString(_(u"Cliquez ici pour ajouter tous les règlements dans le dépôt"))
+        self.bouton_bas.SetToolTipString(_(u"Cliquez ici pour ajouter le règlement disponible selectionné dans le dépôt"))
         self.bouton_bas_tout.SetMinSize((80, -1))
         self.bouton_bas.SetMinSize((150, -1))
         self.bouton_haut.SetMinSize((150, -1))
         self.bouton_haut_tout.SetMinSize((80, -1))
-        self.bouton_haut.SetToolTipString(u"Cliquez ici pour retirer le règlement sélectionné du dépôt")
-        self.bouton_haut_tout.SetToolTipString(u"Cliquez ici pour retirer tous les règlements du dépôt")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_haut.SetToolTipString(_(u"Cliquez ici pour retirer le règlement sélectionné du dépôt"))
+        self.bouton_haut_tout.SetToolTipString(_(u"Cliquez ici pour retirer tous les règlements du dépôt"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((910, 710))
 
     def __do_layout(self):
@@ -274,10 +277,10 @@ class Dialog(wx.Dialog):
         IDcompte = self.ctrl_compte.GetID() 
         IDmode = self.ctrl_mode.GetID() 
         self.ctrl_reglements_disponibles.MAJ(self.tracks, selectionTrack=selectionTrack, nextTrack=nextTrack, IDcompte=IDcompte, IDmode=IDmode) 
-        self.staticbox_reglements_disponibles_staticbox.SetLabel(self.ctrl_reglements_disponibles.GetLabelListe(u"règlements disponibles"))
+        self.staticbox_reglements_disponibles_staticbox.SetLabel(self.ctrl_reglements_disponibles.GetLabelListe(_(u"règlements disponibles")))
         # MAJ Liste règlements du dépôt
         self.ctrl_reglements_depot.MAJ(self.tracks, selectionTrack=selectionTrack, nextTrack=nextTrack) 
-        self.staticbox_reglements_depot_staticbox.SetLabel(self.ctrl_reglements_depot.GetLabelListe(u"règlements dans ce dépôt"))
+        self.staticbox_reglements_depot_staticbox.SetLabel(self.ctrl_reglements_depot.GetLabelListe(_(u"règlements dans ce dépôt")))
     
     def DeplacerTout(self, inclus=True):
         listeTracks = []
@@ -314,14 +317,14 @@ class Dialog(wx.Dialog):
         self.ctrl_reglements_depot.Deplacer()
 
     def OnBoutonBasTout(self, event): 
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment ajouter tous les règlements ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment ajouter tous les règlements ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse ==  wx.ID_YES :
             self.DeplacerTout(inclus=True)
 
     def OnBoutonHautTout(self, event):
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment retirer tous les règlements ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer tous les règlements ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse ==  wx.ID_YES :
@@ -336,11 +339,11 @@ class Dialog(wx.Dialog):
         for track in self.tracks :
             if track.inclus == True :
                 # Création d'un label pour ce règlement en cas de message à afficher
-                label = u"Règlement ID%d du %s payé en %s par %s" % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur)
+                label = _(u"Règlement ID%d du %s payé en %s par %s") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur)
                 
                 # Vérifie si pas de règlement en attente
                 if track.encaissement_attente == True :
-                    dlg = wx.MessageDialog(self, u"Vous avez sélectionné le règlement suivant alors qu'il a été saisi avec l'option 'Encaissement en attente' :\n\n> %s\n\nIl vous est donc impossible de l'inclure dans ce dépôt !" % label, u"Règlement en attente", wx.OK | wx.ICON_ERROR)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné le règlement suivant alors qu'il a été saisi avec l'option 'Encaissement en attente' :\n\n> %s\n\nIl vous est donc impossible de l'inclure dans ce dépôt !") % label, _(u"Règlement en attente"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -348,7 +351,7 @@ class Dialog(wx.Dialog):
                 # Vérifie si règlement différé
                 if track.date_differe != None :
                     if track.date_differe > datetime.date.today() :
-                        dlg = wx.MessageDialog(self, u"Vous avez sélectionné le règlement suivant alors qu'il comporte une date d'encaissement différé supérieure à la date du jour :\n\n> %s\n\nSouhaitez-vous tout de même l'inclure dans ce dépôt ?" % label, u"Attention !", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné le règlement suivant alors qu'il comporte une date d'encaissement différé supérieure à la date du jour :\n\n> %s\n\nSouhaitez-vous tout de même l'inclure dans ce dépôt ?") % label, _(u"Attention !"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
                         if reponse !=  wx.ID_YES :

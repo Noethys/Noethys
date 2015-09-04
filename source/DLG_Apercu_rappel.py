@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import CTRL_Bandeau
 import CTRL_Choix_modele
@@ -17,30 +20,30 @@ import UTILS_Config
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, provisoire=False, titre=u"Aperçu d'une lettre de rappel", intro=u"Vous pouvez ici créer un aperçu PDF du document sélectionné."):
+    def __init__(self, parent, provisoire=False, titre=_(u"Aperçu d'une lettre de rappel"), intro=_(u"Vous pouvez ici créer un aperçu PDF du document sélectionné.")):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
         # Bandeau
         if provisoire == True :
-            intro += u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'un document provisoire avant génération !</FONT>"
+            intro += _(u" <FONT COLOR = '#FF0000'>Attention, il ne s'agit que d'un document provisoire avant génération !</FONT>")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Apercu.png")
         
         # Paramètres
-        self.box_parametres_staticbox = wx.StaticBox(self, -1, u"Paramètres")
+        self.box_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         
-        self.label_modele = wx.StaticText(self, -1, u"Modèle :")
+        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie="rappel")
         self.ctrl_modele.SetMinSize((260, -1))
         
-        self.check_coupons = wx.CheckBox(self, -1, u"Insérer les coupons-réponses")
-        self.check_codesbarres = wx.CheckBox(self, -1, u"Insérer les codes-barres")
+        self.check_coupons = wx.CheckBox(self, -1, _(u"Insérer les coupons-réponses"))
+        self.check_codesbarres = wx.CheckBox(self, -1, _(u"Insérer les codes-barres"))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -55,12 +58,12 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez ici le modèle de document")
-        self.check_coupons.SetToolTipString(u"Cochez cette case pour insérer les coupons-réponses")
-        self.check_codesbarres.SetToolTipString(u"Cochez cette case pour insérer les codes-barres")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez ici le modèle de document"))
+        self.check_coupons.SetToolTipString(_(u"Cochez cette case pour insérer les coupons-réponses"))
+        self.check_codesbarres.SetToolTipString(_(u"Cochez cette case pour insérer les codes-barres"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -110,7 +113,7 @@ class Dialog(wx.Dialog):
         # Modèle
         dictParametres["IDmodele"] = self.ctrl_modele.GetID() 
         if dictParametres["IDmodele"] == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un modèle !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False

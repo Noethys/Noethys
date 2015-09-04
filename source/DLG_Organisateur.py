@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import cStringIO
 import CTRL_Bandeau
 import CTRL_Saisie_adresse
@@ -31,45 +34,45 @@ class Dialog(wx.Dialog):
         
         self.logo = None
         
-        intro = u"Saisissez ici les informations concernant l'organisateur. Ces données seront utilisées dans les différents documents édités par le logiciel."
-        titre = u"L'organisateur"
+        intro = _(u"Saisissez ici les informations concernant l'organisateur. Ces données seront utilisées dans les différents documents édités par le logiciel.")
+        titre = _(u"L'organisateur")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Organisateur.png")
         
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, u"Nom de l'organisateur")
-        self.label_nom = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'organisateur"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
-        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, u"Coordonnées")
-        self.label_rue = wx.StaticText(self, -1, u"Rue :")
+        self.staticbox_coords_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées"))
+        self.label_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_rue = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
-        self.label_adresse = wx.StaticText(self, -1, u"C.P. :")
+        self.label_adresse = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_adresse = CTRL_Saisie_adresse.Adresse(self)
-        self.label_tel = wx.StaticText(self, -1, u"Tél :")
-        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=u"siège")
-        self.label_mail = wx.StaticText(self, -1, u"Email :")
+        self.label_tel = wx.StaticText(self, -1, _(u"Tél :"))
+        self.ctrl_tel = CTRL_Saisie_tel.Tel(self, intitule=_(u"siège"))
+        self.label_mail = wx.StaticText(self, -1, _(u"Email :"))
         self.ctrl_mail = CTRL_Saisie_mail.Mail(self)
-        self.label_fax = wx.StaticText(self, -1, u"Fax :")
-        self.ctrl_fax = CTRL_Saisie_tel.Tel(self, intitule=u"fax")
-        self.label_site = wx.StaticText(self, -1, u"Site internet :")
+        self.label_fax = wx.StaticText(self, -1, _(u"Fax :"))
+        self.ctrl_fax = CTRL_Saisie_tel.Tel(self, intitule=_(u"fax"))
+        self.label_site = wx.StaticText(self, -1, _(u"Site internet :"))
         self.ctrl_site = wx.TextCtrl(self, -1, u"")
         
-        self.staticbox_numeros_staticbox = wx.StaticBox(self, -1, u"Numéros d'identification")
-        self.label_agrement = wx.StaticText(self, -1, u"Numéro agrément :")
+        self.staticbox_numeros_staticbox = wx.StaticBox(self, -1, _(u"Numéros d'identification"))
+        self.label_agrement = wx.StaticText(self, -1, _(u"Numéro agrément :"))
         self.ctrl_agrement = wx.TextCtrl(self, -1, u"")
-        self.label_siret = wx.StaticText(self, -1, u"Numéro SIRET :")
+        self.label_siret = wx.StaticText(self, -1, _(u"Numéro SIRET :"))
         self.ctrl_siret = wx.TextCtrl(self, -1, u"")
-        self.label_ape = wx.StaticText(self, -1, u"Code APE :")
+        self.label_ape = wx.StaticText(self, -1, _(u"Code APE :"))
         self.ctrl_ape = wx.TextCtrl(self, -1, u"")
         
-        self.staticbox_logo_staticbox = wx.StaticBox(self, -1, u"Logo")
+        self.staticbox_logo_staticbox = wx.StaticBox(self, -1, _(u"Logo"))
         self.ctrl_logo = CTRL_Logo.CTRL(self, qualite=100, couleurFond=wx.Colour(255, 255, 255), size=(83, 83) )
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_visualiser = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Loupe.png", wx.BITMAP_TYPE_ANY))
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         # Empêche l'annulation
         if self.empecheAnnulation == True :
@@ -89,21 +92,21 @@ class Dialog(wx.Dialog):
 
         
     def __set_properties(self):
-        self.SetTitle(u"L'organisateur")
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de l'organisateur")
-        self.ctrl_rue.SetToolTipString(u"Saisissez ici la rue de l'adresse de l'organisateur")
-        self.ctrl_site.SetToolTipString(u"Saisissez ici l'adresse du site internet de l'organisateur")
+        self.SetTitle(_(u"L'organisateur"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'organisateur"))
+        self.ctrl_rue.SetToolTipString(_(u"Saisissez ici la rue de l'adresse de l'organisateur"))
+        self.ctrl_site.SetToolTipString(_(u"Saisissez ici l'adresse du site internet de l'organisateur"))
         self.ctrl_agrement.SetMinSize((200, -1))
-        self.ctrl_agrement.SetToolTipString(u"Saisissez ici le numéro d'agrément de l'organisateur")
-        self.ctrl_siret.SetToolTipString(u"Saisissez ici le numéro SIRET de l'organisateur")
-        self.ctrl_ape.SetToolTipString(u"Saisissez ici le code APE de l'organisateur")
-        self.ctrl_logo.SetToolTipString(u"Logo de l'organisateur")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour ajouter ou modifier le logo de l'organisateur")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer le logo actuel")
-        self.bouton_visualiser.SetToolTipString(u"Cliquez ici pour visualiser le logo actuel en taille réelle")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider la saisie")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
+        self.ctrl_agrement.SetToolTipString(_(u"Saisissez ici le numéro d'agrément de l'organisateur"))
+        self.ctrl_siret.SetToolTipString(_(u"Saisissez ici le numéro SIRET de l'organisateur"))
+        self.ctrl_ape.SetToolTipString(_(u"Saisissez ici le code APE de l'organisateur"))
+        self.ctrl_logo.SetToolTipString(_(u"Logo de l'organisateur"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour ajouter ou modifier le logo de l'organisateur"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le logo actuel"))
+        self.bouton_visualiser.SetToolTipString(_(u"Cliquez ici pour visualiser le logo actuel en taille réelle"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

@@ -9,7 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import copy
@@ -19,8 +22,8 @@ import wx.lib.agw.pybusyinfo as PBI
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", u"Euro")
-MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", u"Centime")
+MONNAIE_SINGULIER = UTILS_Config.GetParametre("monnaie_singulier", _(u"Euro"))
+MONNAIE_DIVISION = UTILS_Config.GetParametre("monnaie_division", _(u"Centime"))
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -98,7 +101,7 @@ class Attestations_fiscales():
 
     def GetDonneesImpression(self, tracks=[], dictOptions={}):
         """ Impression des factures """
-        dlgAttente = PBI.PyBusyInfo(u"Recherche des données...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des données..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         
         dictDonnees = {}
@@ -195,7 +198,7 @@ class Attestations_fiscales():
             # Insertion des enfants
             index = 1
             for nomCompletIndividu, dictIndividu in listeIndividus :
-                dictDonnee["TXT_ENFANT_%d" % index] = u"%.2f %s pour %s né%s le %s" % (dictIndividu["regle"], SYMBOLE, nomCompletIndividu, dictIndividu["genre"], dictIndividu["date_naiss"])
+                dictDonnee["TXT_ENFANT_%d" % index] = _(u"%.2f %s pour %s né%s le %s") % (dictIndividu["regle"], SYMBOLE, nomCompletIndividu, dictIndividu["genre"], dictIndividu["date_naiss"])
                 index += 1
                 
             # Ajoute les réponses des questionnaires
@@ -227,8 +230,8 @@ class Attestations_fiscales():
         # Récupération des paramètres d'affichage
         if dictOptions == None :
             if afficherDoc == False :
-                dlg = DLG_Apercu_attestation_fiscale.Dialog(None, titre=u"Sélection des paramètres de l'attestation fiscale", intro=u"Sélectionnez ici les paramètres d'affichage de l'attestation fiscale")
-                dlg.bouton_ok.SetBitmapLabel(wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
+                dlg = DLG_Apercu_attestation_fiscale.Dialog(None, titre=_(u"Sélection des paramètres de l'attestation fiscale"), intro=_(u"Sélectionnez ici les paramètres d'affichage de l'attestation fiscale"))
+                dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
             else :
                 dlg = DLG_Apercu_attestation_fiscale.Dialog(None)
             if dlg.ShowModal() == wx.ID_OK:
@@ -241,7 +244,7 @@ class Attestations_fiscales():
         # Création des PDF à l'unité
         def CreationPDFunique(repertoireCible=""):
             dictPieces = {}
-            dlgAttente = PBI.PyBusyInfo(u"Génération des attestations fiscales à l'unité au format PDF...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Génération des attestations fiscales à l'unité au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
             try :
                 index = 0
@@ -250,7 +253,7 @@ class Attestations_fiscales():
                     nomFichier = u"%s" % nomTitulaires
                     cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
                     dictComptesTemp = {IDcompte_payeur : dictAttestation}
-                    self.EcritStatusbar(u"Edition de l'attestation fiscale %d/%d : %s" % (index, len(dictAttestation), nomFichier))
+                    self.EcritStatusbar(_(u"Edition de l'attestation fiscale %d/%d : %s") % (index, len(dictAttestation), nomFichier))
                     UTILS_Impression_attestation_fiscale.Impression(dictComptesTemp, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=False, nomFichier=cheminFichier)
                     dictPieces[IDcompte_payeur] = cheminFichier
                     index += 1
@@ -260,7 +263,7 @@ class Attestations_fiscales():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des attestations fiscales : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des attestations fiscales : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -280,9 +283,9 @@ class Attestations_fiscales():
 
         # Fabrication du PDF global
         if repertoireTemp == False :
-            dlgAttente = PBI.PyBusyInfo(u"Création du PDF des attestations fiscales...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+            dlgAttente = PBI.PyBusyInfo(_(u"Création du PDF des attestations fiscales..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
             wx.Yield() 
-            self.EcritStatusbar(u"Création du PDF des attestations fiscales en cours... veuillez patienter...")
+            self.EcritStatusbar(_(u"Création du PDF des attestations fiscales en cours... veuillez patienter..."))
             try :
                 UTILS_Impression_attestation_fiscale.Impression(dictDonnees, dictOptions, IDmodele=dictOptions["IDmodele"], ouverture=afficherDoc, nomFichier=nomDoc)
                 self.EcritStatusbar("")
@@ -290,7 +293,7 @@ class Attestations_fiscales():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des attestations fiscales : \n\n%s" % err, u"Erreur", wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des attestations fiscales : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False

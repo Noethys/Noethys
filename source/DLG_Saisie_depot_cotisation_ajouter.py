@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import OL_Cotisations_depots
@@ -22,18 +25,18 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.tracks= tracks
         
-        self.label_intro = wx.StaticText(self, -1, u"Double-cliquez sur une cotisation pour l'affecter ou non au dépôt.", style=wx.ALIGN_CENTER)
+        self.label_intro = wx.StaticText(self, -1, _(u"Double-cliquez sur une cotisation pour l'affecter ou non au dépôt."), style=wx.ALIGN_CENTER)
         
-        self.label_tri = wx.StaticText(self, -1, u"Tri par :")
-        self.ctrl_tri = wx.Choice(self, -1, choices = (u"Ordre de saisie", u"Date de début de validité", u"Date de fin de validité", u"Nom des titulaires", u"Type de cotisation", u"Nom de cotisation", u"Numéro de carte", u"Date de dépôt"))
+        self.label_tri = wx.StaticText(self, -1, _(u"Tri par :"))
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date de début de validité"), _(u"Date de fin de validité"), _(u"Nom des titulaires"), _(u"Type de cotisation"), _(u"Nom de cotisation"), _(u"Numéro de carte"), _(u"Date de dépôt")))
         self.ctrl_tri.Select(0) 
         
-        self.label_ordre = wx.StaticText(self, -1, u"Ordre :")
-        self.ctrl_ordre = wx.Choice(self, -1, choices = (u"Ascendant", u"Descendant"))
+        self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
+        self.ctrl_ordre = wx.Choice(self, -1, choices = (_(u"Ascendant"), _(u"Descendant")))
         self.ctrl_ordre.Select(1) 
 
         # Cotisations disponibles
-        self.staticbox_cotisations_disponibles_staticbox = wx.StaticBox(self, -1, u"Cotisations disponibles")
+        self.staticbox_cotisations_disponibles_staticbox = wx.StaticBox(self, -1, _(u"Cotisations disponibles"))
         self.ctrl_cotisations_disponibles = OL_Cotisations_depots.ListView(self, id=-1, inclus=False, name="OL_cotisations_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         # Commandes
@@ -43,13 +46,13 @@ class Dialog(wx.Dialog):
         self.bouton_haut_tout = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_double_haut_rouge.png", wx.BITMAP_TYPE_ANY))
 
         # Reglements du dépôt
-        self.staticbox_cotisations_depot_staticbox = wx.StaticBox(self, -1, u"Cotisations du dépôt")
+        self.staticbox_cotisations_depot_staticbox = wx.StaticBox(self, -1, _(u"Cotisations du dépôt"))
         self.ctrl_cotisations_depot = OL_Cotisations_depots.ListView(self, id=-1, inclus=True, name="OL_cotisations_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -68,20 +71,20 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.SetTitle(u"Ajouter ou retirer des cotisations")
-        self.ctrl_tri.SetToolTipString(u"Sélectionnez le critère de tri")
-        self.ctrl_ordre.SetToolTipString(u"Sélectionnez l'ordre de tri")
-        self.bouton_bas_tout.SetToolTipString(u"Cliquez ici pour ajouter toutes les cotisations dans le dépôt")
-        self.bouton_bas.SetToolTipString(u"Cliquez ici pour ajouter la cotisation disponible selectionné dans le dépôt")
+        self.SetTitle(_(u"Ajouter ou retirer des cotisations"))
+        self.ctrl_tri.SetToolTipString(_(u"Sélectionnez le critère de tri"))
+        self.ctrl_ordre.SetToolTipString(_(u"Sélectionnez l'ordre de tri"))
+        self.bouton_bas_tout.SetToolTipString(_(u"Cliquez ici pour ajouter toutes les cotisations dans le dépôt"))
+        self.bouton_bas.SetToolTipString(_(u"Cliquez ici pour ajouter la cotisation disponible selectionné dans le dépôt"))
         self.bouton_bas_tout.SetMinSize((80, -1))
         self.bouton_bas.SetMinSize((150, -1))
         self.bouton_haut.SetMinSize((150, -1))
         self.bouton_haut_tout.SetMinSize((80, -1))
-        self.bouton_haut.SetToolTipString(u"Cliquez ici pour retirer la cotisation sélectionnée du dépôt")
-        self.bouton_haut_tout.SetToolTipString(u"Cliquez ici pour retirer toutes les cotisations du dépôt")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_haut.SetToolTipString(_(u"Cliquez ici pour retirer la cotisation sélectionnée du dépôt"))
+        self.bouton_haut_tout.SetToolTipString(_(u"Cliquez ici pour retirer toutes les cotisations du dépôt"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((950, 680))
 
     def __do_layout(self):
@@ -172,14 +175,14 @@ class Dialog(wx.Dialog):
         self.ctrl_cotisations_depot.Deplacer()
 
     def OnBoutonBasTout(self, event): 
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment ajouter toutes les cotisations ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment ajouter toutes les cotisations ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse ==  wx.ID_YES :
             self.DeplacerTout(inclus=True)
 
     def OnBoutonHautTout(self, event):
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment retirer toutes les cotisations ?", u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment retirer toutes les cotisations ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse ==  wx.ID_YES :

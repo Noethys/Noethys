@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -26,11 +29,11 @@ class Parametres(wx.Panel):
         self.parent = parent
                 
         # Calendrier
-        self.staticbox_calendrier_staticbox = wx.StaticBox(self, -1, u"Calendrier")
+        self.staticbox_calendrier_staticbox = wx.StaticBox(self, -1, _(u"Calendrier"))
         self.ctrl_calendrier = CTRL_Calendrier.CTRL(self, afficheBoutonAnnuel=False, multiSelections=True)
         
         # Filtres
-        self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, u"Filtres")
+        self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
         self.ctrl_filtres = CTRL_Filtres_transports.CTRL(self)
         self.ctrl_filtres.SetMinSize((250, -1))
         
@@ -87,8 +90,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Commencez par sélectionner une ou plusieurs dates dans le calendrier (Sélections multiples : conservez la touche CTRL pour des dates non continues, SHIFT pour des dates continues et ALT pour des dates continues sans les week-ends). Vous pouvez ensuite imprimer la liste au format PDF."
-        titre = u"Liste récapitulative des transports"
+        intro = _(u"Commencez par sélectionner une ou plusieurs dates dans le calendrier (Sélections multiples : conservez la touche CTRL pour des dates non continues, SHIFT pour des dates continues et ALT pour des dates continues sans les week-ends). Vous pouvez ensuite imprimer la liste au format PDF.")
+        titre = _(u"Liste récapitulative des transports")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
@@ -97,8 +100,8 @@ class Dialog(wx.Dialog):
         
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -109,9 +112,9 @@ class Dialog(wx.Dialog):
         self.MAJ() 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour créer un aperçu PDF de la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu PDF de la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):

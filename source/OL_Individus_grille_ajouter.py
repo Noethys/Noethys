@@ -9,7 +9,10 @@
 #------------------------------------------------------------------------
 
 
+from UTILS_Traduction import _
+
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import DATA_Civilites as Civilites
@@ -122,7 +125,7 @@ class ListView(FastObjectListView):
         
         def FormateAge(age):
             if age == None : return ""
-            return u"%d ans" % age
+            return _(u"%d ans") % age
         
         # Couleur en alternance des lignes
         self.oddRowsBackColor = "#F0FBED" 
@@ -131,14 +134,14 @@ class ListView(FastObjectListView):
                 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDindividu", typeDonnee="entier", imageGetter=GetImageCivilite),
-            ColumnDefn(u"Nom", 'left', 100, "nom", typeDonnee="texte"),
-            ColumnDefn(u"Prénom", "left", 100, "prenom", typeDonnee="texte"),
-            ColumnDefn(u"Date naiss.", "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(u"Age", "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
+            ColumnDefn(_(u"Nom"), 'left', 100, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Prénom"), "left", 100, "prenom", typeDonnee="texte"),
+            ColumnDefn(_(u"Date naiss."), "left", 72, "date_naiss", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Age"), "left", 50, "age", typeDonnee="entier", stringConverter=FormateAge),
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucun individu")
+        self.SetEmptyListMsg(_(u"Aucun individu"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -172,7 +175,7 @@ class BarreRecherche(wx.SearchCtrl):
         wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
         self.parent = parent
 
-        self.SetDescriptiveText(u"Rechercher un individu...")
+        self.SetDescriptiveText(_(u"Rechercher un individu..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

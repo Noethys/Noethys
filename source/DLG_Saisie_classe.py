@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 import CTRL_Saisie_date
@@ -80,21 +83,21 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent   
 
-        self.label_nom = wx.StaticText(self, -1, u"Nom :", style=wx.ALIGN_RIGHT)
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"), style=wx.ALIGN_RIGHT)
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         
-        self.label_saison = wx.StaticText(self, -1, u"Saison :", style=wx.ALIGN_RIGHT)
+        self.label_saison = wx.StaticText(self, -1, _(u"Saison :"), style=wx.ALIGN_RIGHT)
         self.label_du = wx.StaticText(self, -1, u"Du", style=wx.ALIGN_RIGHT)
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, -1, u"au", style=wx.ALIGN_RIGHT)
+        self.label_au = wx.StaticText(self, -1, _(u"au"), style=wx.ALIGN_RIGHT)
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
-        self.label_niveaux = wx.StaticText(self, -1, u"Niveaux :", style=wx.ALIGN_RIGHT)
+        self.label_niveaux = wx.StaticText(self, -1, _(u"Niveaux :"), style=wx.ALIGN_RIGHT)
         self.ctrl_niveaux = CTRL_Niveaux(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -104,14 +107,14 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une classe")
-        self.ctrl_nom.SetToolTipString(u"Saisissez ici le nom de la classe. Ex : 'CP - Mme PICHON'...")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez ici la date de début de saison")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de saison")
-        self.ctrl_niveaux.SetToolTipString(u"Cochez les niveaux scolaires de la classe")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une classe"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de la classe. Ex : 'CP - Mme PICHON'..."))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de saison"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de saison"))
+        self.ctrl_niveaux.SetToolTipString(_(u"Cochez les niveaux scolaires de la classe"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((400, 400))
 
     def __do_layout(self):
@@ -186,35 +189,35 @@ class Dialog(wx.Dialog):
         listeNiveaux = self.ctrl_niveaux.GetIDcoches(modeTexte=False) 
         
         if nom == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un nom pour cette classe !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom pour cette classe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
 
         if dateDebut == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une date de début de saison !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une date de début de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
 
         if dateFin == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner une date de fin de saison !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une date de fin de saison !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
             return
 
         if dateDebut > dateFin :
-            dlg = wx.MessageDialog(self, u"La date de début ne peut pas être supérieure à celle de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La date de début ne peut pas être supérieure à celle de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return
         
         if len(listeNiveaux) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucun niveau scolaire pour cette classe. \n\nEtes-vous sûr de vouloir tout de même valider cette saisie ?", u"Attention", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun niveau scolaire pour cette classe. \n\nEtes-vous sûr de vouloir tout de même valider cette saisie ?"), _(u"Attention"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             if dlg.ShowModal() != wx.ID_YES :
                 return
             dlg.Destroy()

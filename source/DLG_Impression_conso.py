@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import wx.calendar
 
@@ -60,8 +63,8 @@ DICT_CIVILITES = Civilites.GetDictCivilites()
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -130,10 +133,10 @@ class CTRL_Activites(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(u"Cochez les activités et groupes à afficher")
+        self.SetToolTipString(_(u"Cochez les activités et groupes à afficher"))
         
         # Création des colonnes
-        self.AddColumn(u"Activité/groupe")
+        self.AddColumn(_(u"Activité/groupe"))
         self.SetColumnWidth(0, 220)
 
         # Binds
@@ -165,7 +168,7 @@ class CTRL_Activites(HTL.HyperTreeList):
         self.dictActivites, self.dictGroupes = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
 
@@ -280,10 +283,10 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(u"Cochez les écoles et classes à afficher")
+        self.SetToolTipString(_(u"Cochez les écoles et classes à afficher"))
         
         # Création des colonnes
-        self.AddColumn(u"Ecole/classe")
+        self.AddColumn(_(u"Ecole/classe"))
         self.SetColumnWidth(0, 420)
 
         # Binds
@@ -326,7 +329,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         self.dictEcoles, self.dictClasses = self.Importation()
         self.MAJenCours = True
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
 
@@ -412,7 +415,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
             listeClasses = dictEcole["classes"]
             listeClasses.sort() 
             for listeOrdresNiveaux, nomClasse, txtNiveaux, IDclasse, date_debut, date_fin in listeClasses :
-                nomSaison = u"Du %s au %s" % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)) )
+                nomSaison = _(u"Du %s au %s") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)) )
                 labelClasse = u"%s (%s)" % (nomClasse, nomSaison)
                 niveauClasse = self.AppendItem(niveauEcole, labelClasse, ct_type=1)
                 self.SetPyData(niveauClasse, {"type" : "classe", "ID" : IDclasse, "nom" : nomClasse})
@@ -457,7 +460,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
 ##        self.parent = parent
 ##        self.data = []
 ##        self.listeDates = []
-##        self.SetToolTipString(u"Cochez les activités à afficher")
+##        self.SetToolTipString(_(u"Cochez les activités à afficher"))
 ##        self.listeActivites = []
 ##        self.dictActivites = {}
 ##        # Binds
@@ -559,7 +562,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
 ##        wx.CheckListBox.__init__(self, parent, -1)
 ##        self.parent = parent
 ##        self.data = []
-##        self.SetToolTipString(u"Cochez les groupes à afficher")
+##        self.SetToolTipString(_(u"Cochez les groupes à afficher"))
 ##        self.listeGroupes = []
 ##        self.dictGroupes = {}
 ##        # Binds
@@ -653,72 +656,72 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.date = date
         
-        intro = u"Vous pouvez ici imprimer une liste des consommations au format PDF. Pour une liste journalière, sélectionnez 'journalière' puis une date dans le calendrier. Pour la liste d'une période de dates continues ou non, sélectionnez 'périodique' puis plusieurs dates (en appuyant sur les touches CTRL ou SHIFT) dans le calendrier."
-        titre = u"Impression d'une liste de consommations"
+        intro = _(u"Vous pouvez ici imprimer une liste des consommations au format PDF. Pour une liste journalière, sélectionnez 'journalière' puis une date dans le calendrier. Pour la liste d'une période de dates continues ou non, sélectionnez 'périodique' puis plusieurs dates (en appuyant sur les touches CTRL ou SHIFT) dans le calendrier.")
+        titre = _(u"Impression d'une liste de consommations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
         
 ##        fontSmall = wx.Font(, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "")
         
         # Type de calendrier
-        self.staticbox_type_staticbox = wx.StaticBox(self, -1, u"Type de liste")
-        self.radio_journ = wx.RadioButton(self, -1, u"Journalière", style=wx.RB_GROUP)
-        self.radio_period = wx.RadioButton(self, -1, u"Périodique")
+        self.staticbox_type_staticbox = wx.StaticBox(self, -1, _(u"Type de liste"))
+        self.radio_journ = wx.RadioButton(self, -1, _(u"Journalière"), style=wx.RB_GROUP)
+        self.radio_period = wx.RadioButton(self, -1, _(u"Périodique"))
         
         # Calendrier
-        self.staticbox_date_staticbox = wx.StaticBox(self, -1, u"Date")
+        self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"Date"))
         self.ctrl_calendrier = PANEL_Calendrier(self)
         
         # Activités
-        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, u"Activités/Groupes")
+        self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités/Groupes"))
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((250, 50))
         
-        self.label_saut_activites = wx.StaticText(self, -1, u"Sauts de page :")
-        self.checkbox_saut_groupes = wx.CheckBox(self, -1, u"Après le groupe")
+        self.label_saut_activites = wx.StaticText(self, -1, _(u"Sauts de page :"))
+        self.checkbox_saut_groupes = wx.CheckBox(self, -1, _(u"Après le groupe"))
 
         # Ecoles
-        self.staticbox_ecoles_staticbox = wx.StaticBox(self, -1, u"Ecoles/Classes")
-        self.checkbox_ecoles = wx.CheckBox(self, -1, u"Regrouper par école et par classe")
+        self.staticbox_ecoles_staticbox = wx.StaticBox(self, -1, _(u"Ecoles/Classes"))
+        self.checkbox_ecoles = wx.CheckBox(self, -1, _(u"Regrouper par école et par classe"))
         self.ctrl_ecoles = CTRL_Ecoles(self)
         self.ctrl_ecoles.SetMinSize((380, 50))
 
-        self.label_saut_ecoles = wx.StaticText(self, -1, u"Sauts de page :")
-        self.checkbox_saut_ecoles = wx.CheckBox(self, -1, u"Après l'école")
-        self.checkbox_saut_classes = wx.CheckBox(self, -1, u"Après la classe")
+        self.label_saut_ecoles = wx.StaticText(self, -1, _(u"Sauts de page :"))
+        self.checkbox_saut_ecoles = wx.CheckBox(self, -1, _(u"Après l'école"))
+        self.checkbox_saut_classes = wx.CheckBox(self, -1, _(u"Après la classe"))
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.label_modele = wx.StaticText(self, -1, u"Modèle :")
-        self.ctrl_modele = wx.Choice(self, -1, choices=[u"Modèle par défaut",])
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
+        self.ctrl_modele = wx.Choice(self, -1, choices=[_(u"Modèle par défaut"),])
         self.ctrl_modele.Select(0)
-        self.label_tri = wx.StaticText(self, -1, u"Tri :")
-        self.ctrl_tri = wx.Choice(self, -1, choices=["Nom", u"Prénom", u"Age"])
+        self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
+        self.ctrl_tri = wx.Choice(self, -1, choices=["Nom", _(u"Prénom"), _(u"Age")])
         self.ctrl_tri.Select(0)
-        self.ctrl_ordre = wx.Choice(self, -1, choices=["Croissant", u"Décroissant"])
+        self.ctrl_ordre = wx.Choice(self, -1, choices=["Croissant", _(u"Décroissant")])
         self.ctrl_ordre.Select(0)
         
-        self.checkbox_couleur = wx.CheckBox(self, -1, u"Couleur de fond du titre :")
+        self.checkbox_couleur = wx.CheckBox(self, -1, _(u"Couleur de fond du titre :"))
         self.ctrl_couleur = csel.ColourSelect(self, -1, u"", COULEUR_FOND_TITRE, size=(60, 18))
-        self.checkbox_lignes_vierges = wx.CheckBox(self, -1, u"Afficher des lignes vierges :")
+        self.checkbox_lignes_vierges = wx.CheckBox(self, -1, _(u"Afficher des lignes vierges :"))
         self.checkbox_lignes_vierges.SetValue(True)
         self.ctrl_nbre_lignes = wx.Choice(self, -1, choices=["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"])
         self.ctrl_nbre_lignes.Select(2)
-        self.checkbox_age = wx.CheckBox(self, -1, u"Afficher l'âge des individus")
+        self.checkbox_age = wx.CheckBox(self, -1, _(u"Afficher l'âge des individus"))
         self.checkbox_age.SetValue(True)
-        self.checkbox_infos = wx.CheckBox(self, -1, u"Afficher les informations")
+        self.checkbox_infos = wx.CheckBox(self, -1, _(u"Afficher les informations"))
         self.checkbox_infos.SetValue(True)
-        self.checkbox_cotisations_manquantes = wx.CheckBox(self, -1, u"Afficher les cotisations manquantes")
+        self.checkbox_cotisations_manquantes = wx.CheckBox(self, -1, _(u"Afficher les cotisations manquantes"))
         self.checkbox_cotisations_manquantes.SetValue(True)
-        self.checkbox_pieces_manquantes = wx.CheckBox(self, -1, u"Afficher les pièces manquantes")
+        self.checkbox_pieces_manquantes = wx.CheckBox(self, -1, _(u"Afficher les pièces manquantes"))
         self.checkbox_pieces_manquantes.SetValue(True)
-        self.checkbox_tous_inscrits = wx.CheckBox(self, -1, u"Afficher tous les inscrits")
-        self.checkbox_photos = wx.CheckBox(self, -1, u"Afficher les photos :")
+        self.checkbox_tous_inscrits = wx.CheckBox(self, -1, _(u"Afficher tous les inscrits"))
+        self.checkbox_photos = wx.CheckBox(self, -1, _(u"Afficher les photos :"))
         self.checkbox_photos.SetValue(False)
-        self.ctrl_taille_photos = wx.Choice(self, -1, choices=[u"Petite taille", u"Moyenne taille", u"Grande taille"])
+        self.ctrl_taille_photos = wx.Choice(self, -1, choices=[_(u"Petite taille"), _(u"Moyenne taille"), _(u"Grande taille")])
         self.ctrl_taille_photos.SetSelection(1)
         
         # Liste des unités
-        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, u"Unités")
+        self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
         self.ctrl_unites = CTRL_Unites_impression_conso.CTRL(self)
         self.ctrl_unites.MAJ() 
 
@@ -727,17 +730,17 @@ class Dialog(wx.Dialog):
         self.bouton_unites_reinit = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Actualiser.png", wx.BITMAP_TYPE_ANY))
 
         # Mémorisation des paramètres
-        self.ctrl_memoriser = wx.CheckBox(self, -1, u"Mémoriser les paramètres")
+        self.ctrl_memoriser = wx.CheckBox(self, -1, _(u"Mémoriser les paramètres"))
         font = self.GetFont() 
         font.SetPointSize(7)
         self.ctrl_memoriser.SetFont(font)
         self.ctrl_memoriser.SetValue(True) 
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_export = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Export_excel.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_export = CTRL_Bouton_image.CTRL(self, texte=_(u"Export sous Excel"), cheminImage="Images/32x32/Excel.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         
@@ -832,31 +835,31 @@ class Dialog(wx.Dialog):
         self.__do_layout()
 
     def __set_properties(self):
-        self.SetTitle(u"Impression d'une liste de consommations")
-        self.radio_journ.SetToolTipString(u"Cochez ici pour sélectionner une liste journalière")
-        self.radio_period.SetToolTipString(u"Cochez ici pour sélectionner une liste périodique")
-        self.checkbox_ecoles.SetToolTipString(u"Cochez cette case pour regrouper les individus par école et par classe")
-        self.checkbox_saut_ecoles.SetToolTipString(u"Cochez cette case pour insérer un saut de page après chaque école")
-        self.checkbox_saut_classes.SetToolTipString(u"Cochez cette case pour insérer un saut de page après chaque classe")
-        self.checkbox_saut_groupes.SetToolTipString(u"Cochez cette case pour insérer un saut de page après chaque groupe")
-        self.checkbox_couleur.SetToolTipString(u"Cochez cette case pour afficher le fond des titres en couleur")
-        self.ctrl_couleur.SetToolTipString(u"Cliquez ici pour sélectionner une couleur de fond de titre")
-        self.checkbox_lignes_vierges.SetToolTipString(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste")
-        self.checkbox_age.SetToolTipString(u"Cochez cette case pour afficher l'âge des individus dans la liste")
-        self.checkbox_infos.SetToolTipString(u"Cochez cette case pour afficher les informations individuelles")
-        self.checkbox_cotisations_manquantes.SetToolTipString(u"Cochez cette case pour afficher les cotisations manquantes")
-        self.checkbox_pieces_manquantes.SetToolTipString(u"Cochez cette case pour afficher les pièces manquantes")
-        self.checkbox_tous_inscrits.SetToolTipString(u"Cochez cette case pour inclure tous les inscrits dans la liste")
-        self.checkbox_photos.SetToolTipString(u"Cochez cette case pour afficher les photos des individus")
-        self.ctrl_nbre_lignes.SetToolTipString(u"Sélectionnez le nombre de lignes à afficher")
-        self.bouton_unites_monter.SetToolTipString(u"Cliquez ici pour monter l'unité sélectionnée dans la liste")
-        self.bouton_unites_descendre.SetToolTipString(u"Cliquez ici pour descendre l'unité sélectionnée dans la liste")
-        self.bouton_unites_reinit.SetToolTipString(u"Cliquez ici pour réinitialiser la liste complète des unités")
-        self.ctrl_memoriser.SetToolTipString(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_export.SetToolTipString(u"Cliquez ici pour exporter les données vers Excel")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Impression d'une liste de consommations"))
+        self.radio_journ.SetToolTipString(_(u"Cochez ici pour sélectionner une liste journalière"))
+        self.radio_period.SetToolTipString(_(u"Cochez ici pour sélectionner une liste périodique"))
+        self.checkbox_ecoles.SetToolTipString(_(u"Cochez cette case pour regrouper les individus par école et par classe"))
+        self.checkbox_saut_ecoles.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque école"))
+        self.checkbox_saut_classes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque classe"))
+        self.checkbox_saut_groupes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque groupe"))
+        self.checkbox_couleur.SetToolTipString(_(u"Cochez cette case pour afficher le fond des titres en couleur"))
+        self.ctrl_couleur.SetToolTipString(_(u"Cliquez ici pour sélectionner une couleur de fond de titre"))
+        self.checkbox_lignes_vierges.SetToolTipString(_(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste"))
+        self.checkbox_age.SetToolTipString(_(u"Cochez cette case pour afficher l'âge des individus dans la liste"))
+        self.checkbox_infos.SetToolTipString(_(u"Cochez cette case pour afficher les informations individuelles"))
+        self.checkbox_cotisations_manquantes.SetToolTipString(_(u"Cochez cette case pour afficher les cotisations manquantes"))
+        self.checkbox_pieces_manquantes.SetToolTipString(_(u"Cochez cette case pour afficher les pièces manquantes"))
+        self.checkbox_tous_inscrits.SetToolTipString(_(u"Cochez cette case pour inclure tous les inscrits dans la liste"))
+        self.checkbox_photos.SetToolTipString(_(u"Cochez cette case pour afficher les photos des individus"))
+        self.ctrl_nbre_lignes.SetToolTipString(_(u"Sélectionnez le nombre de lignes à afficher"))
+        self.bouton_unites_monter.SetToolTipString(_(u"Cliquez ici pour monter l'unité sélectionnée dans la liste"))
+        self.bouton_unites_descendre.SetToolTipString(_(u"Cliquez ici pour descendre l'unité sélectionnée dans la liste"))
+        self.bouton_unites_reinit.SetToolTipString(_(u"Cliquez ici pour réinitialiser la liste complète des unités"))
+        self.ctrl_memoriser.SetToolTipString(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_export.SetToolTipString(_(u"Cliquez ici pour exporter les données vers Excel"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((970, 530))
 
     def __do_layout(self):
@@ -1104,7 +1107,7 @@ class Dialog(wx.Dialog):
     def OnBoutonExport(self, event=None):
         typeListe = self.ctrl_unites.typeListe
 ##        if typeListe != "journ" :
-##            dlg = wx.MessageDialog(self, u"L'export sous Excel n'est disponible que pour le mode journalier !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+##            dlg = wx.MessageDialog(self, _(u"L'export sous Excel n'est disponible que pour le mode journalier !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
 ##            dlg.ShowModal()
 ##            dlg.Destroy()
 ##            return
@@ -1121,7 +1124,7 @@ class Dialog(wx.Dialog):
         sp = wx.StandardPaths.Get()
         cheminDefaut = sp.GetDocumentsDir()
         dlg = wx.FileDialog(
-            None, message = u"Veuillez sélectionner le répertoire de destination et le nom du fichier", defaultDir=cheminDefaut, 
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
             defaultFile = nomFichier, 
             wildcard = wildcard, 
             style = wx.SAVE
@@ -1136,7 +1139,7 @@ class Dialog(wx.Dialog):
         
         # Le fichier de destination existe déjà :
         if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?", "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
             if dlg.ShowModal() == wx.ID_NO :
                 return False
                 dlg.Destroy()
@@ -1178,7 +1181,7 @@ class Dialog(wx.Dialog):
             lignes = dictFeuille["lignes"]
             
             # Nom de la feuille
-            titre = u"Page %d" % numFeuille
+            titre = _(u"Page %d") % numFeuille
             feuille = classeur.add_sheet(titre)
             
             # Titre de la page
@@ -1196,7 +1199,7 @@ class Dialog(wx.Dialog):
                 numColonne = 0
                 for valeur in ligne :
                     # Largeur colonne
-                    if type(valeur) == unicode and (u"Nom - " in valeur or valeur == "Informations") :
+                    if type(valeur) == unicode and (_(u"Nom - ") in valeur or valeur == "Informations") :
                         feuille.col(numColonne).width = 10000
                     # Valeur case
                     if type(valeur) in (str, unicode, int) :
@@ -1219,8 +1222,8 @@ class Dialog(wx.Dialog):
         classeur.save(cheminFichier)
         
         # Confirmation de création du fichier et demande d'ouverture directe dans Excel
-        txtMessage = u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?"
-        dlgConfirm = wx.MessageDialog(None, txtMessage, u"Confirmation", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
@@ -1234,21 +1237,21 @@ class Dialog(wx.Dialog):
         listeDates = self.ctrl_calendrier.GetDates() 
         if listeDates == None : listeDates = []
         if len(listeDates) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez sélectionner au moins une date !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une date !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         listeActivites = self.ctrl_activites.GetListeActivites() 
         if len(listeActivites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement cocher au moins une activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
         listeGroupes = self.ctrl_activites.GetListeGroupes() 
         if len(listeGroupes) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement cocher au moins un groupe !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins un groupe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1257,21 +1260,21 @@ class Dialog(wx.Dialog):
             
             listeEcoles = self.ctrl_ecoles.GetListeEcoles() 
             if len(listeEcoles) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement cocher au moins une école !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une école !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
             listeClasses = self.ctrl_ecoles.GetListeClasses() 
             if len(listeClasses) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement cocher au moins une classe !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une classe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
             
         dictChoixUnites = self.ctrl_unites.GetDonnees() 
         if len(dictChoixUnites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner au moins une unité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner au moins une unité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -1282,7 +1285,7 @@ class Dialog(wx.Dialog):
             for typeTemp, IDunite, affichage in listeUnitesTemp :
                 if affichage != "jamais" : valide = True
             if valide == False :
-                dlg = wx.MessageDialog(self, u"Vous devez obligatoirement avoir au moins une unité à afficher pour chaque activité !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement avoir au moins une unité à afficher pour chaque activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -1580,8 +1583,8 @@ class Dialog(wx.Dialog):
             largeur_page = A4[1]
 
         # Initialisation du PDF
-        nomDoc = "Temp/liste_consommations_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        nomDoc = "Temp/liste_consommations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur_page, hauteur_page), topMargin=30, bottomMargin=30)
         story = []
         
@@ -1593,10 +1596,10 @@ class Dialog(wx.Dialog):
             largeursColonnes = ( (largeurContenu-100, 100) )
             dateDuJour = DateEngFr(str(datetime.date.today()))
             if typeListe == "journ" :
-                titre = u"Consommations du %s" % DateComplete(min(listeDates))
+                titre = _(u"Consommations du %s") % DateComplete(min(listeDates))
             else:
-                titre = u"Consommations"
-            dataTableau.append((titre, u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)))
+                titre = _(u"Consommations")
+            dataTableau.append((titre, _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)))
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 
@@ -1622,8 +1625,8 @@ class Dialog(wx.Dialog):
 
             ligne = [ (Paragraph(nomActivite, styleActivite), Paragraph(nomGroupe, styleGroupe)), None]
             if self.checkbox_ecoles.GetValue() == True :
-                if nomEcole == None : nomEcole = u"Ecole inconnue"
-                if nomClasse == None : nomClasse = u"Classe inconnue"
+                if nomEcole == None : nomEcole = _(u"Ecole inconnue")
+                if nomClasse == None : nomClasse = _(u"Classe inconnue")
                 ligne[1] = (Paragraph(nomEcole, styleEcole), Paragraph(nomClasse, styleClasse))
             dataTableau.append(ligne)
 
@@ -1717,14 +1720,14 @@ class Dialog(wx.Dialog):
                                             
                         # Recherche des entêtes de colonnes :
                         if self.checkbox_photos.GetValue() == True :
-                            labelsColonnes.append(u"Photo")
+                            labelsColonnes.append(_(u"Photo"))
                             largeursColonnes.append(tailleImageFinal+6)
                             
-                        labelsColonnes.append(u"Nom - prénom")
+                        labelsColonnes.append(_(u"Nom - prénom"))
                         largeursColonnes.append(120)
                         
                         if self.checkbox_age.GetValue() == True :
-                            labelsColonnes.append(u"Âge")
+                            labelsColonnes.append(_(u"Âge"))
                             largeursColonnes.append(20)
                         
                         # Recherche des entetes de colonnes UNITES
@@ -1754,7 +1757,7 @@ class Dialog(wx.Dialog):
                                 positionD = indexCol-1
                                 listePositionsDates.append((date, positionG, positionD))
                         
-                        labelsColonnes.append(u"Informations")
+                        labelsColonnes.append(_(u"Informations"))
                         largeursColonnes.append(largeurContenu - sum(largeursColonnes))
                         
                         # ------ Création de l'entete de groupe ------
@@ -1779,9 +1782,9 @@ class Dialog(wx.Dialog):
                                 
                             index = 0
                             for date, positionG, positionD in listePositionsDates :
-                                listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-                                listeJoursAbrege = (u"Lun.", u"Mar.", u"Mer.", u"Jeu.", u"Ven.", u"Sam.", u"Dim.")
-                                listeMoisAbrege = (u"janv.", u"fév.", u"mars", u"avril", u"mai", u"juin", u"juil.", u"août", u"sept.", u"oct", u"nov.", u"déc.")
+                                listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+                                listeJoursAbrege = (_(u"Lun."), _(u"Mar."), _(u"Mer."), _(u"Jeu."), _(u"Ven."), _(u"Sam."), _(u"Dim."))
+                                listeMoisAbrege = (_(u"janv."), _(u"fév."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"août"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"déc."))
                                 if (positionD-positionG) < 1 :
                                     jourStr = listeJoursAbrege[date.weekday()]
                                     ligne[positionG] = u"%s\n%d\n%s\n%d" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
@@ -1960,9 +1963,9 @@ class Dialog(wx.Dialog):
                                 for IDfamille in listeIDfamille :
                                     if dictCotisations.has_key(IDfamille):
                                         if dictCotisations[IDfamille]["nbre"] == 1 :
-                                            texteCotisation = u"1 cotisation manquante : %s" % dictCotisations[IDfamille]["cotisations"]
+                                            texteCotisation = _(u"1 cotisation manquante : %s") % dictCotisations[IDfamille]["cotisations"]
                                         else:
-                                            texteCotisation = u"%d cotisations manquantes : %s" % (dictCotisations[IDfamille]["nbre"], dictCotisations[IDfamille]["cotisations"])
+                                            texteCotisation = _(u"%d cotisations manquantes : %s") % (dictCotisations[IDfamille]["nbre"], dictCotisations[IDfamille]["cotisations"])
                                         listeInfos.append(ParagraphAndImage(Paragraph(texteCotisation, paraStyle), Image("Images/16x16/Cotisation.png",width=8, height=8), xpad=1, ypad=0, side="left"))
 
                             # Pièces manquantes
@@ -1970,9 +1973,9 @@ class Dialog(wx.Dialog):
                                 for IDfamille in listeIDfamille :
                                     if dictPieces.has_key(IDfamille):
                                         if dictPieces[IDfamille]["nbre"] == 1 :
-                                            textePiece = u"1 pièce manquante : %s" % dictPieces[IDfamille]["pieces"]
+                                            textePiece = _(u"1 pièce manquante : %s") % dictPieces[IDfamille]["pieces"]
                                         else:
-                                            textePiece = u"%d pièces manquantes : %s" % (dictPieces[IDfamille]["nbre"], dictPieces[IDfamille]["pieces"])
+                                            textePiece = _(u"%d pièces manquantes : %s") % (dictPieces[IDfamille]["nbre"], dictPieces[IDfamille]["pieces"])
                                         listeInfos.append(ParagraphAndImage(Paragraph(textePiece, paraStyle), Image("Images/16x16/Piece.png",width=8, height=8), xpad=1, ypad=0, side="left"))
                                 
                             # Sieste
@@ -2001,12 +2004,12 @@ class Dialog(wx.Dialog):
                                     if traitement == 1 and description_traitement != None and description_traitement != "" :
                                         texteDatesTraitement = u""
                                         if date_debut_traitement != None and date_fin_traitement != None : 
-                                            texteDatesTraitement = u" du %s au %s" % (DateEngFr(date_debut_traitement), DateEngFr(date_fin_traitement))
+                                            texteDatesTraitement = _(u" du %s au %s") % (DateEngFr(date_debut_traitement), DateEngFr(date_fin_traitement))
                                         if date_debut_traitement != None and date_fin_traitement == None : 
-                                            texteDatesTraitement = u" à partir du %s" % DateEngFr(date_debut_traitement)
+                                            texteDatesTraitement = _(u" à partir du %s") % DateEngFr(date_debut_traitement)
                                         if date_debut_traitement == None and date_fin_traitement != None : 
-                                            texteDatesTraitement = u" jusqu'au %s" % DateEngFr(date_fin_traitement)
-                                        texte += u"Traitement%s : %s." % (texteDatesTraitement, description_traitement)
+                                            texteDatesTraitement = _(u" jusqu'au %s") % DateEngFr(date_fin_traitement)
+                                        texte += _(u"Traitement%s : %s.") % (texteDatesTraitement, description_traitement)
                                     
                                     img = DICT_TYPES_INFOS[IDtype]["img"]
                                     listeInfos.append(ParagraphAndImage(Paragraph(texte, paraStyle), Image("Images/16x16/%s" % img,width=8, height=8), xpad=1, ypad=0, side="left"))
@@ -2065,7 +2068,7 @@ class Dialog(wx.Dialog):
                             largeurTableau = 0
                             for largeur in largeursColonnes :
                                 if largeur < 0 :
-                                    dlg = wx.MessageDialog(self, u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier...", u"Erreur", wx.OK | wx.ICON_ERROR)
+                                    dlg = wx.MessageDialog(self, _(u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return False
@@ -2094,9 +2097,9 @@ class Dialog(wx.Dialog):
                                 valeur = ""
                             if indexCol == colNomsIndividus : 
                                 if len(listeIndividus) == 1 :
-                                    valeur = u"1 individu"
+                                    valeur = _(u"1 individu")
                                 else:
-                                    valeur = u"%d individus" % len(listeIndividus)
+                                    valeur = _(u"%d individus") % len(listeIndividus)
                             ligne.append(valeur)     
                         listeLignesExport.append(ligne)               
                         

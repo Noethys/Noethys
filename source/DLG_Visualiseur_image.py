@@ -8,13 +8,16 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 ID_PLUS = 100
 ID_MOINS = 101
 
-phrase1 = u"Ramener l'image à sa taille d'origine"
-phrase2 = u"Opération interdite"
+phrase1 = _(u"Ramener l'image à sa taille d'origine")
+phrase2 = _(u"Opération interdite")
 
 if not wx.USE_UNICODE:
     phrase1 = phrase1.encode("iso8859-15", "replace")
@@ -69,7 +72,7 @@ class MyFrame(wx.Frame):
         _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         self.SetIcon(_icon)
-        self.SetTitle(u"Visualisateur d'image")
+        self.SetTitle(_(u"Visualisateur d'image"))
         
         self.imgORIG = None
         self.imgORIX = 0
@@ -104,25 +107,25 @@ class MyFrame(wx.Frame):
         outils = wx.ToolBar(self, -1, style = wx.TB_HORIZONTAL | wx.NO_BORDER)
         outils.AddSimpleTool(wx.ID_EXIT,
                     wx.Bitmap("Images/32x32/Fermer.png", wx.BITMAP_TYPE_PNG),
-                    shortHelpString = u"Fermer le visualiseur",
-                    longHelpString = u"Fermer le visualiseur")
+                    shortHelpString = _(u"Fermer le visualiseur"),
+                    longHelpString = _(u"Fermer le visualiseur"))
         
         outils.AddSeparator()
         
         outils.AddSimpleTool(ID_PLUS,
                     wx.Bitmap("Images/32x32/zoom_plus.png", wx.BITMAP_TYPE_PNG),
-                    shortHelpString = u"Agrandir", 
-                    longHelpString = u"Agrandir l'image")
+                    shortHelpString = _(u"Agrandir"), 
+                    longHelpString = _(u"Agrandir l'image"))
                     
         outils.AddSimpleTool(wx.ID_UNDO, 
                     wx.Bitmap("Images/32x32/zoom_init.png", wx.BITMAP_TYPE_PNG),
-                    shortHelpString = u"Taille originale",
+                    shortHelpString = _(u"Taille originale"),
                     longHelpString = phrase1)
 
         outils.AddSimpleTool(ID_MOINS,
                     wx.Bitmap("Images/32x32/zoom_moins.png", wx.BITMAP_TYPE_PNG),
-                    shortHelpString = u"Diminuer",
-                    longHelpString = u"Diminuer l'image")
+                    shortHelpString = _(u"Diminuer"),
+                    longHelpString = _(u"Diminuer l'image"))
         
         outils.Realize()
         self.SetToolBar(outils)
@@ -172,12 +175,12 @@ class MyFrame(wx.Frame):
 
     def OnOpen(self, evt):
         if self.imgORIG != None :
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord fermer l'image en cours d'utilisation",
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord fermer l'image en cours d'utilisation"),
                        phrase2, style = wx.OK)
             retour = dlg.ShowModal()
             dlg.Destroy()
         else:
-            dlg = wx.FileDialog(self, u"Choisissez un fichier",
+            dlg = wx.FileDialog(self, _(u"Choisissez un fichier"),
                     wildcard = "*.*",
                     style = wx.OPEN)
             retour = dlg.ShowModal()
@@ -190,7 +193,7 @@ class MyFrame(wx.Frame):
                 self.imgORIY = self.imgORIG.GetHeight()
                 self.bmpRESU = self.imgORIG.ConvertToBitmap()
                 self.panneau.Affiche(self.bmpRESU, self.ratio)
-                self.SetTitle(u"Visualiseur d'images [%s]"% fichier)
+                self.SetTitle(_(u"Visualiseur d'images [%s]")% fichier)
                 self.barre.SetStatusText("(%s, %s) %s %%"%(self.imgORIX, self.imgORIY, self.ratio), 1)
     
     def ChargeImagePIL(self, imgPIL=None):
@@ -218,7 +221,7 @@ class MyFrame(wx.Frame):
             self.imgORIY = 0
             self.bmpRESU = None
             self.ratio = 100
-            self.SetTitle(u"Visualiseur d'images")
+            self.SetTitle(_(u"Visualiseur d'images"))
             self.barre.SetStatusText("", 1)
 
     def OnExit(self, evt):

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hyperlink as Hyperlink
 
 import OL_Liste_cotisations #OL_Factures
@@ -55,13 +58,13 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportExcel, self.bouton_liste_export_excel)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu de la cotisation sélectionnée")
-        self.bouton_email.SetToolTipString(u"Cliquez ici envoyer la cotisation sélectionnée par Email")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la cotisation sélectionnée ou les cotisations cochées")
-        self.bouton_liste_apercu.SetToolTipString(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")
-        self.bouton_liste_imprimer.SetToolTipString(u"Cliquez ici pour imprimer cette liste")
-        self.bouton_liste_export_texte.SetToolTipString(u"Cliquez ici pour exporter cette liste au format Texte")
-        self.bouton_liste_export_excel.SetToolTipString(u"Cliquez ici pour exporter cette liste au format Excel")
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la cotisation sélectionnée"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici envoyer la cotisation sélectionnée par Email"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la cotisation sélectionnée ou les cotisations cochées"))
+        self.bouton_liste_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste"))
+        self.bouton_liste_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer cette liste"))
+        self.bouton_liste_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Texte"))
+        self.bouton_liste_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Excel"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -151,7 +154,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)        
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ() 
-        self.boutonTest = wx.Button(panel, -1, u"Bouton de test")
+        self.boutonTest = wx.Button(panel, -1, _(u"Bouton de test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         sizer_2.Add(self.boutonTest, 0, wx.ALL|wx.EXPAND, 4)
@@ -167,7 +170,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

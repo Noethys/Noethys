@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import datetime
@@ -45,8 +48,8 @@ def DateEngFr(textDate):
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
     if dateDD == None : return u""
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -55,7 +58,7 @@ def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
         
 def PeriodeComplete(mois, annee):
-    listeMois = (u"Janvier", u"Février", u"Mars", u"Avril", u"Mai", u"Juin", u"Juillet", u"Août", u"Septembre", u"Octobre", u"Novembre", u"Décembre")
+    listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
@@ -310,12 +313,12 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                     dateNaiss = dictIndividus[IDindividu]["date_naiss"]
                     if dateNaiss != None : 
                         if DICT_CIVILITES[IDcivilite]["sexe"] == "M" :
-                            texteDateNaiss = u", né le %s" % DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", né le %s") % DateEngFr(str(dateNaiss))
                         else:
-                            texteDateNaiss = u", née le %s" % DateEngFr(str(dateNaiss))
+                            texteDateNaiss = _(u", née le %s") % DateEngFr(str(dateNaiss))
                     else:
                         texteDateNaiss = u""
-                    texteIndividu = u"<b>%s %s</b><font size=7>%s</font>" % (nomIndividu, prenomIndividu, texteDateNaiss)
+                    texteIndividu = _(u"<b>%s %s</b><font size=7>%s</font>") % (nomIndividu, prenomIndividu, texteDateNaiss)
                     nom = u"%s %s" % (nomIndividu, prenomIndividu)
                     
                     # créé le texte complet des noms des individus pour l'intro de l'attestation
@@ -323,7 +326,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                     
                 else:
                     # Si c'est pour une prestation familiale on créé un individu ID 0 :
-                    nom = u"Prestations familiales"
+                    nom = _(u"Prestations familiales")
                     texteIndividu = u"<b>%s</b>" % nom
                     
                 dictComptes[IDcompte_payeur]["individus"][IDindividu] = { "texte" : texteIndividu, "activites" : {}, "total" : FloatToDecimal(0.0), "ventilation" : FloatToDecimal(0.0), "total_reports" : FloatToDecimal(0.0), "nom" : nom, "select" : True }
@@ -333,7 +336,7 @@ def Importation(liste_activites=[], date_debut=None, date_fin=None, date_edition
                 texteActivite = nomActivite
                 agrement = RechercheAgrement(listeAgrements, IDactivite, date)
                 if agrement != None :
-                    texteActivite += u" - n° agrément : %s" % agrement
+                    texteActivite += _(u" - n° agrément : %s") % agrement
                 dictComptes[IDcompte_payeur]["individus"][IDindividu]["activites"][IDactivite] = { "texte" : texteActivite, "presences" : {} }
             
             # Ajout de la présence
@@ -405,10 +408,10 @@ class CTRL(HTL.HyperTreeList):
         
         # Création des colonnes
         listeColonnes = [
-            ( u"Famille/Individu", 270, wx.ALIGN_LEFT),
-            ( u"Total", 80, wx.ALIGN_RIGHT),
-            ( u"Réglé", 80, wx.ALIGN_RIGHT),
-            ( u"Solde", 80, wx.ALIGN_RIGHT),
+            ( _(u"Famille/Individu"), 270, wx.ALIGN_LEFT),
+            ( _(u"Total"), 80, wx.ALIGN_RIGHT),
+            ( _(u"Réglé"), 80, wx.ALIGN_RIGHT),
+            ( _(u"Solde"), 80, wx.ALIGN_RIGHT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -427,9 +430,9 @@ class CTRL(HTL.HyperTreeList):
         
     def AfficheNbreComptes(self, nbreComptes=0):
         if self.parent.GetName() == "DLG_Attestations_selection" :
-            if nbreComptes == 0 : label = u"Aucune attestation sélectionnée"
-            elif nbreComptes == 1 : label = u"1 attestation sélectionnée"
-            else: label = u"%d attestations sélectionnées" % nbreComptes
+            if nbreComptes == 0 : label = _(u"Aucune attestation sélectionnée")
+            elif nbreComptes == 1 : label = _(u"1 attestation sélectionnée")
+            else: label = _(u"%d attestations sélectionnées") % nbreComptes
             self.parent.staticbox_attestations_staticbox.SetLabel(label)
         
     def OnCheckItem(self, event):
@@ -522,7 +525,7 @@ class CTRL(HTL.HyperTreeList):
             if dictCoches.has_key(IDcompte_payeur) :
                 dictCompte["select"] = True
                 # Attribue un numéro de facture
-                dictCompte["numero"] = u"Attestation n°%06d" % num_attestation
+                dictCompte["numero"] = _(u"Attestation n°%06d") % num_attestation
                 dictCompte["num_attestation"] = num_attestation
                 dictCompte["{NUM_ATTESTATION}"] = u"%06d" % num_attestation
                 dictCompte["{CODEBARRES_NUM_ATTESTATION}"] = "F%06d" % num_attestation
@@ -534,11 +537,11 @@ class CTRL(HTL.HyperTreeList):
                 nbreIndividus = len(listeNoms)
                 if nbreIndividus == 0 : texteNoms = u""
                 if nbreIndividus == 1 : texteNoms = listeNoms[0]
-                if nbreIndividus == 2 : texteNoms = u"%s et %s" % (listeNoms[0], listeNoms[1])
+                if nbreIndividus == 2 : texteNoms = _(u"%s et %s") % (listeNoms[0], listeNoms[1])
                 if nbreIndividus > 2 :
                     for texteNom in listeNoms[:-2] :
                         texteNoms += u"%s, " % texteNom
-                    texteNoms += u"%s et %s" % (listeNoms[-2], listeNoms[-1])
+                    texteNoms += _(u"%s et %s") % (listeNoms[-2], listeNoms[-1])
                 dictCompte["{NOMS_INDIVIDUS}"] = texteNoms
     
                 dictCompte["{SIGNATAIRE_NOM}"] = infosSignataire["nom"]
@@ -568,12 +571,12 @@ class CTRL(HTL.HyperTreeList):
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.CocheTout() 
 
     def Remplissage(self):
-        dlgAttente = PBI.PyBusyInfo(u"Recherche des prestations en cours...", parent=None, title=u"Veuillez patienter...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Recherche des prestations en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         try :
             wx.Yield() 
         except :
@@ -660,7 +663,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille de %s" % nomIndividu)
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille de %s") % nomIndividu)
         bmp = wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -675,13 +678,13 @@ class CTRL(HTL.HyperTreeList):
         item = self.GetSelection()
         dictItem = self.GetMainWindow().GetItemPyData(item)
         if dictItem == None :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune famille dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         type = dictItem["type"]
         if type != "compte" : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune famille dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune famille dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -727,8 +730,8 @@ class CTRL(HTL.HyperTreeList):
         # Initialisation du PDF
         PAGE_HEIGHT=defaultPageSize[1]
         PAGE_WIDTH=defaultPageSize[0]
-        nomDoc = "Temp/liste_attestations_%s.pdf" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-        if "win" in sys.platform : nomDoc = nomDoc.replace("/", "\\")
+        nomDoc = "Temp/liste_attestations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30)
         story = []
         
@@ -739,7 +742,7 @@ class CTRL(HTL.HyperTreeList):
             dataTableau = []
             largeursColonnes = ( (420, 100) )
             dateDuJour = DateEngFr(str(datetime.date.today()))
-            dataTableau.append( (u"Liste des attestations", u"%s\nEdité le %s" % (UTILS_Organisateur.GetNom(), dateDuJour)) )
+            dataTableau.append( (_(u"Liste des attestations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
                     ('VALIGN', (0,0), (-1,-1), 'TOP'), 

@@ -8,14 +8,18 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 import wx.html as html
 import GestionDB
 import datetime
 import os
 import subprocess
-
+import webbrowser
+import random
 
 
 
@@ -176,7 +180,7 @@ def Recup_liste_pb_personnes(recalc=False):
 ##    print ">>>", nomWindow
     # Si Recalcul des données obligatoire :
     if recalc == True :
-        print u"Recalcul obligatoire des donnees"
+        print _(u"Recalcul obligatoire des donnees")
         topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes = Creation_liste_pb_personnes()
         return topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes
     
@@ -185,11 +189,11 @@ def Recup_liste_pb_personnes(recalc=False):
         # On essaie de récupérer les dictionnaires dans la topWindow
         dictNomsPersonnes = topWindow.dictNomsPersonnes
         dictProblemesPersonnes = topWindow.dictProblemesPersonnes
-##        print u"Recuperation dans le topWindow"
+##        print _(u"Recuperation dans le topWindow")
         return dictNomsPersonnes, dictProblemesPersonnes
     except :
         topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes = Creation_liste_pb_personnes()
-##        print u"Recuperation dans la topWindow impossible : on calcule les donnees"
+##        print _(u"Recuperation dans la topWindow impossible : on calcule les donnees")
         return topWindow.dictNomsPersonnes, topWindow.dictProblemesPersonnes
 
     
@@ -245,34 +249,34 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         problemesFiche = []
         
         # Civilité
-        if civilite == "" or civilite == None : problemesFiche.append( (u"Civilité") )
+        if civilite == "" or civilite == None : problemesFiche.append( (_(u"Civilité")) )
         # Nom
-        if nom == "" or nom == None : problemesFiche.append( (u"Nom de famille") )
+        if nom == "" or nom == None : problemesFiche.append( (_(u"Nom de famille")) )
         # Nom de jeune fille
         if civilite == "Mme" :
-            if nom_jfille == "" or nom_jfille == None : problemesFiche.append( (u"Nom de jeune fille") )
+            if nom_jfille == "" or nom_jfille == None : problemesFiche.append( (_(u"Nom de jeune fille")) )
         # Prénom
-        if prenom == "" or prenom == None : problemesFiche.append( (u"Prénom") )
+        if prenom == "" or prenom == None : problemesFiche.append( (_(u"Prénom")) )
         # Date de naissance
-        if str(date_naiss).strip(" ") == "" or date_naiss == None : problemesFiche.append( (u"Date de naissance") )
+        if str(date_naiss).strip(" ") == "" or date_naiss == None : problemesFiche.append( (_(u"Date de naissance")) )
         # CP_naissance
-        if str(cp_naiss).strip(" ") == "" or cp_naiss == None : problemesFiche.append( (u"Code postal de la ville de naissance") )
+        if str(cp_naiss).strip(" ") == "" or cp_naiss == None : problemesFiche.append( (_(u"Code postal de la ville de naissance")) )
         # Ville de naissance
-        if ville_naiss == "" or ville_naiss == None : problemesFiche.append( (u"Ville de naissance") )
+        if ville_naiss == "" or ville_naiss == None : problemesFiche.append( (_(u"Ville de naissance")) )
         # Pays de naissance
-        if pays_naiss == "" or pays_naiss == None or pays_naiss == 0 : problemesFiche.append( (u"Pays de naissance") )
+        if pays_naiss == "" or pays_naiss == None or pays_naiss == 0 : problemesFiche.append( (_(u"Pays de naissance")) )
         # Nationalite
-        if nationalite == "" or nationalite == None or nationalite == 0 : problemesFiche.append( (u"Nationalité") )
+        if nationalite == "" or nationalite == None or nationalite == 0 : problemesFiche.append( (_(u"Nationalité")) )
         # Num Sécu
-        if str(num_secu).strip(" ") == "" or num_secu == None : problemesFiche.append( (u"Numéro de sécurité sociale") )
+        if str(num_secu).strip(" ") == "" or num_secu == None : problemesFiche.append( (_(u"Numéro de sécurité sociale")) )
         # Adresse résidence
-        if adresse_resid == "" or adresse_resid == None : problemesFiche.append( (u"Adresse de résidence") )
+        if adresse_resid == "" or adresse_resid == None : problemesFiche.append( (_(u"Adresse de résidence")) )
         # Code postal résidence
-        if str(cp_resid).strip(" ") == "" or cp_resid == None : problemesFiche.append( (u"Code postal de résidence") )
+        if str(cp_resid).strip(" ") == "" or cp_resid == None : problemesFiche.append( (_(u"Code postal de résidence")) )
         # Ville résidence
-        if ville_resid == "" or ville_resid == None : problemesFiche.append( (u"Ville de résidence") )
+        if ville_resid == "" or ville_resid == None : problemesFiche.append( (_(u"Ville de résidence")) )
         # Situation
-        if IDsituation == "" or IDsituation == None or IDsituation == 0 : problemesFiche.append( (u"Situation sociale") )
+        if IDsituation == "" or IDsituation == None or IDsituation == 0 : problemesFiche.append( (_(u"Situation sociale")) )
 
     
         # Analyse des coordonnées
@@ -284,15 +288,15 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         listeCoords = DB.resultatReq()
         
         if len(listeCoords) == 0 : 
-            problemesFiche.append( (u"Coordonnées téléphoniques") )
+            problemesFiche.append( (_(u"Coordonnées téléphoniques")) )
         
         # Met les données dans le dictionnaire
         if len(problemesFiche) != 0 : 
             if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
             if len(problemesFiche) == 1 : 
-                categorie = u"1 information manquante"
+                categorie = _(u"1 information manquante")
             else:
-                categorie = str(len(problemesFiche))  + u" informations manquantes"
+                categorie = str(len(problemesFiche))  + _(u" informations manquantes")
             dictProblemes[IDpersonne][categorie] = problemesFiche
             
     
@@ -382,17 +386,17 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
         if len(piecesManquantes) != 0 : 
             if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
             if len(piecesManquantes) == 1 : 
-                categorie = u"1 pièce manquante"
+                categorie = _(u"1 pièce manquante")
             else:
-                categorie = str(len(piecesManquantes))  + u" pièces manquantes"
+                categorie = str(len(piecesManquantes))  + _(u" pièces manquantes")
             dictProblemes[IDpersonne][categorie] = piecesManquantes
 
         if len(piecesPerimees) != 0 : 
             if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
             if len(piecesPerimees) == 1 : 
-                categorie = u"1 pièce bientôt périmée"
+                categorie = _(u"1 pièce bientôt périmée")
             else:
-                categorie = str(len(piecesPerimees))  + u" pièces bientôt périmées"
+                categorie = str(len(piecesPerimees))  + _(u" pièces bientôt périmées")
             dictProblemes[IDpersonne][categorie] = piecesPerimees
         
         
@@ -411,20 +415,20 @@ def Recherche_problemes_personnes(listeIDpersonnes = (), infosPersonne=[]):
             due = contrat[2]
             # Signature
             if signature == "" or signature == "Non" : 
-                txt = u"Contrat non signé"
+                txt = _(u"Contrat non signé")
                 problemesContrats.append( (txt) )
             # DUE
             if due == "" or due == "Non" : 
-                txt = u"DUE à faire"
+                txt = _(u"DUE à faire")
                 problemesContrats.append( (txt) )
         
         # Met les données dans le dictionnaire
         if len(problemesContrats) != 0 : 
             if dictProblemes.has_key(IDpersonne) == False : dictProblemes[IDpersonne] = {}
             if len(problemesContrats) == 1 : 
-                categorie = u"1 contrat à voir"
+                categorie = _(u"1 contrat à voir")
             else:
-                categorie = str(len(problemesContrats))  + u" contrats à voir"
+                categorie = str(len(problemesContrats))  + _(u" contrats à voir")
             dictProblemes[IDpersonne][categorie] = problemesContrats
     
 
@@ -460,7 +464,7 @@ def Recherche_ContratsEnCoursOuAVenir() :
 
 
 class BarreTitre(wx.Panel):
-    def __init__(self, parent, titre=u"Titre", infoBulle="", arrondis=False, couleurFondPanel=None):
+    def __init__(self, parent, titre=_(u"Titre"), infoBulle="", arrondis=False, couleurFondPanel=None):
         wx.Panel.__init__(self, parent, -1, size=(-1, 80))
         couleurFond = (70, 70, 70)
         # Contrôles
@@ -571,7 +575,7 @@ def sendTextMail():
         smtpServer = 'smtp.orange.fr'
         sourceAddress = 'test@fPython.fr'
         MAIL_SUBJECT="sujet du mail"
-        MAIL_CONTENT = u"ceci est le contenu du mail"
+        MAIL_CONTENT = _(u"ceci est le contenu du mail")
         
         server = smtplib.SMTP( smtpServer, '25', 'localhost' )
         msg = ("From: %s\r\nTo: %s\r\nSubject: %s\r\n\r\n" % ( sourceAddress, ", ".join( addressTarget ), MAIL_SUBJECT))
@@ -585,34 +589,28 @@ def sendTextMail():
 
 def EnvoyerMail(adresses = [], sujet="", message=""):
     """ Envoyer un Email avec le client de messagerie par défaut """
-    if "linux" in sys.platform :
-        dlg = wx.MessageDialog(None, u"Désolé, cette fonction n'est pas encore disponible dans la version LINUX de Teamworks.", u"Fonction indisponible", wx.OK | wx.ICON_ERROR)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return
-        
     if len(adresses) == 1 :
-        commande = "start mailto:%s" % adresses[0]
+        commande = "mailto:%s" % adresses[0]
     else:
-        commande = "start mailto:%s" % adresses[0] + "?"
+        commande = "mailto:%s" % adresses[0] + "?"
         if len(adresses) > 1 :
             commande+= "bcc=%s" % adresses[1]
         for adresse in adresses[2:] :
-            commande+= "^&bcc=%s" % adresse
+            commande+= "&bcc=%s" % adresse
     if sujet != "" : 
         if len(adresses) == 1 : 
             commande += "?"
         else :
-            commande += "^&"
+            commande += "&"
         commande += "subject=%s" % sujet
     if message != "" : 
         if len(adresses) == 1 and sujet == "" : 
             commande += "?"
         else:
-            commande += "^&"
+            commande += "&"
         commande += "body=%s" % message
     #print commande
-    os.system(commande)
+    webbrowser.open(commande)
 
 
 class FichierConfig():
@@ -673,8 +671,8 @@ def Aide(numItem=None):
 ##    return
     
 ##    # ------- TEMPORAIRE : ---------------
-##    txtMessage = u"Le système d'aide n'est pas encore fonctionnel (actuellement en cours de rédaction).\n\nVous pouvez tout de même trouver actuellement de l'aide sur le forum de TeamWorks à l'adresse suivante : \nhttp://teamworks.forumactif.com (ou cliquez dans la barre de menu sur 'Aide' puis 'Accéder au Forum')."
-##    dlg = wx.MessageDialog(None, txtMessage, u"Aide", wx.OK | wx.ICON_INFORMATION)
+##    txtMessage = _(u"Le système d'aide n'est pas encore fonctionnel (actuellement en cours de rédaction).\n\nVous pouvez tout de même trouver actuellement de l'aide sur le forum de TeamWorks à l'adresse suivante : \nhttp://teamworks.forumactif.com (ou cliquez dans la barre de menu sur 'Aide' puis 'Accéder au Forum').")
+##    dlg = wx.MessageDialog(None, txtMessage, _(u"Aide"), wx.OK | wx.ICON_INFORMATION)
 ##    dlg.ShowModal()
 ##    dlg.Destroy()
 ##    return
@@ -685,66 +683,66 @@ def Aide(numItem=None):
     nomAncre = ""
     
     dictAide = {
-        1 : ("Leplanning", "", u"planning"),
-        2 : ("ImprimeruneDUE", "", u"Edition DUE"),
-        3 : ("Envoyerunmailgroup", "", u"Envoi mail groupé"),
-        4 : ("Creerunnouveaufichier", "", u"Créer un nouveau fichier"),
-        5 : ("Imprimerunelistedeprsences", "", u"Impression d'une liste de présences"),
-        6 : ("Lescontrats", "", u"Impression d'un contrat ou d'une DUE"),
-        7 : ("Laprotectionparmotdepasse", "", u"Saisie du mot de passe d'ouverture"),
-        8 : ("Lescatgoriesdeprsences", "", u"Config Catégories de présences"),
-        9 : ("Lespriodesdevacances", "", u"Saisie d'une période de vacances"),
-        10 : ("Lestypesdecontrats", "", u"Config types de contrats"),
-        11 : ("Lescatgoriesdeprsences", "", u"Saisie d'une cat de présences"),
-        12 : ("Personnes", "", u"Panneau Personnes"),
-        13 : ("Lesvaleursdepoints", "", u"Saisie val point"),
-        14 : ("Appliquerunmodledeprsences", "creer_modele", u"Saisie d'un modèle"),
-        15 : ("Lespaysetnationalits", "", u"Config pays"),
-        16 : ("Lestypesdepices", "", u"Config types pièces"),
-        17 : ("Lasauvegardeautomatique", "", u"Panel sauvegarde automatique"),
-        18 : ("Creerunesauvegarde", "", u"Créer une sauvegarde occasionnelle"),
-        19 : ("Restaurerunesauvegarde", "", u"Restaurer une sauvegarde"),
-        20 : ("Leschampsdecontrats", "", u"Saisie champs contrats"),
-        21 : ("Ladresse", "", u"Gestion des villes"),
-        22 : ("Imprimerunefichedefrais", "", u"Impression frais"),
-        23 : ("Lespaysetnationalits", "", u"Saisir un pays"),
-        24 : ("Lestypesdesituations", "", u"Config situations"),
-        25 : ("Gestiondesfraisdedplacements", "", u"Gestion des frais"),
-        26 : ("Laprotectionparmotdepasse", "", u"Config Password"),
-        27 : ("Lesvaleursdepoints", "", u"Config val_point"),
-        28 : ("Rechercherdesmisesjour", "", u"Updater"),
-        29 : ("Crerunepice", "", u"Saisie pièces"),
-        30 : ("Imprimerdesphotosdepersonnes", "", u"Impression_photo"),
+        1 : ("Leplanning", "", _(u"planning")),
+        2 : ("ImprimeruneDUE", "", _(u"Edition DUE")),
+        3 : ("Envoyerunmailgroup", "", _(u"Envoi mail groupé")),
+        4 : ("Creerunnouveaufichier", "", _(u"Créer un nouveau fichier")),
+        5 : ("Imprimerunelistedeprsences", "", _(u"Impression d'une liste de présences")),
+        6 : ("Lescontrats", "", _(u"Impression d'un contrat ou d'une DUE")),
+        7 : ("Laprotectionparmotdepasse", "", _(u"Saisie du mot de passe d'ouverture")),
+        8 : ("Lescatgoriesdeprsences", "", _(u"Config Catégories de présences")),
+        9 : ("Lespriodesdevacances", "", _(u"Saisie d'une période de vacances")),
+        10 : ("Lestypesdecontrats", "", _(u"Config types de contrats")),
+        11 : ("Lescatgoriesdeprsences", "", _(u"Saisie d'une cat de présences")),
+        12 : ("Personnes", "", _(u"Panneau Personnes")),
+        13 : ("Lesvaleursdepoints", "", _(u"Saisie val point")),
+        14 : ("Appliquerunmodledeprsences", "creer_modele", _(u"Saisie d'un modèle")),
+        15 : ("Lespaysetnationalits", "", _(u"Config pays")),
+        16 : ("Lestypesdepices", "", _(u"Config types pièces")),
+        17 : ("Lasauvegardeautomatique", "", _(u"Panel sauvegarde automatique")),
+        18 : ("Creerunesauvegarde", "", _(u"Créer une sauvegarde occasionnelle")),
+        19 : ("Restaurerunesauvegarde", "", _(u"Restaurer une sauvegarde")),
+        20 : ("Leschampsdecontrats", "", _(u"Saisie champs contrats")),
+        21 : ("Ladresse", "", _(u"Gestion des villes")),
+        22 : ("Imprimerunefichedefrais", "", _(u"Impression frais")),
+        23 : ("Lespaysetnationalits", "", _(u"Saisir un pays")),
+        24 : ("Lestypesdesituations", "", _(u"Config situations")),
+        25 : ("Gestiondesfraisdedplacements", "", _(u"Gestion des frais")),
+        26 : ("Laprotectionparmotdepasse", "", _(u"Config Password")),
+        27 : ("Lesvaleursdepoints", "", _(u"Config val_point")),
+        28 : ("Rechercherdesmisesjour", "", _(u"Updater")),
+        29 : ("Crerunepice", "", _(u"Saisie pièces")),
+        30 : ("Imprimerdesphotosdepersonnes", "", _(u"Impression_photo")),
         31 : ("Lesmodlesdecontrats", "", u"wiz création modele contrat"),
-        32 : ("Laprotectionparmotdepasse", "", u"Saisie pwd"),
-        33 : ("Saisirunetcheunique", "", u"Saisie d'une présence"),
-        34 : ("Lesjoursfris", "", u"Config jours fériés"),
-        35 : ("Leschampsdecontrats", "", u"Config champs contrats"),
-        36 : ("Enregistrerunremboursement", "", u"Saisie remboursement"),
+        32 : ("Laprotectionparmotdepasse", "", _(u"Saisie pwd")),
+        33 : ("Saisirunetcheunique", "", _(u"Saisie d'une présence")),
+        34 : ("Lesjoursfris", "", _(u"Config jours fériés")),
+        35 : ("Leschampsdecontrats", "", _(u"Config champs contrats")),
+        36 : ("Enregistrerunremboursement", "", _(u"Saisie remboursement")),
         37 : ("Imprimeruncontrat", "", u"wiz édition contrat"),
-        38 : ("Lesclassifications", "", u"Config classifications"),
-        39 : ("Lesjoursfris", "", u"Saisie jour férié"),
-        40 : ("Appliquerunmodledeprsences", "", u"Application modèle de présences"),
-        41 : ("Lestypesdecontrats", "", u"Saisie types contrats"),
-        42 : ("Attribuerunephoto", "", u"Editeur photo"),
-        43 : ("Lespriodesdevacances", "", u"Config périodes vacances"),
-        44 : ("Enregistrerundplacement", "", u"Saisie déplacement"),
-        45 : ("Lesgadgets", "", u"Config gadgets"),
-        46 : ("ExporterlespersonnesdansMSOutl", "", u"Export Outlook"),
-        47 : ("Ouvrirunfichier", "", u"Ouvrir un fichier"),
-        48 : ("Lestypesdequalifications", "", u"Config types diplomes"),
-        49 : ("Assistantdemarrage", "", u"Assistant démarrage"),
-        50 : ("Lestypesdepices", "", u"Saisie types pièces"),
-        51 : ("Lecalendrier", "", u"Le calendrier"),
-        52 : ("Lesmodlesdecontrats", "", u"Config modeles contrats"),
-        53 : ("Lalistedespersonnes", "Options", u"Config liste personnes"),
+        38 : ("Lesclassifications", "", _(u"Config classifications")),
+        39 : ("Lesjoursfris", "", _(u"Saisie jour férié")),
+        40 : ("Appliquerunmodledeprsences", "", _(u"Application modèle de présences")),
+        41 : ("Lestypesdecontrats", "", _(u"Saisie types contrats")),
+        42 : ("Attribuerunephoto", "", _(u"Editeur photo")),
+        43 : ("Lespriodesdevacances", "", _(u"Config périodes vacances")),
+        44 : ("Enregistrerundplacement", "", _(u"Saisie déplacement")),
+        45 : ("Lesgadgets", "", _(u"Config gadgets")),
+        46 : ("ExporterlespersonnesdansMSOutl", "", _(u"Export Outlook")),
+        47 : ("Ouvrirunfichier", "", _(u"Ouvrir un fichier")),
+        48 : ("Lestypesdequalifications", "", _(u"Config types diplomes")),
+        49 : ("Assistantdemarrage", "", _(u"Assistant démarrage")),
+        50 : ("Lestypesdepices", "", _(u"Saisie types pièces")),
+        51 : ("Lecalendrier", "", _(u"Le calendrier")),
+        52 : ("Lesmodlesdecontrats", "", _(u"Config modeles contrats")),
+        53 : ("Lalistedespersonnes", "Options", _(u"Config liste personnes")),
         54 : ("Creruncontrat", "", u"wiz creation contrats"),
-        55 : ("Lalistedespersonnes", "export_liste", u"export liste personnes"),
-        56 : ("Lalistedespersonnes", "Imprimer_liste", u"Imprimer liste Personnes"),
-        57 : ("Laficheindividuelle", "", u"Fiche individuelle"),
-        58 : ("Lagestiondesscnarios", "", u"Les scénarios"),
-        59 : ("Lesstatistiques", "", u"Les statistiques"),
-        60 : ("Lagestiondesutilisateurs", "", u"La gestion des utilisateurs réseau"),
+        55 : ("Lalistedespersonnes", "export_liste", _(u"export liste personnes")),
+        56 : ("Lalistedespersonnes", "Imprimer_liste", _(u"Imprimer liste Personnes")),
+        57 : ("Laficheindividuelle", "", _(u"Fiche individuelle")),
+        58 : ("Lagestiondesscnarios", "", _(u"Les scénarios")),
+        59 : ("Lesstatistiques", "", _(u"Les statistiques")),
+        60 : ("Lagestiondesutilisateurs", "", _(u"La gestion des utilisateurs réseau")),
         } # NumItem : nomPage, nomAncre, Description
     
     if numItem != None :
@@ -816,8 +814,8 @@ class Aide_archive():
         _icon = wx.EmptyIcon()
         _icon.CopyFromBitmap(wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         self.frameAide.SetIcon(_icon)
-        self.frameAide.SetTitle(u"Aide de TeamWorks")
-        self.frameParente.frmAide.SetTitleFormat(u"Aide de TeamWorks")
+        self.frameAide.SetTitle(_(u"Aide de TeamWorks"))
+        self.frameParente.frmAide.SetTitleFormat(_(u"Aide de TeamWorks"))
         self.frameAide.MakeModal(True)
         
     def CreationPages(self):
@@ -902,7 +900,7 @@ def GetListeCadresPhotos():
         if nomFichier.endswith(".png"):
             listeNomCadres.append(nomFichier[:-4])
     listeNomCadres.sort()
-    listeNomCadres.insert(0, u"Aucun")
+    listeNomCadres.insert(0, _(u"Aucun"))
     return listeNomCadres
 
 def RecupNomCadrePersonne(IDpersonne):
@@ -1000,7 +998,7 @@ def VideRepertoireUpdates(forcer=False):
         
 def ListeImprimantes():
     """ Recherche les imprimantes installées """
-    if "win" in sys.platform :
+    if sys.platform.startswith("win") :
         import win32print
         
     listeImprimantesLocales = []
@@ -1103,7 +1101,7 @@ def GetVersionLogiciel():
 def LanceFichierExterne(nomFichier) :
     """ Ouvre un fichier externe sous windows ou linux """
     nomSysteme = sys.platform
-    if "win" in nomSysteme : 
+    if nomSysteme.startswith("win") : 
         nomFichier = nomFichier.replace("/", "\\")
         os.startfile(nomFichier)
     if "linux" in nomSysteme : 
@@ -1238,7 +1236,7 @@ def Supprime_accent2(texte):
     return texte
 
 def OuvrirCalculatrice():
-    if "win" in sys.platform : LanceFichierExterne("calc.exe")
+    if sys.platform.startswith("win") : LanceFichierExterne("calc.exe")
     if "linux" in sys.platform : os.system("gcalctool")
 
 def RemplacerContenuFichier():
@@ -1246,7 +1244,7 @@ def RemplacerContenuFichier():
 ##        ("ColumnDefn, Filter", "ColumnDefn, Filter, CTRL_Outils"),
         ("wx.SearchCtrl.__init__(self, parent, size=(-1,20)", "wx.SearchCtrl.__init__(self, parent, size=(-1, -1)"),
         ]
-    listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
+    #listeFichiers = os.listdir("C:\Users\Ivan\Documents\GitHub\Noethys\source")
     for nomFichier in listeFichiers :
         if nomFichier.endswith(".py") :
             fichier = open(nomFichier, 'r')
@@ -1324,7 +1322,7 @@ def Formate_taille_octets(size):
     elif size > seuil_Kio:
         return "%.2f Ko" % (size/float(seuil_Kio))
     else:
-        return "%io" % size
+        return "%i o" % size
 
 def RechercheImports():
     """ Renvoie la liste de tous les modules importés du logiciel """
@@ -1450,12 +1448,97 @@ def RechercheModules(nomFichier="Noethys.py") :
             listeModules.append(cheminFichier)
     listeModules.sort() 
     return listeModules
-    
+
+def GetIDfichier():
+    DB = GestionDB.DB()
+    req = """SELECT IDparametre, nom, parametre 
+    FROM parametres WHERE nom='IDfichier';"""
+    DB.ExecuterReq(req)
+    listeTemp = DB.ResultatReq()
+    DB.Close() 
+    IDfichier = listeTemp[0][2]
+    return IDfichier
+
+def GenerationIDdoc():
+    """ Génération d'un ID unique à base de la date, de l'heure de l'IDfichier et d'un numéro aléatoire """
+    IDfichier = GetIDfichier()[14:17]
+    numAleatoire = random.randint(100, 999)
+    horodatage = datetime.datetime.now().strftime("%Y%m%d%H%M%S") 
+    IDdoc = "%s%s%d" % (horodatage, IDfichier, numAleatoire)
+    return IDdoc
+
+
+def InsertUnicodeLiterals():
+    """ Pour insérer  dans tous les fichiers """
+    # Get fichiers
+    listeFichiers = os.listdir(os.getcwd())
+    indexFichier = 0
+    for nomFichier in listeFichiers :
+        if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False :
+            #print "%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier)
+            
+            # Ouverture des fichiers
+            fichier = open(nomFichier, "r")
+            dirty = False
+            
+            listeLignes = []
+            for ligne in fichier :
+                # Insertion de l'import
+                if "from UTILS_Traduction import _" in ligne :
+                    listeLignes.append("\n")
+                    dirty = True
+                
+                listeLignes.append(ligne) 
+                
+            # Clôture des fichiers
+            fichier.close()
+            
+            # Ecriture du nouveau fichier
+            if dirty == True :
+                nouveauFichier = open("New/%s" % nomFichier, "w")
+                for ligne in listeLignes :
+                    nouveauFichier.write(ligne)
+                nouveauFichier.close()
+            
+        indexFichier += 1
+            
+    print "Fini !!!!!!!!!!!!!!!!!"
+
+
+
+def RechercheWhere():
+    """ Pour rechercher les clauses WHERE dans tous les fichiers """
+    # Get fichiers
+    listeFichiers = os.listdir(os.getcwd())
+    for nomFichier in listeFichiers :
+        if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False :
+            # Ouverture du fichier
+            fichier = open(nomFichier, "r")
+            for ligne in fichier :
+                # Insertion de l'import
+                if "WHERE" in ligne :
+                    ligne = ligne.replace("\n", "")
+                    ligne = ligne.replace("  ", "")
+                    print ligne
+                
+            # Clôture des fichiers
+            fichier.close()
+            
+    print "Fini !!!!!!!!!!!!!!!!!"
+
+
+
+
+
+
 if __name__ == "__main__":
 ##    RemplacerContenuFichier() 
     # ------- Affiche les stats -------
 ##    AfficheStatsProgramme()
     
+##    InsertUnicodeLiterals() 
+    
+    RechercheWhere() 
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")
@@ -1466,14 +1549,16 @@ if __name__ == "__main__":
 ##    app = wx.App(0)
 ##    import wx.lib.dialogs as dialogs
 ##    image = wx.Bitmap("Images/32x32/Activite.png", wx.BITMAP_TYPE_ANY)
-##    message2 = u"Ceci est un message super méga long qui doit prendre pas mal de place !\n" * 50
-##    dlg = dialogs.MultiMessageDialog(None, u"Ceci est le message 1", caption = "Message Box", msg2=message2, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : u"Ok", wx.ID_CANCEL : u"Annuler"})
+##    message2 = _(u"Ceci est un message super méga long qui doit prendre pas mal de place !\n") * 50
+##    dlg = dialogs.MultiMessageDialog(None, _(u"Ceci est le message 1"), caption = "Message Box", msg2=message2, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, icon=None, btnLabels={wx.ID_OK : _(u"Ok"), wx.ID_CANCEL : _(u"Annuler")})
 ##    dlg.ShowModal() 
 ##    dlg.Destroy() 
 ##    app.MainLoop()
     
     # Recherche de modules
-    listeModules = RechercheModules("OL_Liste_comptes.py")
-    for x in listeModules :
-        print x
-    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
+##    listeModules = RechercheModules("OL_Liste_comptes.py")
+##    for x in listeModules :
+##        print x
+##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
+    pass
+    

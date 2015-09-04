@@ -8,6 +8,8 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import GestionDB
 import datetime
 
@@ -109,7 +111,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
                 if typeCotisation == "famille" or IDindividu == None :
                     label = nomCotisation
                 else:
-                    label = u"%s de %s" % (nomCotisation, prenom)
+                    label = _(u"%s de %s") % (nomCotisation, prenom)
                 
                 if dictCotisationsFournies.has_key((None, IDtype_cotisation, IDindividu)) or dictCotisationsFournies.has_key((IDfamille, IDtype_cotisation, None)) :
                     if dictCotisationsFournies.has_key((None, IDtype_cotisation, IDindividu)) :
@@ -153,7 +155,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
 ##        if typeCotisation == "famille" or IDindividu == None :
 ##            label = nomCotisation
 ##        else:
-##            label = u"%s de %s" % (nomCotisation, prenom)
+##            label = _(u"%s de %s") % (nomCotisation, prenom)
 ##
 ##        if dictCotisationsFournies.has_key( (IDfamille, IDtype_cotisation, IDindividu) ) :
 ##            date_debut, date_fin = dictCotisationsFournies[(IDfamille, IDtype_cotisation, IDindividu)]
@@ -190,7 +192,7 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         if IDfamille != None and titulaires.has_key(IDfamille) :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
         else :
-            nomTitulaires = u"Aucun titulaire"
+            nomTitulaires = _(u"Aucun titulaire")
         listeCotisations = []
         for cotisation in dictTemp :
             labelCotisation = cotisation[7]

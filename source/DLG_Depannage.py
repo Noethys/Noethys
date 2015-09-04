@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.customtreectrl as CT
 import wx.lib.agw.hyperlink as Hyperlink
 
@@ -57,7 +60,7 @@ def Autodetection(parent=None):
     if nbreAnomalies == 0 :
         return None
     # Propose une correction des anomalies
-    dlg = wx.MessageDialog(parent, u"Des anomalies ont été détectées dans ce fichier de données.\n\nSouhaitez-vous lancer maintenant le correcteur d'anomalies ?", u"Anomalies", wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+    dlg = wx.MessageDialog(parent, _(u"Des anomalies ont été détectées dans ce fichier de données.\n\nSouhaitez-vous lancer maintenant le correcteur d'anomalies ?"), _(u"Anomalies"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
     reponse = dlg.ShowModal() 
     dlg.Destroy()
     if reponse == wx.ID_YES :
@@ -114,9 +117,9 @@ class CTRL(CT.CustomTreeCtrl):
             
         # RAZ ctrl
         self.DeleteAllItems()
-        if nbreAnomalies == 0 : texte = u"Aucune anomalie détectée"
-        elif nbreAnomalies == 1 : texte = u"1 anomalie détectée :"
-        else : texte = u"%d anomalies détectées :" % nbreAnomalies
+        if nbreAnomalies == 0 : texte = _(u"Aucune anomalie détectée")
+        elif nbreAnomalies == 1 : texte = _(u"1 anomalie détectée :")
+        else : texte = _(u"%d anomalies détectées :") % nbreAnomalies
         self.root = self.AddRoot(texte)
         self.SetItemBold(self.root, True)
         
@@ -179,12 +182,12 @@ class CTRL(CT.CustomTreeCtrl):
         DB.Close() 
 
         if nbreCorrections == 0 :
-            message = u"Aucune correction n'a été effectuée !"
+            message = _(u"Aucune correction n'a été effectuée !")
         elif nbreCorrections == 1 :
-            message = u"1 correction a bien été effectuée !"
+            message = _(u"1 correction a bien été effectuée !")
         else :
-            message = u"%d corrections ont bien été effectuées !" % nbreCorrections
-        dlg = wx.MessageDialog(self, message, u"Information", wx.OK | wx.ICON_INFORMATION)
+            message = _(u"%d corrections ont bien été effectuées !") % nbreCorrections
+        dlg = wx.MessageDialog(self, message, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -196,20 +199,20 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.sauvegardeEffectuee = False
         
-        intro = u"Cette fonction permet de détecter et corriger automatiquement certaines anomalies qui pourraient survenir après des erreurs de manipulation ou des bugs non identifiés. Cochez les éléments à corriger puis cliquez sur le bouton Corriger."
-        titre = u"Correcteur d'anomalies"
+        intro = _(u"Cette fonction permet de détecter et corriger automatiquement certaines anomalies qui pourraient survenir après des erreurs de manipulation ou des bugs non identifiés. Cochez les éléments à corriger puis cliquez sur le bouton Corriger.")
+        titre = _(u"Correcteur d'anomalies")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Depannage.png")
         
         # Txt HTML
         self.ctrl_resultats = CTRL(self) #MyHtml(self)
-        self.hyper_tout = Hyperlien(self, label=u"Tout cocher", infobulle=u"Cliquez ici pour tout cocher", URL="tout")
+        self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
-        self.hyper_rien = Hyperlien(self, label=u"Tout décocher", infobulle=u"Cliquez ici pour tout décocher", URL="rien")
+        self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Depannage.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Corriger les anomalies cochées"), cheminImage="Images/32x32/Depannage.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -222,9 +225,9 @@ class Dialog(wx.Dialog):
         self.ctrl_resultats.MAJ() 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour corriger les anomalies cochées")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour corriger les anomalies cochées"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((800, 600))
 
     def __do_layout(self):
@@ -265,7 +268,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         """ Lance la correction """
         if self.sauvegardeEffectuee == False :
-            dlg = wx.MessageDialog(self, u"Souhaitez-vous sauvegarder votre fichier de données avant la correction (Recommandé) ?", u"Annulation", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous sauvegarder votre fichier de données avant la correction (Recommandé) ?"), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
             

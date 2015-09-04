@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 import UTILS_Dates
 import UTILS_Titulaires
@@ -42,9 +45,9 @@ class Track(object):
             
         # Type de pièce        
         if self.public == "famille" : 
-            self.nomPublic = u"Familiale"
+            self.nomPublic = _(u"Familiale")
         else :
-            self.nomPublic = u"Individuelle"
+            self.nomPublic = _(u"Individuelle")
             
         
     
@@ -116,28 +119,28 @@ class ListView(FastObjectListView):
             if dateDD == None :
                 return ""
             if dateDD == "2999-01-01" :
-                return u"Illimitée"
+                return _(u"Illimitée")
             else:
                 return UTILS_Dates.DateDDEnFr(dateDD)
 
         liste_Colonnes = [
-            ColumnDefn(u"IDPiece", "left", 0, "IDpiece", typeDonnee="entier"),
-            ColumnDefn(u"Individu", 'left', 170, "individu_nom_complet", typeDonnee="texte"),
-            ColumnDefn(u"Famille", 'left', 220, "nom_titulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"IDPiece"), "left", 0, "IDpiece", typeDonnee="entier"),
+            ColumnDefn(_(u"Individu"), 'left', 170, "individu_nom_complet", typeDonnee="texte"),
+            ColumnDefn(_(u"Famille"), 'left', 220, "nom_titulaires", typeDonnee="texte"),
             ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Au", "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
-            ColumnDefn(u"Type de pièce", "left", 100, "nomPublic", typeDonnee="texte"),
+            ColumnDefn(_(u"Au"), "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDateCourt),
+            ColumnDefn(_(u"Type de pièce"), "left", 100, "nomPublic", typeDonnee="texte"),
             ]
         
 ##        # Test pour intégrer le filtre inscrits/Présents
 ##        if len(self.donnees) > 0 :
 ##            if self.donnees[0].public == "famille" :
-##                liste_Colonnes.append(ColumnDefn(u"IDfamille", "left", 0, "IDfamille", typeDonnee="entier"))
+##                liste_Colonnes.append(ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"))
 ##            else :
-##                liste_Colonnes.append(ColumnDefn(u"IDindividu", "left", 0, "IDindividu", typeDonnee="entier"))
+##                liste_Colonnes.append(ColumnDefn(_(u"IDindividu"), "left", 0, "IDindividu", typeDonnee="entier"))
 
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(u"Aucune pièce")
+        self.SetEmptyListMsg(_(u"Aucune pièce"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         if len(self.donnees) > 0 :
@@ -177,14 +180,14 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
     
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -193,14 +196,14 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         bmp = wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         bmp = wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -213,13 +216,13 @@ class ListView(FastObjectListView):
     def Impression(self, mode="preview"):
         import UTILS_Printer
         if len(self.donnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée dans la liste !", u"Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        txtIntro = u"Pièce sélectionnée : %s" % self.donnees[0].nomPiece
-        txtTotal = u"Un total de %d pièces" % len(self.donnees)
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des pièces fournies", intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
+        txtIntro = _(u"Pièce sélectionnée : %s") % self.donnees[0].nomPiece
+        txtTotal = _(u"Un total de %d pièces") % len(self.donnees)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des pièces fournies"), intro=txtIntro, total=txtTotal, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else :
@@ -233,11 +236,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des pièces fournies")
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des pièces fournies"))
         
     def ExportExcel(self, event=None):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des pièces fournies")
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des pièces fournies"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -249,7 +252,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une pièce...")
+        self.SetDescriptiveText(_(u"Rechercher une pièce..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_donnees

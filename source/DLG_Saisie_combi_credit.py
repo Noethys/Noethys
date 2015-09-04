@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 
@@ -51,12 +54,12 @@ class Dialog(wx.Dialog):
         self.listeUnites = listeUnites
 
         # Unites
-        self.staticbox_unites = wx.StaticBox(self, -1, u"Unités à combiner")
+        self.staticbox_unites = wx.StaticBox(self, -1, _(u"Unités à combiner"))
         self.ctrl_unites = CTRL_Unites(self, self.listeUnites)
         
         # Options
-        self.staticbox_options = wx.StaticBox(self, -1, u"Options")
-        self.check_quantite = wx.CheckBox(self, -1, u"Quantité max. :")
+        self.staticbox_options = wx.StaticBox(self, -1, _(u"Options"))
+        self.check_quantite = wx.CheckBox(self, -1, _(u"Quantité max. :"))
         self.ctrl_quantite = wx.SpinCtrl(self, -1, "", min=0, max=500)
         
         if afficheOptions == False :
@@ -64,8 +67,8 @@ class Dialog(wx.Dialog):
             self.check_quantite.Show(False)
             self.ctrl_quantite.Show(False)
 
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -78,11 +81,11 @@ class Dialog(wx.Dialog):
         self.OnCheckQuantite() 
         
     def __set_properties(self):
-        self.SetTitle(u"Saisie d'une combinaison")
-        self.check_quantite.SetToolTipString(u"Vous pouvez définir ici un plafond maximal")
-        self.ctrl_unites.SetToolTipString(u"Cochez les unités à combiner")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Saisie d'une combinaison"))
+        self.check_quantite.SetToolTipString(_(u"Vous pouvez définir ici un plafond maximal"))
+        self.ctrl_unites.SetToolTipString(_(u"Cochez les unités à combiner"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((350, 420))
 
     def __do_layout(self):
@@ -141,7 +144,7 @@ class Dialog(wx.Dialog):
         if self.check_quantite.GetValue() == True :
             quantite = self.ctrl_quantite.GetValue()
             if quantite == 0 or quantite == "" or quantite == None :
-                dlg = wx.MessageDialog(self, u"La quantité max. que vous avez saisi ne semble pas valide !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La quantité max. que vous avez saisi ne semble pas valide !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_quantite.SetFocus()
@@ -150,7 +153,7 @@ class Dialog(wx.Dialog):
         # Unités
         listeUnites = self.GetUnites()
         if len(listeUnites) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous devez cocher au moins une unité !", "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins une unité !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
 import GestionDB
 import CTRL_Saisie_euros
@@ -16,8 +19,8 @@ import CTRL_Image_mode
 
 
 LISTE_METHODES_ARRONDI = [
-    (u"Arrondi au centime supérieur", "centimesup"),
-    (u"Arrondi au centime inférieur", "centimeinf"),
+    (_(u"Arrondi au centime supérieur"), "centimesup"),
+    (_(u"Arrondi au centime inférieur"), "centimeinf"),
     ]
 
 
@@ -28,37 +31,37 @@ class Dialog(wx.Dialog):
         self.IDmode = IDmode
         
         # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, u"Généralites")
-        self.label_label = wx.StaticText(self, -1, u"Nom :")
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
+        self.label_label = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
-        self.label_image = wx.StaticText(self, -1, u"Image :")
+        self.label_image = wx.StaticText(self, -1, _(u"Image :"))
         self.ctrl_image = CTRL_Image_mode.CTRL(self, table="modes_reglements", key="IDmode", IDkey=self.IDmode, imageDefaut="Images/Special/Image_non_disponible.png", style=wx.BORDER_SUNKEN)
         self.bouton_ajouter_image = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_image = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.label_type_comptable = wx.StaticText(self, -1, u"Type :")
-        self.ctrl_type_comptable= wx.Choice(self, -1, choices=[u"Banque", u"Caisse"])
+        self.label_type_comptable = wx.StaticText(self, -1, _(u"Type :"))
+        self.ctrl_type_comptable= wx.Choice(self, -1, choices=[_(u"Banque"), _(u"Caisse")])
         self.ctrl_type_comptable.SetSelection(0) 
-        self.label_code_comptable = wx.StaticText(self, -1, u"Code :")
+        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"")
 
         # Options
-        self.staticbox_options_staticbox = wx.StaticBox(self, -1, u"Options")
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         
         # Numero de pièce
-        self.label_numero = wx.StaticText(self, -1, u"N° Pièce :")
-        self.radio_numero_aucun = wx.RadioButton(self, -1, u"Aucun", style=wx.RB_GROUP)
-        self.radio_numero_alpha = wx.RadioButton(self, -1, u"Alphanumerique")
-        self.radio_numero_numerique = wx.RadioButton(self, -1, u"Numérique")
-        self.ctrl_check_caract = wx.CheckBox(self, -1, u"Nbre caractères max :")
+        self.label_numero = wx.StaticText(self, -1, _(u"N° Pièce :"))
+        self.radio_numero_aucun = wx.RadioButton(self, -1, _(u"Aucun"), style=wx.RB_GROUP)
+        self.radio_numero_alpha = wx.RadioButton(self, -1, _(u"Alphanumerique"))
+        self.radio_numero_numerique = wx.RadioButton(self, -1, _(u"Numérique"))
+        self.ctrl_check_caract = wx.CheckBox(self, -1, _(u"Nbre caractères max :"))
         self.ctrl_nbre_caract = wx.SpinCtrl(self, -1, u"", min=0, max=100)
         
         # Frais de gestion
-        self.label_frais = wx.StaticText(self, -1, u"Frais de\ngestion :")
-        self.radio_frais_aucun = wx.RadioButton(self, -1, u"Aucun", style=wx.RB_GROUP)
-        self.radio_frais_libre = wx.RadioButton(self, -1, u"Montant libre")
-        self.radio_frais_fixe = wx.RadioButton(self, -1, u"Montant fixe :")
+        self.label_frais = wx.StaticText(self, -1, _(u"Frais de\ngestion :"))
+        self.radio_frais_aucun = wx.RadioButton(self, -1, _(u"Aucun"), style=wx.RB_GROUP)
+        self.radio_frais_libre = wx.RadioButton(self, -1, _(u"Montant libre"))
+        self.radio_frais_fixe = wx.RadioButton(self, -1, _(u"Montant fixe :"))
         self.ctrl_frais_fixe = CTRL_Saisie_euros.CTRL(self)
-        self.radio_frais_prorata = wx.RadioButton(self, -1, u"Montant au prorata :")
+        self.radio_frais_prorata = wx.RadioButton(self, -1, _(u"Montant au prorata :"))
         self.ctrl_frais_prorata = wx.TextCtrl(self, -1, u"0.0", style=wx.TE_RIGHT)
         self.label_pourcentage = wx.StaticText(self, -1, u"%")
         listeLabelsArrondis = []
@@ -66,20 +69,20 @@ class Dialog(wx.Dialog):
             listeLabelsArrondis.append(labelArrondi)
         self.ctrl_frais_arrondi = wx.Choice(self, -1, choices=listeLabelsArrondis)
         self.ctrl_frais_arrondi.SetSelection(0)
-        self.label_frais_label = wx.StaticText(self, -1, u"Label de la prestation :")
-        self.ctrl_frais_label = wx.TextCtrl(self, -1, u"Frais de gestion")
+        self.label_frais_label = wx.StaticText(self, -1, _(u"Label de la prestation :"))
+        self.ctrl_frais_label = wx.TextCtrl(self, -1, _(u"Frais de gestion"))
         
 ##        # Emetteurs
-##        self.staticbox_emetteurs_staticbox = wx.StaticBox(self, -1, u"Emetteurs")
+##        self.staticbox_emetteurs_staticbox = wx.StaticBox(self, -1, _(u"Emetteurs"))
 ##        self.ctrl_emetteurs = wx.ListCtrl(self, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
 ##        self.bouton_ajouter_emetteur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
 ##        self.bouton_modifier_emetteur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
 ##        self.bouton_supprimer_emetteur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -103,9 +106,9 @@ class Dialog(wx.Dialog):
         # Importation
         if self.IDmode != None :
             self.Importation()
-            self.SetTitle(u"Modification d'un mode de règlement")
+            self.SetTitle(_(u"Modification d'un mode de règlement"))
         else:
-            self.SetTitle(u"Création d'un mode de règlement")
+            self.SetTitle(_(u"Création d'un mode de règlement"))
             
         # Initialisation des contrôles
         self.OnRadioNumero(None)
@@ -119,30 +122,30 @@ class Dialog(wx.Dialog):
         self.ctrl_frais_fixe.SetMinSize((50, -1))
         self.ctrl_nbre_caract.SetMinSize((50, -1))
         self.ctrl_frais_prorata.SetMinSize((50, -1))
-        self.ctrl_label.SetToolTipString(u"Saisissez ici le nom du mode de règlement")
-        self.bouton_ajouter_image.SetToolTipString(u"Cliquez ici pour importer une image pour ce mode de règlement")
-        self.bouton_supprimer_image.SetToolTipString(u"Cliquez ici pour supprimer l'image active")
-        self.radio_numero_aucun.SetToolTipString(u"Cochez ici si le règlement de nécessite aucun numéro de pièce")
-        self.radio_numero_alpha.SetToolTipString(u"Cochez ici si le numéro peut contenir des lettres et des chiffres")
-        self.radio_numero_numerique.SetToolTipString(u"Cochez ici si le numéro ne peut contenir que des chiffres")
-        self.ctrl_check_caract.SetToolTipString(u"Cochez cette case si le numéro a un nombre maximal de chiffres")
-        self.ctrl_nbre_caract.SetToolTipString(u"Saisissez ici le nombre de chiffres du numéro")
-        self.radio_frais_aucun.SetToolTipString(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement")
-        self.radio_frais_libre.SetToolTipString(u"Cochez ici si des frais de gestion d'un montant variable est applicable")
-        self.radio_frais_fixe.SetToolTipString(u"Cochez ici si des frais d'un montant fixe sont applicables")
-        self.ctrl_frais_fixe.SetToolTipString(u"Saisissez le montant fixe des frais de gestion")
-        self.radio_frais_prorata.SetToolTipString(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable")
-        self.ctrl_frais_prorata.SetToolTipString(u"Saisissez ici le pourcentage du montant du règlement")
-        self.ctrl_frais_arrondi.SetToolTipString(u"Selectionnez une méthode de calcul de l'arrondi")
-        self.ctrl_frais_label.SetToolTipString(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion")
-        self.ctrl_type_comptable.SetToolTipString(u"Sélectionnez le type comptable ('Caisse' pour les espèces et 'Banque' pour les autres)")
-        self.ctrl_code_comptable.SetToolTipString(u"Saisissez un code comptable pour ce mode de règlement. Utile uniquement pour l'export des écritures comptables.")
-##        self.bouton_ajouter_emetteur.SetToolTipString(u"Cliquez ici pour ajouter un émetteur")
-##        self.bouton_modifier_emetteur.SetToolTipString(u"Cliquez ici pour modifier l'émetteur selectionné dans la liste")
-##        self.bouton_supprimer_emetteur.SetToolTipString(u"Cliquez ici pour supprimer l'émetteur selectionné dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider la saisie")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler la saisie")
+        self.ctrl_label.SetToolTipString(_(u"Saisissez ici le nom du mode de règlement"))
+        self.bouton_ajouter_image.SetToolTipString(_(u"Cliquez ici pour importer une image pour ce mode de règlement"))
+        self.bouton_supprimer_image.SetToolTipString(_(u"Cliquez ici pour supprimer l'image active"))
+        self.radio_numero_aucun.SetToolTipString(_(u"Cochez ici si le règlement de nécessite aucun numéro de pièce"))
+        self.radio_numero_alpha.SetToolTipString(_(u"Cochez ici si le numéro peut contenir des lettres et des chiffres"))
+        self.radio_numero_numerique.SetToolTipString(_(u"Cochez ici si le numéro ne peut contenir que des chiffres"))
+        self.ctrl_check_caract.SetToolTipString(_(u"Cochez cette case si le numéro a un nombre maximal de chiffres"))
+        self.ctrl_nbre_caract.SetToolTipString(_(u"Saisissez ici le nombre de chiffres du numéro"))
+        self.radio_frais_aucun.SetToolTipString(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement"))
+        self.radio_frais_libre.SetToolTipString(_(u"Cochez ici si des frais de gestion d'un montant variable est applicable"))
+        self.radio_frais_fixe.SetToolTipString(_(u"Cochez ici si des frais d'un montant fixe sont applicables"))
+        self.ctrl_frais_fixe.SetToolTipString(_(u"Saisissez le montant fixe des frais de gestion"))
+        self.radio_frais_prorata.SetToolTipString(_(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable"))
+        self.ctrl_frais_prorata.SetToolTipString(_(u"Saisissez ici le pourcentage du montant du règlement"))
+        self.ctrl_frais_arrondi.SetToolTipString(_(u"Selectionnez une méthode de calcul de l'arrondi"))
+        self.ctrl_frais_label.SetToolTipString(_(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion"))
+        self.ctrl_type_comptable.SetToolTipString(_(u"Sélectionnez le type comptable ('Caisse' pour les espèces et 'Banque' pour les autres)"))
+        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez un code comptable pour ce mode de règlement. Utile uniquement pour l'export des écritures comptables."))
+##        self.bouton_ajouter_emetteur.SetToolTipString(_(u"Cliquez ici pour ajouter un émetteur"))
+##        self.bouton_modifier_emetteur.SetToolTipString(_(u"Cliquez ici pour modifier l'émetteur selectionné dans la liste"))
+##        self.bouton_supprimer_emetteur.SetToolTipString(_(u"Cliquez ici pour supprimer l'émetteur selectionné dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
         self.SetMinSize((800, -1))
 
     def __do_layout(self):
@@ -289,15 +292,15 @@ class Dialog(wx.Dialog):
         
 
     def OnAjouterEmetteur(self, event): 
-        print u"Event handler `OnAjouterEmetteur' not implemented!"
+        print "Event handler `OnAjouterEmetteur' not implemented!"
         event.Skip()
 
     def OnModifierEmetteur(self, event): 
-        print u"Event handler `OnModifierEmetteur' not implemented!"
+        print "Event handler `OnModifierEmetteur' not implemented!"
         event.Skip()
 
     def OnSupprimerEmetteur(self, event): 
-        print u"Event handler `OnSupprimerEmetteur' not implemented!"
+        print "Event handler `OnSupprimerEmetteur' not implemented!"
         event.Skip()
 
     def OnBoutonAide(self, event): 
@@ -308,7 +311,7 @@ class Dialog(wx.Dialog):
         # Récupération et vérification des données saisies
         label = self.ctrl_label.GetValue()
         if label == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un label !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
@@ -324,7 +327,7 @@ class Dialog(wx.Dialog):
             if self.ctrl_check_caract.GetValue() == True :
                 nbre_chiffres = self.ctrl_nbre_caract.GetValue()
                 if nbre_chiffres == 0 :
-                    dlg = wx.MessageDialog(self, u"Vous avez sélectionné l'option 'Nbre limité de caractères' sans saisir de chiffre !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'option 'Nbre limité de caractères' sans saisir de chiffre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     self.ctrl_nbre_caract.SetFocus()
@@ -343,7 +346,7 @@ class Dialog(wx.Dialog):
             frais_montant = self.ctrl_frais_fixe.GetMontant()
             validation, erreur = self.ctrl_frais_fixe.Validation()
             if frais_montant == 0.0 or validation == False :
-                dlg = wx.MessageDialog(self, u"Le montant que vous avez saisi pour les frais de gestion n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le montant que vous avez saisi pour les frais de gestion n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_fixe.SetFocus()
@@ -354,13 +357,13 @@ class Dialog(wx.Dialog):
             try :
                 frais_pourcentage = float(frais_pourcentage) 
             except :
-                dlg = wx.MessageDialog(self, u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_prorata.SetFocus()
                 return
             if frais_pourcentage == 0.0 :
-                dlg = wx.MessageDialog(self, u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le pourcentage que vous avez saisi pour les frais de gestion n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_prorata.SetFocus()
@@ -369,7 +372,7 @@ class Dialog(wx.Dialog):
         if frais_gestion != None :
             frais_label = self.ctrl_frais_label.GetValue() 
             if frais_label == "" :
-                dlg = wx.MessageDialog(self, u"Le label de prestation que vous avez saisi n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le label de prestation que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_frais_label.SetFocus()

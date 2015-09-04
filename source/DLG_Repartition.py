@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import CTRL_Repartition
 
@@ -22,15 +25,15 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        intro = u"Vous pouvez ici visualiser uniquement la répartition des ventilations par règlement. Double-cliquez sur un règlement pour faire apparaître sa ventilation détaillée."
-        titre = u"Répartition de la ventilation"
+        intro = _(u"Vous pouvez ici visualiser uniquement la répartition des ventilations par règlement. Double-cliquez sur un règlement pour faire apparaître sa ventilation détaillée.")
+        titre = _(u"Répartition de la ventilation")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Repartition.png")
         
         self.ctrl_listview = CTRL_Repartition.CTRL(self, IDfamille=self.IDfamille)
         self.ctrl_listview.MAJ() 
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -38,9 +41,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.SetTitle(u"Répartition de la ventilation")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.SetTitle(_(u"Répartition de la ventilation"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((940, 670))
 
     def __do_layout(self):

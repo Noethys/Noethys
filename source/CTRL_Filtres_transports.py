@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.customtreectrl as CT
 import datetime
 import GestionDB
@@ -21,7 +24,7 @@ class CTRL(CT.CustomTreeCtrl):
     def __init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.SUNKEN_BORDER) :
         CT.CustomTreeCtrl.__init__(self, parent, id, pos, size, style)
         self.parent = parent
-        self.root = self.AddRoot(u"Transports")
+        self.root = self.AddRoot(_(u"Transports"))
         self.listeBranches = []
         
         self.SetBackgroundColour(wx.WHITE)
@@ -47,7 +50,7 @@ class CTRL(CT.CustomTreeCtrl):
     def MAJ(self, date_debut=None, date_fin=None, listeDates=[]):
         self.listeBranches = []
         self.DeleteAllItems()
-        self.root = self.AddRoot(u"Objets")
+        self.root = self.AddRoot(_(u"Objets"))
         
         # Création de la condition
         if date_debut != None and date_fin != None :
@@ -148,7 +151,7 @@ class CTRL(CT.CustomTreeCtrl):
                 if dictLignes.has_key(IDligne) :
                     label = dictLignes[IDligne]
                 else :
-                    label = u"Ligne inconnue"
+                    label = _(u"Ligne inconnue")
                 listeLignes.append((label, IDligne))
             listeLignes.sort() 
             
@@ -163,7 +166,7 @@ class CTRL(CT.CustomTreeCtrl):
                     if dictArrets.has_key(IDarret) :
                         label = dictArrets[IDarret]["nom"]
                     else :
-                        label = u"Arrêt inconnu"
+                        label = _(u"Arrêt inconnu")
                     if IDarret == None or dictArrets[IDarret]["IDligne"] == IDligne :
                         brancheArret = self.AppendItem(brancheLigne, label, ct_type=1)
                         self.SetPyData(brancheArret, {"categorie":"arrets", "code":IDarret})
@@ -176,7 +179,7 @@ class CTRL(CT.CustomTreeCtrl):
                 if dictLieux.has_key(IDlieu) :
                     label = dictLieux[IDlieu]
                 else :
-                    label = u"Lieu inconnu"
+                    label = _(u"Lieu inconnu")
                 listeLieux.append((label, IDlieu))
             listeLieux.sort() 
             

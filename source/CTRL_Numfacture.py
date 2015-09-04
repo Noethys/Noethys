@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -18,7 +21,7 @@ class CTRL(wx.SearchCtrl):
         self.parent = parent
         self.IDfamille = IDfamille
         self.IDutilisateurActif = None
-        self.SetDescriptiveText(u"N° de facture")
+        self.SetDescriptiveText(_(u"N° de facture"))
             
         # Options
         self.ShowSearchButton(True)
@@ -42,7 +45,7 @@ class CTRL(wx.SearchCtrl):
             try :
                 numFacture = int(txtSearch)
             except :
-                dlg = wx.MessageDialog(self, u"Ce numéro de facture n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -54,7 +57,7 @@ class CTRL(wx.SearchCtrl):
         try :
             numFacture = int(txtSearch)
         except :
-            dlg = wx.MessageDialog(self, u"Ce numéro de facture n'est pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -62,7 +65,7 @@ class CTRL(wx.SearchCtrl):
     
     def ReglerFacture(self, numFacture=None):
         if self.IDfamille != None :
-            texteSupp = u"pour cette famille "
+            texteSupp = _(u"pour cette famille ")
             conditionFamille = " AND comptes_payeurs.IDfamille=%d" % self.IDfamille
         else:
             texteSupp = u""
@@ -70,26 +73,26 @@ class CTRL(wx.SearchCtrl):
 
         DB = GestionDB.DB()
 
-        # Récupération des totaux des prestations pour chaque facture
-        req = """
-        SELECT 
-        IDfacture, SUM(montant)
-        FROM prestations
-        WHERE IDfacture IS NOT NULL %s
-        GROUP BY IDfacture
-        ;""" % conditionFamille
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
-        dictPrestations = {}
-        for IDfacture, totalPrestations in listeDonnees :
-            if IDfacture != None :
-                dictPrestations[IDfacture] = totalPrestations
+##        # Récupération des totaux des prestations pour chaque facture
+##        req = """
+##        SELECT 
+##        IDfacture, SUM(montant)
+##        FROM prestations
+##        WHERE IDfacture IS NOT NULL %s
+##        GROUP BY IDfacture
+##        ;""" % conditionFamille
+##        DB.ExecuterReq(req)
+##        listeDonnees = DB.ResultatReq()     
+##        dictPrestations = {}
+##        for IDfacture, totalPrestations in listeDonnees :
+##            if IDfacture != None :
+##                dictPrestations[IDfacture] = totalPrestations
 
         # Recherche si le numéro de facture existe
         req = """
         SELECT 
         factures.IDfacture, factures.total, factures.regle, factures.solde,
-        SUM(ventilation.montant),
+        SUM(ventilation.montant), etat,
         comptes_payeurs.IDfamille
         FROM factures
         LEFT JOIN prestations ON prestations.IDfacture = factures.IDfacture
@@ -103,20 +106,38 @@ class CTRL(wx.SearchCtrl):
         DB.Close() 
         # Si le numéro de facture n'existe pas
         if len(listeDonnees) == 0 :
-            dlg = wx.MessageDialog(self, u"Ce numéro ne correspond à aucune facture existante %s!" % texteSupp, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Ce numéro ne correspond à aucune facture existante %s!") % texteSupp, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        IDfacture, totalInitial, regleInitial, soldeInitial, regleActuel, IDfamille = listeDonnees[0]
-        if dictPrestations.has_key(IDfacture) :
-            totalActuel = dictPrestations[IDfacture]
-        else:
+        IDfacture, totalInitial, regleInitial, soldeInitial, regleActuel, etat, IDfamille = listeDonnees[0]
+        if etat == "annulation" :
+            dlg = wx.MessageDialog(self, _(u"La facture n°%d a été annulée !") % numFacture, _(u"Facture annulée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        
+        # Recherche si la facture a déjà été réglée
+        
+        DB = GestionDB.DB()
+        req = """SELECT IDfacture, SUM(montant)
+        FROM prestations
+        WHERE IDfacture=%d
+        GROUP BY IDfacture
+        ;""" % IDfacture
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()     
+        if len(listeDonnees) > 0 :
+            totalActuel = listeDonnees[0][1]
+        else :
             totalActuel = 0.0
+        DB.Close() 
+        
         if totalActuel == None : totalActuel = 0.0 
         if regleActuel == None : regleActuel = 0.0 
         if totalActuel - regleActuel == 0.0 :
-            dlg = wx.MessageDialog(self, u"La facture n°%d a déjà été réglée en intégralité !" % numFacture, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La facture n°%d a déjà été réglée en intégralité !") % numFacture, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -161,23 +182,23 @@ class MyFrame(wx.Frame):
 # --------------------------- DLG de saisie de mot de passe ----------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, id=-1, title=u"Régler une facture", IDfamille=None):
+    def __init__(self, parent, id=-1, title=_(u"Régler une facture"), IDfamille=None):
         wx.Dialog.__init__(self, parent, id, title, name="DLG_Regler_facture")
         self.parent = parent
         self.IDfamille = IDfamille
         
         self.staticbox = wx.StaticBox(self, -1, "")
 
-        self.label = wx.StaticText(self, -1, u"Veuillez saisir le numéro de la facture à régler ou\nscannez directement le code-barre sur la facture :")
+        self.label = wx.StaticText(self, -1, _(u"Veuillez saisir le numéro de la facture à régler ou\nscannez directement le code-barre sur la facture :"))
         self.ctrl_mdp = CTRL(self, IDfamille=self.IDfamille)
         
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         self.__set_properties()
         self.__do_layout()
         
     def __set_properties(self):
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.ctrl_mdp.SetMinSize((200, -1))
 
     def __do_layout(self):

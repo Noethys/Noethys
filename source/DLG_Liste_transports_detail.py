@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 
 import GestionDB
@@ -22,7 +25,7 @@ import operator
 
 
 class CTRL_Filtre(wx.Choice):
-    def __init__(self, parent, listeDonnees=[], labelDefaut=u"Tous"):
+    def __init__(self, parent, listeDonnees=[], labelDefaut=_(u"Tous")):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeDonnees = listeDonnees
@@ -59,26 +62,26 @@ class Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, -1, style=wx.TAB_TRAVERSAL)
         
-        self.box_liste_staticbox = wx.StaticBox(self, -1, u"Liste des transports")
+        self.box_liste_staticbox = wx.StaticBox(self, -1, _(u"Liste des transports"))
 
         # Filtres
-        self.box_filtres_staticbox = wx.StaticBox(self, -1, u"Filtres")
+        self.box_filtres_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
         
-        self.label_individu = wx.StaticText(self, -1, u"Individu :")
-        self.ctrl_individu = CTRL_Filtre(self, labelDefaut=u"Tous les individus")
+        self.label_individu = wx.StaticText(self, -1, _(u"Individu :"))
+        self.ctrl_individu = CTRL_Filtre(self, labelDefaut=_(u"Tous les individus"))
         
-        self.label_depart = wx.StaticText(self, -1, u"Départ :")
-        self.ctrl_depart_date = CTRL_Filtre(self, labelDefaut=u"Toutes les dates")
-        self.ctrl_depart_heure = CTRL_Filtre(self, labelDefaut=u"Tous les horaires")
-        self.ctrl_depart_lieu = CTRL_Filtre(self, labelDefaut=u"Tous les lieux")
+        self.label_depart = wx.StaticText(self, -1, _(u"Départ :"))
+        self.ctrl_depart_date = CTRL_Filtre(self, labelDefaut=_(u"Toutes les dates"))
+        self.ctrl_depart_heure = CTRL_Filtre(self, labelDefaut=_(u"Tous les horaires"))
+        self.ctrl_depart_lieu = CTRL_Filtre(self, labelDefaut=_(u"Tous les lieux"))
 
-        self.label_transport = wx.StaticText(self, -1, u"Transport :")
-        self.ctrl_transport = CTRL_Filtre(self, labelDefaut=u"Tous les transports")
+        self.label_transport = wx.StaticText(self, -1, _(u"Transport :"))
+        self.ctrl_transport = CTRL_Filtre(self, labelDefaut=_(u"Tous les transports"))
 
-        self.label_arrivee = wx.StaticText(self, -1, u"Arrivée :")
-        self.ctrl_arrivee_date = CTRL_Filtre(self, labelDefaut=u"Toutes les dates")
-        self.ctrl_arrivee_heure = CTRL_Filtre(self, labelDefaut=u"Tous les horaires")
-        self.ctrl_arrivee_lieu = CTRL_Filtre(self, labelDefaut=u"Tous les lieux")
+        self.label_arrivee = wx.StaticText(self, -1, _(u"Arrivée :"))
+        self.ctrl_arrivee_date = CTRL_Filtre(self, labelDefaut=_(u"Toutes les dates"))
+        self.ctrl_arrivee_heure = CTRL_Filtre(self, labelDefaut=_(u"Tous les horaires"))
+        self.ctrl_arrivee_lieu = CTRL_Filtre(self, labelDefaut=_(u"Tous les lieux"))
         
         # Liste
         self.ctrl_liste = OL_Transports.ListView(self,id=-1, name="OL_liste_transports", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
@@ -107,19 +110,19 @@ class Panel(wx.Panel):
         self.MAJ() 
         
     def __set_properties(self):
-        self.ctrl_individu.SetToolTipString(u"Filtrer par individu")
-        self.ctrl_depart_date.SetToolTipString(u"Filtrer par date de départ")
-        self.ctrl_depart_heure.SetToolTipString(u"Filtrer par heure de départ")
-        self.ctrl_depart_lieu.SetToolTipString(u"Filtrer par lieu de départ")
-        self.ctrl_arrivee_date.SetToolTipString(u"Filtrer par date d'arrivée")
-        self.ctrl_arrivee_heure.SetToolTipString(u"Filtrer par heure d'arrivée")
-        self.ctrl_arrivee_lieu.SetToolTipString(u"Filtrer par lieu d'arrivée")
-        self.bouton_modifier.SetToolTipString(u"Modifier le transport sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Supprimer le transport sélectionné dans la liste")
-        self.bouton_apercu.SetToolTipString(u"Afficher un aperçu avant impression de la liste")
-        self.bouton_imprimer.SetToolTipString(u"Imprimer la liste")
-        self.bouton_export_excel.SetToolTipString(u"Exporter la liste au format Excel")
-        self.bouton_export_texte.SetToolTipString(u"Exporter la liste au format Texte")
+        self.ctrl_individu.SetToolTipString(_(u"Filtrer par individu"))
+        self.ctrl_depart_date.SetToolTipString(_(u"Filtrer par date de départ"))
+        self.ctrl_depart_heure.SetToolTipString(_(u"Filtrer par heure de départ"))
+        self.ctrl_depart_lieu.SetToolTipString(_(u"Filtrer par lieu de départ"))
+        self.ctrl_arrivee_date.SetToolTipString(_(u"Filtrer par date d'arrivée"))
+        self.ctrl_arrivee_heure.SetToolTipString(_(u"Filtrer par heure d'arrivée"))
+        self.ctrl_arrivee_lieu.SetToolTipString(_(u"Filtrer par lieu d'arrivée"))
+        self.bouton_modifier.SetToolTipString(_(u"Modifier le transport sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Supprimer le transport sélectionné dans la liste"))
+        self.bouton_apercu.SetToolTipString(_(u"Afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Imprimer la liste"))
+        self.bouton_export_excel.SetToolTipString(_(u"Exporter la liste au format Excel"))
+        self.bouton_export_texte.SetToolTipString(_(u"Exporter la liste au format Texte"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
@@ -294,22 +297,22 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = u"Utilisez les filtres pour afficher les transports souhaités et imprimer ou exportez la liste affichée."
-        titre = u"Liste détaillée des transports"
+        intro = _(u"Utilisez les filtres pour afficher les transports souhaités et imprimer ou exportez la liste affichée.")
+        titre = _(u"Liste détaillée des transports")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Transport.png")
         
         self.panel = Panel(self)
         
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((830, 700))
 
     def __do_layout(self):

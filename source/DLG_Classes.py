@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import CTRL_Bandeau
 import CTRL_Classes
 import GestionDB
@@ -71,18 +74,18 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        titre = u"Gestion des classes"
-        intro = u"Vous pouvez ici paramétrer les classes pour chaque école. Vous devez obligatoirement indiquer pour chacune un nom, les dates de la saison et les niveaux scolaires concernés. Vous devez créer de nouvelles classes à chaque saison."
+        titre = _(u"Gestion des classes")
+        intro = _(u"Vous pouvez ici paramétrer les classes pour chaque école. Vous devez obligatoirement indiquer pour chacune un nom, les dates de la saison et les niveaux scolaires concernés. Vous devez créer de nouvelles classes à chaque saison.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Classe.png")
         
         # Ecole
-        self.staticbox_ecole_staticbox = wx.StaticBox(self, -1, u"Ecole")
-        self.label_ecole = wx.StaticText(self, -1, u"Ecole :")
+        self.staticbox_ecole_staticbox = wx.StaticBox(self, -1, _(u"Ecole"))
+        self.label_ecole = wx.StaticText(self, -1, _(u"Ecole :"))
         self.ctrl_ecole = CTRL_Ecole(self)
         
         # Classes
-        self.staticbox_classes_staticbox = wx.StaticBox(self, -1, u"Classes")
+        self.staticbox_classes_staticbox = wx.StaticBox(self, -1, _(u"Classes"))
         self.ctrl_classes = CTRL_Classes.CTRL(self)
         
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -90,8 +93,8 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_fermer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -108,12 +111,12 @@ class Dialog(wx.Dialog):
         self.ActivationControles()
 
     def __set_properties(self):
-        self.ctrl_ecole.SetToolTipString(u"Sélectionnez ici une école")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer une classe")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la classe sélectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la classe sélectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_fermer.SetToolTipString(u"Cliquez ici pour fermer")
+        self.ctrl_ecole.SetToolTipString(_(u"Sélectionnez ici une école"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une classe"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la classe sélectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la classe sélectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((620, 680))
 
     def __do_layout(self):

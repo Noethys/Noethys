@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import CTRL_Saisie_date
@@ -21,13 +24,13 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
 
-        self.radio_tous = wx.RadioButton(self, -1, u"Tous les individus")
-        self.radio_inscrits = wx.RadioButton(self, -1, u"Uniquement les inscrits aux activités suivantes :")
+        self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les individus"))
+        self.radio_inscrits = wx.RadioButton(self, -1, _(u"Uniquement les inscrits aux activités suivantes :"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
         
-        self.check_presents = wx.CheckBox(self, -1, u"Et présents du")
+        self.check_presents = wx.CheckBox(self, -1, _(u"Et présents du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_au = wx.StaticText(self, -1, u"au")
+        self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         if afficherPresents == False :
@@ -36,8 +39,8 @@ class Dialog(wx.Dialog):
             self.label_au.Show(False)
             self.ctrl_date_fin.Show(False)
         
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -52,14 +55,14 @@ class Dialog(wx.Dialog):
         self.OnRadio(None)
 
     def __set_properties(self):
-        self.SetTitle(u"Sélection d'individus")
-        self.radio_tous.SetToolTipString(u"Cochez ici pour sélectionner tous les individus")
-        self.radio_inscrits.SetToolTipString(u"Cochez ici pour sélectionner des inscrits")
-        self.check_presents.SetToolTipString(u"Cochez cette case pour saisir une période de présence")
-        self.ctrl_date_debut.SetToolTipString(u"Saisissez la date de début de période")
-        self.ctrl_date_fin.SetToolTipString(u"Saisissez ici la date de fin de période")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.SetTitle(_(u"Sélection d'individus"))
+        self.radio_tous.SetToolTipString(_(u"Cochez ici pour sélectionner tous les individus"))
+        self.radio_inscrits.SetToolTipString(_(u"Cochez ici pour sélectionner des inscrits"))
+        self.check_presents.SetToolTipString(_(u"Cochez cette case pour saisir une période de présence"))
+        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
+        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de période"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
         self.SetMinSize((430, 460))
 
     def __do_layout(self):
@@ -148,19 +151,19 @@ class Dialog(wx.Dialog):
         # Les présents
         if self.check_presents.GetValue() == True :
             if self.ctrl_date_debut.GetDate() == None or self.ctrl_date_debut.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucune date de début de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de début de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
             if self.ctrl_date_fin.GetDate() == None or self.ctrl_date_fin.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Vous n'avez saisi aucune date de fin de période !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune date de fin de période !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
 
             if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
-                dlg = wx.MessageDialog(self, u"La date de début est supérieure à la date de fin !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

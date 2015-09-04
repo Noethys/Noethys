@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 import wx
+import CTRL_Bouton_image
 
 
 def GetIDutilisateur():

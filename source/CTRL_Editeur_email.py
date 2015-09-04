@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.colourselect as csel
 import wx.richtext as rt
 import sys
@@ -24,25 +27,25 @@ import UTILS_Identification
 
 
 CATEGORIES = [
-    ("saisie_libre", u"Saisie libre"),
-    ("releve_prestations", u"Relevé des prestations"),
-    ("reglement", u"Règlement"),
-    ("recu_reglement", u"Reçu de règlement"),
-    ("recu_don_oeuvres", u"Reçu de don aux oeuvres"),
-    ("facture", u"Facture"),
-    ("rappel", u"Rappel"),
-    ("attestation_presence", u"Attestation de présence"), 
-    ("attestation_fiscale", u"Attestation fiscale"), 
-    ("reservations", u"Liste des réservations"), 
-    ("cotisation", u"Cotisation"), 
+    ("saisie_libre", _(u"Saisie libre")),
+    ("releve_prestations", _(u"Relevé des prestations")),
+    ("reglement", _(u"Règlement")),
+    ("recu_reglement", _(u"Reçu de règlement")),
+    ("recu_don_oeuvres", _(u"Reçu de don aux oeuvres")),
+    ("facture", _(u"Facture")),
+    ("rappel", _(u"Rappel")),
+    ("attestation_presence", _(u"Attestation de présence")), 
+    ("attestation_fiscale", _(u"Attestation fiscale")), 
+    ("reservations", _(u"Liste des réservations")), 
+    ("cotisation", _(u"Cotisation")), 
     ]
 
 MOTSCLES_STANDARDS = [
-                ( "{UTILISATEUR_NOM_COMPLET}", u"Nom complet de l'utilisateur" ),
-                ( "{UTILISATEUR_NOM}", u"Nom de famille de l'utilisateur" ),
-                ( "{UTILISATEUR_PRENOM}", u"Prénom de l'utilisateur" ),
-                ( "{DATE_COURTE}", u"Date du jour courte" ),
-                ( "{DATE_LONGUE}", u"Date du jour longue" ),
+                ( "{UTILISATEUR_NOM_COMPLET}", _(u"Nom complet de l'utilisateur") ),
+                ( "{UTILISATEUR_NOM}", _(u"Nom de famille de l'utilisateur") ),
+                ( "{UTILISATEUR_PRENOM}", _(u"Prénom de l'utilisateur") ),
+                ( "{DATE_COURTE}", _(u"Date du jour courte") ),
+                ( "{DATE_LONGUE}", _(u"Date du jour longue") ),
                 ]
     
 MOTSCLES = {
@@ -51,108 +54,108 @@ MOTSCLES = {
                 ],
     
     "releve_prestations" : [
-                ( "{DATE_EDITION_RELEVE}", u"Date de l'édition du relevé" ),
-                ( "{RESTE_DU}", u"Reste dû indiqué par le relevé" ),
+                ( "{DATE_EDITION_RELEVE}", _(u"Date de l'édition du relevé") ),
+                ( "{RESTE_DU}", _(u"Reste dû indiqué par le relevé") ),
                 ],
 
     "reglement" : [
-                ( "{ID_REGLEMENT}", u"ID du règlement" ),
-                ( "{DATE_REGLEMENT}", u"Date du règlement" ),
-                ( "{MODE_REGLEMENT}", u"Mode de règlement" ),
-                ( "{NOM_EMETTEUR}", u"Nom de l'émetteur" ),
-                ( "{NUM_PIECE}", u"Numéro de la pièce" ),
-                ( "{MONTANT_REGLEMENT}", u"Montant du règlement" ),
-                ( "{NOM_PAYEUR}", u"Nom du payeur" ),
-                ( "{NUM_QUITTANCIER}", u"Numéro de quittancier" ),
-                ( "{DATE_SAISIE}", u"Date de saisie du règlement" ),
+                ( "{ID_REGLEMENT}", _(u"ID du règlement") ),
+                ( "{DATE_REGLEMENT}", _(u"Date du règlement") ),
+                ( "{MODE_REGLEMENT}", _(u"Mode de règlement") ),
+                ( "{NOM_EMETTEUR}", _(u"Nom de l'émetteur") ),
+                ( "{NUM_PIECE}", _(u"Numéro de la pièce") ),
+                ( "{MONTANT_REGLEMENT}", _(u"Montant du règlement") ),
+                ( "{NOM_PAYEUR}", _(u"Nom du payeur") ),
+                ( "{NUM_QUITTANCIER}", _(u"Numéro de quittancier") ),
+                ( "{DATE_SAISIE}", _(u"Date de saisie du règlement") ),
                 ],
 
     "recu_reglement" : [
-                ( "{DATE_EDITION_RECU}", u"Date d'édition du reçu" ),
-                ( "{NUMERO_RECU}", u"Numéro du reçu" ),
-                ( "{ID_REGLEMENT}", u"ID du règlement" ),
-                ( "{DATE_REGLEMENT}", u"Date du règlement" ),
-                ( "{MODE_REGLEMENT}", u"Mode de règlement" ),
-                ( "{NOM_EMETTEUR}", u"Nom de l'émetteur" ),
-                ( "{NUM_PIECE}", u"Numéro de la pièce" ),
-                ( "{MONTANT_REGLEMENT}", u"Montant du règlement" ),
-                ( "{NOM_PAYEUR}", u"Nom du payeur" ),
-                ( "{NUM_QUITTANCIER}", u"Numéro de quittancier" ),
-                ( "{DATE_SAISIE}", u"Date de saisie du règlement" ),
+                ( "{DATE_EDITION_RECU}", _(u"Date d'édition du reçu") ),
+                ( "{NUMERO_RECU}", _(u"Numéro du reçu") ),
+                ( "{ID_REGLEMENT}", _(u"ID du règlement") ),
+                ( "{DATE_REGLEMENT}", _(u"Date du règlement") ),
+                ( "{MODE_REGLEMENT}", _(u"Mode de règlement") ),
+                ( "{NOM_EMETTEUR}", _(u"Nom de l'émetteur") ),
+                ( "{NUM_PIECE}", _(u"Numéro de la pièce") ),
+                ( "{MONTANT_REGLEMENT}", _(u"Montant du règlement") ),
+                ( "{NOM_PAYEUR}", _(u"Nom du payeur") ),
+                ( "{NUM_QUITTANCIER}", _(u"Numéro de quittancier") ),
+                ( "{DATE_SAISIE}", _(u"Date de saisie du règlement") ),
                 ],
 
     "recu_don_oeuvres" : [
-                ( "{DATE_EDITION}", u"Date d'édition du reçu" ),
-                ( "{NUMERO_RECU}", u"Numéro du reçu" ),
-                ( "{NOM_DONATEUR}", u"Nom du donateur" ),
-                ( "{ADRESSE_DONATEUR}", u"Adresse du donateur" ),
-                ( "{DATE_REGLEMENT}", u"Date du règlement" ),
-                ( "{MODE_REGLEMENT}", u"Mode du règlement" ),
-                ( "{MONTANT_CHIFFRES}", u"Montant en chiffres" ),
-                ( "{MONTANT_LETTRES}", u"Montant en lettres" ),
+                ( "{DATE_EDITION}", _(u"Date d'édition du reçu") ),
+                ( "{NUMERO_RECU}", _(u"Numéro du reçu") ),
+                ( "{NOM_DONATEUR}", _(u"Nom du donateur") ),
+                ( "{ADRESSE_DONATEUR}", _(u"Adresse du donateur") ),
+                ( "{DATE_REGLEMENT}", _(u"Date du règlement") ),
+                ( "{MODE_REGLEMENT}", _(u"Mode du règlement") ),
+                ( "{MONTANT_CHIFFRES}", _(u"Montant en chiffres") ),
+                ( "{MONTANT_LETTRES}", _(u"Montant en lettres") ),
                 ],
 
     "facture" : [
-                ( "{DATE_EDITION_FACTURE}", u"Date d'édition de la facture" ),
-                ( "{NUMERO_FACTURE}", u"Numéro de facture" ),
-                ( "{DATE_DEBUT}", u"Date de début de la période de facturation" ),
-                ( "{DATE_FIN}", u"Date de fin de la période de facturation" ),
-                ( "{DATE_ECHEANCE}", u"Date d'échance du règlement" ),
-                ( "{SOLDE}", u"Solde de la facture" ),
+                ( "{DATE_EDITION_FACTURE}", _(u"Date d'édition de la facture") ),
+                ( "{NUMERO_FACTURE}", _(u"Numéro de facture") ),
+                ( "{DATE_DEBUT}", _(u"Date de début de la période de facturation") ),
+                ( "{DATE_FIN}", _(u"Date de fin de la période de facturation") ),
+                ( "{DATE_ECHEANCE}", _(u"Date d'échance du règlement") ),
+                ( "{SOLDE}", _(u"Solde de la facture") ),
                 ],
 
     "rappel" : [
-                ( "{DATE_EDITION_RAPPEL}", u"Date d'édition de la lettre de rappel" ),
-                ( "{NUMERO_RAPPEL}", u"Numéro de le lattre de rappel" ),
-                ( "{DATE_MIN}", u"Date de début des impayés" ),
-                ( "{DATE_MAX}", u"Date de fin des impayés" ),
-                ( "{DATE_REFERENCE}", u"Date de référence" ),
-                ( "{SOLDE_CHIFFRES}", u"Solde du rappel en chiffres" ),
-                ( "{SOLDE_LETTRES}", u"Solde du rappel en lettres" ),
+                ( "{DATE_EDITION_RAPPEL}", _(u"Date d'édition de la lettre de rappel") ),
+                ( "{NUMERO_RAPPEL}", _(u"Numéro de le lattre de rappel") ),
+                ( "{DATE_MIN}", _(u"Date de début des impayés") ),
+                ( "{DATE_MAX}", _(u"Date de fin des impayés") ),
+                ( "{DATE_REFERENCE}", _(u"Date de référence") ),
+                ( "{SOLDE_CHIFFRES}", _(u"Solde du rappel en chiffres") ),
+                ( "{SOLDE_LETTRES}", _(u"Solde du rappel en lettres") ),
                 ],
 
     "attestation_presence" : [
-                ( "{DATE_EDITION_ATTESTATION}", u"Date d'édition de l'attestation" ),
-                ( "{NUMERO_ATTESTATION}", u"Numéro de l'attestation" ),
-                ( "{DATE_DEBUT}", u"Date de début de la période" ),
-                ( "{DATE_FIN}", u"Date de fin de la période" ),
-                ( "{INDIVIDUS_CONCERNES}", u"Liste des individus concernés" ),
-                ( "{SOLDE}", u"Solde de l'attestation" ),
+                ( "{DATE_EDITION_ATTESTATION}", _(u"Date d'édition de l'attestation") ),
+                ( "{NUMERO_ATTESTATION}", _(u"Numéro de l'attestation") ),
+                ( "{DATE_DEBUT}", _(u"Date de début de la période") ),
+                ( "{DATE_FIN}", _(u"Date de fin de la période") ),
+                ( "{INDIVIDUS_CONCERNES}", _(u"Liste des individus concernés") ),
+                ( "{SOLDE}", _(u"Solde de l'attestation") ),
                 ],
 
     "reservations" : [
-                ( "{SOLDE}", u"Solde du document" ),
+                ( "{SOLDE}", _(u"Solde du document") ),
                 ],
 
     "mandat_sepa" : [
-                ( "{REFERENCE_UNIQUE_MANDAT}", u"RUM (Référence Unique du Mandat)" ),
-                ( "{DATE_SIGNATURE}", u"Date de signature du mandat" ),
+                ( "{REFERENCE_UNIQUE_MANDAT}", _(u"RUM (Référence Unique du Mandat)") ),
+                ( "{DATE_SIGNATURE}", _(u"Date de signature du mandat") ),
                 ],
 
     "cotisation" : [
-                ( "{NUMERO_CARTE}", u"Numéro de la carte" ),
-                ( "{DATE_DEBUT}", u"Date de début de validité de la cotisation" ),
-                ( "{DATE_FIN}", u"Date de fin de validité de la cotisation" ),
-                ( "{NOM_TYPE_COTISATION}", u"Nom du type de cotisation" ),
-                ( "{NOM_UNITE_COTISATION}", u"Nom de l'unité de cotisation" ),
-                ( "{NOM_COTISATION}", u"Nom de la cotisation (type + unité)" ),
-                ( "{DATE_CREATION_CARTE}", u"Date de création de la carte" ),
-                ( "{MONTANT_FACTURE}", u"Montant facturé" ),
-                ( "{MONTANT_REGLE}", u"Montant réglé" ),
-                ( "{SOLDE_ACTUEL}", u"Solde actuel" ),
+                ( "{NUMERO_CARTE}", _(u"Numéro de la carte") ),
+                ( "{DATE_DEBUT}", _(u"Date de début de validité de la cotisation") ),
+                ( "{DATE_FIN}", _(u"Date de fin de validité de la cotisation") ),
+                ( "{NOM_TYPE_COTISATION}", _(u"Nom du type de cotisation") ),
+                ( "{NOM_UNITE_COTISATION}", _(u"Nom de l'unité de cotisation") ),
+                ( "{NOM_COTISATION}", _(u"Nom de la cotisation (type + unité)") ),
+                ( "{DATE_CREATION_CARTE}", _(u"Date de création de la carte") ),
+                ( "{MONTANT_FACTURE}", _(u"Montant facturé") ),
+                ( "{MONTANT_REGLE}", _(u"Montant réglé") ),
+                ( "{SOLDE_ACTUEL}", _(u"Solde actuel") ),
                 ],
 
     "attestation_fiscale" : [
-                ("{DATE_EDITION_COURT}", u"Date d'édition court"),
-                ("{DATE_EDITION_LONG}", u"Date d'édition long"),
-                ("{DATE_DEBUT}", u"Date de début de la période"),
-                ("{DATE_FIN}", u"Date de fin de la période"),
-                ("{MONTANT_FACTURE}", u"Montant total facturé"),
-                ("{MONTANT_REGLE}", u"Montant réglé"),
-                ("{MONTANT_IMPAYE}", u"Montant impayé"),
-                ("{MONTANT_FACTURE_LETTRES}", u"Montant total facturé en lettres"),
-                ("{MONTANT_REGLE_LETTRES}", u"Montant réglé en lettres"),
-                ("{MONTANT_IMPAYE_LETTRES}", u"Montant impayé en lettres"),
+                ("{DATE_EDITION_COURT}", _(u"Date d'édition court")),
+                ("{DATE_EDITION_LONG}", _(u"Date d'édition long")),
+                ("{DATE_DEBUT}", _(u"Date de début de la période")),
+                ("{DATE_FIN}", _(u"Date de fin de la période")),
+                ("{MONTANT_FACTURE}", _(u"Montant total facturé")),
+                ("{MONTANT_REGLE}", _(u"Montant réglé")),
+                ("{MONTANT_IMPAYE}", _(u"Montant impayé")),
+                ("{MONTANT_FACTURE_LETTRES}", _(u"Montant total facturé en lettres")),
+                ("{MONTANT_REGLE_LETTRES}", _(u"Montant réglé en lettres")),
+                ("{MONTANT_IMPAYE_LETTRES}", _(u"Montant impayé en lettres")),
                 ],
 
     }
@@ -277,8 +280,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -365,8 +368,8 @@ class Panel_Expediteur(wx.Panel):
         self.bouton_exp = self.bouton_exp = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Propriétés
-        self.ctrl_exp.SetToolTipString(u"Sélectionnez l'adresse d'expéditeur")
-        self.bouton_exp.SetToolTipString(u"Cliquez ici pour accéder à la gestion des adresses d'expédition")
+        self.ctrl_exp.SetToolTipString(_(u"Sélectionnez l'adresse d'expéditeur"))
+        self.bouton_exp.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des adresses d'expédition"))
         
         # Layout
         grid_sizer = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -415,26 +418,26 @@ class BarreOutils1(wx.ToolBar):
             if updateUI is not None:
                 self.Bind(wx.EVT_UPDATE_UI, updateUI, item)
         
-        doBind( self.AddTool(ID_SAUVEGARDER, wx.Bitmap("Images/Teamword/sauvegarder.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Sauvegarder le texte"), self.parent.OnFileSave)
-        doBind( self.AddTool(ID_OUVRIR, wx.Bitmap("Images/Teamword/ouvrir.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Ouvrir un texte sauvegardé"), self.parent.OnFileOpen)
+        doBind( self.AddTool(ID_SAUVEGARDER, wx.Bitmap("Images/Teamword/sauvegarder.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Sauvegarder le texte")), self.parent.OnFileSave)
+        doBind( self.AddTool(ID_OUVRIR, wx.Bitmap("Images/Teamword/ouvrir.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Ouvrir un texte sauvegardé")), self.parent.OnFileOpen)
         self.AddSeparator()
-        doBind( self.AddTool(ID_IMPRIMER, wx.Bitmap("Images/Teamword/imprimer.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Imprimer ce texte"), self.parent.OnPrint)
-        doBind( self.AddTool(ID_APERCU, wx.Bitmap("Images/Teamword/Apercu.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Aperçu avant impression de ce texte"), self.parent.OnPreview)
+        doBind( self.AddTool(ID_IMPRIMER, wx.Bitmap("Images/Teamword/imprimer.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Imprimer ce texte")), self.parent.OnPrint)
+        doBind( self.AddTool(ID_APERCU, wx.Bitmap("Images/Teamword/Apercu.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Aperçu avant impression de ce texte")), self.parent.OnPreview)
         self.AddSeparator()
-        doBind( self.AddTool(ID_ALIGNER_GAUCHE, wx.Bitmap("Images/Teamword/aligner_gauche.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Aligner à gauche"), self.parent.OnAlignLeft, self.parent.OnUpdateAlignLeft)
-        doBind( self.AddTool(ID_ALIGNER_CENTRE, wx.Bitmap("Images/Teamword/aligner_centre.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Centrer"), self.parent.OnAlignCenter, self.parent.OnUpdateAlignCenter)
-        doBind( self.AddTool(ID_ALIGNER_DROIT, wx.Bitmap("Images/Teamword/aligner_droit.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Aligner à droite"), self.parent.OnAlignRight, self.parent.OnUpdateAlignRight)
+        doBind( self.AddTool(ID_ALIGNER_GAUCHE, wx.Bitmap("Images/Teamword/aligner_gauche.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Aligner à gauche")), self.parent.OnAlignLeft, self.parent.OnUpdateAlignLeft)
+        doBind( self.AddTool(ID_ALIGNER_CENTRE, wx.Bitmap("Images/Teamword/aligner_centre.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Centrer")), self.parent.OnAlignCenter, self.parent.OnUpdateAlignCenter)
+        doBind( self.AddTool(ID_ALIGNER_DROIT, wx.Bitmap("Images/Teamword/aligner_droit.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Aligner à droite")), self.parent.OnAlignRight, self.parent.OnUpdateAlignRight)
         self.AddSeparator()
-        doBind( self.AddTool(ID_GRAS, wx.Bitmap("Images/Teamword/gras.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Gras"), self.parent.OnBold, self.parent.OnUpdateBold)
-        doBind( self.AddTool(ID_ITALIQUE, wx.Bitmap("Images/Teamword/italique.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Italique"), self.parent.OnItalic, self.parent.OnUpdateItalic)
-        doBind( self.AddTool(ID_SOULIGNE, wx.Bitmap("Images/Teamword/souligne.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=u"Souligné"), self.parent.OnUnderline, self.parent.OnUpdateUnderline)
+        doBind( self.AddTool(ID_GRAS, wx.Bitmap("Images/Teamword/gras.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Gras")), self.parent.OnBold, self.parent.OnUpdateBold)
+        doBind( self.AddTool(ID_ITALIQUE, wx.Bitmap("Images/Teamword/italique.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Italique")), self.parent.OnItalic, self.parent.OnUpdateItalic)
+        doBind( self.AddTool(ID_SOULIGNE, wx.Bitmap("Images/Teamword/souligne.png", wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Souligné")), self.parent.OnUnderline, self.parent.OnUpdateUnderline)
         self.AddSeparator()
-        doBind( self.AddTool(ID_COULEUR_POLICE, wx.Bitmap("Images/Teamword/police_couleur.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Couleur de la police"), self.parent.OnColour)
+        doBind( self.AddTool(ID_COULEUR_POLICE, wx.Bitmap("Images/Teamword/police_couleur.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Couleur de la police")), self.parent.OnColour)
         self.AddSeparator()
-        doBind( self.AddTool(wx.ID_UNDO, wx.Bitmap("Images/Teamword/annuler.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Annuler"), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_REDO, wx.Bitmap("Images/Teamword/repeter.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Répéter"), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_UNDO, wx.Bitmap("Images/Teamword/annuler.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Annuler")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_REDO, wx.Bitmap("Images/Teamword/repeter.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Répéter")), self.parent.ForwardEvent, self.parent.ForwardEvent)
         self.AddSeparator()
-        doBind( self.AddTool(ID_GOMME, wx.Bitmap("Images/16x16/Gomme.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Effacer tout le texte"), self.parent.OnGomme)
+        doBind( self.AddTool(ID_GOMME, wx.Bitmap("Images/16x16/Gomme.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Effacer tout le texte")), self.parent.OnGomme)
 
         self.SetToolBitmapSize((16, 16))
         self.Realize()
@@ -450,23 +453,23 @@ class BarreOutils2(wx.ToolBar):
             if updateUI is not None:
                 self.Bind(wx.EVT_UPDATE_UI, updateUI, item)
         
-        doBind( self.AddTool(wx.ID_CUT, wx.Bitmap("Images/Teamword/couper.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Couper"), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_COPY, wx.Bitmap("Images/Teamword/copier.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Copier"), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_PASTE, wx.Bitmap("Images/Teamword/coller.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Coller"), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_CUT, wx.Bitmap("Images/Teamword/couper.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Couper")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_COPY, wx.Bitmap("Images/Teamword/copier.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Copier")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        doBind( self.AddTool(wx.ID_PASTE, wx.Bitmap("Images/Teamword/coller.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Coller")), self.parent.ForwardEvent, self.parent.ForwardEvent)
         self.AddSeparator()
-        doBind( self.AddTool(ID_RETRAIT_GAUCHE, wx.Bitmap("Images/Teamword/retrait_gauche.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Diminuer le retrait"), self.parent.OnIndentLess)
-        doBind( self.AddTool(ID_RETRAIT_DROIT, wx.Bitmap("Images/Teamword/retrait_droit.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Augmenter le retrait"), self.parent.OnIndentMore)
+        doBind( self.AddTool(ID_RETRAIT_GAUCHE, wx.Bitmap("Images/Teamword/retrait_gauche.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Diminuer le retrait")), self.parent.OnIndentLess)
+        doBind( self.AddTool(ID_RETRAIT_DROIT, wx.Bitmap("Images/Teamword/retrait_droit.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Augmenter le retrait")), self.parent.OnIndentMore)
         self.AddSeparator()
-        doBind( self.AddTool(ID_PARA_MOINS, wx.Bitmap("Images/Teamword/espaceParagrapheMoins.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Diminuer l'espacement des paragraphes"), self.parent.OnParagraphSpacingLess)
-        doBind( self.AddTool(ID_PARA_PLUS, wx.Bitmap("Images/Teamword/espaceParagraphePlus.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Augmenter l'espacement des paragraphes"), self.parent.OnParagraphSpacingMore)
+        doBind( self.AddTool(ID_PARA_MOINS, wx.Bitmap("Images/Teamword/espaceParagrapheMoins.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Diminuer l'espacement des paragraphes")), self.parent.OnParagraphSpacingLess)
+        doBind( self.AddTool(ID_PARA_PLUS, wx.Bitmap("Images/Teamword/espaceParagraphePlus.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Augmenter l'espacement des paragraphes")), self.parent.OnParagraphSpacingMore)
         self.AddSeparator()
-        doBind( self.AddTool(ID_INTER_SIMPLE, wx.Bitmap("Images/Teamword/interligne_simple.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Interligne simple"), self.parent.OnLineSpacingSingle)
-        doBind( self.AddTool(ID_INTER_DEMI, wx.Bitmap("Images/Teamword/interligne_demi.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Interligne 1.5"), self.parent.OnLineSpacingHalf)
-        doBind( self.AddTool(ID_INTER_DOUBLE, wx.Bitmap("Images/Teamword/interligne_double.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Interligne double"), self.parent.OnLineSpacingDouble)
+        doBind( self.AddTool(ID_INTER_SIMPLE, wx.Bitmap("Images/Teamword/interligne_simple.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Interligne simple")), self.parent.OnLineSpacingSingle)
+        doBind( self.AddTool(ID_INTER_DEMI, wx.Bitmap("Images/Teamword/interligne_demi.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Interligne 1.5")), self.parent.OnLineSpacingHalf)
+        doBind( self.AddTool(ID_INTER_DOUBLE, wx.Bitmap("Images/Teamword/interligne_double.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Interligne double")), self.parent.OnLineSpacingDouble)
         
         self.AddSeparator()
-        doBind( self.AddTool(ID_URL, wx.Bitmap("Images/Teamword/url.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Insérer une url"), self.parent.OnInsererURL)
-        doBind( self.AddTool(ID_IMAGE, wx.Bitmap("Images/Teamword/importer_image.png", wx.BITMAP_TYPE_ANY), shortHelpString=u"Insérer une image"), self.parent.OnImporterImage)
+        doBind( self.AddTool(ID_URL, wx.Bitmap("Images/Teamword/url.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Insérer une url")), self.parent.OnInsererURL)
+        doBind( self.AddTool(ID_IMAGE, wx.Bitmap("Images/Teamword/importer_image.png", wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Insérer une image")), self.parent.OnImporterImage)
 
         self.SetToolBitmapSize((16, 16))
         self.Realize()
@@ -525,7 +528,7 @@ class CTRL(wx.Panel):
     def OnFileOpen(self, evt):
         """ Ouvrir un texte """
         wildcard, types = rt.RichTextBuffer.GetExtWildcard(save=False)
-        dlg = wx.FileDialog(self, u"Choisissez un fichier à ouvrir", wildcard=wildcard, style=wx.OPEN)
+        dlg = wx.FileDialog(self, _(u"Choisissez un fichier à ouvrir"), wildcard=wildcard, style=wx.OPEN)
         dlg.SetFilterIndex(2)
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()
@@ -538,7 +541,7 @@ class CTRL(wx.Panel):
     def OnFileSave(self, evt):
         """ Sauvegarder dans un fichier """
         wildcard, types = rt.RichTextBuffer.GetExtWildcard(save=True)
-        dlg = wx.FileDialog(self, u"Sauvegardez le texte", wildcard=wildcard, style=wx.SAVE)
+        dlg = wx.FileDialog(self, _(u"Sauvegardez le texte"), wildcard=wildcard, style=wx.SAVE)
         dlg.SetFilterIndex(3)
         if dlg.ShowModal() == wx.ID_OK:
             cheminFichier = dlg.GetPath()
@@ -572,7 +575,7 @@ class CTRL(wx.Panel):
             return
         
         import UTILS_Printer
-        pfrm = UTILS_Printer.FramePreview(self, u"Aperçu avant impression", preview)
+        pfrm = UTILS_Printer.FramePreview(self, _(u"Aperçu avant impression"), preview)
         pfrm.SetPosition(self.GetPosition())
         pfrm.SetSize(self.GetSize())
         pfrm.Show(True)     
@@ -708,7 +711,7 @@ class CTRL(wx.Panel):
 
     def OnFont(self, evt):
         if not self.ctrl_editeur.HasSelection():
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner un texte.", u"Police", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un texte."), _(u"Police"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -816,7 +819,7 @@ class CTRL(wx.Panel):
         cheminDefaut = sp.GetDocumentsDir()
         # Ouverture de la fenêtre de dialogue
         dlg = wx.FileDialog(
-            self, message=u"Choisissez une image",
+            self, message=_(u"Choisissez une image"),
             defaultDir=cheminDefaut, 
             defaultFile="",
             wildcard=wildcard,
@@ -832,7 +835,7 @@ class CTRL(wx.Panel):
         # Recadre la photo
         bmp = wx.Bitmap(nomFichierLong, wx.BITMAP_TYPE_ANY)
 ##        import DLG_Editeur_photo_2
-##        dlg = DLG_Editeur_photo_2.MyDialog(self, image=nomFichierLong, titre=u"Redimensionnez l'image si vous le souhaitez")
+##        dlg = DLG_Editeur_photo_2.MyDialog(self, image=nomFichierLong, titre=_(u"Redimensionnez l'image si vous le souhaitez"))
 ##        if dlg.ShowModal() == wx.ID_OK:
 ##            bmp = dlg.GetBmp()
 ##            dlg.Destroy()

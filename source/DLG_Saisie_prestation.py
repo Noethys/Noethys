@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import wx.lib.agw.floatspin as FS
@@ -54,9 +57,9 @@ class Choix_categorie(wx.Choice):
         self.parent = parent
         
         self.listeCategories = [
-            ("consommation", u"Consommation"),
-            ("cotisation", u"Cotisation"),
-            ("autre", u"Autre"),
+            ("consommation", _(u"Consommation")),
+            ("cotisation", _(u"Cotisation")),
+            ("autre", _(u"Autre")),
             ]
 
         self.listeNoms = []
@@ -189,10 +192,10 @@ class Choix_tarif(wx.Choice):
             nom = dictTarif["nomTarif"]
             date_debut = dictTarif["date_debut"]
             date_fin = dictTarif["date_fin"]
-            if date_debut == None and date_fin == None : label = u"%s (Sans période de validité)" % nom
-            if date_debut == None and date_fin != None : label = u"%s (Jusqu'au %s)" % (nom, DateDDenFr(date_fin))
-            if date_debut != None and date_fin == None : label = u"%s (A partir du %s)" % (nom, DateDDenFr(date_debut))
-            if date_debut != None and date_fin != None : label = u"%s (Du %s au %s)" % (nom, DateDDenFr(date_debut), DateDDenFr(date_fin))
+            if date_debut == None and date_fin == None : label = _(u"%s (Sans période de validité)") % nom
+            if date_debut == None and date_fin != None : label = _(u"%s (Jusqu'au %s)") % (nom, DateDDenFr(date_fin))
+            if date_debut != None and date_fin == None : label = _(u"%s (A partir du %s)") % (nom, DateDDenFr(date_debut))
+            if date_debut != None and date_fin != None : label = _(u"%s (Du %s au %s)") % (nom, DateDDenFr(date_debut), DateDDenFr(date_fin))
             self.listeNoms.append(label)
         self.SetItems(self.listeNoms)
     
@@ -232,63 +235,63 @@ class Dialog(wx.Dialog):
         self.IDcompte_payeur = listeDonnees[0][0]
         
         if self.IDprestation == None :
-            self.SetTitle(u"Saisie d'une prestation")
-            titre = u"Saisie d'une prestation"
+            self.SetTitle(_(u"Saisie d'une prestation"))
+            titre = _(u"Saisie d'une prestation")
         else:
-            self.SetTitle(u"Modification d'une prestation")
-            titre = u"Modification d'une prestation"
-        intro = u"Vous pouvez saisir ou modifier ici les caractéristiques d'une prestation. Cela peut être utile lorsque vous devez saisir une prestation exceptionnelle pour un individu ou une famille (ex.: frais de dossier, pénalité, report...) ou quand certains paramètres doivent être modifiés manuellement."
+            self.SetTitle(_(u"Modification d'une prestation"))
+            titre = _(u"Modification d'une prestation")
+        intro = _(u"Vous pouvez saisir ou modifier ici les caractéristiques d'une prestation. Cela peut être utile lorsque vous devez saisir une prestation exceptionnelle pour un individu ou une famille (ex.: frais de dossier, pénalité, report...) ou quand certains paramètres doivent être modifiés manuellement.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
         # Généralités
-        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, u"Généralites")
-        self.label_date = wx.StaticText(self, -1, u"Date :")
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Généralites"))
+        self.label_date = wx.StaticText(self, -1, _(u"Date :"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie = Choix_categorie(self)
 ##        self.ctrl_categorie.Enable(False)
-        self.label_label = wx.StaticText(self, -1, u"Intitulé :")
+        self.label_label = wx.StaticText(self, -1, _(u"Intitulé :"))
         self.ctrl_label = wx.TextCtrl(self, -1, u"")
-        self.label_type = wx.StaticText(self, -1, u"Type :")
-        self.radio_type_familiale = wx.RadioButton(self, -1, u"Prestation familiale", style=wx.RB_GROUP)
-        self.radio_type_individuelle = wx.RadioButton(self, -1, u"Prestation individuelle :")
+        self.label_type = wx.StaticText(self, -1, _(u"Type :"))
+        self.radio_type_familiale = wx.RadioButton(self, -1, _(u"Prestation familiale"), style=wx.RB_GROUP)
+        self.radio_type_individuelle = wx.RadioButton(self, -1, _(u"Prestation individuelle :"))
         self.ctrl_individu = Choix_individu(self, self.IDfamille)
         
         # Facturation
-        self.staticbox_facturation_staticbox = wx.StaticBox(self, -1, u"Facturation")
-        self.label_activite = wx.StaticText(self, -1, u"Activité :")
+        self.staticbox_facturation_staticbox = wx.StaticBox(self, -1, _(u"Facturation"))
+        self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = Choix_activite(self)
-        self.label_categorie_tarif = wx.StaticText(self, -1, u"Catégorie :")
+        self.label_categorie_tarif = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie_tarif = Choix_categorie_tarif(self)
-        self.label_tarif = wx.StaticText(self, -1, u"Tarif :")
+        self.label_tarif = wx.StaticText(self, -1, _(u"Tarif :"))
         self.ctrl_tarif = Choix_tarif(self)
-        self.label_facture = wx.StaticText(self, -1, u"Facture :")
-        self.ctrl_facture = wx.StaticText(self, -1, u"Non facturé")
-        self.label_temps = wx.StaticText(self, -1, u"Temps facturé :")
+        self.label_facture = wx.StaticText(self, -1, _(u"Facture :"))
+        self.ctrl_facture = wx.StaticText(self, -1, _(u"Non facturé"))
+        self.label_temps = wx.StaticText(self, -1, _(u"Temps facturé :"))
         self.ctrl_temps = CTRL_Saisie_heure.Heure(self)
 
         # TVA
-        self.label_tva = wx.StaticText(self, -1, u"Taux TVA (%) :")
+        self.label_tva = wx.StaticText(self, -1, _(u"Taux TVA (%) :"))
         self.ctrl_tva = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
         self.ctrl_tva.SetFormat("%f")
         self.ctrl_tva.SetDigits(2)
         
         # Code comptable
-        self.label_code_comptable = wx.StaticText(self, -1, u"Code compta :")
+        self.label_code_comptable = wx.StaticText(self, -1, _(u"Code compta :"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, u"") 
         
         # Montants
-        self.label_montant_avant_deduc = wx.StaticText(self, -1, u"Montant TTC (%s) :" % SYMBOLE)
+        self.label_montant_avant_deduc = wx.StaticText(self, -1, _(u"Montant TTC (%s) :") % SYMBOLE)
         self.ctrl_montant_avant_deduc = CTRL_Saisie_euros.CTRL(self)
         self.ctrl_montant_avant_deduc.SetMinSize((100, -1))
-        self.label_montant = wx.StaticText(self, -1, u"Montant final TTC (%s) :" % SYMBOLE)
+        self.label_montant = wx.StaticText(self, -1, _(u"Montant final TTC (%s) :") % SYMBOLE)
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, font=wx.Font(13, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         self.ctrl_montant.SetBackgroundColour("#F0FBED")
         self.ctrl_montant.SetEditable(False)
         self.ctrl_montant.SetMinSize((100, -1))
         
         # Déductions associées
-        self.staticbox_deductions_staticbox = wx.StaticBox(self, -1, u"Déductions")
+        self.staticbox_deductions_staticbox = wx.StaticBox(self, -1, _(u"Déductions"))
         if self.IDprestation == None :
             IDprestationTemp = 0
         else :
@@ -301,14 +304,14 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         # Consommations associées
-        self.staticbox_consommations_staticbox = wx.StaticBox(self, -1, u"Consommations associées")
+        self.staticbox_consommations_staticbox = wx.StaticBox(self, -1, _(u"Consommations associées"))
         self.ctrl_consommations = OL_Consommations.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_consommations.SetMinSize((20, 100))
         
         # Commandes
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -362,27 +365,27 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(u"Saisissez ici la date de la prestation")
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez ici la catégorie de la prestation")
-        self.ctrl_label.SetToolTipString(u"Saisissez un intitulé pour cette prestation")
-        self.radio_type_familiale.SetToolTipString(u"Selectionnez cette case si la prestation concerne toute la famille")
-        self.radio_type_individuelle.SetToolTipString(u"Selectionnez cette case si la prestation ne concerne qu'un individu")
-        self.ctrl_individu.SetToolTipString(u"Selectionnez l'individu associé à la prestation")
-        self.ctrl_activite.SetToolTipString(u"Selectionnez ici l'activité concernée par la prestation")
-        self.ctrl_categorie_tarif.SetToolTipString(u"Selectionnez ici la catégorie de tarif rattaché a cette prestation")
-        self.ctrl_tarif.SetToolTipString(u"Selectionnez un tarif parmi ceux proposés")
-        self.ctrl_montant_avant_deduc.SetToolTipString(u"Saisissez ici le montant avant déductions en Euros")
-        self.ctrl_montant.SetToolTipString(u"Montant après déductions en Euros")
-        self.ctrl_facture.SetToolTipString(u"Quand une prestation a été facturée, le numéro de facture apparait ici")
-        self.ctrl_temps.SetToolTipString(u"Vous pouvez modifier ici le temps facturé pour cette prestation (utile pour la CAF)")
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour saisir une nouvelle déduction")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier la déduction selectionnée dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer la déduction selectionnée dans la liste")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler et fermer")
-        self.ctrl_tva.SetToolTipString(u"Saisissez le taux de TVA inclus [Optionnel]")
-        self.ctrl_code_comptable.SetToolTipString(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]")
+        self.ctrl_date.SetToolTipString(_(u"Saisissez ici la date de la prestation"))
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici la catégorie de la prestation"))
+        self.ctrl_label.SetToolTipString(_(u"Saisissez un intitulé pour cette prestation"))
+        self.radio_type_familiale.SetToolTipString(_(u"Selectionnez cette case si la prestation concerne toute la famille"))
+        self.radio_type_individuelle.SetToolTipString(_(u"Selectionnez cette case si la prestation ne concerne qu'un individu"))
+        self.ctrl_individu.SetToolTipString(_(u"Selectionnez l'individu associé à la prestation"))
+        self.ctrl_activite.SetToolTipString(_(u"Selectionnez ici l'activité concernée par la prestation"))
+        self.ctrl_categorie_tarif.SetToolTipString(_(u"Selectionnez ici la catégorie de tarif rattaché a cette prestation"))
+        self.ctrl_tarif.SetToolTipString(_(u"Selectionnez un tarif parmi ceux proposés"))
+        self.ctrl_montant_avant_deduc.SetToolTipString(_(u"Saisissez ici le montant avant déductions en Euros"))
+        self.ctrl_montant.SetToolTipString(_(u"Montant après déductions en Euros"))
+        self.ctrl_facture.SetToolTipString(_(u"Quand une prestation a été facturée, le numéro de facture apparait ici"))
+        self.ctrl_temps.SetToolTipString(_(u"Vous pouvez modifier ici le temps facturé pour cette prestation (utile pour la CAF)"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une nouvelle déduction"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la déduction selectionnée dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la déduction selectionnée dans la liste"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_tva.SetToolTipString(_(u"Saisissez le taux de TVA inclus [Optionnel]"))
+        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]"))
 
         self.ctrl_label.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         
@@ -599,7 +602,7 @@ class Dialog(wx.Dialog):
         # Facture
         self.IDfacture = IDfacture
         if numFacture != None :
-            self.ctrl_facture.SetLabel(u"Facture n°%d" % numFacture)
+            self.ctrl_facture.SetLabel(_(u"Facture n°%d") % numFacture)
             self.ctrl_deductions.Enable(False)
             self.bouton_ajouter.Enable(False)
             self.bouton_modifier.Enable(False)
@@ -723,14 +726,14 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Récupération et vérification des données saisies
         if self.IDfacture != None :
-            dlg = wx.MessageDialog(self, u"Cette prestation apparaît déjà sur une facture. Il est donc impossible de la modifier !\n\nVous devez obligatoirement cliquer sur le bouton ANNULER pour quitter.", u"Validation impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette prestation apparaît déjà sur une facture. Il est donc impossible de la modifier !\n\nVous devez obligatoirement cliquer sur le bouton ANNULER pour quitter."), _(u"Validation impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
             
         date = self.ctrl_date.GetDate()
         if date == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir une date !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
@@ -740,7 +743,7 @@ class Dialog(wx.Dialog):
         
         label = self.ctrl_label.GetValue()
         if label == "" :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement saisir un intitulé !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un intitulé !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_label.SetFocus()
@@ -753,7 +756,7 @@ class Dialog(wx.Dialog):
         montant_initial = self.ctrl_montant_avant_deduc.GetMontant()
         montant = self.ctrl_montant.GetMontant()
         if montant == None :
-            dlg = wx.MessageDialog(self, u"Le montant que vous avez saisi ne semble pas valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Le montant que vous avez saisi ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
@@ -763,7 +766,7 @@ class Dialog(wx.Dialog):
         if self.radio_type_individuelle.GetValue() == True :
             IDindividu = self.ctrl_individu.GetID()
             if IDindividu == None :
-                dlg = wx.MessageDialog(self, u"Etant donné que vous avez sélectionné le type 'prestation individuelle', vous devez obligatoirement sélectionner un individu dans la liste !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Etant donné que vous avez sélectionné le type 'prestation individuelle', vous devez obligatoirement sélectionner un individu dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_individu.SetFocus()
@@ -782,7 +785,7 @@ class Dialog(wx.Dialog):
         temps_facture = self.ctrl_temps.GetHeure()
         if temps_facture != None :
             if self.ctrl_temps.Validation() == False :
-                dlg = wx.MessageDialog(self, u"Le temps facturé que vous avez saisi ne semble pas correct !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Le temps facturé que vous avez saisi ne semble pas correct !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_temps.SetFocus()

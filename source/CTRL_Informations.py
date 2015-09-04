@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 ##import wx.lib.agw.hypertreelist as HTL
 import datetime
 import calendar
@@ -57,7 +60,7 @@ class CTRL(wx.TreeCtrl):
         self.dictItems = {}
 
         # Création des colonnes
-##        self.AddColumn(u"Informations")
+##        self.AddColumn(_(u"Informations"))
 ##        self.SetColumnWidth(0, 270)
 ##        self.SetColumnAlignment(0, wx.ALIGN_LEFT)
                 
@@ -94,20 +97,20 @@ class CTRL(wx.TreeCtrl):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-        item = wx.MenuItem(menuPop, 10, u"Ajouter un message")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter un message"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
         
         menuPop.AppendSeparator()
 
-        item = wx.MenuItem(menuPop, 20, u"Modifier")
+        item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Modifier, id=20)
         if noSelection == True : item.Enable(False)
         
-        item = wx.MenuItem(menuPop, 30, u"Supprimer")
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
@@ -144,7 +147,7 @@ class CTRL(wx.TreeCtrl):
 
     def Remplissage(self):
         # Création de la racine
-        self.root = self.AddRoot(u"Racine")
+        self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches Messages
         self.Branches_messages(self.root)
@@ -171,9 +174,9 @@ class CTRL(wx.TreeCtrl):
             
             # Label de la catégorie d'info
             if nbreMessages == 1 :
-                labelBranche = u"1 message"
+                labelBranche = _(u"1 message")
             else:
-                labelBranche = u"%d messages" % nbreMessages
+                labelBranche = _(u"%d messages") % nbreMessages
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             self.SetPyData(niveauCategorie, {"type":"categorie"} )
             self.SetItemBold(niveauCategorie, True)
@@ -193,9 +196,9 @@ class CTRL(wx.TreeCtrl):
             
             # Label de la catégorie d'info
             if nbreCotisations == 1 :
-                labelBranche = u"1 cotisation à faire"
+                labelBranche = _(u"1 cotisation à faire")
             else:
-                labelBranche = u"%d cotisations à faire" % nbreCotisations
+                labelBranche = _(u"%d cotisations à faire") % nbreCotisations
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             self.SetPyData(niveauCategorie, {"type":"categorie"} )
             self.SetItemBold(niveauCategorie, True)
@@ -207,12 +210,12 @@ class CTRL(wx.TreeCtrl):
                 # Niveau 1 : Titulaires des familles
                 if nbreFamilles > 1 :
                     if IDfamille == None :
-                        label = u"Cotisations indépendantes"
+                        label = _(u"Cotisations indépendantes")
                     else:
                         if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
                             label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
                         else:
-                            label = u"IDfamille=%d" % IDfamille
+                            label = _(u"IDfamille=%d") % IDfamille
                     niveau1 = self.AppendItem(niveauParent, label)
                     self.SetPyData(niveau1, {"type":"famille", "IDfamille":IDfamille} )
                     self.SetItemBold(niveau1, True)
@@ -224,7 +227,7 @@ class CTRL(wx.TreeCtrl):
                     if typeCotisation == "famille" or self.IDindividu != None :
                         label = nomCotisation
                     else:
-                        label = u"%s de %s" % (nomCotisation, prenom)
+                        label = _(u"%s de %s") % (nomCotisation, prenom)
                     niveau2 = self.AppendItem(niveau1, label)
                     self.SetPyData(niveau2, {"type":"cotisation", "IDtype_cotisation":IDtype_cotisation, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide} )
                     self.dictItems[(IDfamille, IDtype_cotisation, IDindividu)] = niveau2
@@ -242,9 +245,9 @@ class CTRL(wx.TreeCtrl):
             
             # Label de la catégorie d'info
             if nbreMaladies == 1 :
-                labelBranche = u"1 vaccination à réaliser"
+                labelBranche = _(u"1 vaccination à réaliser")
             else:
-                labelBranche = u"%d vaccinations à réaliser" % nbreMaladies
+                labelBranche = _(u"%d vaccinations à réaliser") % nbreMaladies
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             self.SetPyData(niveauCategorie, {"type":"categorie"} )
             self.SetItemBold(niveauCategorie, True)
@@ -254,7 +257,7 @@ class CTRL(wx.TreeCtrl):
             for IDindividu, prenom, labelMaladie, IDtype_maladie, etat in listeMaladies :
                 labelVaccination = labelMaladie
                 if self.IDfamille != None :
-                    labelVaccination = u"%s pour %s" % (labelMaladie, prenom)
+                    labelVaccination = _(u"%s pour %s") % (labelMaladie, prenom)
                 niveau1 = self.AppendItem(niveauParent, labelVaccination)
                 if etat == "pasok" : self.SetItemImage(niveau1, self.img_pasok, which=wx.TreeItemIcon_Normal)
                 if etat == "attention" : self.SetItemImage(niveau1, self.img_attention, which=wx.TreeItemIcon_Normal)
@@ -274,9 +277,9 @@ class CTRL(wx.TreeCtrl):
             
             # Label de la catégorie d'info
             if nbreRenseignementsManquants == 1 :
-                labelBranche = u"1 renseignement manquant"
+                labelBranche = _(u"1 renseignement manquant")
             else:
-                labelBranche = u"%d renseignements manquants" % nbreRenseignementsManquants
+                labelBranche = _(u"%d renseignements manquants") % nbreRenseignementsManquants
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             self.SetPyData(niveauCategorie, {"type":"categorie"} )
             self.SetItemBold(niveauCategorie, True)
@@ -293,7 +296,7 @@ class CTRL(wx.TreeCtrl):
                     if ID == IDtype_renseignement :
                         labelRenseignement = label
                 if self.IDfamille != None :
-                    labelRenseignement = u"%s de %s" % (labelRenseignement, prenom)
+                    labelRenseignement = _(u"%s de %s") % (labelRenseignement, prenom)
                 niveau1 = self.AppendItem(niveauParent, labelRenseignement)
                 self.SetItemImage(niveau1, self.img_pasok, which=wx.TreeItemIcon_Normal)
                 self.SetPyData(niveau1, {"type":"renseignement", "IDfamille":IDfamille, "IDindividu":IDindividu, "IDtype_renseignement":IDtype_renseignement} )
@@ -309,9 +312,9 @@ class CTRL(wx.TreeCtrl):
             
             # Label de la catégorie d'info
             if nbrePieces == 1 :
-                labelBranche = u"1 pièce à fournir"
+                labelBranche = _(u"1 pièce à fournir")
             else:
-                labelBranche = u"%d pièces à fournir" % nbrePieces
+                labelBranche = _(u"%d pièces à fournir") % nbrePieces
             niveauCategorie = self.AppendItem(niveauParent, labelBranche)
             self.SetPyData(niveauCategorie, {"type":"categorie"} )
             self.SetItemBold(niveauCategorie, True)
@@ -323,12 +326,12 @@ class CTRL(wx.TreeCtrl):
                 # Niveau 1 : Titulaires des familles
                 if nbreFamilles > 1 :
                     if IDfamille == None :
-                        label = u"Pièces indépendantes"
+                        label = _(u"Pièces indépendantes")
                     else:
                         if self.dictFamillesRattachees != None and len(self.dictFamillesRattachees) > 0 :
                             label = self.dictFamillesRattachees[IDfamille]["nomsTitulaires"]
                         else:
-                            label = u"IDfamille=%d" % IDfamille
+                            label = _(u"IDfamille=%d") % IDfamille
                     niveau1 = self.AppendItem(niveauParent, label)
                     self.SetPyData(niveau1, {"type":"famille", "IDfamille":IDfamille} )
                     self.SetItemBold(niveau1, True)
@@ -340,7 +343,7 @@ class CTRL(wx.TreeCtrl):
                     if publicPiece == "famille" or self.IDindividu != None :
                         label = nomPiece
                     else:
-                        label = u"%s de %s" % (nomPiece, prenom)
+                        label = _(u"%s de %s") % (nomPiece, prenom)
                     niveau2 = self.AppendItem(niveau1, label)
                     self.SetPyData(niveau2, {"type":"piece", "IDtype_piece":IDtype_piece, "IDindividu":IDindividu, "IDfamille":IDfamille, "valide":valide} )
                     self.dictItems[(IDfamille, IDtype_piece, IDindividu)] = niveau2
@@ -642,35 +645,35 @@ class CTRL(wx.TreeCtrl):
             # Caisse d'allocations
             if IDtype_renseignement == 7 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["IDcaisse"] == None :
-                    dictTemp["prenom"] = u"la famille"
+                    dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
             # Numéro d'allocataire
             if IDtype_renseignement == 8 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["num_allocataire"] in (None, "") :
-                    dictTemp["prenom"] = u"la famille"
+                    dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
             # Nom de l'allocataire
             if IDtype_renseignement == 9 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["allocataire"] == None :
-                    dictTemp["prenom"] = u"la famille"
+                    dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
             # Titulaire Hélios
             if IDtype_renseignement == 10 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["titulaire_helios"] == None :
-                    dictTemp["prenom"] = u"la famille"
+                    dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
             # Code comptable
             if IDtype_renseignement == 11 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 if dictDonneesFamille["code_comptable"] in (None, "") :
-                    dictTemp["prenom"] = u"la famille"
+                    dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
@@ -685,7 +688,7 @@ class CTRL(wx.TreeCtrl):
                 listeQuotients = DB.ResultatReq()
                 DB.Close()
                 if len(listeQuotients) == 0 :
-                    dictTemp["prenom"] = u"la famille"
+                    dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
                     listeRenseignementsTemp.append(IDtype_renseignement)
 
@@ -1010,7 +1013,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(800, 400))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
@@ -28,8 +31,8 @@ def DateEngFr(textDate):
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (u"Lundi", u"Mardi", u"Mercredi", u"Jeudi", u"Vendredi", u"Samedi", u"Dimanche")
-    listeMois = (u"janvier", u"février", u"mars", u"avril", u"mai", u"juin", u"juillet", u"août", u"septembre", u"octobre", u"novembre", u"décembre")
+    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
+    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
@@ -138,7 +141,7 @@ class Track(object):
         if dictTitulaires.has_key(self.IDfamille) :
             self.nomsTitulaires =  dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
         else:
-            self.nomsTitulaires = u"Sans titulaires"
+            self.nomsTitulaires = _(u"Sans titulaires")
         
         self.solde = self.total_reglements - self.total_prestations
         self.total_a_ventiler = min(self.total_reglements, self.total_prestations)
@@ -197,7 +200,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
         
         ResteAVentiler = dictPrestation["montant"] - montantVentilation
         if ResteAVentiler < FloatToDecimal(0.0) :
-            dlg = wx.MessageDialog(None, u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle.", u"Information", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -364,18 +367,18 @@ class ListView(FastObjectListView):
                 return u"- %.2f %s" % (-montant, SYMBOLE)
 
         liste_Colonnes = [
-            ColumnDefn(u"IDfamille", "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(u"Famille", 'left', 250, "nomsTitulaires", typeDonnee="texte"),
-            ColumnDefn(u"Solde", 'right', 80, "solde", typeDonnee="montant", stringConverter=FormateSolde),
-            ColumnDefn(u"Prestations", 'right', 80, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Règlements", 'right', 80, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"Total ventilé", 'right', 80, "total_ventilations", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(u"A ventiler", 'right', 80, "reste_a_ventiler", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
+            ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), 'left', 250, "nomsTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Solde"), 'right', 80, "solde", typeDonnee="montant", stringConverter=FormateSolde),
+            ColumnDefn(_(u"Prestations"), 'right', 80, "total_prestations", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Règlements"), 'right', 80, "total_reglements", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Total ventilé"), 'right', 80, "total_ventilations", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"A ventiler"), 'right', 80, "reste_a_ventiler", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ]
         
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
-        self.SetEmptyListMsg(u"Aucun problème de ventilation")
+        self.SetEmptyListMsg(_(u"Aucun problème de ventilation"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         if self.colonneTri == None :
             self.SortBy(1, self.sensTri)
@@ -414,7 +417,7 @@ class ListView(FastObjectListView):
         menuPop = wx.Menu()
 
         # Item Ouverture fiche famille
-        item = wx.MenuItem(menuPop, 10, u"Ouvrir la fiche famille")
+        item = wx.MenuItem(menuPop, 10, _(u"Ouvrir la fiche famille"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Famille.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirFicheFamille, id=10)
@@ -424,36 +427,36 @@ class ListView(FastObjectListView):
         # Item Ventilation Automatique
         sousMenuVentilation = wx.Menu()
         
-        item = wx.MenuItem(sousMenuVentilation, 201, u"Uniquement la ligne sélectionnée")
+        item = wx.MenuItem(sousMenuVentilation, 201, _(u"Uniquement la ligne sélectionnée"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=201)
         if noSelection == True : item.Enable(False)
 
-        item = wx.MenuItem(sousMenuVentilation, 202, u"Uniquement les lignes cochées")
+        item = wx.MenuItem(sousMenuVentilation, 202, _(u"Uniquement les lignes cochées"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=202)
         if len(self.GetTracksCoches()) == 0 : item.Enable(False)
 
-        item = wx.MenuItem(sousMenuVentilation, 203, u"Toutes les lignes")
+        item = wx.MenuItem(sousMenuVentilation, 203, _(u"Toutes les lignes"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Magique.png", wx.BITMAP_TYPE_PNG))
         sousMenuVentilation.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.VentilationAuto, id=203)
 
-        menuPop.AppendMenu(wx.NewId(), u"Ventilation automatique", sousMenuVentilation)
+        menuPop.AppendMenu(wx.NewId(), _(u"Ventilation automatique"), sousMenuVentilation)
         
         menuPop.AppendSeparator()
 
         # Item Tout cocher
-        item = wx.MenuItem(menuPop, 70, u"Tout cocher")
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
         bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.CocheTout, id=70)
 
         # Item Tout décocher
-        item = wx.MenuItem(menuPop, 80, u"Tout décocher")
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
         bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -462,13 +465,13 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
 
         # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 40, u"Aperçu avant impression")
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
         
         # Item Imprimer
-        item = wx.MenuItem(menuPop, 50, u"Imprimer")
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Imprimer, id=50)
@@ -476,13 +479,13 @@ class ListView(FastObjectListView):
         menuPop.AppendSeparator()
     
         # Item Export Texte
-        item = wx.MenuItem(menuPop, 600, u"Exporter au format Texte")
+        item = wx.MenuItem(menuPop, 600, _(u"Exporter au format Texte"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportTexte, id=600)
         
         # Item Export Excel
-        item = wx.MenuItem(menuPop, 700, u"Exporter au format Excel")
+        item = wx.MenuItem(menuPop, 700, _(u"Exporter au format Excel"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Excel.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.ExportExcel, id=700)
@@ -492,18 +495,18 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des soldes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des soldes"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=u"Liste des soldes", format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des soldes"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
     def OuvrirFicheFamille(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune fiche famille à ouvrir !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune fiche famille à ouvrir !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -517,11 +520,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=u"Liste des soldes", autoriseSelections=False)
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des soldes"), autoriseSelections=False)
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=u"Liste des soldes", autoriseSelections=False)
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des soldes"), autoriseSelections=False)
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -545,7 +548,7 @@ class ListView(FastObjectListView):
         if ID == 201 :
             # Uniquement la ligne sélectionnée
             if len(self.Selection()) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -556,7 +559,7 @@ class ListView(FastObjectListView):
             # Uniquement les lignes cochées
             listeTracks = self.GetTracksCoches()
             if len(listeTracks) == 0 :
-                dlg = wx.MessageDialog(self, u"Vous n'avez coché aucune ligne !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -566,7 +569,7 @@ class ListView(FastObjectListView):
         # Toutes les lignes
         if ID == 203 :
             if len(self.donnees) == 0 :
-                dlg = wx.MessageDialog(self, u"La liste est vide !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"La liste est vide !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -582,7 +585,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(u"Rechercher une famille...")
+        self.SetDescriptiveText(_(u"Rechercher une famille..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_reglements

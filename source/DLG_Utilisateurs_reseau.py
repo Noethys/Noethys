@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import sys
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 import GestionDB
@@ -44,9 +47,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(u"Cliquez ici pour créer un utilisateur réseau")
-        self.bouton_modifier.SetToolTipString(u"Cliquez ici pour modifier l'utilisateur réseau sélectionné dans la liste")
-        self.bouton_supprimer.SetToolTipString(u"Cliquez ici pour supprimer l'utilisateur réseau sélectionné dans la liste")
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer un utilisateur réseau"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'utilisateur réseau sélectionné dans la liste"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'utilisateur réseau sélectionné dans la liste"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -87,7 +90,7 @@ class Panel(wx.Panel):
 
     def OnBoutonModifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_utilisateurs_reseau", "modifier") == False : return
-        dlg = wx.MessageDialog(self, u"Actuellement, il n'est pas encore possible de modifier un utilisateur. \nVous devez donc supprimer l'utilisateur et le re-créer.", "Information", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Actuellement, il n'est pas encore possible de modifier un utilisateur. \nVous devez donc supprimer l'utilisateur et le re-créer."), "Information", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()      
         
@@ -97,7 +100,7 @@ class Panel(wx.Panel):
 
         # Vérifie qu'un item a bien été sélectionné
         if index == -1:
-            dlg = wx.MessageDialog(self, u"Vous devez d'abord sélectionner un utilisateur à supprimer dans la liste.", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un utilisateur à supprimer dans la liste."), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -107,14 +110,14 @@ class Panel(wx.Panel):
         
         # Vérifie que ce n'est pas ROOT
         if nom == "root" :
-            dlg = wx.MessageDialog(self, u"Vous ne pouvez pas supprimer le compte administrateur", "Information", wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer le compte administrateur"), "Information", wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Demande de confirmation
-        txtMessage = unicode((u"Voulez-vous vraiment supprimer cet utilisateur ? \n\n> %s@%s" % (nom, hote)))
-        dlgConfirm = wx.MessageDialog(self, txtMessage, u"Confirmation de suppression", wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        txtMessage = unicode((_(u"Voulez-vous vraiment supprimer cet utilisateur ? \n\n> %s@%s") % (nom, hote)))
+        dlgConfirm = wx.MessageDialog(self, txtMessage, _(u"Confirmation de suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
         reponse = dlgConfirm.ShowModal()
         dlgConfirm.Destroy()
         if reponse == wx.ID_NO:
@@ -179,13 +182,13 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
         self.listeDonnees = self.Importation()
 
         # Création des colonnes
-        self.InsertColumn(0, u"Accès")
+        self.InsertColumn(0, _(u"Accès"))
         self.SetColumnWidth(0, 55)
-        self.InsertColumn(1, u"Nom de l'utilisateur")
+        self.InsertColumn(1, _(u"Nom de l'utilisateur"))
         self.SetColumnWidth(1, 130)
-        self.InsertColumn(2, u"Hôte de connexion")
+        self.InsertColumn(2, _(u"Hôte de connexion"))
         self.SetColumnWidth(2, 300)
-        self.InsertColumn(3, u"Mot de passe")
+        self.InsertColumn(3, _(u"Mot de passe"))
         self.SetColumnWidth(3, 90)
         
         # Remplissage avec les valeurs
@@ -202,12 +205,12 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
             index = self.InsertStringItem(sys.maxint, autorisationStr)
             
             if user == "root" :
-                user = u"root (Administrateur)"
+                user = _(u"root (Administrateur)")
             self.SetStringItem(index, 1, user)
             
-            if host == "%" : host = u"Connexion depuis n'importe quel hôte"
-            elif host == "localhost" : host = u"Connexion uniquement depuis le serveur principal"
-            else : host = u"Connexion uniquement depuis l'hôte %s" % host
+            if host == "%" : host = _(u"Connexion depuis n'importe quel hôte")
+            elif host == "localhost" : host = _(u"Connexion uniquement depuis le serveur principal")
+            else : host = _(u"Connexion uniquement depuis l'hôte %s") % host.decode("iso-8859-15")
             self.SetStringItem(index, 2, host)
             
             if password != "" and password != None : 
@@ -241,7 +244,7 @@ class ListCtrl(wx.ListCtrl, CheckListCtrlMixin):
                 self.remplissage = True
                 self.CheckItem(index) 
                 self.remplissage = False
-                dlg = wx.MessageDialog(self, u"Vous ne pouvez pas modifier le compte administrateur", "Information", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas modifier le compte administrateur"), "Information", wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
@@ -319,15 +322,15 @@ class Dialog(wx.Dialog):
         self.parent = parent      
         
         # Bandeau
-        intro = u"Quand vous créez un fichier réseau pour Noethys, il n'y a que vous, l'administrateur, qui avez le droit d'accéder au fichier. Vous devez donc créer des utilisateurs ou accorder une autorisation d'accès aux utilisateurs existants. Vous devez indiquer également les postes (hôtes) depuis lesquels ces utilisateurs sont autorisés à se connecter. Cochez les utilisateurs autorisés à se connecter au fichier réseau chargé. Cliquez sur le bouton 'Aide' pour en savoir plus..."
-        titre = u"Gestion des accès réseau"
+        intro = _(u"Quand vous créez un fichier réseau pour Noethys, il n'y a que vous, l'administrateur, qui avez le droit d'accéder au fichier. Vous devez donc créer des utilisateurs ou accorder une autorisation d'accès aux utilisateurs existants. Vous devez indiquer également les postes (hôtes) depuis lesquels ces utilisateurs sont autorisés à se connecter. Cochez les utilisateurs autorisés à se connecter au fichier réseau chargé. Cliquez sur le bouton 'Aide' pour en savoir plus...")
+        titre = _(u"Gestion des accès réseau")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=54, nomImage="Images/32x32/Utilisateur_reseau.png")
         self.SetTitle(titre)
 
         self.panel_contenu = Panel(self, nomBase=nomBase)
 
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, wx.ID_CANCEL, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
         
         self.__set_properties()
         self.__do_layout()
@@ -336,7 +339,7 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.bouton_aide.SetToolTipString("Cliquez ici pour obtenir de l'aide")
-        self.bouton_annuler.SetToolTipString(u"Cliquez pour annuler et fermer")
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler et fermer"))
         self.SetMinSize((660, 550))
 
     def __do_layout(self):

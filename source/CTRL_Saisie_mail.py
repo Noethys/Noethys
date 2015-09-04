@@ -8,20 +8,23 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 
     
 class Mail(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, "")
         self.parent = parent
-        self.SetToolTipString(u"Saisissez une adresse mail")   
+        self.SetToolTipString(_(u"Saisissez une adresse mail"))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def OnKillFocus(self, event):
         valide, messageErreur = self.Validation()
         if valide == False :
-            dlg = wx.MessageDialog(self, messageErreur, u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, messageErreur, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
         if event != None : event.Skip() 
@@ -32,11 +35,11 @@ class Mail(wx.TextCtrl):
         if text != "":
             posAt = text.find("@")
             if posAt == -1:
-                message = u"L'adresse Email que vous avez saisie n'est pas valide !"
+                message = _(u"L'adresse Email que vous avez saisie n'est pas valide !")
                 return False, message
             posPoint = text.rfind(".")
             if posPoint < posAt :
-                message = u"L'adresse Email que vous avez saisie n'est pas valide !"
+                message = _(u"L'adresse Email que vous avez saisie n'est pas valide !")
                 return False, message
         return True, None
     

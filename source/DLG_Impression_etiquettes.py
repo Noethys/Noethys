@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 from wx.lib.floatcanvas import FloatCanvas
 import numpy
 import wx.lib.agw.hyperlink as Hyperlink
@@ -33,8 +36,8 @@ COULEUR_FOND_ETIQUETTE = (200, 200, 200)
 # ------------------------------------------------------------------------------------------------------------
 
 LISTE_CATEGORIES = [
-    ("individu", u"Individus"),
-    ("famille", u"Familles"),
+    ("individu", _(u"Individus")),
+    ("famille", _(u"Familles")),
     ]
 
 
@@ -249,7 +252,7 @@ class Dialog(wx.Dialog):
         self.categorie = categorie
 
         # DLG Attente
-        dlgAttente = PBI.PyBusyInfo(u"Veuillez patienter durant l'initialisation de l'éditeur...", parent=None, title=u"Patientez", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        dlgAttente = PBI.PyBusyInfo(_(u"Veuillez patienter durant l'initialisation de l'éditeur..."), parent=None, title=_(u"Patientez"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
 
         # Si on vient d'une fiche famille ou d'une fiche individuelle
@@ -257,49 +260,49 @@ class Dialog(wx.Dialog):
         if IDfamille != None : self.categorie="famille"
         
         # Bandeau
-        titre = u"Edition d'étiquettes et de badges"
-        intro = u"Vous pouvez ici imprimer rapidement des planches d'étiquettes ou de badges au format PDF. Commencez par sélectionner la catégorie de données et un modèle, puis définissez le gabarit de la page avant de cocher les données à afficher."
+        titre = _(u"Edition d'étiquettes et de badges")
+        intro = _(u"Vous pouvez ici imprimer rapidement des planches d'étiquettes ou de badges au format PDF. Commencez par sélectionner la catégorie de données et un modèle, puis définissez le gabarit de la page avant de cocher les données à afficher.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Etiquette.png")
         
         # Modèle
-        self.box_modele_staticbox = wx.StaticBox(self, -1, u"Modèle")
-        self.label_categorie = wx.StaticText(self, -1, u"Catégorie :")
+        self.box_modele_staticbox = wx.StaticBox(self, -1, _(u"Modèle"))
+        self.label_categorie = wx.StaticText(self, -1, _(u"Catégorie :"))
         self.ctrl_categorie = CTRL_Categorie(self)
-        self.label_modele = wx.StaticText(self, -1, u"Modèle :")
+        self.label_modele = wx.StaticText(self, -1, _(u"Modèle :"))
         self.ctrl_modele = CTRL_Choix_modele.CTRL_Choice(self, categorie=self.categorie)
         self.bouton_modele = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Gabarit
-        self.box_gabarit_staticbox = wx.StaticBox(self, -1, u"Gabarit (en mm)")
-        self.label_largeur_page = wx.StaticText(self, -1, u"Largeur page :")
+        self.box_gabarit_staticbox = wx.StaticBox(self, -1, _(u"Gabarit (en mm)"))
+        self.label_largeur_page = wx.StaticText(self, -1, _(u"Largeur page :"))
         self.ctrl_largeur_page = wx.SpinCtrl(self, -1, u"", min=1, max=1000)
-        self.label_marge_haut = wx.StaticText(self, -1, u"Marge haut :")
+        self.label_marge_haut = wx.StaticText(self, -1, _(u"Marge haut :"))
         self.ctrl_marge_haut = wx.SpinCtrl(self, -1, u"", min=0, max=1000)
-        self.label_hauteur_page = wx.StaticText(self, -1, u"Hauteur page :")
+        self.label_hauteur_page = wx.StaticText(self, -1, _(u"Hauteur page :"))
         self.ctrl_hauteur_page = wx.SpinCtrl(self, -1, u"", min=1, max=1000)
-        self.label_marge_bas = wx.StaticText(self, -1, u"Marge bas :")
+        self.label_marge_bas = wx.StaticText(self, -1, _(u"Marge bas :"))
         self.ctrl_marge_bas = wx.SpinCtrl(self, -1, u"", min=0, max=1000)
-        self.label_espace_vertic = wx.StaticText(self, -1, u"Espace vertic. :")
+        self.label_espace_vertic = wx.StaticText(self, -1, _(u"Espace vertic. :"))
         self.ctrl_espace_vertic = wx.SpinCtrl(self, -1, u"", min=0, max=1000)
-        self.label_marge_gauche = wx.StaticText(self, -1, u"Marge gauche :")
+        self.label_marge_gauche = wx.StaticText(self, -1, _(u"Marge gauche :"))
         self.ctrl_marge_gauche = wx.SpinCtrl(self, -1, u"", min=0, max=1000)
-        self.label_espace_horiz = wx.StaticText(self, -1, u"Espace horiz. :")
+        self.label_espace_horiz = wx.StaticText(self, -1, _(u"Espace horiz. :"))
         self.ctrl_espace_horiz = wx.SpinCtrl(self, -1, u"", min=0, max=1000)
-        self.label_marge_droite = wx.StaticText(self, -1, u"Marge droite :")
+        self.label_marge_droite = wx.StaticText(self, -1, _(u"Marge droite :"))
         self.ctrl_marge_droite = wx.SpinCtrl(self, -1, u"", min=0, max=1000)
         
         # Aperçu
-        self.box_apercu_staticbox = wx.StaticBox(self, -1, u"Aperçu du gabarit")
+        self.box_apercu_staticbox = wx.StaticBox(self, -1, _(u"Aperçu du gabarit"))
         self.ctrl_apercu = CTRL_Apercu(self)
 
         # Options
-        self.box_options_staticbox = wx.StaticBox(self, -1, u"Options")
-        self.check_contour = wx.CheckBox(self, -1, u"Contour des étiquettes")
-        self.check_reperes = wx.CheckBox(self, -1, u"Repères de découpe")
+        self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.check_contour = wx.CheckBox(self, -1, _(u"Contour des étiquettes"))
+        self.check_reperes = wx.CheckBox(self, -1, _(u"Repères de découpe"))
         
         # Données
-        self.box_donnees_staticbox = wx.StaticBox(self, -1, u"Données")
+        self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
         self.ctrl_donnees = Panel_Donnees(self, IDindividu=IDindividu, IDfamille=IDfamille)
         
 ##        self.ctrl_donnees = OL_Etiquettes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -307,16 +310,16 @@ class Dialog(wx.Dialog):
 ##        self.ctrl_recherche = OL_Etiquettes.CTRL_Outils(self, listview=self.ctrl_donnees, afficherCocher=True)
 
         # Mémorisation des paramètres
-        self.ctrl_memoriser = wx.CheckBox(self, -1, u"Mémoriser les paramètres")
+        self.ctrl_memoriser = wx.CheckBox(self, -1, _(u"Mémoriser les paramètres"))
         font = self.GetFont() 
         font.SetPointSize(7)
         self.ctrl_memoriser.SetFont(font)
         self.ctrl_memoriser.SetValue(True) 
         
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Apercu_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap("Images/BoutonsImages/Fermer_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -384,31 +387,31 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(u"Sélectionnez ici une catégorie de données")
-        self.ctrl_modele.SetToolTipString(u"Sélectionnez ici un modèle")
-        self.bouton_modele.SetToolTipString(u"Cliquez ici pour accéder au paramétrage des modèles")
+        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici une catégorie de données"))
+        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez ici un modèle"))
+        self.bouton_modele.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des modèles"))
         self.ctrl_largeur_page.SetMinSize((60, -1))
-        self.ctrl_largeur_page.SetToolTipString(u"Saisissez ici la largeur de la page (en mm)")
+        self.ctrl_largeur_page.SetToolTipString(_(u"Saisissez ici la largeur de la page (en mm)"))
         self.ctrl_marge_haut.SetMinSize((60, -1))
-        self.ctrl_marge_haut.SetToolTipString(u"Saisissez ici la marge de haut de page (en mm)")
+        self.ctrl_marge_haut.SetToolTipString(_(u"Saisissez ici la marge de haut de page (en mm)"))
         self.ctrl_hauteur_page.SetMinSize((60, -1))
-        self.ctrl_hauteur_page.SetToolTipString(u"Saisissez ici la hauteur de la page (en mm)")
+        self.ctrl_hauteur_page.SetToolTipString(_(u"Saisissez ici la hauteur de la page (en mm)"))
         self.ctrl_marge_bas.SetMinSize((60, -1))
-        self.ctrl_marge_bas.SetToolTipString(u"Saisissez ici la marge de bas de page (en mm)")
+        self.ctrl_marge_bas.SetToolTipString(_(u"Saisissez ici la marge de bas de page (en mm)"))
         self.ctrl_espace_vertic.SetMinSize((60, -1))
-        self.ctrl_espace_vertic.SetToolTipString(u"Saisissez ici l'espace vertical entre 2 étiquettes (en mm)")
+        self.ctrl_espace_vertic.SetToolTipString(_(u"Saisissez ici l'espace vertical entre 2 étiquettes (en mm)"))
         self.ctrl_marge_gauche.SetMinSize((60, -1))
-        self.ctrl_marge_gauche.SetToolTipString(u"Saisissez ici la marge gauche de la page (en mm)")
+        self.ctrl_marge_gauche.SetToolTipString(_(u"Saisissez ici la marge gauche de la page (en mm)"))
         self.ctrl_espace_horiz.SetMinSize((60, -1))
-        self.ctrl_espace_horiz.SetToolTipString(u"Saisissez ici l'espace horizontal entre 2 étiquettes de la page (en mm)")
+        self.ctrl_espace_horiz.SetToolTipString(_(u"Saisissez ici l'espace horizontal entre 2 étiquettes de la page (en mm)"))
         self.ctrl_marge_droite.SetMinSize((60, -1))
-        self.ctrl_marge_droite.SetToolTipString(u"Saisissez ici la marge droite de la page (en mm)")
-        self.check_contour.SetToolTipString(u"Cochez ici pour afficher un cadre noir autour de chaque étiquette")
-        self.check_reperes.SetToolTipString(u"Cochez cette case pour afficher les repères de découpe sur chaque page")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour afficher un apercu du PDF")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
-        self.ctrl_memoriser.SetToolTipString(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")
+        self.ctrl_marge_droite.SetToolTipString(_(u"Saisissez ici la marge droite de la page (en mm)"))
+        self.check_contour.SetToolTipString(_(u"Cochez ici pour afficher un cadre noir autour de chaque étiquette"))
+        self.check_reperes.SetToolTipString(_(u"Cochez cette case pour afficher les repères de découpe sur chaque page"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher un apercu du PDF"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_memoriser.SetToolTipString(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition"))
         self.SetMinSize((980, 770))
 
     def __do_layout(self):
@@ -590,7 +593,7 @@ class Dialog(wx.Dialog):
         # Récupère les paramètres
         IDmodele = self.ctrl_modele.GetID() 
         if IDmodele == None :
-            dlg = wx.MessageDialog(self, u"Vous devez obligatoirement sélectionner un modèle !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -609,7 +612,7 @@ class Dialog(wx.Dialog):
         # Récupération des valeurs
         listeValeurs = self.ctrl_donnees.GetInfosCoches()
         if len(listeValeurs) == 0 :
-            dlg = wx.MessageDialog(self, u"Il n'y a aucune donnée à imprimer !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune donnée à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

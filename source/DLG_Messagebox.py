@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import GestionDB
 
 
@@ -114,7 +117,7 @@ if __name__ == u"__main__":
     
 ##    icone = wx.Bitmap(u"Images/32x32/Absenti.png", wx.BITMAP_TYPE_ANY)
     icone = wx.ICON_INFORMATION
-    dlg = Dialog(None, titre=u"Avertissement", introduction=u"Introduction ici !", detail="detail", conclusion=u"Conclusion ici", icone=icone, boutons=[u"Oui", u"Oui pour tout", u"Non", u"Annuler"])
+    dlg = Dialog(None, titre=_(u"Avertissement"), introduction=_(u"Introduction ici !"), detail="detail", conclusion=_(u"Conclusion ici"), icone=icone, boutons=[_(u"Oui"), _(u"Oui pour tout"), _(u"Non"), _(u"Annuler")])
     reponse = dlg.ShowModal() 
     dlg.Destroy() 
     print reponse

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import string
 import CTRL_Bandeau
 import CTRL_Ultrachoice
@@ -144,7 +147,7 @@ class CTRL_Titulaire(wx.Choice):
         # Remplissage du contrôle
         listeItems = [u"",]
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : 0, "nom" : u"Inconnue"}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
         index = 1
         for donnees in listeRepresentants :
             label = u"%s %s" % (donnees["prenom"], donnees["nom"])
@@ -175,18 +178,18 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        self.SetTitle(u"Saisie du RIB")
+        self.SetTitle(_(u"Saisie du RIB"))
                                 
         # RIB
-        self.box_rib_staticbox = wx.StaticBox(self, -1, u"Coordonnées bancaires")
+        self.box_rib_staticbox = wx.StaticBox(self, -1, _(u"Coordonnées bancaires"))
         
-        self.label_cle_iban = wx.StaticText(self, -1, u"Clé IBAN")
-        self.label_etab = wx.StaticText(self, -1, u"Etab.")
-        self.label_guichet = wx.StaticText(self, -1, u"Guichet")
-        self.label_numero = wx.StaticText(self, -1, u"Compte")
-        self.label_cle_rib = wx.StaticText(self, -1, u"Clé RIB")
+        self.label_cle_iban = wx.StaticText(self, -1, _(u"Clé IBAN"))
+        self.label_etab = wx.StaticText(self, -1, _(u"Etab."))
+        self.label_guichet = wx.StaticText(self, -1, _(u"Guichet"))
+        self.label_numero = wx.StaticText(self, -1, _(u"Compte"))
+        self.label_cle_rib = wx.StaticText(self, -1, _(u"Clé RIB"))
         
-        self.ctrl_cle_iban = wx.TextCtrl(self, -1, u"FR76", style=wx.TE_CENTRE)
+        self.ctrl_cle_iban = wx.TextCtrl(self, -1, _(u"FR76"), style=wx.TE_CENTRE)
         self.ctrl_code_etab = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
         self.ctrl_code_guichet = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
         self.ctrl_numero = wx.TextCtrl(self, -1, u"", style=wx.TE_CENTRE, validator = MyValidator())
@@ -197,32 +200,32 @@ class Dialog(wx.Dialog):
         self.ctrl_controle = wx.StaticBitmap(self, -1, self.image_nonvalide)
         
         # Etablissement
-        self.label_banque = wx.StaticText(self, -1, u"Etablissement")
+        self.label_banque = wx.StaticText(self, -1, _(u"Etablissement"))
         self.ctrl_banque = CTRL_Banque(self)
         self.bouton_banques = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
 
         # Titulaire
-        self.box_titulaire_staticbox = wx.StaticBox(self, -1, u"Titulaire du compte bancaire")
+        self.box_titulaire_staticbox = wx.StaticBox(self, -1, _(u"Titulaire du compte bancaire"))
         
-        self.radio_membre = wx.RadioButton(self, -1, u"Le membre :", style=wx.RB_GROUP)
+        self.radio_membre = wx.RadioButton(self, -1, _(u"Le membre :"), style=wx.RB_GROUP)
         self.ctrl_membre = CTRL_Titulaire(self, IDfamille=IDfamille)
         
-        self.radio_individu = wx.RadioButton(self, -1, u"Le titulaire suivant :")
-        self.label_individu_nom = wx.StaticText(self, -1, u"Nom :")
+        self.radio_individu = wx.RadioButton(self, -1, _(u"Le titulaire suivant :"))
+        self.label_individu_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_individu_nom = wx.TextCtrl(self, -1, u"")
-        self.label_individu_rue = wx.StaticText(self, -1, u"Rue :")
+        self.label_individu_rue = wx.StaticText(self, -1, _(u"Rue :"))
         self.ctrl_individu_rue = wx.TextCtrl(self, -1, u"")
-        self.label_individu_ville = wx.StaticText(self, -1, u"C.P. :")
+        self.label_individu_ville = wx.StaticText(self, -1, _(u"C.P. :"))
         self.ctrl_individu_ville = CTRL_Saisie_adresse.Adresse(self)
 
         # Mémo
-        self.box_memo_staticbox = wx.StaticBox(self, -1, u"Observations")
+        self.box_memo_staticbox = wx.StaticBox(self, -1, _(u"Observations"))
         self.ctrl_memo = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
 
         # Boutons
-        self.bouton_aide = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Aide_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_ok = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Ok_L72.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_annuler = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/BoutonsImages/Annuler_L72.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -251,22 +254,22 @@ class Dialog(wx.Dialog):
         self.ctrl_code_guichet.SetMinSize((50, -1))
         self.ctrl_numero.SetMinSize((90, -1))
         self.ctrl_cle_rib.SetMinSize((40, -1))
-        self.ctrl_code_etab.SetToolTipString(u"Saisissez ici le code Etablissement")
-        self.ctrl_code_guichet.SetToolTipString(u"Saisissez ici le code Guichet")
-        self.ctrl_numero.SetToolTipString(u"Saisissez ici le numéro de compte")
-        self.ctrl_cle_rib.SetToolTipString(u"Saisissez ici la clé RIB")
-        self.ctrl_controle.SetToolTipString(u"Une coche verte apparaît si les coordonnées bancaires sont valides")
-        self.ctrl_banque.SetToolTipString(u"Sélectionnez ici l'établissement du compte")
-        self.bouton_banques.SetToolTipString(u"Cliquez ici pour accéder à la gestion des établissements bancaires")
-        self.radio_membre.SetToolTipString(u"Cliquez ici pour sélectionner un membre de la famille")
-        self.ctrl_membre.SetToolTipString(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire")
-        self.radio_individu.SetToolTipString(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire")
-        self.ctrl_individu_nom.SetToolTipString(u"Saisissez un nom de titulaire pour ce compte bancaire")
-        self.ctrl_individu_rue.SetToolTipString(u"Saisissez la rue de l'individu")
-        self.ctrl_memo.SetToolTipString(u"Saisissez des observations")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_code_etab.SetToolTipString(_(u"Saisissez ici le code Etablissement"))
+        self.ctrl_code_guichet.SetToolTipString(_(u"Saisissez ici le code Guichet"))
+        self.ctrl_numero.SetToolTipString(_(u"Saisissez ici le numéro de compte"))
+        self.ctrl_cle_rib.SetToolTipString(_(u"Saisissez ici la clé RIB"))
+        self.ctrl_controle.SetToolTipString(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides"))
+        self.ctrl_banque.SetToolTipString(_(u"Sélectionnez ici l'établissement du compte"))
+        self.bouton_banques.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires"))
+        self.radio_membre.SetToolTipString(_(u"Cliquez ici pour sélectionner un membre de la famille"))
+        self.ctrl_membre.SetToolTipString(_(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire"))
+        self.radio_individu.SetToolTipString(_(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire"))
+        self.ctrl_individu_nom.SetToolTipString(_(u"Saisissez un nom de titulaire pour ce compte bancaire"))
+        self.ctrl_individu_rue.SetToolTipString(_(u"Saisissez la rue de l'individu"))
+        self.ctrl_memo.SetToolTipString(_(u"Saisissez des observations"))
+        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
@@ -484,14 +487,14 @@ class Dialog(wx.Dialog):
 
         # Vérification des données saisies
         if self.ControleRIB() == False :
-            dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nLes coordonnées bancaires ne sont pas valides !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_code_etab.SetFocus()
             return
 
         if IDbanque == None :
-            dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nVous n'avez sélectionné aucun établissement bancaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez sélectionné aucun établissement bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_banque.SetFocus()
@@ -499,14 +502,14 @@ class Dialog(wx.Dialog):
         
         if self.radio_membre.GetValue() == True :
             if IDindividu == None :
-                dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nVous n'avez pas sélectionné de titulaire du compte bancaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez pas sélectionné de titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_membre.SetFocus()
                 return
         else :
             if nom == "" or rue == "" or cp == "" or ville == "" or cp == None or ville == None :
-                dlg = wx.MessageDialog(self, u"Il est impossible d'activer le prélèvement :\nVous n'avez pas renseigné le titulaire du compte bancaire !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Il est impossible d'activer le prélèvement :\nVous n'avez pas renseigné le titulaire du compte bancaire !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_individu_nom.SetFocus()

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import shelve
 import os
 import cStringIO
@@ -156,7 +159,7 @@ class Importer():
     
     def DemandeChoix(self):
         listeContenu = self.GetNomContenu() 
-        dlg = wx.MultiChoiceDialog(None, u"Sélectionnez le contenu à importer :", u"Importation", listeContenu)
+        dlg = wx.MultiChoiceDialog(None, _(u"Sélectionnez le contenu à importer :"), _(u"Importation"), listeContenu)
         dlg.SetSelections(range(0, len(listeContenu)))
         if dlg.ShowModal() == wx.ID_OK :
             selections = dlg.GetSelections()
@@ -164,7 +167,7 @@ class Importer():
             selections = []
         dlg.Destroy()
         for index in selections :
-            self.Ajouter(index)
+            self.Ajouter(index, len(selections))
         return len(selections)
 
     def GetNomContenu(self):
@@ -173,8 +176,8 @@ class Importer():
             listeNoms.append(importation["nom"])
         return listeNoms
     
-    def Ajouter(self, index=0):
-        dlgAttente = PBI.PyBusyInfo(u"Merci de patienter durant l'opération...", parent=None, title=u"Patientez...", icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+    def Ajouter(self, index=0, nbre=0):
+        dlgAttente = PBI.PyBusyInfo(_(u"Merci de patienter durant l'opération...  (%d/%d)") % (index+1, nbre), parent=None, title=_(u"Patientez..."), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
         wx.Yield() 
         # Importation
         self.dictID = {}
@@ -273,14 +276,15 @@ class Importer():
 if __name__ == "__main__":
     app = wx.App(0)
     
-    print "Exportation..."
-    exportation = Exporter(categorie="activite")
-    exportation.Ajouter(ID=2, nom=u"Activité1")
-    exportation.Enregistrer(fichier="Temp/test.npa")
+##    print "Exportation..."
+##    exportation = Exporter(categorie="activite")
+##    exportation.Ajouter(ID=2, nom=_(u"Activité1"))
+##    exportation.Enregistrer(fichier="Temp/test.npa")
     
-    print "Importation..."
-    importation = Importer(fichier="Temp/test.npa")
-    importation.DemandeChoix() 
-    #importation.Ajouter(index=0)
-    print "Fin."
+##    print "Importation..."
+##    importation = Importer(fichier="Temp/test.npa")
+##    importation.DemandeChoix() 
+##    #importation.Ajouter(index=0)
+##    print "Fin."
+    
     

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import datetime
 import GestionDB
 import CTRL_Saisie_date
@@ -25,14 +28,14 @@ class CTRL_Date_facturation(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.listeChoix = listeChoix
-        self.listeChoix.append(("date:", u"La date suivante"))
+        self.listeChoix.append(("date:", _(u"La date suivante")))
         
-        self.label_date = wx.StaticText(self, -1, u"Date de facturation :")
+        self.label_date = wx.StaticText(self, -1, _(u"Date de facturation :"))
         choices = []
         for code, label in self.listeChoix :
             choices.append(label)
         self.ctrl_choix = wx.Choice(self, -1, choices=choices)
-        self.ctrl_choix.SetToolTipString(u"Sélectionnez la date de facturation de la prestation")
+        self.ctrl_choix.SetToolTipString(_(u"Sélectionnez la date de facturation de la prestation"))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
@@ -78,7 +81,7 @@ class CTRL_Date_facturation(wx.Panel):
 
     def Validation(self):
         if self.GetCodeSelection() == "date:None" :
-            dlg = wx.MessageDialog(self, u"Vous avez sélectionné la date de facturation 'La date suivante' mais sans sélectionner de date valide !", u"Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné la date de facturation 'La date suivante' mais sans sélectionner de date valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date.SetFocus()
@@ -91,14 +94,14 @@ class CTRL_Date_facturation(wx.Panel):
 
 
 class Panel_type_sans_parametres(wx.Panel):
-    def __init__(self, parent, nouveauTarif=False, texte=u"Aucun paramètre à renseigner."):
+    def __init__(self, parent, nouveauTarif=False, texte=_(u"Aucun paramètre à renseigner.")):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         st = wx.StaticText(self, -1, texte, (0, 0))
 
     def Validation(self):
         # Message temporaire
-        dlg = wx.MessageDialog(self, u"Désolé mais le type de tarif que vous avez choisi ('Prestation simple') n'est pas encore disponible à ce jour !", u"Information", wx.OK | wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Désolé mais le type de tarif que vous avez choisi ('Prestation simple') n'est pas encore disponible à ce jour !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return False
@@ -123,10 +126,10 @@ class Panel_type_sans_parametres(wx.Panel):
 ##    
 ##    def CreationPages(self):
 ##        liste_pages = [
-##            ("SIMPLE", u"Prestation simple", Panel_type_sans_parametres(self, self.nouveauTarif)),
-##            ("JOURN", u"Prestation journalière", CTRL_Tarification_journ.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
-##            ("FORFAIT", u"Forfait daté", CTRL_Tarification_forfait.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
-##            ("CREDIT", u"Forfait crédit", CTRL_Tarification_credit.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
+##            ("SIMPLE", _(u"Prestation simple"), Panel_type_sans_parametres(self, self.nouveauTarif)),
+##            ("JOURN", _(u"Prestation journalière"), CTRL_Tarification_journ.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
+##            ("FORFAIT", _(u"Forfait daté"), CTRL_Tarification_forfait.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
+##            ("CREDIT", _(u"Forfait crédit"), CTRL_Tarification_credit.Panel(self, self.IDactivite, self.IDtarif, self.nouveauTarif)),
 ##            ]
 ##        self.dictPages = {}
 ##        index = 0
@@ -199,10 +202,10 @@ class CTRL_Parametres(wx.Panel):
         self.parent = parent
         
         self.liste_pages = [
-            ("SIMPLE", u"Prestation simple", Panel_type_sans_parametres(self, nouveauTarif)),
-            ("JOURN", u"Prestation journalière", CTRL_Tarification_journ.Panel(self, IDactivite, IDtarif, nouveauTarif)),
-            ("FORFAIT", u"Forfait daté", CTRL_Tarification_forfait.Panel(self, IDactivite, IDtarif, nouveauTarif)),
-            ("CREDIT", u"Forfait crédit", CTRL_Tarification_credit.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("SIMPLE", _(u"Prestation simple"), Panel_type_sans_parametres(self, nouveauTarif)),
+            ("JOURN", _(u"Prestation journalière"), CTRL_Tarification_journ.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("FORFAIT", _(u"Forfait daté"), CTRL_Tarification_forfait.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("CREDIT", _(u"Forfait crédit"), CTRL_Tarification_credit.Panel(self, IDactivite, IDtarif, nouveauTarif)),
             ]
 
         # Création des pages
@@ -250,10 +253,10 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        self.label_parametres = wx.StaticText(self, -1, u"Paramètres :")
+        self.label_parametres = wx.StaticText(self, -1, _(u"Paramètres :"))
         self.ctrl_parametres = CTRL_Parametres(self, IDactivite=IDactivite, IDtarif=IDtarif, nouveauTarif=nouveauTarif)
         
-        self.label_type = wx.StaticText(self, -1, u"Type de tarif :")
+        self.label_type = wx.StaticText(self, -1, _(u"Type de tarif :"))
         self.ctrl_type = Choix_type(self, liste_pages=self.ctrl_parametres.liste_pages)
         
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -317,7 +320,7 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = MyFrame(None, -1, u"TEST", size=(700, 500))
+    frame_1 = MyFrame(None, -1, _(u"TEST"), size=(700, 500))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()

@@ -8,7 +8,10 @@
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
+
+from UTILS_Traduction import _
 import wx
+import CTRL_Bouton_image
 import wx.lib.agw.hypertreelist as HTL
 import datetime
 import GestionDB
@@ -50,14 +53,14 @@ class CTRL(HTL.HyperTreeList):
         self.AssignImageList(il)
         
         # Creation des colonnes
-        self.AddColumn(u"Saison / Classe")
+        self.AddColumn(_(u"Saison / Classe"))
         self.SetColumnWidth(0, 370)
-        self.AddColumn(u"Niveaux scolaires")
+        self.AddColumn(_(u"Niveaux scolaires"))
         self.SetColumnWidth(1, 120)
         self.SetMainColumn(0)
                                 
         # Création des branches
-        self.root = self.AddRoot(u"Classes")
+        self.root = self.AddRoot(_(u"Classes"))
         self.SetPyData(self.root, {"type" : "root", "ID" : None} )
         self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_COLUMN_LINES | wx.TR_HAS_BUTTONS)
         
@@ -149,7 +152,7 @@ class CTRL(HTL.HyperTreeList):
         # Création des saisons
         indexSaison = 1
         for saison in listeSaisons :
-            nomSaison = u"Du %s au %s" % (DateEngFr(str(saison[0])), DateEngFr(str(saison[1])) )
+            nomSaison = _(u"Du %s au %s") % (DateEngFr(str(saison[0])), DateEngFr(str(saison[1])) )
             brancheSaison = self.AppendItem(self.root, nomSaison)
             self.SetPyData(brancheSaison, {"type" : "saison", "ID" : saison, "nom" : nomSaison} )
             self.SetItemBold(brancheSaison, True)
@@ -188,7 +191,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop = wx.Menu()
 
         # Item Ajouter
-        item = wx.MenuItem(menuPop, 10, u"Ajouter")
+        item = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
         bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
@@ -198,14 +201,14 @@ class CTRL(HTL.HyperTreeList):
             menuPop.AppendSeparator() 
             
             # Item Modifier
-            item = wx.MenuItem(menuPop, 20, u"Modifier")
+            item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
             bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.Modifier, id=20)
             
             # Item Supprimer
-            item = wx.MenuItem(menuPop, 30, u"Supprimer")
+            item = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
             bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
@@ -265,7 +268,7 @@ class CTRL(HTL.HyperTreeList):
         IDclasse = dictItem["ID"]
         
         if type != "classe" : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune classe à modifier !", u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune classe à modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return        
@@ -281,7 +284,7 @@ class CTRL(HTL.HyperTreeList):
         DB.Close()
 
         if nbreIndividus > 0 :
-            dlg = wx.MessageDialog(self, u"Cette classe a déjà été attribuée à %d individus.\nVous ne pourrez donc modifier que son nom." % nbreIndividus, u"Avertissement", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette classe a déjà été attribuée à %d individus.\nVous ne pourrez donc modifier que son nom.") % nbreIndividus, _(u"Avertissement"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
 
@@ -299,7 +302,7 @@ class CTRL(HTL.HyperTreeList):
         
         import DLG_Saisie_classe
         dlg = DLG_Saisie_classe.Dialog(self)
-        dlg.SetTitle(u"Modification d'une classe")
+        dlg.SetTitle(_(u"Modification d'une classe"))
         
         dlg.SetNom(nom)
         dlg.SetDateDebut(date_debut)
@@ -337,7 +340,7 @@ class CTRL(HTL.HyperTreeList):
         IDclasse = dictItem["ID"]
         
         if type != "classe" : 
-            dlg = wx.MessageDialog(self, u"Vous n'avez sélectionné aucune classe à supprimer !", u"Erreur", wx.OK | wx.ICON_QUESTION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune classe à supprimer !"), _(u"Erreur"), wx.OK | wx.ICON_QUESTION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -352,13 +355,13 @@ class CTRL(HTL.HyperTreeList):
         nbre = int(DB.ResultatReq()[0][0])
         DB.Close()
         if nbre > 0 :
-            dlg = wx.MessageDialog(self, u"Cette classe a déjà été attribuée %d fois.\n\nVous ne pouvez donc pas la supprimer !" % nbre, u"Suppression impossible", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Cette classe a déjà été attribuée %d fois.\n\nVous ne pouvez donc pas la supprimer !") % nbre, _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
         # Confirmation de suppression
-        dlg = wx.MessageDialog(self, u"Souhaitez-vous vraiment supprimer cette classe ?", u"Suppression", wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette classe ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("classes", "IDclasse", IDclasse)
