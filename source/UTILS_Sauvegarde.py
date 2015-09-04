@@ -428,8 +428,8 @@ def GetListeFichiersReseau(dictValeurs={}):
     """ Récupère la liste des fichiers MySQL existants 
          dictValeurs = valeurs de connexion
     """
-    import MySQLdb
-    connexion = MySQLdb.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True) 
+    import mysql
+    connexion = mysql.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True)
     connexion.set_character_set('utf8')
     cursor = connexion.cursor()
     listeDatabases = []

@@ -12,12 +12,14 @@
 from UTILS_Traduction import _
 import sys
 import sqlite3
+import traceback
+import time
 import wx
 import CTRL_Bouton_image
 import os
 
 try :
-    import MySQLdb
+    import mysql.connector
 except Exception, err :
     print err
 
@@ -27,6 +29,7 @@ import DATA_Tables as Tables
 
 class DB:
     def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False):
+        #traceback.print_stack(limit=3)
         """ Utiliser GestionDB.DB(suffixe="PHOTOS") pour accéder à un fichier utilisateur """
         """ Utiliser GestionDB.DB(nomFichier="Geographie.dat", suffixe=None) pour ouvrir un autre type de fichier """
         self.nomFichier = nomFichier
@@ -50,7 +53,7 @@ class DB:
         
         # Ouverture de la base de données
         if self.isNetwork == True :
-            self.OuvertureFichierReseau(self.nomFichier)
+            self.OuvertureFichierReseau(self.nomFichier,suffixe)
         else:
             self.OuvertureFichierLocal(self.nomFichier)
     
@@ -89,11 +92,13 @@ class DB:
         return dictDonnees
 
 
-    def OuvertureFichierReseau(self, nomFichier):
+    def OuvertureFichierReseau(self, nomFichier,suffixe):
         """ Version RESEAU avec MYSQL """
+        print "[Ouverture Fichier reseau]"
+        start_time1 = time.time()
         try :
-            from MySQLdb.constants import FIELD_TYPE
-            from MySQLdb.converters import conversions
+            from mysql.connector.constants import FieldType
+            from mysql.connector import conversion
 
             # Récupération des paramètres de connexion
             pos = nomFichier.index("[RESEAU]")
@@ -103,26 +108,31 @@ class DB:
             nomFichier = nomFichier.lower() 
             
             # Connexion MySQL
-            my_conv = conversions
-            my_conv[FIELD_TYPE.LONG] = int
-            self.connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-            self.connexion.set_character_set('utf8')
+            #my_conv = conversion
+            #my_conv[FieldType.LONG] = int
+            print "   Ouverture d'une connexion a la bd"
+            start_time = time.time()
+            self.connexion = mysql.connector.connect(host=host,user=user, passwd=passwd, port=int(port), database=nomFichier, use_unicode=True, pool_name = "mypool2%s" % suffixe,pool_size = 3) # db=dbParam,
+            elapsed_time = time.time() - start_time
+            print "  --> connexion ouverte %s" % elapsed_time
+            #self.connexion.set_character_set('utf8')
             self.cursor = self.connexion.cursor()
             
             # Ouverture ou création de la base MySQL
-            listeDatabases = self.GetListeDatabasesMySQL()
-            if nomFichier in listeDatabases :
+            #listeDatabases = self.GetListeDatabasesMySQL()
+            #if nomFichier in listeDatabases :
                 # Ouverture Database
-                self.cursor.execute("USE %s;" % nomFichier)
-            else:
+            #    self.cursor.execute("USE %s;" % nomFichier)
+            #else:
                 # Création Database
-                if self.modeCreation == True :
-                    self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
-                    self.cursor.execute("USE %s;" % nomFichier)
-                else :
-                    #print "La base de donnees '%s' n'existe pas." % nomFichier
-                    self.echec = 1
-                    return
+            #    if self.modeCreation == True :
+            #        self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
+            #        self.cursor.execute("USE %s;" % nomFichier)
+            #    else :
+            #        #print "La base de donnees '%s' n'existe pas." % nomFichier
+            #        self.echec = 1
+            #        self.connexion.close()
+            #        return
                 
         except Exception, err:
             print "La connexion avec la base de donnees MYSQL a echouee : \nErreur detectee :%s" % err
@@ -130,7 +140,9 @@ class DB:
             self.echec = 1
         else:
             self.echec = 0
-                    
+        elapsed_time1 = time.time() - start_time1
+        print "[Ouverture fichier reseau %s ]" % elapsed_time1
+
     def GetNomFichierDefaut(self):
         nomFichier = ""
         try :
@@ -294,7 +306,7 @@ class DB:
     def InsertPhoto(self, IDindividu=None, blobPhoto=None):
         if self.isNetwork == True :
             # Version MySQL
-            sql = "INSERT INTO photos (IDindividu, photo) VALUES (%d, '%s')" % (IDindividu, MySQLdb.escape_string(blobPhoto))
+            sql = "INSERT INTO photos (IDindividu, photo) VALUES (%d, '%s')" % (IDindividu, mysql.escape_string(blobPhoto))
             self.cursor.execute(sql)
             self.connexion.commit()
             self.cursor.execute("SELECT LAST_INSERT_ID();")
@@ -310,7 +322,7 @@ class DB:
     def MAJPhoto(self, IDphoto=None, IDindividu=None, blobPhoto=None):
         if self.isNetwork == True :
             # Version MySQL
-            sql = "UPDATE photos SET IDindividu=%d, photo='%s' WHERE IDphoto=%d" % (IDindividu, MySQLdb.escape_string(blobPhoto), IDphoto)
+            sql = "UPDATE photos SET IDindividu=%d, photo='%s' WHERE IDphoto=%d" % (IDindividu, mysql.escape_string(blobPhoto), IDphoto)
             self.cursor.execute(sql)
             self.connexion.commit()
         else:
@@ -324,7 +336,7 @@ class DB:
         """ Enregistre une image dans les modes de règlement ou emetteurs """
         if self.isNetwork == True :
             # Version MySQL
-            sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, MySQLdb.escape_string(blobImage), key, IDkey)
+            sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, mysql.escape_string(blobImage), key, IDkey)
             self.cursor.execute(sql)
             self.connexion.commit()
         else:
@@ -650,8 +662,8 @@ class DB:
         else :
             
             try :
-                from MySQLdb.constants import FIELD_TYPE
-                from MySQLdb.converters import conversions
+                from mysql.constants import FIELD_TYPE
+                from mysql.converters import conversions
 
                 # Récupération des paramètres de connexion
                 pos = nomFichierdefault.index("[RESEAU]")
@@ -663,7 +675,7 @@ class DB:
                 # Connexion MySQL
                 my_conv = conversions
                 my_conv[FIELD_TYPE.LONG] = int
-                connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
+                connexionDefaut = mysql.connector.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam,
                 connexionDefaut.set_character_set('utf8')
                 cursor = connexionDefaut.cursor()
                 
@@ -719,8 +731,8 @@ class DB:
         
         # Ouverture de la base réseau
         try :
-            from MySQLdb.constants import FIELD_TYPE
-            from MySQLdb.converters import conversions
+            from mysql.constants import FIELD_TYPE
+            from mysql.converters import conversions
 
             # Récupération des paramètres de connexion
             pos = nomFichier.index("[RESEAU]")
@@ -732,7 +744,7 @@ class DB:
             # Connexion MySQL
             my_conv = conversions
             my_conv[FIELD_TYPE.LONG] = int
-            connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
+            connexionDefaut = mysql.connector.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam,
             connexionDefaut.set_character_set('utf8')
             cursor = connexionDefaut.cursor()
             
@@ -1745,21 +1757,25 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
     port, host, user, passwd = paramConnexions.split(";")
     nomFichier = nomFichier[pos+8:]
     nomFichier = nomFichier.lower() 
-    
+    cursor=None
     # Test de connexion au réseau MySQL
     try :
-        connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True) # db=dbParam, 
-        connexion.set_character_set('utf8')
+        connexion = mysql.connector.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True,pool_name = "mypool",pool_size = 1) # db=dbParam,
+        # connexion.set_character_set('utf8')
         cursor = connexion.cursor()
         dictResultats["connexion"] =  (True, None)
-        connexion = True
+        connexion_ok = True
     except Exception, err :
         dictResultats["connexion"] =  (False, err)
-        connexion = False
-    
+        connexion_ok = False
+        dlg = wx.MessageDialog(None, u"Erreur dans la création du fichier.\n\nErreur : %s" % err, u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+        dlg.ShowModal()
+        dlg.Destroy()
+
     # Test de connexion à une base de données
-    if typeTest == "fichier" and connexion == True :
+    if typeTest == "fichier" and connexion_ok == True :
         try :
+            cursor = connexion.cursor()
             listeDatabases = []
             cursor.execute("SHOW DATABASES;")
             listeValeurs = cursor.fetchall()
@@ -1773,7 +1789,8 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
                 dictResultats["fichier"] =  (False, _(u"Accès au fichier impossible."))
         except Exception, err :
             dictResultats["fichier"] =  (False, err)
-    
+
+    connexion.close()
     return dictResultats
 
 
@@ -1834,7 +1851,10 @@ def CreationBaseAnnonces():
     
 
 if __name__ == "__main__":
-                
+
+    app = wx.App(0)
+    TestConnexionMySQL(app,nomFichier="3306;127.0.0.1;user;pwd[RESEAU]bd_data")
+
     # Création d'une table données
 ##    db = DB(suffixe="DATA")
 ##    listeTables = ("nomade_archivage",)

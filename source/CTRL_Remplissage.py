@@ -1199,6 +1199,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             dictTemp = { "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin }
             dictActivites[IDactivite] = dictTemp
+        DB.Close()
         return dictActivites
     
     def GetEtatPlaces(self):

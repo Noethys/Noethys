@@ -26,7 +26,7 @@ import operator
 import sqlite3
 import cStringIO
 try :
-    import MySQLdb
+    import mysql
 except Exception, err :
     print err
 
@@ -291,8 +291,8 @@ class CTRL(ULC.UltimateListCtrl):
         motdepasse = self.codesReseau["motdepasse"]
         port = self.codesReseau["port"]
         try :
-            connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
-            connexion.set_character_set('utf8')
+            connexion = mysql.connector.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True)
+            #connexion.set_character_set('utf8')
             cursor = connexion.cursor()
             connexion.close()
         except Exception, err :
@@ -310,8 +310,8 @@ class CTRL(ULC.UltimateListCtrl):
         port = self.codesReseau["port"]
 
         try :
-            connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
-            connexion.set_character_set('utf8')
+            connexion = mysql.connector.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True)
+            #connexion.set_character_set('utf8')
             cursor = connexion.cursor()
         except Exception, err :
             return listeFichiers
@@ -454,7 +454,7 @@ class CTRL(ULC.UltimateListCtrl):
             port = self.codesReseau["port"]
 
             try :
-                connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
+                connexion = mysql.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True)
                 connexion.set_character_set('utf8')
                 cursor = connexion.cursor()
             except Exception, err :
