@@ -1527,6 +1527,49 @@ def RechercheWhere():
     print "Fini !!!!!!!!!!!!!!!!!"
 
 
+def CreerDonneesVirtuelles(nbreFamilles=0):
+    """ Pour remplir la base artificiellement avec des données familles virtuelles """
+    DB = GestionDB.DB()
+    for x in range(0, nbreFamilles) :
+        
+        print "Creation de la famille %d/%d..." % (x+1, nbreFamilles)
+        
+        # Famille
+        IDfamille = DB.ReqInsert("familles", [("date_creation", datetime.date.today()), ("IDcompte_payeur", None)])
+        
+        # Compte payeur
+        IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille),])
+        DB.ReqMAJ("familles", [("IDcompte_payeur", IDcompte_payeur),], "IDfamille", IDfamille)
+        
+        # Individus
+        IDpere = DB.ReqInsert("individus", [("IDcivilite", 1), ("nom", u"PERE%d" % IDfamille), ("prenom", u"Père%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
+        IDmere = DB.ReqInsert("individus", [("IDcivilite", 3), ("nom", u"MERE%d" % IDfamille), ("prenom", u"Mère%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
+        IDenfant = DB.ReqInsert("individus", [("IDcivilite", 4), ("nom", u"ENFANT%d" % IDfamille), ("prenom", u"Enfant%d" % IDfamille), ("rue_resid", u"10 rue des oiseaux"), ("cp_resid", "29200"), ("ville_resid", u"BREST"), ("date_creation", datetime.date.today())])
+        
+        # Rattachements
+        IDrattachement = DB.ReqInsert("rattachements", [("IDindividu", IDpere), ("IDfamille", IDfamille), ("IDcategorie", 1), ("titulaire", 1)])
+        IDrattachement = DB.ReqInsert("rattachements", [("IDindividu", IDmere), ("IDfamille", IDfamille), ("IDcategorie", 1), ("titulaire", 1)])
+        IDrattachement = DB.ReqInsert("rattachements", [("IDindividu", IDenfant), ("IDfamille", IDfamille), ("IDcategorie", 2), ("titulaire", 0)])
+        
+        # Liens
+        IDlien = DB.ReqInsert("liens", [("IDfamille", IDfamille), ("IDindividu_sujet", IDmere), ("IDtype_lien", 10), ("IDindividu_objet", IDpere)])
+        IDlien = DB.ReqInsert("liens", [("IDfamille", IDfamille), ("IDindividu_sujet", IDpere), ("IDtype_lien", 10), ("IDindividu_objet", IDmere)])
+        IDlien = DB.ReqInsert("liens", [("IDfamille", IDfamille), ("IDindividu_sujet", IDenfant), ("IDtype_lien", 2), ("IDindividu_objet", IDpere)])
+        IDlien = DB.ReqInsert("liens", [("IDfamille", IDfamille), ("IDindividu_sujet", IDenfant), ("IDtype_lien", 2), ("IDindividu_objet", IDmere)])
+        IDlien = DB.ReqInsert("liens", [("IDfamille", IDfamille), ("IDindividu_sujet", IDpere), ("IDtype_lien", 1), ("IDindividu_objet", IDenfant)])
+        IDlien = DB.ReqInsert("liens", [("IDfamille", IDfamille), ("IDindividu_sujet", IDmere), ("IDtype_lien", 1), ("IDindividu_objet", IDenfant)])
+        
+        # Inscriptions
+        IDinscription = DB.ReqInsert("inscriptions", [("IDindividu", IDenfant), ("IDfamille", IDfamille), ("IDactivite", 1), ("IDgroupe", 1), ("IDcategorie_tarif", 1), ("IDcompte_payeur", IDcompte_payeur), ("date_inscription", datetime.date.today()), ("parti", 0)])
+        
+        # Prestations et consommations
+        date = datetime.date(2015, 6, 3)
+        IDprestation = DB.ReqInsert("prestations", [("IDcompte_payeur", IDcompte_payeur), ("date", date), ("categorie", "consommation"), ("label", u"Journée avec repas"), ("montant_initial", 13.0), ("montant", 13.0), ("IDactivite", 1), ("IDtarif", 33), ("IDfamille", IDfamille), ("IDindividu", IDenfant), ("temps_facture", "11:00"), ("IDcategorie_tarif", 1)])
+        for IDunite in (1, 2) :
+            IDconso = DB.ReqInsert("consommations", [("IDindividu", IDenfant), ("IDinscription", IDinscription), ("IDactivite", 1), ("date", date), ("IDunite", IDunite), ("IDgroupe", 1), ("etat", "reservation"), ("verrouillage", 0), ("date_saisie", datetime.date.today()), ("IDutilisateur", 1), ("IDcategorie_tarif", 1), ("IDcompte_payeur", IDcompte_payeur), ("IDprestation", IDprestation)])
+        
+        
+    DB.Close() 
 
 
 
@@ -1537,8 +1580,6 @@ if __name__ == "__main__":
 ##    AfficheStatsProgramme()
     
 ##    InsertUnicodeLiterals() 
-    
-    RechercheWhere() 
     
     # ------- Prépare le fichier des tables par défaut -------
     #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")
@@ -1560,5 +1601,9 @@ if __name__ == "__main__":
 ##    for x in listeModules :
 ##        print x
 ##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
+    
+    # Créer des données virtuelles dans DB
+    CreerDonneesVirtuelles(nbreFamilles=1000) 
+    
     pass
     
