@@ -1237,8 +1237,10 @@ class Dialog(wx.Dialog):
         """ % self.IDreglement
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        DB.Close()
-        if len(listeDonnees) == 0 : return
+        if len(listeDonnees) == 0 : 
+            DB.Close()
+            return
+        
         IDcompte_payeur, date, IDmode, IDemetteur, numero_piece, montant, IDpayeur, observations, numero_quittancier, IDprestation_frais, IDcompte, date_differe, encaissement_attente, IDdepot, date_saisie, IDutilisateur, avis_depot = listeDonnees[0]
         
         # Généralités
@@ -1281,7 +1283,6 @@ class Dialog(wx.Dialog):
         self.IDdepot = IDdepot
         
         # Frais de gestion
-        DB = GestionDB.DB()
         req = """SELECT IDprestation, montant_initial, label
         FROM prestations
         WHERE reglement_frais=%d;
@@ -1410,7 +1411,6 @@ class Dialog(wx.Dialog):
         """ % self.IDcompte_payeur
         DB.ExecuterReq(req)
         IDfamille = DB.ResultatReq()[0][0]
-        DB.Close()
 
         # Récupère des frais de gestion
         donneesFrais = self.hyperlien_frais.GetDonnees() 
@@ -1419,10 +1419,10 @@ class Dialog(wx.Dialog):
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
+                DB.Close()
                 return False
 
         # --- Sauvegarde du règlement ---
-        DB = GestionDB.DB()
         listeDonnees = [    
                 ("IDcompte_payeur", self.IDcompte_payeur),
                 ("date", date),
@@ -1445,7 +1445,6 @@ class Dialog(wx.Dialog):
         else:
             self.nouveauReglement = False
             DB.ReqMAJ("reglements", listeDonnees, "IDreglement", self.IDreglement)
-        DB.Close()
         
         # --- Sauvegarde de la ventilation ---
         self.ctrl_ventilation.Sauvegarde(self.IDreglement)
@@ -1455,7 +1454,6 @@ class Dialog(wx.Dialog):
         
         # Si ajout d'un frais
         if montantFrais != None and montantFrais != 0.0 :
-            DB = GestionDB.DB()
             listeDonnees = [    
                     ("IDcompte_payeur", self.IDcompte_payeur),
                     ("date", date),
@@ -1471,15 +1469,13 @@ class Dialog(wx.Dialog):
             else:
                 DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestationFrais)
                 DB.ReqDEL("ventilation", "IDprestation", IDprestationFrais)
-            DB.Close()
         
         # Si suppression d'un frais
         if montantFrais == None and IDprestationFrais != None :
-            DB = GestionDB.DB()
             DB.ReqDEL("prestations", "IDprestation", IDprestationFrais)
             DB.ReqDEL("ventilation", "IDprestation", IDprestationFrais)
-            DB.Close() 
         
+        DB.Close() 
         
         # --- Mémorise l'action dans l'historique ---
         if self.nouveauReglement == True :

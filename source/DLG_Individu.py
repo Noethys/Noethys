@@ -206,9 +206,6 @@ class Dialog(wx.Dialog):
                 page.MAJ() 
                 page.majEffectuee = True
         
-##        # Remplissage de la page des liens
-##        self.ctrl_notebook.GetPageAvecCode("liens").MAJ()
-        
         self.ctrl_notebook.GetPageAvecCode("identite").MAJ()
         
         # Mise à jour du header
@@ -327,7 +324,10 @@ class Dialog(wx.Dialog):
             if page.majEffectuee == True :
                 page.Sauvegarde()
         # Fermeture de la fenêtre
-        self.EndModal(wx.ID_OK)
+        try :
+            self.EndModal(wx.ID_OK)
+        except :
+            pass
 
     def GetFamillesRattachees(self):
         # Recherche des familles rattachées
@@ -551,7 +551,10 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    import time
+    heure_debut = time.time()
     fiche_individu = Dialog(None, IDindividu=45)
     app.SetTopWindow(fiche_individu)
+    print "Temps de chargement fiche individuelle =", time.time() - heure_debut
     fiche_individu.ShowModal()
     app.MainLoop()

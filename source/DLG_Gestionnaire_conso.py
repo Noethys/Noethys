@@ -525,7 +525,7 @@ class Dialog(wx.Dialog):
                 
         # Initialisation des contrôles
         date = self.panel_calendrier.GetDate()
-        self.SetDate(date)
+##        self.SetDate(date)
         
         # Init
         self.panel_activites.SetCocherParDefaut(UTILS_Config.GetParametre("gestionnaire_conso_cocher_activites", defaut=True))
@@ -928,7 +928,10 @@ class Dialog(wx.Dialog):
 
 if __name__ == "__main__":
     app = wx.App(0)
+    import time
+    heure_debut = time.time()
     dialog_1 = Dialog(None)
+    print "Temps de chargement =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()    

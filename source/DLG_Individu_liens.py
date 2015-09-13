@@ -38,6 +38,7 @@ class GetValeurs() :
         self.IDfamille = IDfamille
         
     def InitValeurs(self):
+        self.DB = GestionDB.DB()
         if self.IDfamille != None :
             self.listeIDfamillesRattachees = [self.IDfamille,]
         else:
@@ -49,6 +50,7 @@ class GetValeurs() :
         self.listeIDindividusRattaches = self.GetListeIDindividusRattaches()
         self.dictInfosIndividus = self.GetDictInfosIndividus()
         self.dictLiens = self.GetDictLiens()
+        self.DB.Close() 
     
     def GetDictCategories(self):
         # Dict des catégories :
@@ -62,16 +64,10 @@ class GetValeurs() :
             
     def GetFamillesRattachees(self):
         # REQ > Recherche les familles rattachées à cet individu
-##        listefamillesRattachees = [
-##            (1, 101, 1, 1, 0),
-##            # pour une autre famille aussi : (2, 101, 2, 1, 1),
-##            ] # IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire WHERE IDindividu=self.IDindividu_fiche
-        db = GestionDB.DB()
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
         FROM rattachements WHERE IDindividu=%d;""" % self.IDindividu_fiche
-        db.ExecuterReq(req)
-        listefamillesRattachees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listefamillesRattachees = self.DB.ResultatReq()
         # Récupère les ID des familles de l'individus : Ex : listeIDfamille = [1, 2]
         listeIDfamille = []
         for valeurs in listefamillesRattachees :
@@ -82,14 +78,12 @@ class GetValeurs() :
     
     def GetListeTousLiens(self):
         # Recherche des liens existants dans la base
-        db = GestionDB.DB()
         if len(self.listeIDfamillesRattachees) == 1 : condition = "(%d)" % self.listeIDfamillesRattachees[0]
         else : condition = str(tuple(self.listeIDfamillesRattachees))
         req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, IDautorisation
         FROM liens WHERE IDfamille IN %s;""" % condition
-        db.ExecuterReq(req)
-        listeTousLiens = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeTousLiens = self.DB.ResultatReq()
         return listeTousLiens
     
     def FindLien(self, IDindividu_sujet, IDindividu_objet):
@@ -99,14 +93,12 @@ class GetValeurs() :
         return None
         
     def GetListeIndividusRattaches(self):
-        db = GestionDB.DB()
         if len(self.listeIDfamillesRattachees) == 1 : condition = "(%d)" % self.listeIDfamillesRattachees[0]
         else : condition = str(tuple(self.listeIDfamillesRattachees))
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
         FROM rattachements WHERE IDfamille IN %s;""" % condition
-        db.ExecuterReq(req)
-        listeIndividusRattaches = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeIndividusRattaches = self.DB.ResultatReq()
         return listeIndividusRattaches
 
     def GetInfoIndividuRattache(self, IDindividu, IDfamille):
@@ -114,7 +106,6 @@ class GetValeurs() :
             if IDindividu == IDindividuTmp and IDfamille == IDfamilleTmp :
                 return IDcategorie, titulaire
         return None, None
-
     
     def GetTitulairesFamilles(self):
         dictTitulaires = {}
@@ -158,14 +149,12 @@ class GetValeurs() :
     def GetDictInfosIndividus(self):
         # Création du dictionnaire d'infos sur chaque individus rattachés :
         dictInfosIndividus = {}
-        db = GestionDB.DB()
         if len(self.listeIDindividusRattaches) == 1 : condition = "(%d)" % self.listeIDindividusRattaches[0]
         else : condition = str(tuple(self.listeIDindividusRattaches))
         req = """SELECT IDindividu, IDcivilite, nom, prenom
         FROM individus WHERE IDindividu IN %s;""" % condition
-        db.ExecuterReq(req)
-        listeIndividus = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeIndividus = self.DB.ResultatReq()
         for IDindividu, IDcivilite, nom, prenom in listeIndividus :
             dictInfosIndividus[IDindividu] = { "nom" : nom, "prenom" : prenom, "IDcivilite" : IDcivilite }
         return dictInfosIndividus
@@ -557,7 +546,7 @@ class CTRL_Saisie_Liens(HTL.HyperTreeList):
                         
         # Création des branches
         self.root = self.AddRoot(_(u"Les liens"))
-        self.CreationBranches()
+##        self.CreationBranches()
         
         self.SetSpacing(10)
         self.SetBackgroundColour(wx.WHITE)
@@ -768,11 +757,11 @@ class Panel_liens(wx.Panel):
         
         self.majEffectuee = False
         
-        self.donnees = GetValeurs(self.IDindividu, self.IDfamille)
-        self.donnees.InitValeurs()
+##        self.donnees = GetValeurs(self.IDindividu, self.IDfamille)
+##        self.donnees.InitValeurs()
         
         self.staticbox_liens = wx.StaticBox(self, -1, _(u"Liens"))
-        self.ctrl_liens = CTRL_Saisie_Liens(self, IDindividu=self.IDindividu, IDfamille=self.IDfamille, donnees=self.donnees)
+        self.ctrl_liens = CTRL_Saisie_Liens(self, IDindividu=self.IDindividu, IDfamille=self.IDfamille)#, donnees=self.donnees)
         self.ctrl_liens.SetMinSize((20, 20))
         
         self.hyperlien_liensFamille = Hyperlien_LiensFamille(self, label=_(u"Afficher tous les liens de la famille"), IDindividu=self.IDindividu, IDfamille=self.IDfamille, URL="", infobulle=_(u"Cliquez sur ce lien pour afficher tous les liens de la famille"))
@@ -804,19 +793,20 @@ class Panel_liens(wx.Panel):
     
     def MAJ(self):
         """ MAJ integrale du controle avec MAJ des donnees """
-        self.majEffectuee = True
-        
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_liens", "modifier", afficheMessage=False) == False : 
-            self.ctrl_liens.Enable(False)
-        
-##        self.IDindividu = self.GetGrandParent().IDindividu
-##        self.donnees.IDindividu_fiche = self.IDindividu
-##        self.ctrl_liens.IDindividu = self.IDindividu
-##        if self.IDindividu != None : 
-##            self.donnees.InitValeurs()
-##            self.ctrl_liens.donnees = self.donnees
-##            self.ctrl_liens.MAJ_ctrl()
-        
+        if self.majEffectuee == False :
+            
+            # MAJ du contrôle
+            self.donnees = GetValeurs(self.IDindividu, self.IDfamille)
+            self.donnees.InitValeurs()
+            self.ctrl_liens.SetDonnees(self.donnees)
+            self.ctrl_liens.MAJ_ctrl()
+            
+            # Vérification des droits utilisateurs
+            if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_liens", "modifier", afficheMessage=False) == False : 
+                self.ctrl_liens.Enable(False)
+            
+            self.majEffectuee = True
+            
     def ValidationData(self):
         """ Return True si les données sont valides et pretes à être sauvegardées """
         return True
@@ -945,11 +935,39 @@ class Dialog_liens(wx.Dialog):
         UTILS_Aide.Aide("Compositiondelafamille")
 
 
+class Frame_individu_liens(wx.Frame):
+    def __init__(self, *args, **kwds):
+        wx.Frame.__init__(self, *args, **kwds)
+        panel = wx.Panel(self, -1)
+        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+        sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
+        self.SetSizer(sizer_1)
+        self.nouvelleFiche = False
+        self.IDindividu = 1
+        self.ctrl = Panel_liens(self, IDindividu=self.IDindividu)
+        self.ctrl.MAJ()
+        sizer_2 = wx.BoxSizer(wx.VERTICAL)
+        sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
+        panel.SetSizer(sizer_2)
+        self.Layout()
+        self.CentreOnScreen()
+
+
+
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog_liens(None, IDindividu=None, IDfamille=4)
-    app.SetTopWindow(dialog_1)
-    dialog_1.ShowModal()
+    
+    # DLG tous les liens
+##    dialog_1 = Dialog_liens(None, IDindividu=None, IDfamille=4)
+##    Frame_individu_liens
+##    app.SetTopWindow(dialog_1)
+##    dialog_1.ShowModal()
+    
+    # Frame pour test DLG_individu onglet Liens
+    frame_1 = Frame_individu_liens(None, -1, "TEST", size=(800, 400))
+    app.SetTopWindow(frame_1)
+    frame_1.Show()
+
     app.MainLoop()
     

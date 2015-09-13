@@ -98,7 +98,7 @@ class CTRL_ListBox(wx.ListBox):
             self.Select(indexSelection)
             self.EnsureVisible(indexSelection)
         except Exception, err :
-            print "Erreur dans CTRL_Grille_periode -> Ligne 87 : ", err
+            pass
     
     def SetVisibleSelection(self):
         try :
@@ -106,7 +106,7 @@ class CTRL_ListBox(wx.ListBox):
             self.Select(indexSelection)
             self.EnsureVisible(indexSelection)
         except Exception, err :
-            print "Erreur dans CTRL_Grille_periode -> Ligne 95 : ", err
+            pass
         
 
 # --------------------------------------------------------------------------------------------------------

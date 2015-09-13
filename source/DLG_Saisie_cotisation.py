@@ -396,6 +396,8 @@ class Dialog(wx.Dialog):
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
+        self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
+        self.ctrl_observations = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
 
         # Carte
         self.staticbox_carte_staticbox = wx.StaticBox(self, -1, _(u"Carte d'adhérent"))
@@ -460,6 +462,7 @@ class Dialog(wx.Dialog):
         self.ctrl_beneficiaire.SetToolTipString(_(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation"))
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_observations.SetToolTipString(_(u"Saisissez un texte libre (optionnel)"))
         self.ctrl_creation.SetToolTipString(_(u"Selectionnez OUI si une carte d'adhérent a ete créee"))
         self.ctrl_numero.SetMinSize((70, -1))
         self.ctrl_numero.SetToolTipString(_(u"Saisissez ici le numéro de la carte d'adhérent"))
@@ -482,7 +485,7 @@ class Dialog(wx.Dialog):
         
         # Cotisation
         staticbox_cotisation = wx.StaticBoxSizer(self.staticbox_cotisation_staticbox, wx.VERTICAL)
-        grid_sizer_cotisation = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+        grid_sizer_cotisation = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
         grid_sizer_validite = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_cotisation.Add(self.label_type, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_cotisation.Add(self.ctrl_type, 0, wx.EXPAND, 0)
@@ -496,7 +499,10 @@ class Dialog(wx.Dialog):
         grid_sizer_validite.Add(self.label_au, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_validite.Add(self.ctrl_date_fin, 0, 0, 0)
         grid_sizer_cotisation.Add(grid_sizer_validite, 1, wx.EXPAND, 0)
+        grid_sizer_cotisation.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.TOP, 3)
+        grid_sizer_cotisation.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
         grid_sizer_cotisation.AddGrowableCol(1)
+        grid_sizer_cotisation.AddGrowableRow(4)
         staticbox_cotisation.Add(grid_sizer_cotisation, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_cotisation, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
         
@@ -557,7 +563,9 @@ class Dialog(wx.Dialog):
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.AddGrowableRow(0)
         self.Layout()
+        self.SetMinSize(self.GetSize())
         self.CenterOnScreen() 
     
     def SetProchainIDcotisation(self):
@@ -776,6 +784,7 @@ class Dialog(wx.Dialog):
         IDutilisateur = self.IDutilisateur
         date_debut = self.ctrl_date_debut.GetDate() 
         date_fin = self.ctrl_date_fin.GetDate() 
+        observations = self.ctrl_observations.GetValue() 
         
         # Création de la carte
         if self.ctrl_creation.GetValue() == True :
@@ -798,6 +807,7 @@ class Dialog(wx.Dialog):
                 ("numero", numero),
                 ("date_debut", date_debut),
                 ("date_fin", date_fin),
+                ("observations", observations),
             ]
         if self.IDcotisation == None :
             nouvelleCotisation = True
@@ -894,7 +904,7 @@ class Dialog(wx.Dialog):
         req = """SELECT
         IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation,
         date_saisie, IDutilisateur, date_creation_carte, numero,
-        IDdepot_cotisation, date_debut, date_fin, IDprestation
+        IDdepot_cotisation, date_debut, date_fin, IDprestation, observations
         FROM cotisations 
         WHERE IDcotisation=%d;""" % self.IDcotisation
         DB.ExecuterReq(req)
@@ -902,7 +912,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         
-        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, IDutilisateur, date_creation_carte, numero, IDdepot_cotisation, date_debut, date_fin, IDprestation = listeDonnees[0]
+        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, IDutilisateur, date_creation_carte, numero, IDdepot_cotisation, date_debut, date_fin, IDprestation, observations = listeDonnees[0]
         
         self.date_saisie = date_saisie
         self.IDutilisateur = IDutilisateur
@@ -917,7 +927,9 @@ class Dialog(wx.Dialog):
         if IDindividu != None : self.ctrl_beneficiaire.SetID(IDindividu)
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)
-        
+        if observations != None :
+            self.ctrl_observations.SetValue(observations) 
+            
         # Carte
         if date_creation_carte == None :
             self.ctrl_creation.SetValue(False) 

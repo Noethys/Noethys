@@ -40,9 +40,18 @@ class CTRL(aui.AuiNotebook):
         except :
             pass
         
+        # Bind
+        self.Bind(aui.EVT_AUINOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+
+    def OnPageChanged(self, event):
+        """ Quand une page du notebook est sélectionnée """
+        self.MAJ()
+
     def MAJ(self):
-        self.ctrl_remplissage.MAJ() 
-        self.ctrl_nbre_inscrits.MAJ() 
+        if self.GetPageActive() == 0 :
+            self.ctrl_remplissage.MAJ()
+        if self.GetPageActive() == 1 :
+            self.ctrl_nbre_inscrits.MAJ()
     
     def SetPageActive(self, index=0):
         self.SetSelection(index)
@@ -82,4 +91,4 @@ if __name__ == '__main__':
     frame_1 = MyFrame(None, -1, "TEST", size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
-    app.MainLoop()
+    app.MainLoop()    

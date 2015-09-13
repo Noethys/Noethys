@@ -642,9 +642,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
     def InitDonnees(self):
         self.tarifsForfaitsCreditsPresents = False
+        
+        self.DB = GestionDB.DB()
         self.dictActivites = self.Importation_activites()
         self.dictIndividus = self.Importation_individus() 
         self.dictGroupes = self.GetDictGroupes()
+        self.dictComptesPayeurs = self.GetComptesPayeurs()
+        self.dictQuotientsFamiliaux = self.GetQuotientsFamiliaux()
+        self.dictAides = self.GetAides() 
+        self.DB.Close() 
+        
         self.listePeriodes = []
         self.dictPrestations = {}
         self.dictDeductions = {}
@@ -668,9 +675,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dict_transports_prog = {}
         self.dict_transports = {}
         
-        self.dictComptesPayeurs = self.GetComptesPayeurs()
-        self.dictQuotientsFamiliaux = self.GetQuotientsFamiliaux()
-        self.dictAides = self.GetAides() 
                         
         
     def SetModeIndividu(self, listeActivites=[], listeSelectionIndividus=[], listeIndividusFamille=[], listePeriodes=[], modeSilencieux=False):
@@ -681,10 +685,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.listeSelectionIndividus = listeSelectionIndividus
         self.listeIndividusFamille = listeIndividusFamille
         self.listePeriodes = listePeriodes
+        self.DB = GestionDB.DB()
         self.Importation_deductions(listeComptesPayeurs=[self.dictComptesPayeurs[self.IDfamille],]) 
         self.Importation_prestations(listeComptesPayeurs=[self.dictComptesPayeurs[self.IDfamille],]) 
         self.Importation_forfaits(listeComptesPayeurs=[self.dictComptesPayeurs[self.IDfamille],]) 
         self.Importation_transports()
+        self.DB.Close()
         self.MAJ()
         if modeSilencieux == False :
             attente.Destroy() 
@@ -699,9 +705,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.listeIndividusFamille = []
         self.IDgroupe = None
         self.listePeriodes = [(self.date, self.date),]
+        self.DB = GestionDB.DB()
         self.Importation_prestations()
         self.Importation_forfaits() 
         self.Importation_transports()
+        self.DB.Close()
         self.MAJ()
         if modeSilencieux == False :
             attente.Destroy() 
@@ -713,6 +721,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def MAJ_donnees(self):
         # Récupération des données
+        self.DB = GestionDB.DB()
         self.dictOuvertures, self.listeUnitesUtilisees = self.GetDictOuvertures(self.listeActivites, self.listePeriodes)
         self.dictListeUnites, self.dictUnites = self.GetListeUnites(self.listeUnitesUtilisees)
         self.listeTouchesRaccourcis = self.GetListeTouchesRaccourcis()
@@ -726,6 +735,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictInfosInscriptions = self.GetInfosInscriptions(listeIndividus)
         self.dictInfosIndividus = self.GetInfosIndividus(listeIndividus)
         self.dictMemos = self.GetDictMemoJournee(self.listeActivites, self.listePeriodes, self.listeIndividusFamille)
+        self.DB.Close()
         
         self.CalcRemplissage() 
         
@@ -737,7 +747,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.ClearGrid()
         self.InitGrid()
         self.Refresh()
-        
         self.MAJ_facturation()
     
     def MAJcouleurCases(self, saufLigne=None):
@@ -979,7 +988,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def Importation_individus(self):
         dictIndividus = {}
-        DB = GestionDB.DB()
         
         if self.mode == "individu" :
             
@@ -991,8 +999,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             LEFT JOIN rattachements ON individus.IDindividu = rattachements.IDindividu
             WHERE rattachements.IDfamille = %d AND IDcategorie IN (1, 2)
             ORDER BY nom, prenom;""" % self.IDfamille
-            DB.ExecuterReq(req)
-            listeIndividus = DB.ResultatReq()
+            self.DB.ExecuterReq(req)
+            listeIndividus = self.DB.ResultatReq()
             for IDindividu, IDcivilite, nom, prenom, date_naiss, IDcategorie, titulaire in listeIndividus :
                 civiliteAbrege = DICT_CIVILITES[IDcivilite]["civiliteAbrege"]
                 if date_naiss != None :
@@ -1012,8 +1020,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             FROM inscriptions 
             LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
             WHERE IDfamille = %d ;""" % self.IDfamille
-            DB.ExecuterReq(req)
-            listeInscriptions = DB.ResultatReq()
+            self.DB.ExecuterReq(req)
+            listeInscriptions = self.DB.ResultatReq()
             for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions :
                 dictTemp = { 
                     "IDinscription" : IDinscription, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, 
@@ -1031,8 +1039,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             LEFT JOIN rattachements ON individus.IDindividu = rattachements.IDindividu
             WHERE IDcategorie IN (1, 2)
             ORDER BY nom, prenom;"""
-            DB.ExecuterReq(req)
-            listeIndividus = DB.ResultatReq()
+            self.DB.ExecuterReq(req)
+            listeIndividus = self.DB.ResultatReq()
             for IDindividu, IDcivilite, nom, prenom, date_naiss, IDcategorie, titulaire in listeIndividus :
                 if IDcivilite == None : IDcivilite = 1
                 civiliteAbrege = DICT_CIVILITES[IDcivilite]["civiliteAbrege"]
@@ -1053,8 +1061,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             FROM inscriptions 
             LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
             ;"""
-            DB.ExecuterReq(req)
-            listeInscriptions = DB.ResultatReq()
+            self.DB.ExecuterReq(req)
+            listeInscriptions = self.DB.ResultatReq()
             for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions :
                 dictTemp = { 
                     "IDinscription" : IDinscription, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, 
@@ -1063,30 +1071,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if dictIndividus.has_key(IDindividu) :
                     dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
             
-        
-        # Cloture de la base de données
-        DB.Close()
-
         return dictIndividus
 
     def GetListeVacances(self):
-        db = GestionDB.DB()
         req = """SELECT date_debut, date_fin, nom, annee
         FROM vacances 
         ORDER BY date_debut; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         return listeDonnees
 
     def GetListeFeries(self):
-        db = GestionDB.DB()
         req = """SELECT type, nom, jour, mois, annee
         FROM jours_feries 
         ; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         return listeDonnees
 
     def GetListeTouchesRaccourcis(self):
@@ -1100,13 +1100,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def GetListeUnites(self, listeUnitesUtilisees=None):
         dictListeUnites = {}
         dictUnites = {}
-        db = GestionDB.DB()
         # Récupère la liste des unités
         req = """SELECT IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur
         FROM unites 
         ORDER BY ordre; """ 
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         for IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur in listeDonnees :
             dictTemp = { "unites_incompatibles" : [], "IDunite" : IDunite, "IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : type, "heure_debut" : heure_debut, "heure_debut_fixe" : heure_debut_fixe, 
             "heure_fin" : heure_fin, "heure_fin_fixe" : heure_fin_fixe, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre, "touche_raccourci" : touche_raccourci, "largeur" : largeur}
@@ -1128,9 +1127,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Récupère les incompatibilités entre unités
         req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
         FROM unites_incompat;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
             if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
             if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
@@ -1148,14 +1146,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeActivites) == 0 : conditionActivites = "()"
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
-        db = GestionDB.DB()
         req = """SELECT IDouverture, IDunite, IDgroupe, date
         FROM ouvertures 
         WHERE IDactivite IN %s %s
         ORDER BY date; """ % (conditionActivites, conditionDates)
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         for IDouverture, IDunite, IDgroupe, date in listeDonnees :
             if IDunite not in listeUnitesUtilisees :
                 listeUnitesUtilisees.append(IDunite)
@@ -1186,7 +1182,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeActivites) == 0 : conditionActivites = "()"
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
-        db = GestionDB.DB()
         
         # Récupération des unités de remplissage
         req = """SELECT IDunite_remplissage_unite, unites_remplissage_unites.IDunite_remplissage, IDunite
@@ -1194,8 +1189,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN unites_remplissage ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
         WHERE afficher_grille_conso IS NULL OR afficher_grille_conso=1
         ;""" 
-        db.ExecuterReq(req)
-        listeUnites = db.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeUnites = self.DB.ResultatReq()
         for IDunite_remplissage_unite, IDunite_remplissage, IDunite in listeUnites :
             if dictUnitesRemplissage.has_key(IDunite) == False :
                 dictUnitesRemplissage[IDunite] = [IDunite_remplissage,]
@@ -1208,8 +1203,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         WHERE IDactivite IN %s
         AND (afficher_grille_conso IS NULL OR afficher_grille_conso=1)
         ;""" % conditionActivites
-        db.ExecuterReq(req)
-        listeUnitesRemplissage = db.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeUnitesRemplissage = self.DB.ResultatReq()
         for IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max in listeUnitesRemplissage :
             dictRemplissage[IDunite_remplissage] = {"IDactivite" : IDactivite,
                                                                         "ordre" : ordre,
@@ -1227,8 +1222,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FROM remplissage 
         WHERE IDactivite IN %s %s
         ORDER BY date;""" % (conditionActivites, conditionDates)
-        db.ExecuterReq(req)
-        listeRemplissage = db.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeRemplissage = self.DB.ResultatReq()
         for IDremplissage, IDactivite, IDunite_remplissage, IDgroupe, date, places in listeRemplissage :
             if places == 0 : 
                 places = None
@@ -1247,8 +1242,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
         WHERE IDactivite IN %s %s
         ORDER BY date; """ % (conditionActivites, conditionDates)
-        db.ExecuterReq(req)
-        listeConso = db.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeConso = self.DB.ResultatReq()
         for IDconso, IDindividu, IDactivite, IDinscription, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur, IDcategorie_tarif, IDcompte_payeur, IDprestation, forfait, quantite, IDfamille in listeConso :
             dateDD = DateEngEnDateDD(date)
             date_saisieDD = DateEngEnDateDD(date_saisie)
@@ -1297,8 +1292,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 if consoExists == False :
                     dictConsoIndividus[IDindividu][dateDD][IDunite].append(conso)
                 
-        # Cloture de la BD
-        db.Close()
         return dictRemplissage, dictUnitesRemplissage, dictConsoIndividus
     
     def GetInfosIndividus(self, listeIndividus=[]):
@@ -1307,13 +1300,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Get Conditions
         if len(listeIndividus) == 1 : condition = "(%d)" % listeIndividus[0]
         else : condition = str(tuple(listeIndividus))
-        db = GestionDB.DB()
         req = """SELECT IDindividu, nom, prenom, date_naiss
         FROM individus
         WHERE IDindividu IN %s;""" % condition
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         for IDindividu, nom, prenom, date_naiss in listeDonnees :
             if date_naiss != None : date_naiss = DateEngEnDateDD(date_naiss)
             dictInfosIndividus[IDindividu] = { "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss }
@@ -1325,7 +1316,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Get Conditions
         if len(listeIndividus) == 1 : condition = "(%d)" % listeIndividus[0]
         else : condition = str(tuple(listeIndividus))
-        db = GestionDB.DB()
         if self.IDfamille != None :
             req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur
             FROM inscriptions
@@ -1336,9 +1326,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             FROM inscriptions
             LEFT JOIN categories_tarifs ON inscriptions.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
             WHERE IDindividu IN %s;""" % condition
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, nom_categorie_tarif, date_inscription, IDcompte_payeur in listeDonnees :
             dictInfos = { "IDinscription" : IDinscription, "IDfamille" : IDfamille, "IDgroupe" : IDgroupe, "IDcategorie_tarif" : IDcategorie_tarif, "nom_categorie_tarif" : nom_categorie_tarif, "date_inscription" : date_inscription, "IDcompte_payeur" : IDcompte_payeur }
             if dictInfosInscriptions.has_key(IDindividu) == False :
@@ -1350,13 +1339,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def GetDictGroupes(self):
         dictGroupes = {}
-        db = GestionDB.DB()
         req = """SELECT IDgroupe, IDactivite, nom, ordre
         FROM groupes
         ORDER BY ordre;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         dictGroupes[0] = { "IDactivite" : 0, "nom" : _(u"Sans groupe"), "ordre" : 0 }
         for IDgroupe, IDactivite, nom, ordre in listeDonnees :
             dictGroupes[IDgroupe] = { "IDactivite" : IDactivite, "nom" : nom, "ordre" : ordre}
@@ -1377,12 +1364,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
         else : conditionActivites = str(tuple(listeActivites))
         # Récupération des mémos
-        db = GestionDB.DB()
         req = """SELECT IDmemo, IDindividu, date, texte
         FROM memo_journee; """ 
-        db.ExecuterReq(req)
-        listeMemos = db.ResultatReq()
-        db.Close()
+        self.DB.ExecuterReq(req)
+        listeMemos = self.DB.ResultatReq()
         for IDmemo, IDindividu, date, texte in listeMemos :
             if date != None and date != "None" : date = DateEngEnDateDD(date)
             if dictMemos.has_key((IDindividu, date)) == False :
@@ -1427,15 +1412,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def Importation_activites(self):
-        DB = GestionDB.DB()
         
         # Recherche les activites disponibles
         dictActivites = {}
         req = """SELECT activites.IDactivite, activites.nom, abrege, date_debut, date_fin
         FROM activites
         ORDER BY activites.nom;"""
-        DB.ExecuterReq(req)
-        listeActivites = DB.ResultatReq()      
+        self.DB.ExecuterReq(req)
+        listeActivites = self.DB.ResultatReq()      
         for IDactivite, nom, abrege, date_debut, date_fin in listeActivites :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
@@ -1448,8 +1432,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FROM combi_tarifs_unites
         LEFT JOIN combi_tarifs ON combi_tarifs.IDcombi_tarif = combi_tarifs_unites.IDcombi_tarif
         WHERE type='JOURN' OR type='CREDIT';"""
-        DB.ExecuterReq(req)
-        listeUnites = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeUnites = self.DB.ResultatReq()
         dictCombiUnites = {}
         dictQuantiteMax = {} 
         for IDcombi_tarif_unite, IDcombi_tarif, IDtarif, IDunite, date, type, quantite_max in listeUnites :
@@ -1471,8 +1455,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         req = """SELECT %s
         FROM tarifs_lignes
         ORDER BY num_ligne;""" % champsTable
-        DB.ExecuterReq(req)
-        listeLignes = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeLignes = self.DB.ResultatReq()
         dictLignesCalcul = {}
         for valeurs in listeLignes :
             dictTemp = {}
@@ -1493,8 +1477,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN questionnaire_questions ON questionnaire_questions.IDquestion = questionnaire_filtres.IDquestion
         LEFT JOIN questionnaire_categories ON questionnaire_categories.IDcategorie = questionnaire_questions.IDcategorie
         WHERE categorie='TARIF';"""
-        DB.ExecuterReq(req)
-        listeFiltres = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeFiltres = self.DB.ResultatReq()
         dictFiltres = {}
         for IDfiltre, IDquestion, choix, criteres, IDtarif, type, controle in listeFiltres :
             if dictFiltres.has_key(IDtarif) == False :
@@ -1510,8 +1494,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FROM tarifs
         LEFT JOIN noms_tarifs ON noms_tarifs.IDnom_tarif = tarifs.IDnom_tarif
         ORDER BY date_debut;"""
-        DB.ExecuterReq(req)
-        listeTarifs = DB.ResultatReq()      
+        self.DB.ExecuterReq(req)
+        listeTarifs = self.DB.ResultatReq()      
         for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation in listeTarifs :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
@@ -1571,13 +1555,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if type == "CREDIT" :
                 self.tarifsForfaitsCreditsPresents = True
                 
-        # Cloture de la base de données
-        DB.Close()
-
         return dictActivites
     
     def Importation_prestations(self, listeComptesPayeurs=[]):
-        DB = GestionDB.DB()
         
         # Récupère le dictPrestations
         for IDprestation in self.dictPrestations.keys() :
@@ -1607,9 +1587,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN ventilation ON ventilation.IDprestation = prestations.IDprestation
         %s
         GROUP BY prestations.IDprestation;""" % conditions
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
-        DB.Close() 
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()     
         
         for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, forfait_date_debut, forfait_date_fin, code_compta, tva, montantVentilation in listeDonnees :
             date = DateEngEnDateDD(date)
@@ -1633,7 +1612,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def Importation_forfaits(self, listeComptesPayeurs=[]):
-        DB = GestionDB.DB()
         
         # Récupère le dictPrestations
         for IDprestation in self.dictForfaits.keys() :
@@ -1667,9 +1645,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN ventilation ON ventilation.IDprestation = prestations.IDprestation
         %s
         GROUP BY prestations.IDprestation;""" % conditions
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
-        DB.Close() 
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()     
         
         index = 0
         for IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif, montantVentilation, forfait_date_debut, forfait_date_fin, code_compta, tva in listeDonnees :
@@ -1714,7 +1691,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Importation des transports et des transports programmés """
         global DICT_ARRETS, DICT_LIEUX, DICT_ACTIVITES, DICT_ECOLES
         
-        DB = GestionDB.DB()
 
         if len(self.listeSelectionIndividus) == 0 : conditionIndividus = "()"
         elif len(self.listeSelectionIndividus) == 1 : conditionIndividus = "(%d)" % self.listeSelectionIndividus[0]
@@ -1741,8 +1717,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         FROM transports
         WHERE mode='PROG' AND IDindividu IN %s
         ORDER BY depart_heure;""" % (", ".join(listeChamps), conditionIndividus)
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()     
         for donnees in listeDonnees :
             dictTemp = {}
             index = 0
@@ -1763,8 +1739,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         WHERE mode='TRANSP' AND IDindividu IN %s
         AND (depart_date>='%s' AND depart_date<='%s' OR arrivee_date>='%s' AND arrivee_date<='%s')
         ORDER BY depart_date, depart_heure;""" % (", ".join(listeChamps), conditionIndividus, dates_extremes[0], dates_extremes[1], dates_extremes[0], dates_extremes[1])
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()     
         for donnees in listeDonnees :
             dictTemp = {}
             index = 0
@@ -1787,40 +1763,38 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
         # Arrêts
         req = """SELECT IDarret, nom FROM transports_arrets;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         DICT_ARRETS = {}
         for IDarret, nom in listeDonnees :
             DICT_ARRETS[IDarret] = nom
             
         # Lieux
         req = """SELECT IDlieu, nom FROM transports_lieux;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         DICT_LIEUX = {}
         for IDlieu, nom in listeDonnees :
             DICT_LIEUX[IDlieu] = nom
         
         # Activités
         req = """SELECT IDactivite, nom FROM activites;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         DICT_ACTIVITES = {}
         for IDactivite, nom in listeDonnees :
             DICT_ACTIVITES[IDactivite] = nom
 
         # Ecoles
         req = """SELECT IDecole, nom FROM ecoles;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         DICT_ECOLES = {}
         for IDecole, nom in listeDonnees :
             DICT_ECOLES[IDecole] = nom
 
-        DB.Close()
 
     def Importation_deductions(self, listeComptesPayeurs=[]):
-        DB = GestionDB.DB()
         
         # Récupère le dictPrestations
         for IDdeduction in self.dictDeductions.keys() :
@@ -1850,9 +1824,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         WHERE IDcompte_payeur IN %s
         ;""" % conditionComptes
 
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
-        DB.Close() 
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()     
         
         for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide in listeDonnees :
             date = DateEngEnDateDD(date)
@@ -1872,7 +1845,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictAides = {}
         
         # Importation des aides
-        DB = GestionDB.DB()
         if self.mode == "individu" :
             req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max
             FROM aides
@@ -1884,9 +1856,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             FROM aides
             LEFT JOIN caisses ON caisses.IDcaisse = aides.IDcaisse
             ORDER BY date_debut;"""
-        DB.ExecuterReq(req)
-        listeAides = DB.ResultatReq()
-        if len(listeAides) == 0 : return dictAides
+        self.DB.ExecuterReq(req)
+        listeAides = self.DB.ResultatReq()
+        if len(listeAides) == 0 : 
+            return dictAides
         listeIDaides = []
         for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max in listeAides :
             date_debut = DateEngEnDateDD(date_debut)
@@ -1906,8 +1879,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         req = """SELECT IDaide_beneficiaire, IDaide, IDindividu
         FROM aides_beneficiaires
         WHERE IDaide IN %s;""" % conditionAides
-        DB.ExecuterReq(req)
-        listeBeneficiaires = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeBeneficiaires = self.DB.ResultatReq()
         for IDaide_beneficiaire, IDaide, IDindividu in listeBeneficiaires :
             if dictAides.has_key(IDaide) :
                 dictAides[IDaide]["beneficiaires"].append(IDindividu)
@@ -1920,8 +1893,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         LEFT JOIN aides_combinaisons ON aides_combinaisons.IDaide_combi = aides_combi_unites.IDaide_combi
         LEFT JOIN aides_montants ON aides_montants.IDaide_montant = aides_combinaisons.IDaide_montant
         WHERE aides_montants.IDaide IN %s;""" % conditionAides
-        DB.ExecuterReq(req)
-        listeUnites = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeUnites = self.DB.ResultatReq()
         
         for IDaide, IDaide_combi_unite, IDaide_combi, IDunite, IDaide_montant, montant in listeUnites :
             if dictAides.has_key(IDaide) :
@@ -1934,14 +1907,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Mémorisation des unités de combinaison
                 dictAides[IDaide]["montants"][IDaide_montant]["combinaisons"][IDaide_combi].append(IDunite)
         
-        DB.Close() 
         return dictAides
 
 
     def GetComptesPayeurs(self):
         dictComptesPayeurs = {}
         # Récupère le compte_payeur des ou de la famille
-        DB = GestionDB.DB()
         if self.mode == "individu" :
             req = """SELECT IDfamille, IDcompte_payeur
             FROM comptes_payeurs
@@ -1949,17 +1920,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         else:
             req = """SELECT IDfamille, IDcompte_payeur
             FROM comptes_payeurs;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq() 
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq() 
         for IDfamille, IDcompte_payeur in listeDonnees :
             dictComptesPayeurs[IDfamille] = IDcompte_payeur
-        DB.Close() 
         return dictComptesPayeurs
     
     def GetQuotientsFamiliaux(self):
         dictQuotientsFamiliaux = {}
         # Récupère le QF de la famille
-        DB = GestionDB.DB()
         if self.mode == "individu" :
             req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
             FROM quotients
@@ -1971,15 +1940,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             FROM quotients
             ORDER BY date_debut
             ;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         for IDquotient, IDfamille, date_debut, date_fin, quotient in listeDonnees :
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
             if dictQuotientsFamiliaux.has_key(IDfamille) == False :
                 dictQuotientsFamiliaux[IDfamille] = []
             dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient))
-        DB.Close() 
         return dictQuotientsFamiliaux
 
 
@@ -3389,9 +3357,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if label != None and label != "" :
                         nom_tarif = label
             
-##            print case
-##            print case.conso.__dict__
-            
         # Recherche du montant à appliquer : EN FONCTION DE LA DATE ET DU QUOTIENT FAMILIAL
         if methode_calcul == "qf_date" :
             montant_tarif = 0.0
@@ -3425,6 +3390,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Nouvelle saisie si clic sur la case
                 import DLG_Saisie_montant_prestation
                 dlg = DLG_Saisie_montant_prestation.Dialog(self, label=nom_tarif, montant=0.0)
+                if dlg.ShowModal() == wx.ID_OK:
+                    nom_tarif = dlg.GetLabel()
+                    montant_tarif = dlg.GetMontant()
+                    dlg.Destroy()
+                else:
+                    dlg.Destroy()
+                    return False
+            else :
+                # Sinon pas de nouvelle saisie : on cherche l'ancienne prestation déjà saisie
+                for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
+                    if dictValeurs["date"] == date and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] == IDindividu and dictValeurs["IDtarif"] == IDtarif :
+                        nom_tarif = dictValeurs["label"]
+                        montant_tarif = dictValeurs["montant"]
+
+        # Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
+        if methode_calcul == "choix" :
+            if case.IDunite in combinaisons_unites :
+                # Nouvelle saisie si clic sur la case
+                lignes_calcul = dictTarif["lignes_calcul"]
+                import DLG_Selection_montant_prestation
+                dlg = DLG_Selection_montant_prestation.Dialog(self, lignes_calcul=lignes_calcul, label=nom_tarif, montant=0.0)
                 if dlg.ShowModal() == wx.ID_OK:
                     nom_tarif = dlg.GetLabel()
                     montant_tarif = dlg.GetMontant()
@@ -5144,8 +5130,11 @@ class MyFrame(wx.Frame):
 
 if __name__ == '__main__':
     app = wx.App(0)
+    import time
+    heure_debut = time.time()
     import DLG_Grille
     frame_1 = DLG_Grille.Dialog(None, IDfamille=14, selectionIndividus=[46,])
     app.SetTopWindow(frame_1)
+    print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
     app.MainLoop()

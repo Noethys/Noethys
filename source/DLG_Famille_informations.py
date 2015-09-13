@@ -221,7 +221,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl = Panel(panel, IDfamille=196)
+        self.ctrl = Panel(panel, IDfamille=14)
         self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
@@ -232,7 +232,10 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    import time
+    heure_debut = time.time()
     frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
+    print "Temps de chargement DLG_Famille_informations =", time.time() - heure_debut
     frame_1.Show()
     app.MainLoop()

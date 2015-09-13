@@ -88,6 +88,58 @@ class Langue(wx.Panel):
 
 # ------------------------------------------------------------------------------------------------------------------------
 
+class Interface_mysql(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.listeLabels = [u"MySQLdb", u"mysql.connector"]
+        self.listeCodes = ["mysqldb", "mysql.connector"]
+        
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Interface MySQL"))
+        self.label_interface = wx.StaticText(self, -1, _(u"Interface :"))
+        self.ctrl_interface = wx.Choice(self, -1, choices=self.listeLabels)
+
+        self.__set_properties()
+        self.__do_layout()
+        
+        self.ctrl_interface.SetSelection(0)
+        self.Importation() 
+
+    def __set_properties(self):
+        self.ctrl_interface.SetToolTipString(_(u"Sélectionnez l'interface MySQL à utiliser. 'Mysqldb' est conseillé pour les fichiers en réseau local alors que 'mysql.connector' est conseillé pour les fichiers en réseau distant (par internet)"))
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_interface, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(1)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+    
+    def Importation(self):
+        code = UTILS_Config.GetParametre("interface_mysql", None)
+        index = 0
+        for codeTemp in self.listeCodes :
+            if codeTemp == code :
+                self.ctrl_interface.SetSelection(index)
+            index += 1
+            
+    def Validation(self):
+        return True
+    
+    def Sauvegarde(self):
+        interface_mysql = self.listeCodes[self.ctrl_interface.GetSelection()]
+        UTILS_Config.SetParametre("interface_mysql", interface_mysql)
+        try :
+            topWindow = wx.GetApp().GetTopWindow()
+            topWindow.userConfig["interface_mysql"] = interface_mysql
+            GestionDB.SetInterfaceMySQL(interface_mysql)
+        except Exception, err :
+            print "Erreur dans changement de l'interface mySQL depuis les preferences :", err
+
+# ------------------------------------------------------------------------------------------------------------------------
+
 class Monnaie(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
@@ -101,7 +153,11 @@ class Monnaie(wx.Panel):
         self.ctrl_pluriel = wx.TextCtrl(self, -1, "")
         self.label_symbole = wx.StaticText(self, -1, _(u"Symbole :"))
         self.ctrl_symbole = wx.TextCtrl(self, -1, "")
-
+        
+        self.ctrl_singulier.SetMinSize((70, -1))
+        self.ctrl_division.SetMinSize((100, -1))
+        self.ctrl_pluriel.SetMinSize((70, -1))
+        
         self.__set_properties()
         self.__do_layout()
         
@@ -119,12 +175,12 @@ class Monnaie(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=5, hgap=5)
         grid_sizer_base.Add(self.label_singulier, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_singulier, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add((20, 20), 0, 0, 0)
+        grid_sizer_base.Add((0, 20), 0, 0, 0)
         grid_sizer_base.Add(self.label_division, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_division, 0, 0, 0)
         grid_sizer_base.Add(self.label_pluriel, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_pluriel, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add((20, 20), 0, 0, 0)
+        grid_sizer_base.Add((0, 20), 0, 0, 0)
         grid_sizer_base.Add(self.label_symbole, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_symbole, 0, 0, 0)
         grid_sizer_base.AddGrowableCol(1)
@@ -434,8 +490,97 @@ class DerniersFichiers(wx.Panel):
         topWindow.PurgeListeDerniersFichiers(1) 
 
 
+# ---------------------------------------------------------------------------------------------------------------------------
 
+class Autodeconnect(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
 
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Déconnexion automatique de l'utilisateur"))
+        self.check_autodeconnect = wx.CheckBox(self, -1, _(u"Déconnexion de l'utilisateur si inactivité durant"))
+        self.listeValeurs = [
+            (15, u"15 secondes"),
+            (30, u"30 secondes"),
+            (60, u"1 minute"),
+            (120, u"2 minutes"),
+            (180, u"3 minutes"),
+            (240, u"4 minutes"),
+            (300, u"5 minutes"),
+            (360, u"6 minutes"),
+            (480, u"8 minutes"),
+            (600, u"10 minutes"),
+            (900, u"15 minutes"),
+            (1200, u"20 minutes"),
+            (1800, u"30 minutes"),
+            (3600, u"1 heure"),
+            (7200, u"2 heures"),
+            ]
+        listeLabels = []
+        for temps, label in self.listeValeurs :
+            listeLabels.append(label)
+        self.ctrl_temps = wx.Choice(self, -1, choices=listeLabels)
+        self.ctrl_temps.SetSelection(0) 
+        
+        self.__set_properties()
+        self.__do_layout()
+        
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_autodeconnect)
+
+        self.Importation() 
+
+    def __set_properties(self):
+        self.check_autodeconnect.SetToolTipString(_(u"Cochez cette case pour activer la déconnexion automatique de l'utilisateur au bout du temps d'inactivité sélectionné dans la liste"))
+        self.ctrl_temps.SetToolTipString(_(u"Sélectionnez un temps d'inactivité"))
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=0, hgap=0)
+        grid_sizer_base.Add(self.check_autodeconnect, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_temps, 0, wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(1)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+    
+    def OnCheck(self, event=None):
+        self.ctrl_temps.Enable(self.check_autodeconnect.GetValue())
+        
+    def GetValeur(self):
+        if self.check_autodeconnect.GetValue() == True :
+            index = self.ctrl_temps.GetSelection()
+            temps = self.listeValeurs[index][0]
+            return temps
+        else :
+            return None
+    
+    def SetValeur(self, valeur=None):
+        if valeur == None :
+            self.check_autodeconnect.SetValue(False)
+        else :
+            self.check_autodeconnect.SetValue(True)
+            index = 0
+            for temps, label in self.listeValeurs :
+                if temps == valeur :
+                    self.ctrl_temps.SetSelection(index)
+                index += 1
+        self.OnCheck(None) 
+        
+    def Importation(self):
+        valeur = UTILS_Config.GetParametre("autodeconnect", None)
+        self.SetValeur(valeur)
+        
+    def Validation(self):
+        return True
+    
+    def Sauvegarde(self):
+        valeur = self.GetValeur()
+        UTILS_Config.SetParametre("autodeconnect", valeur)
+        try :
+            topWindow = wx.GetApp().GetTopWindow()
+            topWindow.userConfig["autodeconnect"] = valeur
+            topWindow.Start_autodeconnect_timer()
+        except :
+            pass
 
 
 
@@ -460,7 +605,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        intro = _(u"Vous pouvez modifier ici les paramètres de base du logiciel. Ces paramètres seront mémorisés uniquement sur cet ordinateur. ")
+        intro = _(u"Vous pouvez modifier ici les paramètres de base du logiciel. Ces paramètres seront mémorisés uniquement sur cet ordinateur. Les fonctionnalités marquées d'un astérisque (*) nécessitent un redémarrage du logiciel.")
         titre = _(u"Préférences")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
@@ -473,7 +618,9 @@ class Dialog(wx.Dialog):
         self.ctrl_rapport_bugs = Rapport_bugs(self)
         self.ctrl_propose_maj = Propose_maj(self)
         self.ctrl_derniers_fichiers = DerniersFichiers(self)
-
+        self.ctrl_autodeconnect = Autodeconnect(self) 
+        self.ctrl_interface_mysql = Interface_mysql(self) 
+        
         # Redémarrage
         self.label_redemarrage = wx.StaticText(self, -1, _(u"* Le changement sera effectif au redémarrage du logiciel"))
         self.label_redemarrage.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -496,24 +643,50 @@ class Dialog(wx.Dialog):
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=12, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.ctrl_langue, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_monnaie, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_telephones, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_codesPostaux, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_adresses, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_rapport_bugs, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_propose_maj, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        grid_sizer_base.Add(self.ctrl_derniers_fichiers, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        
+        grid_sizer_contenu = wx.FlexGridSizer(rows=10, cols=2, vgap=10, hgap=10)
+        
+##        grid_sizer_contenu.Add(self.ctrl_langue, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_propose_maj, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_telephones, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_rapport_bugs, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_derniers_fichiers, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_codesPostaux, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_monnaie, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_autodeconnect, 1, wx.EXPAND, 0)
+        
+        
+        grid_sizer_gauche = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
+        grid_sizer_gauche.Add(self.ctrl_langue, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_interface_mysql, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_telephones, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_codesPostaux, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.label_redemarrage, 1, wx.EXPAND, 0)
 
+        grid_sizer_droit = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
+        grid_sizer_droit.Add(self.ctrl_propose_maj, 1, wx.EXPAND, 0)
+        grid_sizer_droit.Add(self.ctrl_rapport_bugs, 1, wx.EXPAND, 0)
+        grid_sizer_droit.Add(self.ctrl_derniers_fichiers, 1, wx.EXPAND, 0)
+        grid_sizer_droit.Add(self.ctrl_monnaie, 1, wx.EXPAND, 0)
+        grid_sizer_droit.Add(self.ctrl_autodeconnect, 1, wx.EXPAND, 0)
+
+        grid_sizer_contenu = wx.FlexGridSizer(rows=10, cols=2, vgap=10, hgap=10)
+        grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
+        grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
+        
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        
         # Ligne vide pour agrandir la fenêtre
 ##        grid_sizer_base.Add( (20, 20), 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
         
-        grid_sizer_base.Add(self.label_redemarrage, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+##        grid_sizer_base.Add(self.label_redemarrage, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
@@ -546,6 +719,8 @@ class Dialog(wx.Dialog):
         if self.ctrl_rapport_bugs.Validation() == False : return
         if self.ctrl_propose_maj.Validation() == False : return
         if self.ctrl_derniers_fichiers.Validation() == False : return
+        if self.ctrl_autodeconnect.Validation() == False : return
+        if self.ctrl_interface_mysql.Validation() == False : return
         
         # Sauvegarde
         self.ctrl_langue.Sauvegarde()
@@ -556,6 +731,8 @@ class Dialog(wx.Dialog):
         self.ctrl_rapport_bugs.Sauvegarde()
         self.ctrl_propose_maj.Sauvegarde()
         self.ctrl_derniers_fichiers.Sauvegarde()
+        self.ctrl_autodeconnect.Sauvegarde()
+        self.ctrl_interface_mysql.Sauvegarde()
         
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)

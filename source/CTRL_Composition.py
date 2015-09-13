@@ -34,12 +34,10 @@ DICT_TYPES_LIENS = Liens.DICT_TYPES_LIENS
 class GetValeurs() :
     def __init__(self, IDfamille=None):
         self.IDfamille = IDfamille
-        
-        self.listeIDindividus, self.dictInfosIndividus = self.GetInfosIndividus()
+        self.listeIDindividus, self.dictInfosIndividus, self.listeLiens = self.GetInfosIndividus()
         
     def GetLiensCadres(self):
         """ Retourne les liens de filiation ou de couple """
-        self.listeLiens = self.GetLiens() 
         dictRelations = {}
         for numCol in [1, 2, 3] :
             dictRelations[numCol] = { "filiation" : {}, "couple" : [], "ex-couple" : [] }
@@ -60,10 +58,6 @@ class GetValeurs() :
                                 else:
                                     if IDparent not in dictRelations[numCol]["filiation"][IDenfant] :
                                         dictRelations[numCol]["filiation"][IDenfant].append(IDparent)
-                                    
-##        for numCol in [1, 2, 3] :
-##            print numCol
-##            print dictRelations[numCol]
         
         return dictRelations
         
@@ -76,38 +70,37 @@ class GetValeurs() :
                     typeRelation = DICT_TYPES_LIENS[IDtype_lien]["type"]
                     listeLiens.append((IDindividu_objet, IDtype_lien, typeRelation))
         return listeLiens
-        
-    def GetLiens(self):
-        # Recherche des liens existants dans la base
-        db = GestionDB.DB()
-        if len(self.listeIDindividus) == 1 : condition = "(%d)" % self.listeIDindividus[0]
-        else : condition = str(tuple(self.listeIDindividus))
-        req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable
-        FROM liens WHERE IDindividu_sujet IN %s;""" % condition
-        db.ExecuterReq(req)
-        listeTousLiens = db.ResultatReq()
-        db.Close()
-        return listeTousLiens
-        
+                
     def GetInfosIndividus(self):
         dictInfos = {} 
         listeIDindividus = []
+        listeLiens = []
+        
         # Recherche des individus rattachés
-        db = GestionDB.DB()
+        DB = GestionDB.DB()
         req = """SELECT IDrattachement, IDindividu, IDcategorie, titulaire
         FROM rattachements WHERE IDfamille=%d;""" % self.IDfamille
-        db.ExecuterReq(req)
-        listeRattachements = db.ResultatReq()
-        db.Close()
-        if len(listeRattachements) == 0 : return listeIDindividus, dictInfos
+        DB.ExecuterReq(req)
+        listeRattachements = DB.ResultatReq()
+        if len(listeRattachements) == 0 : 
+            DB.Close()
+            return listeIDindividus, dictInfos, listeLiens
+        
         # Intégration de ces premières valeurs dans le dictValeurs
         for IDrattachement, IDindividu, IDcategorie, titulaire in listeRattachements :
             listeIDindividus.append(IDindividu)
             dictInfos[IDindividu] = {"categorie" : IDcategorie, "titulaire" : titulaire, "IDrattachement" : IDrattachement}
-        
+
+        # Recherche des liens existants dans la base
+        if len(listeIDindividus) == 1 : condition = "(%d)" % listeIDindividus[0]
+        else : condition = str(tuple(listeIDindividus))
+        req = """SELECT IDlien, IDfamille, IDindividu_sujet, IDtype_lien, IDindividu_objet, responsable
+        FROM liens WHERE IDindividu_sujet IN %s;""" % condition
+        DB.ExecuterReq(req)
+        listeLiens = DB.ResultatReq()
+
         # Recherche des inscriptions des membres de la famille
         dictInscriptions = {}
-        db = GestionDB.DB()
         req = """SELECT 
         IDinscription, IDindividu, date_inscription, parti,
         activites.nom, activites.date_debut, activites.date_fin,
@@ -117,9 +110,8 @@ class GetValeurs() :
         LEFT JOIN groupes ON groupes.IDgroupe = inscriptions.IDgroupe
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
         WHERE IDfamille=%d;""" % self.IDfamille
-        db.ExecuterReq(req)
-        listeInscriptions = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, dateInscription, parti, nomActivite, activiteDebut, activiteFin, nomGroupe, nomCategorie in listeInscriptions :
             if dictInscriptions.has_key(IDindividu) == False :
                 dictInscriptions[IDindividu] = []
@@ -132,7 +124,6 @@ class GetValeurs() :
             
         # Recherche des infos détaillées sur chaque individu
         dictCivilites = Civilites.GetDictCivilites()
-        db = GestionDB.DB()
         listeChamps = (
             "IDcivilite", "nom", "prenom", "num_secu","IDnationalite", 
             "date_naiss", "IDpays_naiss", "cp_naiss", "ville_naiss",
@@ -144,8 +135,8 @@ class GetValeurs() :
             # Infos de la table Individus
             req = """SELECT %s
             FROM individus WHERE IDindividu=%d;""" % (",".join(listeChamps), IDindividu)
-            db.ExecuterReq(req)
-            listeIndividus = db.ResultatReq()
+            DB.ExecuterReq(req)
+            listeIndividus = DB.ResultatReq()
             for index in range(0, len(listeChamps)) :
                 nomChamp = listeChamps[index]
                 dictInfos[IDindividu][nomChamp] = listeIndividus[0][index]
@@ -163,7 +154,14 @@ class GetValeurs() :
                 dictInfos[IDindividu]["civiliteAbrege"] = ""
                 dictInfos[IDindividu]["nomImage"]  = None
 
-        db.Close()
+        DB.Close()
+        
+        # Recherche des photos
+        listeIndividusTemp = []
+        for IDindividu, dictValeursTemp in dictInfos.iteritems() :
+            nomFichier = "Images/128x128/%s" % dictValeursTemp["nomImage"]
+            listeIndividusTemp.append((IDindividu, nomFichier))
+        dictPhotos = CTRL_Photo.GetPhotos(listeIndividus=listeIndividusTemp, taillePhoto=(128, 128), qualite=wx.IMAGE_QUALITY_HIGH)
         
         #----------------------------------------------
         # 2ème tournée : Infos détaillées
@@ -219,10 +217,7 @@ class GetValeurs() :
             if travail_tel != None :
                 dictInfos[IDindividu]["travail_tel_complet"] = _(u"Tél. travail : %s") % travail_tel
             else:
-                dictInfos[IDindividu]["travail_tel_complet"] = None
-            
-            # Infos sur les liens
-            
+                dictInfos[IDindividu]["travail_tel_complet"] = None            
             
             # Infos sur les activités inscrites
             if dictInscriptions.has_key(IDindividu) == True :
@@ -231,8 +226,15 @@ class GetValeurs() :
             else:
                 dictInfos[IDindividu]["inscriptions"] = False
                 dictInfos[IDindividu]["listeInscriptions"] = []
-        
-        return listeIDindividus, dictInfos
+            
+            # Photo
+            if dictPhotos.has_key(IDindividu) :
+                bmp = dictPhotos[IDindividu]["bmp"]
+            else :
+                bmp = None
+            dictInfos[IDindividu]["photo"] = bmp
+            
+        return listeIDindividus, dictInfos, listeLiens
     
     
     def GetDictCadres(self):
@@ -280,6 +282,7 @@ class GetValeurs() :
             dictCadres[IDindividu]["titulaire"] = self.dictInfosIndividus[IDindividu]["titulaire"]
             dictCadres[IDindividu]["IDrattachement"] = self.dictInfosIndividus[IDindividu]["IDrattachement"]
             dictCadres[IDindividu]["inscriptions"] = self.dictInfosIndividus[IDindividu]["inscriptions"]
+            dictCadres[IDindividu]["photo"] = self.dictInfosIndividus[IDindividu]["photo"]
         
         return dictCadres
     
@@ -341,7 +344,7 @@ class GetValeurs() :
 
 
 class CadreIndividu():
-    def __init__(self, parent, dc, IDindividu=None, listeTextes=[], genre="M", nomImage=None, xCentre=None, yCentre=None, largeur=None, hauteur=None, numCol=None, titulaire=0, calendrierActif=False):
+    def __init__(self, parent, dc, IDindividu=None, listeTextes=[], genre="M", photo=None, xCentre=None, yCentre=None, largeur=None, hauteur=None, numCol=None, titulaire=0, calendrierActif=False):
         self.parent = parent
         self.zoom = 1
         self.zoomContenu = True
@@ -356,8 +359,7 @@ class CadreIndividu():
         self.IDobjet = wx.NewId()
         self.listeTextes = listeTextes
         self.genre = genre
-        self.nomImage = nomImage
-        self.bmp = None
+        self.photo = photo
         self.numCol = numCol
         self.titulaire = titulaire
         self.xCentre = xCentre
@@ -422,11 +424,10 @@ class CadreIndividu():
         self.dc.DrawSpline(coordsSpline)
         
         # Intégration de la photo
-        if self.nomImage == None : self.nomImage = "Personne.png"
-        nomFichier = "Images/128x128/%s" % self.nomImage
-        IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=self.IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=wx.IMAGE_QUALITY_HIGH)
-        self.dc.DrawBitmap(bmp, x+paddingCadre, y+paddingCadre)
-        self.bmp = bmp
+        img = self.photo.ConvertToImage()
+        img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH) 
+        self.bmp = img.ConvertToBitmap()
+        self.dc.DrawBitmap(self.bmp, x+paddingCadre, y+paddingCadre)
         
         # Dessin du texte
         largeurMaxiTexte = largeur - paddingCadre*3- taillePhoto
@@ -524,61 +525,64 @@ class CadreIndividu():
                 self.parent.Update()
 
 
-class LienCadreFiliation():
-    def __init__(self, parent, IDobjetLien, dc, IDenfant, listeParents, nbreLiensFiliation):
-        self.parent = parent
-        self.dc = dc
-        self.IDobjetLien = IDobjetLien
-        self.IDobjet = wx.NewId()
-        self.dictCadres = self.parent.dictCadres
-        self.IDenfant = IDenfant
-        self.listeParents = listeParents
-        self.nbreLiensFiliation = nbreLiensFiliation
-        self.posSeparationBlocs = self.parent.posSeparationCol1
-        
-        self.Draw()
-    
-    def Draw(self):
-        # Création de l'ID pour le dictionnaire d'objets
-        if self.parent.dictIDs.has_key(self.IDobjet) : 
-            self.dc.RemoveId(self.IDobjet)
-        self.dc.SetId(self.IDobjet)
-        
-        posXLigneParents = self.posSeparationBlocs-5
-        posXLigneEnfants = self.posSeparationBlocs+5
-        
-        # Dessine la ligne qui part du cadre ENFANT
-        xCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].xCentre
-        yCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].yCentre
-        largeurCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].largeur*self.dictCadres[self.IDenfant]["ctrl"].zoom
-        bordCadreEnfant = (xCadreEnfant-largeurCadreEnfant/2.0, yCadreEnfant)
-        extremiteLigneEnfant = (posXLigneEnfants, yCadreEnfant)
-        self.dc.SetPen(wx.Pen((0, 0, 0), 1))
-        self.dc.DrawLinePoint(bordCadreEnfant, extremiteLigneEnfant)
-        
-        # Dessine la ligne qui part de chaque cadre PARENT
-        listePointsParents = []
-        for IDparent in self.listeParents :
-            xCentre = self.dictCadres[IDparent]["ctrl"].xCentre
-            yCentre = self.dictCadres[IDparent]["ctrl"].yCentre
-            largeur = self.dictCadres[IDparent]["ctrl"].largeur*self.dictCadres[IDparent]["ctrl"].zoom
-            bordCadre = (xCentre+largeur/2.0, yCentre)
-            extremiteLigne = (posXLigneParents, yCentre)
-            self.dc.SetPen(wx.Pen((0, 0, 0), 1))
-            self.dc.DrawLinePoint(bordCadre, extremiteLigne)
-            listePointsParents.append(extremiteLigne)
-        
-        # Barre qui relient les parents
-        pointBas, pointHaut = listePointsParents[0][0], listePointsParents[0][1]
-        for x, y in listePointsParents :
-            print "x=", x, "y=", y
-            if y < pointBas : pointBas = y
-            if y > pointHaut : pointHaut = y
-        print pointBas, pointHaut
-        self.dc.DrawLine(posXLigneParents, pointBas, posXLigneParents, pointHaut)
+##class LienCadreFiliation():
+##    def __init__(self, parent, IDobjetLien, dc, IDenfant, listeParents, nbreLiensFiliation):
+##        self.parent = parent
+##        self.dc = dc
+##        self.IDobjetLien = IDobjetLien
+##        self.IDobjet = wx.NewId()
+##        self.dictCadres = self.parent.dictCadres
+##        self.IDenfant = IDenfant
+##        self.listeParents = listeParents
+##        self.nbreLiensFiliation = nbreLiensFiliation
+##        self.posSeparationBlocs = self.parent.posSeparationCol1
+##        
+##        self.Draw()
+##    
+##    def Draw(self):
+##        # Création de l'ID pour le dictionnaire d'objets
+##        if self.parent.dictIDs.has_key(self.IDobjet) : 
+##            self.dc.RemoveId(self.IDobjet)
+##        self.dc.SetId(self.IDobjet)
+##        
+##        posXLigneParents = self.posSeparationBlocs-5
+##        posXLigneEnfants = self.posSeparationBlocs+5
+##        
+##        # Dessine la ligne qui part du cadre ENFANT
+##        xCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].xCentre
+##        yCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].yCentre
+##        largeurCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].largeur*self.dictCadres[self.IDenfant]["ctrl"].zoom
+##        bordCadreEnfant = (xCadreEnfant-largeurCadreEnfant/2.0, yCadreEnfant)
+##        extremiteLigneEnfant = (posXLigneEnfants, yCadreEnfant)
+##        self.dc.SetPen(wx.Pen((0, 0, 0), 1))
+##        self.dc.DrawLinePoint(bordCadreEnfant, extremiteLigneEnfant)
+##        
+##        # Dessine la ligne qui part de chaque cadre PARENT
+##        listePointsParents = []
+##        for IDparent in self.listeParents :
+##            xCentre = self.dictCadres[IDparent]["ctrl"].xCentre
+##            yCentre = self.dictCadres[IDparent]["ctrl"].yCentre
+##            largeur = self.dictCadres[IDparent]["ctrl"].largeur*self.dictCadres[IDparent]["ctrl"].zoom
+##            bordCadre = (xCentre+largeur/2.0, yCentre)
+##            extremiteLigne = (posXLigneParents, yCentre)
+##            self.dc.SetPen(wx.Pen((0, 0, 0), 1))
+##            self.dc.DrawLinePoint(bordCadre, extremiteLigne)
+##            listePointsParents.append(extremiteLigne)
+##        
+##        # Barre qui relient les parents
+##        pointBas, pointHaut = listePointsParents[0][0], listePointsParents[0][1]
+##        for x, y in listePointsParents :
+##            print "x=", x, "y=", y
+##            if y < pointBas : pointBas = y
+##            if y > pointHaut : pointHaut = y
+##        print pointBas, pointHaut
+##        self.dc.DrawLine(posXLigneParents, pointBas, posXLigneParents, pointHaut)
+##
+##        # Mémorisation dans le dictionnaire d'objets
+##        self.parent.dictIDs[self.IDobjet] = ("lien", self.IDobjetLien)
 
-        # Mémorisation dans le dictionnaire d'objets
-        self.parent.dictIDs[self.IDobjet] = ("lien", self.IDobjetLien)
+
+
 
 
 class CTRL_Graphique(wx.ScrolledWindow):
@@ -587,6 +591,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.parent = parent
         self.IDfamille = IDfamille
         self.selectionCadre = None
+        self.init_ok = False
         
         # Initialisation du tooltip
 ##        self.SetToolTipString("")
@@ -606,6 +611,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.couleurFondCol2 = (238, 253, 252)
         self.couleurFondCol3 = (214, 250, 199)
 
+        self.bmp_responsables = wx.Bitmap("Images/Special/GeneaResponsables.png", wx.BITMAP_TYPE_PNG)
+        self.bmp_enfants = wx.Bitmap("Images/Special/GeneaEnfants.png", wx.BITMAP_TYPE_PNG)
+        self.bmp_contacts = wx.Bitmap("Images/Special/GeneaContacts.png", wx.BITMAP_TYPE_PNG)
+
         self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
         self.Bind(wx.EVT_LEFT_DCLICK, self.OnDLeftDown)
         self.Bind(wx.EVT_MOTION, self.OnMotion)
@@ -620,13 +629,24 @@ class CTRL_Graphique(wx.ScrolledWindow):
 
         self.Bind(wx.EVT_PAINT, self.OnPaint)
         self.Bind(wx.EVT_ERASE_BACKGROUND, lambda x:None)
-        self.Bind(wx.EVT_SIZE, self.OnSize)
 
     def OnSize(self, event):
-        self.MAJ()
+        self.DoDrawing(self.pdc)
+        self.Refresh()
         event.Skip()
 
     def MAJ(self):
+        # Récupération des valeurs
+        valeurs = GetValeurs(self.IDfamille)
+        self.dictValeurs = valeurs
+        self.dictCadres = valeurs.GetDictCadres()
+        self.dictInfoBulles = valeurs.GetDictInfoBulles()
+        self.dictLiensCadres = valeurs.GetLiensCadres()
+        
+        # Actualisation du graphique
+        if self.init_ok == False :
+            self.Bind(wx.EVT_SIZE, self.OnSize)
+            self.init_ok = True
         self.DoDrawing(self.pdc)
         self.Refresh()
                    
@@ -659,14 +679,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         dc.RemoveAll()
         dc.BeginDrawing()
         tailleDC = self.GetSizeTuple()[0], self.GetSizeTuple()[1]      
-        
-        # Récupération des valeurs        
-        valeurs = GetValeurs(self.IDfamille)
-        self.dictValeurs = valeurs
-        self.dictCadres = valeurs.GetDictCadres()
-        self.dictInfoBulles = valeurs.GetDictInfoBulles()
-        self.dictLiensCadres = valeurs.GetLiensCadres()
-        
+                
         # Calcul des positions horizontales des cases
         largeurCase = self.largeurCaseDefaut
         largeurBloc = (3*largeurCase)+self.espaceHorizontalDefautCol1+self.espaceHorizontalDefautCol2
@@ -712,15 +725,15 @@ class CTRL_Graphique(wx.ScrolledWindow):
             
             # Dessin du fond de couleur
             paramFond = {
-                1 : { "couleurFond" : self.couleurFondCol1, "x" : 0, "width" : posSeparationCol1, "nomImage" : "GeneaResponsables.png"},
-                2 : { "couleurFond" : self.couleurFondCol2, "x" : posSeparationCol1, "width" : posSeparationCol2-posSeparationCol1, "nomImage" : "GeneaEnfants.png"},
-                3 : { "couleurFond" : self.couleurFondCol3, "x" : posSeparationCol2, "width" : tailleDC[0]-posSeparationCol2, "nomImage" : "GeneaContacts.png"},
+                1 : { "couleurFond" : self.couleurFondCol1, "x" : 0, "width" : posSeparationCol1, "bmp" : self.bmp_responsables},
+                2 : { "couleurFond" : self.couleurFondCol2, "x" : posSeparationCol1, "width" : posSeparationCol2-posSeparationCol1, "bmp" : self.bmp_enfants},
+                3 : { "couleurFond" : self.couleurFondCol3, "x" : posSeparationCol2, "width" : tailleDC[0]-posSeparationCol2, "bmp" : self.bmp_contacts},
             }
             if paramFond.has_key(numCol) : 
                 dc.SetBrush(wx.Brush(paramFond[numCol]["couleurFond"]))
                 dc.SetPen(wx.Pen(paramFond[numCol]["couleurFond"], 0))
                 dc.DrawRectangle(x=paramFond[numCol]["x"], y=0, width=paramFond[numCol]["width"], height=tailleDC[1])
-                bmp = wx.Bitmap("Images/Special/%s" % paramFond[numCol]["nomImage"], wx.BITMAP_TYPE_PNG)
+                bmp = paramFond[numCol]["bmp"]
                 dc.DrawBitmap(bmp, xCentre-(bmp.GetSize()[0]/2.0), 10)
             
             # Création des cases
@@ -731,7 +744,8 @@ class CTRL_Graphique(wx.ScrolledWindow):
                 nomImage = self.dictCadres[IDindividu]["nomImage"]
                 titulaire = self.dictCadres[IDindividu]["titulaire"] 
                 calendrierActif = self.dictCadres[IDindividu]["inscriptions"]
-                cadre = CadreIndividu(self, dc, IDindividu, listeTextes, genre, nomImage, xCentre, yCentre, largeurCase, hauteurCase, numCol, titulaire, calendrierActif)
+                photo = self.dictCadres[IDindividu]["photo"]
+                cadre = CadreIndividu(self, dc, IDindividu, listeTextes, genre, photo, xCentre, yCentre, largeurCase, hauteurCase, numCol, titulaire, calendrierActif)
                 self.dictCadres[IDindividu]["ctrl"] = cadre
                 yCentre += hauteurCase + espaceVertical
             
@@ -868,7 +882,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         for IDindividuTmp, valeurs in self.dictCadres.iteritems() :
             if ExcepteIDindividu != IDindividuTmp :
                 cadre = self.dictCadres[IDindividuTmp]["ctrl"]
-                if cadre.zoom != 1 :
+                if cadre != None and cadre.zoom != 1 :
                     cadre.ZoomArriere(vitesse=0.1)
     
     def OnLeftDown(self, event):
@@ -1314,7 +1328,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_fiche", "modifier") == False : return
         dlg = DLG_Individu.Dialog(None, IDindividu=IDindividu)
         if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ() 
+            pass
         dlg.Destroy()
         self.MAJ() 
         self.MAJnotebook() 
@@ -2020,6 +2034,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = Notebook(panel, IDfamille=7)
+        self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
@@ -2031,8 +2046,11 @@ class MyFrame(wx.Frame):
 
 if __name__ == '__main__':
     app = wx.App(0)
+    import time
+    heure_debut = time.time()
     #wx.InitAllImageHandlers()
     frame_1 = MyFrame(None, -1, "ObjectListView", size=(900, 400))
     app.SetTopWindow(frame_1)
+    print "Temps de chargement CTRL_Composition =", time.time() - heure_debut
     frame_1.Show()
     app.MainLoop()

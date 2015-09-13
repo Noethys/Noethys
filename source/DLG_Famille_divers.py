@@ -84,12 +84,6 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         self.IDfamille = IDfamille
         
         # Définition des éditeurs personnalisés
-##        if not getattr(sys, '_PropGridEditorsRegistered', False):
-##            self.RegisterEditor(EditeurComboBoxAvecBoutons)
-##            # ensure we only do it once
-##            sys._PropGridEditorsRegistered = True
-                
-##        self.SetVerticalSpacing(3) 
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         
         # Données Tiers pour Hélios
@@ -98,7 +92,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         propriete = wxpg.EnumProperty(label=_(u"Titulaire"), name="titulaire_helios")
         propriete.SetHelpString(_(u"Sélectionnez le titulaire du compte pour Hélios (Trésor Public)"))
         self.Append(propriete)
-        self.MAJ_titulaire_helios() 
+##        self.MAJ_titulaire_helios() 
 
         propriete = wxpg.StringProperty(label=_(u"Identifiant national"), name="idtiers_helios", value=u"")
         propriete.SetHelpString(_(u"[Facultatif] Saisissez l'identifiant national (SIRET ou SIREN ou FINESS ou NIR)")) 
@@ -250,6 +244,7 @@ class Panel(wx.Panel):
     def MAJ(self):
         """ MAJ integrale du controle avec MAJ des donnees """
         if self.majEffectuee == False :
+            self.ctrl_parametres.MAJ() 
             DB = GestionDB.DB()
             req = """SELECT internet_actif, internet_identifiant, internet_mdp, titulaire_helios, code_comptable, idtiers_helios, natidtiers_helios, reftiers_helios, cattiers_helios, natjur_helios
             FROM familles

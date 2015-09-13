@@ -119,6 +119,9 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+    
+    def SetIDcompte_payeur(self, IDcompte_payeur=None):
+        self.IDcompte_payeur = IDcompte_payeur
         
     def OnActivated(self,event):
         self.Reedition(None)

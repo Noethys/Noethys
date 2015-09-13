@@ -67,7 +67,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         DB = GestionDB.DB()
-        
+
         # Préparation du dict de données
         self.dictDonnees = {
             "nbrePrestations" : { "valeur" : 0, "label" : _(u"Nbre prestations"), "typeValeur" : "entier", "position" : 10, "afficher" : False } ,
@@ -79,19 +79,19 @@ class ListView(FastObjectListView):
             "soldeFinal" : { "valeur" : decimal.Decimal(str("0.0")), "label" : _(u"Solde final"), "typeValeur" : "montant", "position" : 70, "afficher" : True } ,
             }
 
-
         # Récupère la ventilation
-        req = """SELECT IDprestation, SUM(montant) AS total_ventilations
+        req = """SELECT IDprestation, montant
         FROM ventilation
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = ventilation.IDcompte_payeur
         WHERE IDfamille=%d
-        GROUP BY IDprestation
         ;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         dictVentilations = {}
-        for IDprestation, total_ventilations in listeVentilations :
-            dictVentilations[IDprestation] = total_ventilations
+        for IDprestation, montant in listeVentilations :
+            if dictVentilations.has_key(IDprestation) == False :
+                dictVentilations[IDprestation] = 0.0
+            dictVentilations[IDprestation] += montant
 
         # Récupération des prestations
         req = """
@@ -99,7 +99,6 @@ class ListView(FastObjectListView):
         prestations.montant, IDfacture
         FROM prestations
         WHERE IDfamille=%d
-        ORDER BY date
         ;""" % self.IDfamille
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
@@ -119,42 +118,12 @@ class ListView(FastObjectListView):
             self.dictDonnees["soldeFinal"]["valeur"] += montant
             if date <= datetime.date.today() :
                 self.dictDonnees["soldeJour"]["valeur"] += montant
-
-        # Ancienne version lente
-##        # Récupération des prestations
-##        req = """
-##        SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, 
-##        prestations.montant, IDfacture, 
-##        SUM(ventilation.montant) AS montant_ventilation
-##        FROM prestations
-##        LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
-##        WHERE IDfamille=%d
-##        GROUP BY prestations.IDprestation
-##        ORDER BY date
-##        ;""" % self.IDfamille
-##        DB.ExecuterReq(req)
-##        listePrestations = DB.ResultatReq()
-##        for IDprestation, IDcompte_payeur, date, montant, IDfacture, montant_ventilation in listePrestations :
-##            date = DateEngEnDateDD(date) 
-##            if montant_ventilation == None : montant_ventilation = 0.0
-##            if montant == None : montant = 0.0
-##            
-##            montant_ventilation = decimal.Decimal(str(montant_ventilation))
-##            montant = decimal.Decimal(str(montant))
-##            
-##            self.dictDonnees["nbrePrestations"]["valeur"] += 1
-##            self.dictDonnees["totalPrestations"]["valeur"] += montant
-##            self.dictDonnees["totalVentilation"]["valeur"] += montant_ventilation
-##            self.dictDonnees["soldeFinal"]["valeur"] += montant
-##            if date <= datetime.date.today() :
-##                self.dictDonnees["soldeJour"]["valeur"] += montant
                         
         # Récupère les règlements
         req = """SELECT IDreglement, date, montant
         FROM reglements
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
         WHERE comptes_payeurs.IDfamille=%d
-        ORDER BY date
         ;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeReglements = DB.ResultatReq()
@@ -175,17 +144,7 @@ class ListView(FastObjectListView):
             if dictDonnee["afficher"] == True :
                 track = Track(dictDonnee)
                 listeListeView.append(track)
-        
-##        for item in listeDonnees :
-##            valide = True
-##            if listeID != None :
-##                if item[0] not in listeID :
-##                    valide = False
-##            if valide == True :
-##                track = Track(item)
-##                listeListeView.append(track)
-##                if self.selectionID == item[0] :
-##                    self.selectionTrack = track
+
         return listeListeView
     
     def GetSolde(self):
@@ -388,11 +347,8 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, IDfamille=196, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        import time
-        heure_debut = time.time()
+        self.myOlv = ListView(panel, id=-1, IDfamille=14, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
-        print time.time() - heure_debut
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
@@ -402,7 +358,10 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    import time
+    heure_debut = time.time()
     frame_1 = MyFrame(None, -1, "OL TEST")
     app.SetTopWindow(frame_1)
+    print "Temps de chargement OL_Etat_compte =", time.time() - heure_debut
     frame_1.Show()
     app.MainLoop()

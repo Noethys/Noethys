@@ -123,6 +123,8 @@ class CTRL(wx.Panel):
         try :
             listePages = []
             
+            self.DB = GestionDB.DB() 
+            
             # Infos Organisateur
             self.dictOrganisateur = self.GetOrganisateur() 
             
@@ -151,6 +153,8 @@ class CTRL(wx.Panel):
 ##            if texte != None :
 ##                listePages.append(texte)
             
+            self.DB.Close() 
+            
             # Envoi des textes au ticker
             self.ctrl_ticker.SetPages(listePages, restart=True)
         
@@ -165,12 +169,10 @@ class CTRL(wx.Panel):
 
     def GetOrganisateur(self):
         """ Récupère les infos sur l'organisateur """
-        DB = GestionDB.DB()
         req = """SELECT cp, ville, gps
         FROM organisateur WHERE IDorganisateur=1;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         if len(listeDonnees) == 0 : return None
         cp, ville, gps = listeDonnees[0]
         if cp == None : cp = ""
@@ -195,9 +197,7 @@ class CTRL(wx.Panel):
         else :
             # Sauvegarde des coordonnées GPS dans la base
             lat, long = dictGPS["lat"], dictGPS["long"]
-            DB = GestionDB.DB()
-            DB.ReqMAJ("organisateur", [("gps", u"%s;%s" % (str(lat), str(long)) ),], "IDorganisateur", 1)
-            DB.Close()
+            self.DB.ReqMAJ("organisateur", [("gps", u"%s;%s" % (str(lat), str(long)) ),], "IDorganisateur", 1)
         return lat, long
         
     def GetCelebrations(self):
@@ -232,7 +232,6 @@ class CTRL(wx.Panel):
         """ Récupère les anniversaires """
         try :
             conditionJour = "%02d-%02d" % (self.dateJour.month, self.dateJour.day) 
-            DB = GestionDB.DB()
             req = """SELECT individus.IDindividu, nom, prenom, date_naiss
             FROM individus 
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
@@ -240,9 +239,8 @@ class CTRL(wx.Panel):
             GROUP BY individus.IDindividu
             ORDER BY date_naiss DESC
             ;""" % conditionJour
-            DB.ExecuterReq(req)
-            listeDonnees = DB.ResultatReq()
-            DB.Close()
+            self.DB.ExecuterReq(req)
+            listeDonnees = self.DB.ResultatReq()
             if len(listeDonnees) == 0 : return None
             listeTextes = []
             for IDindividu, nom, prenom, date_naiss in listeDonnees :

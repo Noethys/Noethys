@@ -147,7 +147,9 @@ class CTRL(wx.TreeCtrl):
 
     def Remplissage(self):
         # Création de la racine
-        self.root = self.AddRoot(_(u"Racine"))
+        self.root = self.AddRoot("Racine")
+        
+        self.DB = GestionDB.DB()
         
         # Création des branches Messages
         self.Branches_messages(self.root)
@@ -163,6 +165,8 @@ class CTRL(wx.TreeCtrl):
         
         # Création des branches Vaccinations
         self.Branches_vaccinations(self.root)
+        
+        self.DB.Close() 
         
         self.ExpandAllChildren(self.root)
 
@@ -352,6 +356,8 @@ class CTRL(wx.TreeCtrl):
                     if valide == "pasok" : self.SetItemImage(niveau2, self.img_pasok, which=wx.TreeItemIcon_Normal)
             
         
+        
+        
     def GetMessages(self):
         # Récupération des données
         listeMessages = []
@@ -365,8 +371,6 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "WHERE IDindividu=%d " % self.IDindividu
         
-        DB = GestionDB.DB()
-        
         # Récupération des pièces à fournir pour la famille ou l'individu
         req = """
         SELECT IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite,
@@ -374,8 +378,8 @@ class CTRL(wx.TreeCtrl):
         FROM messages
         %s
         """ % condition
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeDonnees = self.DB.ResultatReq()
         
         for IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite, afficher_accueil, afficher_liste, IDfamille, IDindividu, texte in listeDonnees :
             listeMessages.append((IDmessage, date_parution, priorite, texte))
@@ -398,8 +402,6 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
         
-        DB = GestionDB.DB()
-        
         # Récupération des pièces à fournir pour la famille ou l'individu
         req = """
         SELECT 
@@ -411,8 +413,8 @@ class CTRL(wx.TreeCtrl):
         WHERE inscriptions.parti=0 %s
         GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu;
         """ % condition
-        DB.ExecuterReq(req)
-        listePiecesObligatoires = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listePiecesObligatoires = self.DB.ResultatReq()
         
         # Récupération des pièces de la famille
         dateDuJour = datetime.date.today()
@@ -444,8 +446,8 @@ class CTRL(wx.TreeCtrl):
             FROM rattachements 
             WHERE IDfamille=%d AND IDcategorie IN (1, 2);
             """ % self.IDfamille
-            DB.ExecuterReq(req)
-            listeDonnees = DB.ResultatReq()
+            self.DB.ExecuterReq(req)
+            listeDonnees = self.DB.ResultatReq()
             listeIDindividus = []
             for IDindividu, IDcategorie in listeDonnees :
                 if IDindividu not in listeIDindividus :
@@ -462,9 +464,8 @@ class CTRL(wx.TreeCtrl):
             ORDER BY date_fin
             """ % (str(dateDuJour), str(dateDuJour), self.IDfamille, conditionIndividus)
         
-        DB.ExecuterReq(req)
-        listePiecesFournies = DB.ResultatReq()
-        DB.Close()
+        self.DB.ExecuterReq(req)
+        listePiecesFournies = self.DB.ResultatReq()
         dictPiecesFournies = {}
         for IDpiece, IDtype_piece, IDindividu, IDfamille, date_debut, date_fin, publicPiece in listePiecesFournies :
             # Pour les pièces familiales :
@@ -527,7 +528,6 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
 
-        DB = GestionDB.DB()
         # Récupération des renseignements à fournir pour la famille ou l'individu
         req = """
         SELECT 
@@ -538,15 +538,15 @@ class CTRL(wx.TreeCtrl):
         WHERE inscriptions.parti=0 %s
         GROUP BY individus.IDindividu, renseignements_activites.IDtype_renseignement;
         """ % condition
-        DB.ExecuterReq(req)
-        listeRenseignementsObligatoires = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeRenseignementsObligatoires = self.DB.ResultatReq()
     
         # Récupération des données de la famille
         if self.IDfamille != None :
             req = """SELECT IDcaisse, num_allocataire, allocataire, titulaire_helios, code_comptable
             FROM familles WHERE IDfamille=%d""" % self.IDfamille
-            DB.ExecuterReq(req)
-            IDcaisse, num_allocataire, allocataire, titulaire_helios, code_comptable = DB.ResultatReq()[0]
+            self.DB.ExecuterReq(req)
+            IDcaisse, num_allocataire, allocataire, titulaire_helios, code_comptable = self.DB.ResultatReq()[0]
             dictDonneesFamille = {"IDcaisse":IDcaisse, "num_allocataire":num_allocataire, "allocataire":allocataire, "titulaire_helios":titulaire_helios, "code_comptable":code_comptable}
 
         # Récupère la liste des ID individus concernés
@@ -563,9 +563,8 @@ class CTRL(wx.TreeCtrl):
         req = """SELECT IDindividu, IDcivilite, nom, nom_jfille, prenom, num_secu, IDnationalite, adresse_auto, rue_resid,
         date_naiss, ville_naiss, IDmedecin
         FROM individus WHERE IDindividu IN %s;""" % conditionIDindividu
-        DB.ExecuterReq(req)
-        listeDonneesIndividu = DB.ResultatReq()
-        DB.Close()
+        self.DB.ExecuterReq(req)
+        listeDonneesIndividu = self.DB.ResultatReq()
         
         dictDonneesIndividus = {}
         for IDindividu, IDcivilite, nom, nom_jfille, prenom, num_secu, IDnationalite, adresse_auto, rue_resid, date_naiss, ville_naiss, IDmedecin in listeDonneesIndividu :
@@ -680,13 +679,11 @@ class CTRL(wx.TreeCtrl):
             # Quotient familial
             if IDtype_renseignement == 12 and self.IDfamille != None and IDtype_renseignement not in listeRenseignementsTemp :
                 dateDuJour = datetime.date.today()
-                DB = GestionDB.DB()
                 req = """SELECT IDquotient, date_debut, date_fin
                 FROM quotients 
                 WHERE IDfamille=%d AND date_debut<='%s' AND date_fin>='%s';""" % (self.IDfamille, dateDuJour, dateDuJour)
-                DB.ExecuterReq(req)
-                listeQuotients = DB.ResultatReq()
-                DB.Close()
+                self.DB.ExecuterReq(req)
+                listeQuotients = self.DB.ResultatReq()
                 if len(listeQuotients) == 0 :
                     dictTemp["prenom"] = _(u"la famille")
                     listeRenseignementsManquants.append(dictTemp)
@@ -709,35 +706,6 @@ class CTRL(wx.TreeCtrl):
             if jours != 0 : dateFin = dateFin + relativedelta.relativedelta(days=+jours)
             if mois != 0 : dateFin = dateFin + relativedelta.relativedelta(months=+mois)
             if annees != 0 : dateFin = dateFin + relativedelta.relativedelta(years=+annees)
-
-##            # Calcul des jours
-##            if jours != 0:
-##                dateFin = date_vaccin + (datetime.timedelta(days = jours))
-##                dateJour, dateMois, dateAnnee = dateFin.day, dateFin.month, dateFin.year
-##
-##            # Calcul des mois
-##            if mois != 0:
-##                if dateMois + mois > 12:
-##                    for temp in range(0, mois):
-##                        dateMois += 1
-##                        if dateMois > 12 :
-##                            dateAnnee += 1
-##                            dateMois = 1
-##                else:
-##                    dateMois = dateMois + mois
-##                nbreJoursMois = calendar.monthrange(dateAnnee, dateMois)[1]
-##                if dateJour > nbreJoursMois :
-##                    dateJour = nbreJoursMois
-##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
-##                dateJour, dateMois, dateAnnee = dateFin.day, dateFin.month, dateFin.year
-##
-##            # Calcul des années
-##            if annees != 0:
-##                dateAnnee = dateAnnee + annees
-##                nbreJoursMois = calendar.monthrange(dateAnnee, dateMois)[1]
-##                if dateJour > nbreJoursMois :
-##                    dateJour = nbreJoursMois
-##                dateFin = datetime.date(dateAnnee, dateMois, dateJour)
         
         # Calcule le nbre de jours restants
         nbreJours = (dateFin - date_jour).days
@@ -757,7 +725,6 @@ class CTRL(wx.TreeCtrl):
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
         
         # Récupère la liste des individus pour lesquels les vaccinations à jour sont obligatoires
-        DB = GestionDB.DB()
         req = """
         SELECT inscriptions.IDindividu, prenom
         FROM activites
@@ -766,11 +733,10 @@ class CTRL(wx.TreeCtrl):
         WHERE inscriptions.parti=0 AND vaccins_obligatoires=1 %s
         GROUP BY inscriptions.IDindividu;
         """ % condition
-        DB.ExecuterReq(req)
-        listeIndividus = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeIndividus = self.DB.ResultatReq()
         
         if len(listeIndividus) == 0 :
-            DB.Close()
             return []
         
         listeIDindividus = []
@@ -789,8 +755,8 @@ class CTRL(wx.TreeCtrl):
         FROM types_maladies
         WHERE vaccin_obligatoire=1
         ORDER BY nom;"""
-        DB.ExecuterReq(req)
-        listeMaladies = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeMaladies = self.DB.ResultatReq()
         
         # Récupère la liste des vaccins de l'individu
         req = """
@@ -803,9 +769,8 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN types_maladies ON vaccins_maladies.IDtype_maladie = types_maladies.IDtype_maladie
         WHERE vaccins.IDindividu IN %s AND types_maladies.vaccin_obligatoire=1;
         """ % conditionIDindividu
-        DB.ExecuterReq(req)
-        listeVaccins = DB.ResultatReq()
-        DB.Close()
+        self.DB.ExecuterReq(req)
+        listeVaccins = self.DB.ResultatReq()
     
         dictMaladiesIndividus = {}
         for IDindividu, IDvaccin, IDtype_vaccin, date, IDtype_maladie, nomVaccin, duree_validite, nomMaladie in listeVaccins :
@@ -855,7 +820,6 @@ class CTRL(wx.TreeCtrl):
         if self.IDindividu != None :
             condition = "AND inscriptions.IDindividu=%d " % self.IDindividu
         
-        DB = GestionDB.DB()
         
         # Récupération des cotisations à fournir pour la famille ou l'individu
         req = """
@@ -868,8 +832,8 @@ class CTRL(wx.TreeCtrl):
         WHERE inscriptions.parti=0 AND types_cotisations.IDtype_cotisation IS NOT NULL %s
         GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu;
         """ % condition
-        DB.ExecuterReq(req)
-        listeCotisationsObligatoiresTemp = DB.ResultatReq()
+        self.DB.ExecuterReq(req)
+        listeCotisationsObligatoiresTemp = self.DB.ResultatReq()
         
         dictCotisationObligatoires = {}
         for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu in listeCotisationsObligatoiresTemp :
@@ -907,8 +871,8 @@ class CTRL(wx.TreeCtrl):
             FROM rattachements 
             WHERE IDfamille=%d AND IDcategorie IN (1, 2);
             """ % self.IDfamille
-            DB.ExecuterReq(req)
-            listeDonnees = DB.ResultatReq()
+            self.DB.ExecuterReq(req)
+            listeDonnees = self.DB.ResultatReq()
             listeIDindividus = []
             for IDindividu, IDcategorie in listeDonnees :
                 if IDindividu not in listeIDindividus :
@@ -925,9 +889,8 @@ class CTRL(wx.TreeCtrl):
             ORDER BY date_fin
             """ % (str(dateDuJour), str(dateDuJour), self.IDfamille, conditionIndividus)
         
-        DB.ExecuterReq(req)
-        listeCotisationsFournies = DB.ResultatReq()
-        DB.Close()
+        self.DB.ExecuterReq(req)
+        listeCotisationsFournies = self.DB.ResultatReq()
         
         dictCotisationsFournies = {}
         for IDcotisation, IDtype_cotisation, IDindividu, IDfamille, date_debut, date_fin, typeCotisation in listeCotisationsFournies :
@@ -1013,7 +976,10 @@ class MyFrame(wx.Frame):
 if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    import time
+    heure_debut = time.time()
     frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
+    print "Temps de chargement CTRL_Informations =", time.time() - heure_debut
     frame_1.Show()
     app.MainLoop()

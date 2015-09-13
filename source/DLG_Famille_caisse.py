@@ -54,8 +54,8 @@ class CTRL_Caisse(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, size=(150, -1)) 
         self.parent = parent
-        self.MAJ() 
-        self.Select(0)
+##        self.MAJ() 
+##        self.Select(0)
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -102,8 +102,8 @@ class CTRL_Allocataire(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        self.MAJ() 
-        self.Select(0)
+##        self.MAJ() 
+##        self.Select(0)
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -285,6 +285,10 @@ class Panel(wx.Panel):
         """ MAJ integrale du controle avec MAJ des donnees """
         # MAJ Caisse
         if self.majEffectuee == False :
+            # MAJ des contrôles de choix
+            self.ctrl_caisse.MAJ() 
+            self.ctrl_allocataire.MAJ()
+            # Importation des données de la famille
             db = GestionDB.DB()
             req = """SELECT IDcaisse, num_allocataire, allocataire
             FROM familles
@@ -351,7 +355,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl= Panel(panel, IDfamille=7)
-        self.ctrl.MAJ() 
+##        self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

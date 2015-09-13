@@ -95,25 +95,15 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_factures", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.IDfamille = IDfamille
+        self.IDcompte_payeur = None 
         
         self.staticbox_factures = wx.StaticBox(self, -1, _(u"Factures"))
-        
-        # Recherche du IDcompte_payeur
-        DB = GestionDB.DB()
-        req = """SELECT IDcompte_payeur
-        FROM familles
-        WHERE IDfamille=%d
-        """ % self.IDfamille
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        self.IDcompte_payeur = listeDonnees[0][0]
-        
+                
         # OL Factures
         codesColonnes = ["IDfacture", "date", "numero", "date_debut", "date_fin", "total", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = True
         triColonne = "date"
-        self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : self.IDcompte_payeur, "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne, "afficherAnnulations" : True}) 
+        self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne, "afficherAnnulations" : True}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
 
         self.ctrl_recherche = OL_Factures.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
@@ -257,6 +247,19 @@ class Panel(wx.Panel):
 
     def MAJ(self):
         """ MAJ integrale du controle avec MAJ des donnees """
+        # Recherche du IDcompte_payeur
+        if self.IDcompte_payeur == None :
+            DB = GestionDB.DB()
+            req = """SELECT IDcompte_payeur
+            FROM familles
+            WHERE IDfamille=%d
+            """ % self.IDfamille
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            self.IDcompte_payeur = listeDonnees[0][0]
+            self.ctrl_listview.SetIDcompte_payeur(self.IDcompte_payeur)
+        # MAJ des contrôles
         self.ctrl_listview.MAJ() 
         self.ctrl_listview.DefileDernier() 
         self.ctrl_email.MAJ() 
@@ -280,7 +283,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl= Panel(panel, IDfamille=7)
-        self.ctrl.MAJ() 
+##        self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

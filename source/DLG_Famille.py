@@ -197,6 +197,9 @@ class Dialog(wx.Dialog):
         # MAJ de l'onglet Informations
         self.notebook.GetPageAvecCode("informations").MAJ() 
         
+        # MAJ CTRL composition
+        self.ctrl_composition.MAJ() 
+        
 
     def __set_properties(self):
         self.SetTitle(_(u"Fiche familiale n°%d") % self.IDfamille)
@@ -207,7 +210,6 @@ class Dialog(wx.Dialog):
         self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour ouvrir la grille des consommations de l'individu sélectionné"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
-##        self.bouton_documents.SetToolTipString(_(u"Cliquez ici pour imprimer des documents"))
         self.bouton_consommations.SetToolTipString(_(u"Cliquez ici pour consulter ou modifier les consommations d'un membre de la famille"))
         self.bouton_saisie_reglement.SetToolTipString(_(u"Cliquez ici pour saisir rapidement un règlement"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
@@ -249,7 +251,6 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=9, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
-##        grid_sizer_boutons.Add(self.bouton_documents, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_consommations, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_saisie_reglement, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
@@ -257,19 +258,20 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
         grid_sizer_boutons.AddGrowableCol(4)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
-        
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
+
         grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
+
+        self.SetSizer(grid_sizer_base)
+##        grid_sizer_base.Fit(self)
         self.Layout()
         
         # Détermine la taille de la fenêtre
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_famille")
         if taille_fenetre == None :
             self.SetSize((840, 700))
-        if taille_fenetre == (0, 0) :
+        elif taille_fenetre == (0, 0) :
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)        
@@ -757,8 +759,8 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None, IDfamille=431)
-    print "Temps de chargement =", time.time() - heure_debut
+    dialog_1 = Dialog(None, IDfamille=14)
+    print "Temps de chargement fiche famille =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

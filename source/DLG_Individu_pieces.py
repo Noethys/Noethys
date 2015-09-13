@@ -41,7 +41,7 @@ class Panel(wx.Panel):
         
         # Cotisations individuelles
         self.staticbox_cotisations = wx.StaticBox(self, -1, _(u"Cotisations familiales et individuelles"))
-        codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom"]
+        codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom", "observations"]
         checkColonne = True
         triColonne = "date_debut"
         self.ctrl_cotisations = OL_Liste_cotisations.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, mode="individu", codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
@@ -169,7 +169,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = Panel(panel, IDindividu=937)
-        self.ctrl.MAJ() 
+##        self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

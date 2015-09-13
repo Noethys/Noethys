@@ -227,7 +227,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.IDindividu = 46
         self.ctrl = Panel(panel, IDindividu=self.IDindividu)
-        self.ctrl.MAJ() 
+##        self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

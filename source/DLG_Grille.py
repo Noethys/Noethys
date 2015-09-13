@@ -259,7 +259,7 @@ class PanelGrille(wx.Panel):
             if len(dictIndividu["inscriptions"]) > 0 :
                 self.listeIndividusFamille.append(IDindividu)
         self.listeIndividusFamille.sort()
-        
+
         self.grille.SetModeIndividu(self.listeSelectionActivites, self.listeSelectionIndividus, self.listeIndividusFamille, self.listePeriodes)    
         
     def SetListesPeriodes(self, listePeriodes=[]):
@@ -309,7 +309,6 @@ class Notebook(aui.AuiNotebook):
     
     def MAJ_grille(self):
         self.grille.SetModeIndividu(self.listeActivites, self.listeSelectionIndividus, self.listeIndividusFamille, self.listePeriodes)    
-        print "MAJ_grille..."
         
     def SetListesPeriodes(self, listePeriodes=[]):
         self.listePeriodes = listePeriodes
@@ -792,8 +791,8 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None, IDfamille=431, selectionIndividus=[1580, 1170, 1171])
-    print "Temps de chargement =", time.time() - heure_debut
+    dialog_1 = Dialog(None, IDfamille=14, selectionIndividus=[46,])
+    print "Temps de chargement DLG_Grille =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()    

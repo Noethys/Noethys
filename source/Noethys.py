@@ -140,6 +140,8 @@ class MainFrame(wx.Frame):
                 "perspectives" : [],
                 "perspective_active" : None,
                 "annonce" : None,
+                "autodeconnect" : None,
+                "interface_mysql" : "mysqldb",
                  },)
             self.nouveauFichierConfig = True
         else:
@@ -192,6 +194,11 @@ class MainFrame(wx.Frame):
         else:
             self.perspective_active = None
         
+        # Sélection de l'interface MySQL
+        if self.userConfig.has_key("interface_mysql"):
+            interface_mysql = self.userConfig["interface_mysql"]
+            GestionDB.SetInterfaceMySQL(interface_mysql)
+        
         # Affiche le titre du fichier en haut de la frame
         self.SetTitleFrame(nomFichier="")
         
@@ -242,7 +249,24 @@ class MainFrame(wx.Frame):
         if self.MAJexiste == True :
             texteToaster = _(u"Une nouvelle version de Noethys est disponible !")
             self.AfficheToaster(titre=_(u"Mise à jour"), texte=texteToaster, couleurFond="#81A8F0") 
-    
+        
+        # Timer Autodeconnect
+        self.autodeconnect_timer = wx.Timer(self, -1)
+        self.autodeconnect_position = wx.GetMousePosition() 
+        self.Bind(wx.EVT_TIMER, self.Autodeconnect, self.autodeconnect_timer)
+        self.Start_autodeconnect_timer() 
+        
+    def Start_autodeconnect_timer(self):
+        """ Lance le timer pour autodeconnexion de l'utilisateur """
+        # Stoppe le timer si besoin
+        if self.autodeconnect_timer.IsRunning():
+            self.autodeconnect_timer.Stop()
+        # Lance le timer
+        if self.userConfig.has_key("autodeconnect") :
+            if self.userConfig["autodeconnect"] not in (0, None) :
+                secondes = self.userConfig["autodeconnect"]
+                self.autodeconnect_timer.Start(secondes * 1000)
+        
     def ChargeTraduction(self):
         UTILS_Traduction.ChargeTraduction(self.langue)
 
@@ -334,8 +358,9 @@ class MainFrame(wx.Frame):
         self.userConfig["perspectives"] = self.perspectives
         self.userConfig["perspective_active"] = self.perspective_active
         
-        self.userConfig["perspective_ctrl_effectifs"] = self.ctrl_remplissage.SavePerspective()
-        self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive() 
+        if hasattr(self, "ctrl_remplissage") :
+            self.userConfig["perspective_ctrl_effectifs"] = self.ctrl_remplissage.SavePerspective()
+            self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive() 
 
         # Sauvegarde du fichier de configuration
         self.SaveFichierConfig(nomFichier=self.nomFichierConfig)
@@ -350,6 +375,13 @@ class MainFrame(wx.Frame):
         if videRepertoiresTemp == True :
             FonctionsPerso.VideRepertoireTemp()
             FonctionsPerso.VideRepertoireUpdates()
+        
+        # Arrête le timer Autodeconnect
+        if self.autodeconnect_timer.IsRunning():
+            self.autodeconnect_timer.Stop()
+        
+        # Affiche les connexions restées ouvertes
+        GestionDB.AfficheConnexionOuvertes() 
         
         return True
     
@@ -426,11 +458,11 @@ class MainFrame(wx.Frame):
         self._mgr.AddPane(self.ctrl_remplissage, aui.AuiPaneInfo().Name("effectifs").Caption(_(u"Effectifs")).
                           Left().Layer(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((200, 200)).BestSize((630, 600)) )
         
-        if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
-            self.ctrl_remplissage.LoadPerspective(self.userConfig["perspective_ctrl_effectifs"])
+##        if self.userConfig.has_key("perspective_ctrl_effectifs") == True :
+##            self.ctrl_remplissage.LoadPerspective(self.userConfig["perspective_ctrl_effectifs"])
         if self.userConfig.has_key("page_ctrl_effectifs") == True :
             self.ctrl_remplissage.SetPageActive(self.userConfig["page_ctrl_effectifs"])
-            
+        
         # Panneau Messages
         self.ctrl_messages = CTRL_Messages.Panel(self)
         self._mgr.AddPane(self.ctrl_messages, aui.AuiPaneInfo().Name("messages").Caption(_(u"Messages")).
@@ -1183,12 +1215,11 @@ class MainFrame(wx.Frame):
         
     def MAJ(self):
         """ Met à jour la page d'accueil """
-        self.ctrl_remplissage.MAJ() 
-        self.ctrl_individus.MAJ()
-        self.ctrl_messages.MAJ() 
-        if hasattr(self, "ctrl_serveur_nomade") :
-            self.ctrl_serveur_nomade.MAJ()
-        wx.CallAfter(self.ctrl_individus.ctrl_recherche.SetFocus)
+        if hasattr(self, "ctrl_remplissage") : self.ctrl_remplissage.MAJ() 
+        if hasattr(self, "ctrl_individus") : self.ctrl_individus.MAJ()
+        if hasattr(self, "ctrl_messages") : self.ctrl_messages.MAJ() 
+        if hasattr(self, "ctrl_serveur_nomade") : self.ctrl_serveur_nomade.MAJ()
+        if hasattr(self, "ctrl_individus") : wx.CallAfter(self.ctrl_individus.ctrl_recherche.SetFocus)
 
     def On_fichier_Nouveau(self, event):
         """ Créé une nouvelle base de données """
@@ -3604,7 +3635,45 @@ Merci pour votre participation !
             return False
         else :
             return True
-            
+
+    def Autodeconnect(self, event=None):
+        """ Actionne l'Autodeconnect si inactivité durant un laps de temps """
+        #print "Timer autodeconnect...  ", time.time()
+        
+        # Vérifie que la souris a bougé
+        position_souris = wx.GetMousePosition()
+        if self.autodeconnect_position != position_souris :
+            self.autodeconnect_position = position_souris
+            return False
+        self.autodeconnect_position = position_souris
+        
+        # Vérifie que un fichier est bien ouvert
+        if self.userConfig["nomFichier"] == "" :
+            return False
+                
+        # Vérifie que aucune dialog ouverte
+        if wx.GetActiveWindow() != None :
+            if wx.GetActiveWindow().GetName() != "general" :
+                return False
+        else :
+            for ctrl in wx.GetApp().GetTopWindow().GetChildren() :
+                if "Dialog" in str(ctrl) :
+                    return False
+        
+        # Demande le mot de passe de l'utilisateur
+        nomFichier = self.nomDernierFichier
+        listeUtilisateursFichier = self.GetListeUtilisateurs(nomFichier)
+        if "[RESEAU]" in nomFichier :
+            nomFichierTmp = nomFichier[nomFichier.index("[RESEAU]"):]
+        else:
+            nomFichierTmp = nomFichier
+        if self.Identification(listeUtilisateursFichier, nomFichierTmp) == False :
+            # Sinon ferme le fichier
+            self.Fermer(sauvegarde_auto=False)
+            return False
+        self.listeUtilisateurs = listeUtilisateursFichier
+        
+        
 
 # -----------------------------------------------------------------------------------------------------------------
 

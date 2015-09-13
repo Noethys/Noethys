@@ -69,6 +69,7 @@ class CTRL_Medecin(html.HtmlWindow):
                 db.ReqMAJ("individus", listeDonnees, "IDindividu", self.IDindividu)
         
         db.Close()
+        
         # Création du texte à afficher
         if len(listeMedecins) > 0 :
             nom = listeMedecins[0][1]
@@ -129,6 +130,7 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_medical", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.IDindividu = IDindividu
+        self.majEffectuee = False
         
         # Vaccinations
         self.staticbox_vaccinations_staticbox = wx.StaticBox(self, -1, _(u"Vaccinations"))
@@ -156,7 +158,6 @@ class Panel(wx.Panel):
         self.bouton_detacher_medecin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         
         self.ctrl_medecin = CTRL_Medecin(self, IDindividu=self.IDindividu)
-        self.ctrl_medecin.SetIDmedecin(IDmedecin=None) 
         
         self.__set_properties()
         self.__do_layout()
@@ -247,6 +248,9 @@ class Panel(wx.Panel):
     def MAJ(self):
         # Initialisation des contrôles
         self.IDindividu = self.GetGrandParent().IDindividu
+        if self.majEffectuee == False :
+            self.ctrl_medecin.SetIDmedecin(None)
+        
         if self.IDindividu == None :
             print "Pas de IDindividu"
             return

@@ -509,7 +509,7 @@ class Dialog(wx.Dialog):
         req = """SELECT
         IDfamille, IDindividu, cotisations.IDtype_cotisation, IDunite_cotisation,
         date_saisie, date_creation_carte, numero,
-        date_debut, date_fin, IDprestation, types_cotisations.type
+        date_debut, date_fin, IDprestation, types_cotisations.type, cotisations.observations
         FROM cotisations 
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         WHERE IDcotisation=%d;""" % self.IDcotisation
@@ -519,7 +519,7 @@ class Dialog(wx.Dialog):
             DB.Close() 
             return
         
-        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, date_creation_carte, numero, date_debut, date_fin, IDprestation, typeCotisation = listeDonnees[0]
+        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, date_creation_carte, numero, date_debut, date_fin, IDprestation, typeCotisation, observations = listeDonnees[0]
         
         self.numero = numero
         if self.numero == None :

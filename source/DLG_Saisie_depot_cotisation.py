@@ -83,6 +83,7 @@ class Track(object):
         self.typeTypeCotisation = donnees[14]
         self.typeHasCarte = donnees[15]
         self.nomUniteCotisation = donnees[16]
+        self.observations = donnees[17]
         
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
         
@@ -259,7 +260,7 @@ class Dialog(wx.Dialog):
         cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
         cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
         types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-        unites_cotisations.nom
+        unites_cotisations.nom, cotisations.observations
         FROM cotisations 
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation

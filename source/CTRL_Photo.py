@@ -50,8 +50,66 @@ def GetPhoto(IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=w
             return (None, bmp)
     
     return (None, None)
-        
+    
+    
+def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH):
+    """ Retourne les photos de plusieurs individus """
+    """ listeIndividus = [(IDindividu1, nomFichierDefaut), (IDindividu2, nomFichierDefaut), etc...] """
+    # Recherche les images par défaut sur le disque dur
+    dictImagesDefaut = {}
+    listeIDindividus = []
+    for IDindividu, nomFichier in listeIndividus :
+        listeIDindividus.append(IDindividu)
+        if nomFichier != None and dictImagesDefaut.has_key(nomFichier) == False :
+            if os.path.isfile(nomFichier):
+                bmp = wx.Bitmap(nomFichier, wx.BITMAP_TYPE_ANY) 
+                if taillePhoto != None :
+                    img = bmp.ConvertToImage()
+                    img = img.Rescale(width=taillePhoto[0], height=taillePhoto[1], quality=qualite) 
+                    bmp = img.ConvertToBitmap()
+                dictImagesDefaut[nomFichier] = bmp
+    
+    # Récupère les photos dans la DB
+    dictPhotosDB = {}
+    DB = GestionDB.DB(suffixe="PHOTOS")
+    if DB.echec == 0 : 
+        if len(listeIDindividus) == 1 : condition = "(%d)" % listeIDindividus[0]
+        else : condition = str(tuple(listeIDindividus))
+        req = "SELECT IDphoto, IDindividu, photo FROM photos WHERE IDindividu IN %s;" % condition 
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        for IDphoto, IDindividu, bufferPhoto in listeDonnees :
+            dictPhotosDB[IDindividu] = {"IDphoto" : IDphoto, "bufferPhoto" : bufferPhoto}
+    
+    # Traite les photos de chaque individu
+    dictPhotos = {}
+    for IDindividu, nomFichier in listeIndividus :
+        if dictPhotosDB.has_key(IDindividu) :
+            # Si photo existe dans DB
+            IDphoto = dictPhotosDB[IDindividu]["IDphoto"]
+            bufferPhoto = dictPhotosDB[IDindividu]["bufferPhoto"]
+            io = cStringIO.StringIO(bufferPhoto)
+            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            if taillePhoto != None :
+                img = img.Rescale(width=taillePhoto[0], height=taillePhoto[1], quality=qualite) 
+            bmp = img.ConvertToBitmap()    
+        else :
+            # Si aucune photo dans DB
+            IDphoto = None
+            if dictImagesDefaut.has_key(nomFichier) :
+                bmp = dictImagesDefaut[nomFichier]
+            else :
+                bmp = None
+        # Mémorisation de la photo
+        dictPhotos[IDindividu] = {"bmp" : bmp, "IDphoto" : IDphoto}
 
+    return dictPhotos
+            
+
+    
+    
+    
 class CTRL_Photo(wx.StaticBitmap):
     def __init__(self, parent, IDindividu=None, style=0):
         wx.StaticBitmap.__init__(self, parent, id=-1, style=style)

@@ -437,6 +437,7 @@ class Facturation():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
+                err = str(err).decode("iso-8859-15")
                 dlg = wx.MessageDialog(None, _(u"Désolé, le problème suivant a été rencontré dans l'édition des lettres de rappel : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()

@@ -24,6 +24,7 @@ import time
 import UTILS_Config
 import UTILS_Cryptage_fichier
 import UTILS_Envoi_email
+import GestionDB
 
 
 LISTE_CATEGORIES = [
@@ -428,16 +429,24 @@ def GetListeFichiersReseau(dictValeurs={}):
     """ Récupère la liste des fichiers MySQL existants 
          dictValeurs = valeurs de connexion
     """
-    import MySQLdb
-    connexion = MySQLdb.connect(host=dictValeurs["hote"],user=dictValeurs["utilisateur"], passwd=dictValeurs["mdp"], port=dictValeurs["port"], use_unicode=True) 
-    connexion.set_character_set('utf8')
-    cursor = connexion.cursor()
+    hote = dictValeurs["hote"]
+    utilisateur = dictValeurs["utilisateur"]
+    motdepasse = dictValeurs["mdp"]
+    port = dictValeurs["port"]
+
+    DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse))
+    if DB.echec == 1 :
+        DB.Close()
+        return []
+    
+    DB.ExecuterReq("SHOW DATABASES;")
+    listeValeurs = DB.ResultatReq()
+    DB.Close()
+    
     listeDatabases = []
-    cursor.execute("SHOW DATABASES;")
-    listeValeurs = cursor.fetchall()
     for valeurs in listeValeurs :
         listeDatabases.append(valeurs[0])
-    connexion.close()
+    
     return listeDatabases
 
 def GetRepertoireMySQL(dictValeurs={}):

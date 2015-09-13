@@ -175,22 +175,12 @@ class Panel(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_reglements", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.IDfamille = IDfamille
+        self.IDcompte_payeur = None
         
         self.staticbox_reglements = wx.StaticBox(self, -1, _(u"Règlements"))
         
-        # Recherche du IDcompte_payeur
-        DB = GestionDB.DB()
-        req = """SELECT IDcompte_payeur
-        FROM familles
-        WHERE IDfamille=%d
-        """ % self.IDfamille
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        IDcompte_payeur = listeDonnees[0][0]
-
         # OL Prestations
-        self.listviewAvecFooter = OL_Reglements.ListviewAvecFooter(self, kwargs={"IDcompte_payeur" : IDcompte_payeur}) 
+        self.listviewAvecFooter = OL_Reglements.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_reglements = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Reglements.CTRL_Outils(self, listview=self.ctrl_reglements)
         self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
@@ -356,6 +346,18 @@ class Panel(wx.Panel):
 
     def MAJ(self):
         """ MAJ integrale du controle avec MAJ des donnees """
+        if self.IDcompte_payeur == None :
+            DB = GestionDB.DB()
+            req = """SELECT IDcompte_payeur
+            FROM familles
+            WHERE IDfamille=%d
+            """ % self.IDfamille
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            self.IDcompte_payeur = listeDonnees[0][0]
+            self.ctrl_reglements.SetIDcompte_payeur(self.IDcompte_payeur)
+        # MAJ des contrôles
         self.ctrl_reglements.MAJ() 
         self.ctrl_prelevement.MAJ() 
         self.ctrl_recu.MAJ() 

@@ -99,7 +99,7 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
 def InfosFichier(fichier=""):
     """ Récupère les infos principales sur un fichier """
     dictInfos = {}
-    fichier = shelve.open(fichier, "r")
+    fichier = shelve.open(fichier.encode("iso-8859-15"), "r")
     for key, valeur in fichier.iteritems() :
         dictInfos[key] = valeur
     fichier.close()
@@ -111,7 +111,7 @@ def Importer(fichier="", dictDonnees={}, IDfond=None, defaut=0):
     DB = GestionDB.DB()
     
     if fichier != "" :
-        doc = shelve.open(fichier, "r")
+        doc = shelve.open(fichier.encode("iso-8859-15"), "r")
     else :
         doc = dictDonnees
     

@@ -463,6 +463,7 @@ class Panel(wx.Panel):
         FROM activites WHERE IDactivite=%d;""" % self.IDactivite
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
+        DB.Close() 
         if len(listeDonnees) > 0 : 
             vaccins = listeDonnees[0][0]
             if vaccins != None :

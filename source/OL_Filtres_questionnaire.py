@@ -139,7 +139,6 @@ class ListView(FastObjectListView):
             DICT_QUESTIONS[IDquestion] = {"label":label, "controle":controle}
         
         # Importation des choix
-        DB = GestionDB.DB()
         req = """SELECT IDchoix, IDquestion, label
         FROM questionnaire_choix
         ORDER BY ordre;"""

@@ -102,6 +102,9 @@ class ListView(FastObjectListView):
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
+    
+    def SetIDcompte_payeur(self, IDcompte_payeur=None):
+        self.IDcompte_payeur = IDcompte_payeur
         
     def OnItemActivated(self,event):
         self.Modifier(None)
@@ -152,8 +155,7 @@ class ListView(FastObjectListView):
         LEFT JOIN depots ON reglements.IDdepot=depots.IDdepot
         %s
         GROUP BY reglements.IDreglement
-        ORDER BY reglements.date;
-        """ % criteres
+        ;""" % criteres
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()

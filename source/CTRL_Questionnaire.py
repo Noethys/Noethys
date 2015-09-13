@@ -948,8 +948,8 @@ class CTRL(HTL.HyperTreeList):
             self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.Modifier) 
 
         # Importation
-        if mode == "normal" :
-            self.Importation() 
+##        if mode == "normal" :
+##            self.Importation() 
         
         # Blocage Utilisateurs
         if type == "individu" and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_questionnaires", "modifier", afficheMessage=False) == False : self.Enable(False)
@@ -1018,7 +1018,9 @@ class CTRL(HTL.HyperTreeList):
             dictChoix[IDquestion].append(dictTemp)
 
         # Importation des questions
-        if len(self.listeIDcategorie) == 0 : return None
+        if len(self.listeIDcategorie) == 0 : 
+            DB.Close() 
+            return None
         elif len(self.listeIDcategorie) == 1 : conditionCategories = "IDcategorie=%d" % self.listeIDcategorie[0]
         else : conditionCategories = "IDcategorie IN %s" % str(tuple(self.listeIDcategorie))
         req = """SELECT IDquestion, IDcategorie, ordre, visible, label, controle, defaut, options

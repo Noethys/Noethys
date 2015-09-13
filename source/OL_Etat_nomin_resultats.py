@@ -544,7 +544,9 @@ class ListView(FastObjectListView):
                         valide = False
                 if paramAge[0] == "DATES" :
                     dateNaissMin, dateNaissMax = paramAge[1], paramAge[2]
-                    if date_naiss < dateNaissMin or date_naiss > dateNaissMax :
+                    if date_naiss == None :
+                        date_naiss = ""
+                    if str(date_naiss) < str(dateNaissMin) or str(date_naiss) > str(dateNaissMax) :
                         valide = False
             
             if self.dictParametres["qf"] != None :

@@ -15,22 +15,58 @@ import sqlite3
 import wx
 import CTRL_Bouton_image
 import os
-
-try :
-    import MySQLdb
-except Exception, err :
-    print err
-
+import traceback
+import time
+import random
 import DATA_Tables as Tables
 
+DICT_CONNEXIONS = {}
 
+# Import MySQLdb
+try :
+    import MySQLdb
+    from MySQLdb.constants import FIELD_TYPE
+    from MySQLdb.converters import conversions
+    IMPORT_MYSQLDB_OK = True
+except Exception, err :
+    IMPORT_MYSQLDB_OK = False
+
+# import mysql.connector
+try :
+    import mysql.connector
+    from mysql.connector.constants import FieldType
+    from mysql.connector import conversion
+    IMPORT_MYSQLCONNECTOR_OK = True
+except Exception, err :
+    IMPORT_MYSQLCONNECTOR_OK = False
+
+# Interface pour Mysql = "mysql.connector" ou "mysqldb"
+# Est modifié automatiquement lors du lancement de Noethys selon les préférences (Menu Paramétrage > Préférences)
+# Peut être également modifié manuellement ici dans le cadre de tests sur des fichiers indépendamment de l'interface principale 
+INTERFACE_MYSQL = "mysqldb"
+
+def SetInterfaceMySQL(nom="mysqldb"):
+    """ Permet de sélectionner une interface MySQL """
+    global INTERFACE_MYSQL
+    if nom == "mysqldb" and IMPORT_MYSQLDB_OK == True :
+        INTERFACE_MYSQL = "mysqldb"
+    if nom == "mysql.connector" and IMPORT_MYSQLCONNECTOR_OK == True :
+        INTERFACE_MYSQL = "mysql.connector"
+    
 
 class DB:
-    def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False):
+    def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False, IDconnexion=None):
         """ Utiliser GestionDB.DB(suffixe="PHOTOS") pour accéder à un fichier utilisateur """
         """ Utiliser GestionDB.DB(nomFichier="Geographie.dat", suffixe=None) pour ouvrir un autre type de fichier """
         self.nomFichier = nomFichier
         self.modeCreation = modeCreation
+        
+        # Mémorisation de l'ouverture de la connexion et des requêtes
+        if IDconnexion == None :
+            self.IDconnexion = random.randint(0, 1000000)
+        else :
+            self.IDconnexion = IDconnexion
+        DICT_CONNEXIONS[self.IDconnexion] = []
         
         # Si aucun nom de fichier n'est spécifié, on recherche celui par défaut dans le Config.dat
         if self.nomFichier == "" :
@@ -50,14 +86,14 @@ class DB:
         
         # Ouverture de la base de données
         if self.isNetwork == True :
-            self.OuvertureFichierReseau(self.nomFichier)
+            self.OuvertureFichierReseau(self.nomFichier, suffixe)
         else:
             self.OuvertureFichierLocal(self.nomFichier)
     
     def GetNomPosteReseau(self):
         if self.isNetwork == False :
             return None
-        return self.GetParamConnexionReseau() ["user"]
+        return self.GetParamConnexionReseau()["user"]
         
     def OuvertureFichierLocal(self, nomFichier):
         """ Version LOCALE avec SQLITE """
@@ -89,12 +125,9 @@ class DB:
         return dictDonnees
 
 
-    def OuvertureFichierReseau(self, nomFichier):
+    def OuvertureFichierReseau(self, nomFichier, suffixe):
         """ Version RESEAU avec MYSQL """
         try :
-            from MySQLdb.constants import FIELD_TYPE
-            from MySQLdb.converters import conversions
-
             # Récupération des paramètres de connexion
             pos = nomFichier.index("[RESEAU]")
             paramConnexions = nomFichier[:pos]
@@ -102,35 +135,52 @@ class DB:
             nomFichier = nomFichier[pos:].replace("[RESEAU]", "")
             nomFichier = nomFichier.lower() 
             
+            # Info sur connexion MySQL
+            #print "IDconnexion=", self.IDconnexion, "Interface MySQL =", INTERFACE_MYSQL
+            
             # Connexion MySQL
-            my_conv = conversions
-            my_conv[FIELD_TYPE.LONG] = int
-            self.connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-            self.connexion.set_character_set('utf8')
+            if INTERFACE_MYSQL == "mysqldb" :
+                my_conv = conversions
+                my_conv[FIELD_TYPE.LONG] = int
+                self.connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
+                self.connexion.set_character_set('utf8')
+                
+            if INTERFACE_MYSQL == "mysql.connector" :
+                self.connexion = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool2%s" % suffixe, pool_size=3)
+    
             self.cursor = self.connexion.cursor()
             
             # Ouverture ou création de la base MySQL
-            listeDatabases = self.GetListeDatabasesMySQL()
-            if nomFichier in listeDatabases :
-                # Ouverture Database
+##            listeDatabases = self.GetListeDatabasesMySQL()
+##            if nomFichier in listeDatabases :
+##                # Ouverture Database
+##                self.cursor.execute("USE %s;" % nomFichier)
+##            else:
+##                # Création Database
+##                if self.modeCreation == True :
+##                    self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
+##                    self.cursor.execute("USE %s;" % nomFichier)
+##                else :
+##                    #print "La base de donnees '%s' n'existe pas." % nomFichier
+##                    self.echec = 1
+##                    return
+            
+            # Création
+            if self.modeCreation == True :
+                self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
+            
+            # Utilisation
+            if nomFichier not in ("", None, "_data") :
                 self.cursor.execute("USE %s;" % nomFichier)
-            else:
-                # Création Database
-                if self.modeCreation == True :
-                    self.cursor.execute("CREATE DATABASE IF NOT EXISTS %s CHARSET utf8 COLLATE utf8_unicode_ci;" % nomFichier)
-                    self.cursor.execute("USE %s;" % nomFichier)
-                else :
-                    #print "La base de donnees '%s' n'existe pas." % nomFichier
-                    self.echec = 1
-                    return
-                
+            
         except Exception, err:
             print "La connexion avec la base de donnees MYSQL a echouee : \nErreur detectee :%s" % err
             self.erreur = err
             self.echec = 1
+            #AfficheConnexionOuvertes() 
         else:
             self.echec = 0
-                    
+    
     def GetNomFichierDefaut(self):
         nomFichier = ""
         try :
@@ -209,6 +259,7 @@ class DB:
             req = req.replace("()", "(10000000, 10000001)")
         try:
             self.cursor.execute(req)
+            DICT_CONNEXIONS[self.IDconnexion].append(req)
         except Exception, err:
             print _(u"Requete SQL incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
             return 0
@@ -231,10 +282,13 @@ class DB:
             self.connexion.commit()
 
     def Close(self):
-        if self.echec == 1 : return
-        if self.connexion:
+        try :
             self.connexion.close()
-    
+            del DICT_CONNEXIONS[self.IDconnexion]
+            #print "Fermeture connexion ID =", self.IDconnexion
+        except :
+            pass
+                
     def Executermany(self, req="", listeDonnees=[], commit=True):
         """ Executemany pour local ou réseau """    
         """ Exemple de req : "INSERT INTO table (IDtable, nom) VALUES (?, ?)" """  
@@ -294,8 +348,12 @@ class DB:
     def InsertPhoto(self, IDindividu=None, blobPhoto=None):
         if self.isNetwork == True :
             # Version MySQL
-            sql = "INSERT INTO photos (IDindividu, photo) VALUES (%d, '%s')" % (IDindividu, MySQLdb.escape_string(blobPhoto))
-            self.cursor.execute(sql)
+            if INTERFACE_MYSQL == "mysqldb" :
+                blob = MySQLdb.escape_string(blobPhoto)
+                sql = "INSERT INTO photos (IDindividu, photo) VALUES (%d, '%s')" % (IDindividu, blob)
+                self.cursor.execute(sql)
+            if INTERFACE_MYSQL == "mysql.connector" :
+                self.cursor.execute("INSERT INTO photos (IDindividu, photo) VALUES (%s, %s)", (IDindividu, blobPhoto))
             self.connexion.commit()
             self.cursor.execute("SELECT LAST_INSERT_ID();")
         else:
@@ -310,8 +368,12 @@ class DB:
     def MAJPhoto(self, IDphoto=None, IDindividu=None, blobPhoto=None):
         if self.isNetwork == True :
             # Version MySQL
-            sql = "UPDATE photos SET IDindividu=%d, photo='%s' WHERE IDphoto=%d" % (IDindividu, MySQLdb.escape_string(blobPhoto), IDphoto)
-            self.cursor.execute(sql)
+            if INTERFACE_MYSQL == "mysqldb" :
+                blob = MySQLdb.escape_string(blobPhoto)
+                sql = "UPDATE photos SET IDindividu=%d, photo='%s' WHERE IDphoto=%d" % (IDindividu, blob, IDphoto)
+                self.cursor.execute(sql)
+            if INTERFACE_MYSQL == "mysql.connector" :
+                self.cursor.execute("UPDATE photos SET IDindividu=%s, photo=%s WHERE IDphoto=%s", (IDindividu, blobPhoto, IDphoto))
             self.connexion.commit()
         else:
             # Version Sqlite
@@ -324,8 +386,14 @@ class DB:
         """ Enregistre une image dans les modes de règlement ou emetteurs """
         if self.isNetwork == True :
             # Version MySQL
-            sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, MySQLdb.escape_string(blobImage), key, IDkey)
-            self.cursor.execute(sql)
+            if INTERFACE_MYSQL == "mysqldb" :
+                blob = MySQLdb.escape_string(blobImage)
+                sql = "UPDATE %s SET %s='%s' WHERE %s=%d" % (table, nomChampBlob, blob, key, IDkey)
+                self.cursor.execute(sql)
+            if INTERFACE_MYSQL == "mysql.connector" :
+                req = "UPDATE %s SET %s=XXBLOBXX WHERE %s=%s" % (table, nomChampBlob, key, IDkey)
+                req = req.replace("XXBLOBXX", "%s")
+                self.cursor.execute(req, (blobImage,))
             self.connexion.commit()
         else:
             # Version Sqlite
@@ -650,9 +718,6 @@ class DB:
         else :
             
             try :
-                from MySQLdb.constants import FIELD_TYPE
-                from MySQLdb.converters import conversions
-
                 # Récupération des paramètres de connexion
                 pos = nomFichierdefault.index("[RESEAU]")
                 paramConnexions = nomFichierdefault[:pos]
@@ -661,10 +726,15 @@ class DB:
                 nomFichier = nomFichier.lower() 
                 
                 # Connexion MySQL
-                my_conv = conversions
-                my_conv[FIELD_TYPE.LONG] = int
-                connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-                connexionDefaut.set_character_set('utf8')
+                if INTERFACE_MYSQL == "mysqldb" :
+                    my_conv = conversions
+                    my_conv[FIELD_TYPE.LONG] = int
+                    connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
+                    connexionDefaut.set_character_set('utf8')
+                    
+                if INTERFACE_MYSQL == "mysql.connector" :
+                    connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool3%s" % suffixe, pool_size=3)
+
                 cursor = connexionDefaut.cursor()
                 
                 # Ouverture Database
@@ -676,7 +746,7 @@ class DB:
                 echec = 1
             else:
                 echec = 0
-
+        
         # Recherche des noms de champs de la table
         req = "SELECT * FROM %s" % nomTable
         cursor.execute(req)
@@ -719,9 +789,6 @@ class DB:
         
         # Ouverture de la base réseau
         try :
-            from MySQLdb.constants import FIELD_TYPE
-            from MySQLdb.converters import conversions
-
             # Récupération des paramètres de connexion
             pos = nomFichier.index("[RESEAU]")
             paramConnexions = nomFichier[:pos]
@@ -730,10 +797,15 @@ class DB:
             nomFichier = nomFichier.lower() 
             
             # Connexion MySQL
-            my_conv = conversions
-            my_conv[FIELD_TYPE.LONG] = int
-            connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
-            connexionDefaut.set_character_set('utf8')
+            if INTERFACE_MYSQL == "mysqldb" :
+                my_conv = conversions
+                my_conv[FIELD_TYPE.LONG] = int
+                connexionDefaut = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, conv=my_conv) # db=dbParam, 
+                connexionDefaut.set_character_set('utf8')
+                
+            if INTERFACE_MYSQL == "mysql.connector" :
+                connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool4%s" % suffixe, pool_size=3)
+                
             cursor = connexionDefaut.cursor()
             
             # Ouverture Database
@@ -1607,7 +1679,14 @@ class DB:
         
         # =============================================================
         
+        versionFiltre = (1, 1, 5, 1)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("cotisations", "observations", "VARCHAR(1000)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
         
+        # =============================================================
         
 
 
@@ -1746,19 +1825,25 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
     nomFichier = nomFichier[pos+8:]
     nomFichier = nomFichier.lower() 
     
+    cursor = None
+    connexion = None
+    
     # Test de connexion au réseau MySQL
     try :
-        connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True) # db=dbParam, 
-        connexion.set_character_set('utf8')
+        if INTERFACE_MYSQL == "mysqldb" :
+            connexion = MySQLdb.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True) # db=dbParam, 
+            connexion.set_character_set('utf8')
+        if INTERFACE_MYSQL == "mysql.connector" :
+            connexion = mysql.connector.connect(host=host,user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool", pool_size=1) 
         cursor = connexion.cursor()
         dictResultats["connexion"] =  (True, None)
-        connexion = True
+        connexion_ok = True
     except Exception, err :
         dictResultats["connexion"] =  (False, err)
-        connexion = False
+        connexion_ok = False
     
     # Test de connexion à une base de données
-    if typeTest == "fichier" and connexion == True :
+    if typeTest == "fichier" and connexion_ok == True :
         try :
             listeDatabases = []
             cursor.execute("SHOW DATABASES;")
@@ -1774,6 +1859,8 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
         except Exception, err :
             dictResultats["fichier"] =  (False, err)
     
+    if connexion != None :
+        connexion.close()
     return dictResultats
 
 
@@ -1833,6 +1920,17 @@ def CreationBaseAnnonces():
     db.Close()
     
 
+def AfficheConnexionOuvertes():
+    """ Affiche les connexions non fermées """
+    if len(DICT_CONNEXIONS) > 0 :
+        print "--------- Attention, il reste %d connexions encore ouvertes : ---------" % len(DICT_CONNEXIONS)
+        for IDconnexion, requetes in DICT_CONNEXIONS.iteritems() :
+            print ">> IDconnexion = %d (%d requetes) :" % (IDconnexion, len(requetes))
+            for requete in requetes :
+                print requete
+
+
+
 if __name__ == "__main__":
                 
     # Création d'une table données
@@ -1885,9 +1983,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    db = DB(suffixe="DATA")
-    db.AjoutChamp("factures", "etat", "VARCHAR(100)")
-    db.Close()
+##    db = DB(suffixe="DATA")
+##    db.AjoutChamp("factures", "etat", "VARCHAR(100)")
+##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
 ##    db = DB(suffixe="DATA")

@@ -272,7 +272,7 @@ class ListView(FastObjectListView):
         
         self.SetEmptyListMsg(_(u"Aucun individu"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        if len(self.columns) > 0 :
+        if len(self.columns) > 1 :
             self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        

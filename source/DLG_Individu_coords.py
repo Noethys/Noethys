@@ -29,11 +29,10 @@ class Adresse_auto(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.SetToolTipString(_(u"Sélectionnez ici un représentant de la famille.\n(Les individus sans adresse n'apparaissent pas)"))
-        self.MAJlisteDonnees() 
     
-    def MAJlisteDonnees(self):
+    def MAJ(self, DB=None):
         if self.parent.IDindividu != None :
-            listeItems = self.GetListeDonnees()
+            listeItems = self.GetListeDonnees(DB)
             self.SetItems(listeItems)
         if len(listeItems) > 0 :
             self.Select(0)
@@ -41,14 +40,13 @@ class Adresse_auto(wx.Choice):
     def GetNbreItems(self):
         return self.GetCount()
     
-    def GetListeDonnees(self):
-        db = GestionDB.DB()
+    def GetListeDonnees(self, DB=None):
         # Recherche des familles rattachées de l'individu
         req = """SELECT IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire
         FROM rattachements
         WHERE IDindividu=%d;""" % self.parent.IDindividu
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         listeFamilles = []
         for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire in listeDonnees :
             listeFamilles.append(IDfamille)
@@ -64,9 +62,8 @@ class Adresse_auto(wx.Choice):
         FROM rattachements
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
         WHERE IDfamille IN %s;""" % condition # J'ai enlevé ici "IDcategorie=1 AND " pour afficher également les contacts
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         self.dictDonnees = {}
         listeNoms = []
         index = 0
@@ -99,16 +96,18 @@ class Adresse_auto(wx.Choice):
 
 class Categorie(wx.Choice):
     def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1, choices=self.GetListeDonnees()) 
+        wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.SetToolTipString(_(u"Sélectionnez la catégorie socio-professionnelle de l'individu"))
     
-    def GetListeDonnees(self):
-        db = GestionDB.DB()
+    def MAJ(self, DB=None):
+        choices = self.GetListeDonnees(DB)
+        self.SetItems(choices)
+        
+    def GetListeDonnees(self, DB=None):
         req = """SELECT IDcategorie, nom FROM categories_travail ORDER BY nom;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         self.dictDonnees = {}
         listeNoms = []
         index = 0
@@ -135,20 +134,17 @@ class Secteur(wx.Choice):
         wx.Choice.__init__(self, parent, -1, choices=[]) 
         self.parent = parent
         self.SetToolTipString(_(u"Sélectionnez le secteur géographique du lieu de résidence de l'individu"))
-        self.MAJ() 
     
-    def MAJ(self):
-        listeItems = self.GetListeDonnees()
+    def MAJ(self, DB=None):
+        listeItems = self.GetListeDonnees(DB)
         if len(listeItems) == 0 :
             self.Enable(False)
         self.SetItems(listeItems)
 
-    def GetListeDonnees(self):
-        db = GestionDB.DB()
+    def GetListeDonnees(self, DB=None):
         req = """SELECT IDsecteur, nom FROM secteurs ORDER BY nom;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         self.dictDonnees = { 0 : (None, _(u"--- Aucun secteur géographique ---")) }
         listeNoms = [ _(u"------ Aucun secteur géographique ------")]
         index = 1
@@ -180,21 +176,19 @@ class CTRL_diff(wx.CheckListBox):
         self.listeDiff = []
         self.dictDiff = {}
         
-    def MAJ(self):
-        self.listeDiff, self.dictDiff = self.Importation()
+    def MAJ(self, DB=None):
+        self.listeDiff, self.dictDiff = self.Importation(DB)
         self.SetListeChoix()
     
-    def Importation(self):
+    def Importation(self, DB=None):
         listeDiff = []
         dictDiff = {}
-        DB = GestionDB.DB()
         # Recherche les listes de diffusion
         req = """SELECT IDliste, nom
         FROM listes_diffusion
         ORDER BY nom;"""
         DB.ExecuterReq(req)
         listeListes = DB.ResultatReq()   
-        DB.Close() 
         for IDliste, nom in listeListes :
             dictDiff[IDliste] = nom
             listeDiff.append((nom, IDliste))
@@ -577,67 +571,73 @@ class Panel_coords(wx.Panel):
         """ Importation des données """
         if self.majEffectuee == True :
             return
-        
-        # Liste de diffusion
-        self.listesDiffusionInitiale = []
-        self.dictDiffusionInitiale = {}
-        self.ctrl_listesdiff.MAJ() 
-        
         self.IDindividu = self.GetGrandParent().IDindividu
         if self.IDindividu == None :
             return
         if self.GetGrandParent().nouvelleFiche == True :
             return
-        db = GestionDB.DB()
-        req = """SELECT adresse_auto, rue_resid, cp_resid, ville_resid, IDcategorie_travail, profession, employeur, 
-        travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail, IDsecteur FROM individus WHERE IDindividu=%d;""" % self.IDindividu
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        if len(listeDonnees) == 0 : return
-        individu = listeDonnees[0]
+
+        DB = GestionDB.DB()
         
-        if individu[0] != None :
-            self.radio_adresse_auto.SetValue(True)
-            self.ctrl_adresse_auto.SetID(individu[0])
-        else:
-            self.radio_adresse_manuelle.SetValue(True)
-            try : self.ctrl_rue.SetValue(individu[1])
-            except : pass
-            self.ctrl_ville.SetValueCP(individu[2])
-            self.ctrl_ville.SetValueVille(individu[3])
-            self.ctrl_secteur.SetID(individu[14])
+        # Adresse auto
+        self.ctrl_adresse_auto.MAJ(DB=DB) 
         
-        # Activité professionnelle
-        self.ctrl_categorie.SetID(individu[4])
-        try : self.ctrl_profession.SetValue(individu[5])
-        except : pass
-        try : self.ctrl_employeur.SetValue(individu[6])
-        except : pass
-        self.ctrl_travail_tel.SetNumero(individu[7])
-        self.ctrl_travail_fax.SetNumero(individu[8])
-        self.ctrl_travail_mail.SetMail(individu[9])
+        # Secteur
+        self.ctrl_secteur.MAJ(DB=DB) 
         
-        # Coords
-        self.ctrl_tel_domicile.SetNumero(individu[10])
-        self.ctrl_tel_mobile.SetNumero(individu[11])
-        self.ctrl_tel_fax.SetNumero(individu[12])
-        self.ctrl_mail.SetMail(individu[13])
-        
+        # Catégorie
+        self.ctrl_categorie.MAJ(DB=DB) 
+
         # Listes de diffusion
-        db = GestionDB.DB()
+        self.listesDiffusionInitiale = []
+        self.dictDiffusionInitiale = {}
+        self.ctrl_listesdiff.MAJ(DB=DB) 
         req = """SELECT IDabonnement, IDliste
         FROM abonnements WHERE IDindividu=%d;""" % self.IDindividu
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
         listeIDliste = []
         for IDabonnement, IDliste in listeDonnees :
             listeIDliste.append(IDliste)
             self.listesDiffusionInitiale.append(IDliste)
             self.dictDiffusionInitiale[IDliste] = IDabonnement
         self.ctrl_listesdiff.SetIDcoches(listeIDliste)
-        
+
+        # Adresse
+        req = """SELECT adresse_auto, rue_resid, cp_resid, ville_resid, IDcategorie_travail, profession, employeur, 
+        travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail, IDsecteur FROM individus WHERE IDindividu=%d;""" % self.IDindividu
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        if len(listeDonnees) > 0 : 
+            individu = listeDonnees[0]
+            
+            if individu[0] != None :
+                self.radio_adresse_auto.SetValue(True)
+                self.ctrl_adresse_auto.SetID(individu[0])
+            else:
+                self.radio_adresse_manuelle.SetValue(True)
+                try : self.ctrl_rue.SetValue(individu[1])
+                except : pass
+                self.ctrl_ville.SetValueCP(individu[2])
+                self.ctrl_ville.SetValueVille(individu[3])
+                self.ctrl_secteur.SetID(individu[14])
+            
+            # Activité professionnelle
+            self.ctrl_categorie.SetID(individu[4])
+            try : self.ctrl_profession.SetValue(individu[5])
+            except : pass
+            try : self.ctrl_employeur.SetValue(individu[6])
+            except : pass
+            self.ctrl_travail_tel.SetNumero(individu[7])
+            self.ctrl_travail_fax.SetNumero(individu[8])
+            self.ctrl_travail_mail.SetMail(individu[9])
+            
+            # Coords
+            self.ctrl_tel_domicile.SetNumero(individu[10])
+            self.ctrl_tel_mobile.SetNumero(individu[11])
+            self.ctrl_tel_fax.SetNumero(individu[12])
+            self.ctrl_mail.SetMail(individu[13])
+                
         # MAJ controles
         self.OnRadioAdresse(None)
 
@@ -645,7 +645,9 @@ class Panel_coords(wx.Panel):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_coordonnees", "modifier", afficheMessage=False) == False : 
             for ctrl in self.GetChildren() :
                 ctrl.Enable(False)
-
+        
+        DB.Close()
+        
         self.majEffectuee = True
     
     def ValidationData(self):
@@ -737,7 +739,10 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl= Panel_coords(panel, IDindividu=3)
+        self.nouvelleFiche = False
+        self.IDindividu = 1
+        self.ctrl = Panel_coords(panel, IDindividu=self.IDindividu)
+        self.ctrl.MAJ()
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

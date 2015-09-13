@@ -25,11 +25,7 @@ import datetime
 import operator
 import sqlite3
 import cStringIO
-try :
-    import MySQLdb
-except Exception, err :
-    print err
-
+import GestionDB
 import UTILS_Utilisateurs
 
 TAILLE_IMAGE = (32, 32)
@@ -290,14 +286,22 @@ class CTRL(ULC.UltimateListCtrl):
         utilisateur = self.codesReseau["utilisateur"]
         motdepasse = self.codesReseau["motdepasse"]
         port = self.codesReseau["port"]
-        try :
-            connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
-            connexion.set_character_set('utf8')
-            cursor = connexion.cursor()
-            connexion.close()
-        except Exception, err :
-            return err
+
+        DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse))
+        if DB.echec == 1 :
+            DB.Close()
+            return DB.erreur
+        DB.Close()
         return True
+    
+##        try :
+##            connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
+##            connexion.set_character_set('utf8')
+##            cursor = connexion.cursor()
+##            connexion.close()
+##        except Exception, err :
+##            return err
+##        return True
 
     def GetListeFichiersReseau(self) :
         """ Récupère la liste des fichiers réseau à afficher """
@@ -308,21 +312,22 @@ class CTRL(ULC.UltimateListCtrl):
         utilisateur = self.codesReseau["utilisateur"]
         motdepasse = self.codesReseau["motdepasse"]
         port = self.codesReseau["port"]
-
-        try :
-            connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
-            connexion.set_character_set('utf8')
-            cursor = connexion.cursor()
-        except Exception, err :
+        
+        if hote == "" or utilisateur == "" :
+            return listeFichiers
+        
+        DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse))
+        if DB.echec == 1 :
+            DB.Close()
             return listeFichiers
         
         # Test de connexion à une base de données
         listeDatabases = []
-        cursor.execute("SHOW DATABASES;")
-        listeValeurs = cursor.fetchall()
+        DB.ExecuterReq("SHOW DATABASES;")
+        listeValeurs = DB.ResultatReq()
         for valeurs in listeValeurs :
             listeDatabases.append(valeurs[0])
-            
+        
         # Récupération des infos
         for nomFichier in listeDatabases :
             if (self.prefixe == None and nomFichier.endswith("_data")) or (self.prefixe != None and nomFichier.endswith("_data") and nomFichier.startswith(self.prefixe)) :
@@ -349,9 +354,9 @@ class CTRL(ULC.UltimateListCtrl):
                 logo = None
                 description = u""
                 try :
-                    cursor.execute("""USE %s_data;""" % titre)
-                    cursor.execute("""SELECT nom, logo FROM organisateur WHERE IDorganisateur=1;""")
-                    description, logo = cursor.fetchone()
+                    DB.ExecuterReq("""USE %s_data;""" % titre)
+                    DB.ExecuterReq("""SELECT nom, logo FROM organisateur WHERE IDorganisateur=1;""")
+                    description, logo = DB.ResultatReq()[0]
                 except :
                     pass
 
@@ -367,7 +372,7 @@ class CTRL(ULC.UltimateListCtrl):
                 listeFichiers.append({"titre" : titre, "image" : None, "image" : image, "description" : description, "taille" : taille, "dateModif" : dateModif})
 
         # Fermeture connexion
-        connexion.close() 
+        DB.Close()
         
         return listeFichiers
     
@@ -453,19 +458,17 @@ class CTRL(ULC.UltimateListCtrl):
             motdepasse = self.codesReseau["motdepasse"]
             port = self.codesReseau["port"]
 
-            try :
-                connexion = MySQLdb.connect(host=hote, user=utilisateur, passwd=motdepasse, port=int(port), use_unicode=True) 
-                connexion.set_character_set('utf8')
-                cursor = connexion.cursor()
-            except Exception, err :
-                dlg = wx.MessageDialog(self, _(u"Erreur de connexion MySQL !\n\n%s") % err, _(u"Erreur de connexion"), wx.OK | wx.ICON_ERROR)
+            DB = GestionDB.DB(nomFichier=u"%s;%s;%s;%s[RESEAU]" % (port, hote, utilisateur, motdepasse))
+            if DB.echec == 1 :
+                dlg = wx.MessageDialog(self, _(u"Erreur de connexion MySQL !\n\n%s") % DB.erreur, _(u"Erreur de connexion"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
             
             for suffixe in ("data", "documents", "photos") :
-                cursor.execute("""DROP DATABASE IF EXISTS %s_%s;""" % (titre, suffixe))
-            connexion.close()
+                DB.ExecuterReq("""DROP DATABASE IF EXISTS %s_%s;""" % (titre, suffixe))
+                
+            DB.Close()
         
         self.Remplissage() 
         
@@ -480,7 +483,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        self.ctrl = CTRL(panel, prefixe="", details=True, mode="local", codesReseau={})
+        self.ctrl = CTRL(panel, prefixe="", details=True, mode="local", codesReseau={}) # Test mode local
+##        self.ctrl = CTRL(panel, prefixe="", details=True, mode="reseau", codesReseau={"port":3306, "hote" : "locahost", "utilisateur" : "root", "motdepasse" : "XXXX"}) # Test mode réseau
         self.Bind(ULC.EVT_LIST_ITEM_ACTIVATED, self.OnSelection, self.ctrl)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)

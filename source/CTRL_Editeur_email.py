@@ -143,6 +143,7 @@ MOTSCLES = {
                 ( "{MONTANT_FACTURE}", _(u"Montant facturé") ),
                 ( "{MONTANT_REGLE}", _(u"Montant réglé") ),
                 ( "{SOLDE_ACTUEL}", _(u"Solde actuel") ),
+                ( "{NOTES}", _(u"Notes") ),
                 ],
 
     "attestation_fiscale" : [

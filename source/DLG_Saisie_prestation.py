@@ -700,6 +700,7 @@ class Dialog(wx.Dialog):
         ORDER BY noms_tarifs.nom, date_debut;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
+        DB.Close() 
         listeTarifs = []
         for IDtarif, IDactivite, IDnom_tarif, nomTarif, date_debut, date_fin, methode, categories_tarifs, groupes in listeDonnees :
             date_debut = DateEngEnDateDD(date_debut)

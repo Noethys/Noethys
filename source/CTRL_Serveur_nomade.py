@@ -332,7 +332,10 @@ class Panel(wx.Panel):
             texte = u"\n"
         else :
             texte = u""
-        texte += u"[%s] %s" % (horodatage, message)
+        try :
+            texte += u"[%s] %s" % (horodatage, message)
+        except :
+            texte += u"[%s] %s" % (horodatage, str(message).decode("iso-8859-15"))
         self.log.AppendText(texte)
         
     def SetGauge(self, valeur=0):

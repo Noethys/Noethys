@@ -200,7 +200,7 @@ class Panel(wx.Panel):
         
     def MAJ(self):
         self.ctrl_listview.MAJ()
-
+        
     def Aide(self):
         import UTILS_Aide
         UTILS_Aide.Aide("Lalistedesindividus")

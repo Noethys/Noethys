@@ -166,7 +166,10 @@ class CaseStandard(gridlib.PyGridCellRenderer):
         # Ecrit le nom du groupe
         if CTRL_Grille.AFFICHE_NOM_GROUPE == True and self.grid.dictUnites[self.case.IDunite]["type"] != "Horaire":
             if self.case.IDgroupe != None and self.case.IDgroupe != 0 and self.case.etat in ("reservation", "present", "absenti", "absentj", "attente", "refus") :
-                nomGroupe = self.grid.dictGroupes[self.case.IDgroupe]["nom"]
+                if self.grid.dictGroupes.has_key(self.case.IDgroupe) :
+                    nomGroupe = self.grid.dictGroupes[self.case.IDgroupe]["nom"]
+                else :
+                    nomGroupe = u"Groupe inconnu"
                 dc.SetTextForeground("#949494")
                 dc.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
                 nomGroupe = self.AdapteTailleTexte(dc, nomGroupe, rect[2]-6)
