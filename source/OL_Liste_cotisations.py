@@ -48,6 +48,7 @@ class Track(object):
         self.typeHasCarte = donnees[15]
         self.nomUniteCotisation = donnees[16]
         self.IDcompte_payeur = donnees[17]
+        self.observations = donnees[18]
         
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
         try :
@@ -304,7 +305,7 @@ class ListView(FastObjectListView):
             cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
             cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
             types_cotisations.nom, types_cotisations.type, types_cotisations.carte,
-            unites_cotisations.nom, comptes_payeurs.IDcompte_payeur
+            unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
             FROM cotisations 
             LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
             LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -340,7 +341,7 @@ class ListView(FastObjectListView):
                 cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
                 cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
                 types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur
+                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
                 FROM cotisations 
                 LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
                 LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -376,7 +377,7 @@ class ListView(FastObjectListView):
                 cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
                 cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation,
                 types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur
+                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
                 FROM cotisations 
                 LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
                 LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -519,6 +520,7 @@ class ListView(FastObjectListView):
             "solde" : ColumnDefn(_(u"Solde"), 'left', 80, "solde", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
             "date_creation_carte" : ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
             "depot_nom" : ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
+            "observations" : ColumnDefn(_(u"Notes"), 'left', 200, "observations", typeDonnee="texte"),
             }
             
             
@@ -1039,7 +1041,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, IDfamille=291, id=-1, mode="famille", triColonne="numero", checkColonne=True, codesColonnes=["IDcotisation", "beneficiaires", "date_saisie", "numero", "nom", "type_cotisation", "unite_cotisation", "montant", "solde"], name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, IDfamille=291, id=-1, mode="famille", triColonne="numero", checkColonne=True, codesColonnes=["IDcotisation", "beneficiaires", "date_saisie", "numero", "nom", "type_cotisation", "unite_cotisation", "montant", "solde", "observations"], name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

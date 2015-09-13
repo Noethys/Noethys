@@ -685,6 +685,7 @@ DB_DATA = {
                                     ("date_debut", "DATE", u"Date de début de validité"),
                                     ("date_fin", "DATE", u"Date de fin de validité"),
                                     ("IDprestation", "INTEGER", u"ID de la prestation associée"),
+                                    ("observations", "VARCHAR(1000)", u"Observations"),
                                     ], # Cotisations
 
     "depots_cotisations":[("IDdepot_cotisation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Dépôt Cotisation"),

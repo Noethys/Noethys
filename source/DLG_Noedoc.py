@@ -699,6 +699,7 @@ class Cotisation():
             (_(u"Montant facturé"), u"20.00 ¤", "{MONTANT_FACTURE}"),
             (_(u"Montant réglé"), u"20.00 ¤", "{MONTANT_REGLE}"),
             (_(u"Solde actuel"), u"20.00 ¤", "{SOLDE_ACTUEL}"),
+            (_(u"Notes"), u"Texte libre", "{NOTES}"),
             (_(u"Montant facturé en lettres"), _(u"Vingt Euros"), "{MONTANT_FACTURE_LETTRES}"),
             (_(u"Montant réglé en lettres"), _(u"Vingt Euros"), "{MONTANT_REGLE_LETTRES}"),
             (_(u"Solde actuel en lettres"), _(u"Vingt Euros"), "{SOLDE_ACTUEL_LETTRES}"),

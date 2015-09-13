@@ -136,7 +136,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Nom"), 'left', 270, "nomCotisation", typeDonnee="texte"),
             ColumnDefn(_(u"Numéro"), 'left', 80, "numero", typeDonnee="texte"), 
             ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
-##            ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", imageGetter=GetImageDepot), 
+            ColumnDefn(_(u"Notes"), 'left', 200, "observations"), 
             ]
         
         self.SetColumns(liste_Colonnes)
