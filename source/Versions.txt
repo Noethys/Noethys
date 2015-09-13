@@ -1,4 +1,11 @@
-Version 1.1.5.0 (25/08/2015) :
+Version 1.1.5.1 (12/09/2015) :
+
+- Optimisation de l'affichage de plusieurs fenêtres
+- Ajout de l'autodéconnexion automatique de l'utilisateur
+- Ajout dans les tarifs de la méthode de calcul Liste de choix
+- Ajout du champ Observations dans les cotisations
+
+Version 1.1.5.0 (01/09/2015) :
 
 - Ajout de l'annulation des factures
 - Ajout de l'affichage du solde actuel dans les factures
