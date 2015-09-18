@@ -124,7 +124,7 @@ class Notebook(wx.Notebook):
         indexPage = event.GetSelection()
         page = self.GetPage(indexPage)
         self.Freeze()
-        page.MAJ() 
+        wx.CallLater(1, page.MAJ)
         self.Thaw()
         event.Skip()
 
@@ -179,12 +179,15 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         
-##        # Importation des données
+        # Importation des données
 ##        if self.nouvelleFiche == False :
 ##            listePages = ("identite", "coords")
 ##            for codePage in listePages :
 ##                self.ctrl_notebook.GetPage(codePage).MAJ()
-        
+
+        self.ctrl_notebook.GetPageAvecCode("identite").MAJ()
+        self.ctrl_notebook.GetPageAvecCode("coords").MAJ()
+
         # Saisie des infos par défaut pour la nouvelle fiche
         if self.nouvelleFiche == True :
             pageIdentite = self.ctrl_notebook.GetPageAvecCode("identite")
@@ -200,14 +203,12 @@ class Dialog(wx.Dialog):
                 pageCoords.radio_adresse_manuelle.SetValue(True)
                 pageCoords.OnRadioAdresse(None)
             # On met à jour les pages spéciales autre que "Identité"
-            listePages = ("liens", "coords")
-            for codePage in listePages :
-                page = self.ctrl_notebook.GetPageAvecCode(codePage)
-                page.MAJ() 
-                page.majEffectuee = True
-        
-        self.ctrl_notebook.GetPageAvecCode("identite").MAJ()
-        
+##            listePages = ("liens", "coords")
+##            for codePage in listePages :
+##                page = self.ctrl_notebook.GetPageAvecCode(codePage)
+##                page.MAJ() 
+##                page.majEffectuee = True
+                
         # Mise à jour du header
         self.MAJtexteRattachementHeader() 
         

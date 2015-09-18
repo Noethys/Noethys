@@ -305,12 +305,6 @@ class Panel_coords(wx.Panel):
         self.ctrl_ville.ctrl_cp.Bind(wx.EVT_TEXT, self.OnTextAdresse)
         self.ctrl_ville.ctrl_ville.Bind(wx.EVT_TEXT, self.OnTextAdresse)
         
-        if self.ctrl_adresse_auto.GetNbreItems() == 0 :
-            self.ctrl_adresse_auto.Enable(False)
-            self.radio_adresse_auto.Enable(False)
-            self.radio_adresse_manuelle.SetValue(True)
-        
-        self.OnRadioAdresse(None)
         
                 
 
@@ -574,80 +568,82 @@ class Panel_coords(wx.Panel):
         self.IDindividu = self.GetGrandParent().IDindividu
         if self.IDindividu == None :
             return
-        if self.GetGrandParent().nouvelleFiche == True :
-            return
-
+        
+        # MAJ intiale des contrôles
         DB = GestionDB.DB()
-        
-        # Adresse auto
         self.ctrl_adresse_auto.MAJ(DB=DB) 
-        
-        # Secteur
         self.ctrl_secteur.MAJ(DB=DB) 
-        
-        # Catégorie
         self.ctrl_categorie.MAJ(DB=DB) 
 
-        # Listes de diffusion
         self.listesDiffusionInitiale = []
         self.dictDiffusionInitiale = {}
         self.ctrl_listesdiff.MAJ(DB=DB) 
-        req = """SELECT IDabonnement, IDliste
-        FROM abonnements WHERE IDindividu=%d;""" % self.IDindividu
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        listeIDliste = []
-        for IDabonnement, IDliste in listeDonnees :
-            listeIDliste.append(IDliste)
-            self.listesDiffusionInitiale.append(IDliste)
-            self.dictDiffusionInitiale[IDliste] = IDabonnement
-        self.ctrl_listesdiff.SetIDcoches(listeIDliste)
 
-        # Adresse
-        req = """SELECT adresse_auto, rue_resid, cp_resid, ville_resid, IDcategorie_travail, profession, employeur, 
-        travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail, IDsecteur FROM individus WHERE IDindividu=%d;""" % self.IDindividu
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        if len(listeDonnees) > 0 : 
-            individu = listeDonnees[0]
-            
-            if individu[0] != None :
-                self.radio_adresse_auto.SetValue(True)
-                self.ctrl_adresse_auto.SetID(individu[0])
-            else:
-                self.radio_adresse_manuelle.SetValue(True)
-                try : self.ctrl_rue.SetValue(individu[1])
-                except : pass
-                self.ctrl_ville.SetValueCP(individu[2])
-                self.ctrl_ville.SetValueVille(individu[3])
-                self.ctrl_secteur.SetID(individu[14])
-            
-            # Activité professionnelle
-            self.ctrl_categorie.SetID(individu[4])
-            try : self.ctrl_profession.SetValue(individu[5])
-            except : pass
-            try : self.ctrl_employeur.SetValue(individu[6])
-            except : pass
-            self.ctrl_travail_tel.SetNumero(individu[7])
-            self.ctrl_travail_fax.SetNumero(individu[8])
-            self.ctrl_travail_mail.SetMail(individu[9])
-            
-            # Coords
-            self.ctrl_tel_domicile.SetNumero(individu[10])
-            self.ctrl_tel_mobile.SetNumero(individu[11])
-            self.ctrl_tel_fax.SetNumero(individu[12])
-            self.ctrl_mail.SetMail(individu[13])
+        if self.ctrl_adresse_auto.GetNbreItems() == 0 :
+            self.ctrl_adresse_auto.Enable(False)
+            self.radio_adresse_auto.Enable(False)
+            self.radio_adresse_manuelle.SetValue(True)
+        
+        # Si pas nouvelle fiche -> Importationd des données
+        if self.GetGrandParent().nouvelleFiche == False :
+        
+            # Listes de diffusion
+            req = """SELECT IDabonnement, IDliste
+            FROM abonnements WHERE IDindividu=%d;""" % self.IDindividu
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            listeIDliste = []
+            for IDabonnement, IDliste in listeDonnees :
+                listeIDliste.append(IDliste)
+                self.listesDiffusionInitiale.append(IDliste)
+                self.dictDiffusionInitiale[IDliste] = IDabonnement
+            self.ctrl_listesdiff.SetIDcoches(listeIDliste)
+
+            # Adresse
+            req = """SELECT adresse_auto, rue_resid, cp_resid, ville_resid, IDcategorie_travail, profession, employeur, 
+            travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail, IDsecteur FROM individus WHERE IDindividu=%d;""" % self.IDindividu
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            if len(listeDonnees) > 0 : 
+                individu = listeDonnees[0]
                 
+                if individu[0] != None :
+                    self.radio_adresse_auto.SetValue(True)
+                    self.ctrl_adresse_auto.SetID(individu[0])
+                else:
+                    self.radio_adresse_manuelle.SetValue(True)
+                    try : self.ctrl_rue.SetValue(individu[1])
+                    except : pass
+                    self.ctrl_ville.SetValueCP(individu[2])
+                    self.ctrl_ville.SetValueVille(individu[3])
+                    self.ctrl_secteur.SetID(individu[14])
+                
+                # Activité professionnelle
+                self.ctrl_categorie.SetID(individu[4])
+                try : self.ctrl_profession.SetValue(individu[5])
+                except : pass
+                try : self.ctrl_employeur.SetValue(individu[6])
+                except : pass
+                self.ctrl_travail_tel.SetNumero(individu[7])
+                self.ctrl_travail_fax.SetNumero(individu[8])
+                self.ctrl_travail_mail.SetMail(individu[9])
+                
+                # Coords
+                self.ctrl_tel_domicile.SetNumero(individu[10])
+                self.ctrl_tel_mobile.SetNumero(individu[11])
+                self.ctrl_tel_fax.SetNumero(individu[12])
+                self.ctrl_mail.SetMail(individu[13])
+                    
+
+            # Verrouillage utilisateurs
+            if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_coordonnees", "modifier", afficheMessage=False) == False : 
+                for ctrl in self.GetChildren() :
+                    ctrl.Enable(False)
+
         # MAJ controles
         self.OnRadioAdresse(None)
 
-        # Verrouillage utilisateurs
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_coordonnees", "modifier", afficheMessage=False) == False : 
-            for ctrl in self.GetChildren() :
-                ctrl.Enable(False)
-        
         DB.Close()
-        
         self.majEffectuee = True
     
     def ValidationData(self):
