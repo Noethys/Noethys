@@ -431,13 +431,13 @@ class CTRL(ULC.UltimateListCtrl):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_fichier", "supprimer") == False : return
         
         # Demande de confirmation
-        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment supprimer le fichier '%s' ?") % titre, _(u"Supprimer un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment supprimer le fichier '%s' ?") % titre.decode("iso-8859-15"), _(u"Supprimer un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return 
         
-        dlg = wx.MessageDialog(None, _(u"Attention, la suppression est irreversible !!! \n\n Vous êtes vraiment sûr de vouloir supprimer le fichier '%s' ?") % titre, _(u"Supprimer un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        dlg = wx.MessageDialog(None, _(u"Attention, la suppression est irreversible !!! \n\n Vous êtes vraiment sûr de vouloir supprimer le fichier '%s' ?") % titre.decode("iso-8859-15"), _(u"Supprimer un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
