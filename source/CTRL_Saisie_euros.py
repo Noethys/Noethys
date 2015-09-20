@@ -13,7 +13,7 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 
-    
+
 class CTRL(wx.TextCtrl):
     def __init__(self, parent, font=None, size=(-1, -1), style=wx.TE_RIGHT):
         wx.TextCtrl.__init__(self, parent, -1, u"0.00", size=size, style=style)

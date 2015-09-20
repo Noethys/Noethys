@@ -13,7 +13,7 @@ from UTILS_Traduction import _
 
 import wx
 import CTRL_Bouton_image
-import wx.lib.agw.hypertreelist as HTL
+import wx.grid as gridlib
 import wx.lib.agw.hyperlink as Hyperlink
 import datetime
 import decimal
@@ -27,11 +27,11 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 import GestionDB
 import CTRL_Saisie_euros
 
-try: import psyco; psyco.full()
-except: pass
-
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
+
+COULEUR_CASE_MODIFIABLE_ACTIVE = (255, 255, 255)
+COULEUR_CASE_MODIFIABLE_INACTIVE = (230, 230, 230)
 
 COULEUR_NUL = (255, 0, 0)
 COULEUR_PARTIEL = (255, 193, 37)
@@ -82,48 +82,100 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 # -----------------------------------------------------------------------------------------------------------------------
 
-
-class Track_regroupement(object):
-    def __init__(self):
-        self.ctrl_checkbox_regroupement = None
-        self.ctrl_total_prestations = None
-        self.ctrl_total_aVentiler = None
-        self.ctrl_total_ventilationActuelle = None
-        self.listeTracks = []
-        self.IDfacture = None
-    
-    def Cocher(self, etat=True):
-        """ Cocher tous les tracks du regroupement """
-        for track in self.listeTracks :
-            track.ctrl_checkbox.SetEtat(etat)
-            if etat == True :
-                track.Ventiler(None)
-            else:
-                track.Ventiler(0.0)
-    
-    def MAJ(self):
-        # Récupération du total des prestations
-        total_prestation = 0.0
-        for track in self.listeTracks :
-            total_prestation += track.montant
-        self.ctrl_total_prestations.SetMontant(total_prestation)
+class Ligne_regroupement(object):
+    def __init__(self, grid=None, numLigne=0, dictRegroupement={}):
+        self.grid = grid
+        self.type_ligne = "regroupement"
+        self.numLigne = numLigne
+        self.dictRegroupement = dictRegroupement
+        self.listeLignesPrestations = []
         
-        # Récupération du total à ventiler
-        total_aVentiler = 0.0
-        for track in self.listeTracks :
-            total_aVentiler += track.resteAVentiler
-        self.ctrl_total_aVentiler.SetMontant(total_aVentiler)
+        # Init ligne
+        hauteurLigne = 20
+        grid.SetRowSize(numLigne, hauteurLigne)
 
-        # Récupération du total des ventilations actuelles
-        total_ventilationActuelle = 0.0
-        for track in self.listeTracks :
-            total_ventilationActuelle += track.ventilationActuelle
-        self.ctrl_total_ventilationActuelle.SetMontant(total_ventilationActuelle)
+        # Attributs communes à toutes les colonnes
+        for numColonne in range(0, 8) :
+            self.grid.SetCellBackgroundColour(self.numLigne, numColonne, COULEUR_FOND_REGROUPEMENT)
+            self.grid.SetReadOnly(self.numLigne, numColonne, True)
+
+        # Case à cocher
+        numColonne = 0
+        self.grid.SetCellRenderer(self.numLigne, numColonne, gridlib.GridCellBoolRenderer())
+
+        # Label du groupe
+        self.grid.SetCellValue(self.numLigne, 1, self.dictRegroupement["label"])
+        
+        font = self.grid.GetFont() 
+        font.SetWeight(wx.BOLD)
+        self.grid.SetCellFont(self.numLigne, 1, font)
+                
+        # Montant prestation
+        numColonne = 5
+        self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
+        font = self.grid.GetFont() 
+        font.SetPointSize(8)
+        self.grid.SetCellFont(self.numLigne, numColonne, font)
+
+        # Montant déjà ventilé
+        numColonne = 6
+        self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
+        font = self.grid.GetFont() 
+        font.SetPointSize(8)
+        self.grid.SetCellFont(self.numLigne, numColonne, font)
+
+        # Ventilation actuelle
+        numColonne = 7
+        self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
+        font = self.grid.GetFont() 
+        font.SetPointSize(8)
+        self.grid.SetCellFont(self.numLigne, numColonne, font)
+        
+    def MAJ(self):
+        # Calcul des totaux
+        total_prestation = FloatToDecimal(0.0)
+        total_aVentiler = FloatToDecimal(0.0)
+        total_ventilationActuelle = FloatToDecimal(0.0)
+        for ligne in self.listeLignesPrestations :
+            total_prestation += ligne.montant
+            total_aVentiler += ligne.resteAVentiler
+            total_ventilationActuelle += ligne.ventilationActuelle
+        
+        # Affichage des totaux
+        self.grid.SetCellValue(self.numLigne, 5, unicode(total_prestation))
+        self.grid.SetCellValue(self.numLigne, 6, unicode(total_aVentiler))
+        self.grid.SetCellValue(self.numLigne, 7, unicode(total_ventilationActuelle))
+
+    def GetEtat(self):
+        valeur = self.grid.GetCellValue(self.numLigne, 0)
+        if valeur == "1" :
+            return True
+        else :
+            return False
+    
+    def SetEtat(self, etat=False, majTotaux=True):
+        self.grid.SetCellValue(self.numLigne, 0, str(int(etat)))
+
+        # Coche ou décoche les prestations du groupe
+        for ligne in self.listeLignesPrestations :
+            ligne.SetEtat(etat, majTotaux=False)
+        
+        # MAJ des totaux
+        self.grid.MAJtotaux()
+        
+    def OnCheck(self):
+        etat = not self.GetEtat() 
+        self.SetEtat(etat)
+        
 
 
+        
+class Ligne_prestation(object):
+    def __init__(self, grid=None, donnees={}):
+        self.grid = grid
+        self.type_ligne = "prestation"
 
-class Track(object):
-    def __init__(self, donnees):
+        # Récupération des données
         self.IDprestation = donnees["IDprestation"]
         self.IDcompte_payeur = donnees["IDcompte_payeur"]
         self.date = donnees["date"]
@@ -161,320 +213,271 @@ class Track(object):
             self.nomCompletIndividu = u""
         self.ventilationPassee = donnees["ventilationPassee"]
         if self.ventilationPassee == None :
-            self.ventilationPassee = 0.0
-        self.ventilationActuelle = 0.0
+            self.ventilationPassee = FloatToDecimal(0.0)
+        self.ventilationActuelle = FloatToDecimal(0.0)
+        self.resteAVentiler = self.montant - self.ventilationPassee - self.ventilationActuelle
+                        
+    def Draw(self, numLigne=0, ligneRegroupement=None):
+        """ Dessine la ligne dans la grid """
+        self.numLigne = numLigne
+        self.ligneRegroupement = ligneRegroupement
+        
+        # Init ligne
+        hauteurLigne = 25
+        self.grid.SetRowSize(numLigne, hauteurLigne)
+        
+        # Case à cocher
+        numColonne = 0
+        self.grid.SetCellRenderer(self.numLigne, numColonne, gridlib.GridCellBoolRenderer())
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+        
+        # Date
+        numColonne = 1
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+        self.grid.SetCellAlignment(self.numLigne, numColonne, wx.ALIGN_LEFT, wx.ALIGN_CENTRE)
+
+        # Individu
+        numColonne = 2
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+        self.grid.SetCellAlignment(self.numLigne, numColonne, wx.ALIGN_LEFT, wx.ALIGN_CENTRE)
+        
+        # Label prestation
+        numColonne = 3
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+        self.grid.SetCellAlignment(self.numLigne, numColonne, wx.ALIGN_LEFT, wx.ALIGN_CENTRE)
+
+        # Facture
+        numColonne = 4
+        self.grid.SetCellAlignment(self.numLigne, numColonne, wx.ALIGN_CENTER, wx.ALIGN_CENTRE)
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+        
+        # Montant prestation
+        numColonne = 5
+        self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+        
+        # Montant déjà ventilé
+        numColonne = 6
+        self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
+        self.grid.SetReadOnly(self.numLigne, numColonne, True)
+
+        # Ventilation actuelle
+        numColonne = 7
+        self.grid.SetCellRenderer(self.numLigne, numColonne, RendererCaseMontant())
+        self.grid.SetCellEditor(self.numLigne, numColonne, EditeurMontant(ligne=self))
+
+    def MAJ(self, majTotaux=True):
+        """ MAJ les données et l'affichage de la ligne """
+        # MAJ des données
+        if type(self.ventilationActuelle) != decimal.Decimal :
+            self.ventilationActuelle = FloatToDecimal(self.ventilationActuelle)
+
         self.resteAVentiler = self.montant - self.ventilationPassee - self.ventilationActuelle
         
-        # Items HyperTreeList
-        self.item = None
-        self.itemParent = None
-        self.track_regroupement = None
+        # Coche
+        if self.ventilationActuelle > FloatToDecimal(0.0) :
+            etat = True
+        else :
+            etat = False
+        self.grid.SetCellValue(self.numLigne, 0, str(int(etat)))
         
-        # Contrôles
-        self.ctrl_checkbox = None
-        self.ctrl_ventilation_totale = None
-        self.ctrl_ventilation_actuelle  = None
-                
-    def Ventiler(self, montant=None, importation=False):
+        # Label
+        self.grid.SetCellValue(self.numLigne, 1, DateComplete(self.date))
+        
+        # Individu
+        self.grid.SetCellValue(self.numLigne, 2, self.prenomIndividu)
+
+        # Label de la prestation
+        self.grid.SetCellValue(self.numLigne, 3, self.label)
+
+        # Facture
+        self.grid.SetCellValue(self.numLigne, 4, self.label_facture)
+
+        # Montant de la prestation
+        self.grid.SetCellValue(self.numLigne, 5, unicode(self.montant))
+
+        # Montant déjà ventilé
+        self.grid.SetCellValue(self.numLigne, 6, unicode(self.resteAVentiler))
+        
+        if self.resteAVentiler == 0.0 and self.GetEtat() == True : 
+            self.grid.SetCellBackgroundColour(self.numLigne, 6, COULEUR_TOTAL)
+        elif self.resteAVentiler == self.montant : 
+            self.grid.SetCellBackgroundColour(self.numLigne, 6, COULEUR_NUL)
+        else: 
+            self.grid.SetCellBackgroundColour(self.numLigne, 6, COULEUR_PARTIEL)
+
+        # Montant ventilé
+        self.grid.SetCellValue(self.numLigne, 7, unicode(self.ventilationActuelle))
+        self.grid.SetReadOnly(self.numLigne, 7, not self.GetEtat())
+
+        if self.GetEtat() == True : 
+            self.grid.SetCellBackgroundColour(self.numLigne, 7, COULEUR_CASE_MODIFIABLE_ACTIVE)
+        else :
+            self.grid.SetCellBackgroundColour(self.numLigne, 7, COULEUR_CASE_MODIFIABLE_INACTIVE)
+        
+        # MAJ de la ligne de regroupement
+        if majTotaux == True :
+            self.ligneRegroupement.MAJ() 
+            self.grid.MAJbarreInfos()
+        
+    def GetEtat(self):
+        valeur = self.grid.GetCellValue(self.numLigne, 0)
+        if valeur == "1" :
+            return True
+        else :
+            return False
+    
+    def SetEtat(self, etat=False, montant=None, majTotaux=True):
+        # Coche la case
+        self.grid.SetCellValue(self.numLigne, 0, str(int(etat)))
+        
+        # Attribue le montant
+        if etat == False :
+            montant = 0.0 
+            
         if montant != None :
             # Tout ventiler
             self.ventilationActuelle = montant
         else:
             # Ventiler uniquement le montant donné
             self.ventilationActuelle = self.resteAVentiler
-        self.MAJ(importation) 
-    
-    def MAJ(self, importation=False):
-        self.resteAVentiler = self.montant - self.ventilationPassee - self.ventilationActuelle
-        self.ctrl_checkbox.MAJ(importation) 
-        self.ctrl_ventilation_totale.MAJ() 
-        self.ctrl_ventilation_actuelle.MAJ() 
-        self.MAJtotal() 
-    
-    def MAJtotal(self):
-        self.track_regroupement.MAJ()
-    
-    def GetEtat(self):
-        """ Retourne si coché ou non """
-        return self.ctrl_checkbox.GetEtat() 
-
-
-# -------------------------------------------------------------------------------------------------------------------
-
-
-class CTRL_Checkbox_regroupement(wx.Panel):
-    def __init__(self, parent, item=None, label=u""):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.item = item
-        self.track_regroupement = None
-
-        self.SetBackgroundColour(COULEUR_FOND_REGROUPEMENT)
-
-        # Checkbox
-        self.cb = wx.CheckBox(self, id=-1, label=label) 
-        self.cb.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))
+            
+        self.MAJ(majTotaux) 
         
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.cb, 1, wx.EXPAND|wx.ALL, 0)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        self.Layout()
-        # Binds
-        self.cb.Bind(wx.EVT_CHECKBOX, self.OnCheck)
-
-    def OnCheck(self, event):
-        etat = self.cb.GetValue()
-        self.track_regroupement.Cocher(etat)
-        self.GetGrandParent().MAJbarreInfos()
-       
-    def SetEtat(self, etat=False):
-        if etat != None :
-            self.cb.SetValue(etat)
-    
-    def GetEtat(self):
-        return self.cb.GetValue()
-
-# -------------------------------------------------------------------------------------------------------------------
-
-class CTRL_Total(wx.Panel):
-    def __init__(self, parent, item=None):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.item = item
-        self.total = 0.0
+    def OnCheck(self):
+        etat = not self.GetEtat() 
+        montant = None
         
-        self.SetSize((55, -1))
-        self.SetMinSize((55, -1))
-        self.SetBackgroundColour(COULEUR_FOND_REGROUPEMENT)
-        self.SetForegroundColour(COULEUR_TEXTE_REGROUPEMENT)
-                
-        # Contrôle montant
-        self.ctrl_montant = wx.StaticText(self, -1, u"")
-##        self.ctrl_montant.SetToolTipString(_(u"Montant déjà ventilé"))
-        self.ctrl_montant.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-        grid_sizer_contenu.Add( (1, 1), 0, wx.EXPAND|wx.ALL, 0)
-        grid_sizer_contenu.Add(self.ctrl_montant, 0, wx.TOP, 3)
-        grid_sizer_contenu.AddGrowableCol(0)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.EXPAND|wx.ALL, 2)
-        grid_sizer_base.AddGrowableCol(0)
-        self.SetSizer(grid_sizer_base)
-        self.Layout()
-        
-        self.grid_sizer_contenu = grid_sizer_contenu
-        
-        self.MAJ() 
-                
-    def MAJ(self):
-        # Label montant
-        self.ctrl_montant.SetLabel(u"%.2f %s " % (self.total, SYMBOLE))
-        self.grid_sizer_contenu.Layout()
-        self.Refresh() 
-    
-    def SetMontant(self, montant=0.0):
-        self.total = montant
-        self.MAJ() 
-        
-# -------------------------------------------------------------------------------------------------------------------
-
-class CTRL_Checkbox(wx.Panel):
-    def __init__(self, parent, IDprestation=None, track=None, label="", infobulle=""):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.IDprestation = IDprestation
-        self.track = track
-
-        self.SetBackgroundColour((255, 255, 255))
-
-        # Image
-        self.imgTotal = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_PNG)
-        self.imgAttention = wx.Bitmap("Images/16x16/Attention.png", wx.BITMAP_TYPE_PNG)
-        self.imgNul = wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG)
-        self.ctrl_image = wx.StaticBitmap(self, -1, self.imgNul)
-        self.ctrl_image.SetToolTipString(_(u"Etat de la ventilation pour cette prestation"))
-
-        # Checkbox
-        self.cb = wx.CheckBox(self, id=-1, label=label) 
-        self.cb.SetToolTipString(infobulle)
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
-        grid_sizer_base.Add(self.cb, 1, wx.EXPAND|wx.ALL, 0)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        self.Layout()
-        # Binds
-        self.cb.Bind(wx.EVT_CHECKBOX, self.OnCheck)
-
-    def MAJ(self, importation=False):
-        if importation == True :
-            self.SetEtat(True)
-        # Couleur du fond et Image
-        if self.track.resteAVentiler == 0.0 and self.GetEtat() == True : 
-            self.ctrl_image.SetBitmap(self.imgTotal)
-        elif self.track.resteAVentiler >= 0.0 : 
-            self.ctrl_image.SetBitmap(self.imgNul)
-        else: 
-            self.ctrl_image.SetBitmap(self.imgAttention)
-
-    def OnCheck(self, event):
-        etat = self.cb.GetValue()
-        self.Cocher(etat)
-    
-    def Cocher(self, etat=True):
+        # Attribue uniquement du crédit encore disponible
         if etat == True :
-            self.track.Ventiler(montant=None)
-        else:
-            self.track.Ventiler(montant=0.0)
-            self.track.track_regroupement.ctrl_checkbox_regroupement.SetEtat(False)
-        # MAJ de la barre d'infos du panel parent
-        self.GetGrandParent().MAJbarreInfos()
-       
-    def SetEtat(self, etat=False):
-        if etat != None :
-            self.cb.SetValue(etat)
-    
-    def GetEtat(self):
-        return self.cb.GetValue()
-
-# -------------------------------------------------------------------------------------------------------------------
-
-
-class CTRL_Montant_prestation(wx.Panel):
-    def __init__(self, parent, IDprestation=None, track=None, montantPrestation=0.0):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.IDprestation = IDprestation
-        self.track = track
-        
-        self.SetSize((55, -1))
-        self.SetMinSize((55, -1))
-        self.SetBackgroundColour((255, 255, 255))
+            montant = self.grid.GetCreditAventiler()
+            if montant > self.resteAVentiler :
+                montant = self.resteAVentiler
                 
-        # Contrôle montant
-        self.ctrl_montant = wx.StaticText(self, -1, u"%.2f %s " % (montantPrestation, SYMBOLE))
-        self.ctrl_montant.SetToolTipString(_(u"Montant de la prestation"))
+        # Modifie la ligne
+        self.SetEtat(etat, montant)
         
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-        grid_sizer_contenu.Add( (1, 1), 0, wx.EXPAND|wx.ALL, 0)
-        grid_sizer_contenu.Add(self.ctrl_montant, 0, wx.TOP, 1)
-        grid_sizer_contenu.AddGrowableCol(0)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.EXPAND|wx.ALL, 2)
-        grid_sizer_base.AddGrowableCol(0)
-        self.SetSizer(grid_sizer_base)
-        self.Layout()
-        
-        self.grid_sizer_contenu = grid_sizer_contenu
-        
-        
-# -------------------------------------------------------------------------------------------------------------------
+        # Décoche le groupe si aucune prestation cochée dedans
+        if etat == False :
+            auMoinsUneCochee = False
+            for ligne in self.ligneRegroupement.listeLignesPrestations :
+                if ligne.GetEtat() == True :
+                    auMoinsUneCochee = True
+            if auMoinsUneCochee == False :
+                self.ligneRegroupement.SetEtat(False)
 
 
-class CTRL_Ventilation_totale(wx.Panel):
-    def __init__(self, parent, IDprestation=None, track=None):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.IDprestation = IDprestation
-        self.track = track
-        
-        self.SetSize((55, -1))
-        self.SetMinSize((55, -1))
-                
-        # Contrôle montant
-        self.ctrl_montant = wx.StaticText(self, -1, u"0.00 %s" % SYMBOLE)
-        self.ctrl_montant.SetToolTipString(_(u"Montant déjà ventilé"))
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-        grid_sizer_contenu.Add( (1, 1), 0, wx.EXPAND|wx.ALL, 0)
-        grid_sizer_contenu.Add(self.ctrl_montant, 0, wx.TOP, 1)
-        grid_sizer_contenu.AddGrowableCol(0)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.EXPAND|wx.ALL, 2)
-        grid_sizer_base.AddGrowableCol(0)
-        self.SetSizer(grid_sizer_base)
-        self.Layout()
-        
-        self.grid_sizer_contenu = grid_sizer_contenu
-        
-        self.MAJ() 
-                
-    def MAJ(self):
-        # Label montant
-        self.ctrl_montant.SetLabel(u"%.2f %s " % (self.track.resteAVentiler, SYMBOLE))
-        # Couleur du fond et Image
-        if self.track.resteAVentiler == 0.0 and self.track.ctrl_checkbox.GetEtat() : 
-            self.SetBackgroundColour(COULEUR_TOTAL)
-        elif self.track.resteAVentiler == self.track.montant : 
-            self.SetBackgroundColour(COULEUR_NUL)
-        else: 
-            self.SetBackgroundColour(COULEUR_PARTIEL)
-        self.grid_sizer_contenu.Layout()
-        self.Refresh() 
 
-        
-# -------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Ventilation_actuelle(wx.Panel):
-    def __init__(self, parent, IDprestation=None, track=None):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.IDprestation = IDprestation
-        self.track = track
-                        
-        # Contrôle montant
-        self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, size=(55, -1))
-        self.ctrl_montant.SetValue("")
-        self.ctrl_montant.SetToolTipString(_(u"Cliquez ici pour modifier manuellement le montant ventilé"))
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=2)
-##        grid_sizer_base.Add(self.ctrl_image, 1, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
-        grid_sizer_base.Add(self.ctrl_montant, 1, wx.EXPAND|wx.ALL, 0)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        self.Layout()
-        
-        self.ctrl_montant.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
+class RendererCaseMontant(gridlib.PyGridCellRenderer):
+    def __init__(self):
+        gridlib.PyGridCellRenderer.__init__(self)
+        self.grid = None
 
-    def OnKillFocus(self, event):
-        # Vérification de la saisie du montant
-        valide, messageErreur = self.ctrl_montant.Validation()
-        if valide == False :
-            wx.MessageBox(messageErreur, "Erreur de saisie")
-            self.GetGrandParent().MAJbarreInfos(erreur=True)
-        else:
-            montant = float(self.ctrl_montant.GetValue())
-            self.ctrl_montant.SetValue(u"%.2f" % montant)
-            # Met à jour le track
-            self.track.ventilationActuelle = montant
-            self.track.MAJ() 
-            self.GetGrandParent().MAJbarreInfos()
-        event.Skip() 
-    
-    def MAJ(self):
-        if self.track.ctrl_checkbox.cb.GetValue() == True :
-            self.Enable(True)
-            self.ctrl_montant.SetMontant(self.track.ventilationActuelle)
-        else:
-            self.Enable(False)
-            self.ctrl_montant.SetValue("")
+    def Draw(self, grid, attr, dc, rect, row, col, isSelected):
+        self.grid = grid
             
+        # Dessin du fond de couleur
+        couleurFond = self.grid.GetCellBackgroundColour(row, col)
+        dc.SetBackgroundMode(wx.SOLID)
+        dc.SetBrush(wx.Brush(couleurFond, wx.SOLID))
+        dc.SetPen(wx.TRANSPARENT_PEN)
+        dc.DrawRectangleRect(rect)
+                
+        # Ecrit les restrictions
+        texte = self.grid.GetCellValue(row, col)
+        if texte != "" :
+            texte = u"%.2f %s " % (float(texte), SYMBOLE)
         
+        dc.SetBackgroundMode(wx.TRANSPARENT)
+        dc.SetFont(attr.GetFont())
+        hAlign, vAlign = grid.GetCellAlignment(row, col)
+        
+        # Alignement à droite
+        largeur, hauteur = dc.GetTextExtent(texte)
+        x = rect[0] + rect[2] - largeur - 2
+        y = rect[1] + ((rect[3] - hauteur) / 2.0)
+        dc.DrawText(texte, x, y)
+        
+    def GetBestSize(self, grid, attr, dc, row, col):
+        text = grid.GetCellValue(row, col)
+        dc.SetFont(attr.GetFont())
+        w, h = dc.GetTextExtent(text)
+        return wx.Size(w, h)
+
+    def Clone(self):
+        return RendererCaseMontant()
+    
+    
+    
+# -------------------------------------------------------------------------------------------------------------------------------------
+
+class EditeurMontant(gridlib.PyGridCellEditor):
+    def __init__(self, ligne=None):
+        self.ligne = ligne
+        gridlib.PyGridCellEditor.__init__(self)
+
+    def Create(self, parent, id, evtHandler):
+        self._tc = CTRL_Saisie_euros.CTRL(parent, style=wx.TE_RIGHT|wx.TE_PROCESS_ENTER)
+        self._tc.SetInsertionPoint(0)
+        self.SetControl(self._tc)
+        if evtHandler:
+            self._tc.PushEventHandler(evtHandler)
+        
+    def BeginEdit(self, row, col, grid):
+        self.startValue = grid.GetTable().GetValue(row, col)
+        self._tc.SetValue(self.startValue)
+        self._tc.SetInsertionPointEnd()
+        self._tc.SetFocus()
+        # For this example, select the text
+        self._tc.SetSelection(0, self._tc.GetLastPosition())
+
+    def EndEdit(self, row, col, grid, oldVal):
+        changed = False
+        valeur = self._tc.GetMontant()
+        # Validation du montant saisi
+        if self._tc.Validation() == False :
+            valeur = None
+        # Vérifie si montant saisi pas supérieur à montant à ventilé
+        if valeur != None :
+            resteAVentiler = self.ligne.montant - self.ligne.ventilationPassee - FloatToDecimal(valeur)
+            if resteAVentiler < 0 :
+                dlg = wx.MessageDialog(grid, _(u"Le montant saisi ne peut pas être supérieur au montant à ventiler !"), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
+                valeur = None
+        # Renvoie la valeur
+        if valeur != oldVal:  
+            return valeur
+        else:
+            return None
+    
+    def ApplyEdit(self, row, col, grid):
+        valeur = self._tc.GetMontant()
+        grid.GetTable().SetValue(row, col, str(valeur))
+        self.startValue = ''
+        self._tc.SetValue('')
+        # MAJ de la ligne
+        self.ligne.ventilationActuelle = FloatToDecimal(valeur)
+        self.ligne.MAJ() 
+    
+    def Reset(self):
+        self._tc.SetValue(self.startValue)
+        self._tc.SetInsertionPointEnd()
+
+    def Destroy(self):
+        super(EditeurMontant, self).Destroy()
+
+    def Clone(self):
+        return EditeurMontant()
+
+
 
 # -------------------------------------------------------------------------------------------------------------------
-            
-class CTRL_Ventilation(HTL.HyperTreeList):
+
+class CTRL_Ventilation(gridlib.Grid): 
     def __init__(self, parent, IDcompte_payeur=None, IDreglement=None): 
-        HTL.HyperTreeList.__init__(self, parent, -1)
+        gridlib.Grid.__init__(self, parent, -1, style=wx.WANTS_CHARS)
         self.parent = parent
         self.IDcompte_payeur = IDcompte_payeur
         self.IDreglement = IDreglement
@@ -482,36 +485,60 @@ class CTRL_Ventilation(HTL.HyperTreeList):
         self.dictVentilation = {}
         self.dictVentilationInitiale = {}
         self.ventilationValide = True
-        
-        if "linux" in sys.platform :
-            defaultFont = self.GetFont()
-            defaultFont.SetPointSize(8)
-            self.SetFont(defaultFont)
+        self.montant_reglement = FloatToDecimal(0.0)
+        self.dictLignes = {}
 
         # Key de regroupement
         self.KeyRegroupement = "periode" # individu, facture, date, periode
         
-        # Création des colonnes
+        # Binds
+        self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnLeftClick)
+##        self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnRightClick)
+        self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
+    
+    def InitGrid(self):
+        """ Création de la grid et importation initiale des données """
         listeColonnes = [
-            ( _(u"Date"), 225, wx.ALIGN_LEFT),
-            ( _(u"Individu"), 95, wx.ALIGN_LEFT),
-            ( _(u"Intitulé"), 185, wx.ALIGN_LEFT),
-            ( _(u"N° Facture"), 75, wx.ALIGN_CENTRE),
-            ( _(u"Montant"), 60, wx.ALIGN_LEFT),
-            ( _(u"A ventiler"), 62, wx.ALIGN_LEFT),
-            ( _(u"Ventilé"), 60, wx.ALIGN_LEFT),
+            ( _(u""), 20),
+            ( _(u"Date"), 175),
+            ( _(u"Individu"), 124),
+            ( _(u"Intitulé"), 185),
+            ( _(u"N° Facture"), 75),
+            ( _(u"Montant"), 65),
+            ( _(u"A ventiler"), 65),
+            ( _(u"Ventilé"), 65),
             ]
+        
+        # Initialisation de la grid
+        self.SetMinSize((10, 10))
+        self.moveTo = None
+        self.CreateGrid(0, len(listeColonnes))
+        self.SetRowLabelSize(1)
+        self.DisableDragColSize()
+        self.DisableDragRowSize()
+        self.modeDisable = False
+        
+        # Création des colonnes
+        self.SetColLabelSize(22)
         numColonne = 0
-        for label, largeur, alignement in listeColonnes :
-            self.AddColumn(label)
-            self.SetColumnWidth(numColonne, largeur)
-            self.SetColumnAlignment(numColonne, alignement)
+        for label, largeur in listeColonnes :
+            self.SetColLabelValue(numColonne, label)
+            self.SetColSize(numColonne, largeur)
             numColonne += 1
         
-        self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag(wx.TR_VIRTUAL|wx.TR_ROW_LINES |  wx.TR_COLUMN_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
-        self.EnableSelectionVista(True)
-                    
+        # Importation des données
+        self.listeLignesPrestations = self.Importation()
+        
+        # MAJ de l'affichage de la grid
+        self.MAJ() 
+        
+        # Importation des ventilations existantes du règlement
+        for ligne_prestation in self.listeLignesPrestations :
+            if self.dictVentilation.has_key(ligne_prestation.IDprestation) :
+                montant = self.dictVentilation[ligne_prestation.IDprestation]
+                ligne_prestation.SetEtat(True, montant, majTotaux=False)
+        self.MAJtotaux() 
+
     def Importation(self):
         if self.IDreglement == None :
             IDreglement = 0
@@ -529,7 +556,7 @@ class CTRL_Ventilation(HTL.HyperTreeList):
         self.dictVentilation = {}
         self.dictVentilationInitiale
         for IDventilation, IDprestation, montant in listeDonnees :
-            self.dictVentilation[IDprestation] = montant
+            self.dictVentilation[IDprestation] = FloatToDecimal(montant)
             self.dictVentilationInitiale[IDprestation] = IDventilation
         
         # Importation des données
@@ -556,13 +583,16 @@ class CTRL_Ventilation(HTL.HyperTreeList):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()     
         DB.Close() 
-        listeTracks = []
+        listeLignesPrestations = []
         for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, num_facture, date_facture, IDfamille, IDindividu, nomIndividu, prenomIndividu, montantVentilation in listeDonnees :
+            montant = FloatToDecimal(montant)
+            montantVentilation = FloatToDecimal(montantVentilation)
             if num_facture == None : num_facture = 0
             if montantVentilation < montant or IDprestation in self.dictVentilation.keys() :
                 date = DateEngEnDateDD(date)
                 if self.dictVentilation.has_key(IDprestation) :
                     montantVentilation = montantVentilation - self.dictVentilation[IDprestation] 
+
                 dictTemp = {
                     "IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "date" : date, "categorie" : categorie,
                     "label" : label, "montant" : montant, "IDactivite" : IDactivite, "nomActivite" : nomActivite, "IDtarif" : IDtarif, "nomTarif" : nomTarif, 
@@ -570,35 +600,156 @@ class CTRL_Ventilation(HTL.HyperTreeList):
                     "IDfamille" : IDfamille, "IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu,
                     "ventilationPassee" : montantVentilation,
                     }
-                track = Track(dictTemp)
-                listeTracks.append(track)
+                ligne_prestation = Ligne_prestation(grid=self, donnees=dictTemp)
+                listeLignesPrestations.append(ligne_prestation)
+
+        return listeLignesPrestations
+
+    def OnLeftClick(self, event):
+        numLigne = event.GetRow()
+        numColonne = event.GetCol()
+        # Checkbox
+        if self.dictLignes.has_key(numLigne) :
+            ligne = self.dictLignes[numLigne]
+            if numColonne == 7 and ligne.GetEtat() == True :
+                pass
+            else :
+                ligne.OnCheck()
+        # Case montant modifiable
+        if numColonne == 7 and self.dictLignes.has_key(numLigne) :
+            ligne = self.dictLignes[numLigne]
+            if ligne.type_ligne == "prestation" and ligne.GetEtat() == True :
+                event.Skip()
+    
+    def OnMouseOver(self, event):    
+        return
         
-        # Si trop de prestations impayées à afficher dans le contrôle
-##        print "nbre prestations =", len(listeTracks)
-        maxPrestationsAffichables = 300
-        if len(listeTracks) > maxPrestationsAffichables :
-            message = _(u"Avertissement\n\nCette famille a %d prestations impayées alors que cette fonctionnalité peut actuellement planter lorsqu'elle en affiche plus de %d (Un correctif sera proposé ultérieurement). \n\nSouhaitez-vous afficher uniquement les %d premières prestations de la liste ?") % (len(listeTracks), maxPrestationsAffichables, maxPrestationsAffichables)
-            dlg = wx.MessageDialog(None, message, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_EXCLAMATION)
-            if dlg.ShowModal() == wx.ID_YES :
-                listeTracks = listeTracks[:maxPrestationsAffichables]
-            dlg.Destroy()
+    def MAJ(self):
+        """ Met à jour (redessine) tout le contrôle """
+        self.Freeze()
+        if self.GetNumberRows() > 0 : 
+            self.DeleteRows(0, self.GetNumberRows())
+        self.Remplissage()
+        self.Thaw() 
 
-        return listeTracks
+    def Remplissage(self):
+        # Regroupement
+        self.dictRegroupements = {}
+        listeKeys = []
+        nbreLignes = 0
+        for ligne_prestation in self.listeLignesPrestations :
+            if self.KeyRegroupement == "individu" : 
+                key = ligne_prestation.IDindividu
+                if key == 0 or key == None :
+                    label = _(u"Prestations familiales")
+                else:
+                    label = ligne_prestation.nomCompletIndividu
+            if self.KeyRegroupement == "facture" : 
+                key = ligne_prestation.IDfacture
+                label = ligne_prestation.label_facture
+            if self.KeyRegroupement == "date" : 
+                key = ligne_prestation.date
+                label = ligne_prestation.date_complete
+            if self.KeyRegroupement == "periode" : 
+                key = ligne_prestation.periode
+                label = ligne_prestation.periode_complete
+            
+            if self.dictRegroupements.has_key(key) == False :
+                self.dictRegroupements[key] = { "label" : label, "total" : FloatToDecimal(0.0), "prestations" : [], "ligne_regroupement" : None}
+                listeKeys.append(key)
+                nbreLignes += 1
+                
+            self.dictRegroupements[key]["prestations"].append(ligne_prestation)
+            self.dictRegroupements[key]["total"] += ligne_prestation.montant
+            nbreLignes += 1
+        
+        # Tri des Keys
+        listeKeys.sort()
+        
+        # Création des lignes
+        self.AppendRows(nbreLignes)
+        
+        # Création des branches
+        numLigne = 0
+        self.dictLignes = {}
+        for key in listeKeys :
+            
+            # Niveau 1 : Regroupement
+            dictRegroupement = self.dictRegroupements[key]
+            ligne_regroupement = Ligne_regroupement(self, numLigne, dictRegroupement)
+            self.dictLignes[numLigne] = ligne_regroupement
+            self.dictRegroupements[key]["ligne_regroupement"] = ligne_regroupement
+            numLigne += 1
+            
+            # Niveau 2 : Prestations
+            for ligne_prestation in self.dictRegroupements[key]["prestations"] :
+                ligne_prestation.Draw(numLigne, ligne_regroupement)
+                ligne_prestation.MAJ(majTotaux=False)
+                ligne_regroupement.listeLignesPrestations.append(ligne_prestation)
+                self.dictLignes[numLigne] = ligne_prestation
+                numLigne += 1
+        
+        # MAJ de tous les totaux
+        self.MAJtotaux() 
+        
+    def MAJtotaux(self):
+        """ Mise à jour de tous les totaux regroupements + barreInfos """
+        # MAJ de tous les totaux de regroupement
+        for key, dictRegroupement in self.dictRegroupements.iteritems() :
+            ligne_regroupement = dictRegroupement["ligne_regroupement"]
+            ligne_regroupement.MAJ() 
+        # MAJ de la barre d'infos
+        self.MAJbarreInfos() 
+        
+    def SetRegroupement(self, key):
+        self.KeyRegroupement = key
+        self.MAJ() 
 
+    def MAJbarreInfos(self, erreur=None):
+        total = FloatToDecimal(0.0)
+        for ligne in self.listeLignesPrestations :
+            total += ligne.ventilationActuelle
+        self.parent.MAJbarreInfos(total, erreur)
+
+    def SelectionneFacture(self, IDfacture=None):
+        # Afficher par facture
+        self.SetRegroupement("facture")
+        # Coche les prestations liées à la facture données
+        for key, dictRegroupement in self.dictRegroupements.iteritems():
+            if key == IDfacture :
+                ligne_regroupement = dictRegroupement["ligne_regroupement"]
+                ligne_regroupement.SetEtat(True)
+
+    def GetCreditAventiler(self):
+        creditAVentiler = self.montant_reglement - self.GetTotalVentile()
+        return creditAVentiler
+
+    def GetTotalVentile(self):
+        total = FloatToDecimal(0.0)
+        for ligne in self.listeLignesPrestations :
+            total += ligne.ventilationActuelle
+        return total
+
+    def GetTotalRestePrestationsAVentiler(self):
+        total = FloatToDecimal(0.0)
+        for ligne in self.listeLignesPrestations :
+            total += ligne.resteAVentiler
+        return total
+    
     def Sauvegarde(self, IDreglement=None):
-        # --------------- Sauvegarde -----------------------
+        """ Sauvegarde des données """
         DB = GestionDB.DB()
         
-        for track in self.listeTracks :
-            IDprestation = track.IDprestation
-            montant = track.ventilationActuelle
+        for ligne in self.listeLignesPrestations :
+            IDprestation = ligne.IDprestation
+            montant = ligne.ventilationActuelle
             
             if self.dictVentilationInitiale.has_key(IDprestation) :
                 IDventilation = self.dictVentilationInitiale[IDprestation]
             else:
                 IDventilation = None
             
-            if track.GetEtat() == True :
+            if ligne.GetEtat() == True :
                 # Ajout ou modification
                 listeDonnees = [    
                         ("IDreglement", IDreglement),
@@ -618,197 +769,7 @@ class CTRL_Ventilation(HTL.HyperTreeList):
         DB.Close()
         
         return True
-    
-    def SetRegroupement(self, key):
-        self.KeyRegroupement = key
-        self.MAJ() 
 
-    def MAJ(self):
-        """ Met à jour (redessine) tout le contrôle """
-        self.Freeze()
-        self.DeleteAllItems()
-        # Création de la racine
-        self.root = self.AddRoot(_(u"Racine"))
-        self.Remplissage()
-        self.Thaw() 
-        self.MAJbarreInfos()
-
-    def Remplissage(self):
-        listeTracks = self.Importation()
-        self.dictControles = {} 
-        
-        # Regroupement
-        dictTracks = {}
-        listeKeys = []
-        for track in listeTracks :
-            if self.KeyRegroupement == "individu" : 
-                key = track.IDindividu
-                if key == 0 or key == None :
-                    label = _(u"Prestations familiales")
-                else:
-                    label = track.nomCompletIndividu
-            if self.KeyRegroupement == "facture" : 
-                key = track.IDfacture
-                label = track.label_facture
-            if self.KeyRegroupement == "date" : 
-                key = track.date
-                label = track.date_complete
-            if self.KeyRegroupement == "periode" : 
-                key = track.periode
-                label = track.periode_complete
-            
-            if dictTracks.has_key(key) == False :
-                dictTracks[key] = { "label" : label, "total" : 0.0, "prestations" : [] }
-                listeKeys.append(key)
-            dictTracks[key]["prestations"].append(track)
-            dictTracks[key]["total"] += track.montant
-        
-        # Tri des Keys
-        listeKeys.sort()
-        
-        # Création des branches
-        self.dictTracksRegroupement = {}
-        for key in listeKeys :
-            
-            # Niveau 1
-            label = dictTracks[key]["label"]
-            
-            regroupement = self.AppendItem(self.root, "")
-##            regroupement = self.AppendItem(self.root, label, ct_type=1)
-            self.SetPyData(regroupement, None)
-            self.SetItemBold(regroupement, True)
-            self.SetItemBackgroundColour(regroupement, COULEUR_FOND_REGROUPEMENT)
-            
-            # Checkbox Regroupement
-            ctrl_checkbox_regroupement = CTRL_Checkbox_regroupement(self.GetMainWindow(), item=regroupement, label=label)
-            self.SetItemWindow(regroupement, ctrl_checkbox_regroupement, 0)
-            
-            # Total des montants des prestations
-            ctrl_total_prestations = CTRL_Total(self.GetMainWindow(), item=regroupement)
-            self.SetItemWindow(regroupement, ctrl_total_prestations, 4)
-            
-            # Total déjà ventilé
-            ctrl_total_aVentiler = CTRL_Total(self.GetMainWindow(), item=regroupement)
-            self.SetItemWindow(regroupement, ctrl_total_aVentiler, 5)
-
-            # Total ventilation actuelle
-            ctrl_total_ventilationActuelle = CTRL_Total(self.GetMainWindow(), item=regroupement)
-            self.SetItemWindow(regroupement, ctrl_total_ventilationActuelle, 6)
-
-            # Mémorisation des contrôles et données du regroupement
-            trackRegroupement = Track_regroupement()
-            trackRegroupement.ctrl_checkbox_regroupement = ctrl_checkbox_regroupement
-            trackRegroupement.ctrl_total_prestations = ctrl_total_prestations
-            trackRegroupement.ctrl_total_aVentiler = ctrl_total_aVentiler
-            trackRegroupement.ctrl_total_ventilationActuelle = ctrl_total_ventilationActuelle
-            trackRegroupement.listeTracks = dictTracks[key]["prestations"]
-            if self.KeyRegroupement == "facture" : 
-                trackRegroupement.IDfacture = key
-            self.dictTracksRegroupement[regroupement] = trackRegroupement
-            
-            ctrl_checkbox_regroupement.track_regroupement = trackRegroupement
-
-            # Niveau 2
-            for track in dictTracks[key]["prestations"] :
-                
-                label = DateComplete(track.date)
-                prestation = self.AppendItem(regroupement, "")
-                self.SetPyData(prestation, track.IDprestation)
-                
-                # Mémorisation des items dans le track
-                track.item = prestation
-                track.itemParent = regroupement
-                track.track_regroupement = trackRegroupement
-                
-                # Case à cocher + Date
-                ctrl_checkbox = CTRL_Checkbox(self.GetMainWindow(), IDprestation=track.IDprestation, track=track, label=label, infobulle=u"")
-                self.SetItemWindow(prestation, ctrl_checkbox, 0)
-                track.ctrl_checkbox = ctrl_checkbox
-                
-                self.SetItemText(prestation, track.prenomIndividu, 1)
-                self.SetItemText(prestation, track.label, 2)
-                self.SetItemText(prestation, track.label_facture, 3)
-                
-                # Montant de la prestation
-                ctrl_montant_prestation = CTRL_Montant_prestation(self.GetMainWindow(), track=track, montantPrestation=track.montant)
-                self.SetItemWindow(prestation, ctrl_montant_prestation, 4)              
-                
-                # Montant déjà ventilé
-                ctrl_ventilation_totale = CTRL_Ventilation_totale(self.GetMainWindow(), track=track)
-                self.SetItemWindow(prestation, ctrl_ventilation_totale, 5)
-                track.ctrl_ventilation_totale = ctrl_ventilation_totale
-                
-                # Montant ventilé
-                ctrl_ventilation_actuelle = CTRL_Ventilation_actuelle(self.GetMainWindow(), track=track)
-                self.SetItemWindow(prestation, ctrl_ventilation_actuelle, 6)
-                ctrl_ventilation_actuelle.Enable(False)
-                track.ctrl_ventilation_actuelle = ctrl_ventilation_actuelle
-            
-            # Met à jour les totaux du niveau de regroupement
-            trackRegroupement.MAJ() 
-        
-        self.ExpandAllChildren(self.root)
-        
-        # Pour éviter le bus de positionnement des contrôles
-        self.GetMainWindow().CalculatePositions() 
-        
-        self.listeTracks = listeTracks
-        
-        # Importation des ventilations déjà définies
-        for track in listeTracks :
-            if self.dictVentilation.has_key(track.IDprestation) :
-                montant = self.dictVentilation[track.IDprestation]
-                track.Ventiler(montant, importation=True)
-                
-
-    
-    def OnCompareItems(self, item1, item2):
-        if self.GetPyData(item1) > self.GetPyData(item2) :
-            return 1
-        elif self.GetPyData(item1) < self.GetPyData(item2) :
-            return -1
-        else:
-            return 0
-                        
-        
-    def RAZ(self):
-        self.DeleteAllItems()
-        for indexColonne in range(self.GetColumnCount()-1, -1, -1) :
-            self.RemoveColumn(indexColonne)
-        self.DeleteRoot() 
-        self.Initialisation()
-    
-    def MAJbarreInfos(self, erreur=None):
-        self.dictVentilation = {}
-        total = 0.0
-        for track in self.listeTracks :
-            total += track.ventilationActuelle
-            self.dictVentilation[track.IDprestation] = track.ventilationActuelle
-        self.parent.MAJbarreInfos(total, erreur)
-
-    def SelectionneFacture(self, IDfacture=None):
-        # Afficher par facture
-        self.SetRegroupement("facture")
-        # Coche les prestations liées à la facture données
-        for treeItemList, trackRegroupement in self.dictTracksRegroupement.iteritems():
-            if trackRegroupement.IDfacture == IDfacture :
-                checkBox = trackRegroupement.ctrl_checkbox_regroupement
-                checkBox.SetEtat(True)
-                checkBox.OnCheck(None)
-                
-    def GetTotalVentile(self):
-        total = 0.0
-        for track in self.listeTracks :
-            total += track.ventilationActuelle
-        return total
-
-    def GetTotalRestePrestationsAVentiler(self):
-        total = 0.0
-        for track in self.listeTracks :
-            total += track.resteAVentiler
-        return total
-    
-    
     
 
 # -----------------------------------------------------------------------------------------------------------------------
@@ -861,6 +822,10 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioRegroupement, self.radio_facture)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioRegroupement, self.radio_individu)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioRegroupement, self.radio_date)
+        
+        # Init
+        self.ctrl_ventilation.InitGrid() 
+
                 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)
@@ -887,7 +852,7 @@ class CTRL(wx.Panel):
         grid_sizer_barre_bas.Add( (400, 5), 0, 0, 0)
         grid_sizer_barre_bas.Add(self.ctrl_image, 0, 0, 0)
         grid_sizer_barre_bas.Add(self.ctrl_info, 0, wx.EXPAND, 0)
-        grid_sizer_base.Add(grid_sizer_barre_bas, 1, wx.EXPAND|wx.TOP, 2)
+        grid_sizer_base.Add(grid_sizer_barre_bas, 1, wx.EXPAND|wx.TOP, 5)
         
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
@@ -910,6 +875,7 @@ class CTRL(wx.Panel):
         if type(montant) != decimal.Decimal :
             montant = FloatToDecimal(montant)
         self.montant_reglement = montant
+        self.ctrl_ventilation.montant_reglement = montant
         self.MAJinfos() 
     
     def MAJbarreInfos(self, total=FloatToDecimal(0.0), erreur=None):
@@ -957,7 +923,8 @@ class CTRL(wx.Panel):
         if self.validation == "addition" : self.ctrl_image.SetBitmap(self.imgAddition)
         if self.validation == "trop" : self.ctrl_image.SetBitmap(self.imgErreur)
         # MAJ le label d'infos
-        self.ctrl_info.SetLabel(label)
+        if label != self.ctrl_info.GetLabel() :
+            self.ctrl_info.SetLabel(label)
         # Colore Label Ventilation Auto
         self.ColoreLabelVentilationAuto() 
         
@@ -1001,8 +968,8 @@ class CTRL(wx.Panel):
     
     def ColoreLabelVentilationAuto(self):
         aVentiler = FloatToDecimal(0.0)
-        for track in self.ctrl_ventilation.listeTracks :
-             aVentiler += FloatToDecimal(track.montant) - FloatToDecimal(track.ventilationPassee)
+        for ligne in self.ctrl_ventilation.listeLignesPrestations :
+             aVentiler += FloatToDecimal(ligne.montant) - FloatToDecimal(ligne.ventilationPassee)
         if self.montant_reglement == aVentiler :
             couleur = wx.Colour(0, 200, 0)
         else :
@@ -1013,8 +980,8 @@ class CTRL(wx.Panel):
     def VentilationAuto(self):
         """ Procédure de ventilation automatique """
         # Vérifie qu'il n'y a pas de prestations négatives
-        for track in self.ctrl_ventilation.listeTracks :
-            if FloatToDecimal(track.montant) < FloatToDecimal(0.0) :
+        for ligne in self.ctrl_ventilation.listeLignesPrestations :
+            if FloatToDecimal(ligne.montant) < FloatToDecimal(0.0) :
                 dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -1032,28 +999,26 @@ class CTRL(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        for track in self.ctrl_ventilation.listeTracks :
+        for ligne in self.ctrl_ventilation.listeLignesPrestations :
             aVentiler = resteVentilation
-            if aVentiler > FloatToDecimal(track.resteAVentiler) : 
-                aVentiler = FloatToDecimal(track.resteAVentiler)
+            if aVentiler > FloatToDecimal(ligne.resteAVentiler) : 
+                aVentiler = FloatToDecimal(ligne.resteAVentiler)
             if aVentiler > FloatToDecimal(0.0) :
-                track.Ventiler(float(aVentiler + FloatToDecimal(track.ventilationActuelle)), importation=True)
+                montant = aVentiler + ligne.ventilationActuelle
+                ligne.SetEtat(etat=True, montant=montant, majTotaux=False)
                 resteVentilation -= FloatToDecimal(aVentiler)
-        self.ctrl_ventilation.MAJbarreInfos()
+        self.ctrl_ventilation.MAJtotaux()
         
     def VentilationTout(self):
-        for track in self.ctrl_ventilation.listeTracks :
-            aVentiler = track.montant - track.ventilationPassee
-            track.Ventiler(aVentiler, importation=True)
-        self.ctrl_ventilation.MAJbarreInfos()
+        for ligne in self.ctrl_ventilation.listeLignesPrestations :
+            aVentiler = ligne.montant - ligne.ventilationPassee
+            ligne.SetEtat(etat=True, montant=aVentiler, majTotaux=False)
+        self.ctrl_ventilation.MAJtotaux()
         
     def VentilationRien(self):
-        for track in self.ctrl_ventilation.listeTracks :
-            track.Ventiler(0)
-            track.ctrl_checkbox.SetEtat(False)
-            track.ctrl_ventilation_actuelle.MAJ() 
-            track.track_regroupement.ctrl_checkbox_regroupement.SetEtat(False)
-        self.ctrl_ventilation.MAJbarreInfos()
+        for ligne in self.ctrl_ventilation.listeLignesPrestations :
+            ligne.SetEtat(False, majTotaux=False)
+        self.ctrl_ventilation.MAJtotaux()
 
         
 # -------------------------------------------------------------------------------------------------------------------------------------------
@@ -1066,9 +1031,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        self.ctrl = CTRL(panel, IDcompte_payeur=209, IDreglement=None)
-        self.ctrl.SetMontantReglement(8.00)
-        self.ctrl.MAJ() 
+        self.ctrl = CTRL(panel, IDcompte_payeur=61, IDreglement=None)
+        self.ctrl.SetMontantReglement(30.00)
     
         self.bouton_test = wx.Button(panel, -1, _(u"Bouton de test"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)

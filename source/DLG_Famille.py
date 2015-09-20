@@ -118,7 +118,7 @@ class Notebook(wx.Notebook):
             UTILS_Utilisateurs.AfficheDLGInterdiction() 
             return
         self.Freeze()
-        page.MAJ() 
+        wx.CallLater(1, page.MAJ)
         self.Thaw()
         event.Skip()
         
@@ -126,11 +126,11 @@ class Notebook(wx.Notebook):
         """ MAJ la page active du notebook """
         indexPage = self.GetSelection()
         page = self.GetPage(indexPage)
-        page.MAJ()
+        wx.CallLater(1, page.MAJ)
     
     def MAJpage(self, codePage=""):
         page = self.dictPages[codePage]["ctrl"]
-        page.MAJ() 
+        wx.CallLater(1, page.MAJ)
 
 
 
@@ -566,12 +566,14 @@ class Dialog(wx.Dialog):
     def OnBoutonSaisieReglement(self, event):
         self.notebook.AffichePage("reglements")
         pageReglements = self.notebook.GetPageAvecCode("reglements")
+        pageReglements.MAJ()
         pageReglements.OnBoutonAjouter(None)
     
     def ReglerFacture(self, IDfacture=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_reglements", "creer") == False : return
         self.notebook.AffichePage("reglements")
         pageReglements = self.notebook.GetPageAvecCode("reglements")
+        pageReglements.MAJ()
         pageReglements.ReglerFacture(IDfacture)
         
     def OnBoutonAnnuler(self, event):

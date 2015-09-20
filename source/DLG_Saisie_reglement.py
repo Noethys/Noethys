@@ -717,7 +717,7 @@ class Dialog(wx.Dialog):
         # Initialisation des contrôles
         self.OnCheckDiffere(None)
         self.MAJinfos() 
-        self.ctrl_ventilation.MAJ() 
+##        self.ctrl_ventilation.MAJ() 
         
         if self.IDreglement == None :
             self.OnChoixMode(None)
@@ -1548,7 +1548,10 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDcompte_payeur=123, IDreglement=None)
+    import time
+    heure_debut = time.time()
+    dialog_1 = Dialog(None, IDcompte_payeur=61, IDreglement=None)
+    print "Temps de chargement Saisie d'un reglement =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
