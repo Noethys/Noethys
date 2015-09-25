@@ -648,7 +648,7 @@ class ListView(GroupListView):
                 else :
                     reponse = 0
                     
-                if reponse == 0 or nePlusDemanderConfirmation == True :
+                if reponse == 0 or reponse == 1 or nePlusDemanderConfirmation == True :
                     if nbreVerrouillees > 0 :
                         # Annule la procédure d'annulation si des consommations sont déjà pointées sur 'présent' :
                         dlg = wx.MessageDialog(self, _(u"La prestation %d est rattachée à %d consommation(s) déjà pointées.\nIl vous est donc impossible de le(s) supprimer !\n\nProcédure de suppression annulée.") % (track.IDprestation, nbreVerrouillees), _(u"Suppression impossible"), wx.OK | wx.ICON_EXCLAMATION)
@@ -659,9 +659,9 @@ class ListView(GroupListView):
                         # Suppression des consommations associées
                         for IDconso in listeIDconso :
                             DB.ReqDEL("consommations", "IDconso", IDconso)
-
-                if reponse == 1 :
-                    nePlusDemanderConfirmation = True
+                            
+                    if reponse == 1 :
+                        nePlusDemanderConfirmation = True
 
                 if reponse == 2 :
                     # Supprime la référence à la prestation des consommations
@@ -793,7 +793,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, -1, IDfamille=None, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+        self.myOlv = ListView(panel, -1, IDfamille=1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         import time
         t = time.time()
         self.myOlv.MAJ() 
