@@ -276,6 +276,8 @@ class Dialog(wx.Dialog):
         self.ctrl_prelevements = MODULE.ListView(self, id=-1, typePrelevement=self.typePrelevement, name="OL_prelevements", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_prelevements.SetMinSize((50, 50)) 
         
+        self.ctrl_recherche = MODULE.CTRL_Outils(self, listview=self.ctrl_prelevements, afficherCocher=False)
+        
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
@@ -425,7 +427,7 @@ class Dialog(wx.Dialog):
         
         # Prélèvements
         box_prelevements = wx.StaticBoxSizer(self.box_prelevements_staticbox, wx.VERTICAL)
-        grid_sizer_prelevements = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
+        grid_sizer_prelevements = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
         grid_sizer_prelevements.Add(self.ctrl_prelevements, 1, wx.EXPAND, 0)
         
         grid_sizer_boutons_liste = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -437,7 +439,11 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons_liste.Add(self.bouton_imprimer, 0, 0, 0)
         
         grid_sizer_prelevements.Add(grid_sizer_boutons_liste, 1, wx.EXPAND, 0)
-        
+
+        # CTRL Outils
+        grid_sizer_prelevements.Add(self.ctrl_recherche, 1, wx.EXPAND, 0)
+        grid_sizer_prelevements.Add((10, 10), 0, wx.EXPAND, 0)
+
         # Commandes
         grid_sizer_commandes = wx.FlexGridSizer(rows=1, cols=16, vgap=5, hgap=5)
         
@@ -750,11 +756,23 @@ class Dialog(wx.Dialog):
         listeAnomalies = []
         listeLots = []
         
+        # Vérifie que seul les tracks filtrés sont souhaités
+        tracks = self.ctrl_prelevements.GetFilteredObjects()
+        if len(self.ctrl_prelevements.GetObjects()) != len(tracks) :
+            txtMessage = u"Souhaitez-vous vraiment prendre uniquement compte les lignes filtrées (%d/%d lignes) ?\n\nSi vous répondez Non, toutes les lignes seront intégrées dans le fichier." % (len(tracks), len(self.ctrl_prelevements.GetObjects()))
+            dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.CANCEL|wx.NO_DEFAULT|wx.ICON_QUESTION)
+            reponse = dlgConfirm.ShowModal()
+            dlgConfirm.Destroy()
+            if reponse == wx.ID_CANCEL :
+                return
+            if reponse == wx.ID_NO :
+                tracks = self.ctrl_prelevements.GetObjects()
+        
         for sequence in listeSequences :
             
             lot_montant = FloatToDecimal(0.0)
             listeTransactions = []
-            for track in self.ctrl_prelevements.GetObjects() :
+            for track in tracks :
                 if sequence == track.sequence :
                     
                     montant = FloatToDecimal(track.montant)
