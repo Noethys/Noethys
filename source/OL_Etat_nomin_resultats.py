@@ -76,12 +76,16 @@ def GetDictIndividus():
     """ Récupération des infos sur les individus """
     # Récupération des adresses
     DB = GestionDB.DB()
-    req = """SELECT IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid FROM individus;"""
+    req = """SELECT IDindividu, individus.nom, prenom, rue_resid, cp_resid, ville_resid, secteurs.nom 
+    FROM individus
+    LEFT JOIN secteurs ON secteurs.IDsecteur = individus.IDsecteur
+    ;"""
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     dictAdresses = {}
-    for IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid in listeDonnees :
-        dictAdresses[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid}
+    for IDindividu, nom, prenom, rue_resid, cp_resid, ville_resid, secteur in listeDonnees :
+        if secteur == None : secteur = ""
+        dictAdresses[IDindividu] = { "nom" : nom, "prenom" : prenom, "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid, "secteur" : secteur}
     
     # Récupération des individus
     listeChamps = (
@@ -103,7 +107,9 @@ def GetDictIndividus():
     dictResultats = {}
     for valeurs in listeIndividus :
         dictTemp = {}
-        dictTemp["IDindividu"] = valeurs[0]
+        
+        IDindividu = valeurs[0]
+        dictTemp["IDindividu"] = IDindividu
         
         # Infos de la table Individus
         for index in range(0, len(listeChamps)) :
@@ -126,13 +132,18 @@ def GetDictIndividus():
             age = (datedujour.year - datenaissDD.year) - int((datedujour.month, datedujour.day) < (datenaissDD.month, datenaissDD.day))
             dictTemp["date_naiss"] = datenaissDD
             dictTemp["age"] = age
-        
+
+        # Secteur
+        dictTemp["secteur"] = dictAdresses[IDindividu]["secteur"]
+
         # Adresse auto ou manuelle
         if dictTemp["adresse_auto"] != None and dictAdresses.has_key(dictTemp["adresse_auto"]) :
             dictTemp["rue_resid"] = dictAdresses[dictTemp["adresse_auto"]]["rue_resid"]
             dictTemp["cp_resid"] = dictAdresses[dictTemp["adresse_auto"]]["cp_resid"]
             dictTemp["ville_resid"] = dictAdresses[dictTemp["adresse_auto"]]["ville_resid"]
-
+            dictTemp["secteur"] = dictAdresses[dictTemp["adresse_auto"]]["secteur"]
+        
+        
         dictResultats[dictTemp["IDindividu"]] = dictTemp
         
     return dictResultats
@@ -239,6 +250,7 @@ class Track(object):
         self.INDIVIDU_RUE = DICT_INDIVIDUS[IDindividu]["rue_resid"]
         self.INDIVIDU_CP = DICT_INDIVIDUS[IDindividu]["cp_resid"]
         self.INDIVIDU_VILLE = DICT_INDIVIDUS[IDindividu]["ville_resid"]
+        self.INDIVIDU_SECTEUR = DICT_INDIVIDUS[IDindividu]["secteur"]
         self.INDIVIDU_NOM = DICT_INDIVIDUS[IDindividu]["nom"]
         
         # Infos sur la famille
@@ -247,6 +259,7 @@ class Track(object):
         self.FAMILLE_RUE = DICT_TITULAIRES[IDfamille]["adresse"]["rue"]
         self.FAMILLE_CP = DICT_TITULAIRES[IDfamille]["adresse"]["cp"]
         self.FAMILLE_VILLE = DICT_TITULAIRES[IDfamille]["adresse"]["ville"]
+        self.FAMILLE_SECTEUR = DICT_TITULAIRES[IDfamille]["adresse"]["secteur"]
         self.FAMILLE_CAISSE = DICT_FAMILLES[IDfamille]["nomCaisse"]
         self.FAMILLE_NUM_ALLOCATAIRE = DICT_FAMILLES[IDfamille]["num_allocataire"]
         self.FAMILLE_ALLOCATAIRE = DICT_FAMILLES[IDfamille]["nomAllocataire"]

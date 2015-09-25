@@ -133,7 +133,7 @@ def GetTitulaires(listeIDfamille=[]):
                 ville_resid = dictIndividus[IDindividuTitulaire]["ville_resid"]
                 IDsecteur = dictIndividus[IDindividuTitulaire]["IDsecteur"]
                 nomSecteur = dictIndividus[IDindividuTitulaire]["nomSecteur"]
-            dictAdresse = {"rue":rue_resid, "cp":cp_resid, "ville":ville_resid, "IDsecteur":IDsecteur, "nomSecteur":nomSecteur}
+            dictAdresse = {"rue":rue_resid, "cp":cp_resid, "ville":ville_resid, "IDsecteur":IDsecteur, "nomSecteur":nomSecteur, "secteur":nomSecteur}
             
             # Recherche des adresses Emails des titulaires
             listeMails = []
@@ -153,7 +153,7 @@ def GetTitulaires(listeIDfamille=[]):
             dictFamilles[IDfamille]["titulairesAvecCivilite"] = _(u"Sans titulaires")
             dictFamilles[IDfamille]["titulairesSansCivilite"] = _(u"Sans titulaires")
             dictFamilles[IDfamille]["listeTitulaires"] = []
-            dictFamilles[IDfamille]["adresse"] = {"rue":"", "cp":"", "ville":"", "IDsecteur":None, "nomSecteur":""}
+            dictFamilles[IDfamille]["adresse"] = {"rue":"", "cp":"", "ville":"", "IDsecteur":None, "nomSecteur":"", "secteur":""}
             dictFamilles[IDfamille]["listeMails"] = []
     
     return dictFamilles
@@ -176,7 +176,7 @@ def GetIndividus():
         dictTemp[IDindividu] = {
             "IDcivilite":IDcivilite, "nom":nom, "prenom":prenom, "date_naiss":date_naiss, 
             "adresse_auto":adresse_auto, "rue":rue_resid, "cp":cp_resid, "ville":ville_resid, "mail":mail,
-            "IDsecteur":IDsecteur, "nomSecteur":nomSecteur}
+            "IDsecteur":IDsecteur, "nomSecteur":nomSecteur, "secteur":nomSecteur}
     
     # Recherche les noms et adresses de chaque individu
     dictIndividus = {}
@@ -204,6 +204,7 @@ def GetIndividus():
             dictIndividu["ville"] = dictTemp[adresse_auto]["ville"]
             dictIndividu["IDsecteur"] = dictTemp[adresse_auto]["IDsecteur"]
             dictIndividu["nomSecteur"] = dictTemp[adresse_auto]["nomSecteur"]
+            dictIndividu["secteur"] = dictTemp[adresse_auto]["nomSecteur"]
             
         dictIndividus[IDindividu] = dictIndividu
     
