@@ -733,7 +733,7 @@ class BarreRecherche(wx.SearchCtrl):
                 IDfamille = None
             if IDfamille != None :
                 DB = GestionDB.DB()
-                req = """SELECT IDfamille FROM Familles WHERE IDfamille=%d
+                req = """SELECT IDfamille FROM familles WHERE IDfamille=%d
                 ;""" % IDfamille
                 DB.ExecuterReq(req)
                 listeDonnees = DB.ResultatReq()
