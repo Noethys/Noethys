@@ -124,6 +124,8 @@ class CTRL_Contrats(wx.Choice):
         for IDcontrat, date_debut, date_fin, nomActivite, montant, nomIndividu, prenomIndividu in listeDonnees :
             if prenomIndividu == None : prenomIndividu = ""
             nomIndividu = u"%s %s" % (nomIndividu, prenomIndividu)
+            if type(montant) != float :
+                montant = 0.0
             montantStr = u"%.2f %s" % (montant, SYMBOLE)
             self.dictDonnees[index] = { "ID" : IDcontrat, "nomIndividu " : nomIndividu}
             label = _(u"%s - %s - %s - du %s au %s") % (nomIndividu, nomActivite, montantStr, UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))

@@ -91,7 +91,7 @@ class Langue(wx.Panel):
 class Interface_mysql(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.listeLabels = [u"MySQLdb", u"mysql.connector"]
+        self.listeLabels = [u"MySQLdb (par défaut)", u"mysql.connector"]
         self.listeCodes = ["mysqldb", "mysql.connector"]
         
         self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Interface MySQL"))
@@ -105,7 +105,7 @@ class Interface_mysql(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_interface.SetToolTipString(_(u"Sélectionnez l'interface MySQL à utiliser. 'Mysqldb' est conseillé pour les fichiers en réseau local alors que 'mysql.connector' est conseillé pour les fichiers en réseau distant (par internet)"))
+        self.ctrl_interface.SetToolTipString(_(u"Sélectionnez l'interface MySQL à utiliser pour les fichiers réseau. 'Mysqldb' est conseillé mais il est possible que 'mysql.connector' soit parfois plus rapide pour certaines connexions distantes (par internet). Vous pouvez tester les deux pour choisir le plus rapide."))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)

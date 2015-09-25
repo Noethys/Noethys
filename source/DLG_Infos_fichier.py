@@ -120,6 +120,7 @@ class Informations():
         req = """SELECT COUNT(IDphoto) FROM photos;"""
         DBTemp.ExecuterReq(req)
         donnees = DBTemp.ResultatReq()
+        DBTemp.Close() 
         if len(donnees) > 0 :
             nbre = donnees[0][0]
         else :
@@ -131,6 +132,7 @@ class Informations():
         req = """SELECT COUNT(IDdocument) FROM documents;"""
         DBTemp.ExecuterReq(req)
         donnees = DBTemp.ResultatReq()
+        DBTemp.Close() 
         if len(donnees) > 0 :
             nbre = donnees[0][0]
         else :

@@ -3377,7 +3377,7 @@ class MainFrame(wx.Frame):
     
     def ActiveBarreMenus(self, etat=True):
         """ Active ou non des menus de la barre """
-        for numMenu in range(1, 9):
+        for numMenu in range(1, 10):
             self.menu.EnableTop(numMenu, etat)
         self._mgr.GetPane("panel_recherche").Show(etat)
 
@@ -3751,7 +3751,7 @@ class MyApp(wx.App):
         if hasattr(frame, "ctrl_serveur_nomade") :
             frame.ctrl_serveur_nomade.StartServeur()
         
-##        print time.time() - heure_debut
+        #print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
         return True
 
 
