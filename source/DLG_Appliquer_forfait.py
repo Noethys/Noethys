@@ -182,7 +182,7 @@ class Forfaits():
         
         return dictActivites
 
-    def Applique_forfait(self, selectionIDcategorie_tarif=None, selectionIDtarif=None, inscription=False, selectionIDactivite=None):
+    def Applique_forfait(self, selectionIDcategorie_tarif=None, selectionIDtarif=None, inscription=False, selectionIDactivite=None, labelTarif=None):
         """ Recherche et applique les forfaits auto à l'inscription """
         dictUnites = self.GetDictUnites() 
         dictInscriptions = self.GetInscriptions() 
@@ -305,17 +305,21 @@ class Forfaits():
                                     texteDatesPrises = u""
                                     for datePrise in listeDatesPrises :
                                         texteDatesPrises += u"   > %s\n" % DateComplete(datePrise)
-                                    dlg = wx.MessageDialog(None, _(u"Il est impossible de saisir le forfait ! \n\nDes consommations existent déjà sur les dates suivantes :\n\n%s") % texteDatesPrises, "Erreur", wx.OK | wx.ICON_ERROR)
+                                    if labelTarif == None :
+                                        label = ""
+                                    else :
+                                        label = labelTarif + " "
+                                    dlg = wx.MessageDialog(None, _(u"Il est impossible de saisir le forfait %s! \n\nDes consommations existent déjà sur les dates suivantes :\n\n%s") % (label, texteDatesPrises), "Erreur", wx.OK | wx.ICON_ERROR)
                                     dlg.ShowModal()
                                     dlg.Destroy()
                                     return False
                                 
-                                # Recherche du montant du tarif : MONTANT UNIQUE
+                                # ------------ Recherche du montant du tarif : MONTANT UNIQUE
                                 if methode_calcul == "montant_unique" :
                                     lignes_calcul = dictTarif["lignes_calcul"]
                                     montant_tarif = lignes_calcul[0]["montant_unique"]
                                 
-                                # Recherche du montant à appliquer : QUOTIENT FAMILIAL
+                                # ------------ Recherche du montant à appliquer : QUOTIENT FAMILIAL
                                 if methode_calcul == "qf" :
                                     montant_tarif = 0.0
                                     tarifFound = False
@@ -335,7 +339,25 @@ class Forfaits():
                                                 break
                                         if tarifFound == True :
                                             break
-                                    
+
+                                # -------------- Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
+                                if methode_calcul == "choix" :
+                                    # Nouvelle saisie si clic sur la case
+                                    lignes_calcul = dictTarif["lignes_calcul"]
+                                    import DLG_Selection_montant_prestation
+                                    dlg = DLG_Selection_montant_prestation.Dialog(None, lignes_calcul=lignes_calcul, label=nom_tarif, montant=0.0, titre=labelTarif)
+                                    if dlg.ShowModal() == wx.ID_OK:
+                                        nom_tarif = dlg.GetLabel()
+                                        montant_tarif = dlg.GetMontant()
+                                        dlg.Destroy()
+                                    else:
+                                        dlg.Destroy()
+                                        return False
+
+
+
+
+
                                 # ------------ Déduction d'une aide journalière --------------
                                 
                                 # Recherche si une aide est valable à cette date et pour cet individu et pour cette activité
@@ -575,7 +597,9 @@ class Forfaits():
         ORDER BY date_debut;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeAides = DB.ResultatReq()
-        if len(listeAides) == 0 : return dictAides
+        if len(listeAides) == 0 : 
+            DB.Close() 
+            return dictAides
         listeIDaides = []
         for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max in listeAides :
             date_debut = DateEngEnDateDD(date_debut)
@@ -643,43 +667,66 @@ class CTRL(HTL.HyperTreeList):
         # ImageList
         il = wx.ImageList(16, 16)
         self.img_forfait = il.Add(wx.Bitmap("Images/16x16/Etiquette.png", wx.BITMAP_TYPE_PNG))
+        self.img_ok = il.Add(wx.Bitmap('Images/16x16/Ok4.png', wx.BITMAP_TYPE_PNG))
+        self.img_pasok = il.Add(wx.Bitmap('Images/16x16/Interdit2.png', wx.BITMAP_TYPE_PNG))
         self.AssignImageList(il)
         
         # Création des colonnes
         self.AddColumn(_(u"Individu/Activité/Prestation"))
-        self.SetColumnWidth(0, 380)
+        self.SetColumnWidth(0, 330)
         self.SetColumnAlignment(0, wx.ALIGN_LEFT)
         
         self.AddColumn(_(u"Période du forfait"))
-        self.SetColumnWidth(1, 320)
+        self.SetColumnWidth(1, 370)
         self.SetColumnAlignment(1, wx.ALIGN_LEFT)
         
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_NO_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT) #  | HTL.TR_NO_HEADER
-        
+        self.SetAGWWindowStyleFlag( wx.TR_HIDE_ROOT | wx.TR_NO_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT) #  | HTL.TR_NO_HEADER
+
         # Binds
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnDoubleClick)
+        self.Bind(HTL.EVT_TREE_ITEM_CHECKED, self.OnCheckItem) 
         
     def OnDoubleClick(self, event):
         item = event.GetItem()
-        donnees = self.GetPyData(item)
-        if donnees == None : return
-        if donnees["type"] != "tarif" : return
-        IDtarif = donnees["ID"]
-        self.parent.OnBoutonOk(None)
+        self.CheckItem(item, not self.IsItemChecked(item))
+        event.Skip() 
+##        donnees = self.GetPyData(item)
+##        if donnees == None : return
+##        if donnees["type"] != "tarif" : return
+##        IDtarif = donnees["ID"]
+##        self.parent.OnBoutonOk(None)
+    
+    def OnCheckItem(self, event):
+        item = event.GetItem()
+        etat = self.IsItemChecked(item)
+        if self.GetPyData(item)["type"] == "activite" :
+            for index in range(0, self.GetChildrenCount(item)):
+                item = self.GetNext(item) 
+                self.CheckItem(item, etat)
         
-        
+    def GetCoches(self):
+        """ Obtient la liste des IDtarif cochés """
+        listeTarifs = []
+        item = self.root
+        for index in range(0, self.GetChildrenCount(self.root)):
+            item = self.GetNext(item) 
+            if self.IsItemChecked(item) and self.GetPyData(item)["type"] == "tarif" :
+                data = self.GetPyData(item)
+                listeTarifs.append(data)
+        return listeTarifs
+
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
         self.Remplissage()
     
-    def GetIDtarif(self):
-        donnees = self.GetPyData(self.GetSelection())
-        if donnees == None : return None
-        if donnees["type"] != "tarif" : return None
-        IDtarif = donnees["ID"]
-        return IDtarif
+##    def GetIDtarif(self):
+##        donnees = self.GetPyData(self.GetSelection())
+##        if donnees == None : return None
+##        if donnees["type"] != "tarif" : return None
+##        IDtarif = donnees["ID"]
+##        return IDtarif
     
     def Remplissage(self):        
         # Création de la racine
@@ -717,7 +764,7 @@ class CTRL(HTL.HyperTreeList):
                     
                     dictActivite = dictForfaits[IDactivite]
                     nomActivite = dictActivite["nom"]
-                    niveau2 = self.AppendItem(niveau1, nomActivite)
+                    niveau2 = self.AppendItem(niveau1, nomActivite, ct_type=1)
                     self.SetPyData(niveau2, {"type":"activite", "ID":IDactivite} )
                     
                     # Niveau 3 : Tarifs
@@ -733,9 +780,7 @@ class CTRL(HTL.HyperTreeList):
                             lignes_calcul = dictTarif["lignes_calcul"]
                             options = dictTarif["options"]
                             
-                            niveau3 = self.AppendItem(niveau2, nomTarif)
-                            self.SetPyData(niveau3, {"type":"tarif", "ID":IDtarif} )
-                            self.SetItemImage(niveau3, self.img_forfait, which=wx.TreeItemIcon_Normal)
+                            niveau3 = self.AppendItem(niveau2, nomTarif, ct_type=1)
                             
                             # Affiche les dates extrêmes du forfait
                             if len(combinaisons) > 0 :
@@ -752,15 +797,22 @@ class CTRL(HTL.HyperTreeList):
                             else :
                                 date_debut_forfait, date_fin_forfait = "?", "?"
                                 
-                            label = _(u"Du %s au %s") % (date_debut_forfait, date_fin_forfait)
-                            self.SetItemText(niveau3, label, 1)
+                            labelDates = _(u"Du %s au %s") % (date_debut_forfait, date_fin_forfait)
+                            self.SetItemText(niveau3, labelDates, 1)
+                            
+                            self.SetPyData(niveau3, {"type":"tarif", "ID":IDtarif, "nom":nomTarif, "dates":labelDates, "item":niveau3} )
+                            
 
-        
-        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_NO_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT ) # | HTL.TR_NO_HEADER
-            
+        self.SetAGWWindowStyleFlag(wx.TR_COLUMN_LINES|wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT) # | HTL.TR_NO_HEADER
         self.ExpandAllChildren(self.root)
-        
-
+    
+    def SetEtat(self, item=None, etat=True):
+        if etat == True :
+            self.SetItemImage(item, self.img_ok, which=wx.TreeItemIcon_Normal)
+            self.CheckItem(item, False)
+        else :
+            self.SetItemImage(item, self.img_pasok, which=wx.TreeItemIcon_Normal)
+            
 # -----------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
@@ -771,18 +823,18 @@ class Dialog(wx.Dialog):
         self.listeActivites = listeActivites
         self.listeIndividus = listeIndividus
         
-        intro = _(u"Vous pouvez ici appliquer un forfait daté. Ceux-ci peuvent être paramétrés dans la tarification. Sélectionnez un forfait pour l'individu et l'activité de votre choix puis cliquez sur Ok ou double-cliquez sur la ligne souhaitée.")
-        titre = _(u"Appliquer un forfait daté")
+        intro = _(u"Vous pouvez ici appliquer un ou plusieurs forfaits datés. Ceux-ci peuvent être paramétrés dans la tarification. Cochez un ou plusieurs forfaits pour l'individu et l'activité de votre choix puis cliquez sur Ok.")
+        titre = _(u"Appliquer des forfaits datés")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Forfait.png")
         self.SetTitle(titre)
 
-        self.staticbox_forfaits = wx.StaticBox(self, -1, _(u"Sélection d'un forfait"))
+        self.staticbox_forfaits = wx.StaticBox(self, -1, _(u"Cochez un ou plusieurs forfaits"))
         self.ctrl_forfaits = CTRL(self, IDfamille, listeActivites, listeIndividus, saisieManuelle=True, saisieAuto=False)
         self.ctrl_forfaits.MAJ()
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
-        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Appliquer"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Annuler.png")
 
         self.__set_properties()
         self.__do_layout()
@@ -825,28 +877,35 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Activits1")
 
     def OnBoutonOk(self, event): 
-        IDtarif = self.ctrl_forfaits.GetIDtarif() 
-        if IDtarif == None :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun forfait à appliquer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        listeTarifs = self.ctrl_forfaits.GetCoches() 
+        if len(listeTarifs) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucun forfait à appliquer !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
         # Application du forfait sélectionné
         f = Forfaits(IDfamille=self.IDfamille, listeActivites=self.listeActivites, listeIndividus=self.listeIndividus, saisieManuelle=True, saisieAuto=False)
-        resultat = f.Applique_forfait(selectionIDtarif=IDtarif) 
-        if resultat == False :
-            return
-        
+        for dataItem in listeTarifs :
+            IDtarif = dataItem["ID"]
+            nomTarif = dataItem["nom"]
+            labelDates = dataItem["dates"]
+            item = dataItem["item"]
+            label = u"%s (%s)" % (nomTarif, labelDates)
+            resultat = f.Applique_forfait(selectionIDtarif=IDtarif, labelTarif=label) 
+            
+            # Affichage de la validation
+            self.ctrl_forfaits.SetEtat(item=item, etat=resultat)
+    
         # Fermeture de la fenêtre
-        self.EndModal(wx.ID_OK)
+##        self.EndModal(wx.ID_OK)
         
 
 
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=3, listeActivites=[2, 3], listeIndividus=[5,])
+    dialog_1 = Dialog(None, IDfamille=3, listeActivites=[1,], listeIndividus=[2,])
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

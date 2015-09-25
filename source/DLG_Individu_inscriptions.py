@@ -58,7 +58,7 @@ class Panel(wx.Panel):
         self.bouton_ajouter_inscription.SetToolTipString(_(u"Cliquez ici pour inscrire l'individu à une activité"))
         self.bouton_modifier_inscription.SetToolTipString(_(u"Cliquez ici pour modifier l'inscription sélectionnée"))
         self.bouton_supprimer_inscription.SetToolTipString(_(u"Cliquez ici pour supprimer l'inscription sélectionnée"))
-        self.bouton_forfait.SetToolTipString(_(u"Cliquez ici pour saisir manuellement un forfait daté"))
+        self.bouton_forfait.SetToolTipString(_(u"Cliquez ici pour saisir manuellement des forfaits datés"))
         self.bouton_ajouter_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat pour cet individu"))
         self.bouton_modifier_contrat.SetToolTipString(_(u"Cliquez ici pour modifier le contrat sélectionné"))
         self.bouton_supprimer_contrat.SetToolTipString(_(u"Cliquez ici pour supprimer le contrat sélectionné"))

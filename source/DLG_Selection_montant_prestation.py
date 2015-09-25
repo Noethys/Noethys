@@ -96,15 +96,17 @@ class ListView(FastObjectListView):
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, lignes_calcul=[], label=u"", montant=0.0):
+    def __init__(self, parent, lignes_calcul=[], label=u"", montant=0.0, titre=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
         # Bandeau
         intro = _(u"Vous pouvez ici sélectionner dans la liste un montant et un label pour la prestation qui va être créée. Vous pouvez également double-cliquer dans la liste pour valider aussitôt.")
-        titre = _(u"Tarif au choix")
+        titreDefaut = _(u"Tarif au choix")
+        if titre == None :
+            titre = titreDefaut
         self.SetTitle(titre)
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titreDefaut, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
 
         # Liste de choix
         self.ctrl_choix = ListView(self, -1, lignes_calcul=lignes_calcul, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -177,6 +179,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
     
     def SetSelection(self, label="", montant=0.0, valider=False):
+        if label == None : label = ""
         self.ctrl_label.SetValue(label)
         self.ctrl_montant.SetMontant(montant)
         if valider == True :
