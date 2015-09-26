@@ -495,10 +495,11 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Init calendrier
         date_debut_temp = date_debut
         date_fin_temp = date_fin
-        if date < date_debut_temp :
-            date_debut_temp = date
-        if date > date_fin_temp :
-            date_fin_temp = date
+        if date != None :
+            if date < date_debut_temp :
+                date_debut_temp = date
+            if date > date_fin_temp :
+                date_fin_temp = date
         self.GetDictOuvertures(date_debut_temp, date_fin_temp)
         self.GetDictRemplissage(date_debut_temp, date_fin_temp)
         self.GetDictConso(date_debut_temp, date_fin_temp)

@@ -125,8 +125,8 @@ class Dialog(wx.Dialog):
         # Init
         self.check_ouvertures.SetValue(True)
         self.check_places.SetValue(True)
-        self.ctrl_scolaires.SetJours("0;1;2;3;4")
-        self.ctrl_vacances.SetJours("0;1;2;3;4")
+##        self.ctrl_scolaires.SetJours("0;1;2;3;4")
+##        self.ctrl_vacances.SetJours("0;1;2;3;4")
         self.ctrl_date.SetFocus()
 
     def __set_properties(self):
