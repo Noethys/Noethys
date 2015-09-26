@@ -41,7 +41,7 @@ class Panel(wx.Panel):
         
         # Cotisations individuelles
         self.staticbox_cotisations = wx.StaticBox(self, -1, _(u"Cotisations familiales et individuelles"))
-        codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom", "observations"]
+        codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom", "activites", "observations"]
         checkColonne = True
         triColonne = "date_debut"
         self.ctrl_cotisations = OL_Liste_cotisations.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=self.dictFamillesRattachees, mode="individu", codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)

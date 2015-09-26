@@ -18,6 +18,7 @@ import CTRL_Bandeau
 import OL_Depots_cotisations
 import OL_Cotisations_depots
 
+import UTILS_Divers
 import UTILS_Titulaires
 import GestionDB
 
@@ -60,7 +61,23 @@ class Track(object):
         self.typeHasCarte = donnees[15]
         self.nomUniteCotisation = donnees[16]
         self.observations = donnees[17] 
-        
+        self.activites= donnees[18]
+        if self.activites == None :
+            self.activites = ""
+            
+        # Activites
+        texte = ""
+        if len(self.activites) > 0 :
+            listeTemp = []
+            listeIDactivites = UTILS_Divers.ConvertChaineEnListe(self.activites)
+            for IDactivite in listeIDactivites :
+                if parent.dictActivites.has_key(IDactivite) :
+                    nomActivite = parent.dictActivites[IDactivite]["nom"]
+                    listeTemp.append(nomActivite)
+            if len(listeTemp) > 0 :
+                texte = ", ".join(listeTemp)
+        self.activitesStr = texte
+
         if parent.titulaires.has_key(self.IDfamille) :
             self.nomTitulaires = parent.titulaires[self.IDfamille]["titulairesSansCivilite"]
         else:
@@ -105,7 +122,20 @@ class Dialog(wx.Dialog):
         intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des dépôts de cotisations. Ces dépôts sont utiles si, par exemple, votre cotisation se présente sous la forme d'une carte d'adhérent dont vous devez renvoyer un bordereau de création à une fédération ou une maison-mère. Vous pouvez ainsi savoir quels sont les bordereaux qui ont déjà été envoyés...")
         titre = _(u"Gestion des dépôts de cotisations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Depot_cotisations.png")
-        
+
+        # Importation des activités
+        DB = GestionDB.DB()
+        req = """SELECT IDactivite, nom, abrege
+        FROM activites
+        ORDER BY date_fin DESC;"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        DB.Close()
+        self.dictActivites = {}
+        for IDactivite, nom, abrege in listeTemp :
+            dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
+            self.dictActivites[IDactivite] = dictTemp
+
         # Cotisations disponibles
         self.staticbox_cotisations = wx.StaticBox(self, -1, _(u"Cotisations disponibles"))
         self.ctrl_cotisations = OL_Cotisations_depots.ListView(self, id=-1, inclus=False, selectionPossible=False, size=(-1, 150), style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -218,7 +248,7 @@ class Dialog(wx.Dialog):
         cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
         cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
         types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-        unites_cotisations.nom, cotisations.observations
+        unites_cotisations.nom, cotisations.observations, cotisations.activites
         FROM cotisations 
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation

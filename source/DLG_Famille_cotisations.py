@@ -26,7 +26,7 @@ class Panel(wx.Panel):
         self.staticbox_cotisations = wx.StaticBox(self, -1, _(u"Cotisations familiales et individuelles"))
         
         # OL Cotisations
-        codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom", "observations"]
+        codesColonnes = ["IDcotisation", "date_debut", "date_fin", "beneficiaires", "nom", "numero", "date_creation_carte", "depot_nom", "activites", "observations"]
         checkColonne = True
         triColonne = "date_debut"
         self.listviewAvecFooter = OL_Liste_cotisations.ListviewAvecFooter(self, kwargs={"IDfamille" : IDfamille, "mode" : "famille", "codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne}) 

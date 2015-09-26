@@ -21,6 +21,7 @@ import UTILS_Titulaires
 import UTILS_Utilisateurs
 import UTILS_Config
 import UTILS_Dates
+import UTILS_Divers
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
@@ -49,8 +50,27 @@ class Track(object):
         self.nomUniteCotisation = donnees[16]
         self.IDcompte_payeur = donnees[17]
         self.observations = donnees[18]
+        self.activites = donnees[19]
+        if self.activites == None :
+            self.activites = ""
+            
+        # Activites
+        texte = ""
+        if len(self.activites) > 0 :
+            listeTemp = []
+            listeIDactivites = UTILS_Divers.ConvertChaineEnListe(self.activites)
+            for IDactivite in listeIDactivites :
+                if parent.dictActivites.has_key(IDactivite) :
+                    nomActivite = parent.dictActivites[IDactivite]["nom"]
+                    listeTemp.append(nomActivite)
+            if len(listeTemp) > 0 :
+                texte = ", ".join(listeTemp)
+        self.activitesStr = texte
         
+        # Nom cotisation
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
+        
+        # Numéro de cotisation
         try :
             self.numero_int = int(self.numero)
         except :
@@ -142,6 +162,19 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.labelParametres = ""
         
+        # Importation des activités
+        DB = GestionDB.DB()
+        req = """SELECT IDactivite, nom, abrege
+        FROM activites
+        ORDER BY date_fin DESC;"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        DB.Close()
+        self.dictActivites = {}
+        for IDactivite, nom, abrege in listeTemp :
+            dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
+            self.dictActivites[IDactivite] = dictTemp
+
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -305,7 +338,7 @@ class ListView(FastObjectListView):
             cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
             cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
             types_cotisations.nom, types_cotisations.type, types_cotisations.carte,
-            unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
+            unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations, cotisations.activites
             FROM cotisations 
             LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
             LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -341,7 +374,7 @@ class ListView(FastObjectListView):
                 cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
                 cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
                 types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
+                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations, cotisations.activites
                 FROM cotisations 
                 LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
                 LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -377,7 +410,7 @@ class ListView(FastObjectListView):
                 cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
                 cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation,
                 types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
+                unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations, cotisations.activites
                 FROM cotisations 
                 LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
                 LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -520,7 +553,8 @@ class ListView(FastObjectListView):
             "solde" : ColumnDefn(_(u"Solde"), 'left', 80, "solde", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageVentilation), 
             "date_creation_carte" : ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
             "depot_nom" : ColumnDefn(_(u"Dépôt carte"), 'left', 100, "depotStr", typeDonnee="texte", imageGetter=GetImageDepot), 
-            "observations" : ColumnDefn(_(u"Notes"), 'left', 200, "observations", typeDonnee="texte"),
+            "activites" : ColumnDefn(_(u"Activités"), 'left', 150, "activitesStr", typeDonnee="texte"),
+            "observations" : ColumnDefn(_(u"Notes"), 'left', 150, "observations", typeDonnee="texte"),
             }
             
             
@@ -1041,7 +1075,8 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, IDfamille=291, id=-1, mode="famille", triColonne="numero", checkColonne=True, codesColonnes=["IDcotisation", "beneficiaires", "date_saisie", "numero", "nom", "type_cotisation", "unite_cotisation", "montant", "solde", "observations"], name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        # mode = liste ou famille
+        self.myOlv = ListView(panel, IDfamille=None, id=-1, mode="liste", triColonne="numero", checkColonne=True, codesColonnes=["IDcotisation", "beneficiaires", "date_saisie", "numero", "nom", "type_cotisation", "unite_cotisation", "montant", "solde", "activites", "observations"], name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

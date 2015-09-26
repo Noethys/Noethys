@@ -40,6 +40,7 @@ try :
 except Exception, err :
     IMPORT_MYSQLCONNECTOR_OK = False
 
+
 # Interface pour Mysql = "mysql.connector" ou "mysqldb"
 # Est modifié automatiquement lors du lancement de Noethys selon les préférences (Menu Paramétrage > Préférences)
 # Peut être également modifié manuellement ici dans le cadre de tests sur des fichiers indépendamment de l'interface principale 
@@ -174,7 +175,8 @@ class DB:
                 self.cursor.execute("USE %s;" % nomFichier)
             
         except Exception, err:
-            print "La connexion avec la base de donnees MYSQL a echouee : \nErreur detectee :%s" % err
+            print "La connexion avec la base de donnees MYSQL a echouee. Erreur :"
+            print (err,)
             self.erreur = err
             self.echec = 1
             #AfficheConnexionOuvertes() 
@@ -1688,7 +1690,14 @@ class DB:
         
         # =============================================================
         
-
+        versionFiltre = (1, 1, 5, 2)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("cotisations", "activites", "VARCHAR(450)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
 
 
         return True
@@ -1984,7 +1993,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("factures", "etat", "VARCHAR(100)")
+##    db.AjoutChamp("cotisations", "activites", "VARCHAR(450)")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
@@ -2010,6 +2019,16 @@ if __name__ == "__main__":
 ##    db.CreationTousIndex() 
 ##    db.Close() 
     
-    
+    # Test d'une connexion MySQL
+    hote = ""
+    utilisateur = ""
+    motdepasse = ""
+    DB = DB(nomFichier=u"3306;%s;%s;%s[RESEAU]" % (hote, utilisateur, motdepasse))
+    if DB.echec == 1 :
+        print "Echec = ", DB.echec
+    else :
+        print "connexion ok"
+    DB.Close()
+
     pass
     

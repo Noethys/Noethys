@@ -20,6 +20,7 @@ import CTRL_Saisie_euros
 import GestionDB
 import UTILS_Historique
 import UTILS_Identification
+import UTILS_Divers
 
 
 def DateEngFr(textDate):
@@ -364,8 +365,84 @@ class Choix_payeur(wx.Choice):
         index = self.GetSelection()
         if index == -1 : return None
         return self.listeDonnees[index][1]
-        
 
+# ------------------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Activites(wx.TextCtrl):
+    def __init__(self, parent):
+        wx.TextCtrl.__init__(self, parent, -1, "")
+        self.Enable(False)
+        self.listeDonnees = []
+        
+        # Importation des activités
+        DB = GestionDB.DB()
+        req = """SELECT IDactivite, nom, abrege
+        FROM activites
+        ORDER BY date_fin DESC;"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        DB.Close()
+        
+        self.dictActivites = {}
+        self.listeActivites = []
+        for IDactivite, nom, abrege in listeTemp :
+            dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
+            self.dictActivites[IDactivite] = dictTemp
+            self.listeActivites.append(dictTemp)
+    
+    def MAJ(self):
+        texte = ""
+        listeTemp = []
+        for IDactivite in self.listeDonnees :
+            if self.dictActivites.has_key(IDactivite) :
+                nomActivite = self.dictActivites[IDactivite]["nom"]
+                listeTemp.append(nomActivite)
+        if len(listeTemp) > 0 :
+            texte = ", ".join(listeTemp)
+        self.SetValue(texte)
+        
+    def SetDonnees(self, donnees=None, format="texte"):
+        """ Importe les données au format texte ou liste """
+        if format == "texte" :
+            if donnees == None : donnees = ""
+            self.listeDonnees = UTILS_Divers.ConvertChaineEnListe(donnees)
+        else :
+            if donnees == None : donnees = []
+            self.listeDonnees = donnees
+        self.MAJ() 
+    
+    def GetDonnees(self, format="texte"):
+        """ Retourne les données au format texte ou liste """
+        if format == "texte" :
+            return UTILS_Divers.ConvertListeEnChaine(self.listeDonnees)
+        else :
+            return self.listeDonnees
+    
+    def Modifier(self):
+        listeLabels = []
+        listeID = []
+        listePreSelections = []
+        index = 0
+        for dictTemp in self.listeActivites :
+            listeLabels.append(dictTemp["nom"])
+            listeID.append(dictTemp["IDactivite"])
+            if dictTemp["IDactivite"] in self.listeDonnees :
+                listePreSelections.append(index)
+            index += 1
+        dlg = wx.MultiChoiceDialog(self, _(u"Cochez les activités à associer à la cotisation :"), _(u"Associer des activités"), listeLabels)
+        dlg.SetSize((500, 550))
+        dlg.SetSelections(listePreSelections)
+        if dlg.ShowModal() == wx.ID_OK :
+            selections = dlg.GetSelections()
+            self.listeDonnees = []
+            for index in selections :
+                IDactivite = listeID[index]
+                self.listeDonnees.append(IDactivite)
+            self.MAJ() 
+        dlg.Destroy()
+        
+        
+        
 # ------------------------------------------------------------------------------------------------------------------------------------------
 
 
@@ -396,8 +473,13 @@ class Dialog(wx.Dialog):
         self.ctrl_date_debut = CTRL_Saisie_date.Date(self)
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
+        
+        self.label_activites = wx.StaticText(self, -1, _(u"Activités :"))
+        self.ctrl_activites = CTRL_Activites(self)
+        self.bouton_activites = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        
         self.label_observations = wx.StaticText(self, -1, _(u"Notes :"))
-        self.ctrl_observations = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.ctrl_observations = wx.TextCtrl(self, -1, "")
 
         # Carte
         self.staticbox_carte_staticbox = wx.StaticBox(self, -1, _(u"Carte d'adhérent"))
@@ -435,6 +517,7 @@ class Dialog(wx.Dialog):
 
         self.Bind(wx.EVT_CHOICE, self.OnChoixType, self.ctrl_type)
         self.Bind(wx.EVT_CHOICE, self.OnChoixUnite, self.ctrl_unite)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonActivites, self.bouton_activites)
         self.Bind(wx.EVT_CHECKBOX, self.OnChoixCreation, self.ctrl_creation)
         self.Bind(wx.EVT_CHECKBOX, self.OnChoixFacturer, self.ctrl_facturer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
@@ -462,6 +545,7 @@ class Dialog(wx.Dialog):
         self.ctrl_beneficiaire.SetToolTipString(_(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation"))
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.bouton_activites.SetToolTipString(_(u"Cliquez ici pour associer une ou plusieurs activités à cette cotisation"))
         self.ctrl_observations.SetToolTipString(_(u"Saisissez un texte libre (optionnel)"))
         self.ctrl_creation.SetToolTipString(_(u"Selectionnez OUI si une carte d'adhérent a ete créee"))
         self.ctrl_numero.SetMinSize((70, -1))
@@ -485,7 +569,7 @@ class Dialog(wx.Dialog):
         
         # Cotisation
         staticbox_cotisation = wx.StaticBoxSizer(self.staticbox_cotisation_staticbox, wx.VERTICAL)
-        grid_sizer_cotisation = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
+        grid_sizer_cotisation = wx.FlexGridSizer(rows=6, cols=2, vgap=5, hgap=5)
         grid_sizer_validite = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_cotisation.Add(self.label_type, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_cotisation.Add(self.ctrl_type, 0, wx.EXPAND, 0)
@@ -499,10 +583,19 @@ class Dialog(wx.Dialog):
         grid_sizer_validite.Add(self.label_au, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_validite.Add(self.ctrl_date_fin, 0, 0, 0)
         grid_sizer_cotisation.Add(grid_sizer_validite, 1, wx.EXPAND, 0)
+        
+        grid_sizer_cotisation.Add(self.label_activites, 0, wx.ALIGN_RIGHT|wx.TOP, 3)
+        
+        grid_sizer_activites = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_activites.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
+        grid_sizer_activites.Add(self.bouton_activites, 0, wx.EXPAND, 0)
+        grid_sizer_activites.AddGrowableCol(0)
+        grid_sizer_cotisation.Add(grid_sizer_activites, 0, wx.EXPAND, 0)
+        
         grid_sizer_cotisation.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.TOP, 3)
         grid_sizer_cotisation.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
         grid_sizer_cotisation.AddGrowableCol(1)
-        grid_sizer_cotisation.AddGrowableRow(4)
+        grid_sizer_cotisation.AddGrowableRow(5)
         staticbox_cotisation.Add(grid_sizer_cotisation, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_cotisation, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
         
@@ -640,7 +733,10 @@ class Dialog(wx.Dialog):
         # MAJ contrôles
         self.OnChoixCreation(None)
         self.OnChoixFacturer(None) 
-
+    
+    def OnBoutonActivites(self, event):
+        self.ctrl_activites.Modifier()
+        
     def OnChoixCreation(self, event):
         if self.ctrl_creation.GetValue() == 1 :
             self.ctrl_numero.Enable(True)
@@ -784,6 +880,7 @@ class Dialog(wx.Dialog):
         IDutilisateur = self.IDutilisateur
         date_debut = self.ctrl_date_debut.GetDate() 
         date_fin = self.ctrl_date_fin.GetDate() 
+        activites = self.ctrl_activites.GetDonnees(format="texte")
         observations = self.ctrl_observations.GetValue() 
         
         # Création de la carte
@@ -808,6 +905,7 @@ class Dialog(wx.Dialog):
                 ("date_debut", date_debut),
                 ("date_fin", date_fin),
                 ("observations", observations),
+                ("activites", activites),
             ]
         if self.IDcotisation == None :
             nouvelleCotisation = True
@@ -904,7 +1002,7 @@ class Dialog(wx.Dialog):
         req = """SELECT
         IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation,
         date_saisie, IDutilisateur, date_creation_carte, numero,
-        IDdepot_cotisation, date_debut, date_fin, IDprestation, observations
+        IDdepot_cotisation, date_debut, date_fin, IDprestation, observations, activites
         FROM cotisations 
         WHERE IDcotisation=%d;""" % self.IDcotisation
         DB.ExecuterReq(req)
@@ -912,7 +1010,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         
-        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, IDutilisateur, date_creation_carte, numero, IDdepot_cotisation, date_debut, date_fin, IDprestation, observations = listeDonnees[0]
+        IDfamille, IDindividu, IDtype_cotisation, IDunite_cotisation, date_saisie, IDutilisateur, date_creation_carte, numero, IDdepot_cotisation, date_debut, date_fin, IDprestation, observations, activites = listeDonnees[0]
         
         self.date_saisie = date_saisie
         self.IDutilisateur = IDutilisateur
@@ -927,6 +1025,10 @@ class Dialog(wx.Dialog):
         if IDindividu != None : self.ctrl_beneficiaire.SetID(IDindividu)
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)
+        
+        if activites != None :
+            self.ctrl_activites.SetDonnees(activites, format="texte")
+            
         if observations != None :
             self.ctrl_observations.SetValue(observations) 
             

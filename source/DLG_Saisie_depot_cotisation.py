@@ -19,6 +19,7 @@ import CTRL_Saisie_date
 import OL_Cotisations_depots
 import DLG_Saisie_depot_cotisation_ajouter
 import UTILS_Titulaires
+import UTILS_Divers
 
 import GestionDB
 
@@ -84,7 +85,23 @@ class Track(object):
         self.typeHasCarte = donnees[15]
         self.nomUniteCotisation = donnees[16]
         self.observations = donnees[17]
-        
+        self.activites = donnees[18]
+        if self.activites == None :
+            self.activites = ""
+            
+        # Activites
+        texte = ""
+        if len(self.activites) > 0 :
+            listeTemp = []
+            listeIDactivites = UTILS_Divers.ConvertChaineEnListe(self.activites)
+            for IDactivite in listeIDactivites :
+                if parent.dictActivites.has_key(IDactivite) :
+                    nomActivite = parent.dictActivites[IDactivite]["nom"]
+                    listeTemp.append(nomActivite)
+            if len(listeTemp) > 0 :
+                texte = ", ".join(listeTemp)
+        self.activitesStr = texte
+
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
         
         if parent.titulaires.has_key(self.IDfamille) :
@@ -126,7 +143,20 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_depot_cotisation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.IDdepot_cotisation = IDdepot_cotisation
-        
+
+        # Importation des activités
+        DB = GestionDB.DB()
+        req = """SELECT IDactivite, nom, abrege
+        FROM activites
+        ORDER BY date_fin DESC;"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        DB.Close()
+        self.dictActivites = {}
+        for IDactivite, nom, abrege in listeTemp :
+            dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
+            self.dictActivites[IDactivite] = dictTemp
+
         # Paramètres
         self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom du dépôt :"))
@@ -260,7 +290,7 @@ class Dialog(wx.Dialog):
         cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
         cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
         types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-        unites_cotisations.nom, cotisations.observations
+        unites_cotisations.nom, cotisations.observations, cotisations.activites
         FROM cotisations 
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation

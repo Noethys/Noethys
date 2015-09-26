@@ -39,6 +39,7 @@ import UTILS_Dates
 import DLG_Apercu_cotisation
 import UTILS_Conversion
 import UTILS_Infos_individus
+import UTILS_Divers
 
 
 class Cotisation():
@@ -105,6 +106,17 @@ class Cotisation():
         else : conditions = str(tuple(listeCotisations))
 
         DB = GestionDB.DB()
+        
+        # Récupération des activités
+        req = """SELECT IDactivite, nom, abrege
+        FROM activites
+        ORDER BY date_fin DESC;"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        dictActivites = {}
+        for IDactivite, nom, abrege in listeTemp :
+            dictTemp = {"IDactivite":IDactivite, "nom":nom, "abrege":abrege}
+            dictActivites[IDactivite] = dictTemp
 
         # Récupère les prestations
         dictFacturation = {}
@@ -143,7 +155,7 @@ class Cotisation():
         cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
         cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
         types_cotisations.nom, types_cotisations.type, types_cotisations.carte,
-        unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations
+        unites_cotisations.nom, comptes_payeurs.IDcompte_payeur, cotisations.observations, cotisations.activites
         FROM cotisations 
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
@@ -182,6 +194,22 @@ class Cotisation():
             nomUniteCotisation = item[16]
             IDcompte_payeur = item[17]
             observations = item[18] 
+            activites = item[19]
+            if activites == None :
+                activites = ""
+            
+            # Activités
+            texte = ""
+            if len(activites) > 0 :
+                listeTemp = []
+                listeIDactivites = UTILS_Divers.ConvertChaineEnListe(activites)
+                for IDactivite in listeIDactivites :
+                    if dictActivites.has_key(IDactivite) :
+                        nomActivite = dictActivites[IDactivite]["nom"]
+                        listeTemp.append(nomActivite)
+                if len(listeTemp) > 0 :
+                    texte = ", ".join(listeTemp)
+            activites = texte
             
             nomCotisation = u"%s - %s" % (nomTypeCotisation, nomUniteCotisation)
             
@@ -277,6 +305,7 @@ class Cotisation():
                 "{SOLDE_ACTUEL_LETTRES}" : soldeStrLettres.capitalize(),
                 "{DATE_REGLEMENT}" : UTILS_Dates.DateDDEnFr(dateReglement),
                 "{MODE_REGLEMENT}" : modeReglement,
+                "{ACTIVITES}" : activites,
                 "{NOTES}" : observations,
                 
                 "{IDINDIVIDU}" : IDindividu,
