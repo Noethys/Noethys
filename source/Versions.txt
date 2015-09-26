@@ -1,9 +1,20 @@
-Version 1.1.5.1 (12/09/2015) :
+Version 1.1.5.2 (26/09/2015) :
 
-- Optimisation de l'affichage de plusieurs fenêtres
+- Optimisations pour connexions distantes
+- Réécriture complète du système de ventilation dans la saisie des règlements
 - Ajout de l'autodéconnexion automatique de l'utilisateur
 - Ajout dans les tarifs de la méthode de calcul Liste de choix
 - Ajout du champ Observations dans les cotisations
+- Ajout barre de filtrage pour prélèvements
+- Ajout du champ secteur dans l'état nominatif
+- Ajout des activités associées aux cotisations
+- Amélioration de l'application des forfaits datés
+- Correction d'un bug sur les perspectives de la page d'accueil
+- Correction d'un bug sur la réinitialisation dans le calendrier des ouvertures
+- Correction d'un bug sur la suppression des prestations des forfaits
+- Correction d'un bug sur suppression de fichiers avec accents
+- Correction d'un bug sur saisie IDfamille sur page d'accueil
+- Correction de divers petits bugs
 
 Version 1.1.5.0 (01/09/2015) :
 

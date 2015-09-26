@@ -1603,7 +1603,7 @@ if __name__ == "__main__":
 ##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
     
     # Créer des données virtuelles dans DB
-    CreerDonneesVirtuelles(nbreFamilles=1000) 
+    CreerDonneesVirtuelles(nbreFamilles=100) 
     
     pass
     
