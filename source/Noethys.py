@@ -2124,6 +2124,7 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_perspective_perso, id=ID_PREMIERE_PERSPECTIVE, id2=ID_PREMIERE_PERSPECTIVE+99 )
     
     def On_affichage_perspective_defaut(self, event):
+        self.MAJ()
         self._mgr.LoadPerspective(self.perspective_defaut)
         self.perspective_active = None
         self.MAJmenuPerspectives() 
