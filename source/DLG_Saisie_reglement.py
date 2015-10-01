@@ -34,8 +34,7 @@ import CTRL_Saisie_date
 import CTRL_Saisie_euros
 import CTRL_Ventilation
 
-try: import psyco; psyco.full()
-except: pass
+ID_OPTION_BLOQUER_VENTILATION = wx.NewId() 
 
 
 
@@ -670,6 +669,7 @@ class Dialog(wx.Dialog):
         
         # Commandes
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_calculatrice = CTRL_Bouton_image.CTRL(self, texte=_(u"Calculatrice"), cheminImage="Images/32x32/Calculatrice.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -691,6 +691,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDiffere, self.ctrl_check_differe)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrierDiffere, self.bouton_calendrier_differe)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOptions, self.bouton_options)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalculatrice, self.bouton_calculatrice)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -727,6 +728,9 @@ class Dialog(wx.Dialog):
         # Verrouillage Depot
         self.VerrouillageDepot()
         
+        # Paramètres
+        self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation = UTILS_Config.GetParametre("ventilation_bloquer", True)
+        
         # Focus
         self.ctrl_date.SetFocus() 
         wx.CallAfter(self.ctrl_date.SetInsertionPoint, 0)
@@ -751,6 +755,7 @@ class Dialog(wx.Dialog):
         self.bouton_supprimer_payeur.SetToolTipString(_(u"Cliquez ici pour supprimer le payeur sélectionné"))
         self.ctrl_check_differe.SetToolTipString(_(u"Cochez cette case pour préciser une date d'encaissement ultérieure"))
         self.bouton_calendrier_differe.SetToolTipString(_(u"Cliquez ici pour sélectionner une date d'encaissement différé dans un calendrier"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_calculatrice.SetToolTipString(_(u"Cliquez ici pour ouvrir la calculatrice installée par défaut sur votre ordinateur"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
@@ -886,13 +891,14 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(staticbox_ventilation, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=6, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=7, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_options, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_calculatrice, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(2)
+        grid_sizer_boutons.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
@@ -1114,7 +1120,22 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event): 
         import UTILS_Aide
         UTILS_Aide.Aide("Rglements1")
+
+    def OnBoutonOptions(self, event):
+        # Création du menu Options
+        menuPop = wx.Menu()
     
+        item = wx.MenuItem(menuPop, ID_OPTION_BLOQUER_VENTILATION, _(u"Bloquer la ventilation lorsque le crédit est épuisé"), _(u"Bloquer la ventilation lorsque le crédit est épuisé"), wx.ITEM_CHECK)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.On_option_bloquer_ventilation, id=ID_OPTION_BLOQUER_VENTILATION)
+        if self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation == True : item.Check(True)
+        
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+    
+    def On_option_bloquer_ventilation(self, event):
+        self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation = not self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation
+        
     def OnBoutonCalculatrice(self, event):
         FonctionsPerso.OuvrirCalculatrice() 
         
@@ -1212,6 +1233,8 @@ class Dialog(wx.Dialog):
                             dlg1.Sauvegarder(demander=False)
                         dlg1.Destroy() 
 
+        # Mémorisation du paramètre de la taille d'écran
+        UTILS_Config.SetParametre("ventilation_bloquer", self.ctrl_ventilation.ctrl_ventilation.bloquer_ventilation)
 
         # Edition d'un reçu
         if self.ctrl_recu.GetValue() == True and email_envoye == False :

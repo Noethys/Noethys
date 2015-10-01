@@ -275,7 +275,7 @@ class Ligne_prestation(object):
         self.resteAVentiler = self.montant - self.ventilationPassee - self.ventilationActuelle
         
         # Coche
-        if self.ventilationActuelle > FloatToDecimal(0.0) :
+        if self.ventilationActuelle != FloatToDecimal(0.0) :
             etat = True
         else :
             etat = False
@@ -351,7 +351,7 @@ class Ligne_prestation(object):
         # Attribue uniquement du crédit encore disponible
         if etat == True :
             montant = self.grid.GetCreditAventiler()
-            if montant > self.resteAVentiler :
+            if montant > self.resteAVentiler or self.grid.bloquer_ventilation == False :
                 montant = self.resteAVentiler
                 
         # Modifie la ligne
@@ -487,6 +487,9 @@ class CTRL_Ventilation(gridlib.Grid):
         self.ventilationValide = True
         self.montant_reglement = FloatToDecimal(0.0)
         self.dictLignes = {}
+        
+        # Options
+        self.bloquer_ventilation = False
 
         # Key de regroupement
         self.KeyRegroupement = "periode" # individu, facture, date, periode
@@ -588,7 +591,7 @@ class CTRL_Ventilation(gridlib.Grid):
             montant = FloatToDecimal(montant)
             montantVentilation = FloatToDecimal(montantVentilation)
             if num_facture == None : num_facture = 0
-            if montantVentilation < montant or IDprestation in self.dictVentilation.keys() :
+            if (montant >= FloatToDecimal(0.0) and montantVentilation < montant) or (montant < FloatToDecimal(0.0) and montantVentilation > montant) or IDprestation in self.dictVentilation.keys() :
                 date = DateEngEnDateDD(date)
                 if self.dictVentilation.has_key(IDprestation) :
                     montantVentilation = montantVentilation - self.dictVentilation[IDprestation] 
@@ -742,7 +745,7 @@ class CTRL_Ventilation(gridlib.Grid):
         
         for ligne in self.listeLignesPrestations :
             IDprestation = ligne.IDprestation
-            montant = ligne.ventilationActuelle
+            montant = float(ligne.ventilationActuelle)
             
             if self.dictVentilationInitiale.has_key(IDprestation) :
                 IDventilation = self.dictVentilationInitiale[IDprestation]
@@ -1031,8 +1034,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        self.ctrl = CTRL(panel, IDcompte_payeur=61, IDreglement=None)
-        self.ctrl.SetMontantReglement(30.00)
+        self.ctrl = CTRL(panel, IDcompte_payeur=23, IDreglement=None)
+        self.ctrl.SetMontantReglement(10.00)
     
         self.bouton_test = wx.Button(panel, -1, _(u"Bouton de test"))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
