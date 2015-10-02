@@ -1362,13 +1362,13 @@ class CaseStandard(Case):
         
         # Sauvegarde des données dans le dictConsoIndividus
         self.MemoriseValeurs()
-        
-        # Change l'apparence de la case
-        self.Refresh()
-        
+                
         # Facturation
         self.MAJ_facturation() 
-        
+
+        # Change l'apparence de la case
+        self.Refresh()
+
         # MAJ Données remplissage
         self.MAJremplissage()
         
@@ -1937,10 +1937,11 @@ class CaseMultihoraires(Case):
         barre.MemoriseValeurs() 
         self.listeBarres.append(barre)
         self.MAJremplissage()
-        barre.Refresh()
         
         # Facturation
         self.MAJ_facturation() 
+        
+        barre.Refresh()
         
         self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Ajout d'une consommation multihoraires")))        
         
@@ -2037,8 +2038,8 @@ class CaseMultihoraires(Case):
             if barre.conso.IDconso != None : 
                 barre.conso.statut = "modification"
             self.MAJremplissage()
-            barre.Refresh()
             self.MAJ_facturation() 
+            barre.Refresh()
             self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification d'une consommation multihoraires")))        
 
             # Si les heures saisies dépassent les heures min et max, on élargit la colonne Multihoraires

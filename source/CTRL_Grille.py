@@ -3424,7 +3424,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dictValeurs["date"] == date and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] == IDindividu and dictValeurs["IDtarif"] == IDtarif :
                         nom_tarif = dictValeurs["label"]
                         montant_tarif = dictValeurs["montant"]
-    
+                
         # Recherche du montant du tarif : EN FONCTION DU NBRE D'INDIVIDUS
         if "nbre_ind" in methode_calcul :
             montant_tarif = 0.0
@@ -5133,7 +5133,7 @@ if __name__ == '__main__':
     import time
     heure_debut = time.time()
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=14, selectionIndividus=[46,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[2,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
