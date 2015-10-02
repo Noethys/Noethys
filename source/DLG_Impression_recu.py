@@ -31,6 +31,7 @@ import UTILS_Identification
 import UTILS_Titulaires
 import UTILS_Questionnaires
 import UTILS_Infos_individus
+import UTILS_Parametres
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -280,6 +281,7 @@ class CTRL_Donnees(gridlib.Grid):
         WHERE IDorganisateur=1;""" 
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()      
+        DB.Close() 
         for nom, num_siret, code_ape, ville in listeDonnees :
             if num_siret != None : 
                 self.SetValeur("siret", num_siret)
@@ -367,10 +369,31 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonAnnuler)
+
+        # Importation des paramètres perso
+        dictValeursDefaut = {
+            "intro_activer" : True,
+            "intro_texte" : TEXTE_INTRO,
+            "prestations_afficher" : False,
+            }
+        dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="impression_recu", dictParametres=dictValeursDefaut)
         
         # Init contrôles
+        self.ctrl_intro.SetValue(dictParametres["intro_activer"])
+        if dictParametres["intro_texte"] != None :
+            self.ctrl_texte_intro.SetValue(dictParametres["intro_texte"])
+        self.ctrl_prestations.SetValue(dictParametres["prestations_afficher"])
+            
         self.OnCheckIntro(None) 
-
+    
+    def MemorisationParametres(self):
+        dictValeurs = {
+            "intro_activer" : self.ctrl_intro.GetValue(),
+            "intro_texte" : self.ctrl_texte_intro.GetValue(),
+            "prestations_afficher" : self.ctrl_prestations.GetValue(),
+            }
+        UTILS_Parametres.ParametresCategorie(mode="set", categorie="impression_recu", dictParametres=dictValeurs)
+        
     def __set_properties(self):
         self.SetTitle(_(u"Edition d'un reçu de règlement"))
         self.ctrl_donnees.SetToolTipString(_(u"Vous pouvez modifier ici les données de base"))
@@ -442,7 +465,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.CenterOnScreen() 
+        self.CenterOnScreen()         
         
     def OnCheckIntro(self, event):
         if self.ctrl_intro.GetValue() == True :
@@ -480,6 +503,7 @@ class Dialog(wx.Dialog):
         """ % self.IDreglement
         DB.ExecuterReq(req)
         listeReglements = DB.ResultatReq()  
+        DB.Close() 
         if len(listeReglements) == 0 : return None
         
         IDreglement, IDcompte_payeur, IDfamille, date,  IDmode, nomMode, IDemetteur, nomEmetteur, \
@@ -512,7 +536,12 @@ class Dialog(wx.Dialog):
         return dictReglements
 
     def OnBoutonAnnuler(self, event):
+        # Mémoriser le reçu
         self.Sauvegarder() 
+
+        # Mémorisation des paramètres perso
+        self.MemorisationParametres() 
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
@@ -551,7 +580,7 @@ class Dialog(wx.Dialog):
                 "IDcategorie" : 28, 
                 "action" : _(u"Edition d'un reçu pour le règlement ID%d") % self.dictSave["IDreglement"],
                 },])
-
+                
     def OnBoutonOk(self, event): 
         self.GetPrestations() 
         self.CreationPDF() 
@@ -762,6 +791,6 @@ if __name__ == u"__main__":
     #wx.InitAllImageHandlers()
     dlg = Dialog(None, IDreglement=2)
     app.SetTopWindow(dlg)
-    dlg.ctrl_prestations.SetValue(True)
+##    dlg.ctrl_prestations.SetValue(True)
     dlg.ShowModal()
     app.MainLoop()
