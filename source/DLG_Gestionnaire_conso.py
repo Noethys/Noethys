@@ -13,6 +13,7 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import datetime
+import time
 import wx.lib.agw.aui as aui
 import wx.html as html
 import wx.lib.agw.hyperlink as Hyperlink
@@ -99,7 +100,7 @@ class Commandes(wx.Panel):
         self.parent = parent
         # Boutons 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")        
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Options"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_outils = self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -552,6 +553,7 @@ class Dialog(wx.Dialog):
         self.panel_totaux.MAJ_contenu() 
     
     def SetDate(self, date):
+##        heure_debut = time.time()
         self.panel_activites.SetDate(date)
         self.panel_grille.SetDate(date)
         listeActivites, listeGroupes = self.panel_activites.GetActivitesEtGroupes()
@@ -559,6 +561,7 @@ class Dialog(wx.Dialog):
         self.panel_grille.SetGroupes(listeGroupes)
         self.panel_grille.MAJ_grille()
         self.panel_totaux.MAJ(date)
+##        print "Temps de chargement =", time.time() - heure_debut
     
     def GetDate(self):
         return self.panel_calendrier.GetDate()
@@ -928,10 +931,9 @@ class Dialog(wx.Dialog):
 
 if __name__ == "__main__":
     app = wx.App(0)
-    import time
     heure_debut = time.time()
-    dialog_1 = Dialog(None)
+    dlg = Dialog(None)
     print "Temps de chargement =", time.time() - heure_debut
-    app.SetTopWindow(dialog_1)
-    dialog_1.ShowModal()
+    app.SetTopWindow(dlg)
+    dlg.ShowModal()
     app.MainLoop()    

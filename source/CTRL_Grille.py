@@ -1612,6 +1612,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
     def Importation_forfaits(self, listeComptesPayeurs=[]):
+        if self.tarifsForfaitsCreditsPresents == False :
+            return
         
         # Récupère le dictPrestations
         for IDprestation in self.dictForfaits.keys() :
@@ -1637,7 +1639,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             conditions = "WHERE prestations.IDcompte_payeur IN %s AND forfait_date_debut<='%s' AND forfait_date_fin>='%s' " % (conditionComptes, date_max, date_min)
         else:
             conditions = "WHERE forfait_date_debut<='%s' AND forfait_date_fin>='%s' " % (date_max, date_min)
-
+        
         req = """SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, 
         prestations.montant_initial, prestations.montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, forfait, temps_facture, IDcategorie_tarif,
         SUM(ventilation.montant), forfait_date_debut, forfait_date_fin, code_compta, tva
@@ -4630,18 +4632,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         for IDPrestationModif in self.listePrestationsModifiees :
             if IDPrestationModif > 0 and self.dictPrestations.has_key(IDPrestationModif) :
                 # Sauvegarde de la prestation
-                dictValeurs = self.dictPrestations[IDPrestationModif]
-##                listeDonnees = [
-##                    ("label", dictValeurs["label"]),
-##                    ("montant_initial", dictValeurs["montant_initial"]), 
-##                    ("montant", dictValeurs["montant"]), 
-##                    ("forfait_date_debut", dictValeurs["forfait_date_debut"]), 
-##                    ("forfait_date_fin", dictValeurs["forfait_date_fin"]), 
-##                    ]
-##                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDPrestationModif)
-##                # Modifie la ventilation de la prestation si celle-ci est plus élevée que le montant final
-##                DB.ReqDEL("ventilation", "IDprestation", IDPrestationModif)
-                
+                dictValeurs = self.dictPrestations[IDPrestationModif]                
                 # Version optimisée
                 listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["tva"], IDPrestationModif))
                 listeSuppressions.append(IDPrestationModif)
@@ -4660,10 +4651,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.Commit() 
 
         # ------------- Suppression des prestations et déductions à supprimer ------------------
-##        for IDanciennePrestation in self.listePrestationsSupprimees :
-##            DB.ReqDEL("prestations", "IDprestation", IDanciennePrestation)
-##            DB.ReqDEL("ventilation", "IDprestation", IDanciennePrestation)
-##            DB.ReqDEL("deductions", "IDprestation", IDanciennePrestation)
         
         # Version optimisée
         if len(self.listePrestationsSupprimees) > 0 :
@@ -5130,7 +5117,6 @@ class MyFrame(wx.Frame):
 
 if __name__ == '__main__':
     app = wx.App(0)
-    import time
     heure_debut = time.time()
     import DLG_Grille
     frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[2,])
