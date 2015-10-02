@@ -142,9 +142,16 @@ class Secteur(wx.Choice):
         self.SetItems(listeItems)
 
     def GetListeDonnees(self, DB=None):
+        if DB == None :
+            DB = GestionDB.DB() 
+            DB_ok = False
+        else :
+            DB_ok = True
         req = """SELECT IDsecteur, nom FROM secteurs ORDER BY nom;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
+        if DB_ok == False :
+            DB.Close() 
         self.dictDonnees = { 0 : (None, _(u"--- Aucun secteur géographique ---")) }
         listeNoms = [ _(u"------ Aucun secteur géographique ------")]
         index = 1
