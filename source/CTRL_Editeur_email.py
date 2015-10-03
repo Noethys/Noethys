@@ -102,6 +102,7 @@ MOTSCLES = {
                 ( "{DATE_FIN}", _(u"Date de fin de la période de facturation") ),
                 ( "{DATE_ECHEANCE}", _(u"Date d'échance du règlement") ),
                 ( "{SOLDE}", _(u"Solde de la facture") ),
+                ( "{SOLDE_AVEC_REPORTS}", _(u"Solde de la facture (reports inclus)") ),
                 ],
 
     "rappel" : [

@@ -368,6 +368,8 @@ class Facturation():
                     "reports" : {},
                     "total_reports" : FloatToDecimal(0.0),
                     "{TOTAL_REPORTS}" : u"0.00 %s" % SYMBOLE,
+                    "solde_avec_reports" : FloatToDecimal(0.0),
+                    "{SOLDE_AVEC_REPORTS}" : u"0.00 %s" % SYMBOLE,
                     "num_facture" : None,
                     "select" : True,
                     "messages_familiaux" : [],
@@ -592,7 +594,11 @@ class Facturation():
                                 dictComptes[IDfacture]["reports"][periode] += montant_impaye
                                 dictComptes[IDfacture]["total_reports"] += montant_impaye
                                 dictComptes[IDfacture]["{TOTAL_REPORTS}"] = u"%.02f %s" % (dictComptes[IDfacture]["total_reports"], SYMBOLE)
-            
+        
+        # Ajout des impayés au solde
+        for ID, dictValeurs in dictComptes.iteritems() :
+            dictComptes[ID]["solde_avec_reports"] = dictComptes[ID]["solde"] + dictComptes[ID]["total_reports"]
+            dictComptes[ID]["{SOLDE_AVEC_REPORTS}"] = u"%.02f %s" % (dictComptes[ID]["solde_avec_reports"], SYMBOLE)
             
         return dictComptes
 
@@ -730,7 +736,9 @@ class Facturation():
                 dictCompte["{DATE_ECHEANCE}"] = UTILS_Dates.DateEngFr(str(date_echeance))
                 dictCompte["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
                 dictCompte["{SOLDE_LETTRES}"] = UTILS_Conversion.trad(solde, MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize() 
-
+                dictCompte["{SOLDE_AVEC_REPORTS}"] = u"%.2f %s" % (dictCompte["solde_avec_reports"], SYMBOLE)
+                dictCompte["{SOLDE_AVEC_REPORTS_LETTRES}"] = UTILS_Conversion.trad(solde+dictCompte["total_reports"], MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize() 
+                
                 if nomLot == None :
                     nomLot = ""
                 dictCompte["{NOM_LOT}"] = nomLot
@@ -766,6 +774,8 @@ class Facturation():
                 dictChampsFusion[IDfacture]["{DATE_EDITION_FACTURE}"] = UTILS_Dates.DateEngFr(str(date_edition))
                 dictChampsFusion[IDfacture]["{DATE_ECHEANCE}"] = UTILS_Dates.DateEngFr(str(date_echeance))
                 dictChampsFusion[IDfacture]["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
+                dictChampsFusion[IDfacture]["{SOLDE_AVEC_REPORTS}"] = dictCompte["{SOLDE_AVEC_REPORTS}"]
+                
                 
                 # Fusion pour textes personnalisés
                 dictCompte["texte_titre"] = self.RemplaceMotsCles(dictOptions["texte_titre"], dictCompte)
