@@ -77,6 +77,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+        # Afficher le rappel des impayés
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le rappel des impayés"), name="afficher_impayes", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le rappel des impayés dans le document")) 
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intégrer les impayés au solde
+        propriete = wxpg.BoolProperty(label=_(u"Intégrer les impayés au solde"), name="integrer_impayes", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez intégrer les impayés dans le solde")) 
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         # Afficher les coupons-réponse
         propriete = wxpg.BoolProperty(label=_(u"Afficher le coupon-réponse"), name="afficher_coupon_reponse", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher un coupon-réponse dans le document")) 
@@ -86,12 +98,6 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Afficher les messages
         propriete = wxpg.BoolProperty(label=_(u"Afficher les messages"), name="afficher_messages", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les messages dans le document")) 
-        propriete.SetAttribute("UseCheckbox", True)
-        self.Append(propriete)
-
-        # Afficher le rappel des impayés
-        propriete = wxpg.BoolProperty(label=_(u"Afficher le rappel des impayés"), name="afficher_impayes", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le rappel des impayés dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 

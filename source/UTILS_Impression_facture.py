@@ -115,6 +115,8 @@ class MyPageTemplate(PageTemplate):
             canvas.drawString(y+2*mm, -x-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
             canvas.setFont("Helvetica", 7)
             solde = dictValeur["total"] - dictValeur["ventilation"]
+            if DICT_OPTIONS["integrer_impayes"] == True :
+                solde += dictValeur["total_reports"]
             numero = dictValeur["numero"]
             nom = dictValeur["nomSansCivilite"]
             canvas.drawString(y+2*mm, -x-9*mm, u"%s - %.02f %s" % (numero, solde, SYMBOLE))
@@ -140,6 +142,8 @@ class MyPageTemplate(PageTemplate):
             canvas.drawString(x+2*mm, y+hauteur-4*mm, _(u"Merci de joindre ce coupon à votre règlement"))
             canvas.setFont("Helvetica", 7)
             solde = dictValeur["total"] - dictValeur["ventilation"]
+            if DICT_OPTIONS["integrer_impayes"] == True :
+                solde += dictValeur["total_reports"]
             numero = dictValeur["numero"]
             nom = dictValeur["nomSansCivilite"]
             canvas.drawString(x+2*mm, y+hauteur-9*mm, u"%s - %.02f %s" % (numero, solde, SYMBOLE))
@@ -666,7 +670,9 @@ class Impression():
                     listeDates.sort() 
                     if len(listeDates) > 0 :
                         for dates in listeDates :
-                            texteQf = _(u"--- Votre QF %s : <b>%s</b> ---") % (dates, dictQfdates[dates])
+                            qf = dictQfdates[dates]
+##                            texteQf = _(u"--- Votre QF %s : <b>%s</b> ---") % (dates, qf)
+                            texteQf = _(u"<b>Votre quotient familial : </b>Votre QF est de %s sur la période %s.") % (qf, dates)
                             listeMessages.append(Paragraph(texteQf, paraStyle))
                 
                 
@@ -676,7 +682,10 @@ class Impression():
                     listePeriodes = dictReports.keys() 
                     listePeriodes.sort() 
                     if len(listePeriodes) > 0 :
-                        texteReport = _(u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations antérieures : ")
+                        if dictOptions["integrer_impayes"] == True :
+                            texteReport = _(u"<b>Détail des impayés : </b>")
+                        else :
+                            texteReport = _(u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations antérieures : ")
                         for periode in listePeriodes :
                             annee, mois = periode
                             nomPeriode = PeriodeComplete(mois, annee)
@@ -706,22 +715,35 @@ class Impression():
                 largeurColonneLabel = 110
                 largeursColonnes = [ CADRE_CONTENU[2] - largeurColonneMontantTTC - largeurColonneLabel, largeurColonneLabel, largeurColonneMontantTTC]
 
-                dataTableau.append((listeMessages, _(u"TOTAL période:"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
+                dataTableau.append((listeMessages, _(u"Total période :"), u"%.02f %s" % (dictValeur["total"], SYMBOLE)))
                 dataTableau.append(("", _(u"Montant déjà réglé :"), u"%.02f %s" % (dictValeur["ventilation"], SYMBOLE)))
-                dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
-
+                
+                if mode == "facture" and dictOptions["integrer_impayes"] == True and dictValeur["total_reports"] > 0.0 :
+                    dataTableau.append(("", _(u"Report impayés :"), u"%.02f %s" % (dictValeur["total_reports"], SYMBOLE) ))
+                    dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"] + dictValeur["total_reports"], SYMBOLE) ))
+                    rowHeights=[10, 10, 10, None]
+                else :
+                    dataTableau.append(("", _(u"Reste à régler :"), u"%.02f %s" % (dictValeur["solde"], SYMBOLE) ))
+                    rowHeights=[18, 18, None]
+                    
                 style = [
                         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'), 
-                        ('FONT', (1, 0), (1, -1), "Helvetica-Bold", dictOptions["taille_texte_labels_totaux"]), 
-                        ('FONT', (2, 0), (2, -1), "Helvetica-Bold", dictOptions["taille_texte_montants_totaux"]), 
+##                        ('FONT', (1, 0), (1, -1), "Helvetica", 7),#dictOptions["taille_texte_labels_totaux"]), 
+##                        ('FONT', (2, 0), (2, -1), "Helvetica-Bold", 7),#dictOptions["taille_texte_montants_totaux"]), 
                         
-                        ('GRID', (2, 0), (2, 0), 0.25, colors.black),
-                        ('GRID', (2, 1), (2, 1), 0.25, colors.black),
-                        ('GRID', (2, 2), (2, 2), 0.25, colors.black),
+                        # Lignes Période, avoir, impayés
+                        ('FONT', (1, 0), (1, -2), "Helvetica", 8),#dictOptions["taille_texte_labels_totaux"]), 
+                        ('FONT', (2, 0), (2, -2), "Helvetica-Bold", 8),#dictOptions["taille_texte_montants_totaux"]), 
+                        
+                        # Ligne Reste à régler
+                        ('FONT', (1, -1), (1, -1), "Helvetica-Bold", dictOptions["taille_texte_labels_totaux"]), 
+                        ('FONT', (2, -1), (2, -1), "Helvetica-Bold", dictOptions["taille_texte_montants_totaux"]), 
+                        
+                        ('GRID', (2, 0), (2, -1), 0.25, colors.black),
                         
                         ('ALIGN', (1, 0), (1, -1), 'RIGHT'),
                         ('ALIGN', (2, 0), (2, -1), 'CENTRE'), 
-                        ('BACKGROUND', (2, 2), (2, 2), couleurFond),
+                        ('BACKGROUND', (2, -1), (2, -1), couleurFond),
                         
                         ('SPAN', (0, 0), (0, -1)), 
                         ]
@@ -731,7 +753,7 @@ class Impression():
                     style.append( ('FONT', (0, 0), (0, -1), "Helvetica", 8)  )
                     style.append( ('VALIGN', (0, 0), (0, -1), 'TOP') )
                     
-                tableau = Table(dataTableau, largeursColonnes, rowHeights=[18, 18, None])
+                tableau = Table(dataTableau, largeursColonnes)#, rowHeights=rowHeights)
                 tableau.setStyle(TableStyle(style))
                 story.append(tableau)
                 

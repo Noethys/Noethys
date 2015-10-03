@@ -918,5 +918,5 @@ if __name__ == '__main__':
 ##    print facturation.Impression(listeFactures=[92, 93], nomDoc=None, afficherDoc=True, dictOptions=None)
 ##    print len(facturation.GetDonnees2(listeFactures=range(3240, 3400)))
 ##    facturation.GetDonneesImpression2(listeFactures=range(3240, 3400))
-    print "resultats =", facturation.Impression(listeFactures=[8,])
+    print "resultats =", facturation.Impression(listeFactures=[5598,])
     app.MainLoop()
