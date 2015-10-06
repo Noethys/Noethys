@@ -203,6 +203,7 @@ def VentilationAuto(IDcompte_payeur=None, IDreglement=None):
             dlg = wx.MessageDialog(None, _(u"Ventilation automatique impossible !\n\nLa ventilation automatique n'est pas compatible avec les prestations comportant un montant négatif ! Vous devez donc effectuer une ventilation manuelle."), _(u"Information"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
+            DB.Close()
             return False
 
     # Récupère les règlements

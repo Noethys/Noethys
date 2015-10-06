@@ -313,7 +313,7 @@ class DB:
         self.cursor.execute(req)
         self.connexion.commit()
 
-    def ReqInsert(self, nomTable, listeDonnees):
+    def ReqInsert(self, nomTable="", listeDonnees=[], commit=True):
         """ Permet d'insérer des données dans une table """
         # Préparation des données
         champs = "("
@@ -331,10 +331,14 @@ class DB:
         champs = champs[:-2] + ")"
         interr = interr[:-2] + ")"
         req = "INSERT INTO %s %s VALUES %s" % (nomTable, champs, interr)
-        # Enregistrement
+        
         try:
+            # Enregistrement
             self.cursor.execute(req, tuple(valeurs))
-            self.Commit()
+            if commit == True :
+                self.Commit()
+                
+            # Récupération de l'ID
             if self.isNetwork == True :
                 # Version MySQL
                 self.cursor.execute("SELECT LAST_INSERT_ID();")
@@ -342,6 +346,7 @@ class DB:
                 # Version Sqlite
                 self.cursor.execute("SELECT last_insert_rowid() FROM %s" % nomTable)
             newID = self.cursor.fetchall()[0][0]
+            
         except Exception, err:
             print "Requete sql d'INSERT incorrecte :\n%s\nErreur detectee:\n%s" % (req, err)
         # Retourne l'ID de l'enregistrement créé
@@ -429,16 +434,17 @@ class DB:
         except Exception, err:
             print _(u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
         
-    def ReqDEL(self, nomTable, nomChampID, ID):
+    def ReqDEL(self, nomTable="", nomChampID="", ID="", commit=True):
         """ Suppression d'un enregistrement """
         req = "DELETE FROM %s WHERE %s=%d" % (nomTable, nomChampID, ID)
         try:
             self.cursor.execute(req)
-            self.Commit()
+            if commit == True :
+                self.Commit()
         except Exception, err:
             print _(u"Requete sql de suppression incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
         
-    def Modifier(self, table, ID, champs, valeurs, dicoDB):
+    def Modifier(self, table, ID, champs, valeurs, dicoDB, commit=True):
         # champs et valeurs sont des tuples
 
         # Recherche du nom de champ ID de la table
@@ -459,7 +465,8 @@ class DB:
 
         req = "UPDATE %s SET %s WHERE %s=%d" % (table, detail, nomID, ID)
         self.cursor.execute(req)
-        self.connexion.commit()
+        if commit == True :
+            self.connexion.commit()
 
     def Dupliquer(self, nomTable="", nomChampCle="", conditions="", dictModifications={}, renvoieCorrespondances=False, IDmanuel=False):
         """ Dulpliquer un enregistrement d'une table :

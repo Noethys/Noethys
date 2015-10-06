@@ -424,10 +424,11 @@ class CadreIndividu():
         self.dc.DrawSpline(coordsSpline)
         
         # Intégration de la photo
-        img = self.photo.ConvertToImage()
-        img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH) 
-        self.bmp = img.ConvertToBitmap()
-        self.dc.DrawBitmap(self.bmp, x+paddingCadre, y+paddingCadre)
+        if self.photo != None :
+            img = self.photo.ConvertToImage()
+            img = img.Rescale(width=taillePhoto, height=taillePhoto, quality=wx.IMAGE_QUALITY_HIGH) 
+            self.bmp = img.ConvertToBitmap()
+            self.dc.DrawBitmap(self.bmp, x+paddingCadre, y+paddingCadre)
         
         # Dessin du texte
         largeurMaxiTexte = largeur - paddingCadre*3- taillePhoto

@@ -1,3 +1,11 @@
+Version 1.1.5.3 (06/10/2015) :
+
+- Ajout de l'option intégrer les impayés dans le solde des factures
+- Ajout de la mémorisation des paramètres d'impression des reçus
+- Optimisation de l'affichage de la grille des conso
+- Correction d'un bug d'affichage sur les conso avec tarification libre
+- Correction d'un bug sur les montants négatifs dans la ventilation des règlements
+
 Version 1.1.5.2 (26/09/2015) :
 
 - Optimisations pour connexions distantes
