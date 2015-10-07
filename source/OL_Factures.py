@@ -45,12 +45,12 @@ class Track(object):
         self.total = donnees["total"]
         self.regle = donnees["regle"]
         self.solde = donnees["solde"]
-        if self.solde != 0.0 : 
+        if self.solde != FloatToDecimal(0.0) : 
             self.solde = -self.solde
         self.totalPrestations = donnees["totalPrestations"]
         self.totalVentilation = donnees["totalVentilation"]
         if self.totalVentilation == None :
-            self.totalVentilation = 0.0
+            self.totalVentilation = FloatToDecimal(0.0)
         self.soldeActuel = self.totalVentilation - self.totalPrestations
         if self.etat == "annulation" :
             self.soldeActuel = None
@@ -288,6 +288,7 @@ class ListView(FastObjectListView):
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             date_echeance = UTILS_Dates.DateEngEnDateDD(date_echeance)       
+            total = FloatToDecimal(total)
             if dictVentilation.has_key(IDfacture) :
                 totalVentilation = FloatToDecimal(dictVentilation[IDfacture])
             else :
@@ -396,9 +397,9 @@ class ListView(FastObjectListView):
         def GetImageSoldeActuel(track):
             if track.etat == "annulation" : 
                 return self.imgAnnulation
-            if track.soldeActuel == 0.0 :
+            if track.soldeActuel == FloatToDecimal(0.0) :
                 return self.imgVert
-            if track.soldeActuel < 0.0 and track.soldeActuel != -track.total :
+            if track.soldeActuel < FloatToDecimal(0.0) and track.soldeActuel != -track.total :
                 return self.imgOrange
             return self.imgRouge
         
