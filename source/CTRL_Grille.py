@@ -2275,7 +2275,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             IDfacture = self.dictPrestations[conso.IDprestation]["IDfacture"]
         return IDfacture
 
-    def Facturation(self, IDactivite, IDindividu, IDfamille, date, IDcategorie_tarif, numIndividu=None, IDgroupe=None, case=None):
+    def Facturation(self, IDactivite, IDindividu, IDfamille, date, IDcategorie_tarif, numIndividu=None, IDgroupe=None, case=None, modeSilencieux=False):
         # 1 - Recherche les unités de la ligne
         try :
             dictUnites = self.dictConsoIndividus[IDindividu][date]
@@ -2431,7 +2431,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 quantite = None
 
             # Calcul du tarif
-            resultat = self.CalculeTarif(dictTarif, combinaisons_unites, date, temps_facture, IDfamille, IDindividu, quantite, case)
+            resultat = self.CalculeTarif(dictTarif, combinaisons_unites, date, temps_facture, IDfamille, IDindividu, quantite, case, modeSilencieux)
             if resultat == False :
                 return False
             elif resultat == "break" :
@@ -3058,7 +3058,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         reponse = q.GetReponse(IDquestion, IDfamille, IDindividu)
         return reponse
         
-    def CalculeTarif(self, dictTarif={}, combinaisons_unites=[], date=None, temps_facture=None, IDfamille=None, IDindividu=None, quantite=None, case=None):       
+    def CalculeTarif(self, dictTarif={}, combinaisons_unites=[], date=None, temps_facture=None, IDfamille=None, IDindividu=None, quantite=None, case=None, modeSilencieux=False):       
         IDtarif = dictTarif["IDtarif"]
         IDactivite = dictTarif["IDactivite"]
         nom_tarif = dictTarif["nom_tarif"]
@@ -3388,7 +3388,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Recherche du montant du tarif : VARIABLE (MONTANT ET LABEL SAISIS PAR L'UTILISATEUR)
         if methode_calcul == "variable" :
-            if case.IDunite in combinaisons_unites :
+            if case.IDunite in combinaisons_unites and modeSilencieux == False :
                 # Nouvelle saisie si clic sur la case
                 import DLG_Saisie_montant_prestation
                 dlg = DLG_Saisie_montant_prestation.Dialog(self, label=nom_tarif, montant=0.0)
@@ -3408,7 +3408,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         # Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
         if methode_calcul == "choix" :
-            if case.IDunite in combinaisons_unites :
+            if case.IDunite in combinaisons_unites and modeSilencieux == False :
                 # Nouvelle saisie si clic sur la case
                 lignes_calcul = dictTarif["lignes_calcul"]
                 import DLG_Selection_montant_prestation
@@ -4087,7 +4087,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def GetHistorique(self):
         return self.listeHistorique
     
-    def RecalculerToutesPrestations(self):
+    def RecalculerToutesPrestations(self, modeSilencieux=True):
         """ Recalcule les prestations de toutes les cases """
         listeDejaFactures = []
         for numLigne, ligne in self.dictLignes.iteritems() :
@@ -4102,16 +4102,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dejaFacture == True :
                         listeDejaFactures.append(case.IDprestation)
                     else :
-                        case.MAJ_facturation()
+                        case.MAJ_facturation(modeSilencieux=modeSilencieux)
                         case.Refresh() 
                     
-##                    if case.IDprestation != None and case.forfait == None :
-##                        if case.IDfacture == None :
-##                            case.MAJ_facturation()
-##                        else :
-##                            listeDejaFactures.append(case.IDprestation)
-
-        if len(listeDejaFactures) > 0 :
+        if len(listeDejaFactures) > 0 and modeSilencieux == False :
             dlg = wx.MessageDialog(self, _(u"Notez que %d prestations n'ont pas été recalculés car \ncelles-ci apparaissent déjà sur des factures !") % len(listeDejaFactures), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()

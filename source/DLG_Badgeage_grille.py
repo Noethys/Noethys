@@ -263,13 +263,16 @@ class CTRL(wx.Panel):
             return _(u"La case mémo journalier est inexistante.")
         case.SetTexte(texte)
         return True        
-        
+    
+    def RecalculerToutesPrestations(self):
+        self.grille.RecalculerToutesPrestations(modeSilencieux=True) 
     
 # FONCTIONS DISPONIBLES :
 # Sauvegarde() : Pour sauvegarder
 # SaisieConso() : Pour ajouter une conso
 # SupprimeConso() : Pour Supprimer une conso
 # ModifieMemo(): Pour modifier le mémo journalier
+# RecalculerToutesPrestations : Recalculer toutes les conso affichées
 
 
 

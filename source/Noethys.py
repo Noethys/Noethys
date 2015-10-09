@@ -916,6 +916,7 @@ class MainFrame(wx.Frame):
                     },
                     "-",
                     {"code" : "liste_prestations", "label" : _(u"Liste des prestations"), "infobulle" : _(u"Liste des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
+                    {"code" : "recalcul_prestations", "label" : _(u"Recalculer des prestations"), "infobulle" : _(u"Recalculer des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_recalculer_prestations},
                     "-",
                     {"code" : "liste_deductions", "label" : _(u"Liste des déductions"), "infobulle" : _(u"Liste des déductions"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_deductions},
                     {"code" : "saisir_lot_deductions", "label" : _(u"Saisir un lot de déductions"), "infobulle" : _(u"Saisir un lot de déductions"), "image" : "Images/16x16/Impayes.png", "action" : self.On_facturation_saisir_deductions},
@@ -2688,6 +2689,12 @@ class MainFrame(wx.Frame):
         if self.VerificationVentilation() == False : return
         import DLG_Liste_prestations
         dlg = DLG_Liste_prestations.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_facturation_recalculer_prestations(self, event):
+        import DLG_Recalculer_prestations
+        dlg = DLG_Recalculer_prestations.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
 

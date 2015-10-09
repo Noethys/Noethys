@@ -390,7 +390,7 @@ class Case():
             dictInfosInscriptions = None
         return dictInfosInscriptions
 
-    def MAJ_facturation(self, event=None):
+    def MAJ_facturation(self, modeSilencieux=False):
         for conso in self.GetListeConso() :
             IDprestation = conso.IDprestation
             if self.grid.dictPrestations.has_key(IDprestation) :
@@ -406,12 +406,13 @@ class Case():
                         nom = u"?"
                         prenom = u"?"
                     nomCase = _(u"%s du %s pour %s %s") % (nomUnite, dateComplete, nom, prenom)
-                    dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), nomCase, wx.OK | wx.ICON_ERROR)
-                    dlg.ShowModal()
-                    dlg.Destroy()
+                    if modeSilencieux == False :
+                        dlg = wx.MessageDialog(self.grid, _(u"La prestation correspondant à cette consommation apparaît déjà sur une facture.\n\nIl est donc impossible de la modifier ou de la supprimer."), nomCase, wx.OK | wx.ICON_ERROR)
+                        dlg.ShowModal()
+                        dlg.Destroy()
                     return False
 
-        self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self)
+        self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self, modeSilencieux=modeSilencieux)
         self.grid.ProgrammeTransports(self.IDindividu, self.date, self.ligne)
 
     def GetTexteInfobulleConso(self, conso=None):
@@ -685,7 +686,7 @@ class Case():
             bmp = wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG)
             item.SetBitmap(bmp)
             menuPop.AppendItem(item)
-            self.grid.Bind(wx.EVT_MENU, self.MAJ_facturation, id=100)            
+            self.grid.Bind(wx.EVT_MENU, self.MAJ_facturation_menu, id=100)            
             
             item = wx.MenuItem(menuPop, 20, _(u"Détail de la consommation"))
             bmp = wx.Bitmap("Images/16x16/Calendrier_zoom.png", wx.BITMAP_TYPE_PNG)
@@ -695,7 +696,10 @@ class Case():
                             
         self.grid.PopupMenu(menuPop)
         menuPop.Destroy()
-
+    
+    def MAJ_facturation_menu(self, event):
+        self.MAJ_facturation() 
+        
     def AppliquerForfaitCredit(self, event=None):
         self.grid.GetGrandParent().panel_forfaits.Ajouter(date_debut=self.date, IDfamille=self.IDfamille)
         
