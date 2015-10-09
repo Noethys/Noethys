@@ -1594,7 +1594,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date = DateEngEnDateDD(date)
             forfait_date_debut = DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = DateEngEnDateDD(forfait_date_fin)
-
+                
             if IDindividu != None and IDindividu != 0 and self.dictIndividus.has_key(IDindividu) :
                 nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
             else:
@@ -2529,8 +2529,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # -------------------------Mémorisation de la prestation ---------------------------------------------
                 IDcompte_payeur = self.dictComptesPayeurs[IDfamille]
                 IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, code_compta=code_compta, tva=tva)
-                listeNouvellesPrestations.append(IDprestation)
-            
+                if IDprestation < 0 :
+                    listeNouvellesPrestations.append(IDprestation)
+                else :
+                    return
+                
             else :
                 IDprestation = forfait_credit
                 
@@ -2889,25 +2892,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def MemorisePrestation(self, IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, categorie="consommation", listeDeductions=[], 
                                                 temps_facture=None, IDcategorie_tarif=None, forfait_date_debut=None, forfait_date_fin=None, code_compta=None, tva=None):
-        # Recherche le prochain numéro dans la liste des prestations
-        IDprestation = self.prochainIDprestation
-        self.prochainIDprestation -= 1
+        """ Mémorisation de la prestation """
         
-        # Mémorise les valeurs de la prestation
+        # Préparation des valeurs à mémoriser
         if IDindividu != None :
             nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
         else:
             nomIndividu = u""
-        
-        dictTemp = {
-                "IDprestation" : IDprestation, 
+            
+        dictPrestation = {
                 "IDcompte_payeur" : IDcompte_payeur, 
                 "date" : date, 
                 "categorie" : categorie,
                 "label" : nom_tarif, 
                 "montant_initial" : montant_initial, 
                 "montant" : montant_final, 
-                "montantVentilation" : 0.0, 
                 "IDactivite" : IDactivite,
                 "IDtarif" : IDtarif, 
                 "IDfacture" : None, 
@@ -2920,8 +2919,25 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "forfait_date_fin" : forfait_date_fin,
                 "code_compta" : code_compta,
                 "tva" : tva,
+                "forfait" : None,
                 }
-        self.dictPrestations[IDprestation] = dictTemp
+        
+        # Recherche si une prestation identique existe déjà en mémoire
+        for IDprestation, dictTemp1 in self.dictPrestations.iteritems() :
+            dictTemp2 = dictTemp1.copy()
+            del dictTemp2["IDprestation"]
+            del dictTemp2["montantVentilation"]
+            if dictPrestation == dictTemp2 and IDprestation > 0 :
+                return IDprestation
+                
+        # Recherche le prochain numéro dans la liste des prestations
+        IDprestation = self.prochainIDprestation
+        self.prochainIDprestation -= 1
+        
+        # Mémorisation de la prestation
+        dictPrestation["IDprestation"] = IDprestation
+        dictPrestation["montantVentilation"] = 0.0
+        self.dictPrestations[IDprestation] = dictPrestation
         
         # Création des déductions pour les aides journalières
         for deduction in listeDeductions :
@@ -3857,28 +3873,28 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
 
 
-    def AjouterPrestation(self):
-        return
-        # <<<<<<<<<<<<<<<<<<<<<<<<<<<
-        IDcompte_payeur = 1
-        date = datetime.date(2010, 6, 16)
-        IDactivite = 1
-        IDtarif = None
-        nom_tarif = _(u"Mini-camps à Crozon")
-        montant = 150.00
-        IDfamille = 3
-        IDindividu = 24
-        categorie = "autre"
-        IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant, IDfamille, IDindividu, categorie)
-        self.GetGrandParent().panel_facturation.SaisiePrestation(
-                self.dictPrestations,
-                self.dictDeductions,
-                [IDprestation,],
-                [],
-                self.listeSelectionIndividus,
-                self.listeActivites,
-                self.listePeriodes,
-                )
+##    def AjouterPrestation(self):
+##        return
+##        # <<<<<<<<<<<<<<<<<<<<<<<<<<<
+##        IDcompte_payeur = 1
+##        date = datetime.date(2010, 6, 16)
+##        IDactivite = 1
+##        IDtarif = None
+##        nom_tarif = _(u"Mini-camps à Crozon")
+##        montant = 150.00
+##        IDfamille = 3
+##        IDindividu = 24
+##        categorie = "autre"
+##        IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant, IDfamille, IDindividu, categorie)
+##        self.GetGrandParent().panel_facturation.SaisiePrestation(
+##                self.dictPrestations,
+##                self.dictDeductions,
+##                [IDprestation,],
+##                [],
+##                self.listeSelectionIndividus,
+##                self.listeActivites,
+##                self.listePeriodes,
+##                )
         
     def ModifierPrestation(self, IDprestation=None):
         print IDprestation
@@ -3908,27 +3924,27 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     
     
-    def AppliquerForfait(self):
-        # Mémorisation de la prestation
-        IDcompte_payeur = 1
-        date = datetime.date(2010, 6, 16)
-        IDactivite = 1
-        IDtarif = None
-        nom_tarif = _(u"Mini-camps à Crozon")
-        montant = 150.00
-        IDfamille = 3
-        IDindividu = 24
-        categorie = "autre"
-        IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant, IDfamille, IDindividu, categorie)
-        self.GetGrandParent().panel_facturation.SaisiePrestation(
-                self.dictPrestations,
-                self.dictDeductions,
-                [IDprestation,],
-                [],
-                self.listeSelectionIndividus,
-                self.listeActivites,
-                self.listePeriodes,
-                )
+##    def AppliquerForfait(self):
+##        # Mémorisation de la prestation
+##        IDcompte_payeur = 1
+##        date = datetime.date(2010, 6, 16)
+##        IDactivite = 1
+##        IDtarif = None
+##        nom_tarif = _(u"Mini-camps à Crozon")
+##        montant = 150.00
+##        IDfamille = 3
+##        IDindividu = 24
+##        categorie = "autre"
+##        IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant, IDfamille, IDindividu, categorie)
+##        self.GetGrandParent().panel_facturation.SaisiePrestation(
+##                self.dictPrestations,
+##                self.dictDeductions,
+##                [IDprestation,],
+##                [],
+##                self.listeSelectionIndividus,
+##                self.listeActivites,
+##                self.listePeriodes,
+##                )
     
     def Imprimer(self):
         """ Impression des consommations """
@@ -5113,7 +5129,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[2,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=394, selectionIndividus=[1066,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()

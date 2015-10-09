@@ -700,7 +700,7 @@ class Dialog(wx.Dialog):
 
     def On_outils_recalculer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichées ?\n\n(Attention, la ventilation des règlements sera supprimée pour ces consommations)"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichées ?"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
         dlg.Destroy()
         if reponse != wx.ID_YES :
