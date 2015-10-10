@@ -193,19 +193,59 @@ class Facturation():
         else :
             conditions = "WHERE prestations.IDfacture IN %s" % conditionFactures
         req = """
-        SELECT ventilation.IDprestation, SUM(ventilation.montant) AS montant_ventilation
+        SELECT ventilation.IDprestation, ventilation.IDreglement, ventilation.IDcompte_payeur, SUM(ventilation.montant) AS montant_ventilation,
+        reglements.date, reglements.montant, reglements.numero_piece, modes_reglements.label, emetteurs.nom, payeurs.nom
         FROM ventilation
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
+        LEFT JOIN reglements ON reglements.IDreglement = ventilation.IDreglement
+        LEFT JOIN modes_reglements ON modes_reglements.IDmode = reglements.IDmode
+        LEFT JOIN emetteurs ON emetteurs.IDemetteur = reglements.IDemetteur
+        LEFT JOIN payeurs ON payeurs.IDpayeur = reglements.IDpayeur
         %s
-        GROUP BY prestations.IDprestation
+        GROUP BY ventilation.IDprestation, ventilation.IDreglement
         ORDER BY prestations.date
         ;""" % conditions
         DB.ExecuterReq(req)
         listeVentilationPrestations = DB.ResultatReq()  
         dictVentilationPrestations = {}
-        for IDprestation, montant_ventilation in listeVentilationPrestations :
-            dictVentilationPrestations[IDprestation] = montant_ventilation
+        dictReglements = {}
+        for IDprestation, IDreglement, IDcompte_payeur, montant_ventilation, date, montant, numero_piece, mode, emetteur, payeur in listeVentilationPrestations :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            montant = FloatToDecimal(montant)
+            montant_ventilation = FloatToDecimal(montant_ventilation)
+            
+            # Mémorisation des règlements
+            if dictReglements.has_key(IDcompte_payeur) == False :
+                dictReglements[IDcompte_payeur] = {}
+            if dictReglements[IDcompte_payeur].has_key(IDreglement) == False :
+                dictReglements[IDcompte_payeur][IDreglement] = {"date" : date, "montant" : montant, "mode" : mode, "emetteur" : emetteur, "numero" : numero_piece, "payeur" : payeur, "ventilation" : FloatToDecimal(0.0)}
+            dictReglements[IDcompte_payeur][IDreglement]["ventilation"] += montant_ventilation
+            
+            # Mémorisation de la ventilation
+            if dictVentilationPrestations.has_key(IDprestation) == False :
+                dictVentilationPrestations[IDprestation] = FloatToDecimal(0.0)
+            dictVentilationPrestations[IDprestation] += montant_ventilation
+
+        # Ancienne version (sans détail des règlements)
+##        if len(listeFactures) == 0 :
+##            conditions = "WHERE (prestations.IDactivite IN %s OR prestations.IDactivite IS NULL) AND %s" % (conditionActivites, conditionDates)
+##        else :
+##            conditions = "WHERE prestations.IDfacture IN %s" % conditionFactures
+##        req = """
+##        SELECT ventilation.IDprestation, SUM(ventilation.montant) AS montant_ventilation
+##        FROM ventilation
+##        LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
+##        LEFT JOIN activites ON prestations.IDactivite = activites.IDactivite
+##        %s
+##        GROUP BY prestations.IDprestation
+##        ORDER BY prestations.date
+##        ;""" % conditions
+##        DB.ExecuterReq(req)
+##        listeVentilationPrestations = DB.ResultatReq()  
+##        dictVentilationPrestations = {}
+##        for IDprestation, montant_ventilation in listeVentilationPrestations :
+##            dictVentilationPrestations[IDprestation] = montant_ventilation
             
         # Recherche des QF aux dates concernées
         if len(listeFactures) == 0 :
@@ -331,7 +371,7 @@ class Facturation():
                 date_fin = dictFactures[IDfacture]["date_fin"]
                 date_edition = dictFactures[IDfacture]["date_edition"]
                 date_echeance = dictFactures[IDfacture]["date_echeance"]
-            
+                            
             # Regroupement par compte payeur
             if dictComptes.has_key(ID) == False and self.dictNomsTitulaires.has_key(IDfamille) :
                 
@@ -343,6 +383,12 @@ class Facturation():
                 cp_resid = dictInfosTitulaires["adresse"]["cp"]
                 ville_resid = dictInfosTitulaires["adresse"]["ville"]
                             
+                # Recherche des règlements
+                if dictReglements.has_key(IDcompte_payeur) :
+                    dictReglementsCompte = dictReglements[IDcompte_payeur]
+                else :
+                    dictReglementsCompte = {}
+                
                 # Mémorisation des infos
                 dictComptes[ID] = {
                     
@@ -374,6 +420,7 @@ class Facturation():
                     "select" : True,
                     "messages_familiaux" : [],
                     "{NOM_LOT}" : "",
+                    "reglements" : dictReglementsCompte,
                     
                     "date_edition" : date_edition,
                     "{DATE_EDITION_LONG}" : UTILS_Dates.DateComplete(date_edition),
@@ -928,5 +975,5 @@ if __name__ == '__main__':
 ##    print facturation.Impression(listeFactures=[92, 93], nomDoc=None, afficherDoc=True, dictOptions=None)
 ##    print len(facturation.GetDonnees2(listeFactures=range(3240, 3400)))
 ##    facturation.GetDonneesImpression2(listeFactures=range(3240, 3400))
-    print "resultats =", facturation.Impression(listeFactures=[5598,])
+    print "resultats =", facturation.Impression(listeFactures=[1387,])
     app.MainLoop()

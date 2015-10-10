@@ -106,7 +106,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les codes-barres dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
-        
+ 
+        # Afficher les règlements
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les règlements"), name="afficher_reglements", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les règlements dans le document")) 
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete) 
+       
         # Afficher les avis de prélèvements
         propriete = wxpg.BoolProperty(label=_(u"Afficher les avis de prélèvements"), name="afficher_avis_prelevements", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher les avis de prélèvements dans le document")) 

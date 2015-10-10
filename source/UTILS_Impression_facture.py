@@ -694,6 +694,39 @@ class Impression():
                         texteReport = texteReport[:-2] + u"."
                         listeMessages.append(Paragraph(texteReport, paraStyle))
                 
+                # Règlements
+                if mode == "facture" and dictOptions["afficher_reglements"] == True :
+                    dictReglements = dictValeur["reglements"]
+                    if len(dictReglements) > 0 :
+                        listeTextesReglements = []
+                        for IDreglement, dictTemp in dictReglements.iteritems() :
+                            if dictTemp["emetteur"] not in ("", None) :
+                                emetteur = u" (%s) " % dictTemp["emetteur"]
+                            else :
+                                emetteur = ""
+                            if dictTemp["numero"] not in ("", None) :
+                                numero = u" n°%s " % dictTemp["numero"]
+                            else :
+                                numero = ""
+                                
+                            montantReglement = u"%.02f %s" % (dictTemp["montant"], SYMBOLE)
+                            montantVentilation = u"%.02f %s" % (dictTemp["ventilation"], SYMBOLE)
+                            if dictTemp["ventilation"] != dictTemp["montant"] :
+                                texteMontant = u"%s utilisés sur %s" % (montantVentilation, montantReglement)
+                            else :
+                                texteMontant = montantReglement
+                                
+                            texte = u"%s%s%s de %s (%s)" % (dictTemp["mode"], numero, emetteur, dictTemp["payeur"], texteMontant)
+                            listeTextesReglements.append(texte)
+                        
+                        if dictValeur["solde"] > FloatToDecimal(0.0) :
+                            intro = u"Période partiellement réglée avec"
+                        else :
+                            intro = u"Période réglée en intégralité avec"
+                            
+                        texteReglements = _(u"<b>Règlement : </b> %s %s.") % (intro, " + ".join(listeTextesReglements))
+                        listeMessages.append(Paragraph(texteReglements, paraStyle))
+                                
                 # Messages
                 if mode == "facture" :
                     if dictOptions["afficher_messages"] == True :
