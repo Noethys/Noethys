@@ -309,7 +309,7 @@ class MainFrame(wx.Frame):
         if "[RESEAU]" in nomFichier :
             port, hote, user, mdp = nomFichier.split(";")
             nomFichier = nomFichier[nomFichier.index("[RESEAU]") + 8:]
-            nomFichier = _(u"Fichier réseau : %s | %s") % (nomFichier, user)
+            nomFichier = _(u"Fichier réseau : %s | %s | %s") % (nomFichier, hote, user)
         if nomFichier != "" :
             nomFichier = " - [" + nomFichier + "]"
         titreFrame = NOM_APPLICATION + " v" + VERSION_APPLICATION + nomFichier
