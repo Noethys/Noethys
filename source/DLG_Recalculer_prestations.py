@@ -162,8 +162,8 @@ class Dialog(wx.Dialog):
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Euro.png")
         
-        # Prestations
-        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"Sélection des prestations"))
+        # Individus
+        self.box_prestations_staticbox = wx.StaticBox(self, -1, _(u"Sélection des individus"))
         self.label_periode = wx.StaticText(self, -1, u"Période :")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, "au")

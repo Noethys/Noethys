@@ -176,7 +176,6 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
         for IDfamille, IDindividu, total_prestations in listePrestations :
-##            dictFacturation[(IDfamille, IDindividu)] = {"prestations":total_prestations, "ventilation":0.0}
             if dictFacturation.has_key(IDindividu) == False :
                 dictFacturation[IDindividu] = {"prestations":0.0, "ventilation":0.0}
             dictFacturation[IDindividu]["prestations"] += total_prestations
@@ -191,7 +190,6 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeVentilations = DB.ResultatReq()
         for IDfamille, IDindividu, total_ventilation in listeVentilations :
-##            dictFacturation[(IDfamille, IDindividu)]["ventilation"] = total_ventilation
             if dictFacturation.has_key(IDindividu) == True :
                 dictFacturation[IDindividu]["ventilation"] = total_ventilation
 
@@ -202,7 +200,6 @@ class ListView(FastObjectListView):
             if champ != None :
                 listeChamps2.append(champ)
         
-        DB = GestionDB.DB()
         req = """
         SELECT %s
         FROM individus 

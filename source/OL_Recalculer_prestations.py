@@ -77,7 +77,7 @@ class ListView(FastObjectListView):
         individus.nom, individus.prenom
         FROM prestations
         LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
-        WHERE date>='%s' AND date<='%s' AND IDactivite=%d
+        WHERE date>='%s' AND date<='%s' AND IDactivite=%d AND categorie='consommation'
         GROUP BY IDprestation
         ;""" % (self.date_debut, self.date_fin, self.IDactivite)
         DB.ExecuterReq(req)

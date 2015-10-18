@@ -366,6 +366,8 @@ class CTRL(HTL.HyperTreeList):
             IDnom_tarif = dictItem["ID"]
             nomTarif = dictItem["nom"]
             newIDnom_tarif = self.DupliquerNom(IDnom_tarif, nomTarif)
+            if newIDnom_tarif == False :
+                return
             self.ModifierNom(IDnom_tarif=newIDnom_tarif)
             self.MAJ(selection=("noms_tarifs", newIDnom_tarif))
             
@@ -586,14 +588,14 @@ class CTRL(HTL.HyperTreeList):
         IDnom_tarif_modele = IDnom_tarif
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous dupliquer également les tarifs ?"), _(u"Duplication"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
+        dlg.Destroy()
         if reponse == wx.ID_YES :
             dupliqueEnfants = True
         elif reponse == wx.ID_NO :
             dupliqueEnfants = False
         else :
-            dlg.Destroy()
-            return
-        dlg.Destroy()
+            return False
+        
         DB = GestionDB.DB()
 
         # Duplication des noms de tarifs

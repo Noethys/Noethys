@@ -196,7 +196,6 @@ class ListView(GroupListView):
             if champ != None :
                 listeChamps2.append(champ)
         
-        DB = GestionDB.DB()
         req = """
         SELECT %s
         FROM inscriptions 
