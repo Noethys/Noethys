@@ -2513,9 +2513,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         listeAidesRetenues.append(aideRetenue)
 
             
-            
             if forfait_credit == False :
-                
                 # Application de la déduction
                 montant_initial = montant_tarif
                 montant_final = montant_initial
@@ -2531,8 +2529,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, code_compta=code_compta, tva=tva)
                 if IDprestation < 0 :
                     listeNouvellesPrestations.append(IDprestation)
-                else :
-                    return
+##                else :
+##                    return
                 
             else :
                 IDprestation = forfait_credit
@@ -2547,14 +2545,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for conso in listeConso :
                 if conso.IDactivite == IDactivite and conso.forfait == None :
                     case = conso.case
-                    valeur = (conso.IDprestation, "consommation")
-                    if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in self.dictForfaits.keys() :
-                        listeAnciennesPrestations.append(valeur)
+                    
+                    # Retrouve le IDprestation
                     if IDunite in dictUnitesPrestations.keys() :
                         IDprestation = dictUnitesPrestations[IDunite]
                     else:
                         IDprestation = None
                     
+                    # Supprime si nécessaire l'ancienne prestation
+                    valeur = (conso.IDprestation, "consommation")
+                    if IDprestation < 0 :
+                        if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in self.dictForfaits.keys() :
+                            listeAnciennesPrestations.append(valeur)
+                        
                     if case != None :
                         if case.CategorieCase == "standard" :
                             case.IDprestation = IDprestation
@@ -2563,7 +2566,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             barre = conso.barre
                             barre.conso.IDprestation = IDprestation
                             barre.MemoriseValeurs()
-
+        
         # 7A - Vérifie que la prestation supprimée n'est pas un tarif SELON NBRE INDIVIDUS FAMILLE
         for IDprestationAncienne, categorie in listeAnciennesPrestations :
             if self.dictPrestations.has_key(IDprestationAncienne):
@@ -5129,7 +5132,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=394, selectionIndividus=[1066,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=209, selectionIndividus=[564,])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
