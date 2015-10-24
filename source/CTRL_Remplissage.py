@@ -27,9 +27,8 @@ import textwrap
 
 import GestionDB
 import UTILS_Config
+import UTILS_Texte
 
-try: import psyco; psyco.full()
-except: pass
 
 # Colonnes unités
 LARGEUR_COLONNE_UNITE = 60
@@ -718,7 +717,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def Tests(self):
         """ Commande de test pour le développement """
         # Param pour les tests
-        self.listeActivites = [2,]
+        self.listeActivites = [1,]
         self.listePeriodes = [(datetime.date(2011, 12, 31), datetime.date(2013, 12, 31)), (datetime.date(2011, 5, 1), datetime.date(2011, 12, 31)),]
         self.SetModeAffichage("nbrePlacesPrises")
         # Lancement
@@ -960,13 +959,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictListeUnites[IDactivite] = [dictTemp,]
             dictUnites[IDunite] = dictTemp
         # Récupère les incompatibilités entre unités
-        req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
-        FROM unites_incompat;"""
-        self.DB.ExecuterReq(req)
-        listeDonnees = self.DB.ResultatReq()
-        for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+##        req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
+##        FROM unites_incompat;"""
+##        self.DB.ExecuterReq(req)
+##        listeDonnees = self.DB.ResultatReq()
+##        for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
+##            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+##            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
         return dictListeUnites, dictUnites
         
     def GetDictOuvertures(self, listeActivites=[], listePeriodes=[]):
@@ -1037,14 +1036,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictUnitesRemplissage[IDunite].append(IDunite_remplissage)
                                 
         # Récupération des unités de remplissage
-        req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max
+        req = """SELECT IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes
         FROM unites_remplissage 
         WHERE IDactivite IN %s %s
         AND (afficher_page_accueil IS NULL OR afficher_page_accueil=1)
         ;""" % (conditionActivites, conditionDates2)
         self.DB.ExecuterReq(req)
         listeUnitesRemplissage = self.DB.ResultatReq()
-        for IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max in listeUnitesRemplissage :
+        for IDunite_remplissage, IDactivite, ordre, nom, abrege, date_debut, date_fin, seuil_alerte, heure_min, heure_max, etiquettes in listeUnitesRemplissage :
+            etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
             dictRemplissage[IDunite_remplissage] = {"IDactivite" : IDactivite,
                                                                         "ordre" : ordre,
                                                                         "nom" : nom,
@@ -1054,6 +1054,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                                                         "seuil_alerte" : seuil_alerte,
                                                                         "heure_min" : heure_min,
                                                                         "heure_max" : heure_max,
+                                                                        "etiquettes" : etiquettes,
                                                                         }
                                                                         
         # Récupération des paramètres de remplissage
@@ -1075,13 +1076,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictRemplissage[IDunite_remplissage][dateDD][IDgroupe] = dictValeursTemp
 
         # Récupération des consommations existantes 
-        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite
+        req = """SELECT IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes
         FROM consommations 
         WHERE IDactivite IN %s %s; """ % (conditionActivites, conditionDates)
         self.DB.ExecuterReq(req)
         listeConso = self.DB.ResultatReq()
-        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite in listeConso :
+        for IDactivite, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettesConso in listeConso :
             dateDD = DateEngEnDateDD(date)
+            etiquettesConso = UTILS_Texte.ConvertStrToListe(etiquettesConso)
             
             # Quantité
             if quantite == None :
@@ -1119,7 +1121,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     valide = False
                         except :
                             pass
-                                                    
+                        
+                        # Vérifie si condition étiquettes
+                        etiquettes = dictRemplissage[IDunite_remplissage]["etiquettes"]
+                        if len(etiquettes) > 0 :
+                            etiquettesCommunes = set(etiquettes) & set(etiquettesConso)
+                            if len(etiquettesCommunes) == 0 :
+                                valide = False
+                        
                         # Mémorisation de la place prise
                         if valide == True :
                             dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] += quantite

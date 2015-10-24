@@ -24,7 +24,7 @@ except: pass
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
 
-LARGEUR_COLONNE_AFFICHAGE = 185
+LARGEUR_COLONNE_AFFICHAGE = 135
 
 
 class Track(object):
@@ -65,7 +65,7 @@ class CTRL_Affichage(wx.Choice):
         self.item = item
         self.track = track
         if self.track.type == "conso" :
-            self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher"), _(u"Afficher uniquement si ouvert")])
+            self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher"), _(u"Afficher si ouvert")])
         else:
             self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher")])
         self.SetToolTipString(_(u"Sélectionnez un type d'affichage pour cette unité"))
@@ -106,11 +106,11 @@ class CTRL(HTL.HyperTreeList):
                 
         # Création des colonnes
         listeColonnes = [
-            ( _(u"Activité / Unité"), 190, wx.ALIGN_LEFT),
-            ( _(u"Abrégé"), 60, wx.ALIGN_LEFT),
+            ( _(u"Activité / Unité"), 160, wx.ALIGN_LEFT),
+            ( _(u"Abrégé"), 50, wx.ALIGN_LEFT),
             ( _(u"Type"), 90, wx.ALIGN_LEFT),
             ( _(u"Affichage"), LARGEUR_COLONNE_AFFICHAGE, wx.ALIGN_LEFT),
-            ( _(u"Ordre"), 40, wx.ALIGN_CENTER),
+##            ( _(u"Ordre"), 40, wx.ALIGN_CENTER),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :

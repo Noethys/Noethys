@@ -29,6 +29,7 @@ import CTRL_Grille_facturation
 import CTRL_Grille_forfaits2 as CTRL_Grille_forfaits
 import OL_Legende_grille
 import OL_Raccourcis_grille
+import CTRL_Etiquettes
 
 try: import psyco; psyco.full()
 except: pass
@@ -378,10 +379,15 @@ class Dialog(wx.Dialog):
                           Name("facturation").Caption(_(u"Facturation")).
                           Right().Layer(0).BestSize(wx.Size(275,140)).Position(3).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
 
+        self.panel_etiquettes = CTRL_Etiquettes.CTRL(self, activeMenu=False, onCheck=self.panel_grille.grille.MAJ_affichage)
+        self._mgr.AddPane(self.panel_etiquettes, aui.AuiPaneInfo().
+                          Name("etiquettes").Caption(_(u"Etiquettes")).
+                          Right().Layer(0).Position(3).CloseButton(False).BestSize(wx.Size(275, 100)).MaximizeButton(False).MinSize((275, 100)))    
+
         self.panel_forfaits = CTRL_Grille_forfaits.CTRL(self, grille=self.panel_grille.grille)
         self._mgr.AddPane(self.panel_forfaits, aui.AuiPaneInfo().
                           Name("forfaits").Caption(_(u"Forfaits crédits")).
-                          Right().Layer(0).BestSize(wx.Size(275,140)).Position(4).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
+                          Right().Layer(0).Position(4).BestSize(wx.Size(275,140)).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
         self._mgr.GetPane("forfaits").dock_proportion = 50000
         
         self.panel_commandes = Commandes(self)
@@ -393,12 +399,14 @@ class Dialog(wx.Dialog):
         self._mgr.AddPane(self.panel_legende, aui.AuiPaneInfo().
                           Name("legende").Caption(_(u"Légende")).
                           Left().Layer(0).Position(2).CloseButton(False).BestSize(wx.Size(170, 100)).MaximizeButton(False).MinSize((170, 100)))    
-
+        self._mgr.GetPane("legende").dock_proportion = 60000
+        
         self.panel_raccourcis = OL_Raccourcis_grille.ListView(self, id=-1, name="OL_raccourcis", style=wx.LC_REPORT|wx.LC_NO_HEADER | wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self._mgr.AddPane(self.panel_raccourcis, aui.AuiPaneInfo().
                           Name("raccourcis").Caption(_(u"Touches raccourcis")).
                           Left().Layer(0).Position(2).CloseButton(False).BestSize(wx.Size(170, 100)).MaximizeButton(False).MinSize((170, 100)))    
-        self._mgr.GetPane("raccourcis").dock_proportion = 60000
+        self._mgr.GetPane("raccourcis").dock_proportion = 30000
+        
         
         # Création du panel central
         self._mgr.AddPane(self.panel_grille, aui.AuiPaneInfo().Name("grille").
@@ -443,6 +451,12 @@ class Dialog(wx.Dialog):
         else:
             self._mgr.GetPane("forfaits").Hide()
         
+        # Affichage du panneau du panneau Etiquettes
+        if self.panel_grille.grille.afficherListeEtiquettes == True :
+            self._mgr.GetPane("etiquettes").Show()
+        else:
+            self._mgr.GetPane("etiquettes").Hide()
+        
         # Contre le bug de maximize
         wx.CallAfter(self._mgr.Update)
         wx.CallAfter(self.panel_grille.grille.SetFocus)
@@ -457,7 +471,7 @@ class Dialog(wx.Dialog):
     def SetListeSelectionActivites(self, listeActivites=[]):
         self.panel_grille.SetListeSelectionActivites(listeActivites)
         self.panel_periode.SetVisibleSelection()
-        
+        self.panel_etiquettes.SetActivites(listeActivites)
 
     def MAJ_grille(self, autoCocheActivites=True):
         if autoCocheActivites == True :

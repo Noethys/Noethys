@@ -332,6 +332,7 @@ DB_DATA = {
                                     ("heure_max", "DATE", u"Plage horaire conditionnelle - Heure max"),  
                                     ("afficher_page_accueil", "INTEGER", u"Afficher dans le cadre Effectifs de la page d'accueil"),
                                     ("afficher_grille_conso", "INTEGER", u"Afficher dans la grille des conso"),
+                                    ("etiquettes", "VARCHAR(450)", u"Etiquettes associées"),
                                     ], # Unités de remplissage
 
     "unites_remplissage_unites":[("IDunite_remplissage_unite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Unité_remplissage_unite"),
@@ -401,6 +402,8 @@ DB_DATA = {
                                     ("tva", "FLOAT", u"Taux TVA"),
                                     ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
                                     ("date_facturation", "VARCHAR(450)", u"Date de facturation de la prestation"),
+                                    ("etiquettes", "VARCHAR(450)", u"Etiquettes rattachées à ce tarif"),
+                                    ("etats", "VARCHAR(150)", u"Etats de consommations rattachés à ce tarif"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),
@@ -482,6 +485,7 @@ DB_DATA = {
                                     ("IDprestation", "INTEGER", u"ID de la prestation"),
                                     ("forfait", "INTEGER", u"Type de forfait : 0 : Aucun | 1 : Suppr possible | 2 : Suppr impossible"),
                                     ("quantite", "INTEGER", u"Quantité de consommations"),
+                                    ("etiquettes", "VARCHAR(50)", u"Etiquettes"),
                                     ], # Consommations
 
     "memo_journee":[      ("IDmemo", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID memo"),
@@ -1426,6 +1430,13 @@ DB_DATA = {
                                     ("date", "DATE", u"Date de l'archivage"),
                                     ], # Synchronisation Nomadhys : Archivage des fichiers
 
+    "etiquettes":              [("IDetiquette", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Etiquette"),
+                                    ("label", "VARCHAR(300)", u"Label de l'étiquette"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité"),
+                                    ("parent", "INTEGER", u"Parent de l'étiquette"),
+                                    ("ordre", "INTEGER", u"Ordre"),
+                                    ("couleur", "VARCHAR(30)", u"Couleur de l'étiquette"),
+                                    ], # Etiquettes de consommations
 
     }
 

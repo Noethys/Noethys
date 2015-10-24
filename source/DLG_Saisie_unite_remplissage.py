@@ -14,6 +14,8 @@ import wx
 import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_heure
+import CTRL_Etiquettes
+import UTILS_Texte
 
 import GestionDB
 
@@ -130,9 +132,15 @@ class Dialog(wx.Dialog):
         self.ctrl_seuil = wx.SpinCtrl(self, -1, "5", size=(60, -1))
         self.ctrl_seuil.SetRange(0, 200)
                 
-        self.label_unites = wx.StaticText(self, -1, _(u"Unités associées :"))
+        self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
         self.ctrl_unites = CheckListBoxUnites(self, self.IDactivite, self.IDunite_remplissage)
+        self.ctrl_unites.SetMinSize((-1, 100))
         self.ctrl_unites.MAJ() 
+        
+        self.label_etiquettes = wx.StaticText(self, -1, _(u"Etiquettes :"))
+        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[self.IDactivite,], nomActivite=u"Activité", activeMenu=False)
+        self.ctrl_etiquettes.SetMinSize((-1, 80))
+        self.ctrl_etiquettes.MAJ() 
         
         self.label_horaire = wx.StaticText(self, -1, _(u"Plage horaire :"))
         self.label_de = wx.StaticText(self, -1, _(u"de"))
@@ -178,6 +186,7 @@ class Dialog(wx.Dialog):
         self.ctrl_abrege.SetToolTipString(_(u"Saisissez ici le nom abrégé de l'unité de remplissage"))
         self.ctrl_seuil.SetToolTipString(_(u"Saisisez le nombre de places qui constitue le seuil d'alerte"))
         self.ctrl_unites.SetToolTipString(_(u"Cochez les unités qui doivent être associées"))
+        self.ctrl_etiquettes.SetToolTipString(_(u"Cochez les étiquettes qui doivent être associées"))
         self.radio_illimitee.SetToolTipString(_(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité"))
         self.radio_limitee.SetToolTipString(_(u"Cliquez ici pour définir une période de validité précise"))
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
@@ -207,8 +216,12 @@ class Dialog(wx.Dialog):
         grid_sizer_caract = wx.FlexGridSizer(rows=7, cols=2, vgap=15, hgap=5)
         grid_sizer_caract.Add(self.label_seuil, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caract.Add(self.ctrl_seuil, 0, 0, 0)
+        
         grid_sizer_caract.Add(self.label_unites, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_caract.Add(self.ctrl_unites, 0, wx.EXPAND, 0)
+
+        grid_sizer_caract.Add(self.label_etiquettes, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_caract.Add(self.ctrl_etiquettes, 0, wx.EXPAND, 0)
         
         grid_sizer_caract.Add(self.label_horaire, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_horaire = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
@@ -337,7 +350,10 @@ class Dialog(wx.Dialog):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
-    
+        
+        # Etiquettes
+        etiquettes = UTILS_Texte.ConvertListeToStr(self.ctrl_etiquettes.GetCoches())
+        
         # Enregistrement
         DB = GestionDB.DB()
         listeDonnees = [ 
@@ -351,6 +367,7 @@ class Dialog(wx.Dialog):
             ("heure_max", heure_max),
             ("afficher_page_accueil", afficher_page_accueil),
             ("afficher_grille_conso", afficher_grille_conso),
+            ("etiquettes", etiquettes),
             ]
 
         if self.IDunite_remplissage == None :
@@ -380,7 +397,7 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des valeurs """
         db = GestionDB.DB()
-        req = """SELECT IDunite_remplissage, nom, abrege, seuil_alerte, date_debut, date_fin, heure_min, heure_max, afficher_page_accueil, afficher_grille_conso
+        req = """SELECT IDunite_remplissage, nom, abrege, seuil_alerte, date_debut, date_fin, heure_min, heure_max, afficher_page_accueil, afficher_grille_conso, etiquettes
         FROM unites_remplissage WHERE IDunite_remplissage=%d;""" % self.IDunite_remplissage
         db.ExecuterReq(req)
         listeTemp = db.ResultatReq()
@@ -397,6 +414,7 @@ class Dialog(wx.Dialog):
         heure_max = listeTemp[7]
         afficher_page_accueil = listeTemp[8]
         afficher_grille_conso = listeTemp[9]
+        etiquettes = listeTemp[10]
 
         self.ctrl_nom.SetValue(nom)
         self.ctrl_abrege.SetValue(abrege)
@@ -411,6 +429,8 @@ class Dialog(wx.Dialog):
             self.check_afficher_page_accueil.SetValue(False)
         if afficher_grille_conso == 0 :
             self.check_afficher_grille_conso.SetValue(False)
+        self.ctrl_etiquettes.SetCoches(UTILS_Texte.ConvertStrToListe(etiquettes))
+
         self.ctrl_unites.Importation() 
         
 

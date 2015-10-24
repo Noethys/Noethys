@@ -600,7 +600,7 @@ class Dialog(wx.Dialog):
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement spécifier une heure de début et une heure de fin pour les unités de type 'Multihoraire' !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            return
+            return False
         
         # Validité
         if self.radio_illimitee.GetValue() == True :

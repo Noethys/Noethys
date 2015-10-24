@@ -33,3 +33,22 @@ if __name__=='__main__':
     T("ref-04851")
     T("0000099")
     T("9")
+    
+    
+def ConvertStrToListe(texte=None, siVide=[], separateur=";", typeDonnee="entier"):
+    """ Convertit un texte "1;2;3;4" en [1, 2, 3, 4] """
+    if texte == None or texte == "" :
+        return siVide
+    listeResultats = []
+    temp = texte.split(separateur)
+    for ID in temp :
+        if typeDonnee == "entier" :
+            ID = int(ID)
+        listeResultats.append(ID)
+    return listeResultats
+
+
+def ConvertListeToStr(liste=[], separateur=";"):
+    """ Convertit une liste en texte """
+    if liste == None : liste = []
+    return separateur.join([str(x) for x in liste])

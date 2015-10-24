@@ -1706,6 +1706,25 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 5, 4)
+        if versionFichier < versionFiltre :   
+            try :
+                if self.IsTableExists("etiquettes") == False : self.CreationTable("etiquettes", Tables.DB_DATA) 
+                self.AjoutChamp("consommations", "etiquettes", "VARCHAR(100)")
+                self.AjoutChamp("tarifs", "etiquettes", "VARCHAR(450)")
+                self.AjoutChamp("tarifs", "etats", "VARCHAR(150)")
+                self.AjoutChamp("unites_remplissage", "etiquettes", "VARCHAR(450)")
+                import UTILS_Procedures
+                UTILS_Procedures.A8941() 
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
+
+
+
+
+
 
         return True
 
@@ -1951,7 +1970,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
 ##    db = DB(suffixe="DATA")
-##    listeTables = ("nomade_archivage",)
+##    listeTables = ("etiquettes",)
 ##    for nomTable in listeTables :
 ##        db.CreationTable(nomTable, Tables.DB_DATA)
 ##    db.Close()
@@ -2000,7 +2019,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
 ##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("cotisations", "activites", "VARCHAR(450)")
+##    db.AjoutChamp("tarifs", "etats", "VARCHAR(150)")
 ##    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
@@ -2027,15 +2046,15 @@ if __name__ == "__main__":
 ##    db.Close() 
     
     # Test d'une connexion MySQL
-    hote = ""
-    utilisateur = ""
-    motdepasse = ""
-    DB = DB(nomFichier=u"3306;%s;%s;%s[RESEAU]" % (hote, utilisateur, motdepasse))
-    if DB.echec == 1 :
-        print "Echec = ", DB.echec
-    else :
-        print "connexion ok"
-    DB.Close()
+##    hote = ""
+##    utilisateur = ""
+##    motdepasse = ""
+##    DB = DB(nomFichier=u"3306;%s;%s;%s[RESEAU]" % (hote, utilisateur, motdepasse))
+##    if DB.echec == 1 :
+##        print "Echec = ", DB.echec
+##    else :
+##        print "connexion ok"
+##    DB.Close()
 
     pass
     

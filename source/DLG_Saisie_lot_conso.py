@@ -15,6 +15,7 @@ import CTRL_Bouton_image
 import CTRL_Saisie_date
 import CTRL_Saisie_heure
 import CTRL_Bandeau
+import CTRL_Etiquettes
 import UTILS_Parametres
 import datetime
 import calendar
@@ -213,6 +214,7 @@ class CTRL_Activite(wx.Choice):
         listeLabels = []
         index = 0
         for IDactivite, nom in listeActivites :
+            if nom == None : nom = u"Activité inconnue"
             self.dictDonnees[index] = IDactivite
             listeLabels.append(nom)
             index += 1
@@ -614,6 +616,10 @@ class Dialog(wx.Dialog):
         self.ctrl_activite = CTRL_Activite(self)
         self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
         self.ctrl_unites = CTRL_Unites(self)
+        self.ctrl_unites.SetMinSize((50, 50))
+        self.label_etiquettes = wx.StaticText(self, -1, _(u"Etiquettes :"))
+        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[], activeMenu=False)
+        self.ctrl_etiquettes.SetMinSize((50, 50))
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
         self.ctrl_etat = CTRL_Etat(self)
 
@@ -666,7 +672,7 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((800, 600))
+        self.SetMinSize((800, 650))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -722,14 +728,17 @@ class Dialog(wx.Dialog):
 
         # Unités
         box_unites = wx.StaticBoxSizer(self.box_unites_staticbox, wx.VERTICAL)
-        grid_sizer_unites = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_unites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         grid_sizer_unites.Add(self.label_activite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_unites.Add(self.ctrl_activite, 0, wx.EXPAND, 0)
         grid_sizer_unites.Add(self.label_unites, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_unites.Add(self.ctrl_unites, 1, wx.EXPAND, 0)
+        grid_sizer_unites.Add(self.label_etiquettes, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_unites.Add(self.ctrl_etiquettes, 1, wx.EXPAND, 0)
         grid_sizer_unites.Add(self.label_etat, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_unites.Add(self.ctrl_etat, 0, wx.EXPAND, 0)
         grid_sizer_unites.AddGrowableRow(1)
+        grid_sizer_unites.AddGrowableRow(2)
         grid_sizer_unites.AddGrowableCol(1)
         box_unites.Add(grid_sizer_unites, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_droite.Add(box_unites, 1, wx.EXPAND, 0)
@@ -768,7 +777,8 @@ class Dialog(wx.Dialog):
         
     def OnChoixActivite(self, event): 
         self.ctrl_unites.SetActivite(self.ctrl_activite.GetActivite())
-
+        self.ctrl_etiquettes.SetActivites([self.ctrl_activite.GetActivite(),])
+        
     def GetPeriode(self):
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
@@ -881,7 +891,10 @@ class Dialog(wx.Dialog):
                         dictOptions[key] = valeur
 
                     listeUnites.append({"IDunite":IDunite, "nom":nom, "type":typeUnite, "options":dictOptions})
-                            
+        
+        # Etiquettes
+        etiquettes = self.ctrl_etiquettes.GetCoches() 
+        
         # Etat
         etat = self.ctrl_etat.GetValeur()         
         if self.ctrl_etat.IsEnabled() == False :
@@ -937,6 +950,7 @@ class Dialog(wx.Dialog):
         self.resultats["unites"] = listeUnites
         self.resultats["etat"] = etat
         self.resultats["dates"] = listeDates
+        self.resultats["etiquettes"] = etiquettes
         
         # Mémorisation paramètres
         UTILS_Parametres.Parametres(mode="set", categorie="dlg_saisie_lot_conso", nom="jours_scolaires", valeur=self.ctrl_scolaires.GetJoursStr())

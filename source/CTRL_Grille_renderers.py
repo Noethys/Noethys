@@ -106,7 +106,7 @@ class CaseStandard(gridlib.PyGridCellRenderer):
         if self.case.etat == "present" :
             tailleImage = 16
             paddingImage = 3
-            bmp = wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY) 
+            bmp = wx.Bitmap("Images/16x16/Ok5.png", wx.BITMAP_TYPE_ANY) 
             dc.DrawBitmap(bmp, rect[0]+rect[2]-tailleImage-paddingImage, rect[1]+paddingImage)
             
         # Dessin de l'image ABSENT JUSTIFIEE (Croix rouge)
@@ -136,8 +136,10 @@ class CaseStandard(gridlib.PyGridCellRenderer):
             dc.SetBrush(wx.Brush(couleurForfait, wx.SOLID))
             dc.SetPen(wx.TRANSPARENT_PEN)
             #dc.DrawCircle(rect[0]+10, rect[1]+10, 4)
-            dc.DrawPolygon([(0, 0), (7, 0), (0, 7)], xoffset=rect[0]+2, yoffset=rect[1]+1)
-
+            dc.DrawPolygon([(0, 0), (7, 0), (0, 7)], xoffset=rect.x+2, yoffset=rect.y+1) # Version en haut à gauche
+##            dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect.x+rect.width-1, yoffset=rect.y+1) # Version en haut à droite
+            
+            
         # Ecrit les horaires si c'est une conso HORAIRE
         if self.grid.dictUnites[self.case.IDunite]["type"] == "Horaire" and self.case.etat in ("reservation", "present", "absenti", "absentj", "attente", "refus") :
             dc.SetTextForeground("BLACK")
@@ -168,15 +170,37 @@ class CaseStandard(gridlib.PyGridCellRenderer):
             if self.case.IDgroupe != None and self.case.IDgroupe != 0 and self.case.etat in ("reservation", "present", "absenti", "absentj", "attente", "refus") :
                 if self.grid.dictGroupes.has_key(self.case.IDgroupe) :
                     nomGroupe = self.grid.dictGroupes[self.case.IDgroupe]["nom"]
+                    nbreGroupesActivite = self.grid.dictGroupes[self.case.IDgroupe]["nbreGroupesActivite"]
                 else :
                     nomGroupe = u"Groupe inconnu"
-                dc.SetTextForeground("#949494")
-                dc.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
-                nomGroupe = self.AdapteTailleTexte(dc, nomGroupe, rect[2]-6)
-                largeurFinaleTexte = dc.GetTextExtent(nomGroupe)[0]
-                xTexte = rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0)
-                dc.DrawText(nomGroupe, xTexte, rect.y + rect.height - 12)
-                dc.SetTextForeground("BLACK")
+                    nbreGroupesActivite = 999
+                if nbreGroupesActivite > 1 :
+                    dc.SetTextForeground("#949494")
+                    dc.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
+                    nomGroupe = self.AdapteTailleTexte(dc, nomGroupe, rect[2]-6)
+                    largeurFinaleTexte = dc.GetTextExtent(nomGroupe)[0]
+                    xTexte = rect[0] + ((rect[2] - largeurFinaleTexte) / 2.0)
+                    dc.DrawText(nomGroupe, xTexte, rect.y + rect.height - 12)
+                    dc.SetTextForeground("BLACK")
+        
+        # Ecrit les étiquettes
+        nbreEtiquettes = len(conso.etiquettes)
+        if self.case.etat != None and nbreEtiquettes > 0 :
+            largeurEtiquette = (rect.width - 3) / nbreEtiquettes * 1.0
+            index = 0
+            for IDetiquette in conso.etiquettes :
+                if self.grid.dictEtiquettes.has_key(IDetiquette) :
+                    dictEtiquette = self.grid.dictEtiquettes[IDetiquette]
+                    # Dessine l'étiquette
+                    dc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
+                    dc.SetPen(wx.TRANSPARENT_PEN)
+##                    dc.DrawRectangle(rect.x+2 + largeurEtiquette * index, rect.y + rect.height - 3, largeurEtiquette, 2) # Barre horizontale inférieure
+                    dc.DrawCircle(rect.x + rect.width - 4 - (5 * index), rect.y + 4, 2) # En haut à droite
+                    index += 1
+                
+                
+                
+        
         
             
     def MAJ(self):
@@ -499,7 +523,7 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
 
             # Dessin de l'image PRESENT (Coche verte)
             if conso.etat == "present" :
-                listeImages.append(wx.Bitmap("Images/16x16/Ok.png", wx.BITMAP_TYPE_ANY))
+                listeImages.append(wx.Bitmap("Images/16x16/Ok5.png", wx.BITMAP_TYPE_ANY))
                 
             # Dessin de l'image ABSENT JUSTIFIEE (Croix rouge)
             if conso.etat == "absentj" :
@@ -530,10 +554,23 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
                     gc.SetFont(wx.Font(6, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'), couleurTexteGroupe)
                     nomGroupe = grid.dictGroupes[conso.IDgroupe]["nom"]
                     largeurNomGroupe, hauteurNomGroupe = gc.GetTextExtent(nomGroupe)
-                    if rectBarre.width > largeurNomGroupe :
+                    nbreGroupesActivite = grid.dictGroupes[conso.IDgroupe]["nbreGroupesActivite"]
+                    if rectBarre.width > largeurNomGroupe and nbreGroupesActivite > 1 :
                         gc.DrawText(nomGroupe, rectBarre.x+4, rectBarre.y + rectBarre.height - 10)
                 
-
+            # Ecrit les étiquettes
+            nbreEtiquettes = len(conso.etiquettes)
+            if conso.etat != None and nbreEtiquettes > 0 :
+                index = 0
+                for IDetiquette in conso.etiquettes :
+                    if grid.dictEtiquettes.has_key(IDetiquette) :
+                        dictEtiquette = grid.dictEtiquettes[IDetiquette]
+                        # Dessine l'étiquette
+                        gc.SetBrush(wx.Brush(dictEtiquette["couleur"], wx.SOLID))
+                        gc.SetPen(wx.TRANSPARENT_PEN)
+                        gc.DrawEllipse(rectBarre.x + rectBarre.width - 7 - (5 * index), rectBarre.y + rectBarre.height - 7, 4, 4) # En haut à droite
+                        index += 1
+                
         gc.PopState() 
         
         # Envoi du buffer au DC
@@ -761,7 +798,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=14, selectionIndividus=[46,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949,])
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

@@ -31,6 +31,7 @@ import GestionDB
 import UTILS_Config
 import UTILS_Organisateur
 import UTILS_Infos_individus
+import UTILS_Texte
 import wx.lib.agw.pybusyinfo as PBI
 
 LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
@@ -217,8 +218,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB.ExecuterReq(req)
         listeGroupes = DB.ResultatReq()
         
+        # Etiquettes
+        self.dictEtiquettes = {}
+        req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur
+        FROM etiquettes;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        for IDetiquette, label, IDactivite, parent, ordre, couleur in listeDonnees :     
+            couleurTemp = couleur[1:-1].split(",")
+            couleur = wx.Colour(int(couleurTemp[0]), int(couleurTemp[1]), int(couleurTemp[2]))
+            self.dictEtiquettes[IDetiquette] = {"label" : label, "IDactivite" : IDactivite, "parent" : parent, "ordre" : ordre, "couleur" : couleur}
+
         # Consommations
-        req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite,
+        req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite, consommations.etiquettes,
         heure_debut, heure_fin, etat, quantite, consommations.IDprestation, prestations.temps_facture,
         comptes_payeurs.IDfamille,  
         activites.nom,
@@ -241,11 +253,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Calcul des données
         dictResultats = {}
         listePrestationsTraitees = []
-        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, heure_debut, heure_fin, etat, quantite, IDprestation, tempsFacture, IDfamille, nomActivite, nomGroupe, nomCategorie in listeConsommations :
+        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDprestation, tempsFacture, IDfamille, nomActivite, nomGroupe, nomCategorie in listeConsommations :
             date = DateEngEnDateDD(date)
             mois = date.month
             annee = date.year           
-
+            
             # Recherche du regroupement
             try :
                 if self.affichage_regroupement == "jour" : regroupement = date
@@ -279,6 +291,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         if qf >= min and qf <= max :
                             regroupement = (min, max)
                 
+                # Etiquettes
+                if self.affichage_regroupement == "etiquette" : 
+                    etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
+                    if len(etiquettes) > 1 :
+                        temp = []
+                        for IDetiquette in etiquettes :
+                            if self.dictEtiquettes.has_key(IDetiquette) :
+                                temp.append(self.dictEtiquettes[IDetiquette]["label"])
+                        regroupement = temp
+                    else :
+                        regroupement = _(u"- Aucune étiquette -")
+
                 # Questionnaires
                 if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement : regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.affichage_regroupement[17:]]
                 if self.affichage_regroupement.startswith("question_") and "individu" in self.affichage_regroupement : regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.affichage_regroupement[18:]]
@@ -287,8 +311,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 regroupement = None
             
             if regroupement in ("", None) :
-                regroupement = _(u"- non renseigné -")
-
+                regroupement = _(u"- Non renseigné -")
+            
             # Quantité
             if quantite == None :
                 quantite = 1
@@ -305,9 +329,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             temps_presence = datetime.timedelta(hours=0, minutes=0)
             if heure_debut != None and heure_debut != "" and heure_fin != None and heure_fin != "" : 
                 valeur = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute) - datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
-##                hr, mn, sc = str(valeur).split(":")
-##                minDecimal = int(mn)*100/60
-##                temps_presence = float("%s.%s" % (hr, minDecimal))
                 temps_presence += valeur
             
             # Si c'est en fonction du temps facturé
@@ -317,7 +338,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     hr, mn = tempsFacture.split(":")
                     temps_facture += datetime.timedelta(hours=int(hr), minutes=int(mn))
                     listePrestationsTraitees.append(IDprestation)
-
                 
             if self.detail_groupes == True :
                 groupe = IDgroupe
@@ -332,14 +352,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 defaut = 0
             else :
                 defaut = datetime.timedelta(hours=0, minutes=0)
+
+            # En cas de regroupements multiples :
+            if type(regroupement) == list :
+                listeRegroupements = regroupement
+            else :
+                listeRegroupements = [regroupement,]
             
-            if dictResultats.has_key(groupe) == False :
-                dictResultats[groupe] = {}
-            if dictResultats[groupe].has_key(IDunite) == False :
-                dictResultats[groupe][IDunite] = {}
-            if dictResultats[groupe][IDunite].has_key(regroupement) == False :
-                dictResultats[groupe][IDunite][regroupement] = defaut
-            dictResultats[groupe][IDunite][regroupement] += valeur
+            for regroupement in listeRegroupements :
+                if dictResultats.has_key(groupe) == False :
+                    dictResultats[groupe] = {}
+                if dictResultats[groupe].has_key(IDunite) == False :
+                    dictResultats[groupe][IDunite] = {}
+                if dictResultats[groupe][IDunite].has_key(regroupement) == False :
+                    dictResultats[groupe][IDunite][regroupement] = defaut
+                dictResultats[groupe][IDunite][regroupement] += valeur
                 
         return dictResultats, listeUnites, listeGroupes
     
@@ -624,8 +651,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel)
-        self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2012, 9, 5), date_fin=datetime.date(2014, 9, 5), listeGroupes=[1, 2],
-                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="qf") 
+        self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2015, 10, 1), date_fin=datetime.date(2015, 10, 20), listeGroupes=[1, 2],
+                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="etiquette") 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)
         panel.SetSizer(sizer_2)

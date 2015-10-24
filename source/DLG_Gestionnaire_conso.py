@@ -27,6 +27,7 @@ import CTRL_Grille_calendrier
 import CTRL_Grille_activite3 #CTRL_Grille_activite
 import CTRL_Grille_totaux
 import CTRL_Grille_forfaits2 as CTRL_Grille_forfaits
+import CTRL_Etiquettes
 import OL_Legende_grille
 import OL_Raccourcis_grille
 
@@ -491,11 +492,17 @@ class Dialog(wx.Dialog):
                           Name("raccourcis").Caption(_(u"Touches raccourcis")).
                           Left().Layer(1).Position(3).CloseButton(False).MaximizeButton(False).MinSize((160, 100)).MaxSize((-1, 120)) )
         self._mgr.GetPane("raccourcis").dock_proportion = 60000
-        
+
+        self.panel_etiquettes = CTRL_Etiquettes.CTRL(self, activeMenu=False)
+        self._mgr.AddPane(self.panel_etiquettes, aui.AuiPaneInfo().
+                          Name("etiquettes").Caption(_(u"Etiquettes")).
+                          Right().Layer(0).Position(0).CloseButton(False).BestSize(wx.Size(275, 100)).MaximizeButton(False).MinSize((275, 100)))    
+        self._mgr.GetPane("etiquettes").Hide()
+
         self.panel_forfaits = CTRL_Grille_forfaits.CTRL(self, grille=self.panel_grille.grille)
         self._mgr.AddPane(self.panel_forfaits, aui.AuiPaneInfo().
                           Name("forfaits").Caption(_(u"Forfaits crédits")).
-                          Right().Layer(0).BestSize(wx.Size(275,140)).Position(4).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
+                          Right().Layer(0).Position(1).BestSize(wx.Size(275,140)).Position(4).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
         self._mgr.GetPane("forfaits").Hide()
         
         # Création du panel central
@@ -517,6 +524,12 @@ class Dialog(wx.Dialog):
             self._mgr.GetPane("forfaits").Show()
         else:
             self._mgr.GetPane("forfaits").Hide()
+
+        # Affichage du panneau du panneau Etiquettes
+        if self.panel_grille.grille.afficherListeEtiquettes == True :
+            self._mgr.GetPane("etiquettes").Show()
+        else:
+            self._mgr.GetPane("etiquettes").Hide()
 
         self._mgr.Update()
         
@@ -558,6 +571,7 @@ class Dialog(wx.Dialog):
         self.panel_grille.SetDate(date)
         listeActivites, listeGroupes = self.panel_activites.GetActivitesEtGroupes()
         self.panel_grille.SetActivites(listeActivites)
+        self.panel_etiquettes.SetActivites(listeActivites)
         self.panel_grille.SetGroupes(listeGroupes)
         self.panel_grille.MAJ_grille()
         self.panel_totaux.MAJ(date)
@@ -574,6 +588,7 @@ class Dialog(wx.Dialog):
     def MAJactivites(self):
         listeActivites, listeGroupes = self.panel_activites.GetActivitesEtGroupes()
         self.panel_grille.SetActivites(listeActivites)
+        self.panel_etiquettes.SetActivites(listeActivites)
         self.panel_grille.SetGroupes(listeGroupes)
         self.panel_grille.MAJ_grille()
         self.panel_totaux.MAJ()

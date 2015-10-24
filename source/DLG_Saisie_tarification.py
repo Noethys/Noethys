@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         
         # Importation du tarif
-        req = """SELECT date_debut, date_fin, type, categories_tarifs, groupes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta FROM tarifs WHERE IDtarif=%d;""" % self.IDtarif
+        req = """SELECT date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta FROM tarifs WHERE IDtarif=%d;""" % self.IDtarif
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         
@@ -201,7 +201,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         
-        date_debut, date_fin, type, categories_tarifs, groupes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta = listeDonnees[0]
+        date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta = listeDonnees[0]
 
         # Date début
         self.toolbook.GetPage("generalites").SetDateDebut(date_debut)
@@ -226,6 +226,9 @@ class Dialog(wx.Dialog):
 
         # Groupes rattachés
         self.toolbook.GetPage("conditions").SetGroupes(groupes)
+
+        # Etiquettes rattachées
+        self.toolbook.GetPage("conditions").SetEtiquettes(etiquettes)
 
         # Cotisations rattachées
         self.toolbook.GetPage("conditions").SetCotisations(cotisations)
@@ -273,6 +276,7 @@ class Dialog(wx.Dialog):
         
         # Conditions
         texteGroupes = self.toolbook.GetPage("conditions").GetGroupes()
+        texteEtiquettes = self.toolbook.GetPage("conditions").GetEtiquettes()
         texteCotisations = self.toolbook.GetPage("conditions").GetCotisations()
         texteCaisses = self.toolbook.GetPage("conditions").GetCaisses()
         listefiltres = self.toolbook.GetPage("conditions").GetFiltres() 
@@ -295,6 +299,7 @@ class Dialog(wx.Dialog):
             ("methode", codeMethode),
             ("categories_tarifs", texteCategories),
             ("groupes", texteGroupes),
+            ("etiquettes", texteEtiquettes),
             ("cotisations", texteCotisations),
             ("caisses", texteCaisses),
             ("description", description),

@@ -18,7 +18,8 @@ import copy
 
 import GestionDB
 import OL_Filtres_questionnaire
-
+import CTRL_Etiquettes
+import UTILS_Texte
 
 
 class CTRL_Groupes(wx.CheckListBox):
@@ -358,7 +359,74 @@ class Page_Groupes(wx.Panel):
         return True
 
 
+# ---------------------------------------------------------------------------------------------------------------------------------------
 
+class Page_Etiquettes(wx.Panel):
+    def __init__(self, parent, IDactivite=None, IDtarif=None):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.IDactivite = IDactivite
+        self.IDtarif = IDtarif
+
+        # Etiquettes
+        self.check_etiquettes = wx.CheckBox(self, -1, _(u"Uniquement pour les étiquettes cochées :"))
+        self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[self.IDactivite,], nomActivite=u"Activité", activeMenu=False)
+        self.ctrl_etiquettes.MAJ() 
+        
+        self.__set_properties()
+        self.__do_layout()
+        
+        # Binds
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckEtiquettes, self.check_etiquettes)
+
+        # Init
+        self.OnCheckEtiquettes(None)
+
+    def __set_properties(self):
+        self.check_etiquettes.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur les étiquettes"))
+        
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.check_etiquettes, 0, wx.ALL, 5)
+        grid_sizer_base.Add(self.ctrl_etiquettes, 1, wx.BOTTOM|wx.LEFT|wx.RIGHT|wx.EXPAND, 5)
+        grid_sizer_base.AddGrowableRow(1)
+        grid_sizer_base.AddGrowableCol(0)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+
+    def OnCheckEtiquettes(self, event):
+        self.ctrl_etiquettes.Activation(self.check_etiquettes.GetValue())
+        self.parent.SurbrillanceLabel("etiquettes", self.check_etiquettes.GetValue())
+                
+    def SetEtiquettes(self, etiquettes=None):
+        if etiquettes not in (None, "") :
+            etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
+            self.ctrl_etiquettes.SetCoches(etiquettes)
+            self.check_etiquettes.SetValue(True)
+        else:
+            self.check_etiquettes.SetValue(False)
+        self.OnCheckEtiquettes(None)
+
+    def GetEtiquettes(self):
+        if self.check_etiquettes.GetValue() == True :
+            texteEtiquettes = UTILS_Texte.ConvertListeToStr(self.ctrl_etiquettes.GetCoches())
+        else:
+            texteEtiquettes = None
+        return texteEtiquettes
+
+    def Validation(self):
+        # Vérifie les étiquettes
+        if self.check_etiquettes.GetValue() == True :
+            if len(self.ctrl_etiquettes.GetCoches()) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune étiquette !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+        return True
+
+
+
+# ---------------------------------------------------------------------------------------------------------------------------------------
 
 class Page_Cotisations(wx.Panel):
     def __init__(self, parent, IDactivite=None, IDtarif=None):
@@ -699,10 +767,11 @@ class Panel(wx.Panel):
         """ Création des pages du notebook """
         self.listePages = [
             {"index" : 0, "code" : "groupes", "ctrl" : Page_Groupes(self, self.IDactivite, self.IDtarif), "label" : _(u"Groupes")},
-            {"index" : 1, "code" : "cotisations", "ctrl" : Page_Cotisations(self, self.IDactivite, self.IDtarif), "label" : _(u"Cotisations")},
-            {"index" : 2, "code" : "questionnaires", "ctrl" : Page_Questionnaires(self, self.IDactivite, self.IDtarif), "label" : _(u"Questionnaires")},
-            {"index" : 3, "code" : "caisses", "ctrl" : Page_Caisses(self,), "label" : _(u"Caisses")},
-            {"index" : 4, "code" : "periodes", "ctrl" : Page_Periodes(self,), "label" : _(u"Périodes")},
+            {"index" : 1, "code" : "etiquettes", "ctrl" : Page_Etiquettes(self, self.IDactivite, self.IDtarif), "label" : _(u"Etiquettes")},
+            {"index" : 2, "code" : "cotisations", "ctrl" : Page_Cotisations(self, self.IDactivite, self.IDtarif), "label" : _(u"Cotisations")},
+            {"index" : 3, "code" : "questionnaires", "ctrl" : Page_Questionnaires(self, self.IDactivite, self.IDtarif), "label" : _(u"Questionnaires")},
+            {"index" : 4, "code" : "caisses", "ctrl" : Page_Caisses(self,), "label" : _(u"Caisses")},
+            {"index" : 5, "code" : "periodes", "ctrl" : Page_Periodes(self,), "label" : _(u"Périodes")},
             ]
         
         self.dictPages = {}
@@ -724,6 +793,12 @@ class Panel(wx.Panel):
 
     def GetGroupes(self):
         return self.dictPages["groupes"].GetGroupes()
+
+    def SetEtiquettes(self, etiquettes):
+        self.dictPages["etiquettes"].SetEtiquettes(etiquettes)
+
+    def GetEtiquettes(self):
+        return self.dictPages["etiquettes"].GetEtiquettes()
 
     def SetCotisations(self, cotisations):
         self.dictPages["cotisations"].SetCotisations(cotisations)

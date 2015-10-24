@@ -23,9 +23,8 @@ from DLG_Activite_obligations import Panel as Page4
 from DLG_Activite_unites import Panel as Page5
 from DLG_Activite_calendrier import Panel as Page6
 from DLG_Activite_tarification import Panel as Page7
+from DLG_Activite_etiquettes import Panel as Page8
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
@@ -112,6 +111,7 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
     DB.ReqDEL("noms_tarifs", "IDactivite", IDactivite)
     DB.ReqDEL("tarifs", "IDactivite", IDactivite)
     DB.ReqDEL("tarifs_lignes", "IDactivite", IDactivite)
+    DB.ReqDEL("etiquettes", "IDactivite", IDactivite)
     
     # Suppressions spéciales
     DB.ExecuterReq("DELETE FROM combi_tarifs WHERE IDtarif IN %s" % conditionTarifs)
@@ -141,7 +141,7 @@ class Assistant(wx.Dialog):
         titre = _(u"Paramétrage d'une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
-        self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page5", "Page6", "Page7")
+        self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page5", "Page8", "Page6", "Page7")
         
         self.static_line = wx.StaticLine(self, -1)
         
@@ -181,7 +181,7 @@ class Assistant(wx.Dialog):
         self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
         self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
-        self.SetMinSize((720, 730))
+        self.SetMinSize((800, 740))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
@@ -312,13 +312,14 @@ class Notebook(wx.Notebook):
         self.dictPages = {}
          
         self.listePages = [
-            (_(u"generalites"), _(u"Généralités"), u"Page1(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Loupe.png"),
-            (_(u"agrements"), _(u"Agréments"), u"Page2(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
-            (_(u"groupes"), _(u"Groupes"), u"Page3(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Famille.png"),
-            (_(u"obligations"), _(u"Renseignements"), u"Page4(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Femme.png"),
-            (u"unites", _(u"Unités"), u"Page5(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Mecanisme.png"),
-            (_(u"calendrier"), _(u"Calendrier"), u"Page6(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Calendrier.png"),
-            (_(u"tarification"), _(u"Tarification"), u"Page7(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Euro.png"),
+            ("generalites", _(u"Généralités"), u"Page1(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Loupe.png"),
+            ("agrements", _(u"Agréments"), u"Page2(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
+            ("groupes", _(u"Groupes"), u"Page3(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Famille.png"),
+            ("obligations", _(u"Renseignements"), u"Page4(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Femme.png"),
+            ("etiquettes", _(u"Etiquettes"), u"Page8(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
+            ("unites", _(u"Unités"), u"Page5(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Mecanisme.png"),
+            ("calendrier", _(u"Calendrier"), u"Page6(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Calendrier.png"),
+            ("tarification", _(u"Tarification"), u"Page7(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Euro.png"),
             ]
             
         # ImageList pour le NoteBook
@@ -415,7 +416,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.SetMinSize(self.GetSize())
+        self.SetMinSize((800, 740))
         self.CenterOnScreen()
     
     def CreateIDactivite(self):
@@ -459,7 +460,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    IDactivite = 15 # <<<<<<<<<<<<<<<< pour les tests
+    IDactivite = 1 # <<<<<<<<<<<<<<<< pour les tests
     if IDactivite == None :
         frame_1 = Assistant(None, IDactivite=None)
     else:

@@ -48,6 +48,7 @@ class CTRL_Activite(wx.Choice):
         listeLabels = []
         index = 0
         for IDactivite, nom in listeActivites :
+            if nom == None : nom = u"Activité inconnue"
             self.dictDonnees[index] = IDactivite
             listeLabels.append(nom)
             index += 1
@@ -177,6 +178,7 @@ class CTRL_Choix_regroupement(wx.Choice):
             {"label" : _(u"Année"), "code" : "annee"},
             {"label" : _(u"Activité"), "code" : "activite"},
             {"label" : _(u"Groupe"), "code" : "groupe"},
+            {"label" : _(u"Etiquette"), "code" : "etiquette"},
             {"label" : _(u"Catégorie de tarif"), "code" : "categorie_tarif"},
             {"label" : _(u"Ville de résidence"), "code" : "ville_residence"},
             {"label" : _(u"Secteur géographique"), "code" : "secteur"},

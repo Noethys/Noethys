@@ -22,7 +22,7 @@ except: pass
 
 
 LISTE_DONNEES = [
-    (_(u"Présence"), "Ok", 1),
+    (_(u"Présence"), "Ok5", 1),
     (_(u"Absence justifiée"), "absentj", 2),
     (_(u"Absence injustifiée"), "absenti", 3),
     (_(u"Sans prestation"), "Gratuit", 5),

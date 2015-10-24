@@ -17,6 +17,7 @@ import GestionDB
 
 import CTRL_Saisie_date
 import UTILS_Dates
+import UTILS_Texte
 
 import wx.lib.agw.floatspin as FS
 
@@ -185,12 +186,9 @@ class Panel(wx.Panel):
         
     def SetCategories(self, categories_tarifs):
         if categories_tarifs != None :
-            listeCategories = []
-            listeTemp = categories_tarifs.split(";")
-            for IDcategorie_tarif in listeTemp :
-                listeCategories.append(int(IDcategorie_tarif))
+            listeCategories = UTILS_Texte.ConvertStrToListe(categories_tarifs)
             self.ctrl_categories.SetIDcoches(listeCategories)
-    
+
     def SetDescription(self, description=""):
         if description != None :
             self.ctrl_description.SetValue(description)        

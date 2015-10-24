@@ -391,8 +391,10 @@ class Case():
         return dictInfosInscriptions
 
     def MAJ_facturation(self, modeSilencieux=False):
+        listeEtiquettes = []
         for conso in self.GetListeConso() :
             IDprestation = conso.IDprestation
+            listeEtiquettes.extend(conso.etiquettes)
             if self.grid.dictPrestations.has_key(IDprestation) :
                 if self.grid.dictPrestations[IDprestation]["IDfacture"] != None :
                     nomUnite = self.grid.dictUnites[self.IDunite]["nom"]
@@ -412,7 +414,7 @@ class Case():
                         dlg.Destroy()
                     return False
 
-        self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self, modeSilencieux=modeSilencieux)
+        self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self, etiquettes=listeEtiquettes, modeSilencieux=modeSilencieux)
         self.grid.ProgrammeTransports(self.IDindividu, self.date, self.ligne)
 
     def GetTexteInfobulleConso(self, conso=None):
@@ -430,7 +432,20 @@ class Case():
         texte = u""
         
         if conso != None :
-        
+            
+            # Etiquettes
+            nbreEtiquettes = len(conso.etiquettes)
+            if nbreEtiquettes > 0 :
+                if nbreEtiquettes == 1 :
+                    texte += _(u"1 étiquette : \n")
+                else :
+                    texte += _(u"%d étiquettes : \n" % nbreEtiquettes)
+                for IDetiquette in conso.etiquettes :
+                    if self.grid.dictEtiquettes.has_key(IDetiquette) :
+                        dictEtiquette = self.grid.dictEtiquettes[IDetiquette]
+                        texte += u"   - %s \n" % dictEtiquette["label"]
+                texte += u"\n"
+                
             # Heures de la consommation
             if conso.etat in ("reservation", "attente", "present") :
                 if conso.heure_debut == None or conso.heure_fin == None :
@@ -602,6 +617,15 @@ class Case():
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.AppliquerForfaitCredit, id=200)            
 
+        # Etiquettes
+        if conso != None and conso.etat != None :
+            menuPop.AppendSeparator()
+            
+            item = wx.MenuItem(menuPop, 300, _(u"Sélectionner des étiquettes"))
+            item.SetBitmap(wx.Bitmap("Images/16x16/Etiquette.png", wx.BITMAP_TYPE_PNG))
+            menuPop.AppendItem(item)
+            self.grid.Bind(wx.EVT_MENU, self.SelectionnerEtiquettes, id=300)            
+        
         if conso == None or conso.etat == None :
             menuPop.AppendSeparator()
 
@@ -623,7 +647,7 @@ class Case():
             item.SetBitmap(wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
             menuPop.AppendItem(item)
             self.grid.Bind(wx.EVT_MENU, self.Supprimer, id=230)            
-
+        
         # Etat de la consommation
         if conso != None and conso.etat in ("reservation", "present", "absenti", "absentj") :
             menuPop.AppendSeparator()
@@ -707,9 +731,13 @@ class Case():
         if self.grid.dictUnitesRemplissage.has_key(self.IDunite) == False :
             return None
         
+        etiquettesCoches = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
+        
         # Recherche des nbre de places
         dictInfosPlaces = {}
         for IDunite_remplissage in self.grid.dictUnitesRemplissage[self.IDunite] :
+            
+            etiquettesRemplissage = self.grid.dictRemplissage[IDunite_remplissage]["etiquettes"]
             
             # Récupère le nombre de places restantes pour le groupe
             nbrePlacesInitial = 0
@@ -718,6 +746,12 @@ class Case():
             except :
                 nbrePlacesInitial = 0
             
+            # Filtre étiquettes
+            if len(etiquettesRemplissage) > 0 :
+                etiquettesCommunes = set(etiquettesRemplissage) & set(etiquettesCoches)
+                if len(etiquettesCommunes) == 0 :
+                    nbrePlacesInitial = 0
+                
             nbrePlacesPrises = 0
             nbreAttente = 0
             try :
@@ -938,6 +972,7 @@ class CaseStandard(Case):
         self.forfait = None
         self.IDfacture = None
         self.quantite = None
+        self.etiquettes = []
 
         # Recherche s'il y a des conso pour cette case
         self.conso = self.GetConso() 
@@ -959,6 +994,7 @@ class CaseStandard(Case):
             self.quantite = self.conso.quantite
             self.IDgroupe = self.conso.IDgroupe
             self.IDinscription = self.conso.IDinscription
+            self.etiquettes = self.conso.etiquettes
             
             if self.IDprestation != None and self.grid.dictPrestations.has_key(self.IDprestation) :
                 self.IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
@@ -987,16 +1023,18 @@ class CaseStandard(Case):
     def GetListeConso(self):
         return [self.conso,]
                         
-    def OnClick(self, TouchesRaccourciActives=True, saisieHeureDebut=None, saisieHeureFin=None, saisieQuantite=None, modeSilencieux=False, ForcerSuppr=False):
+    def OnClick(self, TouchesRaccourciActives=True, saisieHeureDebut=None, saisieHeureFin=None, saisieQuantite=None, modeSilencieux=False, ForcerSuppr=False, etiquettes=None):
         """ Lors d'un clic sur la case """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier", IDactivite=self.IDactivite) == False : return
         
         # Récupération du mode de saisie
         mode = self.grid.GetGrandParent().panel_grille.GetMode()
-##        if self.grid.mode == "individu" :
-##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
-##        else:
-##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
+        
+        # Récupération des étiquettes
+        if etiquettes != None :
+            self.etiquettes = etiquettes
+        else :
+            self.etiquettes = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
         
         # Si l'unité est fermée
         if self.ouvert == False : 
@@ -1422,6 +1460,7 @@ class CaseStandard(Case):
         self.conso.date = self.date
         self.conso.IDunite = self.IDunite
         self.conso.IDactivite = self.IDactivite
+        self.conso.etiquettes = self.etiquettes
 
         if index != None :
             self.grid.dictConsoIndividus[self.IDindividu][self.date][self.IDunite][index] = self.conso
@@ -1486,10 +1525,11 @@ class CaseStandard(Case):
         self.MemoriseValeurs()
 
         if self.forfait == 0 or self.forfait == None :
-            if etat in (None, "reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj") : 
-                self.MAJ_facturation()
-            if etat in (None, "attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti") : 
-                self.MAJ_facturation()
+##            if etat in (None, "reservation", "present", "absenti") and ancienEtat in ("attente", "refus", "absentj") : 
+##                self.MAJ_facturation()
+##            if etat in (None, "attente", "refus", "absentj") and ancienEtat in ("reservation", "present", "absenti") : 
+##                self.MAJ_facturation()
+            self.MAJ_facturation()
         
         self.Refresh()
         self.MAJremplissage() 
@@ -1581,7 +1621,20 @@ class CaseStandard(Case):
             texte = _(u"Cliquez sur cette case pour ajouter une consommation")
         return texte
 
-
+    def SelectionnerEtiquettes(self, event):
+        listeCoches = self.conso.etiquettes
+        import CTRL_Etiquettes
+        dlg = CTRL_Etiquettes.DialogSelection(self.grid, listeActivites=[self.IDactivite,])
+        dlg.SetCoches(listeCoches)
+        if dlg.ShowModal() == wx.ID_OK :
+            listeCoches = dlg.GetCoches() 
+            self.etiquettes = listeCoches
+            self.MemoriseValeurs()
+            self.MAJ_facturation() 
+            self.Refresh()
+            self.MAJremplissage() 
+        dlg.Destroy()
+        
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -1863,7 +1916,7 @@ class CaseMultihoraires(Case):
             self.MAJremplissage() 
         dlg.Destroy()
     
-    def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True):
+    def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None):
         """ Création d'une barre + conso """        
         # Vérifie d'abord qu'il n'y a aucune incompatibilités entre unités
         incompatibilite = self.VerifieCompatibilitesUnites()
@@ -1908,13 +1961,15 @@ class CaseMultihoraires(Case):
         conso.heure_fin = UTILS_Dates.DatetimeTimeEnStr(heure_fin, ":") # self.grid.dictUnites[self.IDunite]["heure_fin"]
         
         # Mode de saisie
-        mode = self.grid.GetGrandParent().panel_grille.GetMode()
-##        if self.grid.mode == "individu" :
-##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
-##        else:
-##            mode = self.grid.GetGrandParent().panel_grille.GetMode()
-        conso.etat = mode
+        conso.etat = self.grid.GetGrandParent().panel_grille.GetMode()
+
+        # Récupération des étiquettes
+        if etiquettes != None :
+            conso.etiquettes = etiquettes
+        else :
+            conso.etiquettes = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
         
+        # Autres paramètres
         conso.verrouillage = 0
         conso.IDfamille = self.IDfamille
         conso.IDcompte_payeur = self.dictInfosInscriptions["IDcompte_payeur"]
@@ -2011,7 +2066,7 @@ class CaseMultihoraires(Case):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "supprimer", IDactivite=self.IDactivite) == False : return
         self.SupprimerBarre(self.barreContextMenu)
         
-    def ModifierBarre(self, barre=None, horaires=None):
+    def ModifierBarre(self, barre=None, horaires=None, etiquettes=None):
         """ Horaires = None ou (heure_debut, heure_fin) """
         # Protections anti modification et suppression
         if self.ProtectionsModifSuppr(barre.conso) == False :
@@ -2038,6 +2093,8 @@ class CaseMultihoraires(Case):
         if reponse == wx.ID_OK:
             barre.conso.heure_debut = heure_debut
             barre.conso.heure_fin = heure_fin
+            if etiquettes != None :
+                barre.conso.etiquettes = etiquettes
             barre.MemoriseValeurs()
             if barre.conso.IDconso != None : 
                 barre.conso.statut = "modification"
@@ -2155,13 +2212,35 @@ class CaseMultihoraires(Case):
             texte = _(u"Double-cliquez pour ajouter une nouvelle consommation horaire")
         return texte
 
-        
+    def SelectionnerEtiquettes(self, event):
+        barre = self.barreContextMenu
+        listeCoches = barre.conso.etiquettes
+        import CTRL_Etiquettes
+        dlg = CTRL_Etiquettes.DialogSelection(self.grid, listeActivites=[self.IDactivite,])
+        dlg.SetCoches(listeCoches)
+        if dlg.ShowModal() == wx.ID_OK :
+            listeCoches = dlg.GetCoches() 
+            barre.conso.etiquettes = listeCoches
+            barre.MemoriseValeurs()
+            if barre.conso.IDconso != None : 
+                barre.conso.statut = "modification"
+            self.MAJ_facturation() 
+            barre.Refresh()
+            self.MAJremplissage() 
+        dlg.Destroy()
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
     app = wx.App(0)
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=14, selectionIndividus=[46,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949,])
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

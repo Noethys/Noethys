@@ -143,7 +143,8 @@ class CTRL_Forfait(HTL.HyperTreeList):
         dc.Clear()
         dc.SetBrush(wx.Brush(couleur, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawCircle(5, 9, 4)
+##        dc.DrawCircle(5, 9, 4)
+        dc.DrawPolygon([(0, 0), (9, 0), (0, 9)], xoffset=0, yoffset=4)
         del dc
         return bmp
                         
