@@ -1,3 +1,13 @@
+Version 1.1.5.4 (24/10/2015) :
+
+- Ajout des étiquettes de consommations
+- Ajout de la facturation en fonction de l'état des consommations
+- Ajout de la saisie par lot de forfaits-crédits depuis le menu Facturation
+- Ajout de l'affichage des règlements dans les factures
+- Ajout du recalcul des prestations depuis le menu Facturation
+- Amélioration du recalcul des prestations
+- Correction de divers bugs
+
 Version 1.1.5.3 (06/10/2015) :
 
 - Ajout de l'option intégrer les impayés dans le solde des factures
