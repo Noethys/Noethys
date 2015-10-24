@@ -44,6 +44,7 @@ DICT_PROCEDURES = {
     "A8733" : _(u"Correction des IDinscription disparus"),
     "A8823" : _(u"Création de tous les index"),
     "A8836" : _(u"Suppression des consommations avec prestation disparue"),
+    "A8941" : _(u"Remplit automatiquement le champ états de la table Tarifs"),
     }
 
 
@@ -669,6 +670,12 @@ def A8836():
         DB.ReqDEL("consommations", "IDconso", IDconso)
     DB.Close()
     
+def A8941():
+    """ Remplit automatiquement le champs états de la table Tarifs """
+    DB = GestionDB.DB()
+    DB.ExecuterReq("""UPDATE tarifs SET etats='reservation;present;absenti';""")
+    DB.Commit()
+    DB.Close()
 
 ##def A8360():
 ##    """ Importation des familles d'un fichier local """
@@ -754,5 +761,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8836()
+    A8941()
     app.MainLoop()

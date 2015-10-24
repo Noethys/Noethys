@@ -202,7 +202,7 @@ class CTRL_Parametres(wx.Panel):
         self.parent = parent
         
         self.liste_pages = [
-            ("SIMPLE", _(u"Prestation simple"), Panel_type_sans_parametres(self, nouveauTarif)),
+##            ("SIMPLE", _(u"Prestation simple"), Panel_type_sans_parametres(self, nouveauTarif)),
             ("JOURN", _(u"Prestation journalière"), CTRL_Tarification_journ.Panel(self, IDactivite, IDtarif, nouveauTarif)),
             ("FORFAIT", _(u"Forfait daté"), CTRL_Tarification_forfait.Panel(self, IDactivite, IDtarif, nouveauTarif)),
             ("CREDIT", _(u"Forfait crédit"), CTRL_Tarification_credit.Panel(self, IDactivite, IDtarif, nouveauTarif)),
@@ -275,7 +275,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_CHOICE, self.OnChoixType, self.ctrl_type)
         
         # Init contrôles
-        self.SetType(code="SIMPLE")
+        self.SetType(code="JOURN")
     
     def OnChoixType(self, event=None):
         code = self.ctrl_type.GetType() 

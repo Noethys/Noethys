@@ -15,14 +15,6 @@ import CTRL_Bouton_image
 import GestionDB
 
 
-LISTE_PERIODES = [
-    ( "1jour", _(u"1 journée")),
-    ( "1semaine", _(u"1 semaine")),
-    ( "1mois", _(u"1 mois")),
-    ( "1annee", _(u"1 année")),
-    ( "perso", _(u"Personnalisée")),
-]
-
 
 class ListBoxCombinaisons(wx.ListBox):
     def __init__(self, parent, IDactivite=None, IDtarif=None):
@@ -288,6 +280,68 @@ class ListBoxCombinaisons(wx.ListBox):
         
 # -----------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Etats(wx.CheckListBox):
+    def __init__(self, parent, IDactivite=None):
+        wx.CheckListBox.__init__(self, parent, -1)
+        self.parent = parent
+        self.IDactivite = IDactivite
+        self.data = []
+        self.Importation() 
+    
+    def Importation(self):
+        listeEtats = [
+            ("reservation", _(u"Réservation")),
+            ("present", _(u"Présent")),
+            ("absenti", _(u"Absence injustifiée")),
+            ("absentj", _(u"Absence justifiée")),
+            ("attente", _(u"Attente")),
+            ("refus", _(u"Refus")),
+            ]
+        listeValeurs = []
+        for code, label in listeEtats :
+            listeValeurs.append((code, label, False)) 
+        self.SetData(listeValeurs)
+        
+    def SetData(self, listeValeurs=[]):
+        """ items = (ID, label, checked) """
+        self.data = []
+        index = 0
+        for code, label, checked in listeValeurs:
+            self.data.append((code, label))
+            self.Append(label)
+            if checked == True :
+                self.Check(index)
+            index += 1
+    
+    def GetIDcoches(self):
+        listeIDcoches = []
+        NbreItems = len(self.data)
+        for index in range(0, NbreItems):
+            if self.IsChecked(index):
+                listeIDcoches.append(self.data[index][0])
+        return listeIDcoches
+    
+    def GetTexteCoches(self):
+        listeIDcoches = []
+        listeTemp = self.GetIDcoches() 
+        if len(listeTemp) == 0 : return []
+        for code in listeTemp :
+            listeIDcoches.append(code)
+        texte = ";".join(listeIDcoches)
+        return texte
+
+    def SetIDcoches(self, listeIDcoches=[]):
+        index = 0
+        for index in range(0, len(self.data)):
+            ID = self.data[index][0]
+            if ID in listeIDcoches :
+                self.Check(index, True)
+            else :
+                self.Check(index, False)
+            index += 1
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 class Panel(wx.Panel):
@@ -298,32 +352,17 @@ class Panel(wx.Panel):
         self.IDtarif = IDtarif
         self.nouveauTarif = nouveauTarif
         
-        self.label_intro = wx.StaticText(self, -1, _(u"Saisissez les combinaisons conditionnelles :"))
-        self.ctrl_nbre = wx.SpinCtrl(self, -1, u"1", min=1, max=100)
-        self.label_ctrl = wx.StaticText(self, -1, _(u"des combinaisons d'unités suivantes :"))
+        self.label_combinaisons = wx.StaticText(self, -1, _(u"Saisissez les combinaisons conditionnelles :"))
         self.ctrl_combinaisons = ListBoxCombinaisons(self, IDactivite=IDactivite, IDtarif=IDtarif)
         self.bouton_ajouter_combi = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_combi = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_combi = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.ctrl_non_facturees = wx.CheckBox(self, -1, _(u"Les consommations peuvent déjà avoir été facturées"))
-        self.label_periode = wx.StaticText(self, -1, _(u"Sur la période suivante :"))
-        periodes = []
-        for code, label in LISTE_PERIODES :
-            periodes.append(label)
-        self.ctrl_periode = wx.Choice(self, -1, choices=periodes)
-        self.ctrl_jours = wx.SpinCtrl(self, -1, u"", min=0, max=365)
-        self.label_jours = wx.StaticText(self, -1, _(u"jours"))
-        self.ctrl_dates_continues = wx.CheckBox(self, -1, _(u"Les dates doivent être continues"))
-        
-        # Désactive temporairement les contrôels inutilisées
-        self.ctrl_nbre.Show(False)
-        self.label_ctrl.Show(False)
-        self.ctrl_non_facturees.Show(False)
-        self.label_periode.Show(False)
-        self.ctrl_periode.Show(False)
-        self.ctrl_jours.Show(False)
-        self.label_jours.Show(False)
-        self.ctrl_dates_continues.Show(False)
+
+        # Etats
+        self.label_etats = wx.StaticText(self, -1, _(u"Cochez les états conditionnels :"))
+        self.ctrl_etats = CTRL_Etats(self, IDactivite)
+        self.ctrl_etats.SetIDcoches(("reservation", "present", "absenti"))
+        self.ctrl_etats.SetMinSize((150, 120))
 
         self.__set_properties()
         self.__do_layout()
@@ -331,50 +370,37 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnAjouterCombi, self.bouton_ajouter_combi)
         self.Bind(wx.EVT_BUTTON, self.OnModifierCombi, self.bouton_modifier_combi)
         self.Bind(wx.EVT_BUTTON, self.OnSupprimerCombi, self.bouton_supprimer_combi)
-        self.Bind(wx.EVT_CHOICE, self.OnChoixPeriode, self.ctrl_periode)
         
         if self.IDtarif != None :
             self.Importation() 
-            
-        self.OnChoixPeriode(None)
 
     def __set_properties(self):
-##        self.label_intro.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL, 1, ""))
-        self.label_periode.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL, 1, ""))
-        self.ctrl_nbre.SetMinSize((55, -1))
+        self.ctrl_etats.SetToolTipString(_(u"Cochez les états de consommation associées à ce tarif"))
         self.bouton_ajouter_combi.SetToolTipString(_(u"Cliquez ici pour ajouter une combinaison d'unités"))
         self.bouton_modifier_combi.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste"))
         self.bouton_supprimer_combi.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste"))
-        self.ctrl_periode.SetSelection(0)
-        self.ctrl_jours.SetMinSize((55, -1))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)
-        grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.label_combinaisons, 0, 0, 0)
+        
         grid_sizer_combinaisons = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_boutons_combi = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        grid_sizer_nbre = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.label_intro, 0, 0, 0)
-        grid_sizer_nbre.Add(self.ctrl_nbre, 0, 0, 0)
-        grid_sizer_nbre.Add(self.label_ctrl, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(grid_sizer_nbre, 1, wx.EXPAND, 0)
         grid_sizer_combinaisons.Add(self.ctrl_combinaisons, 1, wx.EXPAND, 0)
+        
+        grid_sizer_boutons_combi = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons_combi.Add(self.bouton_ajouter_combi, 0, 0, 0)
         grid_sizer_boutons_combi.Add(self.bouton_modifier_combi, 0, 0, 0)
         grid_sizer_boutons_combi.Add(self.bouton_supprimer_combi, 0, 0, 0)
         grid_sizer_combinaisons.Add(grid_sizer_boutons_combi, 1, wx.EXPAND, 0)
+        
         grid_sizer_combinaisons.AddGrowableRow(0)
         grid_sizer_combinaisons.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_combinaisons, 1, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.ctrl_non_facturees, 0, 0, 0)
-        grid_sizer_base.Add(self.label_periode, 0, 0, 0)
-        grid_sizer_periode.Add(self.ctrl_periode, 0, 0, 0)
-        grid_sizer_periode.Add(self.ctrl_jours, 0, 0, 0)
-        grid_sizer_periode.Add(self.label_jours, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(grid_sizer_periode, 1, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.ctrl_dates_continues, 0, 0, 0)
-        grid_sizer_base.AddGrowableRow(2)
         
+        grid_sizer_base.Add(self.label_etats, 0, 0, 0)
+        grid_sizer_base.Add(self.ctrl_etats, 1, wx.EXPAND, 0)
+        
+        grid_sizer_base.AddGrowableRow(1)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableCol(0)
@@ -388,35 +414,18 @@ class Panel(wx.Panel):
     def OnSupprimerCombi(self, event):
         self.ctrl_combinaisons.Supprimer() 
 
-    def OnChoixPeriode(self, event):
-        if self.ctrl_periode.GetStringSelection() == _(u"Personnalisée") :
-            self.ctrl_jours.Enable(True)
-            self.label_jours.Enable(True)
-            self.ctrl_combinaisons.Sauvegarde()
-        else:
-            self.ctrl_jours.Enable(False)
-            self.label_jours.Enable(False)
-
     def Importation(self):
-        db = GestionDB.DB()
-        req = """SELECT condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, date_facturation
+        DB = GestionDB.DB()
+        req = """SELECT condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, date_facturation, etats
         FROM tarifs
         WHERE IDtarif=%d;""" % self.IDtarif
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
         if len(listeDonnees) == 0 : return
-        condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, date_facturation = listeDonnees[0]
-        # Remplissage des contrôles
-        if condition_nbre_combi != None : self.ctrl_nbre.SetValue(condition_nbre_combi)
-        index = 0
-        for code, label in LISTE_PERIODES :
-            if code == condition_periode :
-                self.ctrl_periode.SetSelection(index)
-            index += 1
-        if condition_nbre_jours != None : self.ctrl_jours.SetValue(condition_nbre_jours)
-        if condition_conso_facturees != None : self.ctrl_non_facturees.SetValue(condition_conso_facturees)
-        if condition_dates_continues != None : self.ctrl_dates_continues.SetValue(condition_dates_continues)
+        condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, date_facturation, etats = listeDonnees[0]
+        if etats != None :
+            self.ctrl_etats.SetIDcoches(etats)
         
     def Validation(self):
         return True
@@ -426,28 +435,18 @@ class Panel(wx.Panel):
         self.ctrl_combinaisons.Sauvegarde() 
         
         # Récupération des autres données
-        condition_nbre_combi = int(self.ctrl_nbre.GetValue())
-        condition_periode = LISTE_PERIODES[self.ctrl_periode.GetSelection()][0]
-        if condition_periode == "perso" :
-            condition_nbre_jours = int(self.ctrl_jours.GetValue())
-        else:
-            condition_nbre_jours = 0
-        condition_conso_facturees = int(self.ctrl_non_facturees.GetValue())
-        condition_dates_continues = int(self.ctrl_dates_continues.GetValue())
+        etats = self.ctrl_etats.GetTexteCoches() 
         
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [
-            ("condition_nbre_combi", condition_nbre_combi ),
-            ("condition_periode", condition_periode ), 
-            ("condition_nbre_jours", condition_nbre_jours ), 
-            ("condition_conso_facturees", condition_conso_facturees ), 
-            ("condition_dates_continues", condition_dates_continues ), 
             ("date_facturation", None ),
+            ("etats", etats ),
             ]
         DB.ReqMAJ("tarifs", listeDonnees, "IDtarif", self.IDtarif)
         DB.Close() 
         
+    
 
 
 
