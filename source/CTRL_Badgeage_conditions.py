@@ -64,6 +64,7 @@ class CTRL_Activite(wx.CheckListBox):
         self.data = []
         index = 0
         for ID, label, checked in listeValeurs:
+            if label == None : label = u"Activité inconnue"
             self.data.append((ID, label))
             self.Append(label)
             if checked == True :

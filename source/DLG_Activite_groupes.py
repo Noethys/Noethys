@@ -127,7 +127,7 @@ class Panel(wx.Panel):
     def Validation(self):
         nbreGroupes = len(self.ctrl_groupes.donnees)
         if nbreGroupes == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné 'Avec groupes' sans saisir aucun groupe dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous devez créer au moins un groupe !\n\nSi vous n'avez aucun groupe, créez juste un groupe intitulé par exemple 'Groupe unique'."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -147,7 +147,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl= Panel(panel, IDactivite=1)
+        self.ctrl= Panel(panel, IDactivite=37)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
