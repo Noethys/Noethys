@@ -461,12 +461,14 @@ class Page_Activites(wx.Panel):
         self.ctrl_activites = CTRL_Activites(self)
         self.ctrl_activites.SetMinSize((250, 50))
 
-        self.label_saut_groupes = wx.StaticText(self, -1, _(u"Sauts de page :"))
+        self.label_saut_activites = wx.StaticText(self, -1, _(u"Sauts de page :"))
+        self.checkbox_saut_activites = wx.CheckBox(self, -1, _(u"Après l'activité"))
         self.checkbox_saut_groupes = wx.CheckBox(self, -1, _(u"Après le groupe"))
-                
+        
         # Propriétés
+        self.checkbox_saut_activites.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque activité"))
         self.checkbox_saut_groupes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque groupe"))
-
+        
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -474,7 +476,8 @@ class Page_Activites(wx.Panel):
         grid_sizer_base.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=5)
-        grid_sizer_options.Add(self.label_saut_groupes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.label_saut_activites, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.checkbox_saut_activites, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_groupes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.EXPAND, 0)
 
@@ -547,6 +550,7 @@ class Page_Etiquettes(wx.Panel):
 
         self.checkbox_etiquettes = wx.CheckBox(self, -1, _(u"Regrouper par étiquette"))
         self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, activeMenu=False, onCheck=None)
+        self.ctrl_etiquettes.SetMinSize((250, 50))
         self.label_saut_etiquettes = wx.StaticText(self, -1, _(u"Sauts de page :"))
         self.checkbox_saut_etiquettes = wx.CheckBox(self, -1, _(u"Après l'étiquette"))
         
@@ -594,6 +598,7 @@ class Page_Unites(wx.Panel):
         self.parent = parent
 
         self.ctrl_unites = CTRL_Unites_impression_conso.CTRL(self)
+        self.ctrl_unites.SetMinSize((250, 50))
         self.ctrl_unites.MAJ() 
 
         self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_ANY))
@@ -656,6 +661,7 @@ class Page_Options(wx.Panel):
         self.checkbox_age.SetValue(True)
         self.checkbox_infos = wx.CheckBox(self, -1, _(u"Afficher les informations"))
         self.checkbox_infos.SetValue(True)
+        self.checkbox_etiquettes = wx.CheckBox(self, -1, _(u"Afficher les étiquettes"))
         self.checkbox_cotisations_manquantes = wx.CheckBox(self, -1, _(u"Afficher les cotisations manquantes"))
         self.checkbox_cotisations_manquantes.SetValue(True)
         self.checkbox_pieces_manquantes = wx.CheckBox(self, -1, _(u"Afficher les pièces manquantes"))
@@ -677,6 +683,7 @@ class Page_Options(wx.Panel):
         self.checkbox_lignes_vierges.SetToolTipString(_(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste"))
         self.checkbox_age.SetToolTipString(_(u"Cochez cette case pour afficher l'âge des individus dans la liste"))
         self.checkbox_infos.SetToolTipString(_(u"Cochez cette case pour afficher les informations individuelles"))
+        self.checkbox_etiquettes.SetToolTipString(_(u"Cochez cette case pour afficher le détail des étiquettes pour chaque consommation"))
         self.checkbox_cotisations_manquantes.SetToolTipString(_(u"Cochez cette case pour afficher les cotisations manquantes"))
         self.checkbox_pieces_manquantes.SetToolTipString(_(u"Cochez cette case pour afficher les pièces manquantes"))
         self.checkbox_tous_inscrits.SetToolTipString(_(u"Cochez cette case pour inclure tous les inscrits dans la liste"))
@@ -715,6 +722,7 @@ class Page_Options(wx.Panel):
         
         grid_sizer_base.Add(self.checkbox_age, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.checkbox_infos, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
+        grid_sizer_base.Add(self.checkbox_etiquettes, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
         grid_sizer_base.Add(self.checkbox_cotisations_manquantes, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
         grid_sizer_base.Add(self.checkbox_pieces_manquantes, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
         grid_sizer_base.Add(self.checkbox_tous_inscrits, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
@@ -932,10 +940,11 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
         self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.Fit(self)
         self.Layout()
+        self.SetSize(self.GetMinSize())
         self.CenterOnScreen() 
     
     def GetPage(self, code=""):
@@ -1098,7 +1107,10 @@ class Dialog(wx.Dialog):
                     if type(valeur) == list :
                         listeInfos = []
                         for element in valeur :
-                            listeInfos.append(element.P.text)
+                            try :
+                                listeInfos.append(element.text)
+                            except :
+                                listeInfos.append(element.P.text) 
                         feuille.write(numLigne, numColonne, " - ".join(listeInfos), styleDefaut)
                     
                     numColonne += 1
@@ -1250,16 +1262,17 @@ class Dialog(wx.Dialog):
         unites_remplissage_unites.IDunite_remplissage_unite, 
         unites_remplissage_unites.IDunite_remplissage, 
         unites_remplissage_unites.IDunite,
-        nom, abrege
+        nom, abrege, etiquettes
         FROM unites_remplissage_unites
         LEFT JOIN unites_remplissage ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
         ;"""
         DB.ExecuterReq(req)
         listeUnitesRemplissage = DB.ResultatReq()
         dictUnitesRemplissage = {}
-        for IDunite_remplissage_unite, IDunite_remplissage, IDunite, nom, abrege in listeUnitesRemplissage :
+        for IDunite_remplissage_unite, IDunite_remplissage, IDunite, nom, abrege, etiquettes in listeUnitesRemplissage :
+            etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
             if dictUnitesRemplissage.has_key(IDunite_remplissage) == False :
-                dictUnitesRemplissage[IDunite_remplissage] = {"nom" : nom, "abrege" : abrege, "unites" : [] }
+                dictUnitesRemplissage[IDunite_remplissage] = {"nom" : nom, "abrege" : abrege, "etiquettes" : etiquettes, "unites" : [] }
             dictUnitesRemplissage[IDunite_remplissage]["unites"].append(IDunite)
         
         # Récupération des noms des groupes
@@ -1318,9 +1331,11 @@ class Dialog(wx.Dialog):
 
             # Mémorisation de l'étiquette
             if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == False :
-                etiquettes = [None,]
+                listeEtiquettes = [None,]
+            else :
+                listeEtiquettes = etiquettes
             
-            for IDetiquette in etiquettes :
+            for IDetiquette in listeEtiquettes :
                 
                 if dictConso[IDactivite][IDgroupe][IDclasse].has_key(IDetiquette) == False :
                     dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette] = {}
@@ -1337,7 +1352,7 @@ class Dialog(wx.Dialog):
                 if dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date].has_key(IDunite) == False :
                     dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date][IDunite] = []
                     
-                dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille } )
+                dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "etiquettes" : etiquettes } )
                 
                 # Mémorisation du IDindividu
                 if IDindividu not in listeIDindividus :
@@ -1627,7 +1642,16 @@ class Dialog(wx.Dialog):
                         
                         
                         # -------------------------------------------------------------------------------
-                        for IDetiquette in dictConso[IDactivite][IDgroupe][IDclasse] :
+                        listeIDetiquette = []
+                        if dictConso.has_key(IDactivite) :
+                            if dictConso[IDactivite].has_key(IDgroupe) :
+                                if dictConso[IDactivite][IDgroupe].has_key(IDclasse) :
+                                    for IDetiquette, temp in dictConso[IDactivite][IDgroupe][IDclasse].iteritems() :
+                                        listeIDetiquette.append(IDetiquette)
+                        if len(listeIDetiquette) == 0 :
+                            listeIDetiquette = [None,]
+                            
+                        for IDetiquette in listeIDetiquette :
                             
                             # Initialisation du tableau
                             dataTableau = []
@@ -1651,6 +1675,7 @@ class Dialog(wx.Dialog):
                                 largeurColonneUnite = 30
                             else:
                                 largeurColonneUnite = 25
+                            
                             listePositionsDates = []
                             positionCol1 = len(labelsColonnes)
                             indexCol = len(labelsColonnes)
@@ -1666,8 +1691,15 @@ class Dialog(wx.Dialog):
                                                 abregeUnite = dictUnitesRemplissage[IDunite]["abrege"]
                                             labelsColonnes.append(abregeUnite)
                                             largeur = largeurColonneUnite
+                                            
+                                            # Agrandit si unité de type multihoraires
                                             if typeTemp == "conso" and dictUnites[IDunite]["type"] == "Multihoraires" :
                                                 largeur = 55
+                                            
+                                            # Agrandit si étiquettes à afficher
+                                            if self.GetPage("options").checkbox_etiquettes.GetValue() == True :
+                                                largeur += 10
+                                                
                                             largeursColonnes.append(largeur)
                                             indexCol += 1
                                     positionD = indexCol-1
@@ -1681,9 +1713,10 @@ class Dialog(wx.Dialog):
                             
                             if IDetiquette != None :
                                 nomEtiquette = dictEtiquettes[IDetiquette]["label"]
-                                couleurEtiquette = ConvertCouleurWXpourPDF(dictEtiquettes[IDetiquette]["couleurRVB"])
+                                couleurEtiquette = colors.grey #ConvertCouleurWXpourPDF(dictEtiquettes[IDetiquette]["couleurRVB"])
                                 CreationTitreTableau(nomGroupe=nomEtiquette, couleurTexte=couleurEtiquette)
-
+                            else :
+                                nomEtiquette = None
 
                             listeLignesExport = []
 
@@ -1780,8 +1813,11 @@ class Dialog(wx.Dialog):
                                     
                                         for typeTemp, IDunite, affichage in dictChoixUnites[IDactivite] :
                                             if (affichage == "utilise" and IDunite in listeUnites) or affichage == "toujours" :
-                                                label = u""
+                                                listeLabels = []
                                                 quantite = None
+                                                
+                                                styleConso = ParagraphStyle(name="label_conso", fontName="Helvetica", alignment=1, fontSize=7, leading=7, spaceBefore=0, spaceAfter=0, textColor=colors.black)
+                                                styleEtiquette = ParagraphStyle(name="label_etiquette", fontName="Helvetica", alignment=1, fontSize=5, leading=6, spaceBefore=2, spaceAfter=0, textColor=colors.grey)    
                                                 
                                                 if typeTemp == "conso" :
                                                     # Unité de Conso
@@ -1789,13 +1825,14 @@ class Dialog(wx.Dialog):
                                                         if dictIndividu["listeConso"][date].has_key(IDunite) :
                                                             typeUnite = dictUnites[IDunite]["type"]
                                                             
-                                                            label = u""
                                                             for dictConsoTemp in dictIndividu["listeConso"][date][IDunite] :
                                                             
                                                                 etat = dictConsoTemp["etat"]
                                                                 heure_debut = dictConsoTemp["heure_debut"]
                                                                 heure_fin = dictConsoTemp["heure_fin"]
                                                                 quantite = dictConsoTemp["quantite"]
+                                                                etiquettes = dictConsoTemp["etiquettes"]
+                                                                
                                                                 if typeUnite == "Unitaire" :
                                                                      label = u"X"
                                                                 if typeUnite == "Horaire" :
@@ -1813,10 +1850,21 @@ class Dialog(wx.Dialog):
                                                                     label += u"%s > %s" % (heure_debut, heure_fin)
                                                                 if typeUnite == "Quantite" :
                                                                      label = str(quantite)
+                                                
+                                                                listeLabels.append(Paragraph(label, styleConso))
+                                                
+                                                                # Affichage de l'étiquette
+                                                                if self.GetPage("options").checkbox_etiquettes.GetValue() == True and len(etiquettes) > 0 :
+                                                                    texteEtiquette = []
+                                                                    for IDetiquetteTemp in etiquettes :
+                                                                        texteEtiquette.append(dictEtiquettes[IDetiquetteTemp]["label"])
+                                                                    etiquette = "\n\n" + ", ".join(texteEtiquette)
+                                                                    listeLabels.append(Paragraph(etiquette, styleEtiquette))
                                                     
                                                 else:
                                                     # Unité de Remplissage
                                                     unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
+                                                    etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
                                                     for IDuniteLiee in unitesLiees :
                                                         if dictIndividu["listeConso"].has_key(date) :
                                                             if dictIndividu["listeConso"][date].has_key(IDuniteLiee) :
@@ -1825,20 +1873,42 @@ class Dialog(wx.Dialog):
                                                                 for dictConsoTemp in dictIndividu["listeConso"][date][IDuniteLiee] :
                                                                     etat = dictConsoTemp["etat"]
                                                                     quantite = dictConsoTemp["quantite"]
-                                                                    if quantite != None :
-                                                                        label = str(quantite)
-                                                                    else :
-                                                                        label = u"X"
+                                                                    etiquettes = dictConsoTemp["etiquettes"]
+                                                                    
+                                                                    valide = True
+                                                                    if len(etiquettesUnitesRemplissage) > 0 :
+                                                                        valide = False
+                                                                        for IDetiquetteTemp in etiquettesUnitesRemplissage :
+                                                                            if IDetiquetteTemp in etiquettes :
+                                                                                valide = True
+                                                                                
+                                                                    if valide == True :
+                                                                        
+                                                                        if quantite != None :
+                                                                            label = str(quantite)
+                                                                        else :
+                                                                            label = u"X"
+
+                                                                        listeLabels.append(Paragraph(label, styleConso))
+                                                                
+                                                                        # Affichage de l'étiquette
+                                                                        if self.GetPage("options").checkbox_etiquettes.GetValue() == True and len(etiquettes) > 0 :
+                                                                            texteEtiquette = []
+                                                                            for IDetiquetteTemp in etiquettes :
+                                                                                texteEtiquette.append(dictEtiquettes[IDetiquetteTemp]["label"])
+                                                                                etiquette = "\n\n" + ", ".join(texteEtiquette)
+                                                                            listeLabels.append(Paragraph(etiquette, styleEtiquette))
                                                 
+
                                                 if quantite == None :
                                                     quantite = 1
                                                     
-                                                if label != u"" :
+                                                if len(listeLabels) > 0 :
                                                     if dictTotauxColonnes.has_key(indexColonne) == True :
                                                         dictTotauxColonnes[indexColonne] += quantite
                                                     else:
                                                         dictTotauxColonnes[indexColonne] = quantite
-                                                ligne.append(label)
+                                                ligne.append(listeLabels)
                                                 indexColonne += 1
                                             
                                 # Infos médicales
@@ -2078,7 +2148,7 @@ class Dialog(wx.Dialog):
                     indexGroupe += 1
                     
             # Saut de page après une activité
-            if indexActivite < nbreActivites :
+            if self.GetPage("activites").checkbox_saut_activites.GetValue() == True and indexActivite < nbreActivites :
                 CreationSautPage()
             indexActivite += 1
 
@@ -2159,6 +2229,9 @@ class Dialog(wx.Dialog):
         
         param_infos = UTILS_Config.GetParametre("impression_conso_journ_infos", defaut=1)
         self.GetPage("options").checkbox_infos.SetValue(param_infos)
+
+        param_etiquettes = UTILS_Config.GetParametre("impression_conso_journ_afficher_etiquettes", defaut=0)
+        self.GetPage("options").checkbox_etiquettes.SetValue(param_etiquettes)
         
         param_cotisations = UTILS_Config.GetParametre("impression_conso_journ_cotisations", defaut=0)
         self.GetPage("options").checkbox_cotisations_manquantes.SetValue(param_cotisations)
@@ -2190,6 +2263,7 @@ class Dialog(wx.Dialog):
         self.GetPage("etiquettes").checkbox_etiquettes.SetValue(UTILS_Config.GetParametre("impression_conso_journ_etiquettes", defaut=0))
         
         # Sauts de page
+        self.GetPage("activites").checkbox_saut_activites.SetValue(UTILS_Config.GetParametre("impression_conso_journ_saut_activites", defaut=1))
         self.GetPage("activites").checkbox_saut_groupes.SetValue(UTILS_Config.GetParametre("impression_conso_journ_saut_groupes", defaut=1))
         self.GetPage("scolarite").checkbox_saut_ecoles.SetValue(UTILS_Config.GetParametre("impression_conso_journ_saut_ecoles", defaut=1))
         self.GetPage("scolarite").checkbox_saut_classes.SetValue(UTILS_Config.GetParametre("impression_conso_journ_saut_classes", defaut=1))
@@ -2207,12 +2281,14 @@ class Dialog(wx.Dialog):
             UTILS_Config.SetParametre("impression_conso_journ_nbre_lignes_vierges", self.GetPage("options").ctrl_nbre_lignes.GetSelection())
             UTILS_Config.SetParametre("impression_conso_journ_age", int(self.GetPage("options").checkbox_age.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_infos", int(self.GetPage("options").checkbox_infos.GetValue()))
+            UTILS_Config.SetParametre("impression_conso_journ_afficher_etiquettes", int(self.GetPage("options").checkbox_etiquettes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_cotisations", int(self.GetPage("options").checkbox_cotisations_manquantes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_tous_inscrits", int(self.GetPage("options").checkbox_tous_inscrits.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_pieces", int(self.GetPage("options").checkbox_pieces_manquantes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_photos", int(self.GetPage("options").checkbox_photos.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_taille_photos", int(self.GetPage("options").ctrl_taille_photos.GetSelection())) 
             UTILS_Config.SetParametre("impression_conso_journ_ecoles", int(self.GetPage("scolarite").checkbox_ecoles.GetValue()))
+            UTILS_Config.SetParametre("impression_conso_journ_saut_activites", int(self.GetPage("activites").checkbox_saut_activites.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_saut_groupes", int(self.GetPage("activites").checkbox_saut_groupes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_saut_ecoles", int(self.GetPage("scolarite").checkbox_saut_ecoles.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_saut_classes", int(self.GetPage("scolarite").checkbox_saut_classes.GetValue()))
