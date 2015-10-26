@@ -1313,7 +1313,7 @@ class Dialog(wx.Dialog):
             # Calcul de l'âge
             if date_naiss != None : date_naiss = DateEngEnDateDD(date_naiss)
             age = self.GetAge(date_naiss)
-                        
+            
             # Mémorisation de l'activité
             if dictConso.has_key(IDactivite) == False :
                 dictConso[IDactivite] = {}
@@ -1607,7 +1607,6 @@ class Dialog(wx.Dialog):
                 listeGroupesTemp = self.TriGroupes(dictOuvertures[IDactivite].keys(), dictGroupes)
                 
                 indexGroupe = 1
-##                for IDgroupe, dictDatesUnites in dictOuvertures[IDactivite].iteritems() :
                 for IDgroupe in listeGroupesTemp :
                     dictDatesUnites = dictOuvertures[IDactivite][IDgroupe]
                     

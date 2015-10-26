@@ -44,6 +44,7 @@ class CTRL_Activite(wx.Choice):
         index = 0
         for IDactivite, nom in listeActivites :
             self.dictDonnees[index] = IDactivite
+            if nom == None : nom = u"Activité inconnue"
             listeLabels.append(nom)
             index += 1
         self.SetItems(listeLabels)

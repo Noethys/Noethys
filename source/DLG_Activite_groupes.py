@@ -37,7 +37,7 @@ class Panel(wx.Panel):
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
 
         self.label_info = wx.StaticText(self, -1, _(u"Vous devez obligatoirement saisir un groupe. Si votre activité n'en possède pas, créez juste un groupe intitulé 'Groupe unique'."))
-        self.label_info.SetFont(wx.Font(6, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
+        self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         
         self.__set_properties()
         self.__do_layout()

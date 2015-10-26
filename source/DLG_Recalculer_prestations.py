@@ -127,6 +127,7 @@ class CTRL_Activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom, abrege in listeDonnees :
+            if nom == None : nom = u"Activité inconnue"
             self.dictDonnees[index] = {"ID" : IDactivite, "nom" : nom, "abrege" : abrege}
             listeItems.append(nom)
             index += 1
