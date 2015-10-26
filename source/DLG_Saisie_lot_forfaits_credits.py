@@ -197,57 +197,46 @@ class Traitement(Thread):
                     if dictTarifTemp["IDtarif"] == self.dictTarif["IDtarif"] :
                         dictTarif = dictTarifTemp
                 
-                # Recherche date de facturation du forfait
-                date_facturation_tarif = dictTarif["date_facturation"]
-                if date_facturation_tarif == "date_debut_forfait" : 
-                    date_facturation = self.date_debut
-                elif date_facturation_tarif == "date_saisie" : 
-                    date_facturation = datetime.date.today()
-                elif date_facturation_tarif != None and date_facturation_tarif.startswith("date:") : 
-                    date_facturation = UTILS_Dates.DateEngEnDateDD(date_facturation_tarif[5:])
-                else :
-                    date_facturation = self.date_debut
-                
-                # Mémorisation de la prestation
-                IDprestation = grille.MemorisePrestation(track.IDcompte_payeur, date_facturation, self.IDactivite, dictTarif["IDtarif"], self.dictTarif["nomTarif"], 
-                                                                                dictTarif["resultat"]["montant_tarif"], dictTarif["resultat"]["montant_tarif"], track.IDfamille, track.IDindividu, 
-                                                                                listeDeductions=[], temps_facture=dictTarif["resultat"]["temps_facture"], IDcategorie_tarif=dictTarif["resultat"]["IDcategorie_tarif"],
-                                                                                forfait_date_debut=self.date_debut, forfait_date_fin=self.date_fin)
-                
-                # Affichage de la prestation
-##                try :
-##                    listeNouvellesPrestations = [IDprestation,]
-##                    listeAnciennesPrestations = []
-##                    grille.GetGrandParent().panel_facturation.SaisiePrestation(
-##                            grille.dictPrestations,
-##                            grille.dictDeductions,
-##                            listeNouvellesPrestations,
-##                            listeAnciennesPrestations,
-##                            grille.listeSelectionIndividus,
-##                            grille.listeActivites,
-##                            grille.listePeriodes,
-##                            )
-##                except :
-##                    pass
-
-                # Affichage dans la liste des forfaits
-                dictTemp = grille.dictPrestations[IDprestation].copy()
-                dictTemp["forfait_date_debut"] = self.date_debut
-                dictTemp["forfait_date_fin"] = self.date_fin
-                dictTemp["couleur"] = grille.CreationCouleurForfait(index=len(grille.dictForfaits))
-                grille.dictForfaits[IDprestation] = dictTemp
-
-                # MAJ du contrôle Forfaits
-##                self.MAJ(self.grille.dictForfaits, self.grille.listeSelectionIndividus)
-
-                # Recalcul des prestations
-                self.parent.ctrl_grille.RecalculerToutesPrestations() 
-                time.sleep(0.2)
-                
-                # Sauvegarde de la grille des conso + Ecrit log
-                self.parent.ctrl_grille.Sauvegarde()
-                self.parent.SetStatutTrack(track, "ok")
+                if len(dictTarif) > 0 :
                     
+                    # Recherche date de facturation du forfait
+                    date_facturation_tarif = dictTarif["date_facturation"]
+                    if date_facturation_tarif == "date_debut_forfait" : 
+                        date_facturation = self.date_debut
+                    elif date_facturation_tarif == "date_saisie" : 
+                        date_facturation = datetime.date.today()
+                    elif date_facturation_tarif != None and date_facturation_tarif.startswith("date:") : 
+                        date_facturation = UTILS_Dates.DateEngEnDateDD(date_facturation_tarif[5:])
+                    else :
+                        date_facturation = self.date_debut
+                    
+                    # Mémorisation de la prestation
+                    IDprestation = grille.MemorisePrestation(track.IDcompte_payeur, date_facturation, self.IDactivite, dictTarif["IDtarif"], self.dictTarif["nomTarif"], 
+                                                                                    dictTarif["resultat"]["montant_tarif"], dictTarif["resultat"]["montant_tarif"], track.IDfamille, track.IDindividu, 
+                                                                                    listeDeductions=[], temps_facture=dictTarif["resultat"]["temps_facture"], IDcategorie_tarif=dictTarif["resultat"]["IDcategorie_tarif"],
+                                                                                    forfait_date_debut=self.date_debut, forfait_date_fin=self.date_fin)
+                    
+                    # Affichage dans la liste des forfaits
+                    dictTemp = grille.dictPrestations[IDprestation].copy()
+                    dictTemp["forfait_date_debut"] = self.date_debut
+                    dictTemp["forfait_date_fin"] = self.date_fin
+                    dictTemp["couleur"] = grille.CreationCouleurForfait(index=len(grille.dictForfaits))
+                    grille.dictForfaits[IDprestation] = dictTemp
+
+                    # Recalcul des prestations
+                    self.parent.ctrl_grille.RecalculerToutesPrestations() 
+                    time.sleep(0.2)
+                    
+                    # Sauvegarde de la grille des conso + Ecrit log
+                    self.parent.ctrl_grille.Sauvegarde()
+                    self.parent.SetStatutTrack(track, "ok")
+                
+                else :
+                    
+                    # Si aucun tarif trouvé :
+                    self.parent.EcritLog(u"Erreur : Aucun tarif valide trouvé pour %s" % track.nomCompletIndividu)
+                    self.parent.SetStatutTrack(track, "erreur")
+                
                 # Arrête le traitement si bouton arrêter enfoncé
                 if self.stop: 
                     raise Abort
@@ -304,6 +293,7 @@ class CTRL_Activite(wx.Choice):
         self.dictDonnees = {}
         index = 0
         for IDactivite, nom, abrege in listeDonnees :
+            if nom == None : nom = u"Activité inconnue"
             self.dictDonnees[index] = {"ID" : IDactivite, "nom" : nom, "abrege" : abrege}
             listeItems.append(nom)
             index += 1
