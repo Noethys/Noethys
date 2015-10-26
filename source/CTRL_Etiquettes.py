@@ -82,11 +82,27 @@ class CTRL(CT.CustomTreeCtrl):
         """ Création des images pour le TreeCtrl """
         if couleur == None :
             return None
-        r, v, b = couleur
-        bmp = wx.EmptyImage(tailleImages[0], tailleImages[1], True)
-        bmp.SetRGBRect((0, 0, 16, 16), 255, 255, 255)
-        bmp.SetRGBRect((6, 4, 8, 8), r, v, b)
-        return bmp.ConvertToBitmap()
+        
+##        r, v, b = couleur
+##        bmp = wx.EmptyImage(tailleImages[0], tailleImages[1], True)
+##        bmp.SetRGBRect((0, 0, 16, 16), 255, 255, 255)
+##        bmp.SetRGBRect((6, 4, 8, 8), r, v, b)
+##        return bmp.ConvertToBitmap()
+        
+        bmp = wx.EmptyBitmap(tailleImages[0], tailleImages[1])
+        dc = wx.MemoryDC()
+        dc.SelectObject(bmp)
+        gc = wx.GraphicsContext.Create(dc)
+        gc.PushState() 
+        gc.SetBrush(wx.Brush(couleur, wx.SOLID))
+##        gc.DrawRectangle(0, 0, tailleImages[0], tailleImages[1])
+        gc.SetPen(wx.TRANSPARENT_PEN)
+        gc.SetPen(wx.Pen((0, 0, 0), 1, wx.SOLID))
+        gc.DrawEllipse(0, 3, 10, 10)
+        gc.PopState() 
+        del dc
+        return bmp
+
 
     def Remplissage(self):
         """ Remplissage """
@@ -97,7 +113,7 @@ class CTRL(CT.CustomTreeCtrl):
         self.listeEtiquettes = self.Importation()
         
         # Imagelist
-        tailleImages = (16,16)
+        tailleImages = (11,16)
         self.il = wx.ImageList(tailleImages[0], tailleImages[1])
         self.imgRoot = self.il.Add(wx.ArtProvider_GetBitmap(wx.ART_FILE_OPEN, wx.ART_OTHER, tailleImages))
         
