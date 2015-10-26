@@ -22,35 +22,35 @@ import wx.lib.wordwrap as wordwrap
 
 
 LISTE_METHODES = [
-    { "code" : "montant_unique", "label" : _(u"Montant unique"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("montant_unique", "montant_questionnaire"), "champs_obligatoires" : ("montant_unique",) },
-    { "code" : "qf", "label" : _(u"En fonction du quotient familial"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_unique"), "champs_obligatoires" : ("qf_min", "qf_max", "montant_unique") },
+    { "code" : "montant_unique", "label" : _(u"Montant unique"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("montant_unique", "montant_questionnaire"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT", "CREDIT") },
+    { "code" : "qf", "label" : _(u"En fonction du quotient familial"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_unique"), "champs_obligatoires" : ("qf_min", "qf_max", "montant_unique"), "tarifs_compatibles" : ("JOURN", "FORFAIT", "CREDIT") },
     
-    { "code" : "horaire_montant_unique", "label" : _(u"Montant unique en fonction d'une tranche horaire"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique") },
-    { "code" : "horaire_qf", "label" : _(u"En fonction d'une tranche horaire et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique") },
+    { "code" : "horaire_montant_unique", "label" : _(u"Montant unique en fonction d'une tranche horaire"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "horaire_qf", "label" : _(u"En fonction d'une tranche horaire et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
-    { "code" : "duree_montant_unique", "label" : _(u"Montant unique en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "montant_unique") },
-    { "code" : "duree_qf", "label" : _(u"En fonction d'une durée et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "montant_unique") },
+    { "code" : "duree_montant_unique", "label" : _(u"Montant unique en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "montant_unique", "montant_questionnaire", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_qf", "label" : _(u"En fonction d'une durée et du quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "montant_unique", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
-    { "code" : "montant_unique_date", "label" : _(u"Montant unique en fonction de la date"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "montant_unique", "label"), "champs_obligatoires" : ("date", "montant_unique") },
-    { "code" : "qf_date", "label" : _(u"En fonction de la date et du quotient familial"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "qf_min", "qf_max", "montant_unique", "label"), "champs_obligatoires" : ("date", "qf_min", "qf_max", "montant_unique") },
+    { "code" : "montant_unique_date", "label" : _(u"Montant unique en fonction de la date"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "montant_unique", "label"), "champs_obligatoires" : ("date", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "qf_date", "label" : _(u"En fonction de la date et du quotient familial"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("date", "qf_min", "qf_max", "montant_unique", "label"), "champs_obligatoires" : ("date", "qf_min", "qf_max", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
     
-    { "code" : "variable", "label" : _(u"Tarif libre (Saisi par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : () },
-    { "code" : "choix", "label" : _(u"Tarif au choix (Sélectionné par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("montant_unique", "label"), "champs_obligatoires" : ("montant_unique",) },
+    { "code" : "variable", "label" : _(u"Tarif libre (Saisi par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : 0, "entete" : None, "champs" : (), "champs_obligatoires" : (), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "choix", "label" : _(u"Tarif au choix (Sélectionné par l'utilisateur)"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("montant_unique", "label"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT", "CREDIT") },
     
-    { "code" : "montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1") },
-    { "code" : "qf_nbre_ind", "label" : _(u"En fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1") },
-    { "code" : "horaire_montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1") },
-    { "code" : "montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1") },
-    { "code" : "qf_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1") },
-    { "code" : "horaire_montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1") },
+    { "code" : "montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "qf_nbre_ind", "label" : _(u"En fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "horaire_montant_unique_nbre_ind", "label" : _(u"Montant unique en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : "tranche", "champs" : ("montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "qf_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du quotient familial et du nombre d'individus de la famille présents"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("qf_min", "qf_max", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", ), "champs_obligatoires" : ("qf_min", "qf_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "horaire_montant_unique_nbre_ind_degr", "label" : _(u"Montant dégressif en fonction du nombre d'individus de la famille présents et de la tranche horaire"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : "tranche", "champs" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "temps_facture", "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", "label"), "champs_obligatoires" : ("heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "montant_enfant_1"), "tarifs_compatibles" : ("JOURN",) },
     
-    { "code" : "duree_coeff_montant_unique", "label" : _(u"Montant au prorata d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_questionnaire", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique") },
-    { "code" : "duree_coeff_qf", "label" : _(u"Montant au prorata d'une durée et selon le quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "unite_horaire", "montant_unique") },
+    { "code" : "duree_coeff_montant_unique", "label" : _(u"Montant au prorata d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "montant_questionnaire", "ajustement", "label"), "champs_obligatoires" : ("unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_coeff_qf", "label" : _(u"Montant au prorata d'une durée et selon le quotient familial"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "duree_seuil", "duree_plafond", "unite_horaire", "montant_unique", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "unite_horaire", "montant_unique"), "tarifs_compatibles" : ("JOURN",) },
 
-    { "code" : "taux_montant_unique", "label" : _(u"Par taux d'effort"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("taux",) },
-    { "code" : "taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "taux",) },
-    { "code" : "duree_taux_montant_unique", "label" : _(u"Par taux d'effort et en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "taux") },
-    { "code" : "duree_taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "taux") },
+    { "code" : "taux_montant_unique", "label" : _(u"Par taux d'effort"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("taux",), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "taux",), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_taux_montant_unique", "label" : _(u"Par taux d'effort et en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
+    { "code" : "duree_taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
 
 ]
 
@@ -742,13 +742,19 @@ class Panel(wx.Panel):
         self.label_methode = wx.StaticText(self, -1, _(u"Méthode :"))
         listeLabels = []
         for dictValeurs in LISTE_METHODES :
-            listeLabels.append(dictValeurs["label"])
+            label = dictValeurs["label"]
+            if len(dictValeurs["tarifs_compatibles"]) > 1 :
+                label += u"*"
+            listeLabels.append(label)
         self.ctrl_methode = wx.Choice(self, -1, choices=listeLabels)
         self.label_parametres = wx.StaticText(self, -1, _(u"Paramètres :"))
         self.ctrl_parametres = Tableau(self)
         
         self.bouton_ajouter_ligne = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter_ligne.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_ligne = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer_ligne.png", wx.BITMAP_TYPE_ANY))
+        
+        self.label_info = wx.StaticText(self, -1, _(u"L'astérisque (*) indique les méthodes de calcul compatibles avec les tarifs de type forfait."))
+        self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
         
         self.__set_properties()
         self.__do_layout()
@@ -767,7 +773,7 @@ class Panel(wx.Panel):
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         
         grid_sizer_contenu.Add(self.label_methode, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_contenu.Add(self.ctrl_methode, 0, wx.EXPAND, 0)
@@ -784,7 +790,10 @@ class Panel(wx.Panel):
         grid_sizer_parametres.AddGrowableRow(0)
         grid_sizer_parametres.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_parametres, 1, wx.EXPAND, 0)
-
+        
+        grid_sizer_contenu.Add( (5, 5), 0, 0, 0)
+        grid_sizer_contenu.Add(self.label_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        
         grid_sizer_contenu.AddGrowableRow(1)
         grid_sizer_contenu.AddGrowableCol(1)
 
@@ -813,6 +822,12 @@ class Panel(wx.Panel):
         if indexSelection == -1 : return None
         code = LISTE_METHODES[indexSelection]["code"]
         return code
+    
+    def GetTarifsCompatibles(self):
+        indexSelection = self.ctrl_methode.GetSelection()
+        if indexSelection == -1 : return None
+        tarifs_compatibles = LISTE_METHODES[indexSelection]["tarifs_compatibles"]
+        return tarifs_compatibles
         
     def OnBoutonAjouter(self, event): 
         if self.ctrl_methode.GetSelection() == -1 :

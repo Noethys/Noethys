@@ -244,6 +244,7 @@ class Dialog(wx.Dialog):
 
         # Type
         self.toolbook.GetPage("type").SetType(type)
+        
 
     def OnBoutonAide(self, event): 
         import UTILS_Aide
@@ -255,11 +256,13 @@ class Dialog(wx.Dialog):
         if validation == False :
             return
         
+        # Sauvegarde du tarif
+        etat = self.Sauvegarde()
+        if etat == False :
+            return
+
         # Sauvegarde des données
         self.toolbook.Sauvegarde()
-        
-        # Sauvegarde du tarif
-        self.Sauvegarde()
         
         # Fermeture fenêtre
         self.EndModal(wx.ID_OK)
@@ -287,6 +290,14 @@ class Dialog(wx.Dialog):
         
         # Méthode
         codeMethode = self.toolbook.GetPage("calcul").GetCodeMethode()
+        tarifsCompatibles = self.toolbook.GetPage("calcul").GetTarifsCompatibles()
+        
+        # Vérifie que la méthode est compatible avec le type de tarif
+        if typeTarif not in tarifsCompatibles :
+            dlg = wx.MessageDialog(self, _(u"La méthode de calcul sélectionnée n'est pas compatible avec le type de tarif sélectionné !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
         
         # Sauvegarde
         DB = GestionDB.DB()
