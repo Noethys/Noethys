@@ -267,13 +267,16 @@ class CTRL(wx.Panel):
     def RecalculerToutesPrestations(self):
         self.grille.RecalculerToutesPrestations(modeSilencieux=True) 
     
+    def TraitementLot_processus(self, resultats={}):
+        return self.grille.TraitementLot_processus(resultats=resultats)
+        
 # FONCTIONS DISPONIBLES :
 # Sauvegarde() : Pour sauvegarder
 # SaisieConso() : Pour ajouter une conso
 # SupprimeConso() : Pour Supprimer une conso
 # ModifieMemo(): Pour modifier le mémo journalier
 # RecalculerToutesPrestations : Recalculer toutes les conso affichées
-
+# TraitementLot_processus : Effectuer un traitement par lot global
 
 
 class Dialog(wx.Dialog):

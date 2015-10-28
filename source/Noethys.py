@@ -869,6 +869,8 @@ class MainFrame(wx.Frame):
                     {"code" : "liste_consommations", "label" : _(u"Liste des consommations"), "infobulle" : _(u"Editer une liste des consommations"), "image" : "Images/16x16/Imprimante.png", "action" : self.On_imprim_conso_journ},
                     {"code" : "gestionnaire_conso", "label" : _(u"Gestionnaire des consommations"), "infobulle" : _(u"Gestionnaire des consommations"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_conso_gestionnaire},
                     "-",
+                    {"code" : "traitement_lot_conso", "label" : _(u"Traitement par lot"), "infobulle" : _(u"Traitement par lot"), "image" : "Images/16x16/Calendrier_modification.png", "action" : self.On_conso_traitement_lot},
+                    "-",
                     {"code" : "liste_attente", "label" : _(u"Liste d'attente"), "infobulle" : _(u"Liste d'attente"), "image" : "Images/16x16/Liste_attente.png", "action" : self.On_conso_attente},
                     {"code" : "liste_refus", "label" : _(u"Liste des places refusées"), "infobulle" : _(u"Liste des places refusées"), "image" : "Images/16x16/Places_refus.png", "action" : self.On_conso_refus},
                     {"code" : "liste_absences", "label" : _(u"Liste des absences"), "infobulle" : _(u"Liste des absences"), "image" : "Images/16x16/absenti.png", "action" : self.On_conso_absences},
@@ -2822,6 +2824,14 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "consulter") == False : return
         import DLG_Gestionnaire_conso
         dlg = DLG_Gestionnaire_conso.Dialog(self)
+        dlg.ShowModal() 
+        dlg.Destroy()
+        self.ctrl_remplissage.MAJ()
+
+    def On_conso_traitement_lot(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "saisie") == False : return
+        import DLG_Saisie_lot_conso_global
+        dlg = DLG_Saisie_lot_conso_global.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
         self.ctrl_remplissage.MAJ()

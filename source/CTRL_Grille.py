@@ -4466,160 +4466,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 }
             dlg_grille.panel_periode.SetDictDonnees(dictPeriode)
             dlg_grille.SetListesPeriodes([(date_debut, date_fin),])
-            
-            # Sélection des activités
-    ##        dlg_grille.SetListeSelectionActivites([IDactivite,])
 
             # MAJ de la grille
             dlg_grille.MAJ_grille()
             
-            journal = {}
-            
-            # Parcours les lignes
-            for numLigne, ligne in self.dictLignes.iteritems() :
-                for numColonne, case in ligne.dictCases.iteritems() :
-                    if case.typeCase == "consommation" :
-                        
-                        # Vérifie si ouvert
-                        if case.ouvert == True :
-                            
-                            if journal.has_key(case.IDindividu) == False :
-                                journal[case.IDindividu] = []
-                                
-                            # Vérifie si la date est valide selon les critères
-                            if case.date in resultats["dates"] :
-                                valide = True
-                            else :
-                                valide = False
-
-                            if valide == True :
-                                
-                                # -------------------- Saisie -------------------
-                                if resultats["action"] == "saisie" :
-                                    
-                                    for dictUnite in resultats["unites"] :
-                                        if dictUnite["IDunite"] == case.IDunite :
-                                            nomUnite = dictUnite["nom"]
-                                            heure_debut = None
-                                            heure_fin = None
-                                            quantite = None
-                                            
-                                            if dictUnite["type"] in ("Horaire", "Multihoraires") :
-                                                heure_debut = dictUnite["options"]["heure_debut"]
-                                                heure_fin = dictUnite["options"]["heure_fin"]
-                                                
-                                            if dictUnite["type"] == "Quantite" :
-                                                quantite = dictUnite["options"]["quantite"]
-                                            
-                                            valide = True
-                                            
-                                            # Vérifie qu'il est possible de placer une conso dans cette case
-                                            if case.IsCaseDisponible(heure_debut, heure_fin) == False :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Une consommation est déjà enregistrée")))
-                                                valide = False
-                                            
-                                            # Vérifie qu'il reste des places disponibles
-                                            if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Plus de places")))
-                                                valide = False
-                                            
-                                            # Vérifie la compatibilité avec les autres unités
-                                            incompatibilite = case.VerifieCompatibilitesUnites()
-                                            if incompatibilite != None :
-                                                nomUniteIncompatible = self.dictUnites[incompatibilite]["nom"]
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Incompatibilité avec l'unité '%s' déjà enregistrée") %  nomUniteIncompatible))
-                                                valide = False
-                                            
-                                            # Saisie d'une conso
-                                            if valide == True :
-                                                
-                                                if dictUnite["type"] == "Multihoraires" :
-                                                    barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin), etiquettes=resultats["etiquettes"])
-                                                    # Modifie état
-                                                    if resultats["etat"] != None and barre.conso.etat != resultats["etat"] :
-                                                        case.ModifieEtat(barre.conso, resultats["etat"])
-                                                else :
-                                                    case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
-                                                    # Modifie état
-                                                    if resultats["etat"] != None and case.etat != resultats["etat"] :
-                                                        case.ModifieEtat(None, resultats["etat"])
-
-                
-                                # -------------------- Modification -------------------
-                                if resultats["action"] == "modification" :
-                                    
-                                    index = 0
-                                    for dictUnite in resultats["unites"] :
-                                        if dictUnite["IDunite"] == case.IDunite :
-                                            listeConso = case.GetListeConso()
-                                            if index <= len(listeConso) - 1 :
-                                                conso = listeConso[index]
-
-                                                if conso.etat != None :
-                                                    
-                                                    if conso.IDfacture != None :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
-                                                        
-                                                    elif conso.etat in ("present", "absentj", "absenti") :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
-                                                    
-                                                    elif conso.forfait != None :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier un forfait")))
-                                                        
-                                                    else :
-                                                        # Modifie les heures 
-                                                        if dictUnite["type"] == "Horaire" :
-                                                            heure_debut = dictUnite["options"]["heure_debut"]
-                                                            heure_fin = dictUnite["options"]["heure_fin"]
-                                                            case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, modeSilencieux=True, etiquettes=resultats["etiquettes"])
-                                                        
-                                                        # Modifie Quantité si unité de type Quantité
-                                                        if dictUnite["type"] == "Quantite" :
-                                                            quantite = conso.quantite
-                                                            if conso.quantite == None :
-                                                                quantite = 1
-                                                            quantite += 1
-                                                            case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
-
-                                                        # Modifie Multihoraires
-                                                        if dictUnite["type"] == "Multihoraires" :
-                                                            heure_debut = dictUnite["options"]["heure_debut"]
-                                                            heure_fin = dictUnite["options"]["heure_fin"]
-                                                            conso.case.ModifierBarre(conso.barre, horaires=(heure_debut, heure_fin), etiquettes=resultats["etiquettes"])
-
-                                            index += 1
-            
-                                # -------------------- Suppression -------------------
-                                if resultats["action"] == "suppression" :
-                                    for dictUnite in resultats["unites"] :
-                                        if dictUnite["IDunite"] == case.IDunite :
-                                            for conso in case.GetListeConso() :
-                                                
-                                                if conso.IDfacture != None :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
-                                                elif conso.etat in ("present", "absentj", "absenti") :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
-                                                elif conso.forfait != None :
-                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de modifier un forfait")))
-                                                else :
-                                                    if dictUnite["type"] == "Multihoraires" :
-                                                        case.SupprimerBarre(conso.barre)
-                                                    else :
-                                                        if conso.etat != None :
-                                                            case.OnClick(modeSilencieux=True, ForcerSuppr=True)
-                        
-                                # -------------------- Changement d'état -------------------
-                                if resultats["action"] == "etat" :
-                                    for dictUnite in resultats["unites"] :
-                                        if dictUnite["IDunite"] == case.IDunite :
-                                            for conso in case.GetListeConso() :
-                                                
-                                                if conso.etat != None :
-                                                    if resultats["etat"] != None and conso.etat != resultats["etat"] :
-                                                        if conso.IDfacture != None :
-                                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
-                                                        else :
-                                                            case.ModifieEtat(conso, resultats["etat"])
+            # Processus
+            journal = self.TraitementLot_processus(resultats=resultats) 
             
             del dlgAttente
 
@@ -4653,6 +4505,162 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"Résultats du traitement par lot"), size=(630, 450))
             dlg.ShowModal()
             dlg.Destroy()
+
+
+    def TraitementLot_processus(self, resultats={}):
+        """ Processus du traitement par lot """
+        journal = {}
+        
+        # Parcours les lignes
+        for numLigne, ligne in self.dictLignes.iteritems() :
+            for numColonne, case in ligne.dictCases.iteritems() :
+                if case.typeCase == "consommation" :
+                    
+                    # Vérifie si ouvert
+                    if case.ouvert == True :
+                        
+                        if journal.has_key(case.IDindividu) == False :
+                            journal[case.IDindividu] = []
+                            
+                        # Vérifie si la date est valide selon les critères
+                        if case.date in resultats["dates"] :
+                            valide = True
+                        else :
+                            valide = False
+
+                        if valide == True :
+                            
+                            # -------------------- Saisie -------------------
+                            if resultats["action"] == "saisie" :
+                                
+                                for dictUnite in resultats["unites"] :
+                                    if dictUnite["IDunite"] == case.IDunite :
+                                        nomUnite = dictUnite["nom"]
+                                        heure_debut = None
+                                        heure_fin = None
+                                        quantite = None
+                                        
+                                        if dictUnite["type"] in ("Horaire", "Multihoraires") :
+                                            heure_debut = dictUnite["options"]["heure_debut"]
+                                            heure_fin = dictUnite["options"]["heure_fin"]
+                                            
+                                        if dictUnite["type"] == "Quantite" :
+                                            quantite = dictUnite["options"]["quantite"]
+                                        
+                                        valide = True
+                                        
+                                        # Vérifie qu'il est possible de placer une conso dans cette case
+                                        if case.IsCaseDisponible(heure_debut, heure_fin) == False :
+                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Une consommation est déjà enregistrée")))
+                                            valide = False
+                                        
+                                        # Vérifie qu'il reste des places disponibles
+                                        if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
+                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Plus de places")))
+                                            valide = False
+                                        
+                                        # Vérifie la compatibilité avec les autres unités
+                                        incompatibilite = case.VerifieCompatibilitesUnites()
+                                        if incompatibilite != None :
+                                            nomUniteIncompatible = self.dictUnites[incompatibilite]["nom"]
+                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Incompatibilité avec l'unité '%s' déjà enregistrée") %  nomUniteIncompatible))
+                                            valide = False
+                                        
+                                        # Saisie d'une conso
+                                        if valide == True :
+                                            
+                                            if dictUnite["type"] == "Multihoraires" :
+                                                barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin), etiquettes=resultats["etiquettes"])
+                                                # Modifie état
+                                                if resultats["etat"] != None and barre.conso.etat != resultats["etat"] :
+                                                    case.ModifieEtat(barre.conso, resultats["etat"])
+                                            else :
+                                                case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
+                                                # Modifie état
+                                                if resultats["etat"] != None and case.etat != resultats["etat"] :
+                                                    case.ModifieEtat(None, resultats["etat"])
+
+            
+                            # -------------------- Modification -------------------
+                            if resultats["action"] == "modification" :
+                                
+                                index = 0
+                                for dictUnite in resultats["unites"] :
+                                    if dictUnite["IDunite"] == case.IDunite :
+                                        listeConso = case.GetListeConso()
+                                        if index <= len(listeConso) - 1 :
+                                            conso = listeConso[index]
+
+                                            if conso.etat != None :
+                                                
+                                                if conso.IDfacture != None :
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
+                                                    
+                                                elif conso.etat in ("present", "absentj", "absenti") :
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
+                                                
+                                                elif conso.forfait != None :
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier un forfait")))
+                                                    
+                                                else :
+                                                    # Modifie les heures 
+                                                    if dictUnite["type"] == "Horaire" :
+                                                        heure_debut = dictUnite["options"]["heure_debut"]
+                                                        heure_fin = dictUnite["options"]["heure_fin"]
+                                                        case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, modeSilencieux=True, etiquettes=resultats["etiquettes"])
+                                                    
+                                                    # Modifie Quantité si unité de type Quantité
+                                                    if dictUnite["type"] == "Quantite" :
+                                                        quantite = conso.quantite
+                                                        if conso.quantite == None :
+                                                            quantite = 1
+                                                        quantite += 1
+                                                        case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantite, modeSilencieux=True, etiquettes=resultats["etiquettes"])
+
+                                                    # Modifie Multihoraires
+                                                    if dictUnite["type"] == "Multihoraires" :
+                                                        heure_debut = dictUnite["options"]["heure_debut"]
+                                                        heure_fin = dictUnite["options"]["heure_fin"]
+                                                        conso.case.ModifierBarre(conso.barre, horaires=(heure_debut, heure_fin), etiquettes=resultats["etiquettes"])
+
+                                        index += 1
+        
+                            # -------------------- Suppression -------------------
+                            if resultats["action"] == "suppression" :
+                                for dictUnite in resultats["unites"] :
+                                    if dictUnite["IDunite"] == case.IDunite :
+                                        for conso in case.GetListeConso() :
+                                            
+                                            if conso.IDfacture != None :
+                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
+                                            elif conso.etat in ("present", "absentj", "absenti") :
+                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
+                                            elif conso.forfait != None :
+                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de modifier un forfait")))
+                                            else :
+                                                if dictUnite["type"] == "Multihoraires" :
+                                                    case.SupprimerBarre(conso.barre)
+                                                else :
+                                                    if conso.etat != None :
+                                                        case.OnClick(modeSilencieux=True, ForcerSuppr=True)
+                    
+                            # -------------------- Changement d'état -------------------
+                            if resultats["action"] == "etat" :
+                                for dictUnite in resultats["unites"] :
+                                    if dictUnite["IDunite"] == case.IDunite :
+                                        for conso in case.GetListeConso() :
+                                            
+                                            if conso.etat != None :
+                                                if resultats["etat"] != None and conso.etat != resultats["etat"] :
+                                                    if conso.IDfacture != None :
+                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
+                                                    else :
+                                                        case.ModifieEtat(conso, resultats["etat"])
+        
+        # Renvoie le journal
+        return journal
+
+
 
 
 ####SAUVEGARDE

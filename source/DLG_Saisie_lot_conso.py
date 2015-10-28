@@ -17,6 +17,7 @@ import CTRL_Saisie_heure
 import CTRL_Bandeau
 import CTRL_Etiquettes
 import UTILS_Parametres
+import UTILS_Dates
 import datetime
 import calendar
 import GestionDB
@@ -141,7 +142,7 @@ class CTRL_Jours(wx.Panel):
             listeTemp.append(str(num))
         return ";".join(listeTemp)
         
-    def SetJours(self, texteJours=""):
+    def SetJoursStr(self, texteJours=""):
         if texteJours == None or len(texteJours) == 0 :
             return
 
@@ -149,6 +150,9 @@ class CTRL_Jours(wx.Panel):
         listeJours = []
         for jour in listeJoursTemp :
             listeJours.append(int(jour))
+        self.SetJours(listeJours)
+
+    def SetJours(self, listeJours=[]):
         index = 0
         for jour in self.liste_jours :
             if index in listeJours :
@@ -186,7 +190,14 @@ class CTRL_Semaines(wx.Choice):
     
     def GetLabel(self):
         return self.GetStringSelection()
-
+    
+    def SetValeur(self, valeur=1):
+        index = 0
+        for code, label in self.listeEtats :
+            if code == valeur :
+                self.Select(index)
+            index += 1
+        
 # ----------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Activite(wx.Choice):
@@ -363,7 +374,7 @@ class CTRL_Quantite(wx.Panel):
         self.Refresh() 
     
     def SetQuantite(self, quantite=None):
-        self.ctrl_quantite.SetValeur(quantite)
+        self.ctrl_quantite.SetValue(quantite)
         self.MAJ() 
     
     def GetQuantite(self):
@@ -384,7 +395,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         self.parent = parent
         self.activation = True
         self.IDactivite = None
-        self.data = []
+        self.dictItems = {}
         self.MAJenCours = False
         
         self.SetBackgroundColour(wx.WHITE)
@@ -393,7 +404,7 @@ class CTRL_Unites(HTL.HyperTreeList):
         
         # Création des colonnes
         self.AddColumn(_(u"Unités"))
-        self.SetColumnWidth(0, 300)
+        self.SetColumnWidth(0, 280)
 
         # Binds
         self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem) 
@@ -445,6 +456,7 @@ class CTRL_Unites(HTL.HyperTreeList):
 
     def Remplissage(self):
         # Remplissage
+        self.dictItems = {}
         for dictUnite in self.listeUnites :
             label = dictUnite["nom"]
             type = dictUnite["type"]
@@ -485,7 +497,9 @@ class CTRL_Unites(HTL.HyperTreeList):
                     self.SetItemWindow(niveauQuantite, ctrl, 0)
             
             self.SetPyData(niveauUnite, {"branche" : "unite", "type" : type, "dictUnite" : dictUnite, "ID" : dictUnite["IDunite"], "nom" : label, "controles" : listeControles})
-
+            
+            self.dictItems[dictUnite["IDunite"]] = {"item" : niveauUnite}
+            
             self.EnableChildren(niveauUnite, False)
         self.ExpandAllChildren(self.root)
 
@@ -528,6 +542,45 @@ class CTRL_Unites(HTL.HyperTreeList):
                     listeCoches.append(self.GetPyData(item))
         return listeCoches
     
+    def SetValeursDefaut(self, listeUnites=[]):
+        """ Importation de valeurs par défaut """
+        dictTempMultihoraires = {}
+        
+        for dictTemp in listeUnites :
+            IDunite = dictTemp["IDunite"]
+            
+            item = self.root
+            for index in range(0, self.GetChildrenCount(self.root)):
+                item = self.GetNext(item) 
+                dictItem = self.GetPyData(item)
+                if dictItem != None and dictItem["branche"] == "unite" and dictItem["ID"] == IDunite :
+                
+                    # Coche l'item
+                    item.Check(True)
+                    self.EnableChildren(item, True)
+                    
+                    # Options
+                    if dictItem["type"] == "Horaire" :
+                        ctrl = dictItem["controles"][0]
+                        ctrl.SetHeureDebut(dictTemp["options"]["heure_debut"])
+                        ctrl.SetHeureFin(dictTemp["options"]["heure_fin"])
+        
+                    if dictItem["type"] == "Multihoraires" :
+                        if dictTempMultihoraires.has_key(IDunite) == False :
+                            dictTempMultihoraires[IDunite] = 0
+                        index = dictTempMultihoraires[IDunite]
+                        if index > len(dictItem["controles"]) -1 :
+                            self.AjouterHoraires(niveauUnite=item)
+                        ctrl = dictItem["controles"][index]
+                        ctrl.SetHeureDebut(dictTemp["options"]["heure_debut"])
+                        ctrl.SetHeureFin(dictTemp["options"]["heure_fin"])
+                        dictTempMultihoraires[IDunite] += 1
+        
+                    if dictItem["type"] == "Quantite" :
+                        ctrl = dictItem["controles"][0]
+                        ctrl.SetQuantite(dictTemp["options"]["quantite"])
+        
+        
     
 # -----------------------------------------------------------------------------------------------------------------------------
 
@@ -565,22 +618,34 @@ class CTRL_Etat(wx.Choice):
     def GetLabel(self):
         return self.GetStringSelection()
 
+    def SetValeur(self, valeur="reservation"):
+        index = 0
+        for code, label in self.listeEtats :
+            if code == valeur :
+                self.Select(index)
+            index += 1
+
 # ----------------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, listeIndividus=[], date_debut=None, date_fin=None, IDactivite=None):
+    def __init__(self, parent, listeIndividus=[], date_debut=None, date_fin=None, IDactivite=None, mode_parametres=False):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.action = None
         self.listeIndividus = listeIndividus
+        self.mode_parametres = mode_parametres
         self.resultats = {}
 
         # Bandeau
         titre = _(u"Traitement par lot")
+        if self.mode_parametres == True :
+            titre = _(u"Sélectionner les paramètres de l'action")
         intro = _(u"Vous pouvez ici saisir, modifier ou supprimer un lot de consommations selon les critères de votre choix. Sélectionnez un type d'action puis renseignez les paramètres demandés.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
-
+        if self.mode_parametres == True :
+            self.ctrl_bandeau.Show(False)
+            
         # Action
         self.box_action_staticbox = wx.StaticBox(self, -1, _(u"Action"))
         self.radio_saisie = wx.RadioButton(self, -1, _(u"Saisie"), style=wx.RB_GROUP)
@@ -591,7 +656,11 @@ class Dialog(wx.Dialog):
         # Individus
         self.box_individus_staticbox = wx.StaticBox(self, -1, _(u"Individus"))
         self.ctrl_individus = CTRL_Individus(self, listeIndividus)
-        
+        self.ctrl_individus.SetMinSize((50, 150))
+        if self.mode_parametres == True :
+            self.box_individus_staticbox.Show(False)
+            self.ctrl_individus.Show(False)
+            
         # Periode
         self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
@@ -614,9 +683,11 @@ class Dialog(wx.Dialog):
         self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
         self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Activite(self)
+        if self.mode_parametres == True :
+            self.ctrl_activite.Enable(False)
         self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
         self.ctrl_unites = CTRL_Unites(self)
-        self.ctrl_unites.SetMinSize((50, 50))
+        self.ctrl_unites.SetMinSize((310, 50))
         self.label_etiquettes = wx.StaticText(self, -1, _(u"Etiquettes :"))
         self.ctrl_etiquettes = CTRL_Etiquettes.CTRL(self, listeActivites=[], activeMenu=False)
         self.ctrl_etiquettes.SetMinSize((50, 50))
@@ -646,9 +717,10 @@ class Dialog(wx.Dialog):
         
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)
-        self.ctrl_scolaires.SetJours(UTILS_Parametres.Parametres(mode="get", categorie="dlg_saisie_lot_conso", nom="jours_scolaires", valeur="0;1;2;3;4"))
-        self.ctrl_vacances.SetJours(UTILS_Parametres.Parametres(mode="get", categorie="dlg_saisie_lot_conso", nom="jours_vacances", valeur="0;1;2;3;4"))
-        IDactivite = UTILS_Parametres.Parametres(mode="get", categorie="dlg_saisie_lot_conso", nom="activite", valeur=None)
+        self.ctrl_scolaires.SetJoursStr(UTILS_Parametres.Parametres(mode="get", categorie="dlg_saisie_lot_conso", nom="jours_scolaires", valeur="0;1;2;3;4"))
+        self.ctrl_vacances.SetJoursStr(UTILS_Parametres.Parametres(mode="get", categorie="dlg_saisie_lot_conso", nom="jours_vacances", valeur="0;1;2;3;4"))
+        if IDactivite == None :
+            IDactivite = UTILS_Parametres.Parametres(mode="get", categorie="dlg_saisie_lot_conso", nom="activite", valeur=None)
         if IDactivite != None :
             try :
                 self.ctrl_activite.SetActivite(int(IDactivite))
@@ -672,27 +744,42 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((800, 650))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 1, wx.EXPAND, 0)
-        
-        # Action
-        box_action = wx.StaticBoxSizer(self.box_action_staticbox, wx.VERTICAL)
-        grid_sizer_action = wx.FlexGridSizer(rows=1, cols=4, vgap=20, hgap=20)
-        grid_sizer_action.Add(self.radio_saisie, 0, 0, 0)
-        grid_sizer_action.Add(self.radio_modification, 0, 0, 0)
-        grid_sizer_action.Add(self.radio_suppression, 0, 0, 0)
-        grid_sizer_action.Add(self.radio_etat, 0, 0, 0)
-        box_action.Add(grid_sizer_action, 1, wx.ALL|wx.EXPAND, 10)
-        
-        grid_sizer_base.Add(box_action, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+        if self.mode_parametres == True :
+            grid_sizer_base.Add( (1, 1), 1, wx.EXPAND, 0)
+
         grid_sizer_colonnes = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
         grid_sizer_droite = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+
+        # Action
+        if self.mode_parametres == False :
+            
+            box_action = wx.StaticBoxSizer(self.box_action_staticbox, wx.VERTICAL)
+            grid_sizer_action = wx.FlexGridSizer(rows=1, cols=4, vgap=20, hgap=20)
+            grid_sizer_action.Add(self.radio_saisie, 0, 0, 0)
+            grid_sizer_action.Add(self.radio_modification, 0, 0, 0)
+            grid_sizer_action.Add(self.radio_suppression, 0, 0, 0)
+            grid_sizer_action.Add(self.radio_etat, 0, 0, 0)
+            box_action.Add(grid_sizer_action, 1, wx.ALL|wx.EXPAND, 10)
+            
+            grid_sizer_base.Add(box_action, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
+        else :
+            
+            box_action = wx.StaticBoxSizer(self.box_action_staticbox, wx.VERTICAL)
+            grid_sizer_action = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+            grid_sizer_action.Add(self.radio_saisie, 0, 0, 0)
+            grid_sizer_action.Add(self.radio_modification, 0, 0, 0)
+            grid_sizer_action.Add(self.radio_suppression, 0, 0, 0)
+            grid_sizer_action.Add(self.radio_etat, 0, 0, 0)
+            box_action.Add(grid_sizer_action, 1, wx.ALL|wx.EXPAND, 10)
+            
+            grid_sizer_gauche.Add(box_action, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 0)
+    
         # Individus
         box_individus = wx.StaticBoxSizer(self.box_individus_staticbox, wx.VERTICAL)
         box_individus.Add(self.ctrl_individus, 1, wx.ALL|wx.EXPAND, 10)
@@ -765,6 +852,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen() 
+        self.SetMinSize(self.GetSize())
 
     def OnRadioAction(self, event): 
         if self.radio_saisie.GetValue() == True : self.action = "saisie"
@@ -799,7 +887,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         # Individus
         listeIndividus = self.ctrl_individus.GetCoches() 
-        if len(listeIndividus) == 0 :
+        if len(listeIndividus) == 0 and self.mode_parametres == False :
             dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins un individu !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -853,12 +941,13 @@ class Dialog(wx.Dialog):
             return
         
         # Vérifie si individus inscrits à l'activité :
-        for dictIndividu in listeIndividus :
-            if IDactivite not in dictIndividu["inscriptions"] :
-                dlg = wx.MessageDialog(self, _(u"%s n'est pas inscrit à l'activité '%s' !") % (dictIndividu["label"], nomActivite), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
+        if self.mode_parametres == False :
+            for dictIndividu in listeIndividus :
+                if IDactivite not in dictIndividu["inscriptions"] :
+                    dlg = wx.MessageDialog(self, _(u"%s n'est pas inscrit à l'activité '%s' !") % (dictIndividu["label"], nomActivite), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
             
         # Unités
         listeCoches = self.ctrl_unites.GetCoches() 
@@ -937,6 +1026,13 @@ class Dialog(wx.Dialog):
             dateTemp = date
             date += datetime.timedelta(days=1)
         
+        # Description de l'action
+        if self.action == "saisie" : description = _(u"Saisie de consommations sur la période")
+        if self.action == "modification" : description = _(u"Modification de consommations sur la période")
+        if self.action == "suppression" : description = _(u"Saisie de consommations sur la période")
+        if self.action == "etat" : description = _(u"Changement d'état des consommations de la période")
+        description += u" du %s au %s" % (UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
+        
         # Mémorisation des données
         self.resultats = {}
         self.resultats["action"] = self.action
@@ -946,11 +1042,13 @@ class Dialog(wx.Dialog):
         self.resultats["jours_scolaires"] = jours_scolaires
         self.resultats["jours_vacances"] = jours_vacances
         self.resultats["feries"] = feries
+        self.resultats["semaines"] = semaines
         self.resultats["IDactivite"] = IDactivite
         self.resultats["unites"] = listeUnites
         self.resultats["etat"] = etat
         self.resultats["dates"] = listeDates
         self.resultats["etiquettes"] = etiquettes
+        self.resultats["description"] = description
         
         # Mémorisation paramètres
         UTILS_Parametres.Parametres(mode="set", categorie="dlg_saisie_lot_conso", nom="jours_scolaires", valeur=self.ctrl_scolaires.GetJoursStr())
@@ -965,7 +1063,41 @@ class Dialog(wx.Dialog):
 
     def GetResultats(self):
         return self.resultats
+    
+    def SetValeursDefaut(self, dictValeurs={}):
+        """ Importation de valeurs par défaut """
+        if dictValeurs == None :
+            return
+        
+        # Action
+        if dictValeurs["action"] == "saisie" : self.radio_saisie.SetValue(True) 
+        if dictValeurs["action"] == "modification" : self.radio_modification.SetValue(True) 
+        if dictValeurs["action"] == "suppression" : self.radio_suppression.SetValue(True) 
+        if dictValeurs["action"] == "etat" : self.radio_etat.SetValue(True)
+        
+        self.ctrl_unites.MAJ() 
+        self.ctrl_etat.MAJ() 
 
+        # Période
+        self.ctrl_date_debut.SetDate(dictValeurs["date_debut"])
+        self.ctrl_date_fin.SetDate(dictValeurs["date_fin"])
+        
+        # Jours
+        self.ctrl_scolaires.SetJours(dictValeurs["jours_scolaires"])
+        self.ctrl_vacances.SetJours(dictValeurs["jours_vacances"])
+        self.ctrl_semaines.SetValeur(dictValeurs["semaines"])
+        self.ctrl_feries.SetValue(dictValeurs["feries"])
+        
+        # Unités
+        self.ctrl_unites.SetValeursDefaut(dictValeurs["unites"])
+        
+        # Etiquettes
+        self.ctrl_etiquettes.SetCoches(dictValeurs["etiquettes"])
+        
+        # Etats
+        self.ctrl_etat.SetValeur(dictValeurs["etat"])
+        
+        
     def EstEnVacances(self, dateDD):
         date = str(dateDD)
         for valeurs in self.listeVacances :
@@ -1014,7 +1146,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, listeIndividus=[46,], date_debut=datetime.date(2013, 6, 1), date_fin=datetime.date(2013, 6, 2), IDactivite="")
+    dialog_1 = Dialog(None, listeIndividus=[46,], date_debut=datetime.date(2013, 6, 1), date_fin=datetime.date(2013, 6, 2), IDactivite="", mode_parametres=True)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     print dialog_1.GetResultats() 
