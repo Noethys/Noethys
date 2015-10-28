@@ -1673,7 +1673,7 @@ class Dialog(wx.Dialog):
                             if typeListe == "journ" :
                                 largeurColonneUnite = 30
                             else:
-                                largeurColonneUnite = 25
+                                largeurColonneUnite = 30
                             
                             listePositionsDates = []
                             positionCol1 = len(labelsColonnes)
@@ -1815,8 +1815,8 @@ class Dialog(wx.Dialog):
                                                 listeLabels = []
                                                 quantite = None
                                                 
-                                                styleConso = ParagraphStyle(name="label_conso", fontName="Helvetica", alignment=1, fontSize=7, leading=7, spaceBefore=0, spaceAfter=0, textColor=colors.black)
-                                                styleEtiquette = ParagraphStyle(name="label_etiquette", fontName="Helvetica", alignment=1, fontSize=5, leading=6, spaceBefore=2, spaceAfter=0, textColor=colors.grey)    
+                                                styleConso = ParagraphStyle(name="label_conso", fontName="Helvetica", alignment=1, fontSize=6, leading=6, spaceBefore=0, spaceAfter=0, textColor=colors.black)
+                                                styleEtiquette = ParagraphStyle(name="label_etiquette", fontName="Helvetica", alignment=1, fontSize=5, leading=5, spaceBefore=2, spaceAfter=0, textColor=colors.grey)    
                                                 
                                                 if typeTemp == "conso" :
                                                     # Unité de Conso
@@ -1824,6 +1824,7 @@ class Dialog(wx.Dialog):
                                                         if dictIndividu["listeConso"][date].has_key(IDunite) :
                                                             typeUnite = dictUnites[IDunite]["type"]
                                                             
+                                                            label = u""
                                                             for dictConsoTemp in dictIndividu["listeConso"][date][IDunite] :
                                                             
                                                                 etat = dictConsoTemp["etat"]

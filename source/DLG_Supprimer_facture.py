@@ -29,8 +29,8 @@ class Dialog(wx.Dialog):
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Fermer.png")
 
-        self.bouton_annulation = wx.CommandLinkButton(self, -1, _(u"Annulation"), _("Cette action conservera les traces de la facture annulée dans la base de données. Les principales\ncaractéristiques de la facture seront mémorisées mais il sera impossible par exemple de l'imprimer\nou d'en consulter le détail. Cette action permet notamment de faire apparaître les prestations\nassociées sur une nouvelle facture."))
-        self.bouton_suppression = wx.CommandLinkButton(self, -1, _(u"Suppression"), _("Cette action supprimera totalement la facture. Seule une trace sera conservée dans l'historique.\nLe numéro est susceptible d'être réutilisé s'il s'agit de la dernière facture générée. Cette action peut\nêtre utilisée par exemple pour supprimer une ou plusieurs factures qui viennent d'être générées par\nerreur."))
+        self.bouton_annulation = wx.CommandLinkButton(self, -1, _(u"Annulation"), _(u"Cette action conservera les traces de la facture annulée dans la base de données. Les principales\ncaractéristiques de la facture seront mémorisées mais il sera impossible par exemple de l'imprimer\nou d'en consulter le détail. Cette action permet notamment de faire apparaître les prestations\nassociées sur une nouvelle facture."))
+        self.bouton_suppression = wx.CommandLinkButton(self, -1, _(u"Suppression"), _(u"Cette action supprimera totalement la facture. Seule une trace sera conservée dans l'historique.\nLe numéro est susceptible d'être réutilisé s'il s'agit de la dernière facture générée. Cette action peut\nêtre utilisée par exemple pour supprimer une ou plusieurs factures qui viennent d'être générées par\nerreur."))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")

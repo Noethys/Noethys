@@ -731,8 +731,11 @@ class Case():
         if self.grid.dictUnitesRemplissage.has_key(self.IDunite) == False :
             return None
         
-        etiquettesCoches = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
-        
+        try :
+            etiquettesCoches = self.grid.GetGrandParent().panel_etiquettes.GetCoches(self.IDactivite)
+        except :
+            etiquettesCoches = []
+            
         # Recherche des nbre de places
         dictInfosPlaces = {}
         for IDunite_remplissage in self.grid.dictUnitesRemplissage[self.IDunite] :

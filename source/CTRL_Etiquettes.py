@@ -385,7 +385,7 @@ class CTRL(CT.CustomTreeCtrl):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+
         IDetiquette = dictData["IDetiquette"]
         
         dictConsoAssociees = self.RechercheNbreConsoAssociees() 
@@ -432,16 +432,15 @@ class CTRL(CT.CustomTreeCtrl):
                 DB.ReqDEL("etiquettes", "IDetiquette", dictTemp["IDetiquette"])
 
             # Modification de l'ordre des étiquettes soeurs
-            itemParent = self.GetItem(dictData["parent"])
-            itemTemp, cookie = self.GetFirstChild(itemParent)
+            itemParent = self.GetItemParent(item)
+            listeItemsSoeurs = []
+            self.GetItemsEnfants(liste=listeItemsSoeurs, item=itemParent)
             ordre = 1
-            for index in range(0, self.GetNbreEnfants(itemParent)) :
-                dictDataTemp = self.GetPyData(itemTemp)
+            for dictDataTemp in listeItemsSoeurs :
                 if dictDataTemp["IDetiquette"] != dictData["IDetiquette"] :
                     DB.ReqMAJ("etiquettes", [("ordre", ordre),], "IDetiquette", dictDataTemp["IDetiquette"])
                     ordre += 1
-                itemTemp, cookie = self.GetNextChild(itemParent, cookie)
-                            
+                                                
             DB.Close() 
             self.MAJ()
             
