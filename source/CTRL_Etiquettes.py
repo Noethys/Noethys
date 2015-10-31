@@ -218,8 +218,7 @@ class CTRL(CT.CustomTreeCtrl):
 
         # Item Ajouter
         itemx = wx.MenuItem(menuPop, 10, _(u"Ajouter"))
-        bmp = wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG)
-        itemx.SetBitmap(bmp)
+        itemx.SetBitmap(wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
         
@@ -227,16 +226,14 @@ class CTRL(CT.CustomTreeCtrl):
 
         # Item Modifier
         itemx = wx.MenuItem(menuPop, 20, _(u"Modifier"))
-        bmp = wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG)
-        itemx.SetBitmap(bmp)
+        itemx.SetBitmap(wx.Bitmap("Images/16x16/Modifier.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Modifier, id=20)
         if dictData["type"] is not "etiquette" : itemx.Enable(False)
 
         # Item Supprimer
         itemx = wx.MenuItem(menuPop, 30, _(u"Supprimer"))
-        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
-        itemx.SetBitmap(bmp)
+        itemx.SetBitmap(wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
         if dictData["type"] is not "etiquette" : itemx.Enable(False)
@@ -245,19 +242,26 @@ class CTRL(CT.CustomTreeCtrl):
 
         # Item Deplacer vers le haut
         itemx = wx.MenuItem(menuPop, 40, _(u"Déplacer vers le haut"))
-        bmp = wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG)
-        itemx.SetBitmap(bmp)
+        itemx.SetBitmap(wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Monter, id=40)
         if dictData["type"] is not "etiquette" : itemx.Enable(False)
 
         # Item Déplacer vers le bas
         itemx = wx.MenuItem(menuPop, 50, _(u"Déplacer vers le bas"))
-        bmp = wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG)
-        itemx.SetBitmap(bmp)
+        itemx.SetBitmap(wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(itemx)
         self.Bind(wx.EVT_MENU, self.Descendre, id=50)
         if dictData["type"] is not "etiquette" : itemx.Enable(False)
+        
+        menuPop.AppendSeparator()
+        
+        # Item Range par ordre alphabétique
+        itemx = wx.MenuItem(menuPop, 60, _(u"Trier par ordre alphabétique"))
+        itemx.SetBitmap(wx.Bitmap("Images/16x16/Tri_za.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(itemx)
+        self.Bind(wx.EVT_MENU, self.TrierOrdreAlpha, id=60)
+        if dictData["type"] is not "etiquette" : itemx.Enable(False)        
         
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -291,7 +295,8 @@ class CTRL(CT.CustomTreeCtrl):
             label = dlg.GetLabel()
             couleur = dlg.GetCouleur()
             IDparent, IDactivite = dlg.GetIDparent()
-            ordre = self.GetNbreEnfants(self.GetItem(IDparent)) + 1
+            ordre = self.GetNbreEnfants(self.GetItem(IDparent, IDactivite)) + 1
+            print ordre
             # Sauvegarde de l'étiquette
             self.SauvegarderEtiquette(IDetiquette=None, label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre)
         dlg.Destroy()
@@ -350,13 +355,13 @@ class CTRL(CT.CustomTreeCtrl):
         self.MAJ()
         self.SetID(IDetiquette)
     
-    def GetItemsEnfants(self, liste=[], item=None):
+    def GetItemsEnfants(self, liste=[], item=None, recursif=True):
         itemTemp, cookie = self.GetFirstChild(item)
         for index in range(0, self.GetChildrenCount(item, recursively=False)) :
             dictDataTemp = self.GetPyData(itemTemp)
             liste.append(dictDataTemp)
-            if self.GetChildrenCount(itemTemp, recursively=False) > 0 :
-                self.GetItemsEnfants(liste, itemTemp)
+            if recursif == True and self.GetChildrenCount(itemTemp, recursively=False) > 0 :
+                self.GetItemsEnfants(liste, itemTemp, recursif)
             itemTemp, cookie = self.GetNextChild(item, cookie)
     
     def RechercheNbreConsoAssociees(self):
@@ -434,7 +439,7 @@ class CTRL(CT.CustomTreeCtrl):
             # Modification de l'ordre des étiquettes soeurs
             itemParent = self.GetItemParent(item)
             listeItemsSoeurs = []
-            self.GetItemsEnfants(liste=listeItemsSoeurs, item=itemParent)
+            self.GetItemsEnfants(liste=listeItemsSoeurs, item=itemParent, recursif=False)
             ordre = 1
             for dictDataTemp in listeItemsSoeurs :
                 if dictDataTemp["IDetiquette"] != dictData["IDetiquette"] :
@@ -480,6 +485,31 @@ class CTRL(CT.CustomTreeCtrl):
         self.MAJ() 
         self.SetID(dictData["IDetiquette"])
     
+    def TrierOrdreAlpha(self, event=None):
+        """ Range les branches enfants par ordre alphabétique """
+        item = self.GetSelection()
+        if item == None or self.GetPyData(item) == None :
+            return
+
+        listeItems = []
+        itemParent = self.GetItemParent(item)
+        self.GetItemsEnfants(liste=listeItems, item=itemParent, recursif=False)
+        
+        # Tri alpha
+        listeTemp = []
+        for dictData in listeItems :
+            listeTemp.append((dictData["label"], dictData))
+        listeTemp.sort() 
+
+        DB = GestionDB.DB()
+        ordre = 1
+        for label, dictData in listeTemp :
+            DB.ReqMAJ("etiquettes", [("ordre", ordre),], "IDetiquette", dictData["IDetiquette"])
+            ordre += 1
+        DB.Close() 
+        
+        self.MAJ()
+        
     def SetID(self, IDetiquette=None, IDactivite=None):
         item = None
         if self.dictItems.has_key(IDetiquette) :
@@ -502,11 +532,17 @@ class CTRL(CT.CustomTreeCtrl):
         dictData = self.GetPyData(item)
         return dictData["IDetiquette"], dictData["IDactivite"]
     
-    def GetItem(self, IDetiquette=None):
+    def GetItem(self, IDetiquette=None, IDactivite=None):
         if self.dictItems.has_key(IDetiquette) :
             return self.dictItems[IDetiquette]
         else :
-            return self.root
+            item, cookie = self.GetFirstChild(self.root)
+            for index in range(0, self.GetChildrenCount(self.root, recursively=False)) :
+                dictData = self.GetPyData(item)
+                if dictData["IDetiquette"] == IDetiquette and dictData["IDactivite"] == IDactivite :
+                    return item
+                item, cookie = self.GetNextChild(item, cookie)
+        return None
         
     def GetNbreEnfants(self, item):
         nbre = self.GetChildrenCount(item, recursively=False)
@@ -614,7 +650,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl = CTRL(panel, listeActivites=[1, 2])
+        self.ctrl = CTRL(panel, listeActivites=[1,])
         self.ctrl.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)

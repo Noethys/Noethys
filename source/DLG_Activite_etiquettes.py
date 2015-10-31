@@ -33,6 +33,7 @@ class Panel(wx.Panel):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_monter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_haut.png", wx.BITMAP_TYPE_ANY))
         self.bouton_descendre = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Fleche_bas.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_trier = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Tri_za.png", wx.BITMAP_TYPE_ANY))
 
         self.label_info = wx.StaticText(self, -1, _(u"Les étiquettes sont optionnelles. Elles servent à associer à des consommations des actions, des intervenants, des salles, des états, etc..."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
@@ -53,6 +54,7 @@ class Panel(wx.Panel):
         self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'étiquette selectionnée dans la liste"))
         self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter l'étiquette sélectionnée dans la liste"))
         self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre l'étiquette sélectionnée dans la liste"))
+        self.bouton_trier.SetToolTipString(_(u"Cliquez ici pour trier les étiquettes soeurs par ordre alphabétique"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)
@@ -61,13 +63,15 @@ class Panel(wx.Panel):
         grid_sizer_groupes = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_groupes.Add(self.ctrl_etiquettes, 1, wx.EXPAND, 0)
         
-        grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=8, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_ajouter, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_modifier, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_supprimer, 0, 0, 0)
         grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_monter, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_descendre, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_trier, 0, 0, 0)
         grid_sizer_groupes.Add(grid_sizer_boutons, 1, wx.EXPAND, 0)
         
         grid_sizer_groupes.AddGrowableRow(0)
