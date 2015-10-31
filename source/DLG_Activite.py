@@ -141,7 +141,7 @@ class Assistant(wx.Dialog):
         titre = _(u"Paramétrage d'une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
-        self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page5", "Page8", "Page6", "Page7")
+        self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page8", "Page5", "Page6", "Page7")
         
         self.static_line = wx.StaticLine(self, -1)
         

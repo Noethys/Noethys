@@ -560,20 +560,20 @@ class ListviewAvecFooter(PanelAvecFooter):
 
 # ----------------- FRAME DE TEST ----------------------------------------------------------------
 
-class MyFrame(wx.Frame):
-    def __init__(self, *args, **kwds):
-        wx.Frame.__init__(self, *args, **kwds)
-        panel = wx.Panel(self, -1)
-        sizer_1 = wx.BoxSizer(wx.VERTICAL)
-        sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
-        self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
-        self.myOlv.MAJ(IDactivite=1, listeGroupes=[1, 2], listeCategories=[1, 2], listeColonnes=["nomComplet", "age"]) 
-        sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
-        panel.SetSizer(sizer_2)
-        self.SetSize((800, 400))
-        self.Layout()
+##class MyFrame(wx.Frame):
+##    def __init__(self, *args, **kwds):
+##        wx.Frame.__init__(self, *args, **kwds)
+##        panel = wx.Panel(self, -1)
+##        sizer_1 = wx.BoxSizer(wx.VERTICAL)
+##        sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
+##        self.SetSizer(sizer_1)
+##        self.myOlv = ListView(panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
+##        self.myOlv.MAJ(IDactivite=1, listeGroupes=[1, 2], listeCategories=[1, 2], listeColonnes=["nomComplet", "age"]) 
+##        sizer_2 = wx.BoxSizer(wx.VERTICAL)
+##        sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
+##        panel.SetSizer(sizer_2)
+##        self.SetSize((800, 400))
+##        self.Layout()
 
 
 
@@ -586,7 +586,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.myOlv.MAJ(IDindividu=None, listeActivites=[1,], listeGroupes=[1, 2], listeCategories=[1, 2], presents=(datetime.date(2012, 1, 4), datetime.date(2012, 1, 4)))
+        self.myOlv.MAJ(IDindividu=None, listeActivites=[1,], listeGroupes=[1, 2], listeCategories=[1, 2], presents=(datetime.date(2012, 1, 4), datetime.date(2015, 1, 4)))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)

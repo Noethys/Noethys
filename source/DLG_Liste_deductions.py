@@ -144,6 +144,7 @@ class CTRL_Activites(wx.CheckListBox):
         self.dictIndex = {}
         index = 0
         for IDactivite, nom in self.listeDonnees :
+            if nom == None : nom = u"Activité inconnue"
             self.Append(nom)
             self.dictIndex[index] = IDactivite
             index += 1

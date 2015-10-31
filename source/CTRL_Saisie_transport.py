@@ -470,6 +470,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.dictDonnees[0] = { "ID" : 0, "nom" : u""}
         index = 1
         for IDactivite, nom in listeDonnees :
+            if nom == None : nom = u"Activité inconnue"
             self.dictDonnees[index] = { "ID" : IDactivite, "nom " : nom}
             listeItems.append(nom)
             index += 1
