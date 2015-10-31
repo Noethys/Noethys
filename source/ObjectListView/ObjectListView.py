@@ -2430,16 +2430,16 @@ class ObjectListView(wx.ListCtrl):
             # Inscrits
             if typeDonnee == "inscrits" :
                 if choix == "INSCRITS" :
-                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres))
+                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres["listeActivites"], listeGroupes=criteres["listeGroupes"]))
                 if choix == "PRESENTS" :
-                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres["listeActivites"], periode=(criteres["date_debut"], criteres["date_fin"])))
+                    filtre = "track.ID%s in %s" % (code, self.GetInscrits(mode=code, listeActivites=criteres["listeActivites"], listeGroupes=criteres["listeGroupes"], periode=(criteres["date_debut"], criteres["date_fin"])))
                     
             # Mémorisation
             listeFiltresFinale.append(filtre) 
         
         return listeFiltresFinale
 
-    def GetInscrits(self, mode="individu", listeActivites=[], periode=None):
+    def GetInscrits(self, mode="individu", listeActivites=[], listeGroupes=[], periode=None):
         """ Récupération de la liste des individus inscrits et présents """        
         # Conditions Activites
         if listeActivites == None or listeActivites == [] :
@@ -2450,6 +2450,17 @@ class ObjectListView(wx.ListCtrl):
             else:
                 conditionActivites = " AND inscriptions.IDactivite IN %s" % str(tuple(listeActivites))
 
+        # Conditions Groupes
+        if listeGroupes == None or listeGroupes == [] :
+            conditionGroupes = ""
+        else:
+            if len(listeGroupes) == 1 :
+                conditionGroupes = " AND inscriptions.IDgroupe=%d" % listeGroupes[0]
+            else:
+                conditionGroupes = " AND inscriptions.IDgroupe IN %s" % str(tuple(listeGroupes))
+            if periode != None :
+                conditionGroupes = conditionGroupes.replace("inscriptions", "consommations")
+                
         # Conditions Présents
         conditionPresents = ""
         jointurePresents = ""
@@ -2468,9 +2479,9 @@ class ObjectListView(wx.ListCtrl):
         req = """SELECT %s
         FROM inscriptions 
         %s
-        WHERE (inscriptions.parti=0 OR inscriptions.parti IS NULL)  %s %s
+        WHERE (inscriptions.parti=0 OR inscriptions.parti IS NULL)  %s %s %s
         GROUP BY %s
-        ;""" % (key, jointurePresents, conditionActivites, conditionPresents, key)
+        ;""" % (key, jointurePresents, conditionActivites, conditionGroupes, conditionPresents, key)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 

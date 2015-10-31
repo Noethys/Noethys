@@ -599,7 +599,7 @@ class CTRL_Page_inscrits(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL) 
 
         self.label_intro = wx.StaticText(self, -1, _(u"Uniquement les individus inscrits aux activités suivantes :"))
-        self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
+        self.ctrl_activites = CTRL_Selection_activites.CTRL(self, modeGroupes=True)
         
         self.check_presents = wx.CheckBox(self, -1, _(u"Et présents du"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
@@ -646,23 +646,32 @@ class CTRL_Page_inscrits(wx.Panel):
     
     def SetValeur(self, choix=None, criteres=None):
         if choix == "INSCRITS" : 
-            self.ctrl_activites.SetActivites(criteres)
+            if len(criteres["listeActivites"]) > 0 :
+                self.ctrl_activites.SetActivites(criteres["listeActivites"])
+            if len(criteres["listeGroupes"]) > 0 :
+                self.ctrl_activites.SetGroupes(criteres["listeGroupes"])
+                
         if choix == "PRESENTS" : 
-            self.ctrl_activites.SetActivites(criteres["listeActivites"])
+            if len(criteres["listeActivites"]) > 0 :
+                self.ctrl_activites.SetActivites(criteres["listeActivites"])
+            if len(criteres["listeGroupes"]) > 0 :
+                self.ctrl_activites.SetGroupes(criteres["listeGroupes"])
             self.check_presents.SetValue(True)
             self.ctrl_date_debut.SetDate(criteres["date_debut"]) 
             self.ctrl_date_fin.SetDate(criteres["date_fin"])
+            
         self.OnCheckPresents(None) 
     
     def GetValeur(self):
         choix, criteres = "", ""
         listeActivites = self.ctrl_activites.GetActivites() 
+        listeGroupes = self.ctrl_activites.GetGroupes() 
         if self.check_presents.GetValue() == False :
             choix = "INSCRITS"
-            criteres = listeActivites # str(listeActivites)
+            criteres = {"listeActivites" : listeActivites, "listeGroupes" : listeGroupes}
         else :
             choix = "PRESENTS"
-            criteres = {"listeActivites" : listeActivites, "date_debut" : self.ctrl_date_debut.GetDate(), "date_fin" : self.ctrl_date_fin.GetDate()} #"%s;%s;%s" % (listeActivites, self.ctrl_date_debut.GetDate(), self.ctrl_date_fin.GetDate())
+            criteres = {"listeActivites" : listeActivites, "listeGroupes" : listeGroupes, "date_debut" : self.ctrl_date_debut.GetDate(), "date_fin" : self.ctrl_date_fin.GetDate()} #"%s;%s;%s" % (listeActivites, self.ctrl_date_debut.GetDate(), self.ctrl_date_fin.GetDate())
         return choix, criteres
 
     def Validation(self):
