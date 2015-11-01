@@ -48,6 +48,13 @@ class Panel_Facturation():
         pass
     
     
+class Panel_Etiquettes():
+    def __init__(self, parent):
+        self.parent = parent
+    
+    def GetCoches(self, IDactivite=None):
+        return []
+
     
 class PanelGrille(wx.Panel):
     def __init__(self, parent):
@@ -108,6 +115,7 @@ class CTRL(wx.Panel):
         # Contrôles Grille des conso
         self.panel_activites = Panel_Activites(self)
         self.panel_facturation = Panel_Facturation(self) 
+        self.panel_etiquettes = Panel_Etiquettes(self) 
         self.panel_grille = PanelGrille(self)
         self.grille = self.panel_grille.grille
         
