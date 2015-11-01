@@ -158,7 +158,10 @@ class CTRL(CT.CustomTreeCtrl):
             if dictEtiquette["parent"] == IDparent and IDactivite == dictEtiquette["IDactivite"]:
                 
                 # Création de la branche
-                item = self.AppendItem(itemParent, dictEtiquette["label"], ct_type=1)
+                if dictEtiquette["active"] == 0:
+                    item = self.AppendItem(itemParent, dictEtiquette["label"])
+                else :
+                    item = self.AppendItem(itemParent, dictEtiquette["label"], ct_type=1)
                 dictEtiquette["type"] = "etiquette"
                 self.SetPyData(item, dictEtiquette)
                 self.dictItems[IDetiquette] = item
@@ -183,7 +186,7 @@ class CTRL(CT.CustomTreeCtrl):
         else : conditionActivites = str(tuple(self.listeActivites))
         
         DB = GestionDB.DB()
-        req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur
+        req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur, active
         FROM etiquettes
         WHERE etiquettes.IDactivite IN %s
         ORDER BY IDactivite, parent, ordre;""" % conditionActivites
@@ -191,13 +194,13 @@ class CTRL(CT.CustomTreeCtrl):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         listeEtiquettes = []
-        for IDetiquette, label, IDactivite, parent, ordre, couleur in listeDonnees :     
+        for IDetiquette, label, IDactivite, parent, ordre, couleur, active in listeDonnees :     
             couleurRVB = self.FormateCouleur(couleur)       
             
             # Mémorisation de l'étiquette
             dictTemp = {
                 "IDetiquette" : IDetiquette, "label" : label, "IDactivite" : IDactivite, "parent" : parent, 
-                "ordre" : ordre, "couleur" : couleur, "couleurRVB" : couleurRVB,
+                "ordre" : ordre, "couleur" : couleur, "couleurRVB" : couleurRVB, "active" : active,
                 }
             listeEtiquettes.append(dictTemp)
         
@@ -296,9 +299,11 @@ class CTRL(CT.CustomTreeCtrl):
             couleur = dlg.GetCouleur()
             IDparent, IDactivite = dlg.GetIDparent()
             ordre = self.GetNbreEnfants(self.GetItem(IDparent, IDactivite)) + 1
-            print ordre
+            dictOptions = dlg.GetOptions()
+            active = dictOptions["active"]
+            
             # Sauvegarde de l'étiquette
-            self.SauvegarderEtiquette(IDetiquette=None, label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre)
+            self.SauvegarderEtiquette(IDetiquette=None, label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre, active=active)
         dlg.Destroy()
             
     def Modifier(self, event):
@@ -316,11 +321,14 @@ class CTRL(CT.CustomTreeCtrl):
         dlg.SetLabel(dictData["label"])
         dlg.SetCouleur(dictData["couleur"])
         dlg.SetIDparent(dictData["parent"], dictData["IDactivite"])
-        
+        dictOptions = {"active" : dictData["active"],}
+        dlg.SetOptions(dictOptions)
         if dlg.ShowModal() == wx.ID_OK :
             label = dlg.GetLabel()
             couleur = dlg.GetCouleur()
             IDparent, IDactivite = dlg.GetIDparent()
+            dictOptions = dlg.GetOptions()
+            active = dictOptions["active"]
 
             if dictData["IDetiquette"] == IDparent :
                 dlg2 = wx.MessageDialog(self, _(u"Vous ne pouvez pas sélectionner une étiquette parente qui est l'étiquette à modifier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -334,11 +342,11 @@ class CTRL(CT.CustomTreeCtrl):
             else :
                 ordre = self.GetNbreEnfants(self.GetItem(IDparent)) + 1
 
-            self.SauvegarderEtiquette(IDetiquette=dictData["IDetiquette"], label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre)
+            self.SauvegarderEtiquette(IDetiquette=dictData["IDetiquette"], label=label, IDactivite=IDactivite, parent=IDparent, couleur=couleur, ordre=ordre, active=active)
             
         dlg.Destroy()
     
-    def SauvegarderEtiquette(self, IDetiquette=None, label="", IDactivite=None, parent=None, couleur=None, ordre=None):
+    def SauvegarderEtiquette(self, IDetiquette=None, label="", IDactivite=None, parent=None, couleur=None, ordre=None, active=1):
         DB = GestionDB.DB()
         listeDonnees = [    
             ("label", label),
@@ -346,6 +354,7 @@ class CTRL(CT.CustomTreeCtrl):
             ("parent", parent),
             ("couleur", couleur),
             ("ordre", ordre),
+            ("active", int(active)),
             ]
         if IDetiquette == None :
             IDetiquette = DB.ReqInsert("etiquettes", listeDonnees)

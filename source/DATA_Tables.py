@@ -1436,6 +1436,7 @@ DB_DATA = {
                                     ("parent", "INTEGER", u"Parent de l'étiquette"),
                                     ("ordre", "INTEGER", u"Ordre"),
                                     ("couleur", "VARCHAR(30)", u"Couleur de l'étiquette"),
+                                    ("active", "INTEGER", u"Etiquette active (0/1)"),
                                     ], # Etiquettes de consommations
 
     }

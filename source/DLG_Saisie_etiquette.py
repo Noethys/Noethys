@@ -41,6 +41,11 @@ class Dialog(wx.Dialog):
         self.ctrl_parent.MAJ() 
         self.ctrl_parent.SetID(None)
         
+        # Options
+        self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.ctrl_active = wx.CheckBox(self, -1, _(u"Etiquette active"))
+        self.ctrl_active.SetValue(True)
+        
         # Commandes
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -57,13 +62,14 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_label.SetToolTipString(_(u"Saisissez un label pour cette étiquette"))
         self.ctrl_couleur.SetToolTipString(_(u"Cliquez ici pour sélectionner une couleur pour cette étiquette"))
+        self.ctrl_active.SetToolTipString(_(u"Décochez cette case pour empêcher l'utilisateur de sélectionner cette étiquette. Cette option peut par exemple servir pour créer une étiquette de regroupement pour des sous-étiquettes ou pour désactiver une étiquette obsolète."))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((500, 400))
+        self.SetMinSize((500, 500))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         
         grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
@@ -84,6 +90,11 @@ class Dialog(wx.Dialog):
         staticbox_parent = wx.StaticBoxSizer(self.staticbox_parent_staticbox, wx.VERTICAL)
         staticbox_parent.Add(self.ctrl_parent, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_parent, 1, wx.EXPAND | wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Options
+        staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
+        staticbox_options.Add(self.ctrl_active, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_base.Add(staticbox_options, 1, wx.EXPAND | wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -138,7 +149,14 @@ class Dialog(wx.Dialog):
     def GetCouleur(self):
         couleur = self.ctrl_couleur.GetValue()
         return "(%d, %d, %d)" % (couleur[0], couleur[1], couleur[2])
-
+    
+    def GetOptions(self):
+        active = self.ctrl_active.GetValue()
+        dictOptions = {
+            "active" : active,
+            }
+        return dictOptions
+        
     def GetIDparent(self):
         return self.ctrl_parent.GetID() 
     
@@ -155,7 +173,12 @@ class Dialog(wx.Dialog):
     def SetIDparent(self, IDetiquette=None, IDactivite=None):
         self.ctrl_parent.SetID(IDetiquette, IDactivite)
         
-        
+    def SetOptions(self, dictOptions={}):
+        if dictOptions.has_key("active") : 
+            active = dictOptions["active"]
+            if active == "" or active == None :
+                active = 1
+            self.ctrl_active.SetValue(active)
         
         
 

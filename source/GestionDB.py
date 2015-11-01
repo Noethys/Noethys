@@ -1721,7 +1721,14 @@ class DB:
         
         # =============================================================
 
-
+        versionFiltre = (1, 1, 5, 5)
+        if versionFichier < versionFiltre :   
+            try :
+                self.AjoutChamp("etiquettes", "active", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        
+        # =============================================================
 
 
 
