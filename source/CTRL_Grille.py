@@ -4631,18 +4631,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     if dictUnite["IDunite"] == case.IDunite :
                                         for conso in case.GetListeConso() :
                                             
-                                            if conso.IDfacture != None :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
-                                            elif conso.etat in ("present", "absentj", "absenti") :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
-                                            elif conso.forfait != None :
-                                                journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de modifier un forfait")))
-                                            else :
-                                                if dictUnite["type"] == "Multihoraires" :
-                                                    case.SupprimerBarre(conso.barre)
+                                            if len(resultats["etiquettes"]) == 0 or len(set(conso.etiquettes) & set(resultats["etiquettes"])) > 0 :
+                                                
+                                                if conso.IDfacture != None :
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà facturée")))
+                                                elif conso.etat in ("present", "absentj", "absenti") :
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Interdit de modifier une consommation déjà pointée")))
+                                                elif conso.forfait != None :
+                                                    journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de modifier un forfait")))
                                                 else :
-                                                    if conso.etat != None :
-                                                        case.OnClick(modeSilencieux=True, ForcerSuppr=True)
+                                                    if dictUnite["type"] == "Multihoraires" :
+                                                        case.SupprimerBarre(conso.barre)
+                                                    else :
+                                                        if conso.etat != None :
+                                                            case.OnClick(modeSilencieux=True, ForcerSuppr=True)
                     
                             # -------------------- Changement d'état -------------------
                             if resultats["action"] == "etat" :
@@ -4650,12 +4652,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     if dictUnite["IDunite"] == case.IDunite :
                                         for conso in case.GetListeConso() :
                                             
-                                            if conso.etat != None :
-                                                if resultats["etat"] != None and conso.etat != resultats["etat"] :
-                                                    if conso.IDfacture != None :
-                                                        journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
-                                                    else :
-                                                        case.ModifieEtat(conso, resultats["etat"])
+                                            if len(resultats["etiquettes"]) == 0 or len(set(conso.etiquettes) & set(resultats["etiquettes"])) > 0 :
+                                                
+                                                if conso.etat != None :
+                                                    if resultats["etat"] != None and conso.etat != resultats["etat"] :
+                                                        if conso.IDfacture != None :
+                                                            journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Impossible de supprimer une consommation déjà facturée")))
+                                                        else :
+                                                            case.ModifieEtat(conso, resultats["etat"])
         
         # Renvoie le journal
         return journal

@@ -294,7 +294,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Etiquettes
                 if self.affichage_regroupement == "etiquette" : 
                     etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
-                    if len(etiquettes) > 1 :
+                    if len(etiquettes) > 0 :
                         temp = []
                         for IDetiquette in etiquettes :
                             if self.dictEtiquettes.has_key(IDetiquette) :
@@ -302,7 +302,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         regroupement = temp
                     else :
                         regroupement = _(u"- Aucune étiquette -")
-
+                    
                 # Questionnaires
                 if self.affichage_regroupement.startswith("question_") and "famille" in self.affichage_regroupement : regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.affichage_regroupement[17:]]
                 if self.affichage_regroupement.startswith("question_") and "individu" in self.affichage_regroupement : regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.affichage_regroupement[18:]]
@@ -651,8 +651,8 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel)
-        self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2015, 10, 1), date_fin=datetime.date(2015, 10, 20), listeGroupes=[1, 2],
-                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="etiquette") 
+        self.grille.MAJ(IDactivite=32, date_debut=datetime.date(2015, 11, 1), date_fin=datetime.date(2015, 12, 20), listeGroupes=[41,],
+                                detail_groupes=False, affichage_donnees="quantite", affichage_regroupement="etiquette") 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)
         panel.SetSizer(sizer_2)
