@@ -79,8 +79,9 @@ class CTRL_Groupes(CT.CustomTreeCtrl):
             
             # Branche activité
             dictActivite = dictDonnees[IDactivite]
-
-            brancheActivite = self.AppendItem(self.root, dictActivite["nom"], ct_type=1)
+            nomActivite = dictActivite["nom"]
+            if nomActivite == None : nomActivite = u"Activité inconnue"
+            brancheActivite = self.AppendItem(self.root, nomActivite, ct_type=1)
             dictData = {"type" : "activite", "IDactivite" : IDactivite, "nom" : nomActivite}
             self.SetPyData(brancheActivite, dictData)
 ##            self.SetItemBold(brancheActivite)
@@ -374,8 +375,9 @@ class CTRL(wx.Panel):
         
         if self.modeGroupes == False :
             self.ctrl_activites.MAJ() 
+            self.ctrl_activites.Enable(self.radio_activites.GetValue())
         else :
-            self.ctrl_groupes.MAJ() 
+            self.ctrl_groupes.Activation(self.radio_activites.GetValue())
             
         self.ctrl_activites.Show(not self.modeGroupes)
         self.ctrl_groupes.Show(self.modeGroupes)
@@ -403,15 +405,15 @@ class CTRL(wx.Panel):
         grid_sizer_base.Fit(self)
         
         # Init Contrôles
-        self.ctrl_activites.Enable(self.radio_activites.GetValue())
-        self.ctrl_groupes.Activation(self.radio_activites.GetValue())
         self.ctrl_groupes_activites.Enable(self.radio_groupes_activites.GetValue())
         if self.afficheToutes == False :
             self.radio_toutes.Show(False)
         
     def OnRadioActivites(self, event): 
-        self.ctrl_activites.Enable(self.radio_activites.GetValue())
-        self.ctrl_groupes.Activation(self.radio_activites.GetValue())
+        if self.ctrl_activites.IsShown() :
+            self.ctrl_activites.Enable(self.radio_activites.GetValue())
+        if self.ctrl_groupes.IsShown() :
+            self.ctrl_groupes.Activation(self.radio_activites.GetValue())
         self.ctrl_groupes_activites.Enable(self.radio_groupes_activites.GetValue())
         self.OnCheck()
     
