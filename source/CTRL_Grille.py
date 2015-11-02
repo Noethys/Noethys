@@ -2349,7 +2349,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dictTarif = copy.deepcopy(dictTarif)
             combinaisons_unites = dictTarif["combinaisons_unites"]
             for combinaison in combinaisons_unites :
-                resultat = self.RechercheCombinaison(dictUnitesUtilisees, combinaison, dictTarif)
+                resultat = self.RechercheCombinaisonDict(dictUnitesUtilisees, combinaison, dictTarif)
                 if resultat == True :
                     if len(combinaison) > dictTarif["nbre_max_unites_combi"] : # Ceci est une ligne rajoutée pour le souci des 3 unites de conso non détectées
                         dictTarif["nbre_max_unites_combi"] = len(combinaison)
@@ -2506,7 +2506,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     for IDaide_montant, dictMontant in dictMontants.iteritems() :
                         montant = dictMontant["montant"]
                         for IDaide_combi, combinaison in dictMontant["combinaisons"].iteritems() :
-                            resultat = self.RechercheCombinaison(combinaisons_unites, combinaison) # listeUnitesUtilisees
+                            resultat = self.RechercheCombinaisonTuple(combinaisons_unites, combinaison) # listeUnitesUtilisees
                             
                             # Regarde si la combinaison est bonne
                             combiAideTemp = combinaison
@@ -2843,7 +2843,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except : pass
         
         
-    def RechercheCombinaison(self, dictUnitesUtilisees={}, combinaison=[], dictTarif={}):
+    def RechercheCombinaisonDict(self, dictUnitesUtilisees={}, combinaison=[], dictTarif={}):
         """ Recherche une combinaison donnée dans une ligne de la grille """
         for IDunite_combi in combinaison :
 ##            if IDunite_combi not in listeUnites :
@@ -2858,7 +2858,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     return False
         return True
 
-        
+    def RechercheCombinaisonTuple(self, combinaisons_unites=[], combinaison=[]):
+        """ Recherche une combinaison donnée dans une ligne de la grille """
+        for IDunite_combi in combinaison :
+            if IDunite_combi not in combinaisons_unites :
+                return False
+        return True
+    
     def GetTarifsForfaitsCreditDisponibles(self, date=datetime.date(2012, 1, 10)):
         """ Fonction utilisation pour la création d'un forfait au crédit """
         # Recherche des tarifs disponibles pour chaque individu
@@ -5207,7 +5213,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=4, selectionIndividus=[8, 200])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
