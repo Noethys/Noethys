@@ -1123,12 +1123,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             pass
                         
                         # Vérifie si condition étiquettes
-                        etiquettes = dictRemplissage[IDunite_remplissage]["etiquettes"]
-                        if len(etiquettes) > 0 :
-                            etiquettesCommunes = set(etiquettes) & set(etiquettesConso)
-                            if len(etiquettesCommunes) == 0 :
-                                valide = False
-                        
+                        if dictRemplissage[IDunite_remplissage].has_key("etiquettes") :
+                            etiquettes = dictRemplissage[IDunite_remplissage]["etiquettes"]
+                            if len(etiquettes) > 0 :
+                                etiquettesCommunes = set(etiquettes) & set(etiquettesConso)
+                                if len(etiquettesCommunes) == 0 :
+                                    valide = False
+
                         # Mémorisation de la place prise
                         if valide == True :
                             dictRemplissage[IDunite_remplissage][dateDD][IDgroupe]["nbrePlacesPrises"] += quantite
