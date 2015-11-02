@@ -446,13 +446,13 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
                     nbrePlacesPrises = valeurs["nbrePlacesPrises"]
                     seuil_alerte = valeurs["seuil_alerte"]
                     nbreAttente = valeurs["nbreAttente"]
-                
+                    
                     couleur = None
                     if nbrePlacesRestantes > seuil_alerte : couleur = CTRL_Grille.COULEUR_DISPONIBLE
                     if nbrePlacesRestantes > 0 and nbrePlacesRestantes <= seuil_alerte : couleur = CTRL_Grille.COULEUR_ALERTE
                     if nbrePlacesRestantes <= 0 : couleur = CTRL_Grille.COULEUR_COMPLET
                     
-                    if couleur != None :
+                    if nbrePlacesInitial > 0 and couleur != None :
                         gc.SetBrush(wx.Brush(couleur, wx.SOLID))
                         gc.SetPen(wx.TRANSPARENT_PEN)
                         posG = self.case.HeureEnPos(heure_min) 
