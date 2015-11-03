@@ -55,6 +55,8 @@ class Exporter(UTILS_Export_tables.Exporter):
         self.ExporterTable("unites", "IDactivite=%d" % ID)
         self.ExporterTable("unites_groupes", self.FormateCondition("IDunite", self.dictID["unites"]))
         self.ExporterTable("unites_incompat", self.FormateCondition("IDunite", self.dictID["unites"]))
+        # Etiquettes
+        self.ExporterTable("etiquettes", "IDactivite=%d" % ID)
         # Unités de remplissage
         self.ExporterTable("unites_remplissage", "IDactivite=%d" % ID)
         self.ExporterTable("unites_remplissage_unites", self.FormateCondition("IDunite_remplissage", self.dictID["unites_remplissage"]))
