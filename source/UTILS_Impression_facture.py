@@ -342,7 +342,12 @@ class Impression():
                                     activeTVA = True
 
                 # Remplissage
+                listeIndividusTemp = []
                 for IDindividu, dictIndividus in dictValeur["individus"].iteritems() :
+                    listeIndividusTemp.append((dictIndividus["texte"], IDindividu, dictIndividus))
+                listeIndividusTemp.sort() 
+                
+                for texteTemp, IDindividu, dictIndividus in listeIndividusTemp :
                     
                     if dictIndividus["select"] == True :
                         
@@ -390,7 +395,13 @@ class Impression():
                         story.append(tableau)
                         
                         # Insertion du nom de l'activité
+                        listeIDactivite = []
                         for IDactivite, dictActivites in dictIndividus["activites"].iteritems() :
+                            listeIDactivite.append((dictActivites["texte"], IDactivite, dictActivites))
+                        listeIDactivite.sort() 
+                        
+                        for texteActivite, IDactivite, dictActivites in listeIDactivite :
+
                             texteActivite = dictActivites["texte"]
                             if texteActivite != None :
                                 dataTableau = []
@@ -539,7 +550,13 @@ class Impression():
                                     texteTVA = u""
                                     texteMontantsTTC = u""
                                     
+                                    # Tri par ordre alpha des prestations
+                                    listeDictPrestations = []
                                     for dictPrestation in prestations :
+                                        listeDictPrestations.append((dictPrestation["label"], dictPrestation))
+                                    listeDictPrestations.sort() 
+                                    
+                                    for labelTemp, dictPrestation in listeDictPrestations :
                                         label = dictPrestation["label"]
                                         listeDatesUnite = GetDatesListes(dictPrestation["listeDatesConso"])
                                         montant_initial = dictPrestation["montant_initial"]
