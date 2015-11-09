@@ -22,7 +22,7 @@ import wx.lib.agw.customtreectrl as CT
 
 class CTRL(CT.CustomTreeCtrl):
     def __init__(self, parent, listeActivites=[], nomActivite=None, activeMenu=True, onCheck=None):
-        CT.CustomTreeCtrl.__init__(self, parent, -1, style=wx.SIMPLE_BORDER)
+        CT.CustomTreeCtrl.__init__(self, parent, -1, style=wx.BORDER_THEME)
         self.parent = parent
         self.activation = True
         self.onCheck = onCheck

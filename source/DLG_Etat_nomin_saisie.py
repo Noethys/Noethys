@@ -117,7 +117,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.Add(self.ctrl_titre, 0, wx.EXPAND, 0)
 
         # Formule
-        grid_sizer_contenu.Add(self.label_formule, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_contenu.Add(self.label_formule, 0, wx.ALIGN_RIGHT, 0)
         
         grid_sizer_formule = wx.FlexGridSizer(rows=3, cols=2, vgap=0, hgap=5)
         grid_sizer_formule.Add(self.ctrl_formule, 0, wx.EXPAND, 0)
