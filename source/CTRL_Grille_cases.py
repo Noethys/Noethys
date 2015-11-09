@@ -960,6 +960,7 @@ class CaseStandard(Case):
     def __init__(self, ligne, grid, numLigne=None, numColonne=None, IDindividu=None, IDfamille=None, date=None, IDunite=None, IDactivite=None, verrouillage=0):
         Case.__init__(self, ligne, grid, numLigne, numColonne, IDindividu, IDfamille, date, IDunite, IDactivite, verrouillage)
         self.CategorieCase = "standard"
+        self.ligne = ligne
 
         self.statut = None # statuts possibles = None, ajout, modification, suppression
         self.IDconso = None
@@ -1416,6 +1417,9 @@ class CaseStandard(Case):
 
         # MAJ Données remplissage
         self.MAJremplissage()
+
+        # Autogénération
+        self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
         
         
     def MemoriseValeurs(self):
@@ -1537,7 +1541,8 @@ class CaseStandard(Case):
         self.Refresh()
         self.MAJremplissage() 
         self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Modification de l'état d'une consommation")))
-        
+        self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
+
     def Verrouillage(self, event):
         self.verrouillage = 1
         if self.statut == None : self.statut = "modification"
@@ -1567,7 +1572,9 @@ class CaseStandard(Case):
             if self.IDconso != None : 
                 self.statut = "modification"
             self.Refresh()
-            self.MAJremplissage() 
+            self.MAJremplissage()
+            self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
+
         dlg.Destroy()
     
     def Ajouter(self, event=None):
@@ -1660,7 +1667,8 @@ class Barre():
             self.conso.heure_fin = UTILS_Dates.DatetimeTimeEnStr(heure_fin, separateur=":")
         self.MemoriseValeurs() 
         self.case.grid.memoireHoraires[self.case.IDunite] = {"heure_debut":self.conso.heure_debut, "heure_fin":self.conso.heure_fin}
-        
+
+
     def UpdateRect(self):
         rectCase = self.case.GetRect()
         # vérifie que les heures sont ok
@@ -1916,7 +1924,8 @@ class CaseMultihoraires(Case):
             if barre.conso.IDconso != None : 
                 barre.conso.statut = "modification"
             barre.Refresh()
-            self.MAJremplissage() 
+            self.MAJremplissage()
+            self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
         dlg.Destroy()
     
     def SaisieBarre(self, heure_debut=None, heure_fin=None, modeSilencieux=False, TouchesRaccourciActives=True, etiquettes=None):
@@ -2010,7 +2019,10 @@ class CaseMultihoraires(Case):
         # Si les heures saisies dépassent les heures min et max, on élargit la colonne Multihoraires
         if (heure_debut < self.heure_min) or (heure_fin > self.heure_max) : 
             self.grid.MAJ_affichage()
-            
+
+        # Autogénération
+        self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
+
         return barre
         
     def AjouterBarre(self, position=None):
@@ -2110,6 +2122,9 @@ class CaseMultihoraires(Case):
             if (heure_debut < str(self.heure_min)) or (heure_fin > str(self.heure_max)) : 
                 self.grid.MAJ_affichage()
 
+            # Autogénération
+            self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
+
         elif reponse == 3 :
             # Suppression
             self.SupprimerBarre(barre)
@@ -2150,7 +2165,10 @@ class CaseMultihoraires(Case):
         self.MAJremplissage()
         self.Refresh() 
         self.grid.listeHistorique.append((self.IDindividu, self.date, self.IDunite, _(u"Suppression d'une consommation multihoraires")))   
-            
+
+        # Autogénération
+        self.grid.Autogeneration(ligne=self.ligne, IDactivite=self.IDactivite, IDunite=self.IDunite)
+
     def ToucheRaccourci(self, barre):
         """ Applique une touche raccourci à une barre """
         if wx.GetKeyState(97) == True : # Touche "a" pour Pointage en attente...
@@ -2243,7 +2261,7 @@ class CaseMultihoraires(Case):
 if __name__ == '__main__':
     app = wx.App(0)
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=791, selectionIndividus=[2187,])
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

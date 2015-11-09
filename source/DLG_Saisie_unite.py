@@ -132,7 +132,7 @@ class CheckListBoxGroupes(wx.CheckListBox):
         self.data = []
         self.IDactivite = IDactivite
         self.IDunite = IDunite
-        self.SetMinSize((-1, 60))
+        self.SetMinSize((-1, 40))
     
     def MAJ(self):
         listeTmp = []
@@ -314,12 +314,14 @@ class Dialog(wx.Dialog):
         self.IDactivite = IDactivite
         self.IDunite = IDunite
         self.typeUnite = None
+        self.autogen_conditions = None
+        self.autogen_parametres = None
         
         # Nom
         self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'unité"))
-        self.label_nom = wx.StaticText(self, -1, _(u"Nom complet :"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        self.label_abrege = wx.StaticText(self, -1, _(u"Nom abrégé :"))
+        self.label_abrege = wx.StaticText(self, -1, _(u"Abrégé :"))
         self.ctrl_abrege = wx.TextCtrl(self, -1, u"")
         
         # Caractéristiques
@@ -352,7 +354,12 @@ class Dialog(wx.Dialog):
         
         self.label_raccourci = wx.StaticText(self, -1, _(u"Touche raccourci :"))
         self.ctrl_raccourci = CTRL_Raccourci(self)
-        
+
+        # Auto-génération
+        self.label_autogen = wx.StaticText(self, -1, _(u"Auto-génération :"))
+        self.check_autogen = wx.CheckBox(self, -1, _(u"Activer"))
+        self.bouton_autogen = wx.Button(self, -1, _(u"Paramètres de l'auto-génération"))
+
         # Validité
         self.staticbox_validite_staticbox = wx.StaticBox(self, -1, _(u"Validité"))
         self.radio_illimitee = wx.RadioButton(self, -1, _(u"Durant la période de validité de l'activité"), style=wx.RB_GROUP)
@@ -372,16 +379,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioGroupes, self.radio_groupes_suivants)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckRepas, self.ctrl_repas)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonRestaurateur, self.bouton_restaurateur)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckAutogen, self.check_autogen)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioValidite, self.radio_illimitee)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioValidite, self.radio_limitee)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonAutogen, self.bouton_autogen)
+
         if self.IDunite != None :
             self.Importation() 
         
         self.OnRadioGroupes(None)
         self.OnCheckRepas(None)
+        self.OnCheckAutogen(None)
         self.OnRadioValidite(None)
 
     def __set_properties(self):
@@ -401,6 +411,8 @@ class Dialog(wx.Dialog):
         self.ctrl_restaurateur.SetToolTipString(_(u"Selectionnez un restaurateur"))
         self.bouton_restaurateur.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des restaurateurs"))
         self.ctrl_incompat.SetToolTipString(_(u"Cochez les unités qui sont incompatibles avec cette unité"))
+        self.check_autogen.SetToolTipString(_(u"Cochez cette case pour activer l'auto-génération de cette unité de conommation"))
+        self.bouton_autogen.SetToolTipString(_(u"Cliquez sur ce bouton pour renseigner les paramètres de l'auto-génération"))
         self.radio_illimitee.SetToolTipString(_(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité"))
         self.radio_limitee.SetToolTipString(_(u"Cliquez ici pour définir une période de validité précise"))
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
@@ -413,42 +425,54 @@ class Dialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
-        staticbox_validite = wx.StaticBoxSizer(self.staticbox_validite_staticbox, wx.VERTICAL)
-        grid_sizer_validite = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
-        grid_sizer_dates = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+
         staticbox_caract = wx.StaticBoxSizer(self.staticbox_caract_staticbox, wx.VERTICAL)
         grid_sizer_caract = wx.FlexGridSizer(rows=7, cols=2, vgap=15, hgap=5)
-        grid_sizer_repas = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
-        grid_sizer_restaurateur = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        grid_sizer_groupes = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        grid_sizer_horaires = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+
+        # Noms
         staticbox_nom = wx.StaticBoxSizer(self.staticbox_nom_staticbox, wx.VERTICAL)
-        grid_sizer_nom = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_nom = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_nom.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_nom.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
+        grid_sizer_nom.Add( (5, 5), 0, 0, 0)
         grid_sizer_nom.Add(self.label_abrege, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_nom.Add(self.ctrl_abrege, 0, 0, 0)
         grid_sizer_nom.AddGrowableCol(1)
         staticbox_nom.Add(grid_sizer_nom, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
+        # Type
         grid_sizer_caract.Add(self.label_type, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caract.Add(self.ctrl_type, 0, wx.EXPAND, 0)
+
+        # Horaires
         grid_sizer_caract.Add(self.label_horaires, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_horaires = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
         grid_sizer_horaires.Add(self.ctrl_heure_debut, 0, 0, 0)
         grid_sizer_horaires.Add(self.ctrl_heure_debut_fixe, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_horaires.Add(self.label_a, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
         grid_sizer_horaires.Add(self.ctrl_heure_fin, 0, 0, 0)
         grid_sizer_horaires.Add(self.ctrl_heure_fin_fixe, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caract.Add(grid_sizer_horaires, 1, wx.EXPAND, 0)
+
+        # Groupes
         grid_sizer_caract.Add(self.label_groupes, 0, wx.ALIGN_RIGHT, 0)
+
+        grid_sizer_groupes = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_groupes.Add(self.radio_groupes_tous, 0, 0, 0)
         grid_sizer_groupes.Add(self.radio_groupes_suivants, 0, 0, 0)
         grid_sizer_groupes.Add(self.ctrl_groupes, 0, wx.LEFT|wx.EXPAND, 18)
         grid_sizer_groupes.AddGrowableCol(0)
         grid_sizer_caract.Add(grid_sizer_groupes, 1, wx.EXPAND, 0)
+
+        # Repas
         grid_sizer_caract.Add(self.label_repas, 0, wx.ALIGN_RIGHT, 0)
+
+        grid_sizer_repas = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_repas.Add(self.ctrl_repas, 0, 0, 0)
+
+        grid_sizer_restaurateur = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_restaurateur.Add((18, 18), 0, wx.EXPAND, 0)
         grid_sizer_restaurateur.Add(self.label_restaurateur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_restaurateur.Add(self.ctrl_restaurateur, 0, wx.EXPAND, 0)
@@ -456,23 +480,50 @@ class Dialog(wx.Dialog):
         grid_sizer_restaurateur.AddGrowableCol(2)
         grid_sizer_repas.Add(grid_sizer_restaurateur, 1, wx.EXPAND, 0)
         grid_sizer_repas.AddGrowableCol(0)
+
         grid_sizer_caract.Add(grid_sizer_repas, 1, wx.EXPAND, 0)
+
+        # Incompatibilités
         grid_sizer_caract.Add(self.label_incompat, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_caract.Add(self.ctrl_incompat, 0, wx.EXPAND, 0)
+
+        # Raccourcis
         grid_sizer_caract.Add(self.label_raccourci, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caract.Add(self.ctrl_raccourci, 0, wx.EXPAND, 0)
+
+        # Auto-génération
+        grid_sizer_caract.Add(self.label_autogen, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_autogen = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
+        grid_sizer_autogen.Add(self.check_autogen, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_autogen.Add( (5, 5), 0, 0, 0)
+        grid_sizer_autogen.Add(self.bouton_autogen, 0, wx.EXPAND, 0)
+        grid_sizer_autogen.AddGrowableCol(2)
+        grid_sizer_caract.Add(grid_sizer_autogen, 1, wx.EXPAND, 0)
+
         grid_sizer_caract.AddGrowableCol(1)
         grid_sizer_caract.AddGrowableRow(4)
         staticbox_caract.Add(grid_sizer_caract, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_caract, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Période de validité
+        staticbox_validite = wx.StaticBoxSizer(self.staticbox_validite_staticbox, wx.VERTICAL)
+        grid_sizer_validite = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+
         grid_sizer_validite.Add(self.radio_illimitee, 0, 0, 0)
+
+        grid_sizer_dates = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_dates.Add(self.radio_limitee, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_dates.Add(self.ctrl_date_debut, 0, 0, 0)
         grid_sizer_dates.Add(self.label_au, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_dates.Add(self.ctrl_date_fin, 0, 0, 0)
         grid_sizer_validite.Add(grid_sizer_dates, 1, wx.EXPAND, 0)
         staticbox_validite.Add(grid_sizer_validite, 1, wx.ALL|wx.EXPAND, 10)
+
         grid_sizer_base.Add(staticbox_validite, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
@@ -517,7 +568,20 @@ class Dialog(wx.Dialog):
             self.ctrl_date_debut.Enable(True)
             self.ctrl_date_fin.Enable(True)
 
-    def OnBoutonAide(self, event): 
+    def OnCheckAutogen(self, event):
+        self.bouton_autogen.Enable(self.check_autogen.GetValue())
+
+    def OnBoutonAutogen(self, event):
+        import DLG_Saisie_conso_autogen
+        dlg = DLG_Saisie_conso_autogen.Dialog(self, IDactivite=self.IDactivite, IDunite=self.IDunite)
+        dlg.SetConditions(self.autogen_conditions)
+        dlg.SetParametres(self.autogen_parametres)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.autogen_conditions = dlg.GetConditions()
+            self.autogen_parametres = dlg.GetParametres()
+        dlg.Destroy()
+
+    def OnBoutonAide(self, event):
         import UTILS_Aide
         UTILS_Aide.Aide("Units")
     
@@ -623,7 +687,12 @@ class Dialog(wx.Dialog):
         touche_raccourci = self.ctrl_raccourci.GetCode()
         heure_debut_fixe = int(self.ctrl_heure_debut_fixe.GetValue())
         heure_fin_fixe = int(self.ctrl_heure_fin_fixe.GetValue())
-    
+
+        # Auto-génération
+        autogen_active = int(self.check_autogen.GetValue())
+        autogen_conditions = self.autogen_conditions
+        autogen_parametres = self.autogen_parametres
+
         # Enregistrement
         DB = GestionDB.DB()
         listeDonnees = [ 
@@ -640,6 +709,9 @@ class Dialog(wx.Dialog):
             ("touche_raccourci", touche_raccourci),
             ("heure_debut_fixe", heure_debut_fixe),
             ("heure_fin_fixe", heure_fin_fixe),
+            ("autogen_active", autogen_active),
+            ("autogen_conditions", autogen_conditions),
+            ("autogen_parametres", autogen_parametres),
             ]
 
         if self.IDunite == None :
@@ -677,7 +749,8 @@ class Dialog(wx.Dialog):
         """ Importation des valeurs """
         db = GestionDB.DB()
         req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin, 
-        repas, IDrestaurateur, date_debut, date_fin, touche_raccourci, heure_debut_fixe, heure_fin_fixe
+        repas, IDrestaurateur, date_debut, date_fin, touche_raccourci, heure_debut_fixe, heure_fin_fixe,
+        autogen_active, autogen_conditions, autogen_parametres
         FROM unites WHERE IDunite=%d;""" % self.IDunite
         db.ExecuterReq(req)
         listeTemp = db.ResultatReq()
@@ -698,6 +771,9 @@ class Dialog(wx.Dialog):
         touche_raccourci = listeTemp[10]
         heure_debut_fixe = listeTemp[11]
         heure_fin_fixe = listeTemp[12]
+        autogen_active = listeTemp[13]
+        autogen_conditions = listeTemp[14]
+        autogen_parametres = listeTemp[15]
         
         self.ctrl_nom.SetValue(nom)
         self.ctrl_abrege.SetValue(abrege)
@@ -721,7 +797,13 @@ class Dialog(wx.Dialog):
         
         self.ctrl_heure_debut_fixe.SetValue(heure_debut_fixe)
         self.ctrl_heure_fin_fixe.SetValue(heure_fin_fixe)
-        
+
+        if autogen_active not in (None, 0) :
+            self.check_autogen.SetValue(True)
+        self.autogen_conditions = autogen_conditions
+        self.autogen_parametres = autogen_parametres
+
+
         
 
 

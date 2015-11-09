@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Copyright:       (c) 2010-15 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
@@ -30,6 +30,7 @@ import time
 import textwrap 
 import math
 import random
+import re
 import wx.lib.agw.supertooltip as STT
 import wx.lib.agw.pybusyinfo as PBI
 
@@ -132,8 +133,16 @@ def DeltaEnTime(varTimedelta) :
     heure = HeureStrEnTime(heureStr)
     return heure
 
-def DeltaEnStr(heureDelta):
-    return time.strftime("%Hh%M", time.gmtime(heureDelta.seconds))
+def DeltaEnStr(heureDelta, separateur="h"):
+    texte = time.strftime("%Hh%M", time.gmtime(heureDelta.seconds))
+    texte = texte.replace("h", separateur)
+    return texte
+
+def TimeEnStr(heure, separateur="h"):
+    texte = heure.strftime("%Hh%M")
+    texte = texte.replace("h", separateur)
+    return texte
+
 
 def Additionne_intervalles_temps(intervals=[]):
     def tparse(timestring):
@@ -194,6 +203,12 @@ def CreationImage(largeur, hauteur, couleur=None):
     dc.SelectObject(wx.NullBitmap) 
     b.SetMaskColour("black") 
     return b
+
+def sub(g):
+    heures = int(g.group(1))
+    minutes = int(g.group(2))
+    resultat = datetime.timedelta(minutes= int(heures)*60 + int(minutes))
+    return resultat.__repr__()
 
 
 class BarreRecherche(wx.SearchCtrl):
@@ -1115,14 +1130,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictListeUnites = {}
         dictUnites = {}
         # Récupère la liste des unités
-        req = """SELECT IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur
+        req = """SELECT IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur, autogen_active, autogen_conditions, autogen_parametres
         FROM unites 
         ORDER BY ordre; """ 
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
-        for IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur in listeDonnees :
+        for IDunite, IDactivite, nom, abrege, type, heure_debut, heure_debut_fixe, heure_fin, heure_fin_fixe, date_debut, date_fin, ordre, touche_raccourci, largeur, autogen_active, autogen_conditions, autogen_parametres in listeDonnees :
             dictTemp = { "unites_incompatibles" : [], "IDunite" : IDunite, "IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : type, "heure_debut" : heure_debut, "heure_debut_fixe" : heure_debut_fixe, 
-            "heure_fin" : heure_fin, "heure_fin_fixe" : heure_fin_fixe, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre, "touche_raccourci" : touche_raccourci, "largeur" : largeur}
+            "heure_fin" : heure_fin, "heure_fin_fixe" : heure_fin_fixe, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre, "touche_raccourci" : touche_raccourci, "largeur" : largeur,
+            "autogen_active" : autogen_active, "autogen_conditions" : autogen_conditions, "autogen_parametres" : autogen_parametres}
             if dictListeUnites.has_key(IDactivite) :
                 dictListeUnites[IDactivite].append(dictTemp)
             else:
@@ -2177,20 +2193,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             barre.MAJ_facturation() 
             barre.case.MAJremplissage()
             barre.case.Refresh()
-            
-            # TEST de Facturation de dépassement crèche
-##            barre = self.barreMoving["barre"]
-##            for numLigne, ligne in self.dictLignes.iteritems() :
-##                for numColonne, case in ligne.dictCases.iteritems() :
-##                    if case.typeCase == "consommation" :
-##                        if case.IDunite == 4 and case.date == barre.case.date and case.IDindividu == barre.case.IDindividu :
-##                            if barre.heure_fin > datetime.time(18, 00) :
-##                                if case.etat == None :
-##                                    case.OnClick(modeSilencieux=True)
-##                            else :
-##                                if case.etat != None :
-##                                    case.OnClick(modeSilencieux=True, ForcerSuppr=True)
-
+            # Autogénération
+            self.Autogeneration(ligne=barre.case.ligne, IDactivite=barre.case.IDactivite, IDunite=barre.case.IDunite)
 
         self.barreMoving = None
         self.SetCurseur(None)
@@ -4516,7 +4520,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     def TraitementLot_processus(self, resultats={}):
         """ Processus du traitement par lot """
         journal = {}
-        
+
         # Parcours les lignes
         for numLigne, ligne in self.dictLignes.iteritems() :
             for numColonne, case in ligne.dictCases.iteritems() :
@@ -4535,7 +4539,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             valide = False
 
                         if valide == True :
-                            
+
                             # -------------------- Saisie -------------------
                             if resultats["action"] == "saisie" :
                                 
@@ -4546,13 +4550,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         heure_fin = None
                                         quantite = None
                                         
-                                        if dictUnite["type"] in ("Horaire", "Multihoraires") :
+                                        # if dictUnite["type"] in ("Horaire", "Multihoraires") :
+                                        #     heure_debut = dictUnite["options"]["heure_debut"]
+                                        #     heure_fin = dictUnite["options"]["heure_fin"]
+                                        #
+                                        # if dictUnite["type"] == "Quantite" :
+                                        #     quantite = dictUnite["options"]["quantite"]
+
+                                        if dictUnite["options"].has_key("heure_debut") :
                                             heure_debut = dictUnite["options"]["heure_debut"]
+
+                                        if dictUnite["options"].has_key("heure_fin") :
                                             heure_fin = dictUnite["options"]["heure_fin"]
-                                            
-                                        if dictUnite["type"] == "Quantite" :
+
+                                        if dictUnite["options"].has_key("quantite") :
                                             quantite = dictUnite["options"]["quantite"]
-                                        
+
                                         valide = True
                                         
                                         # Vérifie qu'il est possible de placer une conso dans cette case
@@ -4571,10 +4584,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             nomUniteIncompatible = self.dictUnites[incompatibilite]["nom"]
                                             journal[case.IDindividu].append((case.date, dictUnite["nom"], _(u"Incompatibilité avec l'unité '%s' déjà enregistrée") %  nomUniteIncompatible))
                                             valide = False
-                                        
+
                                         # Saisie d'une conso
                                         if valide == True :
-                                            
+
                                             if dictUnite["type"] == "Multihoraires" :
                                                 barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin), etiquettes=resultats["etiquettes"])
                                                 # Modifie état
@@ -4670,7 +4683,170 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Renvoie le journal
         return journal
 
+    def ResolveFormule(self, formule="", dictVariables={}):
+        # Remplacement de variables prédéfinies
+        #print formule
+        for variable, valeur in dictVariables.iteritems() :
+            formule = formule.replace(variable, valeur.__repr__())
+        # Replacement des variables utilisateurs
+        formule = re.sub(r'\"([0-9][0-9]):([0-9][0-9])\"', sub, formule)
+        # Résolution de la formule
+        try :
+            exec("""resultat = %s""" % formule)
+        except Exception, err :
+            resultat = None
+        #print "Formule : ", formule, " -> resultat =", resultat
+        return resultat
 
+    def Autogeneration(self, ligne=None, IDactivite=None, IDunite=None):
+        """ Autogénération de consommations """
+        #print "------ Recherche d'unites autogenerees"
+
+        # Recherche s'il existe des unités auto-générées
+        listeUnitesAuto = []
+        for dictUnite in self.dictListeUnites[IDactivite] :
+            if dictUnite["autogen_active"] == 1 :
+                listeUnitesAuto.append(dictUnite)
+
+                # Vérifie que l'unité qui fait l'appel n'est pas elle-même auto-générée
+                if IDunite == dictUnite["IDunite"] :
+                    return
+
+        if len(listeUnitesAuto) == 0 :
+            return
+
+        #print "------ Application de l'unite autogeneree"
+
+        # Recherche les cases de la ligne
+        dictCasesUnites = {}
+        for numColonne, case in ligne.dictCases.iteritems() :
+            if case.typeCase == "consommation" and case.IDactivite == IDactivite :
+                dictCasesUnites[case.IDunite] = case
+
+        # Calcule les variables
+        dictVariables = {}
+        for IDunite, case in dictCasesUnites.iteritems():
+            heure_debut = HeureStrEnDelta("00:00")
+            heure_fin = HeureStrEnDelta("00:00")
+            duree = HeureStrEnDelta("00:00")
+            etat = None
+
+            for conso in case.GetListeConso() :
+                if conso.etat != None :
+                    heure_debut_conso = HeureStrEnDelta(conso.heure_debut)
+                    heure_fin_conso = HeureStrEnDelta(conso.heure_fin)
+                    duree_conso = heure_fin_conso - heure_debut_conso
+
+                    # Heure min
+                    if heure_debut_conso < heure_debut or heure_debut == HeureStrEnDelta("00:00"):
+                        heure_debut = heure_debut_conso
+
+                    # Heure_max
+                    if heure_fin_conso > heure_fin :
+                        heure_fin = heure_fin_conso
+
+                    # Durée
+                    duree += duree_conso
+
+                    # Etat
+                    etat = conso.etat
+
+            # Mémorisation des résultats
+            dictVariables["{HEUREDEBUT_UNITE%d}" % IDunite] = heure_debut
+            dictVariables["{HEUREFIN_UNITE%d}" % IDunite] = heure_fin
+            dictVariables["{DUREE_UNITE%d}" % IDunite] = duree
+            dictVariables["{ETAT_UNITE%d}" % IDunite] = etat
+
+        # Traite chaque unité auto-générée
+        for dictUnite in listeUnitesAuto :
+
+            # Vérifie si les conditions sont réunies
+            conditions = dictUnite["autogen_conditions"]
+            listeConditions = conditions.split(";")
+
+            valide = True
+            if len(listeConditions) == 0 :
+                valide = False
+
+            for condition in listeConditions :
+                # Vérifie que la condition est valide
+                if self.ResolveFormule(condition, dictVariables) != True :
+                    valide = False
+
+            # Prépare les paramètres de la conso à saisir ou à supprimer
+            dictParametres = {
+                "dates" : [ligne.date,],
+                "description" : u"Auto-génération",
+                "IDactivite" : IDactivite,
+                "date_fin" : [ligne.date,],
+                "date_debut" : [ligne.date,],
+                "jours_scolaires" : [0, 1, 2, 3, 4, 5, 6],
+                "jours_vacances" : [0, 1, 2, 3, 4, 5, 6],
+                "semaines" : 1,
+                "feries" : True,
+                "individus" : [{"selection" : True, "IDindividu" : ligne.IDindividu},],
+                "unites" : [{"nom" : dictUnite["nom"],"type" : dictUnite["type"],"IDunite" : dictUnite["IDunite"],"options" : {}},],
+            }
+
+            # Vérifie si une conso existe déjà :
+            consoExists = dictVariables["{ETAT_UNITE%d}" % dictUnite["IDunite"]] != None
+            #print "consoExists=", consoExists
+
+            # Si toutes les conditions sont valides
+            if valide == True :
+
+                # Récupération des paramètres de l'unité auto-générée
+                parametres = dictUnite["autogen_parametres"]
+                if parametres not in ("", None) :
+
+                    listeDonnees = parametres.split("##")
+                    for donnee in listeDonnees :
+                        champ, valeur = donnee.split(":=")
+
+                        if champ == "ETIQUETTES" and valeur != None :
+                            etiquettes = UTILS_Texte.ConvertStrToListe(valeur)
+                            dictParametres["etiquettes"] = etiquettes
+
+                        if champ == "ETAT" and valeur != None :
+                            dictParametres["etat"] = valeur
+
+                        if champ == "QUANTITE" and valeur != None :
+                            if valeur != "1" :
+                                dictParametres["unites"][0]["options"]["quantite"] = int(valeur)
+
+                        if champ == "HEUREDEBUT" and valeur != None :
+                            if "FORMULE:" in valeur :
+                                formule = valeur.replace("FORMULE:", "")
+                                heure_debut = self.ResolveFormule(formule, dictVariables)
+                            else :
+                                heure_debut = HeureStrEnDelta(valeur)
+                            #print "heure_debut=", DeltaEnStr(heure_debut, separateur=":")
+                            dictParametres["unites"][0]["options"]["heure_debut"] = DeltaEnStr(heure_debut, separateur=":")
+
+                        if champ == "HEUREFIN" and valeur != None :
+                            if "FORMULE:" in valeur :
+                                formule = valeur.replace("FORMULE:", "")
+                                heure_fin = self.ResolveFormule(formule, dictVariables)
+                            else :
+                                heure_fin = HeureStrEnDelta(valeur)
+                            #print "heure_fin=", DeltaEnStr(heure_fin, separateur=":")
+                            dictParametres["unites"][0]["options"]["heure_fin"] = DeltaEnStr(heure_fin, separateur=":")
+
+                    # Action
+                    if consoExists :
+                        dictParametres["action"] = "modification"
+                    else :
+                        dictParametres["action"] = "saisie"
+
+                    # Traitement par lot
+                    journal = self.TraitementLot_processus(dictParametres)
+                    #print "journal =", journal
+
+            if valide == False and consoExists :
+                dictParametres["action"] = "suppression"
+                dictParametres["etiquettes"] = []
+                journal = self.TraitementLot_processus(dictParametres)
+                #print "journal =", journal
 
 
 ####SAUVEGARDE

@@ -308,6 +308,9 @@ DB_DATA = {
                                     ("touche_raccourci", "VARCHAR(30)", u"Touche de raccourci pour la grille de saisie"), 
                                     ("largeur", "INTEGER", u"Largeur de colonne en pixels"),
                                     ("coeff", "VARCHAR(50)", u"Coeff pour état global"),
+                                    ("autogen_active", "INTEGER", u"Autogénération activée (0/1)"),
+                                    ("autogen_conditions", "VARCHAR(400)", u"Conditions de l'autogénération"),
+                                    ("autogen_parametres", "VARCHAR(400)", u"Paramètres de l'autogénération"),
                                     ], # Unités
 
     "unites_groupes":[      ("IDunite_groupe", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Unité_groupe"),

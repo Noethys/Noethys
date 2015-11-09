@@ -746,7 +746,7 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         
         # Graduations
         padding = PADDING_MULTIHORAIRES["horizontal"]
-    
+
         graduationMin = UTILS_Dates.HeuresEnDecimal(self.heure_min)
         graduationMax = UTILS_Dates.HeuresEnDecimal(self.heure_max)
         graduationStep = 25
@@ -763,7 +763,7 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         step = largeurDc / round(nbreGraduations-1, 1)
         
         # Création de la graduation
-        j = k = etape = 0
+        j = k = 0
         i = rect.x
         
         posY = rect.height - 17

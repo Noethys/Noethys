@@ -1730,7 +1730,16 @@ class DB:
         
         # =============================================================
 
+        versionFiltre = (1, 1, 5, 7)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("unites", "autogen_active", "INTEGER")
+                self.AjoutChamp("unites", "autogen_conditions", "VARCHAR(400)")
+                self.AjoutChamp("unites", "autogen_parametres", "VARCHAR(400)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
         return True
@@ -2025,9 +2034,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-##    db = DB(suffixe="DATA")
-##    db.AjoutChamp("tarifs", "etats", "VARCHAR(150)")
-##    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.AjoutChamp("unites", "autogen_parametres", "VARCHAR(400)")
+    # db.Close()
 
     # Exportation d'une table dans la base DEFAUT
 ##    db = DB(suffixe="DATA")
