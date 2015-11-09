@@ -28,6 +28,7 @@ Microsoft.VC90.CRT.manifest
 Thumbs.db
 .bak
 *.xlang
+.idea/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
