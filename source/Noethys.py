@@ -20,6 +20,7 @@ import os
 import datetime
 import traceback
 from time import sleep 
+from sys import platform as _platform
 
 import UTILS_Linux
 if "linux" in sys.platform :
@@ -3787,9 +3788,17 @@ if __name__ == "__main__":
     
     # Crash report
     UTILS_Rapport_bugs.Activer_rapport_erreurs(version=VERSION_APPLICATION)
-    
+
     # Log
-    fichierLog = "journal.log"
+    if _platform == "linux" or _platform == "linux2":
+        dossierLog = os.path.expanduser('~') + "/.noethys/"
+        fichierLog = dossierLog  + "journal.log"
+
+        if not os.path.isdir(dossierLog):
+            os.mkdir(dossierLog)
+
+    else:
+        fichierLog = "journal.log"
     
     # Supprime le journal.log si supérieur à 10 Mo
     if os.path.isfile(fichierLog) :
