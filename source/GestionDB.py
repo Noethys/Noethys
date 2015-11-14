@@ -541,6 +541,11 @@ class DB:
             req = "SELECT seq FROM sqlite_sequence WHERE name='%s';" % nomTable
             self.ExecuterReq(req)
             donnees = self.ResultatReq()
+
+            # Renvoie le prochain ID
+            if len(donnees) > 0 :
+                return donnees[0][0] + 1
+
         else:
             # Version MySQL
             self.ExecuterReq("USE information_schema;")
@@ -549,11 +554,16 @@ class DB:
             req = "SELECT auto_increment FROM tables WHERE table_schema='%s' and table_name='%s' ;" % (nomFichier, nomTable)
             self.ExecuterReq(req)
             donnees = self.ResultatReq()
-        if len(donnees) > 0 :
-            ID = donnees[0][0] + 1
-            return ID
-        else:
-            return None
+
+            # Se remet sur le fichier normal
+            if nomFichier not in ("", None, "_data") :
+                self.ExecuterReq("USE %s;" % nomFichier)
+
+            # Renvoie le prochain ID
+            if len(donnees) > 0 :
+                return donnees[0][0]
+
+        return 1
     
     def IsTableExists(self, nomTable=""):
         """ Vérifie si une table donnée existe dans la base """

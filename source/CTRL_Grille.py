@@ -2599,13 +2599,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         IDprestation = dictUnitesPrestations[IDunite]
                     else:
                         IDprestation = None
-                    
+
                     # Supprime si nécessaire l'ancienne prestation
                     valeur = (conso.IDprestation, "consommation")
                     if IDprestation < 0 :
                         if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in self.dictForfaits.keys() :
                             listeAnciennesPrestations.append(valeur)
-                        
+
                     if case != None :
                         if case.CategorieCase == "standard" :
                             case.IDprestation = IDprestation
@@ -2986,7 +2986,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "tva" : tva,
                 "forfait" : None,
                 }
-        
+
         # Recherche si une prestation identique existe déjà en mémoire
         for IDprestation, dictTemp1 in self.dictPrestations.iteritems() :
             dictTemp2 = dictTemp1.copy()
@@ -2994,7 +2994,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             del dictTemp2["montantVentilation"]
             if dictPrestation == dictTemp2 and IDprestation > 0 :
                 return IDprestation
-                
+
         # Recherche le prochain numéro dans la liste des prestations
         IDprestation = self.prochainIDprestation
         self.prochainIDprestation -= 1
@@ -3016,7 +3016,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if self.dictDeductions.has_key(IDprestation) == False :
                 self.dictDeductions[IDprestation] = []
             self.dictDeductions[IDprestation].append(dictTemp)
-        
+
         return IDprestation
     
     def RechercheForfaitCredit(self, IDtarif=None, date=None, IDfamille=None, IDindividu=None):
@@ -3948,29 +3948,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
 
 
-##    def AjouterPrestation(self):
-##        return
-##        # <<<<<<<<<<<<<<<<<<<<<<<<<<<
-##        IDcompte_payeur = 1
-##        date = datetime.date(2010, 6, 16)
-##        IDactivite = 1
-##        IDtarif = None
-##        nom_tarif = _(u"Mini-camps à Crozon")
-##        montant = 150.00
-##        IDfamille = 3
-##        IDindividu = 24
-##        categorie = "autre"
-##        IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant, IDfamille, IDindividu, categorie)
-##        self.GetGrandParent().panel_facturation.SaisiePrestation(
-##                self.dictPrestations,
-##                self.dictDeductions,
-##                [IDprestation,],
-##                [],
-##                self.listeSelectionIndividus,
-##                self.listeActivites,
-##                self.listePeriodes,
-##                )
-        
+
     def ModifierPrestation(self, IDprestation=None):
         print IDprestation
         
@@ -3997,29 +3975,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         except :
             pass
     
-    
-    
-##    def AppliquerForfait(self):
-##        # Mémorisation de la prestation
-##        IDcompte_payeur = 1
-##        date = datetime.date(2010, 6, 16)
-##        IDactivite = 1
-##        IDtarif = None
-##        nom_tarif = _(u"Mini-camps à Crozon")
-##        montant = 150.00
-##        IDfamille = 3
-##        IDindividu = 24
-##        categorie = "autre"
-##        IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant, IDfamille, IDindividu, categorie)
-##        self.GetGrandParent().panel_facturation.SaisiePrestation(
-##                self.dictPrestations,
-##                self.dictDeductions,
-##                [IDprestation,],
-##                [],
-##                self.listeSelectionIndividus,
-##                self.listeActivites,
-##                self.listePeriodes,
-##                )
+
     
     def Imprimer(self):
         """ Impression des consommations """
@@ -4856,45 +4812,91 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         DB = GestionDB.DB()
 
         # -------------- Sauvegarde du DictPrestations ----------------
+
+        # Version optimisée de la saisie des nouvelles prestations
+        prochainID = DB.GetProchainID("prestations")
+
         dictNewIDprestation = {}
+        listeAjoutsPrestations = []
+        listeChampsPrestations = []
+        listeAjoutsDeductions = []
+        listeChampsDeductions = []
         for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
             if IDprestation < 0 :
-                # Sauvegarde de la prestation
                 listeDonnees = [
-                    ("IDcompte_payeur", dictValeurs["IDcompte_payeur"]), 
+                    ("IDcompte_payeur", dictValeurs["IDcompte_payeur"]),
                     ("date", str(dictValeurs["date"])),
                     ("categorie", dictValeurs["categorie"]),
                     ("label", dictValeurs["label"]),
-                    ("montant_initial", dictValeurs["montant_initial"]), 
-                    ("montant", dictValeurs["montant"]), 
-                    ("IDactivite", dictValeurs["IDactivite"]), 
-                    ("IDtarif", dictValeurs["IDtarif"]), 
-                    ("IDfacture", dictValeurs["IDfacture"]), 
+                    ("montant_initial", dictValeurs["montant_initial"]),
+                    ("montant", dictValeurs["montant"]),
+                    ("IDactivite", dictValeurs["IDactivite"]),
+                    ("IDtarif", dictValeurs["IDtarif"]),
+                    ("IDfacture", dictValeurs["IDfacture"]),
                     ("IDfamille", dictValeurs["IDfamille"]),
-                    ("IDindividu", dictValeurs["IDindividu"]), 
+                    ("IDindividu", dictValeurs["IDindividu"]),
                     ("temps_facture", dictValeurs["temps_facture"]),
-                    ("IDcategorie_tarif", dictValeurs["IDcategorie_tarif"]), 
-                    ("forfait_date_debut", dictValeurs["forfait_date_debut"]), 
-                    ("forfait_date_fin", dictValeurs["forfait_date_fin"]), 
-                    ("code_compta", dictValeurs["code_compta"]), 
-                    ("tva", dictValeurs["tva"]), 
+                    ("IDcategorie_tarif", dictValeurs["IDcategorie_tarif"]),
+                    ("forfait_date_debut", dictValeurs["forfait_date_debut"]),
+                    ("forfait_date_fin", dictValeurs["forfait_date_fin"]),
+                    ("code_compta", dictValeurs["code_compta"]),
+                    ("tva", dictValeurs["tva"]),
                     ]
-                newIDprestation = DB.ReqInsert("prestations", listeDonnees)
+
+                # Mémorisation de la prestation à ajouter
+                listeValeurs = []
+                for key, valeur in listeDonnees :
+                    if key not in listeChampsPrestations :
+                        listeChampsPrestations.append(key)
+                    listeValeurs.append(valeur)
+
+                listeAjoutsPrestations.append(listeValeurs)
+                newIDprestation = copy.copy(prochainID)
                 dictNewIDprestation[IDprestation] = newIDprestation
-                
+
                 # Sauvegarde des déductions
                 if self.dictDeductions.has_key(IDprestation) :
                     for dictDeduction in self.dictDeductions[IDprestation] :
                         listeDonnees = [
                             ("IDprestation", newIDprestation),
-                            ("IDcompte_payeur", dictValeurs["IDcompte_payeur"]), 
+                            ("IDcompte_payeur", dictValeurs["IDcompte_payeur"]),
                             ("date", str(dictValeurs["date"])),
                             ("montant", dictDeduction["montant"]),
                             ("label", dictDeduction["label"]),
-                            ("IDaide", dictDeduction["IDaide"]), 
+                            ("IDaide", dictDeduction["IDaide"]),
                             ]
-                        newIDdeduction = DB.ReqInsert("deductions", listeDonnees)
-        
+
+                        # Mémorisation de la déduction à ajouter
+                        listeValeurs = []
+                        for key, valeur in listeDonnees :
+                            if key not in listeChampsDeductions :
+                                listeChampsDeductions.append(key)
+                            listeValeurs.append(valeur)
+
+                        listeAjoutsDeductions.append(listeValeurs)
+
+                # Passe au prochain IDprestation
+                prochainID += 1
+
+        # Ajout optimisé des prestations
+        if len(listeAjoutsPrestations) > 0 :
+            texteChampsTemp = ", ".join(listeChampsPrestations)
+            listeInterrogations = []
+            for champ in listeChampsPrestations :
+                listeInterrogations.append("?")
+            texteInterrogations = ", ".join(listeInterrogations)
+            DB.Executermany("INSERT INTO prestations (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjoutsPrestations, commit=False)
+
+        # Ajout optimisé des déductions
+        if len(listeAjoutsDeductions) > 0 :
+            texteChampsTemp = ", ".join(listeChampsDeductions)
+            listeInterrogations = []
+            for champ in listeChampsDeductions :
+                listeInterrogations.append("?")
+            texteInterrogations = ", ".join(listeInterrogations)
+            DB.Executermany("INSERT INTO deductions (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjoutsDeductions, commit=False)
+
+
         # ------------- Sauvegarde des prestations modifiées ------------------
         listeModifications = []
         listeSuppressions = []
@@ -4905,10 +4907,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Version optimisée
                 listeModifications.append((dictValeurs["label"], dictValeurs["montant_initial"], dictValeurs["montant"], dictValeurs["forfait_date_debut"], dictValeurs["forfait_date_fin"], dictValeurs["code_compta"], dictValeurs["tva"], IDPrestationModif))
                 listeSuppressions.append(IDPrestationModif)
-        
+
         # Modifications
         if len(listeModifications) > 0 :
             DB.Executermany("UPDATE prestations SET label=?, montant_initial=?, montant=?, forfait_date_debut=?, forfait_date_fin=?, code_compta=?, tva=? WHERE IDprestation=?", listeModifications, commit=False)
+
         # Suppression
         if len(listeSuppressions) > 0 :
             if len(listeSuppressions) == 1 : 
@@ -4916,8 +4919,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else : 
                 conditionSuppression = str(tuple(listeSuppressions))
             DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
-        # Confirmation
-        DB.Commit() 
+
 
         # ------------- Suppression des prestations et déductions à supprimer ------------------
         
@@ -4930,8 +4932,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             DB.ExecuterReq("DELETE FROM prestations WHERE IDprestation IN %s" % conditionSuppression)
             DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
             DB.ExecuterReq("DELETE FROM deductions WHERE IDprestation IN %s" % conditionSuppression)
-            DB.Commit()
-            
+
         # --------------- Sauvegarde du DictConso --------------------
         listeAjouts = []
         listeModifications = []
@@ -4943,12 +4944,12 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 for date, dictUnites in dictDates.iteritems() :
                     for IDunite, listeConso in dictUnites.iteritems() :
                         for conso in listeConso :
-                            
+
                             # Recherche s'il y a une prestation
                             IDprestation = conso.IDprestation
                             if IDprestation < 0 and dictNewIDprestation.has_key(IDprestation) == True :
                                 IDprestation = dictNewIDprestation[IDprestation]
-                                
+
                             # Récupération des données
                             listeDonnees = [
                                 ("IDindividu", IDindividu), 
@@ -5056,12 +5057,14 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 listeInterrogations.append("?")
             texteInterrogations = ", ".join(listeInterrogations)
             DB.Executermany("INSERT INTO consommations (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjouts, commit=False)
+
         # Modifications
         if len(listeModifications) > 0 :
             listeChampsTemp = []
             for champ in listeChamps :
                 listeChampsTemp.append(("%s=?" % champ))
             DB.Executermany("UPDATE consommations SET %s WHERE IDconso=?" % ", ".join(listeChampsTemp), listeModifications, commit=False)
+
         # Suppression
         if len(listeSuppressions) > 0 :
             if len(listeSuppressions) == 1 : 
@@ -5069,8 +5072,6 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             else : 
                 conditionSuppression = str(tuple(listeSuppressions))
             DB.ExecuterReq("DELETE FROM consommations WHERE IDconso IN %s" % conditionSuppression)
-        # Confirmation
-        DB.Commit() 
 
         
         # ---------------- Sauvegarde des mémos journaliers -------------------
@@ -5088,43 +5089,47 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     ]
             # Ajout
             if statut == "ajout" :
-                IDmemo = DB.ReqInsert("memo_journee", listeDonnees)
+                IDmemo = DB.ReqInsert("memo_journee", listeDonnees, commit=False)
             # Modification
             if statut == "modification" :
-                DB.ReqMAJ("memo_journee", listeDonnees, "IDmemo", IDmemo)
+                DB.ReqMAJ("memo_journee", listeDonnees, "IDmemo", IDmemo, commit=False)
             # Suppression
             if statut == "suppression" :
-                DB.ReqDEL("memo_journee", "IDmemo", IDmemo)
-        
-        # ----------------- Mémorisation de l'action dans l'historique général -------------------
-        try :
-            for IDfamille, dictIndividus in dictHistorique.iteritems() :
-                for IDindividu, dictCategories in dictIndividus.iteritems() :
-                    for codeCategorie in ("suppr", "modif", "ajout") :
-                        dictDates = dictCategories[codeCategorie]
-                        if len(dictDates) > 0 :
-                            listeDates = dictDates.keys()
-                            listeDates.sort()
-                            listeTextes = []
-                            for date in listeDates :
-                                listeUnites = dictDates[date]
-                                dateFr = u"%s/%s/%s" % (str(date)[8:10], str(date)[5:7], str(date)[2:4])
-                                listeTextes.append(u"%s(%s)" % (dateFr, "+".join(listeUnites) ))
-                            texte = u", ".join(listeTextes)
-                        
-                            if codeCategorie == "ajout" : IDcategorie = 9
-                            if codeCategorie == "modif" : IDcategorie = 29
-                            if codeCategorie == "suppr" : IDcategorie = 10
-                    
-                            UTILS_Historique.InsertActions([{
-                                "IDfamille" : IDfamille,
-                                "IDindividu" : IDindividu,
-                                "IDcategorie" : IDcategorie, 
-                                "action" : texte,
-                                },])
-        except :
-            print "pb dans la memorisation dans l'historique (partie 2)"
+                DB.ReqDEL("memo_journee", "IDmemo", IDmemo, commit=False)
 
+        # ----------------- Mémorisation de l'action dans l'historique général -------------------
+        listeAjoutsHistorique = []
+        for IDfamille, dictIndividus in dictHistorique.iteritems() :
+            for IDindividu, dictCategories in dictIndividus.iteritems() :
+                for codeCategorie in ("suppr", "modif", "ajout") :
+                    dictDates = dictCategories[codeCategorie]
+                    if len(dictDates) > 0 :
+                        listeDates = dictDates.keys()
+                        listeDates.sort()
+                        listeTextes = []
+                        for date in listeDates :
+                            listeUnites = dictDates[date]
+                            dateFr = u"%s/%s/%s" % (str(date)[8:10], str(date)[5:7], str(date)[2:4])
+                            listeTextes.append(u"%s(%s)" % (dateFr, "+".join(listeUnites) ))
+                        texte = u", ".join(listeTextes)
+
+                        if codeCategorie == "ajout" : IDcategorie = 9
+                        if codeCategorie == "modif" : IDcategorie = 29
+                        if codeCategorie == "suppr" : IDcategorie = 10
+
+                        listeAjoutsHistorique.append({
+                            "IDfamille" : IDfamille,
+                            "IDindividu" : IDindividu,
+                            "IDcategorie" : IDcategorie,
+                            "action" : texte,
+                            })
+
+        if len(listeAjoutsHistorique) > 0 :
+            UTILS_Historique.InsertActions(listeAjoutsHistorique, DB=DB)
+
+
+        # Application de toutes les modifications dans la base de données
+        DB.Commit()
 
         # Cloture de la DB
         DB.Close()
