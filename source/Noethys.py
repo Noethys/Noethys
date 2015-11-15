@@ -3806,7 +3806,7 @@ if __name__ == "__main__":
         fichierLog = dossierLog  + "journal.log"
 
         if not os.path.isdir(dossierLog):
-            os.mkdir(dossierLog)
+            os.makedirs(dossierLog)
 
     else:
         fichierLog = "journal.log"
