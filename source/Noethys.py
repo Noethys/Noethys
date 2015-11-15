@@ -21,6 +21,7 @@ import datetime
 import traceback
 from time import sleep 
 from sys import platform as _platform
+from xdg.BaseDirectory import *
 
 import UTILS_Linux
 if "linux" in sys.platform :
@@ -118,8 +119,18 @@ class MainFrame(wx.Frame):
     
     def Initialisation(self):
         # Vérifie que le fichier de configuration existe bien
-        self.nomFichierConfig = "Data/Config.dat"
-        test = os.path.isfile(self.nomFichierConfig) 
+        if _platform == "linux" or _platform == "linux2":
+            self.nomDossierConfig = xdg_data_home + "/noethys/Data/"
+            self.nomFichierConfig = self.nomDossierConfig  + "Config.dat"
+
+            if not os.path.isdir(self.nomDossierConfig):
+                os.makedirs(self.nomDossierConfig)
+
+        else:
+	    self.nomFichierConfig = "Data/Config.dat"
+
+	test = os.path.isfile(self.nomFichierConfig)
+
         if test == False :
             # Création du fichier de configuration
             cfg = UTILS_Config.FichierConfig(nomFichier=self.nomFichierConfig)
@@ -3791,7 +3802,7 @@ if __name__ == "__main__":
 
     # Log
     if _platform == "linux" or _platform == "linux2":
-        dossierLog = os.path.expanduser('~') + "/.noethys/"
+        dossierLog = xdg_data_home + "/noethys/Data/"
         fichierLog = dossierLog  + "journal.log"
 
         if not os.path.isdir(dossierLog):
