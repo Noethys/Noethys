@@ -14,6 +14,7 @@ import wx
 import CTRL_Bouton_image
 import os
 import datetime
+import re
 import sys
 import decimal
 import DLG_Selection_liste
@@ -23,6 +24,7 @@ import UTILS_Dates
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
+from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
 def GetValeursListview(listview=None, format="texte"):
@@ -302,20 +304,25 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         except :
             pass
 
+        if type(valeur) == datetime.timedelta :
+            return (valeur, styleHeure)
+
         # Si c'est une heure
-##        try :
-##            if len(valeur) > 4 :
-##                if valeur[-2] in "0123456789" and valeur[-1] in "0123456789" :
-##                    separateur = None
-##                    if valeur[-3] == ":" : 
-##                        separateur = ":"
-##                    if valeur[-3] == "h" : 
-##                        separateur = "h"
-##                    if separateur != None :
-##                        valeur = datetime.timedelta(hours=int(valeur.split(separateur)[0]), minutes=int(valeur.split(separateur)[1]))
-##                        return (valeur, styleHeure)
-##        except :
-##            pass
+        try :
+            if len(valeur) > 3 :
+                if ":" in valeur :
+                    separateur = ":"
+                elif "h" in valeur :
+                    separateur = "h"
+                else :
+                    separateur = None
+                if separateur != None :
+                    heures, minutes = valeur.split(separateur)
+                    valeur = datetime.timedelta(minutes= int(heures)*60 + int(minutes))
+                    # valeur = datetime.time(hour=int(valeur.split(separateur)[0]), minute=int(valeur.split(separateur)[1]))
+                    return (valeur, styleHeure)
+        except :
+            pass
 
         return unicode(valeur), None
 
@@ -336,7 +343,30 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
         if type(valeur) == datetime.date :
             valeur = UTILS_Dates.DateDDEnFr(valeur)
             return (valeur, styleDate)
-        
+
+        if type(valeur) == datetime.timedelta :
+            return (valeur, styleHeure)
+
+        try :
+            if len(valeur) > 3 :
+                if ":" in valeur :
+                    separateur = ":"
+                elif "h" in valeur :
+                    separateur = "h"
+                else :
+                    separateur = None
+                if separateur != None :
+                    donnees = valeur.split(separateur)
+                    if len(donnees) == 2 :
+                        heures, minutes = donnees
+                    if len(donnees) == 3 :
+                        heures, minutes, secondes = donnees
+                    valeur = datetime.timedelta(minutes= int(heures)*60 + int(minutes))
+                    # valeur = datetime.time(hour=int(valeur.split(separateur)[0]), minute=int(valeur.split(separateur)[1]))
+                    return (valeur, styleHeure)
+        except :
+            pass
+
         if type(valeur) in (str, unicode) :
             if len(valeur) == 10 :
                 if valeur[2] == "/" and valeur[5] == "/" : return (valeur, styleDate)
@@ -391,6 +421,61 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
 
 
 
+# ------------------------- POUR LES TESTS ---------------------------------------------
+
+class Track(object):
+    def __init__(self, donnees):
+        self.ID = donnees["ID"]
+        self.texte = donnees["texte"]
+        self.entier = donnees["entier"]
+        self.date = donnees["date"]
+        self.montant = donnees["montant"]
+        self.heure = donnees["heure"]
+
+
+class ListView(FastObjectListView):
+    def __init__(self, *args, **kwds):
+        FastObjectListView.__init__(self, *args, **kwds)
+
+    def InitObjectListView(self):
+
+        def FormateDate(dateDD):
+            return UTILS_Dates.DateComplete(dateDD)
+
+        def FormateMontant(montant):
+            if montant == None or montant == "" : return ""
+            return u"%.2f %s" % (montant, SYMBOLE)
+
+        self.SetColumns([
+            ColumnDefn(u"ID", "left", 50, "ID", typeDonnee="entier"),
+            ColumnDefn(u"Texte", "left", 100, "texte", typeDonnee="texte"),
+            ColumnDefn(u"Entier", "left", 100, "entier", typeDonnee="entier"),
+            ColumnDefn(u"Date", "left", 100, "date", stringConverter=FormateDate, typeDonnee="date"),
+            ColumnDefn(u"Montant", "left", 100, "montant", stringConverter=FormateMontant, typeDonnee="montant"),
+            ColumnDefn(u"Heure", "left", 100, "heure", typeDonnee="texte"),
+        ])
+
+        self.SetObjects(self.donnees)
+
+
+    def MAJ(self, ID=None):
+        # Création de données exemples
+        dictDonnees = {
+            "ID" : 1,
+            "texte" : u"Texte unicode",
+            "entier" : 22,
+            "date" : datetime.date.today(),
+            "montant" : decimal.Decimal(13.50),
+            "heure" : "35h30",
+        }
+        self.donnees = []
+        for x in range(10) :
+            self.donnees.append(Track(dictDonnees))
+        # MAJ
+        self.InitObjectListView()
+
+
+
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kwds):
         wx.Frame.__init__(self, *args, **kwds)
@@ -398,8 +483,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        import OL_Individus
-        self.listview = OL_Individus.ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.listview = ListView(panel, id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.listview.MAJ() 
         # Test de l'export Texte
         ExportExcel(listview=self.listview)
