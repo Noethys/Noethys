@@ -1,0 +1,13 @@
+branches:
+  only:
+    - master
+
+language: python
+
+before_install:
+    - sudo apt-get update -qq
+    - sudo apt-get install -y python-sqlalchemy python-mysqldb python-twisted-web python-ldap python-gobject
+
+notifications:
+    on_success: change
+    on_failure: always
