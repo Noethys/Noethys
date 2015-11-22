@@ -3802,7 +3802,7 @@ if __name__ == "__main__":
 
     # Log
     if _platform == "linux" or _platform == "linux2":
-        dossierLog = xdg_data_home + "/noethys/Data/"
+        dossierLog = xdg_data_home + "/var/log/Noethys/"
         fichierLog = dossierLog  + "journal.log"
 
         if not os.path.isdir(dossierLog):
