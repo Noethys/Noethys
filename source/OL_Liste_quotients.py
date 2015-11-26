@@ -18,6 +18,9 @@ import UTILS_Titulaires
 import UTILS_Utilisateurs
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
+import UTILS_Config
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+
 DICT_TITULAIRES = {}
 
 
@@ -33,19 +36,26 @@ def DateEngEnDateDD(dateEng):
 
 
 class Track(object):
-    def __init__(self, IDfamille, dictQuotient=None):
+    def __init__(self, IDfamille, autorisation_cafpro, dictQuotient=None):
         self.IDfamille = IDfamille
+        self.autorisation_cafpro = autorisation_cafpro
+        if self.autorisation_cafpro == 1 :
+            self.autorisation_cafpro_str = _(u"Oui")
+        else :
+            self.autorisation_cafpro_str = ""
         self.nomTitulaires = DICT_TITULAIRES[IDfamille]["titulairesSansCivilite"]
 
         if dictQuotient != None :
             self.date_debut = dictQuotient["date_debut"]
             self.date_fin = dictQuotient["date_fin"]
             self.quotient = dictQuotient["quotient"]
+            self.revenu = dictQuotient["revenu"]
             self.observations = dictQuotient["observations"]
         else :
             self.date_debut = None
             self.date_fin = None
             self.quotient = None
+            self.revenu = None
             self.observations = None
             
 
@@ -122,8 +132,7 @@ class ListView(FastObjectListView):
 ##        ;""" % (jointurePresents, conditionActivites, conditionPresents)
 
         req = """
-        SELECT 
-        inscriptions.IDfamille
+        SELECT inscriptions.IDfamille, familles.autorisation_cafpro
         FROM inscriptions 
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN familles ON familles.IDfamille = inscriptions.IDfamille
@@ -138,7 +147,7 @@ class ListView(FastObjectListView):
         listeFamilles = DB.ResultatReq()
         
         # Récupération des quotients valides à la date de référence
-        req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations
+        req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu
         FROM quotients
         WHERE date_debut<='%s' AND date_fin>='%s'
         ORDER BY date_fin
@@ -146,13 +155,13 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeQuotients = DB.ResultatReq()
         dictQuotients = {}
-        for IDquotient, IDfamille, date_debut, date_fin, quotient, observations in listeQuotients :
-            dictQuotients[IDfamille] = {"IDquotient":IDquotient, "date_debut":DateEngEnDateDD(date_debut), "date_fin":DateEngEnDateDD(date_fin), "quotient":quotient, "observations":observations} 
+        for IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu in listeQuotients :
+            dictQuotients[IDfamille] = {"IDquotient":IDquotient, "date_debut":DateEngEnDateDD(date_debut), "date_fin":DateEngEnDateDD(date_fin), "quotient":quotient, "revenu" : revenu, "observations":observations}
         
         DB.Close()
 
         listeListeView = []
-        for IDfamille, in listeFamilles :
+        for IDfamille, autorisation_cafpro in listeFamilles :
             
             if self.presents == None or (self.presents != None and IDfamille in listePresents) :
                 
@@ -162,11 +171,11 @@ class ListView(FastObjectListView):
                     dictQuotient = None
                     
                 if self.familles == "TOUTES" :
-                    listeListeView.append(Track(IDfamille, dictQuotient))
+                    listeListeView.append(Track(IDfamille, autorisation_cafpro, dictQuotient))
                 if self.familles == "AVEC" and dictQuotient != None:
-                    listeListeView.append(Track(IDfamille, dictQuotient))
+                    listeListeView.append(Track(IDfamille, autorisation_cafpro, dictQuotient))
                 if self.familles == "SANS" and dictQuotient == None:
-                    listeListeView.append(Track(IDfamille, dictQuotient))
+                    listeListeView.append(Track(IDfamille, autorisation_cafpro, dictQuotient))
 
         return listeListeView
       
@@ -179,10 +188,16 @@ class ListView(FastObjectListView):
         def FormateDate(dateDD):
             return DateEngFr(str(dateDD))
 
+        def FormateMontant(montant):
+            if montant == None or montant == "" or montant == 0.0 : return ""
+            return u"%.2f %s" % (montant, SYMBOLE)
+
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
             ColumnDefn(_(u"Famille"), 'left', 280, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Quotient"), "left", 70, "quotient", typeDonnee="entier"),
+            ColumnDefn(_(u"Accès CAFPRO"), "center", 100, "autorisation_cafpro_str", typeDonnee="texte"),
+            ColumnDefn(_(u"QF"), "center", 80, "quotient", typeDonnee="entier"),
+            ColumnDefn(_(u"Revenu"), 'center', 80, "revenu", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(u"Du", "left", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Au"), "left", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Observations"), "left", 250, "observations", typeDonnee="texte"),
@@ -264,7 +279,7 @@ class ListView(FastObjectListView):
         intro = self.labelParametres
         total = _(u"> %s familles") % len(self.donnees)
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux/revenus"), intro=intro, total=total, format="A", orientation=wx.PORTRAIT)
         if mode == "preview" :
             prt.Preview()
         else:
@@ -292,11 +307,11 @@ class ListView(FastObjectListView):
 
     def ExportTexte(self, event):
         import UTILS_Export
-        UTILS_Export.ExportTexte(self, titre=_(u"Liste des quotients familiaux"))
+        UTILS_Export.ExportTexte(self, titre=_(u"Liste des quotients familiaux/revenus"))
         
     def ExportExcel(self, event):
         import UTILS_Export
-        UTILS_Export.ExportExcel(self, titre=_(u"Liste des quotients familiaux"))
+        UTILS_Export.ExportExcel(self, titre=_(u"Liste des quotients familiaux/revenus"))
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------
@@ -308,7 +323,7 @@ class BarreRecherche(wx.SearchCtrl):
         self.parent = parent
         self.rechercheEnCours = False
         
-        self.SetDescriptiveText(_(u"Rechercher une information..."))
+        self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
         
         self.listView = self.parent.ctrl_listview

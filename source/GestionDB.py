@@ -1751,6 +1751,18 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 5, 8)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("familles", "autorisation_cafpro", "INTEGER")
+                self.AjoutChamp("quotients", "revenu", "FLOAT")
+                self.AjoutChamp("tarifs_lignes", "revenu_min", "FLOAT")
+                self.AjoutChamp("tarifs_lignes", "revenu_max", "FLOAT")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
         return True
 
@@ -2045,7 +2057,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("unites", "autogen_parametres", "VARCHAR(400)")
+    # db.AjoutChamp("tarifs_lignes", "revenu_max", "FLOAT")
     # db.Close()
 
     # Exportation d'une table dans la base DEFAUT

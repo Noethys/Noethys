@@ -261,8 +261,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter et imprimer la liste des quotients familiaux à la date de référence donnée pour la ou les activités sélectionnées. Commencez par saisir une date de référence puis sélectionnez un ou plusieurs groupes d'activités ou certaines activités avant de cliquer sur le bouton 'Rafraîchir la liste'.")
-        titre = _(u"Liste des quotients familiaux")
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des quotients familiaux/revenus à la date de référence donnée pour la ou les activités sélectionnées. Commencez par saisir une date de référence puis sélectionnez un ou plusieurs groupes d'activités ou certaines activités avant de cliquer sur le bouton 'Rafraîchir la liste'.")
+        titre = _(u"Liste des quotients familiaux/revenus")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calculatrice.png")
         

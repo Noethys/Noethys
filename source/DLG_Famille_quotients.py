@@ -23,7 +23,7 @@ class Panel(wx.Panel):
         self.parent = parent
         self.IDfamille = IDfamille
         
-        self.staticbox_quotients = wx.StaticBox(self, -1, _(u"Quotients familiaux"))
+        self.staticbox_quotients = wx.StaticBox(self, -1, _(u"Quotients familiaux / Revenus"))
         
         # OL Quotients
         self.ctrl_quotients = OL_Quotients.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_quotients", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
@@ -41,9 +41,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un quotient familial"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le quotient familial sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le quotient familial sélectionné"))
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un quotient familial/revenu"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le quotient familial/revenu sélectionné"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le quotient familial/revenu sélectionné"))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

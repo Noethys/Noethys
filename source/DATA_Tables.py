@@ -113,6 +113,7 @@ DB_DATA = {
                                     ("reftiers_helios", "VARCHAR(300)", u"Référence locale du tiers pour Hélios"),
                                     ("cattiers_helios", "INTEGER", u"Catégorie de tiers pour Hélios"),
                                     ("natjur_helios", "INTEGER", u"Nature juridique du tiers pour Hélios"),
+                                    ("autorisation_cafpro", "INTEGER", u"Autorisation de consultation CAFPRO (0/1)"),
                                     ], # Les familles
     
     "rattachements":[       ("IDrattachement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID rattachement"),
@@ -457,6 +458,8 @@ DB_DATA = {
                                     ("taux", "FLOAT", u"Taux d'effort"), 
                                     ("ajustement", "FLOAT", u"Ajustement (majoration/déduction)"), 
                                     ("montant_questionnaire", "INTEGER", u"IDquestion de la table questionnaires"),
+                                    ("revenu_min", "FLOAT", u"Montant revenu min"),
+                                    ("revenu_max", "FLOAT", u"Montant revenu max"),
                                     ], # Lignes du tableau de calcul de tarifs
                                     
     "inscriptions":[           ("IDinscription", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID inscription"),
@@ -609,6 +612,7 @@ DB_DATA = {
                                     ("date_fin", "DATE", u"Date de fin de validité"),
                                     ("quotient", "INTEGER", u"Quotient familial"),
                                     ("observations", "VARCHAR(500)", u"Observations"),
+                                    ("revenu", "FLOAT", u"Montant du revenu"),
                                     ], # Quotients familiaux
 
     "caisses":[                ("IDcaisse", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Caisse"),

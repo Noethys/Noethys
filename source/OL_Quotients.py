@@ -15,6 +15,9 @@ import CTRL_Bouton_image
 import datetime
 import GestionDB
 
+import UTILS_Config
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+
 import DLG_Saisie_quotient
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -45,6 +48,7 @@ class Track(object):
         self.date_fin = DateEngEnDateDD(donnees[3])
         self.quotient = donnees[4]
         self.observations = donnees[5]
+        self.revenu = donnees[6]
         
         date_jour = datetime.date.today()
         self.nbreJoursRestants = (self.date_fin - date_jour).days
@@ -86,7 +90,7 @@ class ListView(FastObjectListView):
         listeID = None
         db = GestionDB.DB()
         req = """
-        SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations
+        SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu
         FROM quotients
         WHERE IDfamille=%d
         ORDER BY date_debut
@@ -125,6 +129,10 @@ class ListView(FastObjectListView):
         def FormateDate(dateDD):
             return DateComplete(dateDD)
 
+        def FormateMontant(montant):
+            if montant == None or montant == "" or montant == 0.0 : return ""
+            return u"%.2f %s" % (montant, SYMBOLE)
+
         def rowFormatter(listItem, track):
             if track.valide == False :
                 listItem.SetTextColour((180, 180, 180))
@@ -133,13 +141,14 @@ class ListView(FastObjectListView):
             ColumnDefn(u"", "left", 22, "IDquotient", typeDonnee="entier", imageGetter=GetImage),
             ColumnDefn(_(u"Date de début"), 'left', 165, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Date de fin"), 'left', 165, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Quotient familial"), 'center', 100, "quotient", typeDonnee="entier"),
-            ColumnDefn(_(u"Observations"), 'left', 340, "observations", typeDonnee="texte"),
+            ColumnDefn(_(u"Quotient familial"), 'center', 110, "quotient", typeDonnee="entier"),
+            ColumnDefn(_(u"Revenu"), 'center', 100, "revenu", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Observations"), 'left', 260, "observations", typeDonnee="texte"),
             ]
         
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun quotient familial"))
+        self.SetEmptyListMsg(_(u"Aucun quotient familial/revenu"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
@@ -219,23 +228,24 @@ class ListView(FastObjectListView):
 
     def Apercu(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux / revenus"), format="A", orientation=wx.PORTRAIT)
         prt.Preview()
 
     def Imprimer(self, event):
         import UTILS_Printer
-        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux"), format="A", orientation=wx.PORTRAIT)
+        prt = UTILS_Printer.ObjectListViewPrinter(self, titre=_(u"Liste des quotients familiaux / revenus"), format="A", orientation=wx.PORTRAIT)
         prt.Print()
 
 
     def Ajouter(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "creer") == False : return
         dlg = DLG_Saisie_quotient.Dialog(self)
-        dlg.SetTitle(_(u"Saisie d'un quotient familial"))
+        dlg.SetTitle(_(u"Saisie d'un quotient familial/revenu"))
         if dlg.ShowModal() == wx.ID_OK:
             date_debut = dlg.GetDateDebut()
             date_fin = dlg.GetDateFin()
-            quotient = dlg.GetQuotient() 
+            quotient = dlg.GetQuotient()
+            revenu = dlg.GetRevenu()
             observations = dlg.GetObservations()
             DB = GestionDB.DB()
             listeDonnees = [
@@ -243,6 +253,7 @@ class ListView(FastObjectListView):
                 ("date_debut", date_debut ),
                 ("date_fin", date_fin ),
                 ("quotient", quotient),
+                ("revenu", revenu),
                 ("observations", observations),
                 ]
             IDquotient = DB.ReqInsert("quotients", listeDonnees)
@@ -253,7 +264,7 @@ class ListView(FastObjectListView):
     def Modifier(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "modifier") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun quotient à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun quotient/revenu à modifier dans la liste"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -262,22 +273,26 @@ class ListView(FastObjectListView):
         date_debut = self.Selection()[0].date_debut
         date_fin = self.Selection()[0].date_fin
         quotient = self.Selection()[0].quotient
+        revenu = self.Selection()[0].revenu
         observations = self.Selection()[0].observations
         dlg.SetDateDebut(date_debut)
         dlg.SetDateFin(date_fin)
         dlg.SetQuotient(quotient)
+        dlg.SetRevenu(revenu)
         dlg.SetObservations(observations)
-        dlg.SetTitle(_(u"Modification d'un quotient familial"))
+        dlg.SetTitle(_(u"Modification d'un quotient familial/revenu"))
         if dlg.ShowModal() == wx.ID_OK:
             date_debut = dlg.GetDateDebut()
             date_fin = dlg.GetDateFin() 
-            quotient = dlg.GetQuotient() 
+            quotient = dlg.GetQuotient()
+            revenu = dlg.GetRevenu()
             observations = dlg.GetObservations()
             DB = GestionDB.DB()
             listeDonnees = [
                 ("date_debut", date_debut ),
                 ("date_fin", date_fin ),
                 ("quotient", quotient),
+                ("revenu", revenu),
                 ("observations", observations),
                 ]
             DB.ReqMAJ("quotients", listeDonnees, "IDquotient", IDquotient)
@@ -288,11 +303,11 @@ class ListView(FastObjectListView):
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_quotients", "supprimer") == False : return
         if len(self.Selection()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun quotient familial à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun quotient familial/revenu à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce quotient familial ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce quotient familial/revenu ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             IDquotient = self.Selection()[0].IDquotient
             DB = GestionDB.DB()

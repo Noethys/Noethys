@@ -58,6 +58,8 @@ LISTE_COLONNES = [
     { "code" : "tranche", "label" : _(u"Tranche"), "largeur" : 60, "editeur" : None, "infobulle" : _(u"Tranche") },
     { "code" : "qf_min", "label" : _(u"QF\nmin >="), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Quotient familial minimal") },
     { "code" : "qf_max", "label" : _(u"QF\nmax <="), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Quotient familial maximal") },
+    { "code" : "revenu_min", "label" : _(u"Revenu\nmin >="), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Revenu minimal") },
+    { "code" : "revenu_max", "label" : _(u"Revenu\nmax <="), "largeur" : 70, "editeur" : "decimal", "infobulle" : _(u"Revenu maximal") },
     { "code" : "montant_unique", "label" : _(u"Tarif"), "largeur" : 70, "editeur" : "decimal4", "infobulle" : _(u"Montant") },
     { "code" : "montant_questionnaire", "label" : _(u"Tarif questionnaire"), "largeur" : 130, "editeur" : "questionnaire", "infobulle" : _(u"Montant renseigné dans les questionnaires familiaux ou individuels") },
     { "code" : "montant_enfant_1", "label" : _(u"Tarif\n1 ind."), "largeur" : 60, "editeur" : "decimal4", "infobulle" : _(u"Montant") },
@@ -90,7 +92,7 @@ CHAMPS_TABLE_LIGNES = [
     "IDligne", "IDactivite", "IDtarif", "code", "num_ligne", "tranche", "qf_min", "qf_max", "montant_unique", "montant_questionnaire",
     "montant_enfant_1", "montant_enfant_2", "montant_enfant_3", "montant_enfant_4", "montant_enfant_5", "montant_enfant_6", 
     "nbre_enfants", "coefficient", "montant_min", "montant_max", "heure_debut_min", "heure_debut_max", "heure_fin_min", "heure_fin_max", "duree_min", "duree_max",
-    "date", "label", "temps_facture", "unite_horaire", "duree_seuil", "duree_plafond", "taux", "ajustement",
+    "date", "label", "temps_facture", "unite_horaire", "duree_seuil", "duree_plafond", "taux", "ajustement", "revenu_min", "revenu_max",
     ]
 
 ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"

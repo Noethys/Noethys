@@ -166,12 +166,16 @@ class Panel(wx.Panel):
         self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, _(u"Caisse"))
         self.label_caisse = wx.StaticText(self, -1, _(u"Caisse d'allocation :"))
         self.ctrl_caisse = CTRL_Caisse(self)
+        self.ctrl_caisse.SetMinSize((140, -1))
         self.bouton_caisses = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         self.label_numero = wx.StaticText(self, -1, _(u"N° allocataire :"))
         self.ctrl_numero = wx.TextCtrl(self, -1, u"")
         self.label_allocataire = wx.StaticText(self, -1, _(u"Titulaire :"))
         self.ctrl_allocataire = CTRL_Allocataire(self)
-        
+        self.ctrl_allocataire.SetMinSize((140, -1))
+        self.check_autorisation_cafpro = wx.CheckBox(self, -1, u"Accès CAFPRO")
+        self.bouton_cafpro = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Cafpro.png", wx.BITMAP_TYPE_ANY))
+
         # Aides
         self.staticbox_aides_staticbox = wx.StaticBox(self, -1, _(u"Aides journalières"))
         self.ctrl_aides = OL_Aides.ListView(self, id=-1, IDfamille=self.IDfamille, name="OL_aides", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
@@ -186,13 +190,16 @@ class Panel(wx.Panel):
         self.__do_layout()
 
         self.Bind(wx.EVT_CHOICE, self.OnChoixCaisse, self.ctrl_caisse)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckCafpro, self.check_autorisation_cafpro)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCaisse, self.bouton_caisses)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonCafpro, self.bouton_cafpro)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouter, self.bouton_ajouter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
         # Init contrôles
-        self.OnChoixCaisse(None) 
+        self.OnChoixCaisse(None)
+        self.OnCheckCafpro(None)
         
 
     def __set_properties(self):
@@ -200,6 +207,8 @@ class Panel(wx.Panel):
         self.bouton_caisses.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des caisses"))
         self.ctrl_numero.SetToolTipString(_(u"Saisissez le numéro d'allocataire"))
         self.ctrl_allocataire.SetToolTipString(_(u"Sélectionnez l'individu titulaire du dossier d'allocataire"))
+        self.check_autorisation_cafpro.SetToolTipString(_(u"Cochez cette case si la famille a donné une autorisation de consultation CAFPRO"))
+        self.bouton_cafpro.SetToolTipString(_(u"Cliquez ici pour accéder au site CAFPRO"))
         self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une aide journalière"))
         self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste"))
         self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste"))
@@ -209,16 +218,20 @@ class Panel(wx.Panel):
         
         # Caisse
         staticbox_caisse = wx.StaticBoxSizer(self.staticbox_caisse_staticbox, wx.VERTICAL)
-        grid_sizer_caisse = wx.FlexGridSizer(rows=1, cols=9, vgap=5, hgap=5)
+        grid_sizer_caisse = wx.FlexGridSizer(rows=1, cols=12, vgap=5, hgap=5)
         grid_sizer_caisse.Add(self.label_caisse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_caisse.Add(self.ctrl_caisse, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_caisse.Add(self.ctrl_caisse, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caisse.Add(self.bouton_caisses, 0, 0, 0)
         grid_sizer_caisse.Add((10, 10), 0, wx.EXPAND, 0)
         grid_sizer_caisse.Add(self.label_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_caisse.Add(self.ctrl_numero, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_caisse.Add(self.ctrl_numero, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_caisse.Add((10, 10), 0, wx.EXPAND, 0)
         grid_sizer_caisse.Add(self.label_allocataire, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_caisse.Add(self.ctrl_allocataire, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_caisse.Add(self.ctrl_allocataire, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_caisse.Add((10, 10), 0, wx.EXPAND, 0)
+        grid_sizer_caisse.Add(self.check_autorisation_cafpro, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_caisse.Add(self.bouton_cafpro, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_caisse.AddGrowableCol(8)
         staticbox_caisse.Add(grid_sizer_caisse, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_caisse, 1, wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, 5)
         
@@ -257,6 +270,22 @@ class Panel(wx.Panel):
             self.ctrl_allocataire.Enable(True)
             self.ctrl_numero.SetFocus() 
 
+    def OnCheckCafpro(self, event):
+        self.bouton_cafpro.Enable(self.check_autorisation_cafpro.GetValue())
+
+    def OnBoutonCafpro(self, event):
+        # Mémorisation du numéro allocataire dans le presse-papiers
+        num_allocataire = self.ctrl_numero.GetValue()
+        clipdata = wx.TextDataObject()
+        clipdata.SetText(num_allocataire)
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(clipdata)
+        wx.TheClipboard.Close()
+
+        # Ouverture du navigateur
+        import webbrowser
+        webbrowser.open("http://www.caf.fr/cafpro/Ident.jsp")
+
     def OnBoutonCaisse(self, event): 
         IDcaisse = self.ctrl_caisse.GetID()
         import DLG_Caisses
@@ -290,19 +319,22 @@ class Panel(wx.Panel):
             self.ctrl_allocataire.MAJ()
             # Importation des données de la famille
             db = GestionDB.DB()
-            req = """SELECT IDcaisse, num_allocataire, allocataire
+            req = """SELECT IDcaisse, num_allocataire, allocataire, autorisation_cafpro
             FROM familles
             WHERE IDfamille=%d;""" % self.IDfamille
             db.ExecuterReq(req)
             listeDonnees = db.ResultatReq()
             db.Close()
             if len(listeDonnees) == 0 : return
-            IDcaisse, num_allocataire, allocataire = listeDonnees[0]
+            IDcaisse, num_allocataire, allocataire, autorisation_cafpro = listeDonnees[0]
             self.ctrl_caisse.SetID(IDcaisse)
             if num_allocataire != None :
                 self.ctrl_numero.SetValue(num_allocataire)
             self.ctrl_allocataire.SetID(allocataire)
-            self.OnChoixCaisse(None) 
+            self.OnChoixCaisse(None)
+            if autorisation_cafpro != None :
+                self.check_autorisation_cafpro.SetValue(autorisation_cafpro)
+            self.OnCheckCafpro(None)
         else :
             # MAJ contrôles Allocataire titulaire
             allocataire = self.ctrl_allocataire.GetID()
@@ -319,7 +351,8 @@ class Panel(wx.Panel):
             self.bouton_caisses.Enable(False)
             self.ctrl_numero.Enable(False)
             self.ctrl_allocataire.Enable(False)
-            
+            self.check_autorisation_cafpro.Enable(False)
+
         self.majEffectuee = True
                 
     def ValidationData(self):
@@ -335,11 +368,13 @@ class Panel(wx.Panel):
             else:
                 num_allocataire = None
                 allocataire = None
+            autorisation_cafpro = int(self.check_autorisation_cafpro.GetValue())
             DB = GestionDB.DB()
             listeDonnees = [    
                     ("IDcaisse", IDcaisse),
                     ("num_allocataire", num_allocataire),
                     ("allocataire", allocataire),
+                    ("autorisation_cafpro", autorisation_cafpro),
                     ]
             DB.ReqMAJ("familles", listeDonnees, "IDfamille", self.IDfamille)
             DB.Close()

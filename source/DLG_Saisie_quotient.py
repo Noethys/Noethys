@@ -13,6 +13,7 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import CTRL_Saisie_date
+import CTRL_Saisie_euros
 
 import GestionDB
 
@@ -25,15 +26,19 @@ class Dialog(wx.Dialog):
         
         # Dates
         self.staticbox_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de validité"))
-        self.label_date_debut = wx.StaticText(self, -1, u"Du :")
+        self.label_date_debut = wx.StaticText(self, -1, u"Du")
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
-        self.label_date_fin = wx.StaticText(self, -1, _(u"au :"))
+        self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Paramètres
         self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.label_quotient = wx.StaticText(self, -1, _(u"Quotient familial :"))
         self.ctrl_quotient = wx.TextCtrl(self, -1, u"")
+
+        self.label_revenu = wx.StaticText(self, -1, _(u"Revenu :"))
+        self.ctrl_revenu = CTRL_Saisie_euros.CTRL(self)
+
         self.label_observations = wx.StaticText(self, -1, _(u"Observations :"))
         self.ctrl_observations = wx.TextCtrl(self, -1, u"", style=wx.TE_MULTILINE)
         
@@ -52,7 +57,8 @@ class Dialog(wx.Dialog):
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
         self.ctrl_quotient.SetToolTipString(_(u"Saisissez ici le quotient familial"))
-        self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient"))
+        self.ctrl_revenu.SetToolTipString(_(u"Saisissez ici le revenu"))
+        self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient/revenu"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
@@ -61,7 +67,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         staticbox_parametres = wx.StaticBoxSizer(self.staticbox_parametres_staticbox, wx.VERTICAL)
-        grid_sizer_parametres = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+
         staticbox_dates = wx.StaticBoxSizer(self.staticbox_dates_staticbox, wx.VERTICAL)
         grid_sizer_dates = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_dates.Add(self.label_date_debut, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -70,14 +76,20 @@ class Dialog(wx.Dialog):
         grid_sizer_dates.Add(self.ctrl_date_fin, 0, 0, 0)
         staticbox_dates.Add(grid_sizer_dates, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_dates, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
+        grid_sizer_parametres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         grid_sizer_parametres.Add(self.label_quotient, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_quotient, 0, 0, 0)
+        grid_sizer_parametres.Add(self.label_revenu, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add(self.ctrl_revenu, 0, 0, 0)
         grid_sizer_parametres.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
         grid_sizer_parametres.AddGrowableRow(1)
         grid_sizer_parametres.AddGrowableCol(1)
         staticbox_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
+
         grid_sizer_base.Add(staticbox_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
@@ -104,7 +116,11 @@ class Dialog(wx.Dialog):
     def SetQuotient(self, quotient=None):
         if quotient != None :
             self.ctrl_quotient.SetValue(str(quotient))
-    
+
+    def SetRevenu(self, revenu=None):
+        if revenu != None :
+            self.ctrl_revenu.SetMontant(revenu)
+
     def SetObservations(self, observations=None):
         if observations != None :
             self.ctrl_observations.SetValue(observations)
@@ -116,33 +132,62 @@ class Dialog(wx.Dialog):
         return self.ctrl_date_fin.GetDate() 
 
     def GetQuotient(self):
-        return int(self.ctrl_quotient.GetValue())
-    
+        try :
+            quotient = int(self.ctrl_quotient.GetValue())
+        except :
+            quotient = None
+        return quotient
+
+    def GetRevenu(self):
+        return self.ctrl_revenu.GetMontant()
+
     def GetObservations(self):
         return self.ctrl_observations.GetValue()
 
-    def OnBoutonOk(self, event): 
+    def OnBoutonOk(self, event):
+        # Période
         if self.ctrl_date_debut.FonctionValiderDate() == False or self.GetDateDebut() == None :
             dlg = wx.MessageDialog(self, _(u"La date de début de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
-            return
+            return False
+
         if self.ctrl_date_fin.FonctionValiderDate() == False or self.GetDateFin() == None :
             dlg = wx.MessageDialog(self, _(u"La date de fin de validité n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
-            return
+            return False
+
+        # Quotient
         quotient = self.ctrl_quotient.GetValue()
-        try :
-            test = int(quotient)
-        except :
-            dlg = wx.MessageDialog(self, _(u"Le quotient familial que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        if len(quotient) > 0 :
+            try :
+                test = int(quotient)
+            except :
+                dlg = wx.MessageDialog(self, _(u"Le quotient familial que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_quotient.SetFocus()
+                return False
+        else :
+            quotient = None
+
+        # Revenu
+        revenu = self.ctrl_revenu.GetMontant()
+        if self.ctrl_revenu.Validation() == False :
+            dlg = wx.MessageDialog(self, _(u"Le revenu que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_quotient.SetFocus()
-            return
+            self.ctrl_revenu.SetFocus()
+            return False
+
+        if quotient == None and revenu == 0.0 :
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un quotient familial ou un revenu !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
 
         self.EndModal(wx.ID_OK)
 
