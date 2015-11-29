@@ -59,7 +59,11 @@ class Track(object):
         
         self.IDfamille = donnees["IDfamille"]
         self.nomTitulaires = parent.dictTitulaires[self.IDfamille]["titulairesSansCivilite"]
-        
+
+        self.IDcaisse = donnees["IDcaisse"]
+        self.num_allocataire = donnees["num_allocataire"]
+        self.nomCaisse = donnees["nomCaisse"]
+
         self.IDactivite = donnees["IDactivite"]
         self.abregeActivite = donnees["abregeActivite"]
         
@@ -123,17 +127,20 @@ class ListView(FastObjectListView):
         db = GestionDB.DB()
         req = """SELECT 
         IDdeduction, deductions.IDprestation, deductions.IDcompte_payeur, deductions.date, deductions.montant, deductions.label, IDaide, 
-        individus.nom, individus.prenom, prestations.label, prestations.montant, prestations.montant_initial, prestations.IDfamille, prestations.IDactivite, activites.abrege, prestations.IDindividu, prestations.date, prestations.IDfacture
+        individus.nom, individus.prenom, prestations.label, prestations.montant, prestations.montant_initial, prestations.IDfamille, prestations.IDactivite, activites.abrege, prestations.IDindividu, prestations.date, prestations.IDfacture,
+        familles.IDcaisse, familles.num_allocataire, caisses.nom
         FROM deductions
         LEFT JOIN prestations ON prestations.IDprestation = deductions.IDprestation
         LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
         LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
+        LEFT JOIN familles ON familles.IDfamille = prestations.IDfamille
+        LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
         WHERE %s %s;""" % (condition, texteFiltres)
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close() 
         listeDeductions = []
-        for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu, datePrestation, IDfacture in listeDonnees :
+        for IDdeduction, IDprestation, IDcompte_payeur, date, montant, label, IDaide, nomIndividu, prenomIndividu, labelPrestation, montantPrestation, montantInitialPrestation, IDfamille, IDactivite, abregeActivite, IDindividu, datePrestation, IDfacture, IDcaisse, num_allocataire, nomCaisse in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
             datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
             dictTemp = {
@@ -142,6 +149,7 @@ class ListView(FastObjectListView):
                 "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, 
                 "labelPrestation" : labelPrestation, "montantPrestation" : montantPrestation, "montantInitialPrestation" : montantInitialPrestation,
                 "IDfamille" : IDfamille, "IDactivite" : IDactivite, "abregeActivite" : abregeActivite, "IDindividu" : IDindividu, "datePrestation" : datePrestation, "IDfacture" : IDfacture,
+                "IDcaisse" : IDcaisse, "num_allocataire" : num_allocataire, "nomCaisse" : nomCaisse,
                 }
             listeDeductions.append(dictTemp)
         return listeDeductions
@@ -193,6 +201,8 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"ID"), "left", 0, "IDdeduction", typeDonnee="entier"),
             ColumnDefn(_(u"Date"), 'left', 90, "date", typeDonnee="date", stringConverter=FormateDateCourt), 
             ColumnDefn(_(u"Famille"), 'left', 160, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Caisse"), 'left', 80, "nomCaisse", typeDonnee="texte"),
+            ColumnDefn(_(u"n° Alloc."), 'left', 80, "num_allocataire", typeDonnee="texte"),
             ColumnDefn(_(u"Individu"), 'left', 140, "nomComplet", typeDonnee="texte"), 
             ColumnDefn(_(u"Label déduction"), 'left', 220, "label", typeDonnee="texte"), 
             ColumnDefn(_(u"Montant"), 'right', 90, "montant", typeDonnee="montant", stringConverter=FormateMontant), 
