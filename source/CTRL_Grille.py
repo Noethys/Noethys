@@ -3406,34 +3406,37 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Recherche le QF de la famille
                 if duree_min <= duree <= duree_max :
                     montant_tarif = montant_tarif_ligne
+
+                    # Temps facturé
+                    if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
+                        temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"])
+                        temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
+                    else :
+                        temps_facture = duree_max
+
+                    # Création du label personnalisé
+                    label = ligneCalcul["label"]
+                    if label != None and label != "" :
+                        if "{TEMPS_REALISE}" in label :
+                            label = label.replace("{TEMPS_REALISE}", DeltaEnStr(duree))
+                        if "{TEMPS_FACTURE}" in label :
+                            label = label.replace("{TEMPS_FACTURE}", DeltaEnStr(temps_facture))
+                        if "{HEURE_DEBUT}" in label :
+                            label = label.replace("{HEURE_DEBUT}", heure_debut.replace(":", "h"))
+                        if "{HEURE_FIN}" in label :
+                            label = label.replace("{HEURE_FIN}", heure_fin.replace(":", "h"))
+                        nom_tarif = label
+
+                    # Recherche le QF
                     if self.dictQuotientsFamiliaux.has_key(IDfamille) :
                         listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
                         for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
                             if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                montant_tarif = montant_tarif_ligne
-                                if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
-                                    temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"]) 
-                                    temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
-                                else :
-                                    temps_facture = duree_max
-                                
-                                # Création du label personnalisé
-                                label = ligneCalcul["label"]
-                                if label != None and label != "" :
-                                    if "{TEMPS_REALISE}" in label : 
-                                        label = label.replace("{TEMPS_REALISE}", DeltaEnStr(duree))
-                                    if "{TEMPS_FACTURE}" in label : 
-                                        label = label.replace("{TEMPS_FACTURE}", DeltaEnStr(temps_facture))
-                                    if "{HEURE_DEBUT}" in label : 
-                                        label = label.replace("{HEURE_DEBUT}", heure_debut.replace(":", "h"))
-                                    if "{HEURE_FIN}" in label : 
-                                        label = label.replace("{HEURE_FIN}", heure_fin.replace(":", "h"))
-                                    nom_tarif = label
-
                                 tarifFound = True
                                 break
-                        if tarifFound == True :
-                            break
+
+                    if tarifFound == True :
+                        break
 
         # Recherche du montant du tarif : MONTANT UNIQUE EN FONCTION DE LA DATE
         if methode_calcul == "montant_unique_date" :
@@ -3913,7 +3916,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Arrondit le montant à pour enlever les décimales en trop. Ex : 3.05678 -> 3.05
         montant_tarif = float(FloatToDecimal(montant_tarif, plusProche=True))
-        
+
+        # if montant_tarif == 0.0 :
+        #     return False
+
         return montant_tarif, nom_tarif, temps_facture 
                             
                         
