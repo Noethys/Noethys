@@ -258,13 +258,14 @@ class CTRL_Quantite(wx.Panel):
 # -------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Unites(HTL.HyperTreeList):
-    def __init__(self, parent, IDactivite=None): 
+    def __init__(self, parent, IDactivite=None, IDunite=None):
         HTL.HyperTreeList.__init__(self, parent, -1)
         self.parent = parent
         self.activation = True
         self.IDactivite = IDactivite
         self.data = []
         self.MAJenCours = False
+        self.IDunite = IDunite
         
         self.SetBackgroundColour(wx.WHITE)
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
@@ -316,7 +317,8 @@ class CTRL_Unites(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()      
         DB.Close() 
         for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
-            listeUnites.append({"IDunite":IDunite, "nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin})
+            if self.IDunite == None or self.IDunite == IDunite :
+                listeUnites.append({"IDunite":IDunite, "nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin})
             
         return listeUnites
 
@@ -327,8 +329,11 @@ class CTRL_Unites(HTL.HyperTreeList):
             type = dictUnite["type"]
             listeControles = []
             
-            # Niveau Ecole
-            niveauUnite = self.AppendItem(self.root, label, ct_type=1)
+            # Niveau Unité
+            if self.IDunite == None :
+                niveauUnite = self.AppendItem(self.root, label, ct_type=1)
+            else :
+                niveauUnite = self.AppendItem(self.root, label)
             self.SetItemBold(niveauUnite, True)                
             
             # Branches Options
@@ -360,7 +365,9 @@ class CTRL_Unites(HTL.HyperTreeList):
             
             self.SetPyData(niveauUnite, {"branche" : "unite", "type" : type, "dictUnite" : dictUnite, "ID" : dictUnite["IDunite"], "nom" : label, "controles" : listeControles})
 
-            self.EnableChildren(niveauUnite, False)
+            if self.IDunite == None :
+                self.EnableChildren(niveauUnite, False)
+
         self.ExpandAllChildren(self.root)
 
         if self.activation == False :
@@ -402,8 +409,8 @@ class CTRL_Unites(HTL.HyperTreeList):
         item = self.root
         for index in range(0, self.GetChildrenCount(self.root)):
             item = self.GetNext(item) 
-            if self.IsItemChecked(item) and self.IsItemEnabled(item):
-                if self.GetPyData(item)["branche"] == "unite" :
+            if self.IDunite != None or (self.IsItemChecked(item) and self.IsItemEnabled(item)) :
+                if self.GetPyData(item) != None and self.GetPyData(item)["branche"] == "unite" :
                     listeCoches.append(self.GetPyData(item))
         return listeCoches
     
@@ -417,6 +424,8 @@ class CTRL_Unites(HTL.HyperTreeList):
         return None
 
     def SetDonnees(self, listeUnites=[]):
+        dictTempMultihoraires = {}
+
         for dictUnite in listeUnites :
             IDunite = dictUnite["IDunite"]
             options = dictUnite["options"]
@@ -438,23 +447,78 @@ class CTRL_Unites(HTL.HyperTreeList):
                 self.EnableChildren(item, True)
 
             if itemData["type"] == "Multihoraires" :
-                if itemData["controles"][0].GetHeureDebut() == None :
-                    itemData["controles"][0].SetHeureDebut(options["heure_debut"])
-                    itemData["controles"][0].SetHeureFin(options["heure_fin"])
-                else :
-                    self.AjouterHoraires(niveauUnite=item, heure_debut=options["heure_debut"], heure_fin=options["heure_fin"])
-                self.EnableChildren(item, True)
-    
+                if dictTempMultihoraires.has_key(IDunite) == False :
+                    dictTempMultihoraires[IDunite] = 0
+                index = dictTempMultihoraires[IDunite]
+                if index > len(itemData["controles"]) -1 :
+                    self.AjouterHoraires(niveauUnite=item)
+                ctrl = itemData["controles"][index]
+                ctrl.SetHeureDebut(options["heure_debut"])
+                ctrl.SetHeureFin(options["heure_fin"])
+                dictTempMultihoraires[IDunite] += 1
 
+            # if itemData["type"] == "Multihoraires" :
+            #     if itemData["controles"][0].GetHeureDebut() == None :
+            #         itemData["controles"][0].SetHeureDebut(options["heure_debut"])
+            #         itemData["controles"][0].SetHeureFin(options["heure_fin"])
+            #     else :
+            #         self.AjouterHoraires(niveauUnite=item, heure_debut=options["heure_debut"], heure_fin=options["heure_fin"])
+            #     self.EnableChildren(item, True)
+
+    def Validation(self):
+        listeCoches = self.GetCoches()
+        if len(listeCoches) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une unité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Vérifie la saisie
+        if self.GetDonnees() == False :
+            dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la saisie des paramètres des unités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        return True
+
+    def GetDonnees(self):
+        listeCoches = self.GetCoches()
+        listeUnites = []
+        for dictItem in listeCoches :
+            IDunite = dictItem["ID"]
+            typeUnite = dictItem["type"]
+            nom = dictItem["nom"]
+
+            if typeUnite == "Unitaire" :
+                # Si unité sans options (Standard)
+                listeUnites.append({"IDunite":IDunite, "options":{}})
+            else :
+                # Si unité avec Options (Quantité, Horaire, multihoraires...)
+                for ctrl in dictItem["controles"] :
+
+                    # Validation de la saisie
+                    if ctrl.Validation() == False :
+                        return False
+
+                    # Récupération des données
+                    dictOptions = {}
+                    for key, valeur in ctrl.GetDonnees().iteritems() :
+                        dictOptions[key] = valeur
+
+                    listeUnites.append({"IDunite":IDunite, "options":dictOptions})
+
+        return listeUnites
             
 
 # -----------------------------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, IDactivite=None):
+    def __init__(self, parent, IDactivite=None, IDunite=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.IDactivite = IDactivite
+        self.IDunite = IDunite
         
         # Jours
         self.box_jours_staticbox = wx.StaticBox(self, -1, _(u"Conditions"))
@@ -469,7 +533,7 @@ class Dialog(wx.Dialog):
 
         # Unites
         self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
-        self.ctrl_unites = CTRL_Unites(self, IDactivite=IDactivite)
+        self.ctrl_unites = CTRL_Unites(self, IDactivite=IDactivite, IDunite=self.IDunite)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -562,39 +626,13 @@ class Dialog(wx.Dialog):
         
         # Fériés
         feries = self.ctrl_feries.GetValue() 
-        
-        # Unités
-        listeCoches = self.ctrl_unites.GetCoches() 
-        if len(listeCoches) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une unité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        
-        listeUnites = []
-        for dictItem in listeCoches :
-            IDunite = dictItem["ID"]
-            typeUnite = dictItem["type"]
-            nom = dictItem["nom"]
-            
-            if typeUnite == "Unitaire" :
-                # Si unité sans options (Standard)
-                listeUnites.append({"IDunite":IDunite, "options":{}})
-            else :
-                # Si unité avec Options (Quantité, Horaire, multihoraires...)
-                for ctrl in dictItem["controles"] :
-                    
-                    # Validation de la saisie
-                    if ctrl.Validation() == False :
-                        return
-                    
-                    # Récupération des données
-                    dictOptions = {}
-                    for key, valeur in ctrl.GetDonnees().iteritems() :
-                        dictOptions[key] = valeur
 
-                    listeUnites.append({"IDunite":IDunite, "options":dictOptions})
-                                    
+        # Unités
+        if self.ctrl_unites.Validation() == False :
+            return False
+
+        listeUnites = self.ctrl_unites.GetDonnees()
+
         # Mémorisation des données
         self.resultats = {}
         self.resultats["jours_scolaires"] = jours_scolaires
@@ -640,5 +678,4 @@ if __name__ == u"__main__":
     dlg.SetDonnees() 
     app.SetTopWindow(dlg)
     dlg.ShowModal()
-    print dlg.GetDonnees() 
     app.MainLoop()
