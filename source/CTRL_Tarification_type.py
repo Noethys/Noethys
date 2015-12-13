@@ -100,12 +100,7 @@ class Panel_type_sans_parametres(wx.Panel):
         st = wx.StaticText(self, -1, texte, (0, 0))
 
     def Validation(self):
-        # Message temporaire
-        dlg = wx.MessageDialog(self, _(u"Désolé mais le type de tarif que vous avez choisi ('Prestation simple') n'est pas encore disponible à ce jour !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return False
-        #return True
+        return True
     
     def Sauvegarde(self):
         pass
@@ -202,10 +197,10 @@ class CTRL_Parametres(wx.Panel):
         self.parent = parent
         
         self.liste_pages = [
-##            ("SIMPLE", _(u"Prestation simple"), Panel_type_sans_parametres(self, nouveauTarif)),
             ("JOURN", _(u"Prestation journalière"), CTRL_Tarification_journ.Panel(self, IDactivite, IDtarif, nouveauTarif)),
             ("FORFAIT", _(u"Forfait daté"), CTRL_Tarification_forfait.Panel(self, IDactivite, IDtarif, nouveauTarif)),
             ("CREDIT", _(u"Forfait crédit"), CTRL_Tarification_credit.Panel(self, IDactivite, IDtarif, nouveauTarif)),
+            ("BAREME", _(u"Barême de contrat"), Panel_type_sans_parametres(self, nouveauTarif)),
             ]
 
         # Création des pages

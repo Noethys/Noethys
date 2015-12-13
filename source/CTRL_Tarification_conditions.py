@@ -730,13 +730,16 @@ class Panel(wx.Panel):
         self.IDactivite = IDactivite
         self.IDtarif = IDtarif
         self.listePages = [] 
-        
-        if self.GetParent().GetName() == "notebook" :
-            self.SetBackgroundColour(self.GetParent().GetThemeBackgroundColour())
 
         # Validité
         self.notebook = FNB.FlatNotebook(self, -1, agwStyle= FNB.FNB_NO_TAB_FOCUS | FNB.FNB_NO_X_BUTTON)
-        
+
+        if self.GetParent().GetName() == "notebook" :
+            couleur = self.GetParent().GetThemeBackgroundColour()
+            self.SetBackgroundColour(couleur)
+            self.notebook.SetBackgroundColour(couleur)
+            self.notebook.SetTabAreaColour(couleur)
+
         # Binds
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         sizer_base.Add(self.notebook, 1, wx.EXPAND|wx.ALL, 10)

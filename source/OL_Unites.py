@@ -39,7 +39,13 @@ class Track(object):
         self.date_debut = donnees[4]
         self.date_fin = donnees[5]
         self.ordre = donnees[6]
-        
+        self.autogen_active = donnees[7]
+
+        if self.autogen_active == 1 :
+            self.autogen_active_str = _(u"Oui")
+        else :
+            self.autogen_active_str = ""
+
         if self.date_debut == "1977-01-01" and self.date_fin == "2999-01-01" :
             self.periode_validite = _(u"Illimitée")
         else:
@@ -73,7 +79,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT IDunite, nom, abrege, type, date_debut, date_fin, ordre
+        req = """SELECT IDunite, nom, abrege, type, date_debut, date_fin, ordre, autogen_active
         FROM unites 
         WHERE IDactivite=%d
         ORDER BY ordre; """ % self.IDactivite
@@ -104,10 +110,11 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDunite", typeDonnee="entier"),
             ColumnDefn(_(u"Ordre"), "left", 70, "ordre", typeDonnee="entier"),
-            ColumnDefn(_(u"Nom"), 'left', 200, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 190, "nom", typeDonnee="texte"),
             ColumnDefn(_(u"Abrégé"), "left", 60, "abrege", typeDonnee="texte"), 
             ColumnDefn(_(u"Type"), "left", 60, "type", typeDonnee="texte"), 
-            ColumnDefn(_(u"Période de validité"), "left", 200, "periode_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Période de validité"), "left", 200, "periode_validite", typeDonnee="texte"),
+            ColumnDefn(_(u"Auto-gen."), "left", 70, "autogen_active_str", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

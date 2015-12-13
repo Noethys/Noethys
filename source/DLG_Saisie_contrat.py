@@ -363,7 +363,9 @@ class Dialog(wx.Dialog):
         WHERE IDcontrat=%d; """ % IDcontrat
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        if len(listeDonnees) == 0 : return
+        if len(listeDonnees) == 0 :
+            DB.Close()
+            return
         date_debut, date_fin, observations, IDtarif = listeDonnees[0]
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)

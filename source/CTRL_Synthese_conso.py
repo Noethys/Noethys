@@ -651,15 +651,21 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.grille = CTRL(panel)
-        self.grille.MAJ(IDactivite=32, date_debut=datetime.date(2015, 11, 1), date_fin=datetime.date(2015, 12, 20), listeGroupes=[41,],
-                                detail_groupes=False, affichage_donnees="quantite", affichage_regroupement="etiquette") 
+        self.grille.MAJ(IDactivite=1, date_debut=datetime.date(2015, 11, 1), date_fin=datetime.date(2015, 12, 20), listeGroupes=[1,2],
+                                detail_groupes=False, affichage_donnees="temps_presence", affichage_regroupement="individu")
+        self.bouton_test = wx.Button(panel, -1, u"Test export Excel")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.grille, 1, wx.EXPAND, 0)
+        sizer_2.Add(self.bouton_test, 0, wx.EXPAND, 0)
         panel.SetSizer(sizer_2)
         self.SetSize((750, 400))
         self.Layout()
-        
-        
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
+
+    def OnBoutonTest(self, event):
+        self.grille.ExportExcel()
+
+
 
 if __name__ == '__main__':
     app = wx.App(0)

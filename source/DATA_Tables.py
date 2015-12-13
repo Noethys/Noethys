@@ -1319,6 +1319,10 @@ DB_DATA = {
                                     ("date_fin", "DATE", u"Date de fin"),
                                     ("observations", "VARCHAR(500)", u"Observations"),
                                     ("IDtarif", "INTEGER", u"ID du tarif"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité"),
+                                    ("type", "VARCHAR(100)", u"Type de contrat"),
+                                    ("nbre_absences_prevues", "INTEGER", u"Nombre d'absences prévues PSU"),
+                                    ("nbre_heures_regularisation", "INTEGER", u"Nombre d'heures de régularisation PSU"),
                                     ], # Contrats
 
     "modeles_contrats":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),
@@ -1445,6 +1449,18 @@ DB_DATA = {
                                     ("couleur", "VARCHAR(30)", u"Couleur de l'étiquette"),
                                     ("active", "INTEGER", u"Etiquette active (0/1)"),
                                     ], # Etiquettes de consommations
+
+    "contrats_tarifs":              [("IDcontrat_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID contrat tarif"),
+                                    ("IDcontrat", "INTEGER", u"ID du contrat"),
+                                    ("date_debut", "DATE", u"Date de début de validité"),
+                                    ("revenu", "FLOAT", u"Revenu de la famille"),
+                                    ("quotient", "INTEGER", u"Quotient familial de la famille"),
+                                    ("taux", "FLOAT", u"Taux d'effort"),
+                                    ("tarif_base", "FLOAT", u"Montant du tarif de base"),
+                                    ("tarif_depassement", "FLOAT", u"Montant du tarif de dépassement"),
+                                    ], # Tarifs de contrats
+
+
 
     }
 

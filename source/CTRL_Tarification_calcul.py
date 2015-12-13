@@ -52,6 +52,9 @@ LISTE_METHODES = [
     { "code" : "duree_taux_montant_unique", "label" : _(u"Par taux d'effort et en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
     { "code" : "duree_taux_qf", "label" : _(u"Par taux d'effort et par tranches de QF en fonction d'une durée"), "type" : "horaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "duree_min", "duree_max", "temps_facture", "taux", "montant_min", "montant_max", "ajustement", "label"), "champs_obligatoires" : ("qf_min", "qf_max", "duree_min", "duree_max", "taux"), "tarifs_compatibles" : ("JOURN",) },
 
+    { "code" : "psu_revenu", "label" : _(u"Barême PSU selon revenus"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("revenu_min", "revenu_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("revenu_min", "revenu_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
+    { "code" : "psu_qf", "label" : _(u"Barême PSU selon QF"), "type" : "unitaire", "nbre_lignes_max" : None, "entete" : None, "champs" : ("qf_min", "qf_max", "taux", "montant_min", "montant_max", "ajustement"), "champs_obligatoires" : ("qf_min", "qf_max", "taux"), "tarifs_compatibles" : ("BAREME",) },
+
 ]
 
 LISTE_COLONNES = [

@@ -1763,6 +1763,24 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 5, 9)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("contrats", "IDactivite", "INTEGER")
+                self.AjoutChamp("contrats", "type", "VARCHAR(100)")
+                self.AjoutChamp("contrats", "nbre_absences_prevues", "INTEGER")
+                self.AjoutChamp("contrats", "nbre_heures_regularisation", "INTEGER")
+                if self.IsTableExists("contrats_tarifs") == False : self.CreationTable("contrats_tarifs", Tables.DB_DATA)
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
+
+
+
+
 
         return True
 

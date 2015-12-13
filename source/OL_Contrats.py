@@ -35,11 +35,20 @@ class Track(object):
         self.IDfamille = donnees[5]
         self.nom_activite = donnees[6]
         self.montant = donnees[7]
+
+        # Nom de l'individu
         self.nomIndividu = donnees[8]
         self.prenomIndividu = donnees[9]
         if self.prenomIndividu == None :
             self.prenomIndividu = ""
         self.nomCompletIndividu = u"%s %s" % (self.nomIndividu, self.prenomIndividu)
+
+        # Type de contrat
+        self.type_contrat = donnees[10]
+        if self.type_contrat in (None, "classique") :
+            self.type_contrat_str = _(u"Classique")
+        if self.type_contrat == "psu" :
+            self.type_contrat_str = _(u"P.S.U.")
 
         # Validité
         if str(datetime.date.today()) <= self.date_fin :
@@ -90,7 +99,8 @@ class ListView(FastObjectListView):
         req = """SELECT contrats.IDcontrat, contrats.IDinscription, contrats.date_debut, contrats.date_fin,
         inscriptions.IDindividu, inscriptions.IDfamille, activites.nom, 
         SUM(prestations.montant) as total, 
-        individus.nom, individus.prenom
+        individus.nom, individus.prenom,
+        contrats.type
         FROM contrats 
         LEFT JOIN inscriptions ON inscriptions.IDinscription=contrats.IDinscription
         LEFT JOIN activites ON activites.IDactivite=inscriptions.IDactivite
@@ -139,14 +149,15 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(_(u"IDcontrat"), "left", 0, "IDcontrat", typeDonnee="entier"),
-            ColumnDefn(u"Du", 'center', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(_(u"Du"), 'center', 70, "date_debut", typeDonnee="date", stringConverter=DateEngFr),
             ColumnDefn(_(u"Au"), 'center', 70, "date_fin", typeDonnee="date", stringConverter=DateEngFr),
+            ColumnDefn(_(u"Type"), 'center', 70, "type_contrat_str", typeDonnee="texte"),
             ColumnDefn(_(u"Nom de l'activité"), 'left', 110, "nom_activite", typeDonnee="texte", isSpaceFilling=True),
             ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         
         if self.IDindividu == None :
-            liste_Colonnes.insert(3, ColumnDefn(_(u"Individu"), 'left', 200, "nomCompletIndividu", typeDonnee="texte"))
+            liste_Colonnes.insert(4, ColumnDefn(_(u"Individu"), 'left', 200, "nomCompletIndividu", typeDonnee="texte"))
             
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
@@ -267,6 +278,7 @@ class ListView(FastObjectListView):
         import DLG_Saisie_contrat_intro
         dlg = DLG_Saisie_contrat_intro.Dialog(self, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         if dlg.ShowModal() == wx.ID_OK:
+            type_contrat = dlg.GetTypeContrat()
             IDinscription = dlg.GetInscription() 
             dictOptions = dlg.GetOptions() 
             dlg.Destroy()
@@ -286,13 +298,23 @@ class ListView(FastObjectListView):
             if dictOptions["type"] == "contrat" :
                 copie = dictOptions["IDcontrat"]
             
-        # Création du contrat
-        import DLG_Saisie_contrat
-        dlg = DLG_Saisie_contrat.Dialog(self, IDindividu=self.IDindividu, IDinscription=IDinscription, IDcontrat=None, IDmodele=IDmodele, copie=copie)
-        if dlg.ShowModal() == wx.ID_OK:
-            IDcontrat = dlg.GetIDcontrat() 
-            self.MAJ(IDcontrat)
-        dlg.Destroy()
+        # Création du contrat de type Classique
+        if type_contrat == "classique" :
+            import DLG_Saisie_contrat
+            dlg = DLG_Saisie_contrat.Dialog(self, IDindividu=self.IDindividu, IDinscription=IDinscription, IDcontrat=None, IDmodele=IDmodele, copie=copie)
+            if dlg.ShowModal() == wx.ID_OK:
+                IDcontrat = dlg.GetIDcontrat()
+                self.MAJ(IDcontrat)
+            dlg.Destroy()
+
+        # Création du contrat de type PSU
+        if type_contrat == "psu" :
+            import DLG_Saisie_contratpsu
+            dlg = DLG_Saisie_contratpsu.Assistant(self, IDinscription=IDinscription)
+            if dlg.ShowModal() == wx.ID_OK:
+                IDcontrat = dlg.GetIDcontrat()
+                self.MAJ(IDcontrat)
+            dlg.Destroy()
 
     def Modifier(self, event):
         if len(self.Selection()) == 0 :
@@ -301,12 +323,22 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        import DLG_Saisie_contrat
-        dlg = DLG_Saisie_contrat.Dialog(self, IDindividu=track.IDindividu, IDinscription=track.IDinscription, IDcontrat=track.IDcontrat)
-        if dlg.ShowModal() == wx.ID_OK:
-            IDcontrat = dlg.GetIDcontrat() 
-            self.MAJ(IDcontrat)
-        dlg.Destroy()
+
+        if track.type_contrat in (None, "classique") :
+            import DLG_Saisie_contrat
+            dlg = DLG_Saisie_contrat.Dialog(self, IDindividu=track.IDindividu, IDinscription=track.IDinscription, IDcontrat=track.IDcontrat)
+            if dlg.ShowModal() == wx.ID_OK:
+                IDcontrat = dlg.GetIDcontrat()
+                self.MAJ(IDcontrat)
+            dlg.Destroy()
+
+        if track.type_contrat == "psu" :
+            import DLG_Saisie_contratpsu
+            dlg = DLG_Saisie_contratpsu.Dialog(self, IDcontrat=track.IDcontrat)
+            if dlg.ShowModal() == wx.ID_OK:
+                IDcontrat = dlg.GetIDcontrat()
+                self.MAJ(IDcontrat)
+            dlg.Destroy()
 
     def Supprimer(self, event):
         if len(self.Selection()) == 0 :
@@ -364,6 +396,7 @@ class ListView(FastObjectListView):
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
             DB.ReqDEL("contrats", "IDcontrat", track.IDcontrat)
+            DB.ReqDEL("contrats_tarifs", "IDcontrat", track.IDcontrat)
             DB.ReqDEL("prestations", "IDcontrat", track.IDcontrat)
             # Suppression des consommations associées
             for IDprestation in listeIDprestations :

@@ -107,11 +107,11 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDunite", typeDonnee="entier"),
             ColumnDefn(_(u"Ordre"), "left", 70, "ordre", typeDonnee="entier"),
-            ColumnDefn(_(u"Nom"), 'left', 140, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Nom"), 'left', 190, "nom", typeDonnee="texte"),
             ColumnDefn(_(u"Abrégé"), "left", 60, "abrege", typeDonnee="texte"), 
             ColumnDefn(_(u"Seuil alerte"), "left", 70, "seuil_alerte", typeDonnee="texte"), 
             ColumnDefn(_(u"Plage horaire"), "left", 90, "tranche_horaire", typeDonnee="texte"), 
-            ColumnDefn(_(u"Période de validité"), "left", 150, "periode_validite", typeDonnee="texte"), 
+            ColumnDefn(_(u"Période de validité"), "left", 170, "periode_validite", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

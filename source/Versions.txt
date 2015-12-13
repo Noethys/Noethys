@@ -1,9 +1,14 @@
-Version 1.1.5.7 (09/11/2015) :
+Version 1.1.5.9 (13/12/2015) :
 
 - Ajout des unités de conso auto-générées
 - Ajout du tri des éléments d'une facture par ordre alpha
+- Ajout de la prise en charge du format Heure dans l'export Excel
+- Ajout de la saisie des revenus avec les quotients familiaux
+- Ajout du champ Autorisation CAFPRO dans la fiche familiale
+- Ajout de la désactivation des prélèvements dans les bordereaux PES
 - Optimisation de l'enregistrement des prestations dans la grille des conso
 - Correction d'un bug sur la duplication des activités avec étiquettes
+- Correction d'un bug sur le temps facturé des tarifs selon durée+QF
 
 Version 1.1.5.6 (02/11/2015) :
 

@@ -149,7 +149,13 @@ class CTRL_Contrats(wx.Choice):
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDindividu=None, dictFamillesRattachees=None):
         wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_contrat_intro", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
-        
+
+        # Type de contrat
+        self.box_type_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Type de contrat"))
+        self.radio_type_classique = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat classique"), style=wx.RB_GROUP)
+        self.radio_type_psu = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat P.S.U."))
+        self.radio_type_psu.Enable(False) #TODO:A supprimer
+
         # Activité
         self.box_activite_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sélection de l'activité"))
         self.ctrl_inscriptions = OL_Inscriptions.ListView(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, activeDoubleclick=False, id=-1, name="OL_inscriptions", style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
@@ -158,11 +164,11 @@ class Dialog(wx.Dialog):
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
-        self.radio_vierge = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat vierge"), style=wx.RB_GROUP)
-        self.radio_modele = wx.RadioButton(self, wx.ID_ANY, _(u"Utiliser le modèle de contrat :"))
+        self.radio_option_vierge = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat vierge"), style=wx.RB_GROUP)
+        self.radio_option_modele = wx.RadioButton(self, wx.ID_ANY, _(u"Utiliser le modèle de contrat :"))
         self.ctrl_modele = CTRL_Modeles(self)
         self.bouton_modeles = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
-        self.radio_contrat = wx.RadioButton(self, wx.ID_ANY, _(u"Copier le contrat :"))
+        self.radio_option_contrat = wx.RadioButton(self, wx.ID_ANY, _(u"Copier le contrat :"))
         self.ctrl_contrat = CTRL_Contrats(self)
         
         # Boutons
@@ -173,10 +179,12 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_vierge)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_modele)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioType, self.radio_type_classique)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioType, self.radio_type_psu)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioOption, self.radio_option_vierge)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioOption, self.radio_option_modele)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioOption, self.radio_option_contrat)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModeles, self.bouton_modeles)
-        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_contrat)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -184,41 +192,52 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_LIST_ITEM_DESELECTED, self.OnSelectionActivite, self.ctrl_inscriptions)
         
         # Init
-        self.OnRadio(None)
+        self.OnRadioType(None)
+        self.OnRadioOption(None)
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un nouveau contrat"))
+        self.radio_type_classique.SetToolTipString(_(u"Cliquez ici pour sélectionner le type de contrat classique"))
+        self.radio_type_psu.SetToolTipString(_(u"Cliquez ici pour sélectionner le type de contrat de type P.S.U."))
         self.ctrl_inscriptions.SetToolTipString(_(u"Sélectionnez une activité pour laquelle créer le contrat"))
-        self.radio_vierge.SetToolTipString(_(u"Cliquez ici pour créer un contrat vierge"))
-        self.radio_modele.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat"))
+        self.radio_option_vierge.SetToolTipString(_(u"Cliquez ici pour créer un contrat vierge"))
+        self.radio_option_modele.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat"))
         self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de contrat dans la liste"))
         self.bouton_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des contrats"))
-        self.radio_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un autre contrat"))
+        self.radio_option_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un autre contrat"))
         self.ctrl_contrat.SetToolTipString(_(u"Sélectionnez le contrat à copier"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((600, 450))
+        self.SetMinSize((600, 500))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
-        
+        grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)
+
+        # Type de contrat
+        box_type = wx.StaticBoxSizer(self.box_type_staticbox, wx.VERTICAL)
+        grid_sizer_type = wx.FlexGridSizer(1, 5, 10, 10)
+        grid_sizer_type.Add(self.radio_type_classique, 0, wx.EXPAND, 0)
+        grid_sizer_type.Add(self.radio_type_psu, 0, wx.EXPAND, 0)
+        box_type.Add(grid_sizer_type, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_base.Add(box_type, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
+
         # Activité
         box_activite = wx.StaticBoxSizer(self.box_activite_staticbox, wx.VERTICAL)
         box_activite.Add(self.ctrl_inscriptions, 1, wx.ALL | wx.EXPAND, 10)
-        grid_sizer_base.Add(box_activite, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
+        grid_sizer_base.Add(box_activite, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
         
         # Options
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
         grid_sizer_options = wx.FlexGridSizer(6, 1, 10, 10)
         grid_sizer_modele = wx.FlexGridSizer(1, 2, 5, 5)
-        grid_sizer_options.Add(self.radio_vierge, 0, 0, 0)
-        grid_sizer_options.Add(self.radio_modele, 0, 0, 0)
+        grid_sizer_options.Add(self.radio_option_vierge, 0, 0, 0)
+        grid_sizer_options.Add(self.radio_option_modele, 0, 0, 0)
         grid_sizer_modele.Add(self.ctrl_modele, 0, wx.EXPAND, 0)
         grid_sizer_modele.Add(self.bouton_modeles, 0, 0, 0)
         grid_sizer_modele.AddGrowableCol(0)
         grid_sizer_options.Add(grid_sizer_modele, 1, wx.LEFT | wx.EXPAND, 18)
-        grid_sizer_options.Add(self.radio_contrat, 0, 0, 0)
+        grid_sizer_options.Add(self.radio_option_contrat, 0, 0, 0)
         grid_sizer_options.Add(self.ctrl_contrat, 0, wx.LEFT | wx.EXPAND, 18)
         grid_sizer_options.AddGrowableCol(0)
         box_options.Add(grid_sizer_options, 1, wx.ALL | wx.EXPAND, 10)
@@ -234,7 +253,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT | wx.RIGHT | wx.BOTTOM | wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen() 
@@ -246,12 +265,20 @@ class Dialog(wx.Dialog):
     def OnBoutonAnnuler(self, event):  
         self.EndModal(wx.ID_CANCEL)
 
-    def OnRadio(self, event): 
-        self.ctrl_modele.Enable(self.radio_modele.GetValue())
-        self.bouton_modeles.Enable(self.radio_modele.GetValue())
-        self.ctrl_contrat.Enable(self.radio_contrat.GetValue())
+    def OnRadioType(self, event):
+        if self.radio_type_psu.GetValue() == True :
+            self.radio_option_vierge.SetValue(True)
+            self.OnRadioOption(None)
+        self.radio_option_vierge.Enable(not self.radio_type_psu.GetValue())
+        self.radio_option_modele.Enable(not self.radio_type_psu.GetValue())
+        self.radio_option_contrat.Enable(not self.radio_type_psu.GetValue())
 
-    def OnBoutonModeles(self, event):  # wxGlade: MyDialog.<event_handler>
+    def OnRadioOption(self, event):
+        self.ctrl_modele.Enable(self.radio_option_modele.GetValue())
+        self.bouton_modeles.Enable(self.radio_option_modele.GetValue())
+        self.ctrl_contrat.Enable(self.radio_option_contrat.GetValue())
+
+    def OnBoutonModeles(self, event):
         ID = self.ctrl_modele.GetID() 
         import DLG_Modeles_contrats
         dlg = DLG_Modeles_contrats.Dialog(self)
@@ -265,7 +292,7 @@ class Dialog(wx.Dialog):
         self.ctrl_modele.SetActivite(IDactivite)
         self.ctrl_contrat.SetActivite(IDactivite)
         if IDactivite == None :
-            self.radio_vierge.SetValue(False)
+            self.radio_option_vierge.SetValue(False)
         
     def OnBoutonOk(self, event): 
         if len(self.ctrl_inscriptions.Selection()) == 0 :
@@ -274,13 +301,13 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
         
-        if self.radio_modele.GetValue() == True and self.ctrl_modele.GetID() == None :
+        if self.radio_option_modele.GetValue() == True and self.ctrl_modele.GetID() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
 
-        if self.radio_contrat.GetValue() == True and self.ctrl_contrat.GetID() == None :
+        if self.radio_option_contrat.GetValue() == True and self.ctrl_contrat.GetID() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un contrat dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -288,16 +315,22 @@ class Dialog(wx.Dialog):
 
         self.EndModal(wx.ID_OK)
 
+    def GetTypeContrat(self):
+        if self.radio_type_classique.GetValue() == True :
+            return "classique"
+        if self.radio_type_psu.GetValue() == True :
+            return "psu"
+
     def GetInscription(self):
         IDinscription = self.ctrl_inscriptions.Selection()[0].IDinscription
         return IDinscription
     
     def GetOptions(self):
-        if self.radio_vierge.GetValue() == True :
+        if self.radio_option_vierge.GetValue() == True :
             return None
-        if self.radio_modele.GetValue() == True :
+        if self.radio_option_modele.GetValue() == True :
             return {"type" : "modele", "IDmodele" : self.ctrl_modele.GetID()}
-        if self.radio_contrat.GetValue() == True :
+        if self.radio_option_contrat.GetValue() == True :
             return {"type" : "contrat", "IDcontrat" : self.ctrl_contrat.GetID()}
         
 
