@@ -414,7 +414,21 @@ class ListView(FastObjectListView):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
-                
+
+        menuPop.AppendSeparator()
+
+        # Item Activer le prélèvement
+        item = wx.MenuItem(menuPop, 800, _(u"Activer le prélèvement"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Prelevement.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ActiverPrelevement, id=800)
+
+        # Item Activer le prélèvement
+        item = wx.MenuItem(menuPop, 801, _(u"Désactiver le prélèvement"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Prelevement.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ActiverPrelevement, id=801)
+
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
@@ -665,6 +679,46 @@ class ListView(FastObjectListView):
             self.RemoveObject(track)
         self.MAJtotaux() 
         
+    def ActiverPrelevement(self, event):
+        if event.GetId() == 800 :
+            prelevement = 1
+        else :
+            prelevement = 0
+
+        if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune pièce dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        if len(self.GetTracksCoches()) > 0 :
+            # Sélection multiple
+            listeSelections = self.GetTracksCoches()
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier le prélèvement des %d pièces cochées ?") % len(listeSelections), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+
+        else :
+            # Sélection unique
+            listeSelections = self.Selection()
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier le prélèvement de la pièce sélectionnée ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+
+        # Activation/Désactivation du prélèvement des pièces
+        for track in listeSelections :
+            if prelevement == 0 :
+                track.prelevement = 0
+                track.etat = "modif"
+            if prelevement == 1 and track.prelevement_iban != "" :
+                track.prelevement = 1
+                track.etat = "modif"
+        self.RefreshObjects(listeSelections)
+
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
