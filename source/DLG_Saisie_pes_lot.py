@@ -613,6 +613,7 @@ class Dialog(wx.Dialog):
             # Création du libellé du prélèvement
             prelevement_libelle = self.ctrl_parametres.GetPropertyValue("prelevement_libelle")
             prelevement_libelle = prelevement_libelle.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
+            prelevement_libelle = prelevement_libelle.replace("{OBJET_PIECE}", objet_piece)
             prelevement_libelle = prelevement_libelle.replace("{LIBELLE_FACTURE}", track.libelle)
             prelevement_libelle = prelevement_libelle.replace("{NUM_FACTURE}", str(track.numero))
             prelevement_libelle = prelevement_libelle.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
