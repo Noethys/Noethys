@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 import wx
+import datetime
 
 
 class Footer(wx.PyControl):
@@ -45,7 +46,12 @@ class Footer(wx.PyControl):
                     if hasattr(track, nomColonne) :
                         total = getattr(track, nomColonne)
                         if self.dictTotaux.has_key(nomColonne) == False :
+                            # Format classique (numérique)
                             self.dictTotaux[nomColonne] = 0
+                            # Autre format
+                            if dictColonne.has_key("format") :
+                                if dictColonne["format"] in ("temps", "duree") :
+                                    self.dictTotaux[nomColonne] = datetime.timedelta(0)
                         if total != None :
                             self.dictTotaux[nomColonne] += total
     
@@ -94,7 +100,12 @@ class Footer(wx.PyControl):
                     if self.dictTotaux.has_key(nom) :
                         texte = self.dictTotaux[nom]
                     else :
+                        # Total format classique (numérique)
                         texte = 0
+                        # Autres formats de total
+                        if infoColonne.has_key("format") :
+                            if infoColonne["format"] in ("temps", "duree") :
+                                texte = datetime.timedelta(0)
                     if converter != None :
                         texte = converter(texte)
                     if type(texte) in (int, float, long) :

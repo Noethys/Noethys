@@ -552,6 +552,10 @@ class ObjectListView(wx.ListCtrl):
         finally:
             self.Thaw()
 
+        # MAJ Footer
+        if self.ctrl_footer :
+            self.MAJ_footer()
+
 
     def AddNamedImages(self, name, smallImage=None, normalImage=None):
         """
@@ -826,6 +830,10 @@ class ObjectListView(wx.ListCtrl):
         idx = self.GetIndexOf(modelObject)
         if idx != -1:
             self.RefreshIndex(self._MapModelIndexToListIndex(idx), modelObject)
+
+        # MAJ Footer
+        if self.ctrl_footer :
+            self.MAJ_footer()
 
 
     def RefreshObjects(self, aList):
@@ -2994,6 +3002,10 @@ class FastObjectListView(AbstractVirtualObjectListView):
         if first < self.GetItemCount():
             self.RefreshItems(first, self.GetItemCount() - 1)
 
+        # MAJ Footer
+        if self.ctrl_footer :
+            self.MAJ_footer()
+
 
     def RepopulateList(self):
         """
@@ -3027,6 +3039,10 @@ class FastObjectListView(AbstractVirtualObjectListView):
             #self.RefreshItems(0, self.GetItemCount() - 1)
             if self.GetItemCount() > 0:
                 self.RefreshItems(0, self.GetItemCount() - 1)
+
+        # MAJ Footer
+        if self.ctrl_footer :
+            self.MAJ_footer()
 
     #----------------------------------------------------------------------------
     #  Accessing
