@@ -1,3 +1,7 @@
+Version 1.1.6.0 (14/12/2015) :
+
+- Correction d'un bug avec la recherche next ID sur les fichiers réseau
+
 Version 1.1.5.9 (13/12/2015) :
 
 - Ajout des unités de conso auto-générées

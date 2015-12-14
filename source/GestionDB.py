@@ -548,20 +548,22 @@ class DB:
 
         else:
             # Version MySQL
-            self.ExecuterReq("USE information_schema;")
-            pos = self.nomFichier.index("[RESEAU]")
-            nomFichier = self.nomFichier[pos:].replace("[RESEAU]", "")
-            req = "SELECT auto_increment FROM tables WHERE table_schema='%s' and table_name='%s' ;" % (nomFichier, nomTable)
-            self.ExecuterReq(req)
+            # self.ExecuterReq("USE information_schema;")
+            # pos = self.nomFichier.index("[RESEAU]")
+            # nomFichier = self.nomFichier[pos:].replace("[RESEAU]", "")
+            # req = "SELECT auto_increment FROM tables WHERE table_schema='%s' and table_name='%s' ;" % (nomFichier, nomTable)
+            # self.ExecuterReq(req)
+            # donnees = self.ResultatReq()
+            #
+            # # Se remet sur le fichier normal
+            # if nomFichier not in ("", None, "_data") :
+            #     self.ExecuterReq("USE %s;" % nomFichier)
+
+            # 2ème version
+            self.ExecuterReq("SHOW TABLE STATUS WHERE name='%s';" % nomTable)
             donnees = self.ResultatReq()
-
-            # Se remet sur le fichier normal
-            if nomFichier not in ("", None, "_data") :
-                self.ExecuterReq("USE %s;" % nomFichier)
-
-            # Renvoie le prochain ID
             if len(donnees) > 0 :
-                return donnees[0][0]
+                return donnees[0][10]
 
         return 1
     
