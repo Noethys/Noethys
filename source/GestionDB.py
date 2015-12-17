@@ -408,7 +408,7 @@ class DB:
             self.cursor.execute(sql, [sqlite3.Binary(blobImage),])
             self.connexion.commit()
 
-    def ReqMAJ(self, nomTable, listeDonnees, nomChampID, ID, IDestChaine=False):
+    def ReqMAJ(self, nomTable, listeDonnees, nomChampID, ID, IDestChaine=False, commit=True):
         """ Permet d'insérer des données dans une table """
         # Préparation des données
         champs = ""
@@ -430,7 +430,8 @@ class DB:
         # Enregistrement
         try:
             self.cursor.execute(req, tuple(valeurs))
-            self.Commit()
+            if commit == True :
+                self.Commit()
         except Exception, err:
             print _(u"Requete sql de mise a jour incorrecte :\n%s\nErreur detectee:\n%s") % (req, err)
         
