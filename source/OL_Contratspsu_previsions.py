@@ -37,7 +37,7 @@ class Track(object):
         
         self.texteDetail = ""
         if self.heure_debut != None and self.heure_fin != None :
-            self.texteDetail = "%s-%s" % (self.heure_debut, self.heure_fin)
+            self.texteDetail = "%s - %s" % (self.heure_debut.replace(":", "h"), self.heure_fin.replace(":", "h"))
         if self.quantite != None :
             self.texteDetail += _(u" Qté=%d") % self.quantite
         
@@ -137,7 +137,7 @@ class ListView(FastObjectListView):
             #ColumnDefn(_(u"Unité"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
             #ColumnDefn(_(u"Etat"), 'left', 50, "texteEtat", typeDonnee="texte"),
             ColumnDefn(_(u"Durée"), 'center', 80, "duree", typeDonnee="texte", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Détail"), 'left', 100, "texteDetail", typeDonnee="texte"),
+            ColumnDefn(_(u"Détail"), 'left', 120, "texteDetail", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)

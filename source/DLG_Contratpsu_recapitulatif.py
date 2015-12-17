@@ -71,6 +71,8 @@ class Panel(wx.Panel):
         pass
 
     def MAJ(self):
+        self.clsbase.Calculer()
+
         self.ctrl_recapitulatif.MAJ()
 
 

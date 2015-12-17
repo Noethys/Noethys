@@ -455,7 +455,12 @@ class CTRL_Unites(HTL.HyperTreeList):
                 ctrl = itemData["controles"][index]
                 ctrl.SetHeureDebut(options["heure_debut"])
                 ctrl.SetHeureFin(options["heure_fin"])
+                if options.has_key("interdit_ajout") and options["interdit_ajout"] == True :
+                    ctrl.bouton_ajouter.Show(False)
+                    ctrl.bouton_retirer.Show(False)
                 dictTempMultihoraires[IDunite] += 1
+
+
 
             # if itemData["type"] == "Multihoraires" :
             #     if itemData["controles"][0].GetHeureDebut() == None :
@@ -475,9 +480,6 @@ class CTRL_Unites(HTL.HyperTreeList):
 
         # Vérifie la saisie
         if self.GetDonnees() == False :
-            dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la saisie des paramètres des unités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
             return False
 
         return True
@@ -499,6 +501,9 @@ class CTRL_Unites(HTL.HyperTreeList):
 
                     # Validation de la saisie
                     if ctrl.Validation() == False :
+                        dlg = wx.MessageDialog(self, _(u"Veuillez vérifier la saisie des paramètres des unités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
                         return False
 
                     # Récupération des données
@@ -508,8 +513,27 @@ class CTRL_Unites(HTL.HyperTreeList):
 
                     listeUnites.append({"IDunite":IDunite, "options":dictOptions})
 
+        # Vérifie si chevauchement
+        if self.VerifieSiChevauchement(listeUnites) == True :
+            dlg = wx.MessageDialog(self, _(u"Des unités multi-horaires se chevauchent !\n\nVérifiez les horaires..."), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         return listeUnites
-            
+
+    def VerifieSiChevauchement(self, listeUnites=[]):
+        dictUnites = {}
+        for dictUnite in listeUnites :
+            IDunite = dictUnite["IDunite"]
+            if dictUnites.has_key(IDunite) == False :
+                dictUnites[IDunite] = []
+            if dictUnite["options"].has_key("heure_debut") and dictUnite["options"].has_key("heure_fin") :
+                for heure_debut, heure_fin in dictUnites[IDunite] :
+                    if heure_debut <= dictUnite["options"]["heure_fin"] and heure_fin >= dictUnite["options"]["heure_debut"] :
+                        return True
+                dictUnites[IDunite].append((dictUnite["options"]["heure_debut"], dictUnite["options"]["heure_fin"]))
+        return False
 
 # -----------------------------------------------------------------------------------------------------------------------------
 

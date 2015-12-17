@@ -85,11 +85,19 @@ class Panel(wx.Panel):
             self.ctrl_date_fin.SetFocus()
             return False
 
-        if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() == None :
+        if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
             dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas avoir une date de début de contrat supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_fin.SetFocus()
+            return False
+
+        # Tests
+        dict_valeurs = {
+            "date_debut" : self.ctrl_date_debut.GetDate(),
+            "date_fin" : self.ctrl_date_fin.GetDate(),
+            }
+        if self.clsbase.Calculer(mode_test=True, dict_valeurs=dict_valeurs) == False :
             return False
 
         return True
@@ -103,6 +111,8 @@ class Panel(wx.Panel):
         self.clsbase.SetValeurs(dictValeurs)
 
     def MAJ(self):
+        self.clsbase.Calculer()
+
         if self.MAJ_effectuee == False :
             date_debut = self.clsbase.GetValeur("date_debut")
             date_fin = self.clsbase.GetValeur("date_fin")

@@ -89,7 +89,7 @@ def DeltaEnTime(varTimedelta) :
 def DeltaEnStr(heureDelta, separateur="h"):
     heures = (heureDelta.days*24) + (heureDelta.seconds/3600)
     minutes = heureDelta.seconds%3600/60
-    return "%dh%02d" % (heures, minutes)
+    return "%d%s%02d" % (heures, separateur, minutes)
 
     # texte = time.strftime("%Hh%M", time.gmtime(heureDelta.seconds))
     # texte = texte.replace("h", separateur)
@@ -99,6 +99,12 @@ def TimeEnDelta(heureTime):
     hr = heureTime.hour
     mn = heureTime.minute
     return datetime.timedelta(hours=hr, minutes=mn)
+
+def HeureStrEnDelta(heureStr):
+    if heureStr == None or heureStr == "" : return datetime.timedelta(hours=0, minutes=0)
+    if len(heureStr.split(":")) == 2 : heures, minutes = heureStr.split(":")
+    if len(heureStr.split(":")) == 3 : heures, minutes, secondes = heureStr.split(":")
+    return datetime.timedelta(hours=int(heures), minutes=int(minutes))
 
 def HeureStrEnTime(heureStr):
     if heureStr == None or heureStr == "" : return datetime.time(0, 0)

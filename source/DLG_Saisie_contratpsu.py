@@ -44,12 +44,9 @@ class Base(object) :
         # Stockage des données du contrat
         self.dictContrat = {
             "IDunite_prevision" : 34, #TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+            "IDunite_presence" : 35, #TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             "IDtarif" : None,#TODO <<<<<<<<<<<<<<<<<<<<<<<<<<
         }
-        # "date_debut" : datetime.date(2015, 1, 15),
-        # "date_fin" : datetime.date(2015, 12, 31),
-        # "IDactivite" : 43,
-        # "IDunite_prevision" : 34,
 
         # Importation des données
         self.Importation()
@@ -85,11 +82,16 @@ class Base(object) :
         else :
             return defaut
 
-    def CalculerTotaux(self):
-        """ Calcul des totaux des prévisions """
+    def Calculer(self, mode_test=False, dict_valeurs={}):
+        """ Calcul des totaux et des mensualités """
+        """ dict_valeurs : pour saisir des valeurs tests """
         # Récupération des données
         date_debut = self.GetValeur("date_debut")
+        if dict_valeurs.has_key("date_debut") :
+            date_debut = dict_valeurs["date_debut"]
         date_fin = self.GetValeur("date_fin")
+        if dict_valeurs.has_key("date_fin") :
+            date_fin = dict_valeurs["date_fin"]
         tracks_previsions = self.GetValeur("tracks_previsions", [])
         tracks_tarifs = self.GetValeur("tracks_tarifs", [])
         nbre_absences_prevues = self.GetValeur("nbre_absences_prevues", 0)
@@ -128,22 +130,50 @@ class Base(object) :
         # Calcul du nbre d'heures du contrat
         nbre_heures_contrat = nbre_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
 
-        # Calcul du forfait horaire mensuel
-        forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat, nbre_mois)
+        # Génération des dates de facturation
+        liste_mois = list(rrule.rrule(rrule.MONTHLY, bymonthday=1, dtstart=date_debut, until=date_fin))
+
+        # Ajout de la date de début du contrat
+        if date_debut.day > 1 :
+            liste_mois.insert(0, date_debut)
+
+        # Recherche s'il y a des mensualités déjà facturées
+        listePrestationsFacturees = []
+        heuresFacturees = datetime.timedelta(seconds=0)
+        for dictPrestation in self.GetValeur("liste_prestations", []) :
+            if dictPrestation["IDfacture"] != None :
+                listePrestationsFacturees.append(dictPrestation)
+                heuresFacturees += dictPrestation["temps_facture"]
+
+        nbrePrestations = len(listePrestationsFacturees)
+
+        # Conversion du nbre d'heures déjà facturées en entier
+        heuresFacturees = (heuresFacturees.days*24) + (heuresFacturees.seconds/3600)
+
+        # Calcul du forfait mensuel
+        heures_restantes = nbre_heures_contrat - heuresFacturees
+        nbre_mois_restant = nbre_mois - nbrePrestations
+
+        if nbre_mois_restant == 0 :
+            forfait_horaire_mensuel, reste_division = 0, 0
+        else :
+            forfait_horaire_mensuel, reste_division = divmod(heures_restantes, nbre_mois_restant)
         forfait_horaire_dernier_mois = forfait_horaire_mensuel + reste_division
 
-        # Génération des mensualités
-        liste_mois = list(rrule.rrule(rrule.MONTHLY, dtstart=date_debut, until=date_fin))
+        # Calcul du forfait horaire mensuel
+        # if nbre_mois == 0 :
+        #     forfait_horaire_mensuel, reste_division = 0, 0
+        # else :
+        #     forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat, nbre_mois)
+        # forfait_horaire_dernier_mois = forfait_horaire_mensuel + reste_division
 
+
+        # Génération des mensualités
         tracks_mensualites = []
         total_mensualites = FloatToDecimal(0.0)
         index = 0
         for date in liste_mois :
-            # Calcul de la date de facturation
-            if index == 0 :
-                date_facturation = datetime.date(date.year, date.month, date.day)
-            else :
-                date_facturation = datetime.date(date.year, date.month, 1)
+            date_facturation = datetime.date(date.year, date.month, date.day)
 
             # Calcul des dates du forfait
             forfait_date_debut = date_facturation
@@ -178,21 +208,74 @@ class Base(object) :
             montant_mois = FloatToDecimal(tarif_base * heures_facturees)
             total_mensualites += montant_mois
 
+            # Recherche d'une prestation existante
+            IDprestation = None
+            IDfacture = None
+            num_facture = None
+            for dictPrestation in self.GetValeur("liste_prestations", []) :
+                if dictPrestation["date_facturation"] == date_facturation :
+                    IDprestation = dictPrestation["IDprestation"]
+                    IDfacture = dictPrestation["IDfacture"]
+                    num_facture = dictPrestation["num_facture"]
+
+                    # Rétablit le montant initial si la prestation est déjà facturée
+                    if IDfacture != None :
+                        montant_mois = dictPrestation["montant"]
+                        heures_facturees = dictPrestation["temps_facture"]
+
+            if type(heures_facturees) == int :
+                heures_facturees = UTILS_Dates.HeureStrEnDelta("%d:00" % heures_facturees)
+
             # Mémorisation de la mensualité
             dictMensualite = {
-                "IDprestation" : None, #TODO : Provisoire
+                "IDprestation" : IDprestation,
                 "date_facturation" : date_facturation,
                 "taux" : track_tarif.taux,
                 "heures_facturees" : heures_facturees,
                 "track_tarif" : track_tarif,
                 "tarif_base" : tarif_base,
                 "montant_mois" : montant_mois,
-                "IDfacture" : None, #TODO: Provisoire
+                "IDfacture" : IDfacture,
                 "forfait_date_debut" : forfait_date_debut,
                 "forfait_date_fin" : forfait_date_fin,
+                "num_facture" : num_facture,
             }
             tracks_mensualites.append(Track_mensualite(dictMensualite))
             index += 1
+
+        # Vérifie si anomalies
+        listeAnomalies = []
+
+        # Vérifie que les prestations facturées sont toujours là
+        for dictPrestation in listePrestationsFacturees :
+            present = False
+            for track in tracks_mensualites :
+                if track.IDprestation == dictPrestation["IDprestation"] :
+                    present = True
+            if present == False :
+                listeAnomalies.append(_(u"La prestation du %s ne peut pas être supprimée car elle apparaît déjà sur la facture n°%s." % (UTILS_Dates.DateDDEnFr(dictPrestation["date_facturation"]), dictPrestation["num_facture"])))
+
+        # Vérifie si les consommations sont bien sur la période du contrat
+        nbreConsoHorsPeriode = 0
+        for track in tracks_previsions :
+            if track.date < date_debut or track.date > date_fin :
+                nbreConsoHorsPeriode += 1
+        if nbreConsoHorsPeriode > 0 :
+            listeAnomalies.append(_(u"%d consommations prévues sont en dehors de la période du contrat." % nbreConsoHorsPeriode))
+
+        # Si mode test, renvoie la liste des anomalies
+        if mode_test == True :
+            if len(listeAnomalies) > 0 :
+                import DLG_Messagebox
+                introduction =_(u"Votre saisie ne peut pas être validée en raison des erreurs suivantes :")
+                detail = "\n".join(listeAnomalies)
+                conclusion =_(u"Veuillez modifier les données saisies.")
+                dlg = DLG_Messagebox.Dialog(None, titre=_(u"Erreur"), introduction=introduction, detail=detail, conclusion=conclusion, icone=wx.ICON_INFORMATION, boutons=[_(u"Ok"),])
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+            else :
+                return True
 
         # Envoi des données à clsbase
         dictValeurs = {
@@ -211,6 +294,8 @@ class Base(object) :
             "total_mensualites" : total_mensualites,
         }
         self.SetValeurs(dictValeurs)
+
+        return dictValeurs
 
     def Validation(self):
         return True
@@ -237,6 +322,7 @@ class Base(object) :
             DB.ReqMAJ("contrats", listeDonnees, "IDcontrat", self.IDcontrat)
 
         # Enregistrement des consommations
+        liste_IDconso = []
         for track in self.GetValeur("tracks_previsions", []):
             listeDonnees = (
                 ("IDindividu", self.GetValeur("IDindividu", None)),
@@ -260,9 +346,25 @@ class Base(object) :
             if track.IDconso == None :
                 IDconso = DB.ReqInsert("consommations", listeDonnees)
             else :
-                DB.ReqMAJ("consommations", listeDonnees, "IDconso", track.IDconso)
+                IDconso = track.IDconso
+                DB.ReqMAJ("consommations", listeDonnees, "IDconso", IDconso)
+            liste_IDconso.append(IDconso)
+
+        # Suppression des consommations supprimées
+        listeSuppressions = []
+        for IDconso in self.GetValeur("liste_IDconso", []):
+            if IDconso not in liste_IDconso :
+                listeSuppressions.append(IDconso)
+
+        if len(listeSuppressions) > 0 :
+            if len(listeSuppressions) == 1 :
+                conditionSuppression = "(%d)" % listeSuppressions[0]
+            else :
+                conditionSuppression = str(tuple(listeSuppressions))
+            DB.ExecuterReq("DELETE FROM consommations WHERE IDconso IN %s" % conditionSuppression)
 
         # Enregistrement des tarifs
+        liste_IDtarif = []
         for track in self.GetValeur("tracks_tarifs", []):
             listeDonnees = (
                 ("IDcontrat", self.IDcontrat),
@@ -276,9 +378,25 @@ class Base(object) :
             if track.IDcontrat_tarif == None :
                 IDcontrat_tarif = DB.ReqInsert("contrats_tarifs", listeDonnees)
             else :
-                DB.ReqMAJ("contrats_tarifs", listeDonnees, "IDcontrat_tarif", track.IDcontrat_tarif)
+                IDcontrat_tarif = track.IDcontrat_tarif
+                DB.ReqMAJ("contrats_tarifs", listeDonnees, "IDcontrat_tarif", IDcontrat_tarif)
+            liste_IDtarif.append(IDcontrat_tarif)
+
+        # Suppression des tarifs supprimés
+        listeSuppressions = []
+        for IDcontrat_tarif in self.GetValeur("liste_IDtarif", []):
+            if IDcontrat_tarif not in liste_IDtarif :
+                listeSuppressions.append(IDcontrat_tarif)
+
+        if len(listeSuppressions) > 0 :
+            if len(listeSuppressions) == 1 :
+                conditionSuppression = "(%d)" % listeSuppressions[0]
+            else :
+                conditionSuppression = str(tuple(listeSuppressions))
+            DB.ExecuterReq("DELETE FROM contrats_tarifs WHERE IDcontrat_tarif IN %s" % conditionSuppression)
 
         # Enregistrement des mensualités
+        liste_IDprestation = []
         for track in self.GetValeur("tracks_mensualites", []):
             listeDonnees = (
                 ("IDcompte_payeur", self.GetValeur("IDcompte_payeur", None)),
@@ -293,7 +411,7 @@ class Base(object) :
                 ("IDfamille", self.GetValeur("IDfamille", None)),
                 ("IDindividu", self.GetValeur("IDindividu", None)),
                 ("forfait", None),
-                ("temps_facture", track.heures_facturees),
+                ("temps_facture", UTILS_Dates.DeltaEnStr(track.heures_facturees, ":")),
                 ("IDcategorie_tarif", self.GetValeur("IDcategorie_tarif", None)),
                 ("forfait_date_debut", track.forfait_date_debut),
                 ("forfait_date_fin", track.forfait_date_fin),
@@ -302,8 +420,26 @@ class Base(object) :
             if track.IDprestation == None :
                 IDprestation = DB.ReqInsert("prestations", listeDonnees)
             else :
-                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", track.IDprestation)
+                IDprestation = track.IDprestation
+                DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
+            liste_IDprestation.append(IDprestation)
 
+        # Suppression des prestations supprimées
+        listeSuppressions = []
+        for IDprestation in self.GetValeur("liste_IDprestation", []):
+            if IDprestation not in liste_IDprestation :
+                listeSuppressions.append(IDprestation)
+
+        if len(listeSuppressions) > 0 :
+            if len(listeSuppressions) == 1 :
+                conditionSuppression = "(%d)" % listeSuppressions[0]
+            else :
+                conditionSuppression = str(tuple(listeSuppressions))
+            DB.ExecuterReq("DELETE FROM prestations WHERE IDprestation IN %s" % conditionSuppression)
+            DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
+            DB.ExecuterReq("DELETE FROM deductions WHERE IDprestation IN %s" % conditionSuppression)
+
+        DB.Commit()
         DB.Close()
 
 
@@ -313,7 +449,6 @@ class Base(object) :
 
         # Lecture de la base
         DB = GestionDB.DB()
-
 
         # Informations générales sur le contrat
         if self.IDcontrat != None :
@@ -374,6 +509,7 @@ class Base(object) :
         listeDonnees = DB.ResultatReq()
 
         tracks_previsions = []
+        liste_IDconso = []
         liste_conso = []
         for IDconso, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur,IDcategorie_tarif, IDprestation, forfait, quantite, etiquettes in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
@@ -388,9 +524,11 @@ class Base(object) :
 
             if IDunite == self.GetValeur("IDunite_prevision", None) :
                 tracks_previsions.append(Track_prevision(dictConso))
+                liste_IDconso.append(IDconso)
 
         dictValeurs["liste_conso"] = liste_conso
         dictValeurs["tracks_previsions"] = tracks_previsions
+        dictValeurs["liste_IDconso"] = liste_IDconso
 
         # Lecture des tarifs du contrat
         req = """SELECT IDcontrat_tarif, date_debut, revenu, quotient, taux, tarif_base, tarif_depassement
@@ -400,6 +538,7 @@ class Base(object) :
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         tracks_tarifs = []
+        liste_IDtarif = []
         for IDcontrat_tarif, date_debut, revenu, quotient, taux, tarif_base, tarif_depassement in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             dictTarif = {
@@ -407,36 +546,45 @@ class Base(object) :
                 "taux" : taux, "tarif_base" : tarif_base, "tarif_depassement" : tarif_depassement,
             }
             tracks_tarifs.append(Track_tarif(dictTarif))
+            liste_IDtarif.append(IDcontrat_tarif)
         dictValeurs["tracks_tarifs"] = tracks_tarifs
+        dictValeurs["liste_IDtarif"] = liste_IDtarif
 
         # Lecture des mensualités
-        req = """SELECT IDprestation, date, label, montant_initial, montant, IDfacture, temps_facture,
-        forfait_date_debut, forfait_date_fin
+        req = """SELECT IDprestation, date, label, montant_initial, prestations.montant, prestations.IDfacture, temps_facture,
+        forfait_date_debut, forfait_date_fin, factures.numero
         FROM prestations
+        LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
         WHERE IDcontrat=%d
         ;""" % self.IDcontrat
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         liste_prestations = []
-        for IDprestation, date_facturation, label, montant_initial, montant, IDfacture, temps_facture, forfait_date_debut, forfait_date_fin in listeDonnees :
+        liste_IDprestation = []
+        for IDprestation, date_facturation, label, montant_initial, montant, IDfacture, temps_facture, forfait_date_debut, forfait_date_fin, num_facture in listeDonnees :
             date_facturation = UTILS_Dates.DateEngEnDateDD(date_facturation)
             forfait_date_debut = UTILS_Dates.DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = UTILS_Dates.DateEngEnDateDD(forfait_date_fin)
             montant_initial = FloatToDecimal(montant_initial)
             montant = FloatToDecimal(montant)
+            temps_facture = UTILS_Dates.HeureStrEnDelta(temps_facture)
             dictMensualite = {
                 "IDprestation" : IDprestation, "date_facturation" : date_facturation, "label" : label, "montant_initial" : montant_initial, "montant" : montant,
                 "IDfacture" : IDfacture, "temps_facture" : temps_facture,
-                "forfait_date_debut" : forfait_date_debut, "forfait_date_fin" : forfait_date_fin,
+                "forfait_date_debut" : forfait_date_debut, "forfait_date_fin" : forfait_date_fin, "num_facture" : num_facture,
             }
             liste_prestations.append(dictMensualite)
+            liste_IDprestation.append(IDprestation)
         dictValeurs["liste_prestations"] = liste_prestations
+        dictValeurs["liste_IDprestation"] = liste_IDprestation
 
         # Fermeture de la base
         DB.Close()
 
         # Mémorisation des données
         self.SetValeurs(dictValeurs)
+
+
 
 class Assistant(wx.Dialog, Base):
     def __init__(self, parent, IDcontrat=None, IDinscription=None):
@@ -524,10 +672,6 @@ class Assistant(wx.Dialog, Base):
         self.sizer_pages = sizer_pages
 
     def Onbouton_aide(self, event):
-        #TODO:A supprimer
-        self.CalculerTotaux()
-        return
-
         import UTILS_Aide
         UTILS_Aide.Aide("")
 
@@ -586,6 +730,11 @@ class Assistant(wx.Dialog, Base):
 
     def Annuler(self):
         """ Annulation des modifications """
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment abandonner la saisie de ce nouveau contrat ?\n\nLes éventuelles données saisies seront perdues."), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
         self.EndModal(wx.ID_CANCEL)
 
     def ValidationPages(self) :
@@ -635,25 +784,43 @@ class Notebook(wx.Notebook, Base):
             self.dictPages[dictPage["code"]] = {'ctrl' : dictPage["ctrl"], 'index' : index}
             index += 1
 
-    def AffichePage(self, codePage=""):
-        indexPage = self.dictPages[codePage]["index"]
-        self.SetSelection(indexPage)
+        # Binds
+        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGED, self.OnPageChanged)
+        self.Bind(wx.EVT_NOTEBOOK_PAGE_CHANGING, self.OnPageChanging)
 
-    def GetCodePage(self):
+        # Init
+        self.GetPage(0).MAJ()
+
+    def OnPageChanging(self, event):
+        page = self.GetPage(event.GetOldSelection())
+
+        # Validation de la page quittée
+        if page.Validation() == False :
+            event.Veto()
+            return
+
+        # Sauvegarde de la page quittée
+        page.Sauvegarde()
+
+        event.Skip()
+
+    def OnPageChanged(self, event):
+        # MAJ de la page affichée
+        page = self.GetPage(event.GetSelection())
+        page.MAJ()
+
+        event.Skip()
+
+    def GetPageActuelle(self):
         index = self.GetSelection()
-        return self.listePages[index][0]
+        return self.listePages[index]["ctrl"]
 
-    def GetPage(self):
-        index = self.GetSelection()
-        return self.listePages[index][2]
+    def GetPage(self, index=0):
+        return self.listePages[index]["ctrl"]
 
-    def Validation(self) :
-        page = self.dictPages[self.GetCodePage()]["ctrl"]
-        return page.Validation()
 
-    def GetDonnees(self):
-        page = self.dictPages[self.GetCodePage()]["ctrl"]
-        return page.GetDonnees()
+
+
 
 
 
@@ -712,6 +879,11 @@ class Dialog(wx.Dialog):
         self.OnBoutonAnnuler()
 
     def OnBoutonAnnuler(self, event=None):
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment annuler ?\n\nLes éventuelles modifications que vous avez effectué seront perdues."), _(u"Annulation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonAide(self, event): 
@@ -719,15 +891,16 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
         
     def OnBoutonOk(self, event):
-        if self.Validation() == False :
+        if self.ctrl_notebook.GetPageActuelle().Validation() == False :
             return False
 
         # Sauvegarde des données
-        self.Sauvegarde()
+        self.ctrl_notebook.GetPageActuelle().Sauvegarde()
+        self.ctrl_notebook.Sauvegarde()
 
         # Fermeture
         self.EndModal(wx.ID_OK)
-        
+
     def GetIDcontrat(self):
         return self.IDcontrat
         
@@ -738,8 +911,8 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Assistant(None, IDcontrat=6)
-    #frame_1 = Dialog(None, IDcontrat=6)
+    #frame_1 = Assistant(None, IDcontrat=6)
+    frame_1 = Dialog(None, IDcontrat=6)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

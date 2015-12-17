@@ -445,10 +445,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.clsbase = clsbase
+        self.IDconso = None
 
-        self.IDgroupe = None#IDgroupe#TODO
-        self.IDunite = None#IDunite#TODO
-        
         self.notebook = Notebook(self, clsbase=clsbase)
 
         # Boutons
@@ -596,9 +594,14 @@ class Dialog(wx.Dialog):
             #                 valide = False
 
             # Vérifie si unité ouverte
-            if self.IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], self.IDgroupe)) == False :
+            IDgroupe = self.clsbase.GetValeur("IDgroupe")
+            if IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], IDgroupe)) == False :
                 listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
                 valide = False
+
+            # IDconso pour les modifications
+            if self.IDconso != None :
+                dictConso["IDconso"] = self.IDconso
 
             # Insertion de la conso validée
             if valide == True :
@@ -624,11 +627,12 @@ class Dialog(wx.Dialog):
             return False
                 
         # Demande de confirmation
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
-        reponse = dlg.ShowModal() 
-        dlg.Destroy()
-        if reponse != wx.ID_YES :
-            return False
+        if self.IDconso == None :
+            dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
 
         return True
 
@@ -639,13 +643,16 @@ class Dialog(wx.Dialog):
         self.notebook.AffichePage("calendrier", forcer=True)
         pageCalendrier = self.notebook.GetPage()
 
+        # Mémorise l'IDconso
+        self.IDconso = track.IDconso
+
         # Sélectionne la date
         pageCalendrier.ctrl_calendrier.SelectJours([track.date,])
         pageCalendrier.ctrl_calendrier.Enable(False)
 
         # Sélectionne les unités
         listeUnites = [
-            {"IDunite" : track.IDunite, "options" : {"heure_debut" : track.heure_debut, "heure_fin" : track.heure_fin, "quantite" : track.quantite}},
+            {"IDunite" : track.IDunite, "options" : {"interdit_ajout" : True, "heure_debut" : track.heure_debut, "heure_fin" : track.heure_fin, "quantite" : track.quantite}},
             ]
         pageCalendrier.ctrl_unites.SetDonnees(listeUnites)
 

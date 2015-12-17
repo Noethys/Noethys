@@ -28,6 +28,8 @@ class Panel(wx.Panel):
         self.listviewAvecFooter = OL_Contratspsu_mensualites.ListviewAvecFooter(self, kwargs={})
         self.ctrl_mensualites = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_mensualites.CTRL_Outils(self, listview=self.ctrl_mensualites, afficherCocher=False)
+        if self.parent.GetName() == "notebook" :
+            self.ctrl_recherche.SetBackgroundColour(self.parent.GetThemeBackgroundColour())
 
         self.bouton_mensualites_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_mensualites_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
@@ -71,12 +73,17 @@ class Panel(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
 
     def Validation(self):
+        if self.clsbase.Calculer(mode_test=True) == False :
+            return False
+
         return True
 
     def Sauvegarde(self):
         pass
 
     def MAJ(self):
+        self.clsbase.Calculer()
+
         tracks = self.clsbase.GetValeur("tracks_mensualites", [])
         self.ctrl_mensualites.SetTracks(tracks)
 

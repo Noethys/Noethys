@@ -204,7 +204,7 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         import DLG_Saisie_contratpsu_tarif
-        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self, track=None)
+        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self)
         if self.clsbase != None and len(self.GetTracks()) == 0 :
             date_debut = self.clsbase.GetValeur("date_debut")
             dlg.ctrl_date_debut.SetDate(date_debut)
@@ -222,13 +222,22 @@ class ListView(FastObjectListView):
            return
         track = self.Selection()[0]
         import DLG_Saisie_contratpsu_tarif
-        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self, track=track)
+        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self)
         dlg.SetTrack(track)
         if dlg.ShowModal() == wx.ID_OK:
             track.dictValeurs = dlg.GetDonnees()
             track.MAJ()
             self.RefreshObject(track)
         dlg.Destroy()
+
+    def VerifieTarif(self, trackExclus=None):
+        """ Vérifie si un tarif commence bien au premier jour du contrat """
+        date_debut_contrat = self.clsbase.GetValeur("date_debut")
+        valide = False
+        for track in self.GetTracks():
+            if track != trackExclus and track.date_debut <= date_debut_contrat :
+                valide = True
+        return valide
 
     def Supprimer(self, event):  
         if len(self.Selection()) == 0 :
@@ -237,6 +246,13 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track = self.Selection()[0]
+
+        # if self.VerifieTarif(track) == False :
+        #     dlg = wx.MessageDialog(self, _(u"Attention, si vous supprimez ce tarif, la période du contrat ne disposera pas de tarif disponible au premier jour du contrat !\n\nSouhaitez-vous tout de même supprimer le tarif sélectionné ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        #     reponse = dlg.ShowModal()
+        #     dlg.Destroy()
+        #     if reponse != wx.ID_YES :
+        #         return
 
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer le tarif sélectionné ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()

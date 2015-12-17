@@ -37,6 +37,7 @@ class Track(object):
         self.heures_facturees = self.dictValeurs["heures_facturees"]
         self.montant_mois = self.dictValeurs["montant_mois"]
         self.IDfacture = self.dictValeurs["IDfacture"]
+        self.num_facture = self.dictValeurs["num_facture"]
 
         self.mois = self.date_facturation.month
         self.annee = self.date_facturation.year
@@ -60,15 +61,12 @@ class ListView(FastObjectListView):
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
-        self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         self.donnees = []
         self.listeDonnees = []
         self.InitObjectListView()
 
-    def OnItemActivated(self,event):
-        self.Modifier(None)
-                
+
     def InitObjectListView(self):
         # Couleur en alternance des lignes
         self.oddRowsBackColor = "#F0FBED" 
@@ -108,9 +106,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date fact."), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Taux"), 'center', 80, "taux", typeDonnee="montant", stringConverter=FormateMontant2),
             ColumnDefn(_(u"Tarif de base"), 'center', 80, "tarif_base", typeDonnee="montant", stringConverter=FormateMontant2),
-            ColumnDefn(_(u"Heures fact."), 'center', 80, "heures_facturees", typeDonnee="entier"),
+            ColumnDefn(_(u"Heures fact."), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree),
             ColumnDefn(_(u"Montant"), 'center', 80, "montant_mois", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"N° Facture"), 'center', 70, "IDfacture", typeDonnee="entier"),
+            ColumnDefn(_(u"N° Facture"), 'center', 70, "num_facture", typeDonnee="entier"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -203,7 +201,7 @@ class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
             "annee_mois" : {"mode" : "nombre", "singulier" : _(u"mensualité"), "pluriel" : _(u"mensualités"), "alignement" : wx.ALIGN_CENTER},
-            "heures_facturees" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER},
+            "heures_facturees" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER, "format" : "temps"},
             "montant_mois" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)

@@ -27,6 +27,8 @@ class Panel(wx.Panel):
         self.listviewAvecFooter = OL_Contratspsu_previsions.ListviewAvecFooter(self, kwargs={"clsbase" : clsbase})
         self.ctrl_previsions = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_previsions.CTRL_Outils(self, listview=self.ctrl_previsions, afficherCocher=True)
+        if self.parent.GetName() == "notebook" :
+            self.ctrl_recherche.SetBackgroundColour(self.parent.GetThemeBackgroundColour())
 
         self.bouton_previsions_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_previsions_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -118,6 +120,9 @@ class Panel(wx.Panel):
         self.ctrl_absences_solde.SetValue(str(solde))
 
     def Validation(self):
+        if self.clsbase.Calculer(mode_test=True) == False :
+            return False
+
         return True
 
     def Sauvegarde(self):
@@ -127,6 +132,8 @@ class Panel(wx.Panel):
         self.clsbase.SetValeur("nbre_absences_solde", int(self.ctrl_absences_solde.GetValue()))
 
     def MAJ(self):
+        self.clsbase.Calculer()
+
         if self.MAJ_effectuee == False :
 
             # Prévisions

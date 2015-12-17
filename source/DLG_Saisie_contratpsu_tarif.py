@@ -60,16 +60,10 @@ class CTRL_Montant(wx.TextCtrl):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent, dictContrat={}, track=None):
+    def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
-        self.dictContrat = dictContrat
-        self.track = track
-
-        if dictContrat.has_key("IDcontrat_tarif") :
-            self.IDcontrat_tarif = dictContrat["IDcontrat_tarif"]
-        else :
-            self.IDcontrat_tarif = None
+        self.track = None
 
         # Période d'application
         self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Date d'application"))
@@ -244,6 +238,15 @@ class Dialog(wx.Dialog):
             self.ctrl_depassement_retenu.SetFocus()
             return False
 
+        # Vérifie le date de début par rapport à celle du contrat
+        # if self.parent.VerifieTarif(self.track) == False :
+        #     if self.ctrl_date_debut.GetDate() != self.parent.clsbase.GetValeur("date_debut"):
+        #         dlg = wx.MessageDialog(self, _(u"Attention, si vous modifiez la date de début de ce tarif, la période du contrat ne disposera pas de tarif disponible au premier jour du contrat !\n\nSouhaitez-vous tout de même modifier ce tarif ?"), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        #         reponse = dlg.ShowModal()
+        #         dlg.Destroy()
+        #         if reponse != wx.ID_YES :
+        #             return False
+
         self.EndModal(wx.ID_OK)
 
     def GetDonnees(self):
@@ -257,8 +260,13 @@ class Dialog(wx.Dialog):
         tarif_base = self.ctrl_base_retenu.GetMontant()
         tarif_depassement = self.ctrl_depassement_retenu.GetMontant()
 
+        if self.track != None :
+            IDcontrat_tarif = self.track.IDcontrat_tarif
+        else :
+            IDcontrat_tarif = None
+
         dictDonnees = {
-            "IDcontrat_tarif" : self.IDcontrat_tarif,
+            "IDcontrat_tarif" : IDcontrat_tarif,
             "date_debut" : date_debut,
             "revenu" : revenu,
             "quotient" : quotient,
@@ -270,6 +278,8 @@ class Dialog(wx.Dialog):
         return dictDonnees
 
     def SetTrack(self, track=None):
+        self.track = track
+
         if track.date_debut != None :
             self.ctrl_date_debut.SetDate(track.date_debut)
         if track.revenu != None :

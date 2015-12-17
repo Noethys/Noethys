@@ -29,6 +29,8 @@ class Panel(wx.Panel):
         self.listviewAvecFooter = OL_Contratspsu_tarifs.ListviewAvecFooter(self, kwargs={"clsbase" : clsbase})
         self.ctrl_tarifs = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_tarifs.CTRL_Outils(self, listview=self.ctrl_tarifs, afficherCocher=False)
+        if self.parent.GetName() == "notebook" :
+            self.ctrl_recherche.SetBackgroundColour(self.parent.GetThemeBackgroundColour())
 
         self.bouton_tarifs_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_tarifs_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
@@ -104,6 +106,9 @@ class Panel(wx.Panel):
             dlg.Destroy()
             return False
 
+        if self.clsbase.Calculer(mode_test=True) == False :
+            return False
+
         return True
 
     def Sauvegarde(self):
@@ -111,6 +116,8 @@ class Panel(wx.Panel):
         self.clsbase.SetValeur("nbre_heures_regularisation", int(self.ctrl_regularisation.GetValue()))
 
     def MAJ(self):
+        self.clsbase.Calculer()
+
         if self.MAJ_effectuee == False :
             # Liste des tarifs
             tracks_tarifs = self.clsbase.GetValeur("tracks_tarifs", [])
