@@ -66,22 +66,22 @@ class ListView(FastObjectListView):
         
     def MAJ(self):
         listeDonnees = [
-            {"label" : _(u"Nombre de jours"), "code" : "nbre_dates", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre de semaines"), "code" : "nbre_semaines", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre de mois"), "code" : "nbre_mois", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par jour"), "code" : "moy_heures_jour", "format" : "decimal", "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par semaine"), "code" : "moy_heures_semaine", "format" : "decimal", "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par mois"), "code" : "moy_heures_mois", "format" : "decimal", "defaut" : 0},
-            {"label" : _(u"Nombre d'heures prévues brut"), "code" : "nbre_heures_brut", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre d'heures RTT prévues"), "code" : "nbre_absences_prevues", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre d'heures RTT prises"), "code" : "nbre_absences_prises", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre d'heures RTT restantes"), "code" : "nbre_absences_solde", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre d'heures de régularisation"), "code" : "nbre_heures_regularisation", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre total d'heures facturées"), "code" : "nbre_heures_contrat", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Heures facturées chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Heures facturées le dernier mois"), "code" : "forfait_horaire_dernier_mois", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Nombre de mensualités"), "code" : "nbre_mensualites", "format" : "entier", "defaut" : 0},
-            {"label" : _(u"Montant total facturé"), "code" : "total_mensualites", "format" : "montant", "defaut" : FloatToDecimal(0.0)},
+            {"label" : _(u"Nombre de jours prévus"), "code" : "nbre_dates", "format" : "entier", "suffixe" : _(u"jours"), "defaut" : 0},
+            {"label" : _(u"Nombre de semaines prévues"), "code" : "nbre_semaines", "format" : "entier", "suffixe" : _(u"semaines"), "defaut" : 0},
+            {"label" : _(u"Nombre de mois prévus"), "code" : "nbre_mois", "format" : "entier", "suffixe" : _(u"mois"), "defaut" : 0},
+            {"label" : _(u"Nombre moyen d'heures prévues par jour"), "code" : "moy_heures_jour", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre moyen d'heures prévues par semaine"), "code" : "moy_heures_semaine", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre moyen d'heures prévues par mois"), "code" : "moy_heures_mois", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures prévues brut"), "code" : "nbre_heures_brut", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures RTT prévues"), "code" : "nbre_absences_prevues", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures RTT prises"), "code" : "nbre_absences_prises", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures RTT restantes"), "code" : "nbre_absences_solde", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures de régularisation"), "code" : "nbre_heures_regularisation", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre total d'heures facturées"), "code" : "nbre_heures_contrat", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Heures facturées chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Heures facturées le dernier mois"), "code" : "forfait_horaire_dernier_mois", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre de mensualités"), "code" : "nbre_mensualites", "format" : "entier", "suffixe" : _(u"mensualités"), "defaut" : 0},
+            {"label" : _(u"Montant total facturé"), "code" : "total_mensualites", "format" : "montant", "suffixe" : "", "defaut" : FloatToDecimal(0.0)},
         ]
 
         self.donnees = []
@@ -94,6 +94,8 @@ class ListView(FastObjectListView):
                 valeur = u"%d" % valeur
             if dictDonnee["format"] == "decimal" :
                 valeur = u"%.2f" % valeur
+            if dictDonnee["suffixe"] != "" :
+                valeur += " " + dictDonnee["suffixe"]
             self.donnees.append(Track(index, dictDonnee["label"], valeur))
             index += 1
 

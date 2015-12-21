@@ -13,7 +13,8 @@ from UTILS_Traduction import _
 import wx
 import GestionDB
 import UTILS_Dates
-
+import datetime
+from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -34,10 +35,17 @@ class Track(object):
         self.forfait_date_fin = self.dictValeurs["forfait_date_fin"]
         self.taux = self.dictValeurs["taux"]
         self.tarif_base = self.dictValeurs["tarif_base"]
-        self.heures_facturees = self.dictValeurs["heures_facturees"]
-        self.montant_mois = self.dictValeurs["montant_mois"]
+        self.tarif_depassement = self.dictValeurs["tarif_depassement"]
+
+        # Prévisions
+        self.heures_prevues = self.dictValeurs["heures_prevues"]
+        self.montant_prevu = self.dictValeurs["montant_prevu"]
+
+        # Facturé
         self.IDfacture = self.dictValeurs["IDfacture"]
         self.num_facture = self.dictValeurs["num_facture"]
+        self.heures_facturees = self.dictValeurs["heures_facturees"]
+        self.montant_facture = self.dictValeurs["montant_facture"]
 
         self.mois = self.date_facturation.month
         self.annee = self.date_facturation.year
@@ -80,7 +88,8 @@ class ListView(FastObjectListView):
                 return UTILS_Dates.DateDDEnFr(dateDD)
 
         def FormateMontant(montant):
-            if montant == None or montant == "" : return ""
+            if montant in ("", None, FloatToDecimal(0.0)) :
+                return ""
             return u"%.2f %s" % (montant, SYMBOLE)
 
         def FormateMontant2(montant):
@@ -88,7 +97,7 @@ class ListView(FastObjectListView):
             return u"%.5f %s" % (montant, SYMBOLE)
 
         def FormateDuree(duree):
-            if duree in (None, ""):
+            if duree in (None, "", datetime.timedelta(seconds=0)):
                 return ""
             else :
                 return UTILS_Dates.DeltaEnStr(duree, separateur="h")
@@ -102,13 +111,15 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(_(u"IDprestation"), "left", 0, "IDprestation", typeDonnee="entier"),
-            ColumnDefn(_(u"Mois"), 'left', 100, "annee_mois", typeDonnee="texte", isSpaceFilling=True, stringConverter=FormateMois),
+            ColumnDefn(_(u"Mois"), 'left', 100, "annee_mois", typeDonnee="texte", stringConverter=FormateMois),
+            ColumnDefn(_(u"Heures prév."), 'center', 80, "heures_prevues", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Montant prév."), 'center', 90, "montant_prevu", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Date fact."), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Heures fact."), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Montant fact."), 'center', 90, "montant_facture", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"N° Facture"), 'center', 70, "num_facture", typeDonnee="entier"),
             ColumnDefn(_(u"Taux"), 'center', 80, "taux", typeDonnee="montant", stringConverter=FormateMontant2),
             ColumnDefn(_(u"Tarif de base"), 'center', 80, "tarif_base", typeDonnee="montant", stringConverter=FormateMontant2),
-            ColumnDefn(_(u"Heures fact."), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Montant"), 'center', 80, "montant_mois", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"N° Facture"), 'center', 70, "num_facture", typeDonnee="entier"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -201,8 +212,10 @@ class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
             "annee_mois" : {"mode" : "nombre", "singulier" : _(u"mensualité"), "pluriel" : _(u"mensualités"), "alignement" : wx.ALIGN_CENTER},
+            "heures_prevues" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER, "format" : "temps"},
+            "montant_prevu" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER},
             "heures_facturees" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER, "format" : "temps"},
-            "montant_mois" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER},
+            "montant_facture" : {"mode" : "total", "alignement" : wx.ALIGN_CENTER},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
