@@ -1,3 +1,8 @@
+Version 1.1.6.1 (21/12/2015) :
+
+- Correction d'un bug sur l'enregistrement des mémos journaliers
+- Correction d'un bug sur l'enregistrement optimisé des conso
+
 Version 1.1.6.0 (14/12/2015) :
 
 - Correction d'un bug avec la recherche next ID sur les fichiers réseau

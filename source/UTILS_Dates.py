@@ -33,7 +33,7 @@ def DateComplete(dateDD):
     return dateComplete
 
 def DateEngEnDateDD(dateEng):
-    if dateEng == None or dateEng == "" : return None
+    if dateEng in (None, "", "None") : return None
     if type(dateEng) == datetime.date : return dateEng
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
