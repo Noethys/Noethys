@@ -105,7 +105,7 @@ def DateComplete(dateDD):
     return dateComplete
 
 def DateEngEnDateDD(dateEng):
-    if dateEng == None or dateEng == "" : return None
+    if dateEng in (None, "", "None") : return None
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
 def DateEngFr(textDate):
@@ -5079,7 +5079,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 conditionSuppression = str(tuple(listeSuppressions))
             DB.ExecuterReq("DELETE FROM consommations WHERE IDconso IN %s" % conditionSuppression)
 
-        
+        # Application des modifications dans la base de données
+        DB.Commit()
+
         # ---------------- Sauvegarde des mémos journaliers -------------------
         for key, valeurs in self.dictMemos.iteritems() :
             IDindividu = key[0]
@@ -5134,7 +5136,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             UTILS_Historique.InsertActions(listeAjoutsHistorique, DB=DB)
 
 
-        # Application de toutes les modifications dans la base de données
+        # Application des modifications dans la base de données
         DB.Commit()
 
         # Cloture de la DB
