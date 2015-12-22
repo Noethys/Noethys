@@ -20,6 +20,8 @@ import os
 import datetime
 import traceback
 from time import sleep 
+from sys import platform as _platform
+from xdg.BaseDirectory import *
 
 import UTILS_Linux
 if "linux" in sys.platform :
@@ -117,8 +119,18 @@ class MainFrame(wx.Frame):
     
     def Initialisation(self):
         # Vérifie que le fichier de configuration existe bien
-        self.nomFichierConfig = "Data/Config.dat"
-        test = os.path.isfile(self.nomFichierConfig) 
+        if _platform == "linux" or _platform == "linux2":
+            self.nomDossierConfig = xdg_data_home + "/noethys/Data/"
+            self.nomFichierConfig = self.nomDossierConfig  + "Config.dat"
+
+            if not os.path.isdir(self.nomDossierConfig):
+                os.makedirs(self.nomDossierConfig)
+
+        else:
+	    self.nomFichierConfig = "Data/Config.dat"
+
+	test = os.path.isfile(self.nomFichierConfig)
+
         if test == False :
             # Création du fichier de configuration
             cfg = UTILS_Config.FichierConfig(nomFichier=self.nomFichierConfig)
@@ -3787,9 +3799,17 @@ if __name__ == "__main__":
     
     # Crash report
     UTILS_Rapport_bugs.Activer_rapport_erreurs(version=VERSION_APPLICATION)
-    
+
     # Log
-    fichierLog = "journal.log"
+    if _platform == "linux" or _platform == "linux2":
+        dossierLog = xdg_data_home + "/var/log/Noethys/"
+        fichierLog = dossierLog  + "journal.log"
+
+        if not os.path.isdir(dossierLog):
+            os.makedirs(dossierLog)
+
+    else:
+        fichierLog = "journal.log"
     
     # Supprime le journal.log si supérieur à 10 Mo
     if os.path.isfile(fichierLog) :

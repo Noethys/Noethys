@@ -23,8 +23,8 @@ def PILtoWx(image):
     """Convert a PIL image to wx image format"""
     largeur, hauteur = image.size
     imagewx = wx.EmptyImage(largeur, hauteur)
-    imagewx.SetData(image.tostring('raw', 'RGB'))
-    imagewx.SetAlphaData(image.convert("RGBA").tostring()[3::4])
+    imagewx.SetData(image.tobytes('raw', 'RGB'))
+    imagewx.SetAlphaData(image.convert("RGBA").tobytes()[3::4])
     return imagewx        
 
 
