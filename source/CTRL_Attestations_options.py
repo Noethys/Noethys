@@ -81,7 +81,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Mémorisation")) )
         
         # Mémorisation des paramètres
-        propriete = wxpg.BoolProperty(label="Mémoriser les paramètres", name="memoriser_parametres", value=True)
+        propriete = wxpg.BoolProperty(label=_(u"Mémoriser les paramètres"), name="memoriser_parametres", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez mémoriser les paramètres de cette liste")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -95,7 +95,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Afficher le titre
-        propriete = wxpg.BoolProperty(label="Afficher le titre", name="afficher_titre", value=True)
+        propriete = wxpg.BoolProperty(label=_u("Afficher le titre"), name="afficher_titre", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le titre du le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -111,7 +111,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_titre", "SpinCtrl")
         
-        propriete = wxpg.BoolProperty(label="Afficher la période de facturation", name="afficher_periode", value=True)
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la période de facturation"), name="afficher_periode", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher la période de facturation dans le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)

@@ -187,7 +187,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         # Règlement automatique
         self.Append( wxpg.PropertyCategory(_(u"Règlement automatique")) )
         
-        propriete = wxpg.BoolProperty(label="Régler automatiquement", name="reglement_auto", value=False)
+        propriete = wxpg.BoolProperty(label=_(u"Régler automatiquement"), name="reglement_auto", value=False)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys créé un règlement automatiquement pour les prélèvements")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
