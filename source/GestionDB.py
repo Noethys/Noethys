@@ -1779,7 +1779,16 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 6, 1)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("contrats", "arrondi_type", "VARCHAR(50)")
+                self.AjoutChamp("contrats", "arrondi_delta", "INTEGER")
+                if self.IsTableExists("contrats_tarifs") == False : self.CreationTable("contrats_tarifs", Tables.DB_DATA)
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
 
@@ -2077,9 +2086,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    # db = DB(suffixe="DATA")
-    # db.AjoutChamp("tarifs_lignes", "revenu_max", "FLOAT")
-    # db.Close()
+    db = DB(suffixe="DATA")
+    db.AjoutChamp("contrats", "arrondi_delta", "INTEGER")
+    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
 ##    db = DB(suffixe="DATA")

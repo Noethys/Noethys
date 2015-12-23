@@ -917,6 +917,8 @@ class MainFrame(wx.Frame):
                             ],
                     },
                     "-",
+                    {"code" : "validation_contratspsu", "label" : _(u"Validation des contrats P.S.U."), "infobulle" : _(u"Validation des contrats P.S.U."), "image" : "Images/16x16/Contrat.png", "action" : self.On_facturation_validation_contratspsu},
+                    "-",
                     {"code" : "liste_prestations", "label" : _(u"Liste des prestations"), "infobulle" : _(u"Liste des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_liste_prestations},
                     {"code" : "recalcul_prestations", "label" : _(u"Recalculer des prestations"), "infobulle" : _(u"Recalculer des prestations"), "image" : "Images/16x16/Euro.png", "action" : self.On_facturation_recalculer_prestations},
                     "-",
@@ -2687,6 +2689,13 @@ class MainFrame(wx.Frame):
         import DLG_Attestations_fiscales_generation
         dlg = DLG_Attestations_fiscales_generation.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_facturation_validation_contratspsu(self, event):
+        if self.VerificationVentilation() == False : return
+        import DLG_Contratpsu_validation
+        dlg = DLG_Contratpsu_validation.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_facturation_liste_prestations(self, event):

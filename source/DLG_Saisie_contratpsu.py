@@ -27,13 +27,13 @@ import DLG_Contratpsu_tarification
 import DLG_Contratpsu_mensualisation
 import DLG_Contratpsu_recapitulatif
 
-from OL_Contratspsu_previsions import Track as Track_prevision
+from OL_Contratspsu_previsions import Track as Track_conso
 from OL_Contratspsu_tarifs import Track as Track_tarif
 from OL_Contratspsu_mensualites import Track as Track_mensualite
 
 
 
-TEXTE_INTRO = _(u"Ceci est le texte d'intro")
+TEXTE_INTRO = _(u"Vous pouvez saisir ici les paramètres d'un contrat P.S.U.")
 
 class Base(object) :
     """ Classe commune à l'assistant et au notebook """
@@ -99,21 +99,23 @@ class Base(object) :
         nbre_absences_prises = self.GetValeur("nbre_absences_prises", 0)
         nbre_absences_solde = self.GetValeur("nbre_absences_solde", 0)
         nbre_heures_regularisation = self.GetValeur("nbre_heures_regularisation", 0)
+        arrondi_type = self.GetValeur("arrondi_type", "duree")
+        arrondi_delta = self.GetValeur("arrondi_delta", 30)
 
         # Calcul du nbre de semaines et de mois
         nbre_semaines = rrule.rrule(rrule.WEEKLY, dtstart=date_debut, until=date_fin).count()
         nbre_mois = rrule.rrule(rrule.MONTHLY, dtstart=date_debut, until=date_fin).count()
 
-        # Analyse des prévisions
-        duree_previsions_brut = datetime.timedelta(0)
+        # Analyse des heures prévues
+        duree_heures_brut = datetime.timedelta(0)
         listeDatesUniques = []
         for track in tracks_previsions :
-            duree_previsions_brut += track.duree
+            duree_heures_brut += track.duree_arrondie
             if track.date not in listeDatesUniques :
                 listeDatesUniques.append(track.date)
 
         # Calcul du nbre d'heures brut
-        nbre_heures_brut = (duree_previsions_brut.days*24) + (duree_previsions_brut.seconds/3600)
+        nbre_heures_brut = (duree_heures_brut.days*24) + (duree_heures_brut.seconds/3600.0)
 
         # Calcul du nbre de dates uniques
         nbre_dates = len(listeDatesUniques)
@@ -124,11 +126,12 @@ class Base(object) :
             moy_heures_semaine = 0
             moy_heures_mois = 0
         else :
-            moy_heures_jour = round(1.0 * nbre_heures_brut / nbre_dates, 1)
-            moy_heures_semaine = round(1.0 * nbre_heures_brut / nbre_semaines, 1)
-            moy_heures_mois = round(1.0 * nbre_heures_brut / nbre_mois, 1)
+            moy_heures_jour = round(nbre_heures_brut / nbre_dates, 1)
+            moy_heures_semaine = round(nbre_heures_brut / nbre_semaines, 1)
+            moy_heures_mois = round(nbre_heures_brut / nbre_mois, 1)
 
         # Calcul du nbre d'heures du contrat
+        duree_heures_contrat = duree_heures_brut - datetime.timedelta(hours=nbre_absences_prevues) + datetime.timedelta(hours=nbre_heures_regularisation)
         nbre_heures_contrat = nbre_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
 
         # Génération des dates de facturation
@@ -226,10 +229,10 @@ class Base(object) :
                     montant_facture = dictPrestation["montant"]
                     heures_facturees = dictPrestation["temps_facture"]
 
-            if type(heures_facturees) == int :
-                heures_facturees = UTILS_Dates.HeureStrEnDelta("%d:00" % heures_facturees)
-            if type(heures_prevues) == int :
-                heures_prevues = UTILS_Dates.HeureStrEnDelta("%d:00" % heures_prevues)
+            #if type(heures_facturees) == int :
+            #    heures_facturees = UTILS_Dates.HeureStrEnDelta("%d:00" % heures_facturees)
+            if type(heures_prevues) in (int, float) :
+                heures_prevues = UTILS_Dates.FloatEnDelta(heures_prevues)
 
             # Mémorisation de la mensualité
             dictMensualite = {
@@ -295,6 +298,7 @@ class Base(object) :
             "moy_heures_semaine" : moy_heures_semaine,
             "moy_heures_mois" : moy_heures_mois,
             "nbre_heures_contrat" : nbre_heures_contrat,
+            "duree_heures_contrat" : duree_heures_contrat,
             "forfait_horaire_mensuel" : forfait_horaire_mensuel,
             "forfait_horaire_dernier_mois" : forfait_horaire_dernier_mois,
             "tracks_mensualites" : tracks_mensualites,
@@ -323,6 +327,8 @@ class Base(object) :
             ("type", "psu"),
             ("nbre_absences_prevues", self.GetValeur("nbre_absences_prevues", 0)),
             ("nbre_heures_regularisation", self.GetValeur("nbre_heures_regularisation", 0)),
+            ("arrondi_type", self.GetValeur("arrondi_type", None)),
+            ("arrondi_delta", self.GetValeur("arrondi_delta", 30)),
         )
         if self.IDcontrat == None :
             self.IDcontrat = DB.ReqInsert("contrats", listeDonnees)
@@ -465,7 +471,7 @@ class Base(object) :
         if self.IDcontrat != None :
 
             req = """SELECT contrats.IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type,
-            nbre_absences_prevues, nbre_heures_regularisation,
+            nbre_absences_prevues, nbre_heures_regularisation, arrondi_type, arrondi_delta,
             individus.nom, individus.prenom
             FROM contrats
             LEFT JOIN individus ON individus.IDindividu = contrats.IDindividu
@@ -474,7 +480,7 @@ class Base(object) :
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, nbre_absences_prevues, nbre_heures_regularisation, individu_nom, individu_prenom = listeDonnees[0]
+                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, nbre_absences_prevues, nbre_heures_regularisation, arrondi_type, arrondi_delta, individu_nom, individu_prenom = listeDonnees[0]
 
                 self.IDinscription = IDinscription
                 dictValeurs["date_debut"] = UTILS_Dates.DateEngEnDateDD(date_debut)
@@ -486,6 +492,8 @@ class Base(object) :
                 dictValeurs["nbre_heures_regularisation"] = nbre_heures_regularisation
                 dictValeurs["individu_nom"] = individu_nom
                 dictValeurs["individu_prenom"] = individu_prenom
+                dictValeurs["arrondi_type"] = arrondi_type
+                dictValeurs["arrondi_delta"] = arrondi_delta
 
                 if individu_prenom != None :
                     dictValeurs["individu_nom_complet"] = u"%s %s" %(individu_nom, individu_prenom)
@@ -513,10 +521,12 @@ class Base(object) :
             dictValeurs["date_inscription"] = date_inscription
             dictValeurs["parti"] = parti
 
+        # Mémorise les données déjà importées
+        self.SetValeurs(dictValeurs)
+
         # Echap sur nouveau contrat
         if self.IDcontrat == None :
             DB.Close()
-            self.SetValeurs(dictValeurs)
             return
 
         # Lecture des consommations
@@ -531,22 +541,33 @@ class Base(object) :
         tracks_previsions = []
         liste_IDconso = []
         liste_conso = []
+        dict_conso = {}
         for IDconso, date, IDunite, IDgroupe, heure_debut, heure_fin, etat, verrouillage, date_saisie, IDutilisateur,IDcategorie_tarif, IDprestation, forfait, quantite, etiquettes in listeDonnees :
             date = UTILS_Dates.DateEngEnDateDD(date)
             date_saisie = UTILS_Dates.DateEngEnDateDD(date_saisie)
+            heure_debut_time = UTILS_Dates.HeureStrEnTime(heure_debut)
+            heure_fin_time = UTILS_Dates.HeureStrEnTime(heure_fin)
+
             dictConso = {
                 "IDconso" : IDconso, "date" : date, "IDunite" : IDunite, "IDgroupe" : IDgroupe, "heure_debut" : heure_debut, "heure_fin" : heure_fin,
                 "etat" : etat, "verrouillage" : verrouillage, "date_saisie" : date_saisie, "IDutilisateur" : IDutilisateur,
                 "IDcategorie_tarif" : IDcategorie_tarif, "IDprestation" : IDprestation, "forfait" : forfait,
-                "quantite" : quantite, "etiquettes" : etiquettes,
+                "quantite" : quantite, "etiquettes" : etiquettes, "heure_debut_time" : heure_debut_time, "heure_fin_time" : heure_fin_time,
             }
-            liste_conso.append(dictConso)
+
+            track = Track_conso(self, dictConso)
+
+            liste_conso.append(track)
+            if dict_conso.has_key(date) == False :
+                dict_conso[date] = []
+            dict_conso[date].append(track)
 
             if IDunite == self.GetValeur("IDunite_prevision", None) :
-                tracks_previsions.append(Track_prevision(dictConso))
+                tracks_previsions.append(track)
                 liste_IDconso.append(IDconso)
 
         dictValeurs["liste_conso"] = liste_conso
+        dictValeurs["dict_conso"] = dict_conso
         dictValeurs["tracks_previsions"] = tracks_previsions
         dictValeurs["liste_IDconso"] = liste_IDconso
 

@@ -68,6 +68,10 @@ def HeuresEnDecimal(texteHeure="07:00"):
     heure = str(heures + minutes)
     return int(heure)
 
+def FloatEnDelta(valeur=10.50):
+    """ Convertit une valeur décimale en timedelta """
+    return datetime.timedelta(hours=valeur)
+
 def SoustractionHeures(heure_max, heure_min):
     """ Effectue l'opération heure_max - heure_min. Renvoi un timedelta """
     if type(heure_max) != datetime.timedelta : heure_max = datetime.timedelta(hours=heure_max.hour, minutes=heure_max.minute)
@@ -79,6 +83,30 @@ def AdditionHeures(heure1, heure2):
     if type(heure1) != datetime.timedelta : heure1 = datetime.timedelta(hours=heure1.hour, minutes=heure1.minute)
     if type(heure2) != datetime.timedelta : heure2 =  datetime.timedelta(hours=heure2.hour, minutes=heure2.minute)
     return heure1 + heure2
+
+def Additionne_intervalles_temps(intervals=[]):
+    def tparse(timestring):
+        return datetime.datetime.strptime(timestring, '%H:%M')
+
+    START, END = xrange(2)
+    times = []
+    for interval in intervals:
+        times.append((tparse(interval[START]), START))
+        times.append((tparse(interval[END]), END))
+    times.sort()
+
+    started = 0
+    result = datetime.timedelta()
+    for t, categorie in times:
+        if categorie == START:
+            if not started:
+                start_time = t
+            started += 1
+        elif categorie == END:
+            started -= 1
+            if not started:
+               result += (t - start_time)
+    return result
 
 def DeltaEnTime(varTimedelta) :
     """ Transforme une variable TIMEDELTA en heure datetime.time """
@@ -96,6 +124,8 @@ def DeltaEnStr(heureDelta, separateur="h"):
     # return texte
 
 def TimeEnDelta(heureTime):
+    if heureTime == None :
+        return datetime.timedelta(0)
     hr = heureTime.hour
     mn = heureTime.minute
     return datetime.timedelta(hours=hr, minutes=mn)
@@ -132,9 +162,54 @@ def HorodatageEnDatetime(horodatage, separation=None):
         horodatage = datetime.datetime(int(annee), int(mois), int(jour), int(heures), int(minutes), int(secondes))
     return horodatage
 
+def ArrondirTime(heure=datetime.time(hour=10, minute=25), delta_minutes=15, sens="inf"):
+    """ sens = 'sup' ou 'inf' """
+    dt = datetime.datetime(year=2015, month=1, day=1, hour=heure.hour, minute=heure.minute)
+    if dt.minute % delta_minutes :
+        if sens == "sup" :
+            resultat = dt + datetime.timedelta(minutes = delta_minutes - dt.minute % delta_minutes)
+        if sens == "inf" :
+            resultat = dt - datetime.timedelta(minutes = dt.minute % delta_minutes)
+    else:
+        resultat = dt
+    return datetime.time(hour=resultat.hour, minute=resultat.minute)
+
+def ArrondirDelta(duree=datetime.timedelta(hours=1, minutes=25), delta_minutes=15, sens="sup"):
+    duree_minutes = duree.seconds / 60
+    if duree_minutes % delta_minutes :
+        if sens == "sup" :
+            resultat = duree + datetime.timedelta(minutes = delta_minutes - duree_minutes % delta_minutes)
+        if sens == "inf" :
+            resultat = duree - datetime.timedelta(minutes = duree_minutes % delta_minutes)
+    else :
+        resultat = duree
+    return resultat
+
+def CalculerArrondi(arrondi_type="duree", arrondi_delta=15, heure_debut=None, heure_fin=None):
+    """
+    :param arrondi_type: None ou duree ou tranche_horaire
+    :param arrondi_delta: minutes
+    :param heure_debut: heure_debut en time
+    :param heure_fin: heure_fin en time
+    :return: datetime.time
+    """
+    duree_reelle = SoustractionHeures(heure_fin, heure_debut)
+
+    if arrondi_type == None :
+        duree_arrondie = duree_reelle
+
+    if arrondi_type == "tranche_horaire" :
+        heure_debut_temp = ArrondirTime(heure=heure_debut, delta_minutes=arrondi_delta, sens="inf")
+        heure_fin_temp = ArrondirTime(heure=heure_fin, delta_minutes=arrondi_delta, sens="sup")
+        duree_arrondie = SoustractionHeures(heure_fin_temp, heure_debut_temp)
+
+    if arrondi_type == "duree" :
+        duree_arrondie = ArrondirDelta(duree=duree_reelle, delta_minutes=arrondi_delta, sens="sup")
+
+    return duree_arrondie
+
 
 
 if __name__ == "__main__":
-    pass
-
-    
+    # Tests
+    print CalculerArrondi(arrondi_type="tranche_horaire", arrondi_delta=15, heure_debut=datetime.time(9, 25), heure_fin=datetime.time(9, 45))

@@ -29,6 +29,8 @@ class CTRL_Activite(wx.Choice):
     def MAJ(self):
         listeItems = self.GetListeDonnees()
         self.SetItems(listeItems)
+        if len(listeItems) > 0 :
+            self.Select(0)
 
     def GetListeDonnees(self):
         DB = GestionDB.DB()
@@ -91,7 +93,9 @@ class Dialog(wx.Dialog):
         self.listviewAvecFooter = OL_Contratspsu_validation.ListviewAvecFooter(self)
         self.ctrl_contrats = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Contratspsu_validation.CTRL_Outils(self, listview=self.ctrl_contrats, afficherCocher=True)
-        
+
+        self.bouton_detail = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/zoom_plus.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Texte2.png", wx.BITMAP_TYPE_ANY))
@@ -113,6 +117,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_SPIN, self.OnSpinMois, self.spin_mois)
         self.Bind(wx.EVT_SPINCTRL, self.OnChangeParametres, self.ctrl_annee)
         self.Bind(wx.EVT_CHOICE, self.OnChangeParametres, self.ctrl_activite)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Detail, self.bouton_detail)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Supprimer, self.bouton_supprimer)
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Apercu, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Imprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.ExportTexte, self.bouton_texte)
@@ -126,8 +132,11 @@ class Dialog(wx.Dialog):
         self.SetMois(mois=date.month, annee=date.year)
         self.OnChangeParametres()
 
+
     def __set_properties(self):
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_detail.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu du détail de la mensualité sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer les prestations existantes des lignes sélectionnées ou cochées"))
         self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
         self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
         self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
@@ -175,7 +184,10 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         
-        grid_sizer_droit = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit.Add(self.bouton_detail, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_imprimer, 0, 0, 0)
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)

@@ -78,45 +78,126 @@ class Track(object):
         self.heures_depassements = datetime.timedelta(seconds=0)
         self.heures_regularisation = datetime.timedelta(seconds=0)
 
-        for dictConso in self.clsbase.GetValeur("liste_conso", []) :
+        # Récupération des paramètres d'arrondis du contrat
+        # arrondi_type = self.clsbase.GetValeur("arrondi_type")
+        # arrondi_delta = self.clsbase.GetValeur("arrondi_delta")
 
-            if dictConso["date"].month == self.mois and dictConso["date"].year == self.annee :
+        dict_conso = self.clsbase.GetValeur("dict_conso", {})
+        self.dict_dates = {}
+        for date, listeConso in dict_conso.iteritems() :
 
-                heure_debut_time = UTILS_Dates.HeureStrEnTime(dictConso["heure_debut"])
-                heure_fin_time = UTILS_Dates.HeureStrEnTime(dictConso["heure_fin"])
-                duree = UTILS_Dates.SoustractionHeures(heure_fin_time, heure_debut_time)
+            # Recherche des consommations de la date
+            if date.month == self.mois and date.year == self.annee :
 
-                # Recherche des prévisions
-                if dictConso["IDunite"] == self.clsbase.GetValeur("IDunite_prevision") :
-                    self.heures_prevues_mois += duree
+                dict_date = {
+                    "prevision" : {
+                        "heure_debut" : None,
+                        "heure_fin" : None,
+                        "duree_reelle" : datetime.timedelta(),
+                        "duree_arrondie" : datetime.timedelta(),
+                    },
+                    "presence" : {
+                        "heure_debut" : None,
+                        "heure_fin" : None,
+                        "duree_reelle" : datetime.timedelta(),
+                        "duree_arrondie" : datetime.timedelta(),
+                    },
+                    "heures_absences_non_deductibles" : datetime.timedelta(0),
+                    "heures_absences_deductibles" : datetime.timedelta(0),
+                    "depassement" : datetime.timedelta(0),
+                }
 
-                # Recherche des présences et des absences
-                if dictConso["IDunite"] == self.clsbase.GetValeur("IDunite_presence") :
 
-                    if dictConso["etat"] in ("reservation", "present") :
-                        self.heures_presences += duree
 
-                    if dictConso["etat"] in ("absenti",) :
-                        self.heures_absences_non_deductibles += duree
+                for track in listeConso :
 
-                    if dictConso["etat"] in ("absentj",) :
-                        self.heures_absences_deductibles += duree
+                    # Recherche des prévisions
+                    if track.IDunite == self.clsbase.GetValeur("IDunite_prevision") :
+                        self.heures_prevues_mois += track.duree_arrondie # track.duree_reelle
 
-                # Recherche des dépassements
-                if dictConso["IDunite"] == self.clsbase.GetValeur("IDunite_depassement") :
-                    self.heures_depassements += duree
+                        if dict_date["prevision"]["heure_debut"] == None or dict_date["prevision"]["heure_debut"] < track.heure_debut_time :
+                            dict_date["prevision"]["heure_debut"] = track.heure_debut_time
+                        if dict_date["prevision"]["heure_fin"] == None or dict_date["prevision"]["heure_fin"] > track.heure_fin_time :
+                            dict_date["prevision"]["heure_fin"] = track.heure_fin_time
+                        dict_date["prevision"]["duree_reelle"] += track.duree_reelle
+                        dict_date["prevision"]["duree_arrondie"] += track.duree_arrondie
 
+                    # Recherche des présences
+                    if track.IDunite == self.clsbase.GetValeur("IDunite_presence") :
+
+                        if track.etat in ("reservation", "present") :
+                            self.heures_presences += track.duree_arrondie
+
+                            if dict_date["presence"]["heure_debut"] == None or dict_date["presence"]["heure_debut"] < track.heure_debut_time :
+                                dict_date["presence"]["heure_debut"] = track.heure_debut_time
+                            if dict_date["presence"]["heure_fin"] == None or dict_date["presence"]["heure_fin"] > track.heure_fin_time :
+                                dict_date["presence"]["heure_fin"] = track.heure_fin_time
+                            dict_date["presence"]["duree_reelle"] += track.duree_reelle
+                            dict_date["presence"]["duree_arrondie"] += track.duree_arrondie
+
+                        if track.etat in ("absenti",) :
+                            self.heures_absences_non_deductibles += track.duree_arrondie
+
+                        if track.etat in ("absentj",) :
+                            self.heures_absences_deductibles += track.duree_arrondie
+
+        #         # Recherche des dépassements
+        #         if track.IDunite == self.clsbase.GetValeur("IDunite_depassement") :
+        #             self.heures_depassements += duree
+
+                # Paramètres des dépassements
+                arrondi_type = "tranche_horaire"
+                arrondi_delta = 15
+                tolerance_delta = datetime.timedelta(minutes=15)
+
+                # Vérifie dépassement du début puis le dépassement de la fin
+                depassement_debut = ("debut", dict_date["presence"]["heure_debut"], dict_date["prevision"]["heure_debut"])
+                depassement_fin = ("fin", dict_date["prevision"]["heure_fin"], dict_date["presence"]["heure_fin"])
+
+                for type_depassement, heure_min, heure_max in [depassement_debut, depassement_fin] :
+                    depassement_arrondi = datetime.timedelta(0)
+
+                    # Vérifie s'il y a bien une présence
+                    if dict_date["presence"]["duree_arrondie"] != datetime.timedelta(0) :
+
+                        # S'il y avait une prévision :
+                        if dict_date["prevision"]["duree_arrondie"] != datetime.timedelta(0) :
+
+                            if heure_min < heure_max :
+
+                                # Vérifie si la tolérance est dépassée
+                                depassement_reel = UTILS_Dates.TimeEnDelta(heure_max) - UTILS_Dates.TimeEnDelta(heure_min)
+
+                                if depassement_reel > tolerance_delta :
+
+                                    # Vérifie s'il y a un dépassement
+                                    if heure_min < heure_max :
+                                        depassement_arrondi = UTILS_Dates.CalculerArrondi(arrondi_type=arrondi_type, arrondi_delta=arrondi_delta, heure_debut=heure_min, heure_fin=heure_max)
+
+                        else :
+                            # S'il n'y avait pas de prévision
+                            depassement_arrondi = dict_date["presence"]["duree_arrondie"]
+
+                        # Mémorisation du dépassement
+                        if depassement_arrondi > datetime.timedelta(0) :
+                            dict_date["depassement"] += depassement_arrondi
+                            self.heures_depassements += depassement_arrondi
+
+                # Mémorisation des données de la date
+                self.dict_dates[date] = dict_date
+
+        # MAJ du track mensualité
         self.MAJ()
 
     def MAJ(self):
         # Calcul des heures à facturer
         self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation
-        self.heures_a_facturer_entier = (self.heures_a_facturer.days*24) + (self.heures_a_facturer.seconds/3600)
-        self.montant_a_facturer = FloatToDecimal(self.tarif_base * self.heures_a_facturer_entier)
+        self.heures_a_facturer_float = (self.heures_a_facturer.days*24) + (self.heures_a_facturer.seconds/3600.0)
+        self.montant_a_facturer = FloatToDecimal(self.tarif_base * self.heures_a_facturer_float)
 
         # Calcul des dépassements
-        self.heures_depassements_entier = (self.heures_depassements.days*24) + (self.heures_depassements.seconds/3600)
-        self.montant_depassements = FloatToDecimal(self.tarif_depassement * self.heures_depassements_entier)
+        self.heures_depassements_float = (self.heures_depassements.days*24) + (self.heures_depassements.seconds/3600.0)
+        self.montant_depassements = FloatToDecimal(self.tarif_depassement * self.heures_depassements_float)
         self.montant_a_facturer += self.montant_depassements
 
         self.heures_a_facturer += self.heures_depassements
@@ -134,6 +215,7 @@ class ListView(FastObjectListView):
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
+        # self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
         self.Bind(EVT_CELL_EDIT_FINISHING, self.handleCellEditFinishing)
         self.donnees = []
@@ -149,6 +231,9 @@ class ListView(FastObjectListView):
     def handleCellEditFinishing(self, event):
         index = event.rowIndex
         wx.CallAfter(self.MAJtracks)
+
+    def OnItemActivated(self,event):
+        self.Detail(None)
 
     def MAJtracks(self):
         for track in self.donnees :
@@ -194,7 +279,7 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             # ColumnDefn(_(u""), "left", 0, "IDprestation", typeDonnee="entier", isEditable=False),
             ColumnDefn(_(u""), "left", 18, "", typeDonnee="texte", imageGetter=GetImage, isEditable=False),
-            ColumnDefn(_(u"Individu"), 'left', 130, "individu_nom_complet", typeDonnee="texte", isEditable=False),
+            ColumnDefn(_(u"Individu"), 'left', 150, "individu_nom_complet", typeDonnee="texte", isEditable=False),
             # ColumnDefn(_(u"Mois"), 'left', 100, "label_prestation", typeDonnee="texte", isEditable=False),
             ColumnDefn(_(u"H. forfait."), 'center', 80, "heures_prevues", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Mt. forfait"), 'center', 80, "montant_prevu", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
@@ -206,11 +291,11 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"H. compl."), 'center', 80, "heures_depassements", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"H. régular."), 'center', 80, "heures_regularisation", typeDonnee="duree", stringConverter=FormateDuree, isEditable=True),
 
-            ColumnDefn(_(u"H. facturées"), 'center', 80, "heures_a_facturer", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"HEURES"), 'center', 80, "heures_a_facturer", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"MONTANT"), 'center', 80, "montant_a_facturer", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
             ColumnDefn(_(u"Date"), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate, isEditable=False),
 
-            ColumnDefn(_(u"H. fact."), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"H. facturées"), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Montant fact."), 'center', 90, "montant_facture", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
             ColumnDefn(_(u"N° Facture"), 'center', 70, "num_facture", typeDonnee="entier", isEditable=False),
 
@@ -231,21 +316,24 @@ class ListView(FastObjectListView):
         self.annee = annee
         self.IDactivite = IDactivite
         self.nomActivite = nomActivite
+        # MAJ des données
+        self.MAJ_donnees()
 
+    def MAJ_donnees(self):
         # Recherche des dates extrêmes du mois
-        dernierJourMois = calendar.monthrange(annee, mois)[1]
-        date_debut = datetime.date(annee, mois, 1)
-        date_fin = datetime.date(annee, mois, dernierJourMois)
+        dernierJourMois = calendar.monthrange(self.annee, self.mois)[1]
+        date_debut = datetime.date(self.annee, self.mois, 1)
+        date_fin = datetime.date(self.annee, self.mois, dernierJourMois)
 
-        if IDactivite == None :
-            IDactivite = 0
+        if self.IDactivite == None :
+            self.IDactivite = 0
 
         # Recherche des contrats
         DB = GestionDB.DB()
         req = """SELECT IDcontrat, IDindividu
         FROM contrats
         WHERE type='psu' AND date_debut<='%s' AND date_fin>='%s' AND IDactivite=%d
-        ;""" % (date_fin, date_debut, IDactivite)
+        ;""" % (date_fin, date_debut, self.IDactivite)
         DB.ExecuterReq(req)
         listeContrats = DB.ResultatReq()
 
@@ -263,12 +351,12 @@ class ListView(FastObjectListView):
             track_mensualite = None
             liste_mensualites = clsbase.GetValeur("tracks_mensualites", [])
             for track in liste_mensualites :
-                if track.mois == mois and track.annee == annee :
+                if track.mois == self.mois and track.annee == self.annee :
                     track_mensualite = track
                     break
 
             # Création du track
-            track = Track(mois, annee, clsbase, track_mensualite)
+            track = Track(self.mois, self.annee, clsbase, track_mensualite)
             track.MAJ()
             self.donnees.append(track)
 
@@ -304,6 +392,24 @@ class ListView(FastObjectListView):
                 
         # Création du menu contextuel
         menuPop = wx.Menu()
+
+        # Item Détail
+        item = wx.MenuItem(menuPop, 20, _(u"Détail de la mensualité"))
+        bmp = wx.Bitmap("Images/16x16/zoom_plus.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Detail, id=20)
+        if noSelection == True : item.Enable(False)
+
+        # Item Supprimer
+        item = wx.MenuItem(menuPop, 30, _(u"Supprimer la prestation"))
+        bmp = wx.Bitmap("Images/16x16/Supprimer.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
+        if noSelection == True : item.Enable(False)
+
+        menuPop.AppendSeparator()
 
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
@@ -378,6 +484,79 @@ class ListView(FastObjectListView):
 
     def GetIntro(self):
         return u"Mensualités de %s %d de l'activité %s" % (LISTE_MOIS[self.mois-1], self.annee, self.nomActivite)
+
+    def Supprimer(self, event=None):
+        if len(self.Selection()) == 0 and len(self.GetCheckedObjects()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune aucune ligne dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        if len(self.GetCheckedObjects()) > 0 :
+            # Suppression multiple
+            listeSelections = self.GetCheckedObjects()
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer les prestations des mensualités cochées ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+
+        else :
+            # Suppression unique
+            listeSelections = self.Selection()
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer la prestation de la mensualité sélectionnée ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+
+        # Suppression
+        listeSuppressions = []
+        for track in listeSelections :
+            if track.IDfacture != None :
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation de %s car elle apparaît déjà sur une facture !") % track.individu_nom_complet, _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+            if track.IDprestation != None :
+                listeSuppressions.append(track.IDprestation)
+
+        # Suppression dans la base
+        DB = GestionDB.DB()
+
+        if len(listeSuppressions) > 0 :
+            if len(listeSuppressions) == 1 :
+                conditionSuppression = "(%d)" % listeSuppressions[0]
+            else :
+                conditionSuppression = str(tuple(listeSuppressions))
+            DB.ExecuterReq("DELETE FROM prestations WHERE IDprestation IN %s" % conditionSuppression)
+            DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
+            DB.ExecuterReq("DELETE FROM deductions WHERE IDprestation IN %s" % conditionSuppression)
+
+        DB.Commit()
+        DB.Close()
+
+        # MAJ de la liste
+        self.MAJ_donnees()
+
+        # Confirmation succès
+        dlg = wx.MessageDialog(self, _(u"%d prestations ont été supprimées avec succès !") % len(listeSuppressions), _(u"Suppression terminée"), wx.OK | wx.ICON_EXCLAMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def Detail(self, event=None):
+        if len(self.Selection()) == 0 :
+           dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune mensualité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+           dlg.ShowModal()
+           dlg.Destroy()
+           return False
+        track = self.Selection()[0]
+        import DLG_Contratpsu_detail
+        titre = u"%s %d" % (LISTE_MOIS[self.mois-1], self.annee)
+        dlg = DLG_Contratpsu_detail.Dialog(self, track_mensualite=track, titre_detail=titre)
+        dlg.ShowModal()
+        dlg.Destroy()
 
     def Valider(self):
         """ Valider les mensualités """

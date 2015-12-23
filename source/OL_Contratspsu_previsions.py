@@ -20,7 +20,8 @@ from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, 
                 
   
 class Track(object):
-    def __init__(self, dictValeurs):
+    def __init__(self, clsbase=None, dictValeurs={}):
+        self.clsbase = clsbase
         self.dictValeurs = dictValeurs
         self.MAJ()
 
@@ -56,11 +57,19 @@ class Track(object):
         else :
             self.texteEtat = ""
 
-        # Calcule la durée
+        # Calcule des horaires
         self.heure_debut_time = UTILS_Dates.HeureStrEnTime(self.heure_debut)
         self.heure_fin_time = UTILS_Dates.HeureStrEnTime(self.heure_fin)
-        self.duree = UTILS_Dates.SoustractionHeures(self.heure_fin_time, self.heure_debut_time)
-        self.duree_str = UTILS_Dates.DeltaEnStr(self.duree, separateur="h")
+
+        # Calcule la durée réelle
+        self.duree_reelle = UTILS_Dates.SoustractionHeures(self.heure_fin_time, self.heure_debut_time)
+        self.duree_reelle_str = UTILS_Dates.DeltaEnStr(self.duree_reelle, separateur="h")
+
+        # Calcule la durée arrondie
+        arrondi_type = self.clsbase.GetValeur("arrondi_type", None)
+        arrondi_delta = self.clsbase.GetValeur("arrondi_delta", 15)
+        self.duree_arrondie = UTILS_Dates.CalculerArrondi(arrondi_type=arrondi_type, arrondi_delta=arrondi_delta, heure_debut=self.heure_debut_time, heure_fin=self.heure_fin_time)
+        self.duree_arrondie_str = UTILS_Dates.DeltaEnStr(self.duree_arrondie, separateur="h")
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
@@ -136,8 +145,9 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Date"), 'left', 150, "date", typeDonnee="date", isSpaceFilling=True, stringConverter=FormateDate),
             #ColumnDefn(_(u"Unité"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
             #ColumnDefn(_(u"Etat"), 'left', 50, "texteEtat", typeDonnee="texte"),
-            ColumnDefn(_(u"Durée"), 'center', 80, "duree", typeDonnee="texte", stringConverter=FormateDuree),
             ColumnDefn(_(u"Détail"), 'left', 120, "texteDetail", typeDonnee="texte"),
+            ColumnDefn(_(u"Durée réelle"), 'center', 100, "duree_reelle", typeDonnee="texte", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Durée retenue"), 'center', 100, "duree_arrondie", typeDonnee="texte", stringConverter=FormateDuree),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -158,6 +168,11 @@ class ListView(FastObjectListView):
     def SetTracks(self, listeTracks=[]):
         self.donnees = listeTracks
         self.MAJ()
+
+    def MAJtracks(self):
+        for track in self.donnees :
+            track.MAJ()
+        self.RefreshObjects(self.donnees)
 
     def GetTracks(self):
         return self.GetObjects()
@@ -277,7 +292,7 @@ class ListView(FastObjectListView):
             listeConso = dlg.GetListeConso()
             listeTracks = []
             for dictConso in listeConso :
-                listeTracks.append(Track(dictConso))
+                listeTracks.append(Track(self.clsbase, dictConso))
             self.AddObjects(listeTracks)
         dlg.Destroy()
         
@@ -401,7 +416,8 @@ class ListviewAvecFooter(PanelAvecFooter):
     def __init__(self, parent, kwargs={}):
         dictColonnes = {
             "date" : {"mode" : "nombre", "singulier" : _(u"consommation"), "pluriel" : _(u"consommations"), "alignement" : wx.ALIGN_CENTER},
-            "duree" : {"mode" : "total", "format" : "temps", "alignement" : wx.ALIGN_CENTER},
+            "duree_reelle" : {"mode" : "total", "format" : "temps", "alignement" : wx.ALIGN_CENTER},
+            "duree_arrondie" : {"mode" : "total", "format" : "temps", "alignement" : wx.ALIGN_CENTER},
             }
         PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
 
@@ -415,7 +431,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         
-        ctrl = ListviewAvecFooter(panel, kwargs={"IDactivite" : 43, "IDunite_prevision" : 34})
+        ctrl = ListviewAvecFooter(panel, kwargs={})
         listview = ctrl.GetListview()
         listview.MAJ() 
         
