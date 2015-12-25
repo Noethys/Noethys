@@ -154,7 +154,6 @@ class Dialog(wx.Dialog):
         self.box_type_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Type de contrat"))
         self.radio_type_classique = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat classique"), style=wx.RB_GROUP)
         self.radio_type_psu = wx.RadioButton(self, wx.ID_ANY, _(u"Contrat P.S.U."))
-        self.radio_type_psu.Enable(False) #TODO:A supprimer
 
         # Activité
         self.box_activite_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Sélection de l'activité"))
@@ -300,7 +299,8 @@ class Dialog(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+        track_inscription = self.ctrl_inscriptions.Selection()[0]
+
         if self.radio_option_modele.GetValue() == True and self.ctrl_modele.GetID() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -309,6 +309,12 @@ class Dialog(wx.Dialog):
 
         if self.radio_option_contrat.GetValue() == True and self.ctrl_contrat.GetID() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un contrat dans la liste proposée !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        if self.radio_type_psu.GetValue() == True and track_inscription.psu_activation != 1 :
+            dlg = wx.MessageDialog(self, _(u"L'activité que vous avez sélectionné n'est pas compatible P.S.U. !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return

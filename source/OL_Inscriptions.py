@@ -58,6 +58,7 @@ class Track(object):
         self.parti = donnees[10]
         self.date_debut = donnees[11]
         self.date_fin = donnees[12]
+        self.psu_activation = donnees[13]
 ##        self.logo_activite = donnees[13]
 ##        self.bmp = self.GetImage()
 
@@ -140,7 +141,8 @@ class ListView(FastObjectListView):
         req = """SELECT IDinscription, IDindividu, IDfamille, 
         inscriptions.IDactivite, inscriptions.IDgroupe, inscriptions.IDcategorie_tarif, date_inscription, 
         activites.nom, groupes.nom, categories_tarifs.nom,
-        inscriptions.parti, activites.date_debut, activites.date_fin
+        inscriptions.parti, activites.date_debut, activites.date_fin,
+        activites.psu_activation
         FROM inscriptions 
         LEFT JOIN activites ON inscriptions.IDactivite=activites.IDactivite
         LEFT JOIN groupes ON inscriptions.IDgroupe=groupes.IDgroupe

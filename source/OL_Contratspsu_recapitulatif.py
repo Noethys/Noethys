@@ -14,6 +14,7 @@ import wx
 import GestionDB
 import UTILS_Dates
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+import datetime
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -73,9 +74,9 @@ class ListView(FastObjectListView):
             {"label" : _(u"Nombre moyen d'heures prévues par semaine"), "code" : "moy_heures_semaine", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
             {"label" : _(u"Nombre moyen d'heures prévues par mois"), "code" : "moy_heures_mois", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
             {"label" : _(u"Nombre d'heures prévues brut"), "code" : "nbre_heures_brut", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Nombre d'heures RTT prévues"), "code" : "nbre_absences_prevues", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Nombre d'heures RTT prises"), "code" : "nbre_absences_prises", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Nombre d'heures RTT restantes"), "code" : "nbre_absences_solde", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures RTT prévues"), "code" : "nbre_absences_prevues", "format" : "duree", "suffixe" : _(u"heures"), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre d'heures RTT prises"), "code" : "nbre_absences_prises", "format" : "duree", "suffixe" : _(u"heures"), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre d'heures RTT restantes"), "code" : "nbre_absences_solde", "format" : "duree", "suffixe" : _(u"heures"), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre d'heures de régularisation"), "code" : "nbre_heures_regularisation", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
             {"label" : _(u"Nombre total d'heures facturées"), "code" : "nbre_heures_contrat", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
             {"label" : _(u"Heures facturées chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
@@ -94,6 +95,8 @@ class ListView(FastObjectListView):
                 valeur = u"%d" % valeur
             if dictDonnee["format"] == "decimal" :
                 valeur = u"%.2f" % valeur
+            if dictDonnee["format"] == "duree" :
+                valeur = UTILS_Dates.DeltaEnStr(valeur)
             if dictDonnee["suffixe"] != "" :
                 valeur += " " + dictDonnee["suffixe"]
             self.donnees.append(Track(index, dictDonnee["label"], valeur))

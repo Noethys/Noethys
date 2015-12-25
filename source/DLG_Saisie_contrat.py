@@ -50,6 +50,9 @@ class CTRL_Tarif(CTRL_Ultrachoice.CTRL):
             self.SetSelection2(0)
 
     def Importation(self):
+        if self.IDactivite == None :
+            return []
+
         DB = GestionDB.DB()
         
         # Recherche des catégories de tarifs

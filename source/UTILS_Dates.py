@@ -72,6 +72,10 @@ def FloatEnDelta(valeur=10.50):
     """ Convertit une valeur décimale en timedelta """
     return datetime.timedelta(hours=valeur)
 
+def DeltaEnHeures(valeur=datetime.timedelta(0)):
+    """ Convertit une durée timedelta en nombre d'heures"""
+    return (valeur.days*24) + (valeur.seconds/3600.0)
+
 def SoustractionHeures(heure_max, heure_min):
     """ Effectue l'opération heure_max - heure_min. Renvoi un timedelta """
     if type(heure_max) != datetime.timedelta : heure_max = datetime.timedelta(hours=heure_max.hour, minutes=heure_max.minute)

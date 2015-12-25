@@ -127,6 +127,119 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
     
 
 
+
+class ClsParametres():
+    def __init__(self, parent, IDactivite=None):
+        self.parent = parent
+        self.IDactivite = IDactivite
+        self.dictDonnees = {}
+
+        # Importation
+        if self.IDactivite != None :
+            self.Importation()
+
+    def SetValeur(self, code="", valeur=None):
+        self.dictDonnees[code] = valeur
+
+    def GetValeur(self, code="", defaut=None):
+        if self.dictDonnees.has_key(code):
+            return self.dictDonnees[code]
+        else :
+            return defaut
+
+    def Importation(self):
+        """ Importation des données """
+        self.dictDonnees = {}
+        DB = GestionDB.DB()
+        req = """SELECT psu_activation, psu_unite_prevision, psu_unite_presence, psu_tarif_forfait
+        FROM activites WHERE IDactivite=%d;""" % self.IDactivite
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) == 0 : return
+        self.SetValeur("psu_activation", listeDonnees[0][0])
+        self.SetValeur("psu_unite_prevision", listeDonnees[0][1])
+        self.SetValeur("psu_unite_presence", listeDonnees[0][2])
+        self.SetValeur("psu_tarif_forfait", listeDonnees[0][3])
+
+    def Validation(self):
+        # Validation
+        if self.GetValeur("psu_activation", 0) == 1 :
+
+            psu_unite_prevision = self.GetValeur("psu_unite_prevision", None)
+            psu_unite_presence = self.GetValeur("psu_unite_presence", None)
+            psu_tarif_forfait = self.GetValeur("psu_tarif_forfait", None)
+
+            # Vérifie que des valeurs ont été saisies
+            if psu_unite_prevision == None :
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais sans sélectionner d'unité de prévision !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+            if psu_unite_presence == None :
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais sans sélectionner d'unité de présence !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+            if psu_tarif_forfait == None :
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais sans sélectionner de tarif forfait-crédit !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            # Vérifie que les valeurs existent
+            DB = GestionDB.DB()
+
+            req = """SELECT IDunite, nom
+            FROM unites WHERE IDactivite=%d;""" % self.IDactivite
+            DB.ExecuterReq(req)
+            listeUnites = DB.ResultatReq()
+            for IDunite in [psu_unite_prevision, psu_unite_presence] :
+                valide = False
+                for IDunite_temp, nom in listeUnites :
+                    if IDunite_temp == IDunite :
+                        valide = True
+                if valide == False :
+                    dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais l'unité de prévision sélectionnée semble inexistante !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    DB.Close()
+                    return False
+
+            req = """SELECT IDtarif, type
+            FROM tarifs WHERE IDactivite=%d;""" % self.IDactivite
+            DB.ExecuterReq(req)
+            listeTarifs = DB.ResultatReq()
+            valide = False
+            for IDtarif, type_tarif in listeTarifs :
+                if psu_tarif_forfait == IDtarif :
+                    valide = True
+            if valide == False :
+                dlg = wx.MessageDialog(self.parent, _(u"Vous avez sélectionné le mode P.S.U. mais le tarif forfait-crédit sélectionné semble inexistant !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                DB.Close()
+                return False
+
+            DB.Close()
+
+        return True
+
+    def Sauvegarde(self):
+        """ Sauvegarde des paramètres """
+        listeDonnees = [
+            ("psu_activation", self.GetValeur("psu_activation", 0)),
+            ("psu_unite_prevision", self.GetValeur("psu_unite_prevision", None)),
+            ("psu_unite_presence", self.GetValeur("psu_unite_presence", None)),
+            ("psu_tarif_forfait", self.GetValeur("psu_tarif_forfait", None)),
+            ]
+        DB = GestionDB.DB()
+        DB.ReqMAJ("activites", listeDonnees, "IDactivite", self.IDactivite)
+        DB.Close()
+
+
+
+# ---------------------------------------------------------------------------------------------
 class Assistant(wx.Dialog):
     def __init__(self, parent, IDactivite=None):
         wx.Dialog.__init__(self, parent, -1, name="DLG_activite", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
@@ -146,6 +259,7 @@ class Assistant(wx.Dialog):
         self.static_line = wx.StaticLine(self, -1)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Paramètres avancés"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_retour = CTRL_Bouton_image.CTRL(self, texte=_(u"Retour"), cheminImage="Images/32x32/Fleche_gauche.png")
         self.bouton_suite = CTRL_Bouton_image.CTRL(self, texte=_(u"Suite"), cheminImage="Images/32x32/Fleche_droite.png", margesImage=(0, 0, 4, 0), positionImage=wx.RIGHT)
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -153,6 +267,7 @@ class Assistant(wx.Dialog):
         self.__do_layout()
                 
         self.Bind(wx.EVT_BUTTON, self.Onbouton_aide, self.bouton_aide)
+        self.Bind(wx.EVT_BUTTON, self.Onbouton_options, self.bouton_options)
         self.Bind(wx.EVT_BUTTON, self.Onbouton_retour, self.bouton_retour)
         self.Bind(wx.EVT_BUTTON, self.Onbouton_suite, self.bouton_suite)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -178,6 +293,7 @@ class Assistant(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Paramétrage d'une activité"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux paramètres avancés"))
         self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
         self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
@@ -197,11 +313,12 @@ class Assistant(wx.Dialog):
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=6, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_options, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_retour, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_suite, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, wx.LEFT, 10)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(2)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
@@ -224,6 +341,9 @@ class Assistant(wx.Dialog):
     def Onbouton_aide(self, event):
         import UTILS_Aide
         UTILS_Aide.Aide("Paramtreruneactivit")
+
+    def Onbouton_options(self, event):
+        print "ok"
 
     def Onbouton_retour(self, event):
         # rend invisible la page affichée
@@ -338,6 +458,9 @@ class Notebook(wx.Notebook):
             exec("self.SetPageImage(%d, self.img%d)" % (index, index))
             exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
             index += 1
+
+        # Chargement des autres paramètres
+        self.clsParametres = ClsParametres(self, self.IDactivite)
         
     def GetPage(self, codePage=""):
         return self.dictPages[codePage]["ctrl"]
@@ -352,14 +475,41 @@ class Notebook(wx.Notebook):
             exec( "validation = self.page" + str(numPage) + ".Validation()" )
             if validation == False :
                 return False
+        # Validation des autres paramètres
+        if self.clsParametres.Validation() == False :
+            return False
         return True
 
     def Sauvegarde(self):
-        # Sauvegarde des données
+        # Sauvegarde des pages
         for numPage in range(0, len(self.listePages)) :
             exec( "self.page" + str(numPage) + ".Sauvegarde()" )
+        # Sauvegardes des autres paramètres
+        self.clsParametres.Sauvegarde()
         return True
 
+    def MenuOptions(self):
+        # Création du menu Options
+        menuPop = wx.Menu()
+
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Paramètres P.S.U."), _(u"Renseigner les paramètres P.S.U."))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Contrat.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ParametresPSU, id=id)
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def ParametresPSU(self, event):
+        import DLG_Activite_psu
+        dlg = DLG_Activite_psu.Dialog(self, self.IDactivite, clsParametres=self.clsParametres)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+
+
+# ----------------------------------------------------------------------------------------------------------
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None):
@@ -378,6 +528,7 @@ class Dialog(wx.Dialog):
         self.ctrl_notebook = Notebook(self, IDactivite, nouvelleActivite=self.nouvelleFiche)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Paramètres avancés"), cheminImage="Images/32x32/Configuration2.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
 
@@ -385,6 +536,7 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOptions, self.bouton_options)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
@@ -393,7 +545,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Paramétrage d'une activité"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux paramètres avancés"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
 
@@ -403,12 +555,13 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_base.Add(self.ctrl_notebook, 0, wx.RIGHT|wx.LEFT|wx.EXPAND, 10)
         
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_options, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(2)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
         self.SetSizer(grid_sizer_base)
@@ -440,7 +593,10 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event): 
         import UTILS_Aide
         UTILS_Aide.Aide("Paramtreruneactivit")
-        
+
+    def OnBoutonOptions(self, event):
+        self.ctrl_notebook.MenuOptions()
+
     def OnBoutonOk(self, event):
         # Validation des données
         validation = self.ctrl_notebook.ValidationPages()
@@ -460,7 +616,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    IDactivite = 1 # <<<<<<<<<<<<<<<< pour les tests
+    IDactivite = 43 # <<<<<<<<<<<<<<<< pour les tests
     if IDactivite == None :
         frame_1 = Assistant(None, IDactivite=None)
     else:

@@ -1790,8 +1790,17 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 6, 2)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("activites", "psu_activation", "INTEGER")
+                self.AjoutChamp("activites", "psu_unite_prevision", "INTEGER")
+                self.AjoutChamp("activites", "psu_unite_presence", "INTEGER")
+                self.AjoutChamp("activites", "psu_tarif_forfait", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
-
+        # =============================================================
 
 
         return True
@@ -2087,7 +2096,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     db = DB(suffixe="DATA")
-    db.AjoutChamp("contrats", "arrondi_delta", "INTEGER")
+    db.AjoutChamp("activites", "psu_tarif_forfait", "INTEGER")
     db.Close()
 
     # Exportation d'une table dans la base DEFAUT

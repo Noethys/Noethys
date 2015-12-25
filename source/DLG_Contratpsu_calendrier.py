@@ -191,9 +191,9 @@ class Panel(wx.Panel):
 
     def Sauvegarde(self):
         self.clsbase.SetValeur("tracks_previsions", self.ctrl_previsions.GetTracks())
-        self.clsbase.SetValeur("nbre_absences_prevues", int(self.ctrl_absences_prevues.GetValue()))
-        self.clsbase.SetValeur("nbre_absences_prises", int(self.ctrl_absences_prises.GetValue()))
-        self.clsbase.SetValeur("nbre_absences_solde", int(self.ctrl_absences_solde.GetValue()))
+        self.clsbase.SetValeur("nbre_absences_prevues", UTILS_Dates.FloatEnDelta(int(self.ctrl_absences_prevues.GetValue())))
+        self.clsbase.SetValeur("nbre_absences_prises", UTILS_Dates.FloatEnDelta(int(self.ctrl_absences_prises.GetValue())))
+        self.clsbase.SetValeur("nbre_absences_solde", UTILS_Dates.FloatEnDelta(int(self.ctrl_absences_solde.GetValue())))
         self.clsbase.SetValeur("arrondi_type", self.GetArrondiType())
         self.clsbase.SetValeur("arrondi_delta", self.GetArrondiDelta())
 

@@ -251,6 +251,10 @@ DB_DATA = {
                                     ("date_creation", "DATE", u"Date de création de l'activité"),
                                     ("nbre_inscrits_max", "INTEGER", u"Nombre d'inscrits max"),
                                     ("code_comptable", "VARCHAR(450)", u"Code comptable pour facturation et export logiciels compta"),
+                                    ("psu_activation", "INTEGER", u"Mode PSU : Activation"),
+                                    ("psu_unite_prevision", "INTEGER", u"Mode PSU : IDunite prévision"),
+                                    ("psu_unite_presence", "INTEGER", u"Mode PSU : IDunite présence"),
+                                    ("psu_tarif_forfait", "INTEGER", u"Mode PSU : IDtarif forfait-crédit"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),

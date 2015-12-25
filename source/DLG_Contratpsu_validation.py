@@ -36,6 +36,7 @@ class CTRL_Activite(wx.Choice):
         DB = GestionDB.DB()
         req = """SELECT IDactivite, nom, abrege
         FROM activites
+        WHERE psu_activation=1
         ORDER BY date_fin DESC;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()

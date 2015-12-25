@@ -23,23 +23,29 @@ from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filte
 from ObjectListView import EVT_CELL_EDIT_STARTING, EVT_CELL_EDIT_FINISHING, CellEditorRegistry
 
 from DLG_Saisie_contratpsu import Base
+import CTRL_Saisie_duree
 
 LISTE_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")]
 
 
 
-class CTRL_Duree(wx.SpinCtrl):
+class CTRL_Duree(CTRL_Saisie_duree.CTRL):
     def __init__(self, parent):
-        wx.SpinCtrl.__init__(self, parent, -1, "", min=-99999, max=99999, style=wx.TE_PROCESS_ENTER)
+        CTRL_Saisie_duree.CTRL.__init__(self, parent)
 
-    def SetValue(self, valeur=datetime.timedelta(seconds=0)):
-        heures = (valeur.days*24) + (valeur.seconds/3600)
-        super(CTRL_Duree, self).SetValue(heures)
+    def SetValue(self, valeur=datetime.timedelta(0)):
+        #self.SetDuree("12:30")
+        return CTRL_Saisie_duree.CTRL.SetDuree(self, valeur)
+        #heures = (valeur.days*24) + (valeur.seconds/3600)
+        #super(CTRL_Duree, self).SetValue(heures)
 
     def GetValue(self):
-        heures = super(CTRL_Duree, self).GetValue()
-        if heures == -99999 : heures = 0
-        return datetime.timedelta(hours=heures)
+        return CTRL_Saisie_duree.CTRL.GetValue(self)
+        #return self.GetDuree(format=datetime.timedelta)
+        #heures = super(CTRL_Duree, self).GetValue()
+        #if heures == -99999 : heures = 0
+        #return datetime.timedelta(hours=heures)
+
 
 
 class Track(object):
@@ -50,7 +56,15 @@ class Track(object):
         self.track_mensualite = track_mensualite
 
         # Généralités
+        self.date_debut_contrat = self.clsbase.GetValeur("date_debut", None)
+        self.date_fin_contrat = self.clsbase.GetValeur("date_fin", None)
         self.individu_nom_complet = self.clsbase.GetValeur("individu_nom_complet", "")
+
+        # Ajout les RTT non prises si dernier mois du contrat
+        if self.date_fin_contrat.month == mois and self.date_fin_contrat.year == annee :
+            self.nbre_solde_rtt = self.clsbase.GetValeur("nbre_absences_solde", datetime.timedelta(0))
+        else :
+            self.nbre_solde_rtt = datetime.timedelta(0)
 
         # Mensualité
         self.label_prestation = self.track_mensualite.label_prestation
@@ -191,7 +205,7 @@ class Track(object):
 
     def MAJ(self):
         # Calcul des heures à facturer
-        self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation
+        self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation + self.nbre_solde_rtt
         self.heures_a_facturer_float = (self.heures_a_facturer.days*24) + (self.heures_a_facturer.seconds/3600.0)
         self.montant_a_facturer = FloatToDecimal(self.tarif_base * self.heures_a_facturer_float)
 
@@ -273,8 +287,13 @@ class ListView(FastObjectListView):
         def FormateDuree(duree):
             if duree in (None, "", datetime.timedelta(seconds=0)):
                 return ""
-            else :
+            if type(duree) == datetime.timedelta :
                 return UTILS_Dates.DeltaEnStr(duree, separateur="h")
+            if type(duree) in (str, unicode) :
+                duree = duree.replace(' ','')
+                duree = duree.replace(":", "h")
+                return duree
+            
 
         liste_Colonnes = [
             # ColumnDefn(_(u""), "left", 0, "IDprestation", typeDonnee="entier", isEditable=False),
@@ -289,6 +308,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Abs déduc."), 'center', 80, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Abs non déduc."), 'center', 95, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"H. compl."), 'center', 80, "heures_depassements", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"RTT non prises"), 'center', 95, "nbre_solde_rtt", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"H. régular."), 'center', 80, "heures_regularisation", typeDonnee="duree", stringConverter=FormateDuree, isEditable=True),
 
             ColumnDefn(_(u"HEURES"), 'center', 80, "heures_a_facturer", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),

@@ -42,12 +42,7 @@ class Base(object) :
         self.IDinscription = IDinscription
 
         # Stockage des données du contrat
-        self.dictContrat = {
-            "IDunite_prevision" : 34, #TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            "IDunite_presence" : 35, #TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            "IDunite_depassement" : 36, #TODO <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-            "IDtarif" : None,#TODO <<<<<<<<<<<<<<<<<<<<<<<<<<
-        }
+        self.dictContrat = {}
 
         # Importation des données
         self.Importation(DB)
@@ -95,16 +90,29 @@ class Base(object) :
             date_fin = dict_valeurs["date_fin"]
         tracks_previsions = self.GetValeur("tracks_previsions", [])
         tracks_tarifs = self.GetValeur("tracks_tarifs", [])
-        nbre_absences_prevues = self.GetValeur("nbre_absences_prevues", 0)
-        nbre_absences_prises = self.GetValeur("nbre_absences_prises", 0)
-        nbre_absences_solde = self.GetValeur("nbre_absences_solde", 0)
-        nbre_heures_regularisation = self.GetValeur("nbre_heures_regularisation", 0)
+        nbre_heures_regularisation = UTILS_Dates.FloatEnDelta(self.GetValeur("nbre_heures_regularisation", 0))
         arrondi_type = self.GetValeur("arrondi_type", "duree")
         arrondi_delta = self.GetValeur("arrondi_delta", 30)
 
+        # Absences
+        nbre_absences_prevues = UTILS_Dates.FloatEnDelta(self.GetValeur("nbre_absences_prevues", 0))
+        nbre_absences_prises = UTILS_Dates.FloatEnDelta(self.GetValeur("nbre_absences_prises", 0))
+        nbre_absences_solde = nbre_absences_prevues - nbre_absences_prises
+        self.SetValeur("nbre_absences_solde", nbre_absences_solde)
+
+        # Vérifie si dates du contrat valides avant les calculs
+        if date_debut != None and date_fin != None and date_fin > date_debut :
+            dates_valides = True
+        else :
+            dates_valides = False
+
         # Calcul du nbre de semaines et de mois
-        nbre_semaines = rrule.rrule(rrule.WEEKLY, dtstart=date_debut, until=date_fin).count()
-        nbre_mois = rrule.rrule(rrule.MONTHLY, dtstart=date_debut, until=date_fin).count()
+        if dates_valides :
+            nbre_semaines = rrule.rrule(rrule.WEEKLY, dtstart=date_debut, until=date_fin).count()
+            nbre_mois = rrule.rrule(rrule.MONTHLY, dtstart=date_debut, until=date_fin).count()
+        else :
+            nbre_semaines = 0
+            nbre_mois = 0
 
         # Analyse des heures prévues
         duree_heures_brut = datetime.timedelta(0)
@@ -115,7 +123,7 @@ class Base(object) :
                 listeDatesUniques.append(track.date)
 
         # Calcul du nbre d'heures brut
-        nbre_heures_brut = (duree_heures_brut.days*24) + (duree_heures_brut.seconds/3600.0)
+        nbre_heures_brut = UTILS_Dates.DeltaEnHeures(duree_heures_brut)
 
         # Calcul du nbre de dates uniques
         nbre_dates = len(listeDatesUniques)
@@ -131,15 +139,18 @@ class Base(object) :
             moy_heures_mois = round(nbre_heures_brut / nbre_mois, 1)
 
         # Calcul du nbre d'heures du contrat
-        duree_heures_contrat = duree_heures_brut - datetime.timedelta(hours=nbre_absences_prevues) + datetime.timedelta(hours=nbre_heures_regularisation)
-        nbre_heures_contrat = nbre_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
+        duree_heures_contrat = duree_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
+        #nbre_heures_contrat = nbre_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
 
         # Génération des dates de facturation
-        liste_mois = list(rrule.rrule(rrule.MONTHLY, bymonthday=1, dtstart=date_debut, until=date_fin))
+        if dates_valides :
+            liste_mois = list(rrule.rrule(rrule.MONTHLY, bymonthday=1, dtstart=date_debut, until=date_fin))
+        else :
+            liste_mois = []
         nbre_mois_factures = len(liste_mois)
 
         # Ajout de la date de début du contrat
-        if date_debut.day > 1 :
+        if dates_valides and date_debut.day > 1 :
             liste_mois.insert(0, date_debut)
 
         # Recherche s'il y a des mensualités déjà facturées
@@ -161,7 +172,8 @@ class Base(object) :
         if nbre_mois_factures == 0 :
             forfait_horaire_mensuel, reste_division = 0, 0
         else :
-            forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat, nbre_mois_factures)
+            nbre_heures_contrat_float = UTILS_Dates.DeltaEnHeures(duree_heures_contrat)
+            forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat_float, nbre_mois_factures)
         forfait_horaire_dernier_mois = forfait_horaire_mensuel + reste_division
 
         # Calcul du forfait horaire mensuel
@@ -170,7 +182,6 @@ class Base(object) :
         # else :
         #     forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat, nbre_mois)
         # forfait_horaire_dernier_mois = forfait_horaire_mensuel + reste_division
-
 
         # Génération des mensualités
         tracks_mensualites = []
@@ -208,9 +219,11 @@ class Base(object) :
             if track_tarif != None :
                 tarif_base = track_tarif.tarif_base
                 tarif_depassement = track_tarif.tarif_depassement
+                taux = track_tarif.taux
             else :
-                tarif_base = FloatToDecimal(0.0)
-                tarif_depassement = FloatToDecimal(0.0)
+                tarif_base = 0.0
+                tarif_depassement = 0.0
+                taux = 0.0
 
             montant_prevu = FloatToDecimal(tarif_base * heures_prevues)
             total_mensualites += montant_prevu
@@ -238,7 +251,7 @@ class Base(object) :
             dictMensualite = {
                 "IDprestation" : IDprestation,
                 "date_facturation" : date_facturation,
-                "taux" : track_tarif.taux,
+                "taux" : taux,
                 "track_tarif" : track_tarif,
                 "tarif_base" : tarif_base,
                 "tarif_depassement" : tarif_depassement,
@@ -297,7 +310,7 @@ class Base(object) :
             "moy_heures_jour" : moy_heures_jour,
             "moy_heures_semaine" : moy_heures_semaine,
             "moy_heures_mois" : moy_heures_mois,
-            "nbre_heures_contrat" : nbre_heures_contrat,
+            #"nbre_heures_contrat" : nbre_heures_contrat,
             "duree_heures_contrat" : duree_heures_contrat,
             "forfait_horaire_mensuel" : forfait_horaire_mensuel,
             "forfait_horaire_dernier_mois" : forfait_horaire_dernier_mois,
@@ -520,6 +533,32 @@ class Base(object) :
             dictValeurs["IDcompte_payeur"] = IDcompte_payeur
             dictValeurs["date_inscription"] = date_inscription
             dictValeurs["parti"] = parti
+
+            # Infos sur le dernier contrat saisi
+            req = """SELECT arrondi_type, arrondi_delta
+            FROM contrats
+            WHERE type='psu' AND IDactivite=%d
+            ORDER BY IDcontrat DESC LIMIT 1
+            ;""" % IDactivite
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            if len(listeDonnees) > 0 :
+                arrondi_type, arrondi_delta = listeDonnees[0]
+                dictValeurs["arrondi_type"] = arrondi_type
+                dictValeurs["arrondi_delta"] = arrondi_delta
+
+        # Informations sur l'activité
+        req = """SELECT psu_unite_prevision, psu_unite_presence, psu_tarif_forfait
+        FROM activites
+        WHERE IDactivite=%d
+        ;""" % dictValeurs["IDactivite"]
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        psu_unite_prevision, psu_unite_presence, psu_tarif_forfait = listeDonnees[0]
+
+        dictValeurs["IDunite_prevision"] = psu_unite_prevision
+        dictValeurs["IDunite_presence"] = psu_unite_presence
+        dictValeurs["IDtarif"] = psu_tarif_forfait
 
         # Mémorise les données déjà importées
         self.SetValeurs(dictValeurs)
@@ -954,7 +993,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    #frame_1 = Assistant(None, IDcontrat=6)
+    #frame_1 = Assistant(None, IDinscription=1856)
     frame_1 = Dialog(None, IDcontrat=6)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
