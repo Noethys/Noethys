@@ -1329,6 +1329,8 @@ DB_DATA = {
                                     ("nbre_heures_regularisation", "INTEGER", u"Nombre d'heures de régularisation PSU"),
                                     ("arrondi_type", "VARCHAR(50)", u"Type d'arrondi sur les heures"),
                                     ("arrondi_delta", "INTEGER", u"Delta en minutes de l'arrondi sur les heures"),
+                                    ("duree_absences_prevues", "VARCHAR(50)", u"Temps d'absences prévues PSU"),
+                                    ("duree_heures_regularisation", "VARCHAR(50)", u"Temps de régularisation PSU"),
                                     ], # Contrats
 
     "modeles_contrats":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),

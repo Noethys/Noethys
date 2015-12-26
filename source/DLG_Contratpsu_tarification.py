@@ -14,7 +14,7 @@ import wx
 import CTRL_Bouton_image
 import GestionDB
 import OL_Contratspsu_tarifs
-
+import CTRL_Saisie_duree
 
 
 class Panel(wx.Panel):
@@ -41,7 +41,7 @@ class Panel(wx.Panel):
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.label_regularisation = wx.StaticText(self, -1, _(u"Heures de régularisation :"))
-        self.ctrl_regularisation = wx.SpinCtrl(self, -1, "0", size=(90, -1), min=-99999, max=99999)
+        self.ctrl_regularisation = CTRL_Saisie_duree.CTRL(self)
 
         self.__set_properties()
         self.__do_layout()
@@ -113,7 +113,7 @@ class Panel(wx.Panel):
 
     def Sauvegarde(self):
         self.clsbase.SetValeur("tracks_tarifs", self.ctrl_tarifs.GetTracks())
-        self.clsbase.SetValeur("nbre_heures_regularisation", int(self.ctrl_regularisation.GetValue()))
+        self.clsbase.SetValeur("duree_heures_regularisation", self.ctrl_regularisation.GetValue())
 
     def MAJ(self):
         self.clsbase.Calculer()
@@ -124,9 +124,9 @@ class Panel(wx.Panel):
             self.ctrl_tarifs.SetTracks(tracks_tarifs)
 
             # Heures de régularisation
-            nbre_heures_regularisation = self.clsbase.GetValeur("nbre_heures_regularisation", 0)
-            if nbre_heures_regularisation != None :
-                self.ctrl_regularisation.SetValue(nbre_heures_regularisation)
+            duree_heures_regularisation = self.clsbase.GetValeur("duree_heures_regularisation", 0)
+            if duree_heures_regularisation != None :
+                self.ctrl_regularisation.SetValue(duree_heures_regularisation)
 
         self.MAJ_effectuee = True
 

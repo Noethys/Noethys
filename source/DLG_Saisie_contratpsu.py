@@ -90,14 +90,14 @@ class Base(object) :
             date_fin = dict_valeurs["date_fin"]
         tracks_previsions = self.GetValeur("tracks_previsions", [])
         tracks_tarifs = self.GetValeur("tracks_tarifs", [])
-        nbre_heures_regularisation = UTILS_Dates.FloatEnDelta(self.GetValeur("nbre_heures_regularisation", 0))
+        duree_heures_regularisation = self.GetValeur("duree_heures_regularisation", datetime.timedelta(0))
         arrondi_type = self.GetValeur("arrondi_type", "duree")
         arrondi_delta = self.GetValeur("arrondi_delta", 30)
 
         # Absences
-        nbre_absences_prevues = UTILS_Dates.FloatEnDelta(self.GetValeur("nbre_absences_prevues", 0))
-        nbre_absences_prises = UTILS_Dates.FloatEnDelta(self.GetValeur("nbre_absences_prises", 0))
-        nbre_absences_solde = nbre_absences_prevues - nbre_absences_prises
+        duree_absences_prevues = self.GetValeur("duree_absences_prevues", datetime.timedelta(0))
+        nbre_absences_prises = self.GetValeur("nbre_absences_prises", datetime.timedelta(0))
+        nbre_absences_solde = duree_absences_prevues - nbre_absences_prises
         self.SetValeur("nbre_absences_solde", nbre_absences_solde)
 
         # Vérifie si dates du contrat valides avant les calculs
@@ -139,8 +139,8 @@ class Base(object) :
             moy_heures_mois = round(nbre_heures_brut / nbre_mois, 1)
 
         # Calcul du nbre d'heures du contrat
-        duree_heures_contrat = duree_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
-        #nbre_heures_contrat = nbre_heures_brut - nbre_absences_prevues + nbre_heures_regularisation
+        duree_heures_contrat = duree_heures_brut - duree_absences_prevues + duree_heures_regularisation
+        #nbre_heures_contrat = nbre_heures_brut - duree_absences_prevues + duree_heures_regularisation
 
         # Génération des dates de facturation
         if dates_valides :
@@ -338,8 +338,8 @@ class Base(object) :
             ("date_fin", self.GetValeur("date_fin", None)),
             ("observations", self.GetValeur("observations", None)),
             ("type", "psu"),
-            ("nbre_absences_prevues", self.GetValeur("nbre_absences_prevues", 0)),
-            ("nbre_heures_regularisation", self.GetValeur("nbre_heures_regularisation", 0)),
+            ("duree_absences_prevues", self.GetValeur("duree_absences_prevues", 0)),
+            ("duree_heures_regularisation", self.GetValeur("duree_heures_regularisation", 0)),
             ("arrondi_type", self.GetValeur("arrondi_type", None)),
             ("arrondi_delta", self.GetValeur("arrondi_delta", 30)),
         )
@@ -484,7 +484,7 @@ class Base(object) :
         if self.IDcontrat != None :
 
             req = """SELECT contrats.IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type,
-            nbre_absences_prevues, nbre_heures_regularisation, arrondi_type, arrondi_delta,
+            duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta,
             individus.nom, individus.prenom
             FROM contrats
             LEFT JOIN individus ON individus.IDindividu = contrats.IDindividu
@@ -493,7 +493,7 @@ class Base(object) :
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, nbre_absences_prevues, nbre_heures_regularisation, arrondi_type, arrondi_delta, individu_nom, individu_prenom = listeDonnees[0]
+                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, individu_nom, individu_prenom = listeDonnees[0]
 
                 self.IDinscription = IDinscription
                 dictValeurs["date_debut"] = UTILS_Dates.DateEngEnDateDD(date_debut)
@@ -501,8 +501,8 @@ class Base(object) :
                 dictValeurs["observations"] = observations
                 dictValeurs["IDactivite"] = IDactivite
                 dictValeurs["type_contrat"] = type_contrat
-                dictValeurs["nbre_absences_prevues"] = nbre_absences_prevues
-                dictValeurs["nbre_heures_regularisation"] = nbre_heures_regularisation
+                dictValeurs["duree_absences_prevues"] = UTILS_Dates.HeureStrEnDelta(duree_absences_prevues)
+                dictValeurs["duree_heures_regularisation"] = UTILS_Dates.HeureStrEnDelta(duree_heures_regularisation)
                 dictValeurs["individu_nom"] = individu_nom
                 dictValeurs["individu_prenom"] = individu_prenom
                 dictValeurs["arrondi_type"] = arrondi_type

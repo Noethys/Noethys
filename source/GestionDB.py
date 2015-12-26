@@ -1784,7 +1784,6 @@ class DB:
             try :
                 self.AjoutChamp("contrats", "arrondi_type", "VARCHAR(50)")
                 self.AjoutChamp("contrats", "arrondi_delta", "INTEGER")
-                if self.IsTableExists("contrats_tarifs") == False : self.CreationTable("contrats_tarifs", Tables.DB_DATA)
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
@@ -1797,10 +1796,16 @@ class DB:
                 self.AjoutChamp("activites", "psu_unite_prevision", "INTEGER")
                 self.AjoutChamp("activites", "psu_unite_presence", "INTEGER")
                 self.AjoutChamp("activites", "psu_tarif_forfait", "INTEGER")
+                self.AjoutChamp("contrats", "duree_absences_prevues", "VARCHAR(50)")
+                self.AjoutChamp("contrats", "duree_heures_regularisation", "VARCHAR(50)")
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
+
+
+
+
 
 
         return True
@@ -2096,7 +2101,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     db = DB(suffixe="DATA")
-    db.AjoutChamp("activites", "psu_tarif_forfait", "INTEGER")
+    db.AjoutChamp("contrats", "duree_absences_prevues", "VARCHAR(50)")
     db.Close()
 
     # Exportation d'une table dans la base DEFAUT

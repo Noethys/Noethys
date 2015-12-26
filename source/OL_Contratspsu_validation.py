@@ -40,7 +40,7 @@ class CTRL_Duree(CTRL_Saisie_duree.CTRL):
         #super(CTRL_Duree, self).SetValue(heures)
 
     def GetValue(self):
-        return CTRL_Saisie_duree.CTRL.GetValue(self)
+        return CTRL_Saisie_duree.CTRL.GetDuree(self)
         #return self.GetDuree(format=datetime.timedelta)
         #heures = super(CTRL_Duree, self).GetValue()
         #if heures == -99999 : heures = 0
@@ -236,7 +236,7 @@ class ListView(FastObjectListView):
         self.InitObjectListView()
 
         def TimedeltaEditor(olv, rowIndex, subItemIndex):
-            ctrl = CTRL_Duree(self)
+            ctrl = CTRL_Saisie_duree.CTRL(self)
             return ctrl
 
         # Register the "editor factory" for wx.Colour objects
@@ -293,7 +293,7 @@ class ListView(FastObjectListView):
                 duree = duree.replace(' ','')
                 duree = duree.replace(":", "h")
                 return duree
-            
+
 
         liste_Colonnes = [
             # ColumnDefn(_(u""), "left", 0, "IDprestation", typeDonnee="entier", isEditable=False),

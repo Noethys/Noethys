@@ -136,8 +136,12 @@ def TimeEnDelta(heureTime):
 
 def HeureStrEnDelta(heureStr):
     if heureStr == None or heureStr == "" : return datetime.timedelta(hours=0, minutes=0)
-    if len(heureStr.split(":")) == 2 : heures, minutes = heureStr.split(":")
-    if len(heureStr.split(":")) == 3 : heures, minutes, secondes = heureStr.split(":")
+    if len(heureStr.split(":")) == 2 :
+        heures, minutes = heureStr.split(":")
+    if len(heureStr.split(":")) == 3 :
+        heures, minutes, secondes = heureStr.split(":")
+    if heures == "" : heures = 0
+    if minutes == "" : minutes = 0
     return datetime.timedelta(hours=int(heures), minutes=int(minutes))
 
 def HeureStrEnTime(heureStr):

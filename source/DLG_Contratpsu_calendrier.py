@@ -12,7 +12,7 @@
 from UTILS_Traduction import _
 import wx
 import OL_Contratspsu_previsions
-
+import CTRL_Saisie_duree
 
 
 class Panel(wx.Panel):
@@ -39,12 +39,12 @@ class Panel(wx.Panel):
         # Absences
         self.staticbox_absences_staticbox = wx.StaticBox(self, -1, _(u"Absences RTT"))
         self.label_absences_prevues = wx.StaticText(self, -1, _(u"Prévues :"))
-        self.ctrl_absences_prevues = wx.SpinCtrl(self, -1, "0", size=(50, -1), min=0, max=99999)
+        self.ctrl_absences_prevues = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
         self.label_absences_prises = wx.StaticText(self, -1, _(u"Prises :"))
-        self.ctrl_absences_prises = wx.TextCtrl(self, -1, "0", size=(40, -1), style=wx.TE_RIGHT)
+        self.ctrl_absences_prises = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
         self.ctrl_absences_prises.Enable(False)
         self.label_absences_solde = wx.StaticText(self, -1, _(u"Restantes :"))
-        self.ctrl_absences_solde = wx.TextCtrl(self, -1, "0", size=(40, -1), style=wx.TE_RIGHT)
+        self.ctrl_absences_solde = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
         self.ctrl_absences_solde.Enable(False)
 
         # Options
@@ -148,9 +148,8 @@ class Panel(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
 
     def OnChangeAbsencesPrevues(self, event=None):
-        prises = int(self.ctrl_absences_prises.GetValue())
-        solde = int(self.ctrl_absences_prevues.GetValue()) - prises
-        self.ctrl_absences_solde.SetValue(str(solde))
+        solde = self.ctrl_absences_prevues.GetValue() - self.ctrl_absences_prises.GetValue()
+        self.ctrl_absences_solde.SetValue(solde)
 
     def OnChoixArrondi(self, event=None):
         self.ctrl_arrondi_delta.Enable(self.ctrl_arrondi_type.GetSelection() != 0)
@@ -191,9 +190,9 @@ class Panel(wx.Panel):
 
     def Sauvegarde(self):
         self.clsbase.SetValeur("tracks_previsions", self.ctrl_previsions.GetTracks())
-        self.clsbase.SetValeur("nbre_absences_prevues", UTILS_Dates.FloatEnDelta(int(self.ctrl_absences_prevues.GetValue())))
-        self.clsbase.SetValeur("nbre_absences_prises", UTILS_Dates.FloatEnDelta(int(self.ctrl_absences_prises.GetValue())))
-        self.clsbase.SetValeur("nbre_absences_solde", UTILS_Dates.FloatEnDelta(int(self.ctrl_absences_solde.GetValue())))
+        self.clsbase.SetValeur("duree_absences_prevues", self.ctrl_absences_prevues.GetValue())
+        self.clsbase.SetValeur("duree_absences_prises", self.ctrl_absences_prises.GetValue())
+        self.clsbase.SetValeur("duree_absences_solde", self.ctrl_absences_solde.GetValue())
         self.clsbase.SetValeur("arrondi_type", self.GetArrondiType())
         self.clsbase.SetValeur("arrondi_delta", self.GetArrondiDelta())
 
@@ -207,12 +206,12 @@ class Panel(wx.Panel):
             self.ctrl_previsions.SetTracks(self.clsbase.GetValeur("tracks_previsions", []))
 
             # Absences
-            nbre_absences_prevues = self.clsbase.GetValeur("nbre_absences_prevues")
-            if nbre_absences_prevues != None :
-                self.ctrl_absences_prevues.SetValue(nbre_absences_prevues)
-            nbre_absences_prises = self.clsbase.GetValeur("nbre_absences_prises")
-            if nbre_absences_prises != None :
-                self.ctrl_absences_prises.SetValue(nbre_absences_prises)
+            duree_absences_prevues = self.clsbase.GetValeur("duree_absences_prevues")
+            if duree_absences_prevues != None :
+                self.ctrl_absences_prevues.SetValue(duree_absences_prevues)
+            duree_absences_prises = self.clsbase.GetValeur("duree_absences_prises")
+            if duree_absences_prises != None :
+                self.ctrl_absences_prises.SetValue(duree_absences_prises)
             self.OnChangeAbsencesPrevues()
 
             # Options
