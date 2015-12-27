@@ -29,24 +29,6 @@ LISTE_MOIS = [_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), 
 
 
 
-class CTRL_Duree(CTRL_Saisie_duree.CTRL):
-    def __init__(self, parent):
-        CTRL_Saisie_duree.CTRL.__init__(self, parent)
-
-    def SetValue(self, valeur=datetime.timedelta(0)):
-        #self.SetDuree("12:30")
-        return CTRL_Saisie_duree.CTRL.SetDuree(self, valeur)
-        #heures = (valeur.days*24) + (valeur.seconds/3600)
-        #super(CTRL_Duree, self).SetValue(heures)
-
-    def GetValue(self):
-        return CTRL_Saisie_duree.CTRL.GetDuree(self)
-        #return self.GetDuree(format=datetime.timedelta)
-        #heures = super(CTRL_Duree, self).GetValue()
-        #if heures == -99999 : heures = 0
-        #return datetime.timedelta(hours=heures)
-
-
 
 class Track(object):
     def __init__(self, mois=1, annee=2015, clsbase=None, track_mensualite=None):
@@ -107,14 +89,14 @@ class Track(object):
                     "prevision" : {
                         "heure_debut" : None,
                         "heure_fin" : None,
-                        "duree_reelle" : datetime.timedelta(),
-                        "duree_arrondie" : datetime.timedelta(),
+                        "duree_reelle" : datetime.timedelta(0),
+                        "duree_arrondie" : datetime.timedelta(0),
                     },
                     "presence" : {
                         "heure_debut" : None,
                         "heure_fin" : None,
-                        "duree_reelle" : datetime.timedelta(),
-                        "duree_arrondie" : datetime.timedelta(),
+                        "duree_reelle" : datetime.timedelta(0),
+                        "duree_arrondie" : datetime.timedelta(0),
                     },
                     "heures_absences_non_deductibles" : datetime.timedelta(0),
                     "heures_absences_deductibles" : datetime.timedelta(0),
@@ -206,12 +188,10 @@ class Track(object):
     def MAJ(self):
         # Calcul des heures à facturer
         self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation + self.nbre_solde_rtt
-        self.heures_a_facturer_float = (self.heures_a_facturer.days*24) + (self.heures_a_facturer.seconds/3600.0)
-        self.montant_a_facturer = FloatToDecimal(self.tarif_base * self.heures_a_facturer_float)
+        self.montant_a_facturer = FloatToDecimal(self.tarif_base * UTILS_Dates.DeltaEnFloat(self.heures_a_facturer))
 
         # Calcul des dépassements
-        self.heures_depassements_float = (self.heures_depassements.days*24) + (self.heures_depassements.seconds/3600.0)
-        self.montant_depassements = FloatToDecimal(self.tarif_depassement * self.heures_depassements_float)
+        self.montant_depassements = FloatToDecimal(self.tarif_depassement * UTILS_Dates.DeltaEnFloat(self.heures_depassements))
         self.montant_a_facturer += self.montant_depassements
 
         self.heures_a_facturer += self.heures_depassements

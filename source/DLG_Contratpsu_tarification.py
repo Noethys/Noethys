@@ -13,6 +13,7 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import GestionDB
+import datetime
 import OL_Contratspsu_tarifs
 import CTRL_Saisie_duree
 
@@ -124,7 +125,7 @@ class Panel(wx.Panel):
             self.ctrl_tarifs.SetTracks(tracks_tarifs)
 
             # Heures de régularisation
-            duree_heures_regularisation = self.clsbase.GetValeur("duree_heures_regularisation", 0)
+            duree_heures_regularisation = self.clsbase.GetValeur("duree_heures_regularisation", datetime.timedelta(0))
             if duree_heures_regularisation != None :
                 self.ctrl_regularisation.SetValue(duree_heures_regularisation)
 

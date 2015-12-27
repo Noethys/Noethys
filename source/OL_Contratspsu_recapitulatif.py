@@ -70,17 +70,17 @@ class ListView(FastObjectListView):
             {"label" : _(u"Nombre de jours prévus"), "code" : "nbre_dates", "format" : "entier", "suffixe" : _(u"jours"), "defaut" : 0},
             {"label" : _(u"Nombre de semaines prévues"), "code" : "nbre_semaines", "format" : "entier", "suffixe" : _(u"semaines"), "defaut" : 0},
             {"label" : _(u"Nombre de mois prévus"), "code" : "nbre_mois", "format" : "entier", "suffixe" : _(u"mois"), "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par jour"), "code" : "moy_heures_jour", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par semaine"), "code" : "moy_heures_semaine", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Nombre moyen d'heures prévues par mois"), "code" : "moy_heures_mois", "format" : "decimal", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Nombre d'heures prévues brut"), "code" : "nbre_heures_brut", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre moyen d'heures prévues par jour"), "code" : "moy_heures_jour", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre moyen d'heures prévues par semaine"), "code" : "moy_heures_semaine", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre moyen d'heures prévues par mois"), "code" : "moy_heures_mois", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre d'heures prévues arrondies"), "code" : "duree_heures_brut", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre d'heures RTT prévues"), "code" : "duree_absences_prevues", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre d'heures RTT prises"), "code" : "duree_absences_prises", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre d'heures RTT restantes"), "code" : "duree_absences_solde", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
-            {"label" : _(u"Nombre d'heures de régularisation"), "code" : "duree_heures_regularisation", "format" : "duree", "suffixe" : _(u""), "defaut" : 0},
-            {"label" : _(u"Nombre total d'heures facturées"), "code" : "nbre_heures_contrat", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Heures facturées chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
-            {"label" : _(u"Heures facturées le dernier mois"), "code" : "forfait_horaire_dernier_mois", "format" : "entier", "suffixe" : _(u"heures"), "defaut" : 0},
+            {"label" : _(u"Nombre d'heures de régularisation"), "code" : "duree_heures_regularisation", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Nombre total d'heures facturées"), "code" : "duree_heures_contrat", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Heures facturées chaque mois"), "code" : "forfait_horaire_mensuel", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
+            {"label" : _(u"Heures facturées le dernier mois"), "code" : "forfait_horaire_dernier_mois", "format" : "duree", "suffixe" : _(u""), "defaut" : datetime.timedelta(0)},
             {"label" : _(u"Nombre de mensualités"), "code" : "nbre_mensualites", "format" : "entier", "suffixe" : _(u"mensualités"), "defaut" : 0},
             {"label" : _(u"Montant total facturé"), "code" : "total_mensualites", "format" : "montant", "suffixe" : "", "defaut" : FloatToDecimal(0.0)},
         ]
@@ -97,7 +97,7 @@ class ListView(FastObjectListView):
                 valeur = u"%.2f" % valeur
             if dictDonnee["format"] == "duree" :
                 valeur = UTILS_Dates.DeltaEnStr(valeur)
-            if dictDonnee["suffixe"] != "" :
+            if dictDonnee.has_key("suffixe") and dictDonnee["suffixe"] != "" :
                 valeur += " " + dictDonnee["suffixe"]
             self.donnees.append(Track(index, dictDonnee["label"], valeur))
             index += 1

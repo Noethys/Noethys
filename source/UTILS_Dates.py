@@ -72,6 +72,10 @@ def FloatEnDelta(valeur=10.50):
     """ Convertit une valeur décimale en timedelta """
     return datetime.timedelta(hours=valeur)
 
+def DeltaEnFloat(valeur=datetime.timedelta(0)):
+    """ Convertit une valeur décimale en timedelta """
+    return (valeur.days*24) + (valeur.seconds/3600.0)
+
 def DeltaEnHeures(valeur=datetime.timedelta(0)):
     """ Convertit une durée timedelta en nombre d'heures"""
     return (valeur.days*24) + (valeur.seconds/3600.0)

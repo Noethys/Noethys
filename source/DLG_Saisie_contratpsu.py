@@ -19,6 +19,7 @@ from dateutil import rrule
 import datetime
 import calendar
 import UTILS_Dates
+import UTILS_Identification
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 import DLG_Contratpsu_generalites
@@ -122,25 +123,21 @@ class Base(object) :
             if track.date not in listeDatesUniques :
                 listeDatesUniques.append(track.date)
 
-        # Calcul du nbre d'heures brut
-        nbre_heures_brut = UTILS_Dates.DeltaEnHeures(duree_heures_brut)
-
         # Calcul du nbre de dates uniques
         nbre_dates = len(listeDatesUniques)
 
         # Calcul des moyennes
         if nbre_dates == 0 :
-            moy_heures_jour = 0
-            moy_heures_semaine = 0
-            moy_heures_mois = 0
+            moy_heures_jour = datetime.timedelta(0)
+            moy_heures_semaine = datetime.timedelta(0)
+            moy_heures_mois = datetime.timedelta(0)
         else :
-            moy_heures_jour = round(nbre_heures_brut / nbre_dates, 1)
-            moy_heures_semaine = round(nbre_heures_brut / nbre_semaines, 1)
-            moy_heures_mois = round(nbre_heures_brut / nbre_mois, 1)
+            moy_heures_jour = duree_heures_brut / nbre_dates
+            moy_heures_semaine = duree_heures_brut / nbre_semaines
+            moy_heures_mois = duree_heures_brut / nbre_mois
 
         # Calcul du nbre d'heures du contrat
         duree_heures_contrat = duree_heures_brut - duree_absences_prevues + duree_heures_regularisation
-        #nbre_heures_contrat = nbre_heures_brut - duree_absences_prevues + duree_heures_regularisation
 
         # Génération des dates de facturation
         if dates_valides :
@@ -175,6 +172,9 @@ class Base(object) :
             nbre_heures_contrat_float = UTILS_Dates.DeltaEnHeures(duree_heures_contrat)
             forfait_horaire_mensuel, reste_division = divmod(nbre_heures_contrat_float, nbre_mois_factures)
         forfait_horaire_dernier_mois = forfait_horaire_mensuel + reste_division
+
+        forfait_horaire_mensuel = UTILS_Dates.FloatEnDelta(forfait_horaire_mensuel)
+        forfait_horaire_dernier_mois = UTILS_Dates.FloatEnDelta(forfait_horaire_dernier_mois)
 
         # Calcul du forfait horaire mensuel
         # if nbre_mois == 0 :
@@ -225,7 +225,7 @@ class Base(object) :
                 tarif_depassement = 0.0
                 taux = 0.0
 
-            montant_prevu = FloatToDecimal(tarif_base * heures_prevues)
+            montant_prevu = FloatToDecimal(tarif_base * UTILS_Dates.DeltaEnFloat(heures_prevues))
             total_mensualites += montant_prevu
 
             # Recherche d'une prestation existante
@@ -241,11 +241,6 @@ class Base(object) :
                     num_facture = dictPrestation["num_facture"]
                     montant_facture = dictPrestation["montant"]
                     heures_facturees = dictPrestation["temps_facture"]
-
-            #if type(heures_facturees) == int :
-            #    heures_facturees = UTILS_Dates.HeureStrEnDelta("%d:00" % heures_facturees)
-            if type(heures_prevues) in (int, float) :
-                heures_prevues = UTILS_Dates.FloatEnDelta(heures_prevues)
 
             # Mémorisation de la mensualité
             dictMensualite = {
@@ -305,12 +300,11 @@ class Base(object) :
         dictValeurs = {
             "nbre_semaines" : nbre_semaines,
             "nbre_mois" : nbre_mois,
-            "nbre_heures_brut" : nbre_heures_brut,
+            "duree_heures_brut" : duree_heures_brut,
             "nbre_dates" : nbre_dates,
             "moy_heures_jour" : moy_heures_jour,
             "moy_heures_semaine" : moy_heures_semaine,
             "moy_heures_mois" : moy_heures_mois,
-            #"nbre_heures_contrat" : nbre_heures_contrat,
             "duree_heures_contrat" : duree_heures_contrat,
             "forfait_horaire_mensuel" : forfait_horaire_mensuel,
             "forfait_horaire_dernier_mois" : forfait_horaire_dernier_mois,
@@ -338,8 +332,8 @@ class Base(object) :
             ("date_fin", self.GetValeur("date_fin", None)),
             ("observations", self.GetValeur("observations", None)),
             ("type", "psu"),
-            ("duree_absences_prevues", self.GetValeur("duree_absences_prevues", 0)),
-            ("duree_heures_regularisation", self.GetValeur("duree_heures_regularisation", 0)),
+            ("duree_absences_prevues", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_absences_prevues", datetime.timedelta(0)))),
+            ("duree_heures_regularisation", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_heures_regularisation", datetime.timedelta(0)))),
             ("arrondi_type", self.GetValeur("arrondi_type", None)),
             ("arrondi_delta", self.GetValeur("arrondi_delta", 30)),
         )
@@ -362,7 +356,7 @@ class Base(object) :
                 ("heure_fin", track.heure_fin),
                 ("etat", track.etat),
                 #("date_saisie", track.date_saisie),
-                #("IDutilisateur", track.IDutilisateur),#TODO
+                ("IDutilisateur", UTILS_Identification.GetIDutilisateur()),
                 ("IDcategorie_tarif", self.GetValeur("IDcategorie_tarif", None)),
                 ("IDcompte_payeur", self.GetValeur("IDcompte_payeur", None)),
                 #("IDprestation", track.IDprestation),#TODO
