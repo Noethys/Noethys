@@ -255,6 +255,7 @@ DB_DATA = {
                                     ("psu_unite_prevision", "INTEGER", u"Mode PSU : IDunite prévision"),
                                     ("psu_unite_presence", "INTEGER", u"Mode PSU : IDunite présence"),
                                     ("psu_tarif_forfait", "INTEGER", u"Mode PSU : IDtarif forfait-crédit"),
+                                    ("psu_etiquette_rtt", "INTEGER", u"Mode PSU : IDetiquette Absences RTT"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
@@ -1331,6 +1332,7 @@ DB_DATA = {
                                     ("arrondi_delta", "INTEGER", u"Delta en minutes de l'arrondi sur les heures"),
                                     ("duree_absences_prevues", "VARCHAR(50)", u"Temps d'absences prévues PSU"),
                                     ("duree_heures_regularisation", "VARCHAR(50)", u"Temps de régularisation PSU"),
+                                    ("duree_tolerance_depassement", "VARCHAR(50)", u"Temps de tolérance dépassements PSU"),
                                     ], # Contrats
 
     "modeles_contrats":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),

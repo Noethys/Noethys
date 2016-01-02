@@ -19,6 +19,7 @@ from dateutil import rrule
 import datetime
 import calendar
 import UTILS_Dates
+import UTILS_Texte
 import UTILS_Identification
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
@@ -97,9 +98,9 @@ class Base(object) :
 
         # Absences
         duree_absences_prevues = self.GetValeur("duree_absences_prevues", datetime.timedelta(0))
-        nbre_absences_prises = self.GetValeur("nbre_absences_prises", datetime.timedelta(0))
-        nbre_absences_solde = duree_absences_prevues - nbre_absences_prises
-        self.SetValeur("nbre_absences_solde", nbre_absences_solde)
+        duree_absences_prises = self.GetValeur("duree_absences_prises", datetime.timedelta(0))
+        duree_absences_solde = duree_absences_prevues - duree_absences_prises
+        self.SetValeur("duree_absences_solde", duree_absences_solde)
 
         # Vérifie si dates du contrat valides avant les calculs
         if date_debut != None and date_fin != None and date_fin > date_debut :
@@ -332,8 +333,8 @@ class Base(object) :
             ("date_fin", self.GetValeur("date_fin", None)),
             ("observations", self.GetValeur("observations", None)),
             ("type", "psu"),
-            ("duree_absences_prevues", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_absences_prevues", datetime.timedelta(0)))),
-            ("duree_heures_regularisation", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_heures_regularisation", datetime.timedelta(0)))),
+            ("duree_absences_prevues", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_absences_prevues", datetime.timedelta(0)), separateur=":")),
+            ("duree_heures_regularisation", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_heures_regularisation", datetime.timedelta(0)), separateur=":")),
             ("arrondi_type", self.GetValeur("arrondi_type", None)),
             ("arrondi_delta", self.GetValeur("arrondi_delta", 30)),
         )
@@ -478,7 +479,7 @@ class Base(object) :
         if self.IDcontrat != None :
 
             req = """SELECT contrats.IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type,
-            duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta,
+            duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement,
             individus.nom, individus.prenom
             FROM contrats
             LEFT JOIN individus ON individus.IDindividu = contrats.IDindividu
@@ -487,7 +488,7 @@ class Base(object) :
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, individu_nom, individu_prenom = listeDonnees[0]
+                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement, individu_nom, individu_prenom = listeDonnees[0]
 
                 self.IDinscription = IDinscription
                 dictValeurs["date_debut"] = UTILS_Dates.DateEngEnDateDD(date_debut)
@@ -497,6 +498,7 @@ class Base(object) :
                 dictValeurs["type_contrat"] = type_contrat
                 dictValeurs["duree_absences_prevues"] = UTILS_Dates.HeureStrEnDelta(duree_absences_prevues)
                 dictValeurs["duree_heures_regularisation"] = UTILS_Dates.HeureStrEnDelta(duree_heures_regularisation)
+                dictValeurs["duree_tolerance_depassement"] = UTILS_Dates.HeureStrEnDelta(duree_tolerance_depassement)
                 dictValeurs["individu_nom"] = individu_nom
                 dictValeurs["individu_prenom"] = individu_prenom
                 dictValeurs["arrondi_type"] = arrondi_type
@@ -529,7 +531,7 @@ class Base(object) :
             dictValeurs["parti"] = parti
 
             # Infos sur le dernier contrat saisi
-            req = """SELECT arrondi_type, arrondi_delta
+            req = """SELECT arrondi_type, arrondi_delta, duree_tolerance_depassement
             FROM contrats
             WHERE type='psu' AND IDactivite=%d
             ORDER BY IDcontrat DESC LIMIT 1
@@ -537,22 +539,25 @@ class Base(object) :
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                arrondi_type, arrondi_delta = listeDonnees[0]
+                arrondi_type, arrondi_delta, duree_tolerance_depassement = listeDonnees[0]
                 dictValeurs["arrondi_type"] = arrondi_type
                 dictValeurs["arrondi_delta"] = arrondi_delta
+                dictValeurs["duree_tolerance_depassement"] = UTILS_Dates.HeureStrEnDelta(duree_tolerance_depassement)
 
         # Informations sur l'activité
-        req = """SELECT psu_unite_prevision, psu_unite_presence, psu_tarif_forfait
+        req = """SELECT psu_unite_prevision, psu_unite_presence, psu_tarif_forfait, psu_etiquette_rtt
         FROM activites
         WHERE IDactivite=%d
         ;""" % dictValeurs["IDactivite"]
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        psu_unite_prevision, psu_unite_presence, psu_tarif_forfait = listeDonnees[0]
+        psu_unite_prevision, psu_unite_presence, psu_tarif_forfait, psu_etiquette_rtt = listeDonnees[0]
 
         dictValeurs["IDunite_prevision"] = psu_unite_prevision
         dictValeurs["IDunite_presence"] = psu_unite_presence
         dictValeurs["IDtarif"] = psu_tarif_forfait
+        dictValeurs["psu_etiquette_rtt"] = psu_etiquette_rtt
+        dictValeurs["duree_absences_prises"] = datetime.timedelta(0)
 
         # Mémorise les données déjà importées
         self.SetValeurs(dictValeurs)
@@ -580,6 +585,7 @@ class Base(object) :
             date_saisie = UTILS_Dates.DateEngEnDateDD(date_saisie)
             heure_debut_time = UTILS_Dates.HeureStrEnTime(heure_debut)
             heure_fin_time = UTILS_Dates.HeureStrEnTime(heure_fin)
+            etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
 
             dictConso = {
                 "IDconso" : IDconso, "date" : date, "IDunite" : IDunite, "IDgroupe" : IDgroupe, "heure_debut" : heure_debut, "heure_fin" : heure_fin,
@@ -598,6 +604,10 @@ class Base(object) :
             if IDunite == self.GetValeur("IDunite_prevision", None) :
                 tracks_previsions.append(track)
                 liste_IDconso.append(IDconso)
+
+            if dictValeurs["psu_etiquette_rtt"] in etiquettes :
+                duree = UTILS_Dates.SoustractionHeures(heure_fin_time, heure_debut_time)
+                dictValeurs["duree_absences_prises"] += duree
 
         dictValeurs["liste_conso"] = liste_conso
         dictValeurs["dict_conso"] = dict_conso
@@ -988,7 +998,7 @@ if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     #frame_1 = Assistant(None, IDinscription=1856)
-    frame_1 = Dialog(None, IDcontrat=6)
+    frame_1 = Dialog(None, IDcontrat=7)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

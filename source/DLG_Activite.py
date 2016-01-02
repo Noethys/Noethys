@@ -151,7 +151,7 @@ class ClsParametres():
         """ Importation des données """
         self.dictDonnees = {}
         DB = GestionDB.DB()
-        req = """SELECT psu_activation, psu_unite_prevision, psu_unite_presence, psu_tarif_forfait
+        req = """SELECT psu_activation, psu_unite_prevision, psu_unite_presence, psu_tarif_forfait, psu_etiquette_rtt
         FROM activites WHERE IDactivite=%d;""" % self.IDactivite
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -161,6 +161,7 @@ class ClsParametres():
         self.SetValeur("psu_unite_prevision", listeDonnees[0][1])
         self.SetValeur("psu_unite_presence", listeDonnees[0][2])
         self.SetValeur("psu_tarif_forfait", listeDonnees[0][3])
+        self.SetValeur("psu_etiquette_rtt", listeDonnees[0][4])
 
     def Validation(self):
         # Validation
@@ -232,30 +233,67 @@ class ClsParametres():
             ("psu_unite_prevision", self.GetValeur("psu_unite_prevision", None)),
             ("psu_unite_presence", self.GetValeur("psu_unite_presence", None)),
             ("psu_tarif_forfait", self.GetValeur("psu_tarif_forfait", None)),
+            ("psu_etiquette_rtt", self.GetValeur("psu_etiquette_rtt", None)),
             ]
         DB = GestionDB.DB()
         DB.ReqMAJ("activites", listeDonnees, "IDactivite", self.IDactivite)
         DB.Close()
 
 
+class ClsCommune():
+    def __init__(self, parent):
+        self.parent = parent
+
+    def GetListePages(self):
+        listePages = [
+            ("generalites", _(u"Généralités"), Page1(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Loupe.png"),
+            ("agrements", _(u"Agréments"), Page2(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Etiquette.png"),
+            ("groupes", _(u"Groupes"), Page3(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Famille.png"),
+            ("obligations", _(u"Renseignements"), Page4(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Femme.png"),
+            ("etiquettes", _(u"Etiquettes"), Page8(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Etiquette.png"),
+            ("unites", _(u"Unités"), Page5(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Mecanisme.png"),
+            ("calendrier", _(u"Calendrier"), Page6(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Calendrier.png"),
+            ("tarification", _(u"Tarification"), Page7(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Euro.png"),
+            ]
+        return listePages
+
+    def MenuOptions(self, event=None):
+        # Création du menu Options
+        menuPop = wx.Menu()
+
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Paramètres P.S.U."), _(u"Renseigner les paramètres P.S.U."))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Contrat.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ParametresPSU, id=id)
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def ParametresPSU(self, event):
+        import DLG_Activite_psu
+        dlg = DLG_Activite_psu.Dialog(self, self.IDactivite, clsParametres=self.clsParametres)
+        dlg.ShowModal()
+        dlg.Destroy()
 
 # ---------------------------------------------------------------------------------------------
-class Assistant(wx.Dialog):
+class Assistant(wx.Dialog, ClsCommune):
     def __init__(self, parent, IDactivite=None):
         wx.Dialog.__init__(self, parent, -1, name="DLG_activite", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.IDactivite = IDactivite
-        self.nouvelleFiche = False
+        self.nouvelleActivite = False
         if self.IDactivite == None :
             self.CreateIDactivite()
-            self.nouvelleFiche = True
+            self.nouvelleActivite = True
         
         intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage est encore complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez faire appel à l'auteur de Noethys pour bénéficier d'une aide gratuite et personnalisée au paramétrage.")
         titre = _(u"Paramétrage d'une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
-        self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page8", "Page5", "Page6", "Page7")
-        
+        #self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page8", "Page5", "Page6", "Page7")
+        self.listePages = self.GetListePages()
+
         self.static_line = wx.StaticLine(self, -1)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -267,7 +305,7 @@ class Assistant(wx.Dialog):
         self.__do_layout()
                 
         self.Bind(wx.EVT_BUTTON, self.Onbouton_aide, self.bouton_aide)
-        self.Bind(wx.EVT_BUTTON, self.Onbouton_options, self.bouton_options)
+        self.Bind(wx.EVT_BUTTON, self.MenuOptions, self.bouton_options)
         self.Bind(wx.EVT_BUTTON, self.Onbouton_retour, self.bouton_retour)
         self.Bind(wx.EVT_BUTTON, self.Onbouton_suite, self.bouton_suite)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -275,19 +313,25 @@ class Assistant(wx.Dialog):
 
         self.bouton_retour.Enable(False)
         self.nbrePages = len(self.listePages)    
-        self.pageVisible = 1
+        self.pageVisible = 0
                         
         # Création des pages
         self.Creation_Pages()
             
     def Creation_Pages(self):
         """ Creation des pages """
-        for numPage in range(1, self.nbrePages+1) :
-            exec( "self.page" + str(numPage) + " = " + self.listePages[numPage-1] + "(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleFiche)" )
-            exec( "self.sizer_pages.Add(self.page" + str(numPage) + ", 1, wx.EXPAND, 0)" )
+        self.dictPages = {}
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages :
+            self.dictPages[codePage] = ctrlPage
+            self.sizer_pages.Add(ctrlPage, 1, wx.EXPAND, 0)
             self.sizer_pages.Layout()
-            exec( "self.page" + str(numPage) + ".Show(False)" )
-        self.page1.Show(True)
+            ctrlPage.Show(False)
+
+        # Chargement des autres paramètres
+        self.clsParametres = ClsParametres(self, self.IDactivite)
+
+        # Affichage de la première page
+        self.listePages[self.pageVisible][2].Show(True)
         self.sizer_pages.Layout()
 
     def __set_properties(self):
@@ -342,20 +386,17 @@ class Assistant(wx.Dialog):
         import UTILS_Aide
         UTILS_Aide.Aide("Paramtreruneactivit")
 
-    def Onbouton_options(self, event):
-        print "ok"
-
     def Onbouton_retour(self, event):
         # rend invisible la page affichée
-        pageCible = eval("self.page"+str(self.pageVisible))
+        pageCible = self.listePages[self.pageVisible][2] #eval("self.page"+str(self.pageVisible))
         pageCible.Show(False)
         # Fait apparaître nouvelle page
         self.pageVisible -= 1
-        pageCible = eval("self.page"+str(self.pageVisible))
+        pageCible = self.listePages[self.pageVisible][2]
         pageCible.Show(True)
         self.sizer_pages.Layout()
         # Si on quitte l'avant-dernière page, on active le bouton Suivant
-        if self.pageVisible == self.nbrePages :
+        if self.pageVisible == self.nbrePages-1 :
             self.bouton_suite.Enable(True)
             self.bouton_suite.SetImage("Images/32x32/Valider.png")
             self.bouton_suite.SetTexte(_(u"Valider"))
@@ -374,15 +415,15 @@ class Assistant(wx.Dialog):
         validation = self.ValidationPages()
         if validation == False : return
         # Si on est déjà sur la dernière page : on termine
-        if self.pageVisible == self.nbrePages :
+        if self.pageVisible == self.nbrePages-1 :
             self.Terminer()
             return
         # Rend invisible la page affichée
-        pageCible = eval("self.page"+str(self.pageVisible))
+        pageCible = self.listePages[self.pageVisible][2]
         pageCible.Show(False)
         # Fait apparaître nouvelle page
         self.pageVisible += 1
-        pageCible = eval("self.page"+str(self.pageVisible))
+        pageCible = self.listePages[self.pageVisible][2]
         pageCible.Show(True)
         self.sizer_pages.Layout()
         # Si on arrive à la dernière page, on désactive le bouton Suivant
@@ -391,7 +432,7 @@ class Assistant(wx.Dialog):
             self.bouton_suite.SetTexte(_(u"Valider"))
             self.bouton_annuler.Enable(False)
         # Si on quitte la première page, on active le bouton Retour
-        if self.pageVisible > 1 :
+        if self.pageVisible > 0 :
             self.bouton_retour.Enable(True)
 
     def OnClose(self, event):
@@ -408,16 +449,24 @@ class Assistant(wx.Dialog):
 
     def ValidationPages(self) :
         """ Validation des données avant changement de pages """
-        exec( "validation = self.page" + str(self.pageVisible) + ".Validation()" )
-        return validation
+        if self.listePages[self.pageVisible][2].Validation() == False :
+            return False
+
+        # Validation des autres paramètres
+        if self.clsParametres.Validation() == False :
+            return False
+
+        return True
     
     def GetIDactivite(self):
         return self.IDactivite
     
     def Terminer(self):
         # Sauvegarde des données
-        for numPage in range(1, len(self.listePages)+1) :
-            exec( "self.page" + str(numPage) + ".Sauvegarde()" )
+        for codePage, labelPage, ctrlPage, imgPage in self.listePages :
+            ctrlPage.Sauvegarde()
+        # Sauvegardes des autres paramètres
+        self.clsParametres.Sauvegarde()
         # Fermeture
         self.EndModal(wx.ID_OK)
         
@@ -425,55 +474,50 @@ class Assistant(wx.Dialog):
 # ------------------------------------------------------------------------------------------------------------------------------------------
 
 
-class Notebook(wx.Notebook):
+class Notebook(wx.Notebook, ClsCommune):
     def __init__(self, parent, IDactivite=None, nouvelleActivite=False):
         wx.Notebook.__init__(self, parent, id=-1, style= wx.BK_DEFAULT) # | wx.NB_MULTILINE
         self.IDactivite = IDactivite
+        self.nouvelleActivite = nouvelleActivite
         self.dictPages = {}
          
-        self.listePages = [
-            ("generalites", _(u"Généralités"), u"Page1(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Loupe.png"),
-            ("agrements", _(u"Agréments"), u"Page2(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
-            ("groupes", _(u"Groupes"), u"Page3(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Famille.png"),
-            ("obligations", _(u"Renseignements"), u"Page4(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Femme.png"),
-            ("etiquettes", _(u"Etiquettes"), u"Page8(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Etiquette.png"),
-            ("unites", _(u"Unités"), u"Page5(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Mecanisme.png"),
-            ("calendrier", _(u"Calendrier"), u"Page6(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Calendrier.png"),
-            ("tarification", _(u"Tarification"), u"Page7(self, IDactivite=IDactivite, nouvelleActivite=nouvelleActivite)", "Euro.png"),
-            ]
-            
+        self.listePages = self.GetListePages()
+
         # ImageList pour le NoteBook
         il = wx.ImageList(16, 16)
         index = 0
+        self.dictImages = {}
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.img%d = il.Add(wx.Bitmap('Images/16x16/%s', wx.BITMAP_TYPE_PNG))" % (index, imgPage))
+            self.dictImages[codePage] = il.Add(wx.Bitmap("Images/16x16/%s" % imgPage, wx.BITMAP_TYPE_PNG))
             index += 1
         self.AssignImageList(il)
 
         # Création des pages
         index = 0
+        self.dictPages = {}
         for codePage, labelPage, ctrlPage, imgPage in self.listePages :
-            exec("self.page%d = %s" % (index, ctrlPage))
-            exec("self.AddPage(self.page%d, u'%s')" % (index, labelPage))
-            exec("self.SetPageImage(%d, self.img%d)" % (index, index))
-            exec("self.dictPages['%s'] = {'ctrl' : self.page%d, 'index' : %d}" % (codePage, index, index))
+            self.dictPages[codePage] = ctrlPage
+            self.AddPage(ctrlPage, labelPage)
+            self.SetPageImage(index, self.dictImages[codePage])
             index += 1
 
         # Chargement des autres paramètres
         self.clsParametres = ClsParametres(self, self.IDactivite)
         
     def GetPage(self, codePage=""):
-        return self.dictPages[codePage]["ctrl"]
+        return self.dictPages[codePage]
     
     def AffichePage(self, codePage=""):
-        indexPage = self.dictPages[codePage]["index"]
-        self.SetSelection(indexPage)
+        index = 0
+        for codePageTemp, labelPage, ctrlPage, imgPage in self.listePages :
+            if codePage == codePageTemp :
+                self.SetSelection(index)
+            index += 1
 
     def ValidationPages(self) :
         # Validation des données des pages
-        for numPage in range(0, len(self.listePages)) :
-            exec( "validation = self.page" + str(numPage) + ".Validation()" )
-            if validation == False :
+        for codePageTemp, labelPage, ctrlPage, imgPage in self.listePages :
+            if ctrlPage.Validation() == False :
                 return False
         # Validation des autres paramètres
         if self.clsParametres.Validation() == False :
@@ -482,30 +526,12 @@ class Notebook(wx.Notebook):
 
     def Sauvegarde(self):
         # Sauvegarde des pages
-        for numPage in range(0, len(self.listePages)) :
-            exec( "self.page" + str(numPage) + ".Sauvegarde()" )
+        for codePageTemp, labelPage, ctrlPage, imgPage in self.listePages :
+            ctrlPage.Sauvegarde()
         # Sauvegardes des autres paramètres
         self.clsParametres.Sauvegarde()
         return True
 
-    def MenuOptions(self):
-        # Création du menu Options
-        menuPop = wx.Menu()
-
-        id = wx.NewId()
-        item = wx.MenuItem(menuPop, id, _(u"Paramètres P.S.U."), _(u"Renseigner les paramètres P.S.U."))
-        item.SetBitmap(wx.Bitmap("Images/16x16/Contrat.png", wx.BITMAP_TYPE_PNG))
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.ParametresPSU, id=id)
-
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
-
-    def ParametresPSU(self, event):
-        import DLG_Activite_psu
-        dlg = DLG_Activite_psu.Dialog(self, self.IDactivite, clsParametres=self.clsParametres)
-        dlg.ShowModal()
-        dlg.Destroy()
 
 
 
@@ -516,16 +542,16 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.IDactivite = IDactivite
-        self.nouvelleFiche = False
+        self.nouvelleActivite = False
         if self.IDactivite == None :
             self.CreateIDactivite()
-            self.nouvelleFiche = True
+            self.nouvelleActivite = True
             
         titre = _(u"Paramétrage d'une activité")
         intro = _(u"Vous pouvez ici renseigner tous les paramètres d'une activité. Attention, ce paramétrage peut être complexe pour un utilisateur n'ayant reçu aucune formation spécifique. Vous pouvez demander un coup de pouce à la communauté depuis le forum d'entraide sur le site internet de Noethys.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
-        self.ctrl_notebook = Notebook(self, IDactivite, nouvelleActivite=self.nouvelleFiche)
+        self.ctrl_notebook = Notebook(self, IDactivite, nouvelleActivite=self.nouvelleActivite)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_options = CTRL_Bouton_image.CTRL(self, texte=_(u"Paramètres avancés"), cheminImage="Images/32x32/Configuration2.png")
@@ -616,7 +642,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    IDactivite = 43 # <<<<<<<<<<<<<<<< pour les tests
+    IDactivite = None#43 # <<<<<<<<<<<<<<<< pour les tests
     if IDactivite == None :
         frame_1 = Assistant(None, IDactivite=None)
     else:

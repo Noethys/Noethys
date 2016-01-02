@@ -42,7 +42,9 @@ class Panel(wx.Panel):
         # Options
         self.staticbox_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
         self.label_regularisation = wx.StaticText(self, -1, _(u"Heures de régularisation :"))
-        self.ctrl_regularisation = CTRL_Saisie_duree.CTRL(self)
+        self.ctrl_regularisation = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
+        self.label_tolerance = wx.StaticText(self, -1, _(u"Tolérance dépassement :"))
+        self.ctrl_tolerance = CTRL_Saisie_duree.CTRL(self, size=(50, -1))
 
         self.__set_properties()
         self.__do_layout()
@@ -61,6 +63,7 @@ class Panel(wx.Panel):
         self.bouton_tarifs_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
         self.bouton_tarifs_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
         self.ctrl_regularisation.SetToolTipString(_(u"Saisissez ici le nombre d'heure de régularisation (en positif ou négatif)"))
+        self.ctrl_tolerance.SetToolTipString(_(u"Saisissez ici la valeur de tolérance des dépassements. Une facturation ne sera ainsi appliquée que lorsque le dépassement sera supérieur à la valeur renseignée."))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -92,6 +95,10 @@ class Panel(wx.Panel):
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=8, vgap=10, hgap=10)
         grid_sizer_options.Add(self.label_regularisation, 1, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_regularisation, 1, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add( (5, 5), 1, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.label_tolerance, 1, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_tolerance, 1, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
+
         staticbox_options.Add(grid_sizer_options, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_options, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         
@@ -115,6 +122,7 @@ class Panel(wx.Panel):
     def Sauvegarde(self):
         self.clsbase.SetValeur("tracks_tarifs", self.ctrl_tarifs.GetTracks())
         self.clsbase.SetValeur("duree_heures_regularisation", self.ctrl_regularisation.GetValue())
+        self.clsbase.SetValeur("duree_tolerance_depassement", self.ctrl_tolerance.GetValue())
 
     def MAJ(self):
         self.clsbase.Calculer()
@@ -128,6 +136,11 @@ class Panel(wx.Panel):
             duree_heures_regularisation = self.clsbase.GetValeur("duree_heures_regularisation", datetime.timedelta(0))
             if duree_heures_regularisation != None :
                 self.ctrl_regularisation.SetValue(duree_heures_regularisation)
+
+            # Tolérance des dépassements
+            duree_tolerance_depassement = self.clsbase.GetValeur("duree_tolerance_depassement", datetime.timedelta(0))
+            if duree_tolerance_depassement != None :
+                self.ctrl_tolerance.SetValue(duree_tolerance_depassement)
 
         self.MAJ_effectuee = True
 

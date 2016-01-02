@@ -110,7 +110,6 @@ class CTRL(wx.TextCtrl):
         else :
             return valeur
 
-
     def SetDuree(self, duree=None):
         """ duree = float, str ou timedelta """
         if type(duree) == float :
@@ -121,9 +120,7 @@ class CTRL(wx.TextCtrl):
             td = duree
         else :
             td = datetime.timedelta(0)
-        heures = (td.days*24) + (td.seconds/3600)
-        minutes = td.seconds%3600/60
-        valeur = "{}{}{:0>2}".format(heures, self.separateur, minutes)
+        valeur = UTILS_Dates.DeltaEnStr(td, separateur=self.separateur)
         wx.TextCtrl.SetValue(self, valeur)
 
     def SetValue(self, value=datetime.timedelta(0)):

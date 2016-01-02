@@ -18,6 +18,60 @@ from DLG_Saisie_contrat import CTRL_Tarif
 
 
 
+
+class CTRL_Etiquette(wx.Choice):
+    def __init__(self, parent, IDactivite=None):
+        wx.Choice.__init__(self, parent, -1, size=(-1, -1))
+        self.parent = parent
+        self.IDactivite = IDactivite
+        self.MAJ()
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 0 :
+            self.Enable(False)
+        else:
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        listeItems = []
+        self.dictDonnees = {}
+
+        DB = GestionDB.DB()
+        req = """SELECT IDetiquette, label, parent, ordre, couleur, active
+        FROM etiquettes
+        WHERE etiquettes.IDactivite=%d AND active=1
+        ORDER BY parent, ordre;""" % self.IDactivite
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+
+        index = 0
+        for IDetiquette, label, parent, ordre, couleur, active in listeDonnees :
+            # Mémorisation de l'étiquette
+            dictTemp = {
+                "IDetiquette" : IDetiquette, "label" : label, "parent" : parent,
+                "ordre" : ordre, "couleur" : couleur, "active" : active,
+                }
+            listeItems.append(label)
+            self.dictDonnees[index] = dictTemp
+            index += 1
+
+        return listeItems
+
+    def SetID(self, ID=0):
+        for index, values in self.dictDonnees.iteritems():
+            if values["IDetiquette"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]["IDetiquette"]
+
+
+# --------------------------------------------------------------------------------------------------------------
 class CTRL_Unite(wx.Choice):
     def __init__(self, parent, IDactivite=None):
         wx.Choice.__init__(self, parent, -1, size=(-1, -1))
@@ -64,7 +118,7 @@ class CTRL_Unite(wx.Choice):
         return self.dictDonnees[index]["ID"]
 
 
-
+# -------------------------------------------------------------------------------------------------------------------
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, clsParametres=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
@@ -93,6 +147,8 @@ class Dialog(wx.Dialog):
         self.ctrl_unite_presence = CTRL_Unite(self, self.IDactivite)
         self.label_tarif_forfait = wx.StaticText(self, -1, _(u"Tarif forfait :"))
         self.ctrl_tarif_forfait = CTRL_Tarif(self, IDactivite=self.IDactivite)
+        self.label_etiquette_rtt = wx.StaticText(self, -1, _(u"Etiquette RTT :"))
+        self.ctrl_etiquette_rtt = CTRL_Etiquette(self, self.IDactivite)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -116,6 +172,7 @@ class Dialog(wx.Dialog):
         self.ctrl_unite_prevision.SetToolTipString(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de prévision"))
         self.ctrl_unite_presence.SetToolTipString(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de présence"))
         self.ctrl_tarif_forfait.SetToolTipString(_(u"Sélectionnez le tarif qui doit être utilisé comme forfait-crédit pour les mensualités"))
+        self.ctrl_etiquette_rtt.SetToolTipString(_(u"Sélectionnez l'étiquette qui représente les absences RTT"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
@@ -144,6 +201,9 @@ class Dialog(wx.Dialog):
         grid_sizer_parametres.Add(self.ctrl_unite_presence, 0, wx.EXPAND, 0)
         grid_sizer_parametres.Add(self.label_tarif_forfait, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_tarif_forfait, 0, wx.EXPAND, 0)
+        grid_sizer_parametres.Add(self.label_etiquette_rtt, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add(self.ctrl_etiquette_rtt, 0, wx.EXPAND, 0)
+
         grid_sizer_parametres.AddGrowableCol(1)
         box_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
         
@@ -171,13 +231,15 @@ class Dialog(wx.Dialog):
         self.EndModal(wx.ID_CANCEL)
 
     def Importation(self):
-        if self.clsParametres.GetValeur("psu_activation", 0) == 1 :
-            self.radio_activation_oui.SetValue(True)
-        else :
-            self.radio_activation_non.SetValue(True)
-        self.ctrl_unite_prevision.SetID(self.clsParametres.GetValeur("psu_unite_prevision", None))
-        self.ctrl_unite_presence.SetID(self.clsParametres.GetValeur("psu_unite_presence", None))
-        self.ctrl_tarif_forfait.SetID(self.clsParametres.GetValeur("psu_tarif_forfait", None))
+        if self.clsParametres != None :
+            if self.clsParametres.GetValeur("psu_activation", 0) == 1 :
+                self.radio_activation_oui.SetValue(True)
+            else :
+                self.radio_activation_non.SetValue(True)
+            self.ctrl_unite_prevision.SetID(self.clsParametres.GetValeur("psu_unite_prevision", None))
+            self.ctrl_unite_presence.SetID(self.clsParametres.GetValeur("psu_unite_presence", None))
+            self.ctrl_tarif_forfait.SetID(self.clsParametres.GetValeur("psu_tarif_forfait", None))
+            self.ctrl_etiquette_rtt.SetID(self.clsParametres.GetValeur("psu_etiquette_rtt", None))
 
     def OnBoutonOk(self, event):
         # Récupération des données
@@ -185,6 +247,7 @@ class Dialog(wx.Dialog):
         psu_unite_prevision = self.ctrl_unite_prevision.GetID()
         psu_unite_presence = self.ctrl_unite_presence.GetID()
         psu_tarif_forfait = self.ctrl_tarif_forfait.GetID()
+        psu_etiquette_rtt = self.ctrl_etiquette_rtt.GetID()
 
         if psu_activation == 1 :
             if psu_unite_prevision == None :
@@ -207,6 +270,7 @@ class Dialog(wx.Dialog):
         self.clsParametres.SetValeur("psu_unite_prevision", psu_unite_prevision)
         self.clsParametres.SetValeur("psu_unite_presence", psu_unite_presence)
         self.clsParametres.SetValeur("psu_tarif_forfait", psu_tarif_forfait)
+        self.clsParametres.SetValeur("psu_etiquette_rtt", psu_etiquette_rtt)
 
         # Fermeture
         self.EndModal(wx.ID_OK)
@@ -217,7 +281,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDactivite=43)
+    dialog_1 = Dialog(None, IDactivite=1)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

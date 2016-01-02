@@ -1796,8 +1796,10 @@ class DB:
                 self.AjoutChamp("activites", "psu_unite_prevision", "INTEGER")
                 self.AjoutChamp("activites", "psu_unite_presence", "INTEGER")
                 self.AjoutChamp("activites", "psu_tarif_forfait", "INTEGER")
+                self.AjoutChamp("activites", "psu_etiquette_rtt", "INTEGER")
                 self.AjoutChamp("contrats", "duree_absences_prevues", "VARCHAR(50)")
                 self.AjoutChamp("contrats", "duree_heures_regularisation", "VARCHAR(50)")
+                self.AjoutChamp("contrats", "duree_tolerance_depassement", "VARCHAR(50)")
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
@@ -2101,7 +2103,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     db = DB(suffixe="DATA")
-    db.AjoutChamp("contrats", "duree_absences_prevues", "VARCHAR(50)")
+    db.AjoutChamp("activites", "psu_etiquette_rtt", "INTEGER")
     db.Close()
 
     # Exportation d'une table dans la base DEFAUT

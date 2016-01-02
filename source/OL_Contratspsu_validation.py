@@ -41,12 +41,15 @@ class Track(object):
         self.date_debut_contrat = self.clsbase.GetValeur("date_debut", None)
         self.date_fin_contrat = self.clsbase.GetValeur("date_fin", None)
         self.individu_nom_complet = self.clsbase.GetValeur("individu_nom_complet", "")
+        self.duree_tolerance_depassement = self.clsbase.GetValeur("duree_tolerance_depassement", datetime.timedelta(0))
+        self.arrondi_type = self.clsbase.GetValeur("arrondi_type", datetime.timedelta(0))
+        self.arrondi_delta = self.clsbase.GetValeur("arrondi_delta", datetime.timedelta(0))
 
         # Ajout les RTT non prises si dernier mois du contrat
         if self.date_fin_contrat.month == mois and self.date_fin_contrat.year == annee :
-            self.nbre_solde_rtt = self.clsbase.GetValeur("nbre_absences_solde", datetime.timedelta(0))
+            self.duree_solde_rtt = self.clsbase.GetValeur("duree_absences_solde", datetime.timedelta(0))
         else :
-            self.nbre_solde_rtt = datetime.timedelta(0)
+            self.duree_solde_rtt = datetime.timedelta(0)
 
         # Mensualité
         self.label_prestation = self.track_mensualite.label_prestation
@@ -141,11 +144,6 @@ class Track(object):
         #         if track.IDunite == self.clsbase.GetValeur("IDunite_depassement") :
         #             self.heures_depassements += duree
 
-                # Paramètres des dépassements
-                arrondi_type = "tranche_horaire"
-                arrondi_delta = 15
-                tolerance_delta = datetime.timedelta(minutes=15)
-
                 # Vérifie dépassement du début puis le dépassement de la fin
                 depassement_debut = ("debut", dict_date["presence"]["heure_debut"], dict_date["prevision"]["heure_debut"])
                 depassement_fin = ("fin", dict_date["prevision"]["heure_fin"], dict_date["presence"]["heure_fin"])
@@ -164,11 +162,11 @@ class Track(object):
                                 # Vérifie si la tolérance est dépassée
                                 depassement_reel = UTILS_Dates.TimeEnDelta(heure_max) - UTILS_Dates.TimeEnDelta(heure_min)
 
-                                if depassement_reel > tolerance_delta :
+                                if depassement_reel > self.duree_tolerance_depassement :
 
                                     # Vérifie s'il y a un dépassement
                                     if heure_min < heure_max :
-                                        depassement_arrondi = UTILS_Dates.CalculerArrondi(arrondi_type=arrondi_type, arrondi_delta=arrondi_delta, heure_debut=heure_min, heure_fin=heure_max)
+                                        depassement_arrondi = UTILS_Dates.CalculerArrondi(arrondi_type=self.arrondi_type, arrondi_delta=self.arrondi_delta, heure_debut=heure_min, heure_fin=heure_max)
 
                         else :
                             # S'il n'y avait pas de prévision
@@ -187,7 +185,7 @@ class Track(object):
 
     def MAJ(self):
         # Calcul des heures à facturer
-        self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation + self.nbre_solde_rtt
+        self.heures_a_facturer = self.heures_prevues - self.heures_absences_deductibles + self.heures_regularisation + self.duree_solde_rtt
         self.montant_a_facturer = FloatToDecimal(self.tarif_base * UTILS_Dates.DeltaEnFloat(self.heures_a_facturer))
 
         # Calcul des dépassements
@@ -288,13 +286,15 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Abs déduc."), 'center', 80, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Abs non déduc."), 'center', 95, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"H. compl."), 'center', 80, "heures_depassements", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
-            ColumnDefn(_(u"RTT non prises"), 'center', 95, "nbre_solde_rtt", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
+            ColumnDefn(_(u"RTT non prises"), 'center', 95, "duree_solde_rtt", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"H. régular."), 'center', 80, "heures_regularisation", typeDonnee="duree", stringConverter=FormateDuree, isEditable=True),
 
             ColumnDefn(_(u"HEURES"), 'center', 80, "heures_a_facturer", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"MONTANT"), 'center', 80, "montant_a_facturer", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
-            ColumnDefn(_(u"Date"), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate, isEditable=False),
 
+            ColumnDefn(_(u""), 'center', 2, "", typeDonnee="texte", isEditable=False),
+
+            ColumnDefn(_(u"Date"), 'center', 80, "date_facturation", typeDonnee="date", stringConverter=FormateDate, isEditable=False),
             ColumnDefn(_(u"H. facturées"), 'center', 80, "heures_facturees", typeDonnee="duree", stringConverter=FormateDuree, isEditable=False),
             ColumnDefn(_(u"Montant fact."), 'center', 90, "montant_facture", typeDonnee="montant", stringConverter=FormateMontant, isEditable=False),
             ColumnDefn(_(u"N° Facture"), 'center', 70, "num_facture", typeDonnee="entier", isEditable=False),
