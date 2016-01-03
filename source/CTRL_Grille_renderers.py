@@ -627,13 +627,15 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
     def GetCouleur(self, conso):
         return self.GetCouleurBarre(conso)
 
-    
+
+# -------------------------------------------------------------------------------------------
 class LabelLigneStandard(glr.GridLabelRenderer):
-    def __init__(self, bgcolor=None, date=None):
+    def __init__(self, bgcolor=None, date=None, ligne=None):
         self.couleurFond = bgcolor
         self.couleurInitiale = bgcolor
         self.rect = None
         self.date = date
+        self.ligne = ligne
         
     def Draw(self, grid, dc, rect, row):
         self.rect = rect
@@ -643,21 +645,51 @@ class LabelLigneStandard(glr.GridLabelRenderer):
             dc.SetPen(wx.TRANSPARENT_PEN)
             dc.DrawRectangleRect(rect)
 ##        self.couleurFond = dc.GetBackground().GetColour() 
-        hAlign, vAlign = grid.GetRowLabelAlignment()
-        text = grid.GetRowLabelValue(row)
         DrawBorder(grid, dc, rect)
-        self.DrawText(grid, dc, rect, text, hAlign, vAlign)
+
+        dc.SetTextForeground(wx.BLACK)
+        if self.ligne.coche == True :
+            dc.SetTextForeground(wx.RED)
+
+        texte = grid.GetRowLabelValue(row)
+        # hAlign, vAlign = grid.GetRowLabelAlignment()
+        # self.DrawText(grid, dc, rect, texte, hAlign, vAlign)
+
+        dc.SetFont(wx.Font(8, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
+        tailleTexte = dc.GetTextExtent(texte)
+        x = rect.x + rect.width/2.0 - tailleTexte[0]/2.0
+        y = rect.y + rect.height/2.0 - tailleTexte[1]/2.0
+        dc.DrawText(texte, x, y)
 
         # Indicateur date du jour
         if self.date == datetime.date.today() :
             dc.SetBrush(wx.Brush(wx.Colour(255, 0, 0), wx.SOLID))
             dc.SetPen(wx.TRANSPARENT_PEN)
             dc.DrawPolygon([(0, 0), (-7, 0), (0, 7)], xoffset=rect[2]-2, yoffset=rect[1]+1)
+
+        # Coche
+        # if self.ligne.coche == True :
+        #     tailleImage = 16
+        #     bmp = wx.Bitmap("Images/16x16/Ok4.png", wx.BITMAP_TYPE_ANY)
+        #     dc.DrawBitmap(bmp, rect.x +3, rect.y + rect.height/2.0 - tailleImage/2.0)
+
     
     def MAJ(self, couleur):
         self.couleurFond = couleur
-        self.grid.Refresh() 
-    
+        self.MAJCase() #self.grid.Refresh()
+
+    def MAJCase(self):
+        rect = wx.Rect()
+        rect.width = self.grid.GetRowLabelSize()
+        rect.height = self.grid.GetRowSize(self.ligne.numLigne)
+        rect.x = self.grid.GetGridRowLabelWindow().GetPosition()[0]
+        rect.y = self.grid.CellToRect(self.ligne.numLigne, 1).y
+        # Adaptation au scrolling
+        xView, yView = self.grid.GetViewStart()
+        xDelta, yDelta = self.grid.GetScrollPixelsPerUnit()
+        rect.OffsetXY(0,-(yView*yDelta)) # rect.OffsetXY(-(xView*xDelta),-(yView*yDelta))
+        self.grid.GetGridRowLabelWindow().RefreshRect(rect)
+
     def Flash(self, couleur=None):
         self.MAJ(couleur)
         wx.CallLater(1000, self.MAJ, self.couleurInitiale)

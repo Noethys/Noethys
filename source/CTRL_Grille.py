@@ -294,6 +294,8 @@ class Ligne():
         self.IDfamille = IDfamille
         self.date = date
         self.modeLabel = modeLabel
+        self.coche = False
+
 ##        self.listeConso = []
         if self.IDindividu != None :
             self.dictInfosIndividu = grid.dictInfosIndividus[self.IDindividu]
@@ -341,7 +343,7 @@ class Ligne():
         if self.estSeparation == True :
             self.renderer_label = CTRL_Grille_renderers.LabelLigneSeparation(couleurCase, dateTemp)
         else :
-            self.renderer_label = CTRL_Grille_renderers.LabelLigneStandard(couleurCase, dateTemp)
+            self.renderer_label = CTRL_Grille_renderers.LabelLigneStandard(couleurCase, dateTemp, self)
         self.grid.SetRowLabelRenderer(numLigne, self.renderer_label)
         self.grid.dictLignes[numLigne] = self.renderer_label
         
@@ -449,6 +451,10 @@ class Ligne():
             if date >= date_debut and date <= date_fin :
                 return True
         return False
+
+    def OnLeftClick(self):
+        self.coche = not self.coche
+        self.renderer_label.MAJCase()
 
     def OnContextMenu(self):
         return
@@ -648,6 +654,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
+        self.Bind(gridlib.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
         self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnModificationMemo)
         self.Bind(gridlib.EVT_GRID_ROW_SIZE, self.OnChangeRowSize)
         self.Bind(gridlib.EVT_GRID_COL_SIZE, self.OnChangeColSize)
@@ -2110,7 +2117,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         ligne = self.dictLignes[numLigne]
         ligne.OnContextMenu()
         event.Skip()
-    
+
+    def OnLabelLeftClick(self, event):
+        # Annule moving barre
+        self.barreMoving = None
+        self.SetCurseur(None)
+        # Context Menu
+        numLigne = event.GetRow()
+        if numLigne == -1 : return
+        ligne = self.dictLignes[numLigne]
+        ligne.OnLeftClick()
+        event.Skip()
+
     def OnModificationMemo(self, event):
         numLigne = event.GetRow()
         numColonne = event.GetCol()
@@ -4118,14 +4136,46 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##            "etats" : selectionEtats,
 ##            }
     
-    def ConvertirEtat(self, etatInitial="refus", etatFinal="reservation"):
+    def ConvertirEtat(self, event=None):
         """ Convertit toutes les conso selon les souhaits """
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
+
+        # Demande les paramètres de la conversion
+        import DLG_Conversion_etat
+        dlg = DLG_Conversion_etat.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK :
+            dictDonnees = dlg.GetDonnees()
+            dlg.Destroy()
+        else :
+            dlg.Destroy()
+            return
+
+        # Recherche les cases concernées
+        listeConso = []
         for numLigne, ligne in self.dictLignes.iteritems() :
-            for numColonne, case in ligne.dictCases.iteritems() :
-                if case.typeCase == "consommation" :
-                    for conso in case.GetListeConso() :
-                        if conso.etat == etatInitial :
-                            case.ModifieEtat(conso, etatFinal)
+            if dictDonnees["option_lignes"] == "lignes_affichees" or (dictDonnees["option_lignes"] == "lignes_selectionnees" and ligne.coche == True):
+                for numColonne, case in ligne.dictCases.iteritems() :
+                    if case.typeCase == "consommation" :
+                        for conso in case.GetListeConso() :
+                            if conso.etat == dictDonnees["code_etat_avant"] :
+                                listeConso.append((case, conso))
+
+        if len(listeConso) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation ayant cet état !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le changement d'état '%s' en '%s' pour %d consommations ?") % (dictDonnees["label_etat_avant"], dictDonnees["label_etat_apres"], len(listeConso)), _(u"Changement d'état"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        # Conversion
+        for case, conso in listeConso :
+            case.ModifieEtat(conso, dictDonnees["code_etat_apres"])
+
     
     def GetNbreDatesEtat(self, etat="refus"):
         nbre = 0
@@ -5360,7 +5410,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##                ligne.Flash()
                 return True
         return False
-                
+
+    def SelectionnerLignes(self, event=None):
+        for numLigne, ligne in self.dictLignes.iteritems() :
+            if ligne.estSeparation == False :
+                ligne.coche = True
+        self.Refresh()
+
+    def DeselectionnerLignes(self, event=None):
+        for numLigne, ligne in self.dictLignes.iteritems() :
+            if ligne.estSeparation == False :
+                ligne.coche = False
+        self.Refresh()
         
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

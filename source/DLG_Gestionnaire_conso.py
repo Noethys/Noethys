@@ -59,6 +59,8 @@ ID_FORMAT_LABEL_LIGNE_4 = wx.NewId()
 ID_OUTILS_SAISIE_FORFAIT = wx.NewId()
 ID_OUTILS_RECALCUL = wx.NewId()
 ID_OUTILS_IMPRIMER_CONSO = wx.NewId()
+ID_OUTILS_CONVERTIR_ETAT = wx.NewId()
+
 
 
 def DateComplete(dateDD):
@@ -116,7 +118,7 @@ class Commandes(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=7, vgap=10, hgap=10)
         grid_sizer_base.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_base.Add(self.bouton_options, 0, 0, 0)
-        grid_sizer_base.Add(self.bouton_outils, 0, wx.EXPAND, 0)
+        grid_sizer_base.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer_base.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_base.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_base.Add(self.bouton_annuler, 0, 0, 0)
@@ -645,51 +647,38 @@ class Dialog(wx.Dialog):
         item.SetBitmap(wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_imprimer, id=ID_OUTILS_IMPRIMER_CONSO)
-        
+
+        menuPop.AppendSeparator()
+
         item = wx.MenuItem(menuPop, ID_OUTILS_RECALCUL, _(u"Recalculer toutes les prestations"), _(u"Recalculer toutes les prestations"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_recalculer, id=ID_OUTILS_RECALCUL)
 
-        menuPop.AppendSeparator()
+        item = wx.MenuItem(menuPop, ID_OUTILS_CONVERTIR_ETAT, _(u"Convertir l'état des consommations"), _(u"Convertir l'état des consommations"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier_modification.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.panel_grille.grille.ConvertirEtat, id=ID_OUTILS_CONVERTIR_ETAT)
 
-        sousMenuConvertirEtat = wx.Menu()
-            
-        ID = 1000
-        self.dictTempConversionEtat = {}
-        listeEtats = [("reservation", _(u"Réservation")), ("attente", _(u"Attente")), ("refus", _(u"Refus")), ("present", _(u"Présent")), ("absenti", _(u"Absence injustifiée")), ("absentj", _(u"Absence justifiée"))]
-        for codeEtat1, labelEtat1 in listeEtats :
-            for codeEtat2, labelEtat2 in listeEtats : 
-                if codeEtat1 != codeEtat2 :
-                    labelCommande = _(u"Convertir les consommations '%s' en '%s'") % (labelEtat1, labelEtat2)
-                    item = wx.MenuItem(sousMenuConvertirEtat, ID, labelCommande, labelCommande)
-                    item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier_modification.png", wx.BITMAP_TYPE_PNG))
-                    sousMenuConvertirEtat.AppendItem(item)
-                    self.Bind(wx.EVT_MENU, self.On_outils_convert_etat, id=ID)
-                    self.dictTempConversionEtat[ID] = (codeEtat1, labelEtat1, codeEtat2, labelEtat2)
-                    ID += 1
-        
-        item = menuPop.AppendMenu(500, _(u"Convertir l'état des consommations affichées"), sousMenuConvertirEtat)
-        
         self.PopupMenu(menuPop)
         menuPop.Destroy()
         
-    def On_outils_convert_etat(self, event):
-        """ Convertit tous les refus en réservations """
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
-        codeEtat1, labelEtat1, codeEtat2, labelEtat2 = self.dictTempConversionEtat[event.GetId()]
-        nbre = self.panel_grille.grille.GetNbreDatesEtat(codeEtat1)
-        if nbre == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation affichée ayant cet état !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        dlg = wx.MessageDialog(self, _(u"Confirmez-vous le changement d'état '%s' en '%s' pour %d consommations ?") % (labelEtat1, labelEtat2, nbre), _(u"Changement d'état"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-        reponse = dlg.ShowModal() 
-        dlg.Destroy()
-        if reponse != wx.ID_YES :
-            return 
-        self.panel_grille.grille.ConvertirEtat(etatInitial=codeEtat1, etatFinal=codeEtat2)
+    # def On_outils_convert_etat(self, event):
+    #     """ Convertit tous les refus en réservations """
+    #     if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
+    #     codeEtat1, labelEtat1, codeEtat2, labelEtat2 = self.dictTempConversionEtat[event.GetId()]
+    #     nbre = self.panel_grille.grille.GetNbreDatesEtat(codeEtat1)
+    #     if nbre == 0 :
+    #         dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation affichée ayant cet état !"), _(u"Annulation"), wx.OK | wx.ICON_EXCLAMATION)
+    #         dlg.ShowModal()
+    #         dlg.Destroy()
+    #         return
+    #     dlg = wx.MessageDialog(self, _(u"Confirmez-vous le changement d'état '%s' en '%s' pour %d consommations ?") % (labelEtat1, labelEtat2, nbre), _(u"Changement d'état"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+    #     reponse = dlg.ShowModal()
+    #     dlg.Destroy()
+    #     if reponse != wx.ID_YES :
+    #         return
+    #     self.panel_grille.grille.ConvertirEtat(etatInitial=codeEtat1, etatFinal=codeEtat2)
 
         
     def On_outils_imprimer(self, event):
