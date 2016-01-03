@@ -25,6 +25,8 @@ import CTRL_Saisie_euros
 import CTRL_Saisie_heure
 import OL_Consommations
 import OL_Deductions
+import CTRL_Saisie_duree
+import UTILS_Dates
 
 try: import psyco; psyco.full()
 except: pass
@@ -128,6 +130,7 @@ class Choix_activite(wx.Choice):
         for dictActivite in listeActivites :
             IDactivite = dictActivite["IDactivite"]
             nom = dictActivite["nom"]
+            if nom == None : nom = "?"
             self.listeNoms.append(nom)
         self.SetItems(self.listeNoms)
     
@@ -268,7 +271,7 @@ class Dialog(wx.Dialog):
         self.label_facture = wx.StaticText(self, -1, _(u"Facture :"))
         self.ctrl_facture = wx.StaticText(self, -1, _(u"Non facturé"))
         self.label_temps = wx.StaticText(self, -1, _(u"Temps facturé :"))
-        self.ctrl_temps = CTRL_Saisie_heure.Heure(self)
+        self.ctrl_temps = CTRL_Saisie_duree.CTRL(self, size=(80, -1))
 
         # TVA
         self.label_tva = wx.StaticText(self, -1, _(u"Taux TVA (%) :"))
@@ -612,7 +615,7 @@ class Dialog(wx.Dialog):
         self.ctrl_consommations.SetIDprestation(IDprestation) 
         # Temps facturé
         if temps_facture != None :
-            self.ctrl_temps.SetHeure(temps_facture)
+            self.ctrl_temps.SetDuree(temps_facture)
                 
     
     def Importation_individus(self):
@@ -783,7 +786,7 @@ class Dialog(wx.Dialog):
             tva = None
 
         # Vérifie temps facturé
-        temps_facture = self.ctrl_temps.GetHeure()
+        temps_facture = UTILS_Dates.DeltaEnStr(self.ctrl_temps.GetDuree(), separateur=":")
         if temps_facture != None :
             if self.ctrl_temps.Validation() == False :
                 dlg = wx.MessageDialog(self, _(u"Le temps facturé que vous avez saisi ne semble pas correct !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)

@@ -33,6 +33,7 @@ class Track(object):
         self.heure_fin = self.dictValeurs["heure_fin"]
         self.quantite = self.dictValeurs["quantite"]
         self.etat = self.dictValeurs["etat"]
+        self.etiquettes = self.dictValeurs["etiquettes"]
         
         self.nomUnite = "TEST"#self.parent.dictUnites[self.IDunite]["nom"]
         

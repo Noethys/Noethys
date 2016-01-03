@@ -38,12 +38,15 @@ class Track(object):
         self.track_mensualite = track_mensualite
 
         # Généralités
+        self.IDinscription = self.clsbase.GetValeur("IDinscription", None)
         self.date_debut_contrat = self.clsbase.GetValeur("date_debut", None)
         self.date_fin_contrat = self.clsbase.GetValeur("date_fin", None)
         self.individu_nom_complet = self.clsbase.GetValeur("individu_nom_complet", "")
         self.duree_tolerance_depassement = self.clsbase.GetValeur("duree_tolerance_depassement", datetime.timedelta(0))
         self.arrondi_type = self.clsbase.GetValeur("arrondi_type", datetime.timedelta(0))
         self.arrondi_delta = self.clsbase.GetValeur("arrondi_delta", datetime.timedelta(0))
+        self.IDunite_prevision = self.clsbase.GetValeur("IDunite_prevision", None)
+        self.IDunite_presence = self.clsbase.GetValeur("IDunite_presence", None)
 
         # Ajout les RTT non prises si dernier mois du contrat
         if self.date_fin_contrat.month == mois and self.date_fin_contrat.year == annee :
@@ -104,6 +107,7 @@ class Track(object):
                     "heures_absences_non_deductibles" : datetime.timedelta(0),
                     "heures_absences_deductibles" : datetime.timedelta(0),
                     "depassement" : datetime.timedelta(0),
+                    "absences_rtt" : datetime.timedelta(0),
                 }
 
 
@@ -136,9 +140,18 @@ class Track(object):
 
                         if track.etat in ("absenti",) :
                             self.heures_absences_non_deductibles += track.duree_arrondie
+                            dict_date["heures_absences_non_deductibles"] = self.heures_absences_non_deductibles
 
                         if track.etat in ("absentj",) :
                             self.heures_absences_deductibles += track.duree_arrondie
+                            dict_date["heures_absences_deductibles"] = self.heures_absences_deductibles
+
+                    # Recherche des absences RTT
+                    if self.clsbase.GetValeur("psu_etiquette_rtt") in track.etiquettes :
+                        dict_date["absences_rtt"] += track.duree_arrondie
+
+
+
 
         #         # Recherche des dépassements
         #         if track.IDunite == self.clsbase.GetValeur("IDunite_depassement") :
@@ -534,6 +547,21 @@ class ListView(FastObjectListView):
             DB.ExecuterReq("DELETE FROM ventilation WHERE IDprestation IN %s" % conditionSuppression)
             DB.ExecuterReq("DELETE FROM deductions WHERE IDprestation IN %s" % conditionSuppression)
 
+            # MAJ des consommations
+            listeUnites = []
+            for IDunite in (track.IDunite_prevision, track.IDunite_presence) :
+                if IDunite != None :
+                    listeUnites.append(IDunite)
+
+            if len(listeUnites) == 0 : conditionUnites = "()"
+            elif len(listeUnites) == 1 : conditionUnites = "(%d)" % listeUnites[0]
+            else : conditionUnites = str(tuple(listeUnites))
+
+            req = """UPDATE consommations SET IDprestation=NULL
+            WHERE IDinscription=%d AND date>='%s' AND date<='%s' AND IDunite IN %s
+            ;"""% (track.IDinscription, track.forfait_date_debut, track.forfait_date_fin, conditionUnites)
+            DB.ExecuterReq(req)
+
         DB.Commit()
         DB.Close()
 
@@ -611,6 +639,20 @@ class ListView(FastObjectListView):
             else :
                 IDprestation = track.IDprestation
                 DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestation)
+
+            # MAJ des consommations
+            listeUnites = []
+            for IDunite in (track.IDunite_prevision, track.IDunite_presence) :
+                if IDunite != None :
+                    listeUnites.append(IDunite)
+            if len(listeUnites) == 0 : conditionUnites = "()"
+            elif len(listeUnites) == 1 : conditionUnites = "(%d)" % listeUnites[0]
+            else : conditionUnites = str(tuple(listeUnites))
+
+            req = """UPDATE consommations SET IDprestation=%d
+            WHERE IDinscription=%d AND date>='%s' AND date<='%s' AND IDunite IN %s
+            ;"""% (IDprestation, track.IDinscription, track.forfait_date_debut, track.forfait_date_fin, conditionUnites)
+            DB.ExecuterReq(req)
 
             # MAJ du track
             track.IDprestation = IDprestation

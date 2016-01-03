@@ -491,6 +491,7 @@ class Base(object) :
                 IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement, individu_nom, individu_prenom = listeDonnees[0]
 
                 self.IDinscription = IDinscription
+                dictValeurs["IDinscription"] = self.IDinscription
                 dictValeurs["date_debut"] = UTILS_Dates.DateEngEnDateDD(date_debut)
                 dictValeurs["date_fin"] = UTILS_Dates.DateEngEnDateDD(date_fin)
                 dictValeurs["observations"] = observations
@@ -606,8 +607,7 @@ class Base(object) :
                 liste_IDconso.append(IDconso)
 
             if dictValeurs["psu_etiquette_rtt"] in etiquettes :
-                duree = UTILS_Dates.SoustractionHeures(heure_fin_time, heure_debut_time)
-                dictValeurs["duree_absences_prises"] += duree
+                dictValeurs["duree_absences_prises"] += track.duree_arrondie
 
         dictValeurs["liste_conso"] = liste_conso
         dictValeurs["dict_conso"] = dict_conso

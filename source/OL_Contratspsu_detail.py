@@ -38,6 +38,7 @@ class Track(object):
         self.heures_absences_non_deductibles = dict_date["heures_absences_non_deductibles"]
         self.heures_absences_deductibles = dict_date["heures_absences_deductibles"]
         self.depassement = dict_date["depassement"]
+        self.absences_rtt = dict_date["absences_rtt"]
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
@@ -88,6 +89,8 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Abs déduc."), 'center', 90, "heures_absences_deductibles", typeDonnee="duree", stringConverter=FormateDuree),
             ColumnDefn(_(u"Abs non déduc."), 'center', 90, "heures_absences_non_deductibles", typeDonnee="duree", stringConverter=FormateDuree),
             ColumnDefn(_(u"H.Compl."), 'center', 90, "depassement", typeDonnee="duree", stringConverter=FormateDuree),
+            ColumnDefn(_(u""), 'center', 5, "5", typeDonnee="texte"),
+            ColumnDefn(_(u"Abs. RTT"), 'center', 90, "absences_rtt", typeDonnee="duree", stringConverter=FormateDuree),
             ]
         
         self.SetColumns(liste_Colonnes)

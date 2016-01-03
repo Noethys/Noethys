@@ -54,6 +54,12 @@ class MyValidator(wx.PyValidator):
         # gets to the text control
         return
 
+    def TransferToWindow(self):
+        return True
+
+    def TransfertFromWindow(self):
+        return True
+
 
 #-----------------------------------------------------------------------------------------------------
 class CTRL(wx.TextCtrl):
