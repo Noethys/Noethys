@@ -170,6 +170,7 @@ class CTRL(CT.CustomTreeCtrl):
 
                 # Recherche des branches enfants
                 self.Boucle(IDetiquette, item, IDactivite)
+                self.Expand(item)
 
     def MAJ(self):
         self.Freeze()
