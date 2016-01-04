@@ -60,6 +60,9 @@ ID_OUTILS_SAISIE_FORFAIT = wx.NewId()
 ID_OUTILS_RECALCUL = wx.NewId()
 ID_OUTILS_IMPRIMER_CONSO = wx.NewId()
 ID_OUTILS_CONVERTIR_ETAT = wx.NewId()
+ID_OUTILS_RECOPIAGE = wx.NewId()
+ID_OUTILS_TOUT_SELECTIONNER = wx.NewId()
+ID_OUTILS_TOUT_DESELECTIONNER = wx.NewId()
 
 
 
@@ -655,10 +658,29 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_recalculer, id=ID_OUTILS_RECALCUL)
 
+        menuPop.AppendSeparator()
+
         item = wx.MenuItem(menuPop, ID_OUTILS_CONVERTIR_ETAT, _(u"Convertir l'état des consommations"), _(u"Convertir l'état des consommations"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier_modification.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.panel_grille.grille.ConvertirEtat, id=ID_OUTILS_CONVERTIR_ETAT)
+
+        item = wx.MenuItem(menuPop, ID_OUTILS_RECOPIAGE, _(u"Recopier des consommations"), _(u"Recopier des consommations"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier_modification.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.panel_grille.grille.Recopier, id=ID_OUTILS_RECOPIAGE)
+
+        menuPop.AppendSeparator()
+
+        item = wx.MenuItem(menuPop, ID_OUTILS_TOUT_SELECTIONNER, _(u"Sélectionner toutes les lignes"), _(u"Sélectionner toutes les lignes"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.panel_grille.grille.SelectionnerLignes, id=ID_OUTILS_TOUT_SELECTIONNER)
+
+        item = wx.MenuItem(menuPop, ID_OUTILS_TOUT_DESELECTIONNER, _(u"Désélectionner toutes les lignes"), _(u"Désélectionner toutes les lignes"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.panel_grille.grille.DeselectionnerLignes, id=ID_OUTILS_TOUT_DESELECTIONNER)
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()

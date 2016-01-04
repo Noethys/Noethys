@@ -56,6 +56,7 @@ ID_OUTILS_ENVOYER_CONSO = wx.NewId()
 ID_OUTILS_TOUT_SELECTIONNER = wx.NewId()
 ID_OUTILS_TOUT_DESELECTIONNER = wx.NewId()
 ID_OUTILS_CONVERTIR_ETAT = wx.NewId()
+ID_OUTILS_RECOPIAGE = wx.NewId()
 
 ID_MODE_RESERVATION = wx.NewId()
 ID_MODE_ATTENTE = wx.NewId()
@@ -602,10 +603,17 @@ class Dialog(wx.Dialog):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_outils_recalculer, id=ID_OUTILS_RECALCUL)
 
+        menuPop.AppendSeparator()
+
         item = wx.MenuItem(menuPop, ID_OUTILS_CONVERTIR_ETAT, _(u"Convertir l'état des consommations"), _(u"Convertir l'état des consommations"))
         item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier_modification.png", wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.panel_grille.grille.ConvertirEtat, id=ID_OUTILS_CONVERTIR_ETAT)
+
+        item = wx.MenuItem(menuPop, ID_OUTILS_RECOPIAGE, _(u"Recopier des consommations"), _(u"Recopier des consommations"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Calendrier_modification.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.panel_grille.grille.Recopier, id=ID_OUTILS_RECOPIAGE)
 
         menuPop.AppendSeparator()
 

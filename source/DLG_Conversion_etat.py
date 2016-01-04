@@ -64,7 +64,7 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Calendrier_modifier.png")
 
         # Conversion
-        self.staticbox_conversion = wx.StaticBox(self, -1, _(u"Etat à convertir"))
+        self.staticbox_conversion = wx.StaticBox(self, -1, _(u"Etats"))
         self.ctrl_etat_avant = CTRL_Etat(self)
         self.ctrl_image_conversion = wx.StaticBitmap(self, -1, wx.Bitmap(u"Images/16x16/Fleche_droite2.png", wx.BITMAP_TYPE_ANY))
         self.ctrl_etat_apres = CTRL_Etat(self)

@@ -4533,6 +4533,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Processus du traitement par lot """
         journal = {}
 
+        # Recherche les individus impactés
+        listeIndividus = []
+        for dictIndividu in resultats["individus"] :
+            listeIndividus.append(dictIndividu["IDindividu"])
+
         # Parcours les lignes
         for numLigne, ligne in self.dictLignes.iteritems() :
             for numColonne, case in ligne.dictCases.iteritems() :
@@ -4545,7 +4550,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             journal[case.IDindividu] = []
                             
                         # Vérifie si la date est valide selon les critères
-                        if case.date in resultats["dates"] :
+                        if case.date in resultats["dates"] and case.IDindividu in listeIndividus :
                             valide = True
                         else :
                             valide = False
@@ -4557,6 +4562,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                 
                                 for dictUnite in resultats["unites"] :
                                     if dictUnite["IDunite"] == case.IDunite :
+                                        IDunite = dictUnite["IDunite"]
                                         nomUnite = dictUnite["nom"]
                                         heure_debut = None
                                         heure_fin = None
@@ -4569,11 +4575,25 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         # if dictUnite["type"] == "Quantite" :
                                         #     quantite = dictUnite["options"]["quantite"]
 
+                                        heure_debut_defaut = self.dictUnites[IDunite]["heure_debut"]
+                                        heure_fin_defaut = self.dictUnites[IDunite]["heure_fin"]
+
                                         if dictUnite["options"].has_key("heure_debut") :
                                             heure_debut = dictUnite["options"]["heure_debut"]
 
+                                            if heure_debut != None and heure_debut_defaut != None :
+                                                if heure_debut < heure_debut_defaut  or heure_debut > heure_fin_defaut :
+                                                    heure_debut = heure_debut_defaut
+
                                         if dictUnite["options"].has_key("heure_fin") :
                                             heure_fin = dictUnite["options"]["heure_fin"]
+
+                                            if heure_fin != None and heure_fin_defaut != None :
+                                                if heure_fin > heure_fin_defaut or heure_fin < heure_debut_defaut :
+                                                    heure_fin = heure_fin_defaut
+
+                                            if heure_debut != None and heure_fin != None and heure_debut > heure_debut :
+                                                heure_debut = heure_fin
 
                                         if dictUnite["options"].has_key("quantite") :
                                             quantite = dictUnite["options"]["quantite"]
@@ -5422,7 +5442,222 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             if ligne.estSeparation == False :
                 ligne.coche = False
         self.Refresh()
-        
+
+    def Recopier(self, event=None):
+        """ Recopiage des conso d'une unité vers une autre unité """
+
+        # Demande les paramètres de la conversion
+        import DLG_Recopiage_conso
+        dlg = DLG_Recopiage_conso.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK :
+            dictDonnees = dlg.GetDonnees()
+            dlg.Destroy()
+        else :
+            dlg.Destroy()
+            return
+
+        # Recherche les cases à recopier
+        listeCasesOriginales = []
+        for numLigne, ligne in self.dictLignes.iteritems() :
+            if dictDonnees["option_lignes"] == "lignes_affichees" or (dictDonnees["option_lignes"] == "lignes_selectionnees" and ligne.coche == True):
+                for numColonne, case in ligne.dictCases.iteritems() :
+                    if case.typeCase == "consommation" and case.IDunite == dictDonnees["ID_unite_origine"] :
+                        listeCasesOriginales.append(case)
+
+        # Traitement
+        listeJournaux = []
+        for case in listeCasesOriginales :
+            for conso in case.GetListeConso() :
+                if conso.etat != None :
+
+                    # Prépare les paramètres de la conso à saisir ou à supprimer
+                    dictParametres = {
+                        "action" : "saisie",
+                        "dates" : [case.ligne.date,],
+                        "description" : u"Recopiage",
+                        "IDactivite" : case.IDactivite,
+                        "date_fin" : [case.ligne.date,],
+                        "date_debut" : [case.ligne.date,],
+                        "jours_scolaires" : [0, 1, 2, 3, 4, 5, 6],
+                        "jours_vacances" : [0, 1, 2, 3, 4, 5, 6],
+                        "semaines" : 1,
+                        "feries" : True,
+                        "individus" : [{"selection" : True, "IDindividu" : case.ligne.IDindividu},],
+                        "etiquettes" : [],
+                        "etat" : "reservation",
+                        "unites" : [{
+                                "nom" : self.dictUnites[dictDonnees["ID_unite_destination"]]["nom"],
+                                "type" : self.dictUnites[dictDonnees["ID_unite_destination"]]["type"],
+                                "IDunite" : dictDonnees["ID_unite_destination"],
+                                "options" : {},}],
+                        }
+
+                    # Informations optionnelles
+                    if dictDonnees["param_etat"] == True :
+                        dictParametres["etat"] = conso.etat
+
+                    if dictDonnees["param_etiquettes"] == True :
+                        dictParametres["etiquettes"] = conso.etiquettes
+
+                    if dictDonnees["param_horaires"] == True :
+                        dictParametres["unites"][0]["options"]["heure_debut"] = conso.heure_debut
+                        dictParametres["unites"][0]["options"]["heure_fin"] = conso.heure_fin
+
+                    if dictDonnees["param_quantite"] == True :
+                        dictParametres["unites"][0]["options"]["quantite"] = conso.quantite
+
+                    # Traitement par lot pour recopier
+                    journal = self.TraitementLot_processus(dictParametres)
+                    listeJournaux.append((case, conso, journal))
+
+        # Formatage du texte de résultats
+        texte = _(u"<B>La procédure de recopiage est terminée mais les incidents suivants ont été rencontrés :</B><BR><BR>")
+
+        afficher = False
+        texte += u"<UL>"
+        for case, conso, journal in listeJournaux :
+            for IDindividu, listeActions in journal.iteritems() :
+                if len(listeActions) > 0 :
+                    afficher = True
+                    for date, nomUnite, action in listeActions :
+                        texte += u"<LI>%s - %s : %s.</LI>" % (case.ligne.labelLigne, nomUnite, action)
+        texte += "</UL><BR><BR>"
+
+        # Affichage des résultats
+        if afficher == True :
+            import DLG_Message_html
+            dlg = DLG_Message_html.Dialog(self, texte=u"<FONT SIZE=2>%s</FONT>" % texte, titre=_(u"Résultats du recopiage"), size=(630, 450))
+            dlg.ShowModal()
+            dlg.Destroy()
+
+
+
+
+        # # Calcule les variables
+        # dictVariables = {}
+        # for IDunite, case in dictCasesUnites.iteritems():
+        #     heure_debut = HeureStrEnDelta("00:00")
+        #     heure_fin = HeureStrEnDelta("00:00")
+        #     duree = HeureStrEnDelta("00:00")
+        #     etat = None
+        #
+        #     for conso in case.GetListeConso() :
+        #         if conso.etat != None :
+        #             heure_debut_conso = HeureStrEnDelta(conso.heure_debut)
+        #             heure_fin_conso = HeureStrEnDelta(conso.heure_fin)
+        #             duree_conso = heure_fin_conso - heure_debut_conso
+        #
+        #             # Heure min
+        #             if heure_debut_conso < heure_debut or heure_debut == HeureStrEnDelta("00:00"):
+        #                 heure_debut = heure_debut_conso
+        #
+        #             # Heure_max
+        #             if heure_fin_conso > heure_fin :
+        #                 heure_fin = heure_fin_conso
+        #
+        #             # Durée
+        #             duree += duree_conso
+        #
+        #             # Etat
+        #             etat = conso.etat
+        #
+        #     # Mémorisation des résultats
+        #     dictVariables["{HEUREDEBUT_UNITE%d}" % IDunite] = heure_debut
+        #     dictVariables["{HEUREFIN_UNITE%d}" % IDunite] = heure_fin
+        #     dictVariables["{DUREE_UNITE%d}" % IDunite] = duree
+        #     dictVariables["{ETAT_UNITE%d}" % IDunite] = etat
+        #
+        # # Traite chaque unité auto-générée
+        # for dictUnite in listeUnitesAuto :
+        #
+        #     # Vérifie si les conditions sont réunies
+        #     conditions = dictUnite["autogen_conditions"]
+        #     listeConditions = conditions.split(";")
+        #
+        #     valide = True
+        #     if len(listeConditions) == 0 :
+        #         valide = False
+        #
+        #     for condition in listeConditions :
+        #         # Vérifie que la condition est valide
+        #         if self.ResolveFormule(condition, dictVariables) != True :
+        #             valide = False
+        #
+        #     # Prépare les paramètres de la conso à saisir ou à supprimer
+        #     dictParametres = {
+        #         "dates" : [ligne.date,],
+        #         "description" : u"Auto-génération",
+        #         "IDactivite" : IDactivite,
+        #         "date_fin" : [ligne.date,],
+        #         "date_debut" : [ligne.date,],
+        #         "jours_scolaires" : [0, 1, 2, 3, 4, 5, 6],
+        #         "jours_vacances" : [0, 1, 2, 3, 4, 5, 6],
+        #         "semaines" : 1,
+        #         "feries" : True,
+        #         "individus" : [{"selection" : True, "IDindividu" : ligne.IDindividu},],
+        #         "unites" : [{"nom" : dictUnite["nom"],"type" : dictUnite["type"],"IDunite" : dictUnite["IDunite"],"options" : {}},],
+        #     }
+        #
+        #     # Vérifie si une conso existe déjà :
+        #     consoExists = dictVariables["{ETAT_UNITE%d}" % dictUnite["IDunite"]] != None
+        #     #print "consoExists=", consoExists
+        #
+        #     # Si toutes les conditions sont valides
+        #     if valide == True :
+        #
+        #         # Récupération des paramètres de l'unité auto-générée
+        #         parametres = dictUnite["autogen_parametres"]
+        #         if parametres not in ("", None) :
+        #
+        #             listeDonnees = parametres.split("##")
+        #             for donnee in listeDonnees :
+        #                 champ, valeur = donnee.split(":=")
+        #
+        #                 if champ == "ETIQUETTES" and valeur != None :
+        #                     etiquettes = UTILS_Texte.ConvertStrToListe(valeur)
+        #                     dictParametres["etiquettes"] = etiquettes
+        #
+        #                 if champ == "ETAT" and valeur != None :
+        #                     dictParametres["etat"] = valeur
+        #
+        #                 if champ == "QUANTITE" and valeur != None :
+        #                     if valeur != "1" :
+        #                         dictParametres["unites"][0]["options"]["quantite"] = int(valeur)
+        #
+        #                 if champ == "HEUREDEBUT" and valeur != None :
+        #                     if "FORMULE:" in valeur :
+        #                         formule = valeur.replace("FORMULE:", "")
+        #                         heure_debut = self.ResolveFormule(formule, dictVariables)
+        #                     else :
+        #                         heure_debut = HeureStrEnDelta(valeur)
+        #                     #print "heure_debut=", DeltaEnStr(heure_debut, separateur=":")
+        #                     dictParametres["unites"][0]["options"]["heure_debut"] = DeltaEnStr(heure_debut, separateur=":")
+        #
+        #                 if champ == "HEUREFIN" and valeur != None :
+        #                     if "FORMULE:" in valeur :
+        #                         formule = valeur.replace("FORMULE:", "")
+        #                         heure_fin = self.ResolveFormule(formule, dictVariables)
+        #                     else :
+        #                         heure_fin = HeureStrEnDelta(valeur)
+        #                     #print "heure_fin=", DeltaEnStr(heure_fin, separateur=":")
+        #                     dictParametres["unites"][0]["options"]["heure_fin"] = DeltaEnStr(heure_fin, separateur=":")
+        #
+        #             # Action
+        #             if consoExists :
+        #                 dictParametres["action"] = "modification"
+        #             else :
+        #                 dictParametres["action"] = "saisie"
+        #
+        #             # Traitement par lot
+        #             journal = self.TraitementLot_processus(dictParametres)
+        #             #print "journal =", journal
+        #
+        #     if valide == False and consoExists :
+        #         dictParametres["action"] = "suppression"
+        #         dictParametres["etiquettes"] = []
+        #         journal = self.TraitementLot_processus(dictParametres)
+        #         #print "journal =", journal
+
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class MyFrame(wx.Frame):
