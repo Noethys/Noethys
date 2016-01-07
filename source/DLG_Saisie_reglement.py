@@ -1470,7 +1470,7 @@ class Dialog(wx.Dialog):
             DB.ReqMAJ("reglements", listeDonnees, "IDreglement", self.IDreglement)
         
         # --- Sauvegarde de la ventilation ---
-        self.ctrl_ventilation.Sauvegarde(self.IDreglement)
+        self.ctrl_ventilation.Sauvegarde(self.IDreglement, DB)
         
         # --- Sauvegarde les frais de gestion ---
         montantFrais, labelFrais, IDprestationFrais = donneesFrais
@@ -1503,7 +1503,7 @@ class Dialog(wx.Dialog):
         # --- Mémorise l'action dans l'historique ---
         if self.nouveauReglement == True :
             IDcategorie = 6
-            categorie = _(u"Saisie")
+            categorie = "Saisie"
         else:
             IDcategorie = 7
             categorie = "Modification"

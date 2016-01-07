@@ -739,10 +739,13 @@ class CTRL_Ventilation(gridlib.Grid):
             total += ligne.resteAVentiler
         return total
     
-    def Sauvegarde(self, IDreglement=None):
+    def Sauvegarde(self, IDreglement=None, DBtemp=None):
         """ Sauvegarde des données """
-        DB = GestionDB.DB()
-        
+        if DBtemp == None :
+            DB = GestionDB.DB()
+        else :
+            DB = DBtemp
+
         for ligne in self.listeLignesPrestations :
             IDprestation = ligne.IDprestation
             montant = float(ligne.ventilationActuelle)
@@ -768,8 +771,9 @@ class CTRL_Ventilation(gridlib.Grid):
                 # Suppression
                 if IDventilation != None :
                     DB.ReqDEL("ventilation", "IDventilation", IDventilation)
-        
-        DB.Close()
+
+        if DBtemp == None :
+            DB.Close()
         
         return True
 
@@ -957,8 +961,8 @@ class CTRL(wx.Panel):
             return False
         return True
         
-    def Sauvegarde(self, IDreglement=None):
-        self.ctrl_ventilation.Sauvegarde(IDreglement) 
+    def Sauvegarde(self, IDreglement=None, DB=None):
+        self.ctrl_ventilation.Sauvegarde(IDreglement, DB)
         # Si le montant du règlement est négatif :
 ##        if self.montant_reglement < 0.0 : 
 ##            DB = GestionDB.DB() 
