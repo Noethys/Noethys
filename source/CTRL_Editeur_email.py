@@ -37,8 +37,10 @@ CATEGORIES = [
     ("attestation_presence", _(u"Attestation de présence")), 
     ("attestation_fiscale", _(u"Attestation fiscale")), 
     ("reservations", _(u"Liste des réservations")), 
-    ("cotisation", _(u"Cotisation")), 
+    ("cotisation", _(u"Cotisation")),
+    ("rappel_pieces_manquantes", _(u"Rappel pièces manquantes"))
     ]
+
 
 MOTSCLES_STANDARDS = [
                 ( "{UTILISATEUR_NOM_COMPLET}", _(u"Nom complet de l'utilisateur") ),
@@ -159,6 +161,11 @@ MOTSCLES = {
                 ("{MONTANT_FACTURE_LETTRES}", _(u"Montant total facturé en lettres")),
                 ("{MONTANT_REGLE_LETTRES}", _(u"Montant réglé en lettres")),
                 ("{MONTANT_IMPAYE_LETTRES}", _(u"Montant impayé en lettres")),
+                ],
+
+    "rappel_pieces_manquantes" : [
+                ("{NOM_FAMILLE}", _(u"Nom de la famille")),
+                ("{LISTE_PIECES_MANQUANTES}", _(u"Liste des pièces manquantes")),
                 ],
 
     }

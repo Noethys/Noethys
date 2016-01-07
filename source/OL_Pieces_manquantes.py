@@ -18,8 +18,6 @@ import UTILS_Pieces_manquantes
 
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-try: import psyco; psyco.full()
-except: pass
 
 
 class Track(object):
@@ -35,6 +33,7 @@ class ListView(FastObjectListView):
         self.selectionID = None
         self.selectionTrack = None
         self.criteres = ""
+        self.donnees = []
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
@@ -53,7 +52,7 @@ class ListView(FastObjectListView):
 
     def GetTracks(self):
         """ Récupération des données """
-        if self.dateReference == None : return
+        if self.dateReference == None : return []
         dictDonnees = UTILS_Pieces_manquantes.GetListePiecesManquantes(self.dateReference, self.listeActivites, self.presents, concernes=self.concernes)
 
         listeListeView = []
@@ -80,9 +79,10 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
+        self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucune pièce manquante"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
-        self.SetSortColumn(self.columns[1])
+        self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        
     def MAJ(self, date_reference=None, listeActivites=None, presents=None, concernes=False, labelParametres=""):
@@ -101,6 +101,22 @@ class ListView(FastObjectListView):
         """Ouverture du menu contextuel """
         # Création du menu contextuel
         menuPop = wx.Menu()
+
+        # Item Tout cocher
+        item = wx.MenuItem(menuPop, 70, _(u"Tout cocher"))
+        bmp = wx.Bitmap("Images/16x16/Cocher.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.CocheListeTout, id=70)
+
+        # Item Tout décocher
+        item = wx.MenuItem(menuPop, 80, _(u"Tout décocher"))
+        bmp = wx.Bitmap("Images/16x16/Decocher.png", wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.CocheListeRien, id=80)
+
+        menuPop.AppendSeparator()
 
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
@@ -163,6 +179,11 @@ class ListView(FastObjectListView):
     def ExportExcel(self, event):
         import UTILS_Export
         UTILS_Export.ExportExcel(self, titre=_(u"Liste des pièces manquantes"))
+
+    def GetTracksCoches(self):
+        return self.GetCheckedObjects()
+
+
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------

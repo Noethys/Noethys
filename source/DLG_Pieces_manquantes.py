@@ -20,6 +20,8 @@ import OL_Pieces_manquantes
 import CTRL_Saisie_date
 import DLG_calendrier_simple
 import CTRL_Selection_activites
+import UTILS_Envoi_email
+
 
 def DateEngFr(textDate):
     text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
@@ -264,12 +266,13 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres = Parametres(self)
         self.ctrl_listview = OL_Pieces_manquantes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_listview.SetMinSize((100, 100))
-        self.ctrl_recherche = OL_Pieces_manquantes.CTRL_Outils(self, listview=self.ctrl_listview)
+        self.ctrl_recherche = OL_Pieces_manquantes.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
         
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer des rappels par Email"), cheminImage="Images/32x32/Emails_exp.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -277,6 +280,7 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_BUTTON, self.Apercu, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.EnvoyerEmail, self.bouton_email)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         
         self.MAJ(None)
@@ -287,6 +291,7 @@ class Dialog(wx.Dialog):
         self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
         self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer un email de rappel aux familles cochées"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((950, 700))
 
@@ -318,9 +323,10 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_email, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
         grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
@@ -372,6 +378,67 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event): 
         import UTILS_Aide
         UTILS_Aide.Aide("Listedespicesmanquantes")
+
+    def EnvoyerEmail(self, event):
+        """ Envoi par Email de rappels de pièces manquantes """
+        # Validation des données saisies
+        tracks = self.ctrl_listview.GetTracksCoches()
+        if len(tracks) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune famille dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Récupération des données adresse + champs + pièces
+        listeDonnees = []
+        listeAnomalies = []
+        listeEnvoiNonDemande = []
+        for track in tracks :
+            adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomTitulaires)
+
+            # Mémorisation des données
+            if adresse not in (None, "", []) and track.pieces not in (None, "", []):
+                champs = {
+                    "{NOM_FAMILLE}" : track.nomTitulaires,
+                    "{LISTE_PIECES_MANQUANTES}" : "texte1\ntexte2\ntexte3",#track.pieces,
+                }
+                listeDonnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
+            else :
+                listeAnomalies.append(track.nomTitulaires)
+
+        # Annonce les anomalies trouvées
+        if len(listeAnomalies) > 0 :
+            texte = _(u"%d des familles sélectionnées n'ont pas d'adresse Email ou n'ont pas de pièces manquantes.\n\n") % len(listeAnomalies)
+            texte += _(u"Souhaitez-vous quand même continuer avec les %d autres familles ?") % len(listeDonnees)
+            dlg = wx.MessageDialog(self, texte, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return
+
+        # Dernière vérification avant transfert
+        if len(listeDonnees) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Il ne reste finalement aucun rappel à envoyer par Email !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Transfert des données vers DLG Mailer
+        import DLG_Mailer
+        dlg = DLG_Mailer.Dialog(self, categorie="rappel_pieces_manquantes")
+        dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
+        dlg.ChargerModeleDefaut()
+        dlg.ShowModal()
+        dlg.Destroy()
+
+
+
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
