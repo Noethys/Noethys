@@ -19,6 +19,7 @@ import webbrowser
 
 import CTRL_Bandeau
 import CTRL_Liste_fichiers
+import UTILS_Utilisateurs
 
 
 class Hyperlien(Hyperlink.HyperLinkCtrl):
@@ -248,7 +249,8 @@ class MyDialog(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
 
-    def OnBoutonModifierFichier(self, event): 
+    def OnBoutonModifierFichier(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_fichier", "modifier") == False : return
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
             dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -264,7 +266,8 @@ class MyDialog(wx.Dialog):
 
         self.ctrl_fichiers.ModifierFichier(titre)
 
-    def OnBoutonSupprimerFichier(self, event): 
+    def OnBoutonSupprimerFichier(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("fichier_fichier", "supprimer") == False : return
         index = self.ctrl_fichiers.GetFirstSelected()
         if index == -1 :
             dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un fichier à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
