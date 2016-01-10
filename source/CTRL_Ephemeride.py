@@ -92,7 +92,7 @@ class CTRL(wx.Panel):
             self.ctrl_horloge.SetBackgroundColour(couleur)
             self.ctrl_horloge.SetFaceFillColour(couleur)
             self.ctrl_horloge.SetFaceBorderColour(couleur)
-        
+
         self.__set_properties()
         self.__do_layout()
         

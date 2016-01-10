@@ -15,6 +15,8 @@ import wx
 import CTRL_Bouton_image
 import datetime
 
+
+import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()

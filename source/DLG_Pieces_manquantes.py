@@ -400,7 +400,7 @@ class Dialog(wx.Dialog):
             if adresse not in (None, "", []) and track.pieces not in (None, "", []):
                 champs = {
                     "{NOM_FAMILLE}" : track.nomTitulaires,
-                    "{LISTE_PIECES_MANQUANTES}" : "texte1\ntexte2\ntexte3",#track.pieces,
+                    "{LISTE_PIECES_MANQUANTES}" : track.pieces,
                 }
                 listeDonnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
             else :

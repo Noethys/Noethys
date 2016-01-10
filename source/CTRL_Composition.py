@@ -24,6 +24,7 @@ import DATA_Civilites as Civilites
 import DATA_Liens as Liens
 import CTRL_Photo
 import DLG_Individu
+import UTILS_Interface
 
 ##import DLG_Individu_liens
 import UTILS_Utilisateurs
@@ -608,9 +609,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.hauteurCaseDefaut = 75 #70 # Hauteur par défaut d'une case
         self.largeurCaseDefaut = 210 # Largeur par défaut d'une case
         
-        self.couleurFondCol1 = (238, 253, 252)
-        self.couleurFondCol2 = (238, 253, 252)
-        self.couleurFondCol3 = (214, 250, 199)
+        self.couleurFondCol1 = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(238, 253, 252))
+        self.couleurFondCol2 = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(238, 253, 252))
+        self.couleurFondCol3 = UTILS_Interface.GetValeur("couleur_tres_claire_2", wx.Colour(214, 250, 199))
 
         self.bmp_responsables = wx.Bitmap("Images/Special/GeneaResponsables.png", wx.BITMAP_TYPE_PNG)
         self.bmp_enfants = wx.Bitmap("Images/Special/GeneaEnfants.png", wx.BITMAP_TYPE_PNG)

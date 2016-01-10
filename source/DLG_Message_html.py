@@ -90,7 +90,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
+        #grid_sizer_base.Fit(self)
         self.Layout()
         self.CenterOnScreen() 
     
@@ -107,7 +107,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, texte=TEXTE, titre=_(u"Message"), nePlusAfficher=True)
+    dialog_1 = Dialog(None, texte=TEXTE, titre=_(u"Message"), nePlusAfficher=True, size=(600, 200))
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

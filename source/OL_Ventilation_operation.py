@@ -21,6 +21,8 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
+
+import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
@@ -126,7 +128,7 @@ class ListView(FastObjectListView):
 
     def InitObjectListView(self):            
         # Couleur en alternance des lignes
-        self.oddRowsBackColor = "#F0FBED" 
+        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 

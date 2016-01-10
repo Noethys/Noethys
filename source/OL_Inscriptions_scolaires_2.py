@@ -16,6 +16,8 @@ import GestionDB
 import datetime
 import DATA_Civilites as Civilites
 
+
+import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 try: import psyco; psyco.full()
@@ -161,7 +163,7 @@ class ListView(FastObjectListView):
             return _(u"%d ans") % age
         
         # Couleur en alternance des lignes
-        self.oddRowsBackColor = "#F0FBED" 
+        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
                 

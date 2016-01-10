@@ -153,7 +153,10 @@ data_files=[
           ('Images\\Teamword', listdirectory('Images\\Teamword')),
           ('Images\\Avatars\\16x16', listdirectory('Images\\Avatars\\16x16')),
           ('Images\\Avatars\\128x128', listdirectory('Images\\Avatars\\128x128')),
-          
+          ('Images\\Interface\\Vert', listdirectory('Images\\Interface\\Vert')),
+          ('Images\\Interface\\Bleu', listdirectory('Images\\Interface\\Bleu')),
+          ('Images\\Interface\\Noir', listdirectory('Images\\Interface\\Noir')),
+
           ('Temp', [] ),
           ('Updates', [] ),
           ('Sync', [] ),

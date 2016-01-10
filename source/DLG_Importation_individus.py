@@ -33,6 +33,8 @@ import CTRL_Saisie_adresse
 import DLG_Famille
 import UTILS_Parametres
 
+
+import UTILS_Interface
 from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 TYPES_IMPORTATION = [
@@ -524,7 +526,7 @@ class CTRL_Donnees(FastObjectListView):
             return valeur
 
         # Couleur en alternance des lignes
-        self.oddRowsBackColor = "#F0FBED" 
+        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         

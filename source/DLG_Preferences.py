@@ -19,19 +19,34 @@ import CTRL_Bandeau
 import GestionDB
 import UTILS_Config
 import UTILS_Utilisateurs
+import UTILS_Interface
 
 
 
 
 # ---------------------------------------------------------------------------------------------------------------------------
 
-class Langue(wx.Panel):
+class Interface(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.listeLangues = [u"Français (par défaut)",]
-        self.listeCodes = [None,]
-        
-        # Recherche des langues disponibles
+
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Interface*"))
+
+        # Thème
+        self.liste_labels_theme = []
+        self.liste_codes_theme = []
+        for code, label in UTILS_Interface.THEMES :
+            self.liste_labels_theme.append(label)
+            self.liste_codes_theme.append(code)
+
+        self.label_theme = wx.StaticText(self, -1, _(u"Thème :"))
+        self.ctrl_theme = wx.Choice(self, -1, choices=self.liste_labels_theme)
+        self.ctrl_theme.SetSelection(0)
+
+        # Langue
+        self.liste_labels_langue = [u"Français (par défaut)",]
+        self.liste_codes_langue = [None,]
+
         listeFichiers = os.listdir("Lang/") 
         for nomFichier in listeFichiers :
             if nomFichier.endswith("lang") :
@@ -42,26 +57,30 @@ class Langue(wx.Panel):
                 code = dictInfos["code_langue"]
                 fichier.close()
                 
-                if code not in self.listeCodes :
-                    self.listeCodes.append(code)
-                    self.listeLangues.append(nom)
+                if code not in self.liste_codes_langue :
+                    self.liste_codes_langue.append(code)
+                    self.liste_labels_langue.append(nom)
         
-        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Langue interface*"))
+
         self.label_langue = wx.StaticText(self, -1, _(u"Langue :"))
-        self.ctrl_langue = wx.Choice(self, -1, choices=self.listeLangues)
+        self.ctrl_langue = wx.Choice(self, -1, choices=self.liste_labels_langue)
+        self.ctrl_langue.SetSelection(0)
 
         self.__set_properties()
         self.__do_layout()
         
-        self.ctrl_langue.SetSelection(0)
+        # Init
         self.Importation() 
 
     def __set_properties(self):
+        self.ctrl_theme.SetToolTipString(_(u"Sélectionnez un thème pour l'interface. Redémarrez le logiciel pour appliquer la modification."))
         self.ctrl_langue.SetToolTipString(_(u"Sélectionnez la langue de l'interface parmi les langues disponibles dans la liste. Redémarrez le logiciel pour appliquer la modification."))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
-        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_theme, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_theme, 1, wx.EXPAND, 0)
         grid_sizer_base.Add(self.label_langue, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_langue, 1, wx.EXPAND, 0)
         grid_sizer_base.AddGrowableCol(1)
@@ -70,9 +89,18 @@ class Langue(wx.Panel):
         staticbox.Fit(self)
     
     def Importation(self):
+        # Thème
+        theme = UTILS_Interface.GetTheme()
+        index = 0
+        for code in self.liste_codes_theme :
+            if code == theme :
+                self.ctrl_theme.SetSelection(index)
+            index += 1
+
+        # Langue
         code = UTILS_Config.GetParametre("langue_interface", None)
         index = 0
-        for codeTemp in self.listeCodes :
+        for codeTemp in self.liste_codes_langue :
             if codeTemp == code :
                 self.ctrl_langue.SetSelection(index)
             index += 1
@@ -81,7 +109,12 @@ class Langue(wx.Panel):
         return True
     
     def Sauvegarde(self):
-        code = self.listeCodes[self.ctrl_langue.GetSelection()]
+        # Thème
+        theme = self.liste_codes_theme[self.ctrl_theme.GetSelection()]
+        UTILS_Interface.SetTheme(theme)
+
+        # Langue
+        code = self.liste_codes_langue[self.ctrl_langue.GetSelection()]
         UTILS_Config.SetParametre("langue_interface", code)
 
 
@@ -94,7 +127,7 @@ class Interface_mysql(wx.Panel):
         self.listeLabels = [u"MySQLdb (par défaut)", u"mysql.connector"]
         self.listeCodes = ["mysqldb", "mysql.connector"]
         
-        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Interface MySQL"))
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"MySQL"))
         self.label_interface = wx.StaticText(self, -1, _(u"Interface :"))
         self.ctrl_interface = wx.Choice(self, -1, choices=self.listeLabels)
 
@@ -610,7 +643,7 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
         # Contenu
-        self.ctrl_langue = Langue(self)
+        self.ctrl_interface = Interface(self)
         self.ctrl_monnaie = Monnaie(self)
         self.ctrl_telephones = Telephones(self)
         self.ctrl_codesPostaux = Codes_postaux(self)
@@ -649,7 +682,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_contenu = wx.FlexGridSizer(rows=10, cols=2, vgap=10, hgap=10)
         
-##        grid_sizer_contenu.Add(self.ctrl_langue, 1, wx.EXPAND, 0)
+##        grid_sizer_contenu.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
 ##        grid_sizer_contenu.Add(self.ctrl_propose_maj, 1, wx.EXPAND, 0)
 ##        grid_sizer_contenu.Add(self.ctrl_telephones, 1, wx.EXPAND, 0)
 ##        grid_sizer_contenu.Add(self.ctrl_rapport_bugs, 1, wx.EXPAND, 0)
@@ -661,7 +694,7 @@ class Dialog(wx.Dialog):
         
         
         grid_sizer_gauche = wx.FlexGridSizer(rows=6, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche.Add(self.ctrl_langue, 1, wx.EXPAND, 0)
+        grid_sizer_gauche.Add(self.ctrl_interface, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_interface_mysql, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_telephones, 1, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_adresses, 1, wx.EXPAND, 0)
@@ -711,7 +744,7 @@ class Dialog(wx.Dialog):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_preferences", "modifier") == False : return
         
         # Validation des données
-        if self.ctrl_langue.Validation() == False : return
+        if self.ctrl_interface.Validation() == False : return
         if self.ctrl_monnaie.Validation() == False : return
         if self.ctrl_telephones.Validation() == False : return
         if self.ctrl_codesPostaux.Validation() == False : return
@@ -723,7 +756,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_interface_mysql.Validation() == False : return
         
         # Sauvegarde
-        self.ctrl_langue.Sauvegarde()
+        self.ctrl_interface.Sauvegarde()
         self.ctrl_monnaie.Sauvegarde()
         self.ctrl_telephones.Sauvegarde()
         self.ctrl_codesPostaux.Sauvegarde()

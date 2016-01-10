@@ -17,6 +17,8 @@ import GestionDB
 import os
 import FonctionsPerso
 
+
+import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 LISTE_EXTENSIONS = ["bmp", "doc", "docx", "gif", "jpeg", "jpg", "pdf", "png", "tous", "xls", "xlsx", "zip", "plusieurs",]
@@ -79,7 +81,7 @@ class ListView(FastObjectListView):
             
     def InitObjectListView(self):            
         # Couleur en alternance des lignes
-        self.oddRowsBackColor = "#F0FBED" 
+        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         

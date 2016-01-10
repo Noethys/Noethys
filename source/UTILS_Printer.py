@@ -14,6 +14,8 @@ import wx
 import CTRL_Bouton_image
 import datetime
 import copy
+
+import UTILS_Interface
 from ObjectListView import ReportFormat
 from Outils import ListCtrlPrinter
 import GestionDB

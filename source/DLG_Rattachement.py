@@ -21,6 +21,8 @@ import GestionDB
 try: import psyco; psyco.full()
 except: pass
 
+
+import UTILS_Interface
 from ObjectListView import Filter
 
 

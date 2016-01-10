@@ -15,6 +15,8 @@ import CTRL_Bouton_image
 import os
 import shelve
 
+
+import UTILS_Interface
 from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
 
@@ -102,7 +104,7 @@ class ListView(FastObjectListView):
 
     def InitObjectListView(self):
         # Couleur en alternance des lignes
-        self.oddRowsBackColor = "#F0FBED" 
+        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
 

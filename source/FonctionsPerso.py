@@ -1505,6 +1505,49 @@ def InsertUnicodeLiterals():
     print "Fini !!!!!!!!!!!!!!!!!"
 
 
+def InsertThemeDansOL():
+    """ Pour insérer la prise en charge des thèmes dans les OL """
+    # Get fichiers
+    listeFichiers = os.listdir(os.getcwd())
+    indexFichier = 0
+    for nomFichier in listeFichiers :
+        if nomFichier.endswith("py") and nomFichier.startswith("DATA_") == False :
+            #print "%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier)
+
+            # Ouverture des fichiers
+            fichier = open(nomFichier, "r")
+            dirty = False
+
+            listeLignes = []
+            for ligne in fichier :
+
+                # Insertion de l'import
+                if "from ObjectListView" in ligne :
+                    listeLignes.append("\n")
+                    listeLignes.append("import UTILS_Interface\n")
+                    dirty = True
+
+                # Insertion de l'import
+                if "self.oddRowsBackColor =" in ligne :
+                    ligne = """        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))\n"""
+                    dirty = True
+
+                listeLignes.append(ligne)
+
+            # Clôture des fichiers
+            fichier.close()
+
+            # Ecriture du nouveau fichier
+            if dirty == True :
+                nouveauFichier = open("New/%s" % nomFichier, "w")
+                for ligne in listeLignes :
+                    nouveauFichier.write(ligne)
+                nouveauFichier.close()
+
+        indexFichier += 1
+
+    print "Fini !!!!!!!!!!!!!!!!!"
+
 
 def RechercheWhere():
     """ Pour rechercher les clauses WHERE dans tous les fichiers """
@@ -1603,7 +1646,7 @@ if __name__ == "__main__":
 ##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
     
     # Créer des données virtuelles dans DB
-    CreerDonneesVirtuelles(nbreFamilles=100) 
+    InsertThemeDansOL()
     
-    pass
+
     

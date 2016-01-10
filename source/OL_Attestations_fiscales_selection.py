@@ -16,6 +16,8 @@ import GestionDB
 import datetime
 import copy
 
+
+import UTILS_Interface
 from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 import UTILS_Config
@@ -142,7 +144,7 @@ class ListView(FastObjectListView):
             return u"%.2f %s" % (montant, SYMBOLE)
 
         # Couleur en alternance des lignes
-        self.oddRowsBackColor = "#F0FBED" 
+        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
         

@@ -19,6 +19,7 @@ import platform
 import os
 import datetime
 import traceback
+
 from time import sleep 
 
 import UTILS_Linux
@@ -29,10 +30,12 @@ import time
 HEUREDEBUT = time.time()
 
 import UTILS_Config
+import UTILS_Customize
 import UTILS_Historique
 import UTILS_Sauvegarde_auto
 import UTILS_Rapport_bugs
 import UTILS_Utilisateurs
+import UTILS_Interface
 
 import GestionDB
 
@@ -63,15 +66,7 @@ import wx.lib.agw.advancedsplash as AS
 import wx.lib.agw.toasterbox as Toaster
 import wx.lib.agw.pybusyinfo as PBI
 
-
-
-if os.path.isfile("nologin.txt") :
-    fichier = open("nologin.txt", "r")
-    PASS = fichier.readline()
-    fichier.close() 
-else :
-    PASS = None
-    
+CUSTOMIZE = None
 
 # Constantes générales
 VERSION_APPLICATION = FonctionsPerso.GetVersionLogiciel()
@@ -95,16 +90,18 @@ ID_TB_UTILISATEUR = wx.NewId()
 class MainFrame(wx.Frame):
     def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, title=_(u"Noethys"), name="general", style=wx.DEFAULT_FRAME_STYLE)
-        
+
 ##        # Dates en francais
 ##        wx.Locale(wx.LANGUAGE_FRENCH)
 ##        try : locale.setlocale(locale.LC_ALL, 'FR')
 ##        except : pass
-        
+
+        theme = CUSTOMIZE.GetValeur("interface", "theme", "Vert")
+
         # Icône
-        _icon = wx.EmptyIcon()
-        _icon.CopyFromBitmap(wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
-        self.SetIcon(_icon)
+        icon = wx.EmptyIcon()
+        icon.CopyFromBitmap(wx.Bitmap("Images/Interface/%s/Icone.png" % theme, wx.BITMAP_TYPE_ANY))
+        self.SetIcon(icon)
         
         # Ecrit la date et l'heure dans le journal.log
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -304,6 +301,8 @@ class MainFrame(wx.Frame):
         
         return code
 
+    def GetCustomize(self):
+        return CUSTOMIZE
 
     def SetTitleFrame(self, nomFichier=""):
         if "[RESEAU]" in nomFichier :
@@ -3376,23 +3375,22 @@ class MainFrame(wx.Frame):
                 dlg.ShowModal()
                 dlg.Destroy()
             
-            if versionFichier < (1, 1, 3, 0) :
+            if versionFichier < (1, 1, 6, 2) :
                 texte = u"""
                 <CENTER>
                 <BR>
                 <FONT SIZE=3>
-                <B>Astuce</B><BR><BR>
-                Personnalisez l'interface de la page d'accueil en fonction de vos besoins !
+                <IMG SRC="Images/16x16/Astuce.png"><B>Astuce</B><BR><BR>
+                Personnalisez l'interface de Noethys en fonction de vos envies !
                 <BR><BR>
-                <IMG SRC="Images/Special/Astuce_barres_outils.png">
+                <IMG SRC="Images/Special/pub_themes.png">
                 <BR><BR>
-                Déplacer ou cachez les cadres et créez de nouvelles barres d'outils personnalisées pour accéder plus rapidement à vos fonctions préférées.
-                <BR><BR>
-                (Voir menu Affichage)
+                Sélectionnez le thème de votre choix depuis le <b>menu Paramétrage > Préférences</b>.
                 </FONT>
                 </CENTER>
                 """
-                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"))
+                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), size=(650, 450))
+                dlg.CenterOnScreen()
                 dlg.ShowModal()
                 dlg.Destroy()
             
@@ -3417,9 +3415,9 @@ class MainFrame(wx.Frame):
         self._mgr.GetPane("panel_recherche").Show(etat)
 
     def Identification(self, listeUtilisateurs=[], nomFichier=None):
-        if PASS != None :
+        if CUSTOMIZE.GetValeur("utilisateur", "pass", "") != "" :
             for dictTemp in listeUtilisateurs :
-                if dictTemp["mdp"] == PASS :
+                if dictTemp["mdp"] == CUSTOMIZE.GetValeur("utilisateur", "pass", "") :
                     self.ChargeUtilisateur(dictTemp)
                     return True
         dlg = CTRL_Identification.Dialog(self, listeUtilisateurs=listeUtilisateurs, nomFichier=nomFichier)
@@ -3468,7 +3466,7 @@ class MainFrame(wx.Frame):
         tb.SetToolLabel(ID_TB_UTILISATEUR, u"%s %s" % (dictUtilisateur["nom"], dictUtilisateur["prenom"]))
         tb.Refresh() 
         # Affiche le Toaster
-        if afficheToaster == True and PASS == None :
+        if afficheToaster == True and CUSTOMIZE.GetValeur("utilisateur", "pass", "") == "" :
             CTRL_Toaster.ToasterUtilisateur(self, prenom=dictUtilisateur["prenom"], nomImage=nomImage) 
     
     def AfficheMessagesOuverture(self):
@@ -3717,7 +3715,7 @@ class MyApp(wx.App):
         # Adaptation pour rétrocompatibilité wx2.8
         if wx.VERSION < (2, 9, 0, 0) :
             wx.InitAllImageHandlers() 
-        
+
         heure_debut = time.time()
         
         # Vérifie l'existence des répertoires
@@ -3736,16 +3734,20 @@ class MyApp(wx.App):
         # Suppression du fichier temporaire s'il existe pour éviter bugs
         if os.path.isfile("Data/__db.Config.dat") :
             os.remove("Data/__db.Config.dat")
-        
+
+        # Lit les paramètres de l'interface
+        theme = CUSTOMIZE.GetValeur("interface", "theme", "Vert")
+
         # AdvancedSplashScreen
-        if PASS == None :
-            bmp = wx.Bitmap("Images/Special/Logo_splash.png", wx.BITMAP_TYPE_PNG)
-            frame = AS.AdvancedSplash(None, bitmap=bmp, timeout=500, agwStyle=AS.AS_TIMEOUT | AS.AS_CENTER_ON_SCREEN)
+        if CUSTOMIZE.GetValeur("utilisateur", "pass", "") == "" :
+            bmp = wx.Bitmap("Images/Interface/%s/Logo_splash.png" % theme, wx.BITMAP_TYPE_PNG)
+            frame = AS.AdvancedSplash(None, bitmap=bmp, timeout=2500, agwStyle=AS.AS_TIMEOUT | AS.AS_CENTER_ON_SCREEN)
             anneeActuelle = str(datetime.date.today().year)
             frame.SetText(u"Copyright © 2010-%s Ivan LUCAS" % anneeActuelle[2:])
-            frame.SetTextFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-            frame.SetTextPosition((340, 175))
-            frame.SetTextColour(wx.Colour(110, 147, 58))
+            frame.SetTextFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
+            frame.SetTextPosition((425, 212)) #frame.SetTextPosition((340, 175))
+            couleur_texte = UTILS_Interface.GetValeur("couleur_claire", wx.Colour(255, 255, 255))
+            frame.SetTextColour(couleur_texte)
             frame.Refresh()
             frame.Update()
             wx.Yield()
@@ -3779,7 +3781,7 @@ class MyApp(wx.App):
                 financement = frame.AnnonceFinancement()
             
                 # Détection d'anomalies
-                if financement == False :
+                if financement == False and CUSTOMIZE.GetValeur("correction_anomalies", "actif", "1") == "1" :
                     frame.AutodetectionAnomalies() 
         
         # Démarrage du serveur
@@ -3791,15 +3793,17 @@ class MyApp(wx.App):
 
 
 
-
 if __name__ == "__main__":
-    
+
+    # Initialisation du fichier de customisation
+    CUSTOMIZE = UTILS_Customize.Customize()
+
     # Crash report
     UTILS_Rapport_bugs.Activer_rapport_erreurs(version=VERSION_APPLICATION)
-    
+
     # Log
-    fichierLog = "journal.log"
-    
+    fichierLog = CUSTOMIZE.GetValeur("journal", "nom", "journal.log")
+
     # Supprime le journal.log si supérieur à 10 Mo
     if os.path.isfile(fichierLog) :
         taille = os.path.getsize(fichierLog)
@@ -3808,7 +3812,7 @@ if __name__ == "__main__":
 
     # Lancement de l'application
     nomFichier = sys.executable
-    if nomFichier.endswith("python.exe") or os.path.isfile("nolog.txt") :
+    if nomFichier.endswith("python.exe") or CUSTOMIZE.GetValeur("journal", "actif", "1") == "0" or os.path.isfile("nolog.txt") :
         app = MyApp(redirect=False)
     else :
         app = MyApp(redirect=True, filename=fichierLog)
