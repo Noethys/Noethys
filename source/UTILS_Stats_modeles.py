@@ -517,7 +517,7 @@ class Graphe(Objet):
         im = Image.open(imgdata)
         # Convert to wx.Image Object and then to wx.Bitmap
         self.wximage = wx.EmptyImage(im.size[0], im.size[1])
-        self.wximage.SetData(im.convert("RGB").tostring())
+        self.wximage.SetData(im.convert("RGB").tobytes())
 ##        self.wximage = self.wximage.Rescale(self.taille[0], self.taille[1], quality=wx.IMAGE_QUALITY_HIGH)
         self.wximbmp = wx.BitmapFromImage(self.wximage)
         

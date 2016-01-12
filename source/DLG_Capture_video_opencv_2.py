@@ -67,7 +67,7 @@ def InitCamera(port=0):
 ##            frame = cv.QueryFrame(CAMERA)
 ##            cv.CvtColor(frame, frame, cv.CV_BGR2RGB)
 ##            Img = wx.EmptyImage(frame.width, frame.height)
-##            Img.SetData(frame.tostring())
+##            Img.SetData(frame.tobytes())
 ##            self.bmp = wx.BitmapFromImage(Img)
 ##            width, height = frame.width, frame.height
 ##            
@@ -175,7 +175,7 @@ class CTRL_Video(wx.Panel):
         frame = cv.QueryFrame(CAMERA)
         cv.CvtColor(frame, frame, cv.CV_BGR2RGB)
         Img = wx.EmptyImage(frame.width, frame.height)
-        Img.SetData(frame.tostring())
+        Img.SetData(frame.tobytes())
         self.bmp = wx.BitmapFromImage(Img)
         width, height = frame.width, frame.height
         

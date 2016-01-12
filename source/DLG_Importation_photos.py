@@ -423,7 +423,7 @@ class Dialog(wx.Dialog):
             # Transforme l'image en buffer
             image = track.bmp.ConvertToImage()
             pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-            pil.fromstring(image.GetData())
+            pil.frombytes(image.GetData())
             buffer = cStringIO.StringIO()
             pil.save(buffer, format="JPEG", quality=100)
             buffer.seek(0)
