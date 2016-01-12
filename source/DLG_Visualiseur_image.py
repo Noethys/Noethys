@@ -27,15 +27,15 @@ if not wx.USE_UNICODE:
 def pil2wx(image):
     """Convert a PIL image to wx image format"""
     imagewx=wx.EmptyImage(image.size[0], image.size[1])
-    imagewx.SetData(image.tostring('raw', 'RGB'))
+    imagewx.SetData(image.tobytes('raw', 'RGB'))
     return imagewx
 
 ##def pil2wx(image):
 ##    """Convert a PIL image to wx image format"""
 ##    largeur, hauteur = image.size
 ##    imagewx = wx.EmptyImage(largeur, hauteur)
-##    imagewx.SetData(image.tostring('raw', 'RGB'))
-##    imagewx.SetAlphaData(image.convert("RGBA").tostring()[3::4])
+##    imagewx.SetData(image.tobytes('raw', 'RGB'))
+##    imagewx.SetAlphaData(image.convert("RGBA").tobytes()[3::4])
 ##    return imagewx        
 
 

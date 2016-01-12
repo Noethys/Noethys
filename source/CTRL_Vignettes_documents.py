@@ -59,25 +59,25 @@ def ChargeImage(fichier):
 ##def wxtopil(image):
 ##    """Convert wx.Image to PIL Image."""
 ##    pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-##    pil.fromstring(image.GetData())
+##    pil.frombytes(image.GetData())
 ##    return pil
 
 ##def piltowx(image):
 ##    """Convert a PIL image to wx image format"""
 ##    largeur, hauteur = image.size
 ##    imagewx = wx.EmptyImage(largeur, hauteur)
-##    imagewx.SetData(image.tostring('raw', 'RGB'))
-##    imagewx.SetAlphaData(image.convert("RGBA").tostring()[3::4])
+##    imagewx.SetData(image.tobytes('raw', 'RGB'))
+##    imagewx.SetAlphaData(image.convert("RGBA").tobytes()[3::4])
 ##    return imagewx        
 
 def wxtopil(wxImage, wantAlpha=True):  
     pilImage = Image.new( 'RGB', (wxImage.GetWidth(), wxImage.GetHeight()), color=(255, 255, 255) )
-    pilImage.fromstring(wxImage.GetData())
+    pilImage.frombytes(wxImage.GetData())
     if wxImage.HasAlpha() and wantAlpha :  
         pilImage.convert( 'RGBA' )            
         wxAlphaStr = wxImage.GetAlphaData()    
         pilAlphaImage = Image.new( 'L', (wxImage.GetWidth(), wxImage.GetHeight()) )
-        pilAlphaImage = Image.fromstring( 'L', (wxImage.GetWidth(), wxImage.GetHeight()), wxAlphaStr )
+        pilAlphaImage = Image.frombytes( 'L', (wxImage.GetWidth(), wxImage.GetHeight()), wxAlphaStr )
         pilImage.putalpha(pilAlphaImage) 
     return pilImage
 

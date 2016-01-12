@@ -25,7 +25,7 @@ import FonctionsPerso
 def pil2wx(image):
     """Convert a PIL image to wx image format"""
     imagewx=wx.EmptyImage(image.size[0], image.size[1])
-    imagewx.SetData(image.tostring('raw', 'RGB'))
+    imagewx.SetData(image.tobytes('raw', 'RGB'))
     return imagewx
 
 def load_image(fn):
@@ -62,7 +62,7 @@ def save_image_file(fn,buf):
 def wxtopil(image):
     """Convert wx.Image to PIL Image."""
     pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-    pil.fromstring(image.GetData())
+    pil.frombytes(image.GetData())
     return pil
 
 

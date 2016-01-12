@@ -36,15 +36,15 @@ def ChargeImage(fichier):
 def wxtopil( image):
     """Convert wx.Image to PIL Image."""
     pil = Image.new('RGB', (image.GetWidth(), image.GetHeight()))
-    pil.paste(pil.fromstring(image.GetData()), (10, 10))
+    pil.paste(pil.frombytes(image.GetData()), (10, 10))
     return pil
 
 def piltowx(image):
     """Convert a PIL image to wx image format"""
     largeur, hauteur = image.size
     imagewx = wx.EmptyImage(largeur, hauteur)
-    imagewx.SetData(image.tostring('raw', 'RGB'))
-    imagewx.SetAlphaData(image.convert("RGBA").tostring()[3::4])
+    imagewx.SetData(image.tobytes('raw', 'RGB'))
+    imagewx.SetAlphaData(image.convert("RGBA").tobytes()[3::4])
     return imagewx        
         
         
