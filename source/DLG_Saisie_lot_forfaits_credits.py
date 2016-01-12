@@ -108,6 +108,7 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
         return listeTarifs
     
     def MAJ(self):
+        selectionActuelle = None#self.GetID()
         self.listeTarifs = self.Importation() 
         listeItems = []
         for dictTarif in self.listeTarifs :
@@ -130,7 +131,10 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
             self.Enable(False)
         else :
             self.Enable(True)
-            self.SetSelection2(0)
+            if selectionActuelle != None :
+                self.SetID(selectionActuelle)
+            else :
+                self.SetSelection2(0)
         
     def SetID(self, ID=None):
         index = 0
@@ -143,6 +147,7 @@ class CTRL_Forfait(CTRL_Ultrachoice.CTRL):
     def GetID(self):
         index = self.GetSelection2()
         if index == -1 or index == None : return None
+        print index, len(self.listeTarifs)
         return self.listeTarifs[index]["IDtarif"]
     
     def GetDictTarif(self):
@@ -366,8 +371,8 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_CHOICE, self.Actualiser, self.ctrl_activite)
-        self.Bind(wx.EVT_COMBOBOX, self.Actualiser, self.ctrl_forfait)
+        self.Bind(wx.EVT_CHOICE, self.OnChoixActivite, self.ctrl_activite)
+        self.Bind(wx.EVT_COMBOBOX, self.OnChoixForfait, self.ctrl_forfait)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
@@ -462,14 +467,21 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen() 
-        
-    def Actualiser(self, event=None):
-        IDactivite = self.ctrl_activite.GetID() 
-        
+
+    def OnChoixActivite(self, event):
+        IDactivite = self.ctrl_activite.GetID()
+
         # MAJ CTRL forfait
         self.ctrl_forfait.SetActivite(IDactivite)
-        self.ctrl_forfait.MAJ() 
-        
+        self.ctrl_forfait.MAJ()
+
+        self.Actualiser()
+
+    def OnChoixForfait(self, event):
+        self.Actualiser()
+
+    def Actualiser(self, event=None):
+
         dictTarif = self.ctrl_forfait.GetDictTarif()
         if dictTarif != None :
             categories_tarifs = dictTarif["listeCategoriesTarifs"]
@@ -481,6 +493,7 @@ class Dialog(wx.Dialog):
         date_fin = self.ctrl_date_fin.GetDate()
         
         # MAJ liste individus
+        IDactivite = self.ctrl_activite.GetID()
         self.ctrl_individus.SetActivite(IDactivite)
         self.ctrl_individus.SetCategoriesTarifs(categories_tarifs)
         self.ctrl_individus.SetPeriode(date_debut, date_fin)
