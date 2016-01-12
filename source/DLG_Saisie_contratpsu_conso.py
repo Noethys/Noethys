@@ -383,6 +383,7 @@ class Panel_calendrier(wx.Panel):
                     "heure_fin" : heure_fin,
                     "quantite" : quantite,
                     "etat" : "reservation",
+                    "etiquettes" : [],
                     }
                 listeConso.append(dictConso)
 
