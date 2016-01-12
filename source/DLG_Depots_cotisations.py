@@ -64,7 +64,14 @@ class Track(object):
         self.activites= donnees[18]
         if self.activites == None :
             self.activites = ""
-            
+
+        self.individu_nom = donnees[19]
+        if self.individu_nom == None :
+            self.individu_nom = ""
+        self.individu_prenom = donnees[20]
+        if self.individu_prenom == None :
+            self.individu_prenom = ""
+
         # Activites
         texte = ""
         if len(self.activites) > 0 :
@@ -84,7 +91,12 @@ class Track(object):
             self.nomTitulaires = u""
         
         self.nomCotisation = u"%s - %s" % (self.nomTypeCotisation, self.nomUniteCotisation)
-        
+
+        # Individu
+        self.individu = ""
+        if self.IDindividu != None :
+            self.individu = u"%s %s" % (self.individu_nom, self.individu_prenom)
+
         # Type
         if self.typeTypeCotisation == "famille" :
             self.typeStr = _(u"Cotisation familiale")
@@ -247,11 +259,13 @@ class Dialog(wx.Dialog):
         cotisations.IDfamille, cotisations.IDindividu, cotisations.IDtype_cotisation, cotisations.IDunite_cotisation,
         cotisations.date_saisie, cotisations.IDutilisateur, cotisations.date_creation_carte, cotisations.numero,
         cotisations.IDdepot_cotisation, cotisations.date_debut, cotisations.date_fin, cotisations.IDprestation, 
-        types_cotisations.nom, types_cotisations.type, types_cotisations.carte, 
-        unites_cotisations.nom, cotisations.observations, cotisations.activites
+        types_cotisations.nom, types_cotisations.type, types_cotisations.carte,
+        unites_cotisations.nom, cotisations.observations, cotisations.activites,
+        individus.nom, individus.prenom
         FROM cotisations 
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
         LEFT JOIN unites_cotisations ON unites_cotisations.IDunite_cotisation = cotisations.IDunite_cotisation
+        LEFT JOIN individus ON individus.IDindividu = cotisations.IDindividu
         WHERE cotisations.IDdepot_cotisation IS NULL;
         """ 
         db.ExecuterReq(req)

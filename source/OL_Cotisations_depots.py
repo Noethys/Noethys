@@ -132,9 +132,10 @@ class ListView(FastObjectListView):
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDcotisation", typeDonnee="entier"),
             ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=FormateDate), 
-            ColumnDefn(_(u"au"), 'left', 70, "date_fin", typeDonnee="date", stringConverter=FormateDate), 
-            ColumnDefn(_(u"Famille"), 'left', 130, "nomTitulaires", typeDonnee="texte"), 
+            ColumnDefn(_(u"au"), 'left', 70, "date_fin", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Type"), 'left', 150, "typeStr", typeDonnee="texte"),
+            ColumnDefn(_(u"Famille"), 'left', 130, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Individu"), 'left', 130, "individu", typeDonnee="texte"),
             ColumnDefn(_(u"Nom"), 'left', 270, "nomCotisation", typeDonnee="texte"),
             ColumnDefn(_(u"Numéro"), 'left', 80, "numero", typeDonnee="texte"), 
             ColumnDefn(_(u"Création carte"), 'left', 100, "date_creation_carte", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageCreation), 
