@@ -78,6 +78,12 @@ class Exporter(UTILS_Export_tables.Exporter):
         self.ExporterTable("tarifs_lignes", "IDactivite=%d" % ID)
         self.ExporterTable("questionnaire_filtres", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
 
+        # Correspondances spéciales
+        self.correspondances_speciales.append({"table" : "etiquettes", "champ" : "parent", "champ_reference" : "IDetiquette"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_prevision", "champ_reference" : "IDunite"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_presence", "champ_reference" : "IDunite"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_tarif_forfait", "champ_reference" : "IDtarif"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_etiquette_rtt", "champ_reference" : "IDetiquette"})
 
 
 

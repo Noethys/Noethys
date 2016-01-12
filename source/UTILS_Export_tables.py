@@ -41,10 +41,12 @@ class Exporter():
         self.listeTables = []
         self.DB = GestionDB.DB()
         self.dictID = {}
+        self.correspondances_speciales = []
         self.Exporter(ID)
         self.contenu.append({
             "nom" : nom,
             "tables" : self.listeTables,
+            "correspondances_speciales" : self.correspondances_speciales,
             })
         self.DB.Close()
                 
@@ -89,6 +91,14 @@ class Exporter():
         self.ExporterTable("combi_tarifs", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
         self.ExporterTable("combi_tarifs_unites", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
         self.ExporterTable("tarifs_lignes", "IDactivite=%d" % ID)
+
+        # Correspondances spéciales
+        self.correspondances_speciales.append({"table" : "etiquettes", "champ" : "parent", "champ_reference" : "IDetiquette"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_prevision", "champ_reference" : "IDunite"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_unite_presence", "champ_reference" : "IDunite"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_tarif_forfait", "champ_reference" : "IDtarif"})
+        self.correspondances_speciales.append({"table" : "activites", "champ" : "psu_etiquette_rtt", "champ_reference" : "IDetiquette"})
+
 
     def ExporterTable(self, nomTable="", condition="", chainesListes=[], remplacement=None):
         """ Exporter une table donnée """
@@ -184,8 +194,12 @@ class Importer():
         self.DB = GestionDB.DB()
         importation = self.contenu[index]
         nom = importation["nom"]  
-        listeTables = importation["tables"]  
-        self.Importer(listeTables) 
+        listeTables = importation["tables"]
+        if importation.has_key("correspondances_speciales") :
+            correspondances_speciales = importation["correspondances_speciales"]
+        else :
+            correspondances_speciales = []
+        self.Importer(listeTables, correspondances_speciales)
         self.DB.Close()
         del dlgAttente
 
@@ -198,11 +212,45 @@ class Importer():
         champCle = listeColonnes[0][0]
         return dictChamps, champCle
 
-    def Importer(self, listeTables=[]):
+    def Importer(self, listeTables=[], correspondances_speciales=[]):
         """ Procédure d'importation """
+        # Importation des tables
         for nomTable, listeLignes, chainesListes in listeTables:
             self.ImporterTable(nomTable, listeLignes, chainesListes)
-    
+
+        # MAJ des correspondances spéciales
+        for dictCorr in correspondances_speciales :
+            table = dictCorr["table"]
+            champ = dictCorr["champ"]
+            champ_reference = dictCorr["champ_reference"]
+
+            # Recherche les enregistrements de la table
+            for nomTable, listeLignes, chainesListes in listeTables:
+                if nomTable == table :
+                    dictTypesChamps, champCle = self.GetTypesChamps(nomTable)
+
+                    # Lignes
+                    for ligne in listeLignes :
+
+                        newIDligne = None
+                        valeur_remplacement = None
+
+                        # Colonnes
+                        for nomChamp, valeur in ligne.iteritems() :
+
+                            # Get newID de la ligne
+                            if nomChamp == champCle :
+                                newIDligne = self.dictID[champCle][valeur]
+
+                            # recherche le champ à remplacer
+                            if nomChamp == champ and valeur != None :
+                                valeur_remplacement = self.dictID[champ_reference][valeur]
+
+                        # Remplacement de la valeur
+                        if newIDligne != None and valeur_remplacement != None :
+                            self.DB.ReqMAJ(table, [(champ, valeur_remplacement),], champCle, newIDligne)
+
+
     def ImporterTable(self, nomTable="", listeLignes=[], chainesListes=[]):
         if len(listeLignes) == 0 : return
         
@@ -232,6 +280,12 @@ class Importer():
                     if self.dictID.has_key(nomChamp) :
                         if self.dictID[nomChamp].has_key(valeur) :
                             valeur = self.dictID[nomChamp][valeur]
+
+                    # Remplacement d'un champ 'parent' (Prévu pour les étiquettes dans les activités)
+                    # if nomChamp == "parent" and valeur != None :
+                    #     if self.dictID.has_key(champCle) :
+                    #         if self.dictID[champCle].has_key(valeur) :
+                    #             valeur = self.dictID[champCle][valeur]
 
                     # Chaîne de liste
                     for nomChampChaine, champRemplacement, separateur in chainesListes :
