@@ -20,7 +20,7 @@ import wx.grid
 import wx.lib.agw.floatspin as FloatSpin
 import wx.lib.agw.pybusyinfo as PBI
 
-import Image
+from PIL import Image
 import numpy
 import sys
 import os

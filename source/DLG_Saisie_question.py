@@ -14,7 +14,7 @@ import wx
 import CTRL_Bouton_image
 import GestionDB
 import wx.combo
-import Image
+from PIL import Image
 import os
 import cStringIO
 

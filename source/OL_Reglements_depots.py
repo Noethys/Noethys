@@ -15,7 +15,7 @@ import CTRL_Bouton_image
 import datetime
 import decimal
 import GestionDB
-import Image
+from PIL import Image
 import os
 import cStringIO
 

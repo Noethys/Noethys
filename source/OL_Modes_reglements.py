@@ -13,7 +13,7 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import datetime
-import Image
+from PIL import Image
 import os
 import cStringIO
 

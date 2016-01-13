@@ -18,7 +18,7 @@ import CTRL_Image_mode
 import CTRL_Bandeau
 import OL_Emetteurs
 
-import Image
+from PIL import Image
 import os
 import cStringIO
 import wx.combo

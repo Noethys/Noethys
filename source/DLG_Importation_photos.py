@@ -18,7 +18,7 @@ import GestionDB
 import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, ListCtrlPrinter
 
-import Image
+from PIL import Image
 import cStringIO
 import numpy as np
 import cv2

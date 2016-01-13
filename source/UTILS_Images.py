@@ -8,7 +8,7 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-import Image
+from PIL import Image
 import wx
 import CTRL_Bouton_image
 import os

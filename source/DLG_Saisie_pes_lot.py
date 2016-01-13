@@ -17,7 +17,7 @@ import os
 import sys
 import GestionDB
 import datetime
-import Image
+from PIL import Image
 import cStringIO
 import wx.propgrid as wxpg
 

@@ -14,7 +14,7 @@ import wx
 import CTRL_Bouton_image
 import wx.html
 import cStringIO
-import Image
+from PIL import Image
 import datetime
 import calendar
 import GestionDB

@@ -16,7 +16,7 @@ import wx.html as html
 import os
 import GestionDB
 import datetime
-import Image
+from PIL import Image
 import cStringIO
 
 import CTRL_Saisie_date
