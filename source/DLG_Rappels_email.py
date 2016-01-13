@@ -118,7 +118,10 @@ class Dialog(wx.Dialog):
         for track in tracks :
             listeIDrappel.append(track.IDrappel) 
         facturation = UTILS_Rappels.Facturation()
-        dictOptions=self.ctrl_options.GetOptions()
+        dictOptions = self.ctrl_options.GetOptions()
+        if dictOptions == False :
+            return
+
         resultat = facturation.Impression(listeRappels=listeIDrappel, nomDoc=None, afficherDoc=False, dictOptions=dictOptions, repertoire=dictOptions["repertoire"], repertoireTemp=True)
         if resultat == False : 
             return

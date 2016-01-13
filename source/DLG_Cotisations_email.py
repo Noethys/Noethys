@@ -119,6 +119,9 @@ class Dialog(wx.Dialog):
             listeIDcotisation.append(track.IDcotisation) 
         cotisation = UTILS_Cotisations.Cotisation()
         dictOptions = self.ctrl_options.GetOptions()
+        if dictOptions == False :
+            return
+
         resultat = cotisation.Impression(listeCotisations=listeIDcotisation, nomDoc=None, afficherDoc=False, dictOptions=dictOptions, repertoire=dictOptions["repertoire"], repertoireTemp=True)
         if resultat == False : 
             return

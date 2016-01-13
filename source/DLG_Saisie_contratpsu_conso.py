@@ -274,6 +274,7 @@ class Panel_planning(wx.Panel):
                         "heure_fin" : heure_fin,
                         "quantite" : quantite,
                         "etat" : "reservation",
+                        "etiquettes" : [],
                         }
                     listeConso.append(dictConso)
 

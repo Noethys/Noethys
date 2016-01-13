@@ -677,7 +677,7 @@ if __name__ == '__main__':
     app.MainLoop()
     
     # Test Dialog de sélection d'étiquettes
-##    frame_1 = DialogSelection(None, listeActivites=[1,])
-##    app.SetTopWindow(frame_1)
-##    frame_1.ShowModal()
-##    app.MainLoop()
+    # frame_1 = DialogSelection(None, listeActivites=[1,])
+    # app.SetTopWindow(frame_1)
+    # frame_1.ShowModal()
+    # app.MainLoop()

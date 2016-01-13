@@ -145,7 +145,10 @@ class Dialog(wx.Dialog):
             listeIDfacture.append(track.IDfacture) 
             
         facturation = UTILS_Facturation.Facturation()
-        dictOptions=self.ctrl_options.GetOptions()
+        dictOptions = self.ctrl_options.GetOptions()
+        if dictOptions == False :
+            return
+
         resultat = facturation.Impression(listeFactures=listeIDfacture, nomDoc=None, afficherDoc=False, dictOptions=dictOptions, repertoire=dictOptions["repertoire_copie"], repertoireTemp=True)
         if resultat == False : 
             return

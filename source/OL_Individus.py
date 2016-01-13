@@ -114,7 +114,10 @@ class Track(object):
                     
     def GetNomsTitulaires(self, IDfamille=None):
         dictTitulaires = UTILS_Titulaires.GetTitulaires(listeIDfamille=[IDfamille,])
-        noms = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+        if dictTitulaires.has_key(IDfamille) :
+            noms = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+        else :
+            noms = "?"
         return noms
 
 

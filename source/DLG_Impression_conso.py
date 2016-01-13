@@ -1687,7 +1687,10 @@ class Dialog(wx.Dialog):
                                             if typeTemp == "conso" :
                                                 abregeUnite = dictUnites[IDunite]["abrege"]
                                             else:
-                                                abregeUnite = dictUnitesRemplissage[IDunite]["abrege"]
+                                                if dictUnitesRemplissage.has_key(IDunite) :
+                                                    abregeUnite = dictUnitesRemplissage[IDunite]["abrege"]
+                                                else :
+                                                    abregeUnite = "?"
                                             labelsColonnes.append(abregeUnite)
                                             largeur = largeurColonneUnite
                                             
