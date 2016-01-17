@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
 
     def Ajouter(self, event):
         import DLG_Saisie_contratpsu_tarif
-        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self)
+        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self, IDfamille=self.clsbase.GetValeur("IDfamille"))
         if self.clsbase != None and len(self.GetTracks()) == 0 :
             date_debut = self.clsbase.GetValeur("date_debut")
             dlg.ctrl_date_debut.SetDate(date_debut)
@@ -224,7 +224,7 @@ class ListView(FastObjectListView):
            return
         track = self.Selection()[0]
         import DLG_Saisie_contratpsu_tarif
-        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self)
+        dlg = DLG_Saisie_contratpsu_tarif.Dialog(self, IDfamille=self.clsbase.GetValeur("IDfamille"))
         dlg.SetTrack(track)
         if dlg.ShowModal() == wx.ID_OK:
             track.dictValeurs = dlg.GetDonnees()

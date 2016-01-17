@@ -60,9 +60,10 @@ class CTRL_Montant(wx.TextCtrl):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, IDfamille=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
+        self.IDfamille = IDfamille
         self.track = None
 
         # Période d'application
@@ -106,7 +107,8 @@ class Dialog(wx.Dialog):
 
         self.__set_properties()
         self.__do_layout()
-        
+
+        self.ctrl_date_debut.Bind(wx.EVT_TEXT, self.OnActualiserSuggestion)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
@@ -186,6 +188,38 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event):
         import UTILS_Aide
         UTILS_Aide.Aide("")
+
+    def OnActualiserSuggestion(self, event=None):
+        # Recherche date début de tarif
+        date_debut = self.ctrl_date_debut.GetDate()
+        if date_debut == None :
+            return
+
+        # Recherche les revenus
+        DB = GestionDB.DB()
+        req = """SELECT quotient, revenu
+        FROM quotients
+        WHERE IDfamille=%d AND date_debut<='%s' AND date_fin >='%s'
+        ORDER BY date_debut;""" % (self.IDfamille, date_debut, date_debut)
+        DB.ExecuterReq(req)
+        listeQuotients = DB.ResultatReq()
+        DB.Close()
+        if len(listeQuotients) == 0 :
+            return
+
+        quotient, revenu = listeQuotients[0]
+        if quotient == None :
+            quotient = ""
+        self.ctrl_qf.SetValue(str(quotient))
+        self.ctrl_revenu.SetMontant(revenu)
+
+        # Calcul du taux
+        #TODO : Calcul du taux
+
+        # Calcul du tarif de base
+        #TODO : Calcul du tarif de base + dépassement
+
+
 
     def OnBoutonOk(self, event):
         if self.ctrl_date_debut.Validation() == False or self.ctrl_date_debut.GetDate() == None :
@@ -297,7 +331,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None)
+    dialog_1 = Dialog(None, IDfamille=793)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
