@@ -4197,19 +4197,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             for numColonne, case in ligne.dictCases.iteritems() :
                 if case.typeCase == "consommation" and case.ouvert == True :
                     dejaFacture = False
+                    verrouillee = False
                     for conso in case.GetListeConso() :
                         if conso.IDprestation != None and conso.forfait == None :
                             if conso.IDfacture != None :
                                 dejaFacture = True
+                            if case.verrouillage == True or conso.verrouillage == True :
+                                verrouillee = True
                     
-                    if dejaFacture == True :
+                    if dejaFacture == True or verrouillee == True :
                         listeDejaFactures.append(case.IDprestation)
                     else :
                         case.MAJ_facturation(modeSilencieux=modeSilencieux)
                         case.Refresh() 
                     
         if len(listeDejaFactures) > 0 and modeSilencieux == False :
-            dlg = wx.MessageDialog(self, _(u"Notez que %d prestations n'ont pas été recalculés car \ncelles-ci apparaissent déjà sur des factures !") % len(listeDejaFactures), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Notez que %d prestations n'ont pas été recalculés car \ncelles-ci apparaissent déjà sur des factures ou sont verrouillées !") % len(listeDejaFactures), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
     

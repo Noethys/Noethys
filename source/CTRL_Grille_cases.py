@@ -414,6 +414,9 @@ class Case():
                         dlg.Destroy()
                     return False
 
+            if conso.verrouillage == 1 :
+                return False
+
         self.grid.Facturation(self.IDactivite, self.IDindividu, self.IDfamille, self.date, self.IDcategorie_tarif, IDgroupe=self.IDgroupe, case=self, etiquettes=listeEtiquettes, modeSilencieux=modeSilencieux)
         self.grid.ProgrammeTransports(self.IDindividu, self.date, self.ligne)
 
@@ -854,12 +857,13 @@ class Case():
             return False
 
         # Si la conso est verrouillée, on annule l'action
-        if conso.verrouillage == 1 and modeSilencieux == False :
-            dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation verrouillée !"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
+        if conso.verrouillage == 1 :
+            if modeSilencieux == False :
+                dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation verrouillée !"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
             return False
-        
+
         # Si la conso est "present", on annule l'action
         if conso.etat == "present" and modeSilencieux == False :
             dlg = wx.MessageDialog(self.grid, _(u"Vous ne pouvez pas modifier une consommation pointée 'présent' !"), _(u"Consommation verrouillée"), wx.OK | wx.ICON_EXCLAMATION)
@@ -999,6 +1003,7 @@ class CaseStandard(Case):
             self.IDgroupe = self.conso.IDgroupe
             self.IDinscription = self.conso.IDinscription
             self.etiquettes = self.conso.etiquettes
+            self.verrouillage = verrouillage
             
             if self.IDprestation != None and self.grid.dictPrestations.has_key(self.IDprestation) :
                 self.IDfacture = self.grid.dictPrestations[self.IDprestation]["IDfacture"]
@@ -1076,7 +1081,9 @@ class CaseStandard(Case):
         conso = self.GetConso()
         if conso != None and self.ProtectionsModifSuppr(conso, modeSilencieux) == False :
             return
-        
+        if self.verrouillage == 1 :
+            return
+
         # Touches de raccourci
         if TouchesRaccourciActives == True :
             self.OnTouchesRaccourcisPerso() 
