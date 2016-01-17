@@ -561,7 +561,7 @@ def A8574():
     
     valide = True
     try :
-        version = [int(x) for x in version.split(".")]
+        version = tuple([int(x) for x in version.split(".")])
     except :
         valide = False
     if len(version) != 4 :
