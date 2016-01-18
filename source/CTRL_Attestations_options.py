@@ -95,7 +95,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append( wxpg.PropertyCategory(_(u"Titre")) )
 
         # Afficher le titre
-        propriete = wxpg.BoolProperty(label=_u("Afficher le titre"), name="afficher_titre", value=True)
+        propriete = wxpg.BoolProperty(label=_(u"Afficher le titre"), name="afficher_titre", value=True)
         propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez afficher le titre du le document")) 
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
