@@ -1742,6 +1742,7 @@ class CaseMultihoraires(Case):
     def __init__(self, ligne, grid, numLigne=None, numColonne=None, IDindividu=None, IDfamille=None, date=None, IDunite=None, IDactivite=None, verrouillage=0, heure_min=None, heure_max=None):
         Case.__init__(self, ligne, grid, numLigne, numColonne, IDindividu, IDfamille, date, IDunite, IDactivite, verrouillage)
         self.CategorieCase = "multihoraires"
+        self.verrouillage = 0
         
         # Plage horaire
         self.heure_min = heure_min

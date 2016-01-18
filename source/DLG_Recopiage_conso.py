@@ -78,6 +78,7 @@ class CTRL_Unite(wx.Choice):
     def GetValeur(self):
         index = self.GetSelection()
         if index == -1 or index == 0 : return None
+        if self.dictDonnees[index] == None : return None
         return self.dictDonnees[index]["ID"]
 
     def GetInfos(self):
