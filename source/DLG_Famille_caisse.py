@@ -16,6 +16,8 @@ import OL_Aides
 import GestionDB
 import wx.lib.agw.hyperlink as Hyperlink
 import UTILS_Utilisateurs
+import UTILS_Parametres
+import DLG_Message_html
 
 
 class Hyperlien(Hyperlink.HyperLinkCtrl):
@@ -281,6 +283,27 @@ class Panel(wx.Panel):
         wx.TheClipboard.Open()
         wx.TheClipboard.SetData(clipdata)
         wx.TheClipboard.Close()
+
+        # Vérifie si case Ne plus Afficher cochée ou non
+        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=False) == False :
+            texte = u"""
+<CENTER><IMG SRC="Images/32x32/Astuce.png">
+<FONT SIZE=3>
+<BR>
+<B>Astuce</B>
+<BR><BR>
+Le numéro d'allocataire de la famille a été copié dans le presse-papiers.
+<BR><BR>
+Collez tout simplement ce numéro dans le champ de recherche du site CAFPRO grâce à la combinaison de touches <B>CTRL+V</B> de votre clavier !
+</FONT>
+</CENTER>
+"""
+            dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Astuce"), nePlusAfficher=True, size=(200, 300))
+            dlg.ShowModal()
+            nePlusAfficher = dlg.GetEtatNePlusAfficher()
+            dlg.Destroy()
+            if nePlusAfficher == True :
+                UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=nePlusAfficher)
 
         # Ouverture du navigateur
         import webbrowser
