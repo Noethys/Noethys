@@ -1,9 +1,10 @@
-Version 1.1.6.2 (11/01/2016) :
+Version 1.1.6.3 (28/01/2016) :
 
 - Ajout des thèmes
 - Ajout des rappels de pièces manquantes par Email
 - Ajout du recopiage des conso depuis la grille des conso
 - Amélioration de la conversion des états de conso par lot
+- Correction de divers bugs
 
 Version 1.1.6.1 (21/12/2015) :
 

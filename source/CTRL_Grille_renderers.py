@@ -466,7 +466,10 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
             listeGraduations = range(UTILS_Dates.HeuresEnDecimal(self.case.heure_min), UTILS_Dates.HeuresEnDecimal(self.case.heure_max)+graduationStep, graduationStep)
 ##            if listeGraduations == [0] :
 ##                listeGraduations = [0, 1]
-            step = 1.0 * (rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2) / (len(listeGraduations) - 1)
+            nbreGraduations = len(listeGraduations)
+            if nbreGraduations <= 1 :
+                nbreGraduations = 2
+            step = 1.0 * (rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2) / (nbreGraduations - 1)
             if step > 3.0 :
                 x = PADDING_MULTIHORAIRES["horizontal"]
                 for temp in listeGraduations :

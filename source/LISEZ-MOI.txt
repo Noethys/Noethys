@@ -1,12 +1,12 @@
 #########################################################
-#							#
-#	NOETHYS, LOGICIEL DE GESTION MULTI-ACTIVITES	#
-#							#
-# 	Site internet : www.noethys.com			#
-# 	Auteur: Ivan LUCAS				#
-# 	Copyright: (c) 2010-14 Ivan LUCAS		#
-# 	Licence: GNU GPL				# 
-#							#
+#														#
+#	NOETHYS, LOGICIEL DE GESTION MULTI-ACTIVITES		#
+#														#
+# 	Site internet : www.noethys.com						#
+# 	Auteur: Ivan LUCAS									#
+# 	Copyright: (c) 2010-16 Ivan LUCAS					#
+# 	Licence: GNU GPL									# 
+#														#
 #########################################################
 
 PROCEDURE D'INSTALLATION

@@ -275,9 +275,10 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
     def GetListeMails(self):
         listeMails = []
         for IDliste in self.GetIDcoches() :
-            for mail in self.dictAbonnements[IDliste] :
-                if mail not in listeMails :
-                    listeMails.append(mail)
+            if self.dictAbonnements.has_key(IDliste) :
+                for mail in self.dictAbonnements[IDliste] :
+                    if mail not in listeMails :
+                        listeMails.append(mail)
         return listeMails
     
         
