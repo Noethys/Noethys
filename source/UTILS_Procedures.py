@@ -45,6 +45,7 @@ DICT_PROCEDURES = {
     "A8823" : _(u"Création de tous les index"),
     "A8836" : _(u"Suppression des consommations avec prestation disparue"),
     "A8941" : _(u"Remplit automatiquement le champ états de la table Tarifs"),
+    "A8956" : _(u"Réparation des factures : Rapprochement des factures et des prestations détachées"),
     }
 
 
@@ -677,6 +678,85 @@ def A8941():
     DB.Commit()
     DB.Close()
 
+def A8956():
+    """ Réparation des factures : Rapprochement des factures et des prestations détachées """
+    from UTILS_Decimal import FloatToDecimal
+    import UTILS_Dates
+    import copy
+
+    DB = GestionDB.DB()
+
+    # Lecture des prestations
+    req = """SELECT IDprestation, IDcompte_payeur, date, montant, IDfacture
+    FROM prestations
+    ;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    dictPrestations = {}
+    dictPrestationsFactures = {}
+    for IDprestation, IDcompte_payeur, date, montant, IDfacture in listeDonnees :
+        montant = FloatToDecimal(montant)
+        date = UTILS_Dates.DateEngEnDateDD(date)
+        dictTemp = {"IDprestation":IDprestation, "IDcompte_payeur":IDcompte_payeur, "date":date, "montant":montant, "IDfacture":IDfacture}
+
+        if dictPrestations.has_key(IDcompte_payeur) == False :
+            dictPrestations[IDcompte_payeur] = []
+        dictPrestations[IDcompte_payeur].append(dictTemp)
+
+        if dictPrestationsFactures.has_key(IDfacture) == False :
+            dictPrestationsFactures[IDfacture] = {"total" : FloatToDecimal(0.0), "prestations" : []}
+        dictPrestationsFactures[IDfacture]["prestations"].append(dictTemp)
+        dictPrestationsFactures[IDfacture]["total"] += montant
+
+    # Lecture des factures
+    req = """SELECT IDfacture, IDcompte_payeur, date_debut, date_fin, total
+    FROM factures
+    ;"""
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    listePrestationsReparees = []
+    listeFacturesReparees = []
+    for IDfacture, IDcompte_payeur, date_debut, date_fin, total_facture in listeDonnees :
+        date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+        date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+        total_facture = FloatToDecimal(total_facture)
+
+        # Vérifie si le total des prestations correspond bien au total de la facture
+        if dictPrestationsFactures.has_key(IDfacture):
+            total_prestations = dictPrestationsFactures[IDfacture]["total"]
+        else :
+            total_prestations = FloatToDecimal(0.0)
+
+        if total_prestations < total_facture :
+            #print "PROBLEME : ", IDcompte_payeur, IDfacture, total_prestations, total_facture
+
+            # Recherche les possibles prestations à rattacher
+            listePrestationsTrouvees = []
+            totalPrestationsTrouvees = copy.copy(total_prestations)
+            if dictPrestations.has_key(IDcompte_payeur) :
+                for dictPrestation in dictPrestations[IDcompte_payeur] :
+                    if dictPrestation["IDfacture"] == None and dictPrestation["date"] >= date_debut and dictPrestation["date"] <= date_fin :
+                        listePrestationsTrouvees.append(dictPrestation)
+                        totalPrestationsTrouvees += dictPrestation["montant"]
+
+                # Si la liste des prestations correspond bien aux prestations manquantes de la facture, on les associe
+                if total_facture == totalPrestationsTrouvees :
+                    for dictPrestation in listePrestationsTrouvees :
+                        DB.ReqMAJ("prestations", [("IDfacture", IDfacture),], "IDprestation", dictPrestation["IDprestation"])
+                        listePrestationsReparees.append(dictPrestation)
+                        if IDfacture not in listeFacturesReparees :
+                            listeFacturesReparees.append(IDfacture)
+
+    DB.Close()
+
+    # Message de fin
+    dlg = wx.MessageDialog(None, _(u"Résultats :\n\nNombre de factures réparées = %d\nNombre de prestations réparées = %d" % (len(listeFacturesReparees), len(listePrestationsReparees))), _(u"Fin de la procédure"), wx.OK | wx.ICON_INFORMATION)
+    dlg.ShowModal()
+    dlg.Destroy()
+
+
+
+
 ##def A8360():
 ##    """ Importation des familles d'un fichier local """
 ##    import DATA_Tables as Tables
@@ -761,5 +841,5 @@ if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8941()
+    A8956()
     app.MainLoop()
