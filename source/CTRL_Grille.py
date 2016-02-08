@@ -189,7 +189,16 @@ def ConvertStrToListe(texte=None, siVide=None):
 def ConvertListeToStr(liste=[]):
     if liste == None : liste = []
     return ";".join([str(x) for x in liste])
-    
+
+def CompareDict(dict1={}, dict2={}, keys=[]):
+    """ Compare les valeurs de 2 dictionnaires selon les clés données """
+    isIdem = True
+    for key in keys:
+        if dict1[key] != dict2[key] :
+            isIdem = False
+            #print key, dict1[key], type(dict1[key]), dict2[key], type(dict2[key])
+    return isIdem
+
 def CreationImage(largeur, hauteur, couleur=None):
     """ couleur peut être RGB ou HEXA """
     b = wx.EmptyBitmap(largeur, hauteur) 
@@ -1661,7 +1670,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             date = DateEngEnDateDD(date)
             forfait_date_debut = DateEngEnDateDD(forfait_date_debut)
             forfait_date_fin = DateEngEnDateDD(forfait_date_fin)
-                
+
             if IDindividu != None and IDindividu != 0 and self.dictIndividus.has_key(IDindividu) :
                 nomIndividu = u"%s %s" % (self.dictIndividus[IDindividu]["nom"], self.dictIndividus[IDindividu]["prenom"])
             else:
@@ -2589,7 +2598,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Formatage du temps facturé
                 if temps_facture != None :
                     temps_facture = time.strftime("%H:%M", time.gmtime(temps_facture.seconds))
-                
+
                 # -------------------------Mémorisation de la prestation ---------------------------------------------
                 IDcompte_payeur = self.dictComptesPayeurs[IDfamille]
                 IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, code_compta=code_compta, tva=tva)
@@ -3004,14 +3013,23 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "tva" : tva,
                 "forfait" : None,
                 }
-
+        #print dictPrestation["date"], " #############################"
         # Recherche si une prestation identique existe déjà en mémoire
         for IDprestation, dictTemp1 in self.dictPrestations.iteritems() :
             dictTemp2 = dictTemp1.copy()
-            del dictTemp2["IDprestation"]
-            del dictTemp2["montantVentilation"]
-            if dictPrestation == dictTemp2 and IDprestation > 0 :
-                return IDprestation
+
+            if IDprestation > 0 :
+                # Renvoie prestation existante si la prestation apparaît déjà sur une facture même si le montant est différent
+                if dictTemp2["IDfacture"] != None and CompareDict(dictPrestation, dictTemp2, keys=["date", "IDindividu", "IDtarif", "IDcompte_payeur"]) == True :
+                    #print "trouvee1"
+                    return IDprestation
+
+                # Renvoie prestation existante si la prestation semble identique avec montants identiques
+                if CompareDict(dictPrestation, dictTemp2, keys=["date", "IDindividu", "IDtarif", "montant_initial", "montant", "IDcategorie_tarif", "IDcompte_payeur", "label", "temps_facture"]) == True :
+                    #print "trouvee2"
+                    return IDprestation
+
+        #print "pas trouvee"
 
         # Recherche le prochain numéro dans la liste des prestations
         IDprestation = self.prochainIDprestation
@@ -5670,8 +5688,8 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.grille = CTRL(panel, IDfamille=14)
-        self.grille.SetModeIndividu(listeActivites=[1, 2], listeSelectionIndividus=[46,], listeIndividusFamille=[14,], listePeriodes=[(datetime.date(2013, 6, 1), datetime.date(2013, 7, 1)),])
+        self.grille = CTRL(panel, IDfamille=203)
+        self.grille.SetModeIndividu(listeActivites=[16, ], listeSelectionIndividus=[1437,], listeIndividusFamille=[1437,], listePeriodes=[(datetime.date(2015, 7, 1), datetime.date(2015, 7, 10)),])
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.ctrl_facturation = wx.TextCtrl(panel, -1, "", size=(-1, 60), style=wx.TE_MULTILINE)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
@@ -5701,7 +5719,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=4, selectionIndividus=[8, 200])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=203, selectionIndividus=[1437])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
