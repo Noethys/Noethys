@@ -13,9 +13,6 @@ import zipfile
 from distutils.core import setup 
 import py2exe
 
-try: import psyco; psyco.full()
-except: pass
-
 
 manifest = """
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -100,32 +97,49 @@ def GetFichiersExemples(chemin="Data/"):
 
 options = {
     "py2exe": {
-        "includes" : [ "matplotlib.backends", 
-                            "matplotlib.figure", "matplotlib.backends.backend_wxagg", "pylab", "numpy",
-                            "email", "email.encoders", "email.generator", "email.iterators", "email.utils", 
-                            "email.mime.base", "email.mime.multipart", "email.mime.text", 
-                            "email.mime.image", "email.mime.audio", "email.base64mime", 
-                            "pyttsx.drivers.sapi5", "zope.interface",
-                            ], 
+        "includes" : [
+                "matplotlib.backends",
+                "matplotlib.figure", "matplotlib.backends.backend_wxagg", "pylab", "numpy",
+                "email", "email.encoders", "email.generator", "email.iterators", "email.utils",
+                "email.mime.base", "email.mime.multipart", "email.mime.text",
+                "email.mime.image", "email.mime.audio", "email.base64mime",
+                "pyttsx.drivers.sapi5", "zope.interface",
+                ],
         
          'excludes' : [
-             '_gtkagg', '_tkagg', '_agg2', '_cairo', '_cocoaagg',
-             '_fltkagg', '_gtk', '_gtkcairo',
-             'backend_qt', 'backend_qt4', 'backend_qt4agg',
-             'backend_qtagg',
-             'backend_cairo', 'backend_cocoaagg',
-             'Tkconstants', 'Tkinter', 'tcl',
-             "_imagingtk", "PIL._imagingtk", "ImageTk", "PIL.ImageTk", "FixTk", 
-          ], 
+                '_gtkagg', '_tkagg', '_agg2', '_cairo', '_cocoaagg',
+                '_fltkagg', '_gtk', '_gtkcairo',
+                'backend_qt', 'backend_qt4', 'backend_qt4agg',
+                'backend_qtagg',
+                'backend_cairo', 'backend_cocoaagg',
+                'Tkconstants', 'Tkinter', 'tcl',
+                "_imagingtk", "PIL._imagingtk", "ImageTk", "PIL.ImageTk", "FixTk",
+                ],
 
-        'dll_excludes': ['tcl84.dll', 'tk84.dll', 'wxmsw26uh_vc.dll', 'libgdk-win32-2.0-0.dll',
-                                  'libgobject-2.0-0.dll', "UxTheme.dll", 'mswsock.dll', 'powrprof.dll', 'MSVCP90.dll' ],
-        
-        "packages": ["pytz", "reportlab", "twisted", "twisted.web.resource"], 
+        'dll_excludes': [
+                "tcl84.dll", "tk84.dll", "wxmsw26uh_vc.dll", "libgdk-win32-2.0-0.dll",
+                "libgobject-2.0-0.dll", "UxTheme.dll", "mswsock.dll", "powrprof.dll", "MSVCP90.dll",
+                "api-ms-win-core-string-l1-1-0.dll", "api-ms-win-core-registry-l1-1-0.dll",
+                "api-ms-win-core-errorhandling-l1-1-1.dll", "api-ms-win-core-string-l2-1-0.dll",
+                "api-ms-win-core-profile-l1-1-0.dll", "api-ms-win*.dll",
+                "api-ms-win-core-processthreads-l1-1-2.dll", "api-ms-win-core-libraryloader-l1-2-1.dll",
+                "api-ms-win-core-file-l1-2-1.dll", "api-ms-win-security-base-l1-2-0.dll",
+                "api-ms-win-eventing-provider-l1-1-0.dll", "api-ms-win-core-heap-l2-1-0.dll",
+                "api-ms-win-core-libraryloader-l1-2-0.dll", "api-ms-win-core-localization-l1-2-1.dll",
+                "api-ms-win-core-sysinfo-l1-2-1.dll", "api-ms-win-core-synch-l1-2-0.dll",
+                "api-ms-win-core-heap-l1-2-0.dll", "api-ms-win-core-handle-l1-1-0.dll",
+                "api-ms-win-core-io-l1-1-1.dll", "api-ms-win-core-com-l1-1-1.dll",
+                "api-ms-win-core-memory-l1-1-2.dll", "api-ms-win-core-version-l1-1-1.dll",
+                "api-ms-win-core-version-l1-1-0.dll",
+                ],
+
+        "packages": [
+                "pytz", "reportlab", "twisted", "twisted.web.resource",
+                ],
 
         "typelibs": [
-                        ('{C866CA3A-32F7-11D2-9602-00C04F8EE628}', 0, 5, 4), # Pour Pyttsx - Version Windows 7
-                        ],
+                ('{C866CA3A-32F7-11D2-9602-00C04F8EE628}', 0, 5, 4), # Pour Pyttsx - Version Windows 7
+                ],
                         
         #'compressed' : 1 ,.
         #'optimize': 2,

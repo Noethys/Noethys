@@ -1,6 +1,7 @@
 Version 1.1.6.4 (21/02/2016) :
 
 - Ajout de la prise en charge des adresses d'expédition authentifiées sans starttls [mpasteur]
+- Correction de divers bugs
 
 Version 1.1.6.3 (28/01/2016) :
 
