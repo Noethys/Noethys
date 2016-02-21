@@ -594,6 +594,9 @@ class CTRL_Donnees(gridlib.Grid):
         self.SetValeur("numero", u"%06d" % numero)
         
         # Récupération des infos sur l'organisme
+        self.SetValeur("siret", "")
+        self.SetValeur("ape", "")
+        self.SetValeur("lieu", "")
         req = """SELECT nom, num_siret, code_ape, ville
         FROM organisateur
         WHERE IDorganisateur=1;""" 

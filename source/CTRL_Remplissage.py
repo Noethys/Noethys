@@ -665,6 +665,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 ##        self.dictActivites = self.Importation_activites()
         self.listePeriodes = []
         self.listeActivites = []
+        self.dictLignes = {}
         self.SetModeAffichage("nbrePlacesPrises")
         self.moveTo = None
         self.GetGridWindow().SetToolTipString("")

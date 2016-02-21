@@ -367,6 +367,7 @@ class CadreIndividu():
         self.yCentre = yCentre
         self.largeur = largeur
         self.hauteur = hauteur
+        self.bmp = None
         
         self.Draw()
     
@@ -994,11 +995,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
             
         # Titre du tooltip
         bmp = cadreIndividu.bmp
-        bmp = bmp.ConvertToImage()
-
-        bmp = bmp.Rescale(width=taillePhoto, height=taillePhoto, quality=qualite) 
-        bmp = bmp.ConvertToBitmap()
-        self.tip.SetHeaderBitmap(bmp)
+        if bmp != None :
+            bmp = bmp.ConvertToImage()
+            bmp = bmp.Rescale(width=taillePhoto, height=taillePhoto, quality=qualite)
+            bmp = bmp.ConvertToBitmap()
+            self.tip.SetHeaderBitmap(bmp)
         self.tip.SetHeaderFont(wx.Font(10, font.GetFamily(), font.GetStyle(), wx.BOLD, font.GetUnderlined(), font.GetFaceName()))
         self.tip.SetHeader(dictInfoIndividu["nomComplet2"])
         self.tip.SetDrawHeaderLine(True)

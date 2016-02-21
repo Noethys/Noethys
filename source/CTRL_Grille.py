@@ -4815,7 +4815,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
             # Vérifie si les conditions sont réunies
             conditions = dictUnite["autogen_conditions"]
-            listeConditions = conditions.split(";")
+            if conditions != None :
+                listeConditions = conditions.split(";")
+            else :
+                listeConditions = []
 
             valide = True
             if len(listeConditions) == 0 :
