@@ -148,14 +148,14 @@ class DLG_Rapport(wx.Dialog):
         dictAdresse = {}
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return None
-        IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl = listeDonnees[0]
-        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "ssl":connexionssl}
+        IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS = listeDonnees[0]
+        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":connexionAuthentifiee, "startTLS":startTLS}
         return dictAdresse
 
     def Envoi_mail(self, commentaires=""):
@@ -191,7 +191,8 @@ class DLG_Rapport(wx.Dialog):
         adresseExpediteur = dictExp["adresse"]
         serveur = dictExp["smtp"]
         port = dictExp["port"]
-        ssl = dictExp["ssl"]
+        auth = dictExp["auth"]
+        startTLS = dictExp["startTLS"]
         motdepasse = dictExp["motdepasse"]
 
         # Création du message
@@ -203,15 +204,16 @@ class DLG_Rapport(wx.Dialog):
             
         msg.attach( MIMEText(texteMail.encode('utf-8'), 'html', 'utf-8') )
         
-        if ssl == False :
+        if auth == False :
             # Envoi standard
             smtp = smtplib.SMTP(serveur)
         else:
             # Si identification SSL nécessaire :
             smtp = smtplib.SMTP(serveur, port, timeout=150)
             smtp.ehlo()
-            smtp.starttls()
-            smtp.ehlo()
+            if startTLS == True :
+                smtp.starttls()
+                smtp.ehlo()
             smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
         
         try :

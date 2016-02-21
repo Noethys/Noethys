@@ -177,12 +177,12 @@ class Panel(wx.Panel):
         ID = int(self.listCtrl.GetItem(index, 0).GetText())
         
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeServeurs = DB.ResultatReq()
         
-        for IDadresse, adresse, smtp, port, defaut, connexionssl in listeServeurs :
+        for IDadresse, adresse, smtp, port, defaut, connexionAuthentifiee, startTLS in listeServeurs :
             if IDadresse == ID :
                 etat = True
             else:
@@ -246,7 +246,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
         self.SetColumnWidth(3, 50) 
         self.InsertColumn(4, _(u"Defaut"))
         self.SetColumnWidth(4, 0) 
-        self.InsertColumn(5, _(u"Connexion SSL"))
+        self.InsertColumn(5, _(u"Connexion authentifiée"))
         self.SetColumnWidth(5, 100) 
         
 
@@ -274,7 +274,7 @@ class ListCtrl(wx.ListCtrl, listmix.ListCtrlAutoWidthMixin, listmix.ColumnSorter
     def Importation(self):
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         liste = DB.ResultatReq()

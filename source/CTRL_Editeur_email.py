@@ -331,16 +331,16 @@ class CTRL_Expediteur(wx.Choice):
         self.dictAdresses = {}
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         sel = None
         index = 0
-        for IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl in listeDonnees :
+        for IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS in listeDonnees :
             self.listeAdresses.append(adresse)
-            self.dictAdresses[index] = {"IDadresse" : IDadresse, "adresse": adresse, "smtp" : smtp, "port" : port, "defaut" : defaut, "ssl" : connexionssl, "motdepasse" : motdepasse}
+            self.dictAdresses[index] = {"IDadresse" : IDadresse, "adresse": adresse, "smtp" : smtp, "port" : port, "defaut" : defaut, "auth" : connexionAuthentifiee, "startTLS":startTLS, "motdepasse" : motdepasse}
             if defaut == 1 : 
                 sel = index
             index += 1

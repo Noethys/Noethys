@@ -855,8 +855,10 @@ DB_DATA = {
                                     ("motdepasse", "VARCHAR(200)", u"Mot de passe si SSL"),
                                     ("smtp", "VARCHAR(200)", u"Adresse SMTP"),
                                     ("port", "INTEGER", u"Numéro du port"),
-                                    ("connexionssl", "INTEGER", u"Connexion ssl (1/0)"),
+                                    ("connexionssl", "INTEGER", u"Connexion ssl (1/0) - N'est plus utilisé !"),
                                     ("defaut", "INTEGER", u"Adresse utilisée par défaut (1/0)"),
+                                    ("connexionAuthentifiee", "INTEGER", u"Authentification activée (1/0)"),
+                                    ("startTLS", "INTEGER", u"startTLS activé (1/0)"),
                                     ], # Adresses d'expéditeur de mail
 
     "listes_diffusion":  [    ("IDliste", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),

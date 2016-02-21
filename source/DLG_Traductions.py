@@ -249,14 +249,14 @@ class DLG_Envoi(wx.Dialog):
         dictAdresse = {}
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return None
-        IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl = listeDonnees[0]
-        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "ssl":connexionssl}
+        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS = listeDonnees[0]
+        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":auth, "startTLS":startTLS}
         return dictAdresse
 
     def OnBoutonEnvoyer(self, event):  

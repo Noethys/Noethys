@@ -25,7 +25,7 @@ class Dialog(wx.Dialog):
         # Récupération des serveurs prédéfinis
         self.listeServeurs = DATA_Serveurs_fai.LISTE_SERVEURS_FAI
         listeServeursChoices = []
-        for fai, smtp, port, ssl in self.listeServeurs :
+        for fai, smtp, port, auth, startTLS in self.listeServeurs :
             listeServeursChoices.append(fai)
         
         self.static_sizer_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse de messagerie"))
@@ -40,8 +40,10 @@ class Dialog(wx.Dialog):
         self.ctrl_smtp = wx.TextCtrl(self, -1, "")
         self.label_port = wx.StaticText(self, -1, _(u"Numéro de port :"))
         self.ctrl_port = wx.TextCtrl(self, -1, "")
-        self.label_ssl = wx.StaticText(self, -1, _(u"Connexion SSL :"))
-        self.ctrl_ssl = wx.CheckBox(self, -1, "")
+        self.label_authentification  = wx.StaticText(self, -1, _(u"Connexion authentifiée :"))
+        self.ctrl_authentification  = wx.CheckBox(self, -1, "")
+        self.label_startTLS  = wx.StaticText(self, -1, _(u"startTLS :"))
+        self.ctrl_startTLS   = wx.CheckBox(self, -1, "")
         self.label_adresse = wx.StaticText(self, -1, _(u"Adresse :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
@@ -57,7 +59,7 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioServeur, self.radio_predefini )
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioServeur, self.radio_personnalise )
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckSSL, self.ctrl_ssl)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckAuthentification, self.ctrl_authentification)
         self.Bind(wx.EVT_CHOICE, self.OnChoiceServeur, self.ctrl_predefinis)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
@@ -75,7 +77,7 @@ class Dialog(wx.Dialog):
         self.ctrl_smtp.SetToolTipString(_(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)"))
         self.ctrl_port.SetMinSize((60, -1))
         self.ctrl_port.SetToolTipString(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)"))
-        self.ctrl_ssl.SetToolTipString(_(u"Cliquez ici sur le serveur de messagerie utilise une connexion securisée SSL"))
+        self.ctrl_authentification.SetToolTipString(_(u"Cliquez ici sur le serveur de messagerie nécessite une authentification"))
         self.ctrl_adresse.SetToolTipString(_(u"Saisissez ici votre adresse mail"))
         self.ctrl_mdp.SetToolTipString(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour accéder à l'aide"))
@@ -89,7 +91,7 @@ class Dialog(wx.Dialog):
         grid_sizer_adresse = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
         static_sizer_serveur = wx.StaticBoxSizer(self.static_sizer_serveur_staticbox, wx.VERTICAL)
         grid_sizer_serveur = wx.FlexGridSizer(rows=6, cols=2, vgap=15, hgap=0)
-        grid_sizer_personnalise = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_personnalise = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         grid_sizer_predefini = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_base.Add(self.label_intro, 0, wx.ALL, 10)
         grid_sizer_serveur.Add(self.radio_predefini, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -104,8 +106,10 @@ class Dialog(wx.Dialog):
         grid_sizer_personnalise.Add(self.ctrl_smtp, 0, wx.EXPAND, 0)
         grid_sizer_personnalise.Add(self.label_port, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_personnalise.Add(self.ctrl_port, 0, 0, 0)
-        grid_sizer_personnalise.Add(self.label_ssl, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_personnalise.Add(self.ctrl_ssl, 0, 0, 0)
+        grid_sizer_personnalise.Add(self.label_authentification, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_personnalise.Add(self.ctrl_authentification, 0, 0, 0)
+        grid_sizer_personnalise.Add(self.label_startTLS, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_personnalise.Add(self.ctrl_startTLS, 0, 0, 0)
         grid_sizer_personnalise.AddGrowableCol(1)
         grid_sizer_serveur.Add(grid_sizer_personnalise, 1, wx.LEFT|wx.EXPAND, 20)
         grid_sizer_serveur.AddGrowableCol(1)
@@ -134,50 +138,53 @@ class Dialog(wx.Dialog):
             self.ctrl_predefinis.Enable(True)
             self.label_smtp.Enable(False)
             self.label_port.Enable(False)
-            self.label_ssl.Enable(False)
+            self.label_authentification.Enable(False)
+            self.label_startTLS.Enable(False)
             self.ctrl_smtp.Enable(False)
             self.ctrl_port.Enable(False)
-            self.ctrl_ssl.Enable(False)
+            self.ctrl_authentification.Enable(False)
+            self.ctrl_startTLS.Enable(False)
         else:
             self.ctrl_predefinis.Enable(False)
             self.label_smtp.Enable(True)
             self.label_port.Enable(True)
-            self.label_ssl.Enable(True)
+            self.label_authentification.Enable(True)
+            self.label_startTLS.Enable(True)
             self.ctrl_smtp.Enable(True)
             self.ctrl_port.Enable(True)
-            self.ctrl_ssl.Enable(True)
+            self.ctrl_authentification.Enable(True)
+            self.ctrl_startTLS.Enable(True)
         self.ActiveCtrlMdp()
     
     def OnChoiceServeur(self, event):
         self.ActiveCtrlMdp()
         
-    def OnCheckSSL(self, event):
+    def OnCheckAuthentification(self, event):
         self.ActiveCtrlMdp()
         
     def ActiveCtrlMdp(self):
-        etat = False
+        etatAuth  = False
         if self.radio_predefini.GetValue() == True :
             # Si serveur prédéfini
             selection = self.ctrl_predefinis.GetSelection()
             if selection != -1 :
-                ssl = self.listeServeurs[selection][3]
-                if ssl == True :
-                    etat = True
+                etatAuth = self.listeServeurs[selection][3]
+                self.ctrl_authentification.SetValue(etatAuth)
+                self.ctrl_startTLS.SetValue(self.listeServeurs[selection][4])
         else:
             # Si serveur personnalisé
-            if self.ctrl_ssl.GetValue() == True :
-                etat = True
-        self.ctrl_mdp.Enable(etat)
+            etatAuth = self.ctrl_authentification.GetValue()
+        self.ctrl_mdp.Enable(etatAuth)
 
     def Importation(self):
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail WHERE IDadresse=%d; """ % self.IDadresse
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDadresse, adresse, motdepasse, smtp, port, defaut, ssl = listeDonnees[0]
+        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS = listeDonnees[0]
         
         self.defaut = bool(defaut)
         
@@ -188,8 +195,8 @@ class Dialog(wx.Dialog):
         # Recherche si les paramètres correspondent à un serveur prédéfini
         index = 0
         indexPredefini = None
-        for fai, smtpTmp, portTmp, sslTmp in self.listeServeurs :
-            if smtpTmp == smtp and portTmp == port and sslTmp == ssl :
+        for fai, smtpTmp, portTmp, authTmp, startTLSTmp in self.listeServeurs :
+            if smtpTmp == smtp and portTmp == port and authTmp == auth and startTLSTmp == startTLS :
                 indexPredefini = index
             index += 1
         
@@ -203,8 +210,10 @@ class Dialog(wx.Dialog):
                 self.ctrl_smtp.SetValue(smtp)
             if port != None :
                 self.ctrl_port.SetValue(str(port))
-            if ssl != None :
-                self.ctrl_ssl.SetValue(ssl)
+            if auth != None :
+                self.ctrl_authentification.SetValue(auth)
+            if startTLS != None :
+                self.ctrl_startTLS.SetValue(startTLS)
             self.radio_personnalise.SetValue(True)
         
         self.ActiveCtrlMdp()
@@ -214,7 +223,7 @@ class Dialog(wx.Dialog):
     def GetNbreAdresses(self):
         """ Récupère le nbre d'adresses déjà saisies """
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionssl
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -269,7 +278,7 @@ class Dialog(wx.Dialog):
                     return
             
             # Validation du mot de passe
-            if self.ctrl_ssl.GetValue() == True :
+            if self.ctrl_authentification.GetValue() == True :
                 if self.ctrl_mdp.GetValue() == "" :
                     dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le mot de passe de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
@@ -291,8 +300,9 @@ class Dialog(wx.Dialog):
             selection = self.ctrl_predefinis.GetSelection()
             smtp = self.listeServeurs[selection][1]
             port = self.listeServeurs[selection][2]
-            ssl = self.listeServeurs[selection][3]
-            if ssl == True :
+            auth = self.listeServeurs[selection][3]
+            startTLS = self.listeServeurs[selection][4]
+            if auth == True :
                 motdepasse = self.ctrl_mdp.GetValue()
             else:
                 motdepasse = None
@@ -312,10 +322,14 @@ class Dialog(wx.Dialog):
                 port = None
             else:
                 port = int(self.ctrl_port.GetValue())
-            if self.ctrl_ssl.GetValue() == True :
-                ssl = 1
+            if self.ctrl_authentification.GetValue() == True :
+                auth = 1
             else:
-                ssl = 0
+                auth = 0
+            if self.ctrl_startTLS.GetValue() == True :
+                startTLS = 1
+            else :
+                startTLS = 0
         
         # Si c'est la première adresse saisie, on la met comme defaut
         nbreAdresses = self.GetNbreAdresses() 
@@ -330,7 +344,8 @@ class Dialog(wx.Dialog):
                                     ("motdepasse",    motdepasse),
                                     ("smtp",    smtp),
                                     ("port",    port), 
-                                    ("connexionssl",    ssl), 
+                                    ("connexionAuthentifiee", auth),
+                                    ("startTLS", startTLS),
                                     ("defaut",    defaut), 
                                     ]
         if self.IDadresse == None :

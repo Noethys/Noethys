@@ -1805,6 +1805,19 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 6, 4)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("adresses_mail", "connexionAuthentifiee", "INTEGER")
+                self.AjoutChamp("adresses_mail", "startTLS", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
+
+
 
 
 

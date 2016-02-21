@@ -223,7 +223,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
                 listeFichiersJoints=["Temp/%s" % nomFichierTemp,], 
                 serveur=dictAdresse["smtp"], 
                 port=dictAdresse["port"], 
-                ssl=dictAdresse["connexionssl"], 
+                avecAuthentification=dictAdresse["auth"],
+                avecStartTLS=dictAdresse["startTLS"],
                 motdepasse=dictAdresse["motdepasse"], 
                 #listeImages=listeImages,
                 )
