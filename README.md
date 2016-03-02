@@ -74,7 +74,9 @@ apt-get install python-wxgtk2.8 libjpeg62 libwxgtk3.0-0
 ```
 
 Puis téléchargez les paquets de la bibliothèque graphique correspondant à votre architecture (32 ou 64 bits), wxpython et wxwidgets, ainsi que libtiff4.
-Vous trouverez ces fichiers sur le site de Noethys : Menu Téléchargements > Ressources communautaires > Divers.
+
+Vous trouverez ces fichiers sur le site de Noethys : **Menu Téléchargements > Ressources communautaires > Divers**.
+
 Puis exécutez la commande suivante:
 ```
 dpkg -i dossier/wxwidget*****.deb dossier/wxpython*****.deb dossier/libtiff4*****.deb
