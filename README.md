@@ -59,7 +59,7 @@ Dépendances pour Linux
 Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
 ```
-apt-get install python-wxgtk3.0 python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto
+apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto
 ```
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fait dans l'étape précédente) et les installer par:
@@ -67,8 +67,20 @@ Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fait 
 pip install pyttsx
 pip install icalendar
 ```
+Puis:
+```
+apt-get install python-wxgtk3.0
+```
+Si cette commande se termine correctement, vous avez fini.
 
-Dans le cas où votre version de debian ou d'ubuntu ne proposerait pas python-wxgtk3.0, exécutez la commande suivante:
+
+Pour lancer Noethys, lancez le terminal de Linux, placez-vous dans le répertoire d'installation de Noethys, puis saisissez la commande "python Noethys.py"
+
+
+
+Dans le cas contraire, où votre version de debian ou d'ubuntu ne proposerait pas python-wxgtk3.0 (ce qui est le cas pour ubuntu LTS 14.04 et toute distribution basée sur cette version), la commande précédente retourne une erreur.
+
+Exécutez alors la commande suivante:
 ```
 apt-get install python-wxgtk2.8 libjpeg62 libwxgtk3.0-0
 ```
@@ -88,6 +100,4 @@ dpkg -i dossier/wxwidget*****.deb dossier/wxpython*****.deb dossier/libtiff4****
 **Vérifiez que vous avez choisi la version correspondant à votre architecture (32 ou 64 bits).**
 
 
-Pour lancer Noethys, lancez le terminal de Linux, placez-vous 
-dans le répertoire d'installation de Noethys, puis saisissez
-la commande "python Noethys.py"
+
