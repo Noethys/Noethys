@@ -56,7 +56,7 @@ Dépendances pour Linux
 - python-opencv (pour la détection automatique des visages)
 - python-pip (qui permet d'installer pyttsx et icalendar)
 
-Ils s'installent depuis le terminal tout simplement avec la commande:
+Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
 ```
 apt-get install python-wxgtk3.0 python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto
@@ -75,14 +75,15 @@ apt-get install python-wxgtk2.8 libjpeg62 libwxgtk3.0-0
 
 Puis téléchargez les paquets de la bibliothèque graphique correspondant à votre architecture (32 ou 64 bits), wxpython et wxwidgets, ainsi que libtiff4.
 Vous trouverez ces fichiers sur le site de Noethys : Menu Téléchargements > Ressources communautaires > Divers.
-Puis exécutez les commandes suivantes:
+Puis exécutez la commande suivante:
 ```
 dpkg -i dossier/wxwidget*****.deb dossier/wxpython*****.deb dossier/libtiff4*****.deb
 ```
 
-dossier: le dossier dans lequel vous avez téléchargé la bibliothèque
-wxwidget*****.deb, wxpython*****.deb et libtiff4*****.deb sont les fichiers correspondant à votre architecture que vous avez téléchargés.
-Vérifiez que vous avez choisi la version correspondant à votre architecture (32 ou 64 bits).
+**dossier**: le dossier dans lequel vous avez téléchargé la bibliothèque
+**wxwidget\*****.deb, wxpython\*****.deb et libtiff4\*****.deb** sont les fichiers correspondant à votre architecture que vous avez téléchargés.
+
+**Vérifiez que vous avez choisi la version correspondant à votre architecture (32 ou 64 bits).**
 
 
 Pour lancer Noethys, lancez le terminal de Linux, placez-vous 
