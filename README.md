@@ -40,10 +40,9 @@ rechercher et installer les bibliothèques suivantes.
 Dépendances pour Linux
 ------------------
 
-Bibliothèque graphique wxPython disponible sur le site de Noethys :
-Menu Téléchargements > Ressources communautaires > Divers.
 
-- python 2.7 (installé en principe par défaut sous ubuntu)
+- python 2.7 (Installé en principe par défaut sous ubuntu)
+- python-wxgtk3.0 (Bibliothèque graphique wxPython)
 - python-mysqldb (Pour l'utilisation en mode réseau)
 - python-dateutil (Manipulation des dates)
 - python-numpy (Calculs avancés)
@@ -60,15 +59,30 @@ Menu Téléchargements > Ressources communautaires > Divers.
 Ils s'installent depuis le terminal tout simplement avec la commande:
 
 ```
-apt-get install python-mysqldb python-dateutil python-numpy python-imaging 
-python-reportlab python-matplotlib python-xlrd python-excelerator python-pip 
-python-pyscard python-opencv python-crypto
+apt-get install python-wxgtk3.0 python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto
 ```
 
-Et pour pyttsx et icalendar il faut avoir installé python-pip et les installer par:
+Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fait dans l'étape précédente) et les installer par:
+```
+pip install pyttsx
+pip install icalendar
+```
 
-- pip install pyttsx
-- pip install icalendar
+Dans le cas où votre version de debian ou d'ubuntu ne proposerait pas python-wxgtk3.0, exécutez la commande suivante:
+```
+apt-get install python-wxgtk2.8 libjpeg62 libwxgtk3.0-0
+```
+
+Puis téléchargez les paquets de la bibliothèque graphique correspondant à votre architecture (32 ou 64 bits), wxpython et wxwidgets, ainsi que libtiff4.
+Vous trouverez ces fichiers sur le site de Noethys : Menu Téléchargements > Ressources communautaires > Divers.
+Puis exécutez les commandes suivantes:
+```
+dpkg -i dossier/wxwidget*****.deb dossier/wxpython*****.deb dossier/libtiff4*****.deb
+```
+
+dossier: le dossier dans lequel vous avez téléchargé la bibliothèque
+wxwidget*****.deb, wxpython*****.deb et libtiff4*****.deb sont les fichiers correspondant à votre architecture que vous avez téléchargés.
+Vérifiez que vous avez choisi la version correspondant à votre architecture (32 ou 64 bits).
 
 
 Pour lancer Noethys, lancez le terminal de Linux, placez-vous 
