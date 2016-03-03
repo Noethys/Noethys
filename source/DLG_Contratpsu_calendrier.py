@@ -12,8 +12,165 @@
 from UTILS_Traduction import _
 import wx
 import OL_Contratspsu_previsions
+import OL_Contrats_planning_elements
 import CTRL_Saisie_duree
 import UTILS_Dates
+import CTRL_Bouton_image
+import GestionDB
+
+
+class Page_planning(wx.Panel):
+    def __init__(self, parent, clsbase=None):
+        wx.Panel.__init__(self, parent, id=-1, name="page_planning", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.clsbase = clsbase
+        self.MAJ_effectuee = False
+
+        if self.clsbase != None :
+            IDactivite = self.clsbase.GetValeur("IDactivite")
+            IDunite_prevision = self.clsbase.GetValeur("IDunite_prevision")
+        else :
+            IDactivite = 0
+            IDunite_prevision = 0
+
+        self.ctrl_planning = OL_Contrats_planning_elements.ListView(self, id=-1, IDactivite=IDactivite, IDunite=IDunite_prevision, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_planning.SetMinSize((50, 50))
+
+        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+
+        self.bouton_generer = CTRL_Bouton_image.CTRL(self, texte=_(u"Générer les consommations"), cheminImage="Images/32x32/Magique.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        # Binds
+        self.Bind(wx.EVT_BUTTON, self.ctrl_planning.Ajouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_planning.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_planning.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_planning.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_planning.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.Generer, self.bouton_generer)
+
+    def __set_properties(self):
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un paramètre de planning"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le paramètre de planning sélectionné"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le paramètre de planning sélectionné"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_generer.SetToolTipString(_(u"Cliquez ici pour générer les consommations selon le planning"))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.ctrl_planning, 1, wx.EXPAND|wx.LEFT|wx.TOP, 10)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_ajouter, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_apercu, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_imprimer, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.EXPAND|wx.RIGHT|wx.TOP, 10)
+
+        grid_sizer_base.Add(self.bouton_generer, 1, wx.EXPAND|wx.LEFT|wx.BOTTOM, 10)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+
+    def Generer(self, event):
+        date_debut = self.clsbase.GetValeur("date_debut")
+        date_fin = self.clsbase.GetValeur("date_fin")
+        listeConso = self.ctrl_planning.GetConso(date_debut, date_fin)
+        self.parent.page_consommations.ctrl_consommations.GenerationSelonPlanning(listeConso)
+
+
+
+class Page_consommations(wx.Panel):
+    def __init__(self, parent, clsbase=None):
+        wx.Panel.__init__(self, parent, id=-1, name="page_consommations", style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.clsbase = clsbase
+        self.MAJ_effectuee = False
+
+        self.listviewAvecFooter = OL_Contratspsu_previsions.ListviewAvecFooter(self, kwargs={"clsbase" : clsbase})
+        self.ctrl_consommations = self.listviewAvecFooter.GetListview()
+        self.ctrl_recherche = OL_Contratspsu_previsions.CTRL_Outils(self, listview=self.ctrl_consommations, afficherCocher=True)
+        if self.GetGrandParent().GetParent().GetName() == "notebook" :
+            self.ctrl_recherche.SetBackgroundColour(self.GetGrandParent().GetParent().GetThemeBackgroundColour())
+
+        self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+
+        self.__set_properties()
+        self.__do_layout()
+
+        # Binds
+        self.Bind(wx.EVT_BUTTON, self.ctrl_consommations.Ajouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_consommations.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_consommations.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_consommations.Apercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_consommations.Imprimer, self.bouton_imprimer)
+
+    def __set_properties(self):
+        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une consommation"))
+        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la consommation sélectionnée"))
+        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la consommation sélectionnée"))
+        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
+        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.listviewAvecFooter, 1, wx.EXPAND|wx.LEFT|wx.TOP, 10)
+
+        grid_sizer_boutons = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
+        grid_sizer_boutons.Add(self.bouton_ajouter, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_modifier, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_apercu, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_imprimer, 0, 0, 0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.EXPAND|wx.RIGHT|wx.TOP, 10)
+
+        grid_sizer_base.Add(self.ctrl_recherche, 1, wx.EXPAND|wx.LEFT|wx.BOTTOM, 10)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        grid_sizer_base.AddGrowableRow(0)
+        grid_sizer_base.AddGrowableCol(0)
+
+
+
+
+
+
+class Notebook(wx.Notebook):
+    def __init__(self, parent, clsbase=None):
+        wx.Notebook.__init__(self, parent, id=-1, name="notebook_calendrier", style=wx.BK_LEFT)
+        self.clsbase = clsbase
+
+        # Page planning
+        self.page_planning = Page_planning(self, clsbase)
+        self.AddPage(self.page_planning, _(u"Planning"))
+
+        # Page consommations
+        self.page_consommations = Page_consommations(self, clsbase)
+        self.AddPage(self.page_consommations, _(u"Consommations"))
+
+
+    def SetLabelPage(self, numPage=0, label=""):
+        self.SetPageText(numPage, label)
+
+
+
 
 
 
@@ -26,17 +183,11 @@ class Panel(wx.Panel):
 
         # Prévisions
         self.staticbox_previsions_staticbox = wx.StaticBox(self, -1, _(u"Présences prévisionnelles"))
-        self.listviewAvecFooter = OL_Contratspsu_previsions.ListviewAvecFooter(self, kwargs={"clsbase" : clsbase})
-        self.ctrl_previsions = self.listviewAvecFooter.GetListview()
-        self.ctrl_recherche = OL_Contratspsu_previsions.CTRL_Outils(self, listview=self.ctrl_previsions, afficherCocher=True)
-        if self.parent.GetName() == "notebook" :
-            self.ctrl_recherche.SetBackgroundColour(self.parent.GetThemeBackgroundColour())
-
-        self.bouton_previsions_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_previsions_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_previsions_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_previsions_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_previsions_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.ctrl_previsions = Notebook(self, clsbase)
+        try :
+            self.ctrl_previsions.SetBackgroundColour(self.GetParent().GetThemeBackgroundColour())
+        except :
+            pass
 
         # Absences
         self.staticbox_absences_staticbox = wx.StaticBox(self, -1, _(u"Absences RTT"))
@@ -61,11 +212,6 @@ class Panel(wx.Panel):
         self.__do_layout()
 
         # Binds
-        self.Bind(wx.EVT_BUTTON, self.ctrl_previsions.Ajouter, self.bouton_previsions_ajouter)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_previsions.Modifier, self.bouton_previsions_modifier)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_previsions.Supprimer, self.bouton_previsions_supprimer)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_previsions.Apercu, self.bouton_previsions_apercu)
-        self.Bind(wx.EVT_BUTTON, self.ctrl_previsions.Imprimer, self.bouton_previsions_imprimer)
         self.Bind(wx.EVT_TEXT, self.OnChangeAbsencesPrevues, self.ctrl_absences_prevues)
         self.Bind(wx.EVT_CHOICE, self.OnChoixArrondi, self.ctrl_arrondi_type)
         self.Bind(wx.EVT_CHOICE, self.OnChoixArrondi, self.ctrl_arrondi_delta)
@@ -78,11 +224,6 @@ class Panel(wx.Panel):
         self.ctrl_arrondi_delta.Enable(self.ctrl_arrondi_type.GetSelection() != 0)
 
     def __set_properties(self):
-        self.bouton_previsions_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une consommation"))
-        self.bouton_previsions_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la consommation sélectionnée"))
-        self.bouton_previsions_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la consommation sélectionnée"))
-        self.bouton_previsions_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_previsions_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
         self.ctrl_absences_prevues.SetToolTipString(_(u"Saisissez ici le nombre d'heures d'absences prévues (RTT)"))
         self.ctrl_arrondi_type.SetToolTipString(_(u"Sélectionnez un type d'arrondi"))
         self.ctrl_arrondi_delta.SetToolTipString(_(u"Sélectionnez le deltade l'arrondi"))
@@ -92,25 +233,7 @@ class Panel(wx.Panel):
         
         # Prévisions
         staticbox_previsions = wx.StaticBoxSizer(self.staticbox_previsions_staticbox, wx.VERTICAL)
-        grid_sizer_previsions = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
-
-        grid_sizer_previsions.Add(self.listviewAvecFooter, 1, wx.EXPAND, 0)
-
-        grid_sizer_boutons_previsions = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
-        grid_sizer_boutons_previsions.Add(self.bouton_previsions_ajouter, 0, 0, 0)
-        grid_sizer_boutons_previsions.Add(self.bouton_previsions_modifier, 0, 0, 0)
-        grid_sizer_boutons_previsions.Add(self.bouton_previsions_supprimer, 0, 0, 0)
-        grid_sizer_boutons_previsions.Add( (5, 5), 0, 0, 0)
-        grid_sizer_boutons_previsions.Add(self.bouton_previsions_apercu, 0, 0, 0)
-        grid_sizer_boutons_previsions.Add(self.bouton_previsions_imprimer, 0, 0, 0)
-
-        grid_sizer_previsions.Add(grid_sizer_boutons_previsions, 1, wx.EXPAND, 0)
-
-        grid_sizer_previsions.Add(self.ctrl_recherche, 1, wx.EXPAND, 0)
-
-        grid_sizer_previsions.AddGrowableRow(0)
-        grid_sizer_previsions.AddGrowableCol(0)
-        staticbox_previsions.Add(grid_sizer_previsions, 1, wx.ALL|wx.EXPAND, 10)
+        staticbox_previsions.Add(self.ctrl_previsions, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_previsions, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
         grid_sizer_bas = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -159,8 +282,8 @@ class Panel(wx.Panel):
         arrondi_delta = self.GetArrondiDelta()
         self.clsbase.SetValeur("arrondi_type", arrondi_type)
         self.clsbase.SetValeur("arrondi_delta", arrondi_delta)
-        self.ctrl_previsions.MAJtracks()
-        self.clsbase.SetValeur("tracks_previsions", self.ctrl_previsions.GetTracks())
+        self.ctrl_previsions.page_consommations.ctrl_consommations.MAJtracks()
+        self.clsbase.SetValeur("tracks_previsions", self.ctrl_previsions.page_consommations.ctrl_consommations.GetTracks())
         self.clsbase.Calculer()
 
     def GetArrondiType(self):
@@ -185,13 +308,23 @@ class Panel(wx.Panel):
             index += 1
 
     def Validation(self):
+        nbreConso = len(self.ctrl_previsions.page_consommations.ctrl_consommations.GetTracks())
+        if nbreConso == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune consommation prévisionnelle ! Souhaitez-vous tout de même continuer ?\n\nPour saisir des consommations, vous avez deux possibilités : Soit vous créez un planning dans l'onglet 'Planning' puis cliquez sur 'Générer les consommations', soit vous saisissez manuellement les consommations souhaitées depuis l'onglet 'Consommations'."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
+        # Recalcul de toutes les données du contrat
         if self.clsbase.Calculer(mode_test=True) == False :
             return False
 
         return True
 
     def Sauvegarde(self):
-        self.clsbase.SetValeur("tracks_previsions", self.ctrl_previsions.GetTracks())
+        self.clsbase.SetValeur("planning", self.ctrl_previsions.page_planning.ctrl_planning.GetElementsStr())
+        self.clsbase.SetValeur("tracks_previsions", self.ctrl_previsions.page_consommations.ctrl_consommations.GetTracks())
         self.clsbase.SetValeur("duree_absences_prevues", self.ctrl_absences_prevues.GetValue())
         self.clsbase.SetValeur("duree_absences_prises", self.ctrl_absences_prises.GetValue())
         self.clsbase.SetValeur("duree_absences_solde", self.ctrl_absences_solde.GetValue())
@@ -203,9 +336,12 @@ class Panel(wx.Panel):
 
         if self.MAJ_effectuee == False :
 
-            # Prévisions
-            self.ctrl_previsions.IDunite_prevision = self.clsbase.GetValeur("IDunite_prevision")
-            self.ctrl_previsions.SetTracks(self.clsbase.GetValeur("tracks_previsions", []))
+            # Planning
+            self.ctrl_previsions.page_planning.ctrl_planning.SetElementsStr(self.clsbase.GetValeur("planning"))
+
+            # Consommations
+            self.ctrl_previsions.page_consommations.ctrl_consommations.IDunite_prevision = self.clsbase.GetValeur("IDunite_prevision")
+            self.ctrl_previsions.page_consommations.ctrl_consommations.SetTracks(self.clsbase.GetValeur("tracks_previsions", []))
 
             # Absences
             duree_absences_prevues = self.clsbase.GetValeur("duree_absences_prevues")
@@ -232,8 +368,11 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
+
+        # Chargement d'un contrat pour les tests
         from DLG_Saisie_contratpsu import Base
-        self.clsbase = Base(IDcontrat=None)
+        self.clsbase = Base(IDcontrat=8)
+
         self.ctrl = Panel(panel, clsbase=self.clsbase)
         self.bouton_test = wx.Button(panel, -1, "Test")
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
