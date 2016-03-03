@@ -175,7 +175,7 @@ class CTRL_Video(wx.Panel):
         frame = cv.QueryFrame(CAMERA)
         cv.CvtColor(frame, frame, cv.CV_BGR2RGB)
         Img = wx.EmptyImage(frame.width, frame.height)
-        Img.SetData(frame.tobytes())
+        Img.SetData(frame.tostring())
         self.bmp = wx.BitmapFromImage(Img)
         width, height = frame.width, frame.height
         
