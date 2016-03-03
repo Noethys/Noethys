@@ -18,6 +18,7 @@ import OL_Contrats_planning_elements
 import GestionDB
 import UTILS_Dates
 import wx.lib.dialogs as dialogs
+import copy
 
 import CTRL_Calendrier
 from DLG_Saisie_contrat_conso_detail import CTRL_Unites
@@ -59,9 +60,6 @@ class Panel_planning(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_planning_detail.Ajouter, self.bouton_ajouter)
         self.Bind(wx.EVT_BUTTON, self.ctrl_planning_detail.Modifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.ctrl_planning_detail.Supprimer, self.bouton_supprimer)
-
-        self.listeVacances = self.GetListeVacances()
-        self.listeFeries = self.GetListeFeries()
 
         self.ctrl_date_debut.SetDate(self.date_debut)
         self.ctrl_date_fin.SetDate(self.date_fin)
@@ -111,51 +109,6 @@ class Panel_planning(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
 
-    def GetListeVacances(self):
-        db = GestionDB.DB()
-        req = """SELECT date_debut, date_fin, nom, annee
-        FROM vacances
-        ORDER BY date_debut; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        return listeDonnees
-
-    def GetListeFeries(self):
-        db = GestionDB.DB()
-        req = """SELECT type, nom, jour, mois, annee
-        FROM jours_feries
-        ; """
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        return listeDonnees
-
-    def EstEnVacances(self, dateDD):
-        date = str(dateDD)
-        for valeurs in self.listeVacances :
-            date_debut = valeurs[0]
-            date_fin = valeurs[1]
-            if date >= date_debut and date <= date_fin :
-                return True
-        return False
-
-    def EstFerie(self, dateDD):
-        jour = dateDD.day
-        mois = dateDD.month
-        annee = dateDD.year
-        for type, nom, jourTmp, moisTmp, anneeTmp in self.listeFeries :
-            jourTmp = int(jourTmp)
-            moisTmp = int(moisTmp)
-            anneeTmp = int(anneeTmp)
-            if type == "fixe" :
-                if jourTmp == jour and moisTmp == mois :
-                    return True
-            else:
-                if jourTmp == jour and moisTmp == mois and anneeTmp == annee :
-                    return True
-        return False
-
     def Validation(self):
         if self.ctrl_date_debut.GetDate() == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la date de début d'application !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -202,82 +155,7 @@ class Panel_planning(wx.Panel):
         # Récupération des paramètres
         date_debut = self.ctrl_date_debut.GetDate()
         date_fin = self.ctrl_date_fin.GetDate()
-        donneesPlanning = self.ctrl_planning_detail.GetDonnees()
-
-        listeConso = []
-        for dictPlanning in donneesPlanning :
-
-            # Recherche des dates
-            listeDates = []
-            date = date_debut
-            semaines = dictPlanning["semaines"]
-            numSemaine = semaines
-            dateTemp = date
-            while date < (date_fin + datetime.timedelta(days=1)) :
-
-                # Vérifie période et jour
-                valide = False
-                if self.EstEnVacances(date) :
-                    if date.weekday() in dictPlanning["jours_vacances"] :
-                        valide = True
-                else :
-                    if date.weekday() in dictPlanning["jours_scolaires"] :
-                        valide = True
-
-                # Vérifie si férié
-                if dictPlanning["feries"] == False and self.EstFerie(date) == True :
-                    valide = False
-
-                # Calcul le numéro de semaine
-                if len(listeDates) > 0 :
-                    if date.weekday() < dateTemp.weekday() :
-                        numSemaine += 1
-
-                # Fréquence semaines
-                if semaines != 1 :
-                    if numSemaine % semaines != 0 :
-                        valide = False
-
-                # Ajout de la date à la liste
-                if valide == True :
-                    listeDates.append(date)
-
-                dateTemp = date
-                date += datetime.timedelta(days=1)
-
-            # Mémorisation des consommations
-            for date in listeDates :
-
-                for dictUnite in dictPlanning["unites"] :
-                    IDunite = dictUnite["IDunite"]
-                    options = dictUnite["options"]
-
-                    if options.has_key("heure_debut"):
-                        heure_debut = options["heure_debut"]
-                    else :
-                        heure_debut = self.dictUnites[IDunite]["heure_debut"]
-                    if options.has_key("heure_fin"):
-                        heure_fin = options["heure_fin"]
-                    else :
-                        heure_fin = self.dictUnites[IDunite]["heure_fin"]
-
-                    if options.has_key("quantite"):
-                        quantite = options["quantite"]
-                    else :
-                        quantite = None
-
-                    dictConso = {
-                        "IDconso" : None,
-                        "date" : date,
-                        "IDunite" : IDunite,
-                        "heure_debut" : heure_debut,
-                        "heure_fin" : heure_fin,
-                        "quantite" : quantite,
-                        "etat" : "reservation",
-                        "etiquettes" : [],
-                        }
-                    listeConso.append(dictConso)
-
+        listeConso = self.ctrl_planning_detail.GetConso(date_debut, date_fin)
         return listeConso
 
 
@@ -463,9 +341,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
 
-        # Init
-        self.dictUnites = self.Importation_unites()
-        self.dictOuvertures = self.GetOuverturesUnites()
+        # # Init
+        # self.dictUnites = self.Importation_unites()
+        # self.dictOuvertures = self.GetOuverturesUnites()
 
 
 
@@ -509,134 +387,137 @@ class Dialog(wx.Dialog):
             return False
 
         # Génération des consommations
-        if self.Generation() == False :
+        listeConso = self.parent.Generation(listeConso=self.notebook.GetDonnees(), IDconso=self.IDconso)
+        if listeConso == False :
             return
-        
+        else :
+            self.listeConso = listeConso
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
     
 
-    def Importation_unites(self):
-        # Récupération des unités
-        DB = GestionDB.DB()
-        req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
-        FROM unites
-        WHERE IDactivite=%d
-        ORDER BY ordre;""" % self.clsbase.GetValeur("IDactivite")
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
-        dictUnites = {}
-        for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
-            dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
-
-        # Récupère les incompatibilités entre unités
-        req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
-        FROM unites_incompat;"""
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close() 
-        for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
-            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
-            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
-
-        return dictUnites
-    
-    def GetOuverturesUnites(self):
-        DB = GestionDB.DB()
-        req = """SELECT IDouverture, IDunite, IDgroupe, date
-        FROM ouvertures 
-        WHERE IDactivite=%d
-        ORDER BY date; """ % self.clsbase.GetValeur("IDactivite")
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
-        DB.Close()
-        dictOuvertures = {}
-        for IDouverture, IDunite, IDgroupe, date in listeDonnees :
-            date = UTILS_Dates.DateEngEnDateDD(date)
-            dictOuvertures[(date, IDunite, IDgroupe)] = IDouverture
-        return dictOuvertures
-
-    def VerifieCompatibilitesUnites(self, IDunite1=None, IDunite2=None):
-        listeIncompatibilites = self.dictUnites[IDunite1]["unites_incompatibles"]
-        if IDunite2 in listeIncompatibilites :
-            return False
-        return True
-
-    def Generation(self):
-        listeConso = self.notebook.GetDonnees()
-
-        # Vérification de la validité des dates
-        listeAnomalies = []
-        nbreConsoValides = 0
-        self.listeConso = []
-
-        for dictConso in listeConso :
-            
-            index = 0
-            dateFr = UTILS_Dates.DateDDEnFr(dictConso["date"])
-            valide = True
-
-            # Recherche si pas d'incompatibilités avec les conso déjà saisies
-            # for dictConsoTemp in listeConso :
-            #     if dictConso["date"] == dictConsoTemp["date"] :
-            #         nomUnite1 = self.dictUnites[dictConso["IDunite"]]["nom"]
-            #         nomUnite2 = self.dictUnites[dictConsoTemp["IDunite"]]["nom"]
-            #
-            #         if self.VerifieCompatibilitesUnites(dictConsoTemp["IDunite"], dictConso["IDunite"]) == False :
-            #             listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
-            #             valide = False
-            #
-            #         if dictConso["IDunite"] == dictConsoTemp["IDunite"] :
-            #             if self.dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
-            #                 if dictConso["heure_fin"] > dictConsoTemp["heure_debut"] and dictConso["heure_debut"] < dictConsoTemp["heure_fin"] :
-            #                     listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
-            #                     valide = False
-            #             else :
-            #                 listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
-            #                 valide = False
-
-            # Vérifie si unité ouverte
-            IDgroupe = self.clsbase.GetValeur("IDgroupe")
-            if IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], IDgroupe)) == False :
-                listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
-                valide = False
-
-            # IDconso pour les modifications
-            if self.IDconso != None :
-                dictConso["IDconso"] = self.IDconso
-
-            # Insertion de la conso validée
-            if valide == True :
-                self.listeConso.append(dictConso)
-                nbreConsoValides += 1
-                            
-                index += 1
-        
-        # Signalement des anomalies
-        if len(listeAnomalies) :
-            message1 = _(u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
-            message2 = u"\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
-            reponse = dlg.ShowModal() 
-            dlg.Destroy() 
-            if reponse != wx.ID_YES :
-                return False
-        
-        if nbreConsoValides == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation valide à générer !"), _(u"Génération"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
-                
-        # Demande de confirmation
-        if self.IDconso == None :
-            dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
-            reponse = dlg.ShowModal()
-            dlg.Destroy()
-            if reponse != wx.ID_YES :
-                return False
-
-        return True
+    # def Importation_unites(self):
+    #     # Récupération des unités
+    #     DB = GestionDB.DB()
+    #     req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
+    #     FROM unites
+    #     WHERE IDactivite=%d
+    #     ORDER BY ordre;""" % self.clsbase.GetValeur("IDactivite")
+    #     DB.ExecuterReq(req)
+    #     listeDonnees = DB.ResultatReq()
+    #     dictUnites = {}
+    #     for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
+    #         dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
+    #
+    #     # Récupère les incompatibilités entre unités
+    #     req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
+    #     FROM unites_incompat;"""
+    #     DB.ExecuterReq(req)
+    #     listeDonnees = DB.ResultatReq()
+    #     DB.Close()
+    #     for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
+    #         if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+    #         if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+    #
+    #     return dictUnites
+    #
+    # def GetOuverturesUnites(self):
+    #     DB = GestionDB.DB()
+    #     req = """SELECT IDouverture, IDunite, IDgroupe, date
+    #     FROM ouvertures
+    #     WHERE IDactivite=%d
+    #     ORDER BY date; """ % self.clsbase.GetValeur("IDactivite")
+    #     DB.ExecuterReq(req)
+    #     listeDonnees = DB.ResultatReq()
+    #     DB.Close()
+    #     dictOuvertures = {}
+    #     for IDouverture, IDunite, IDgroupe, date in listeDonnees :
+    #         date = UTILS_Dates.DateEngEnDateDD(date)
+    #         dictOuvertures[(date, IDunite, IDgroupe)] = IDouverture
+    #     return dictOuvertures
+    #
+    # def VerifieCompatibilitesUnites(self, IDunite1=None, IDunite2=None):
+    #     listeIncompatibilites = self.dictUnites[IDunite1]["unites_incompatibles"]
+    #     if IDunite2 in listeIncompatibilites :
+    #         return False
+    #     return True
+    #
+    # def Generation(self):
+    #     listeConso = self.notebook.GetDonnees()
+    #
+    #     # Vérification de la validité des dates
+    #     listeAnomalies = []
+    #     nbreConsoValides = 0
+    #     self.listeConso = []
+    #
+    #     for dictConso in listeConso :
+    #
+    #         index = 0
+    #         dateFr = UTILS_Dates.DateDDEnFr(dictConso["date"])
+    #         valide = True
+    #
+    #         # Recherche si pas d'incompatibilités avec les conso déjà saisies
+    #         # for dictConsoTemp in listeConso :
+    #         #     if dictConso["date"] == dictConsoTemp["date"] :
+    #         #         nomUnite1 = self.dictUnites[dictConso["IDunite"]]["nom"]
+    #         #         nomUnite2 = self.dictUnites[dictConsoTemp["IDunite"]]["nom"]
+    #         #
+    #         #         if self.VerifieCompatibilitesUnites(dictConsoTemp["IDunite"], dictConso["IDunite"]) == False :
+    #         #             listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
+    #         #             valide = False
+    #         #
+    #         #         if dictConso["IDunite"] == dictConsoTemp["IDunite"] :
+    #         #             if self.dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
+    #         #                 if dictConso["heure_fin"] > dictConsoTemp["heure_debut"] and dictConso["heure_debut"] < dictConsoTemp["heure_fin"] :
+    #         #                     listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
+    #         #                     valide = False
+    #         #             else :
+    #         #                 listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
+    #         #                 valide = False
+    #
+    #         # Vérifie si unité ouverte
+    #         IDgroupe = self.clsbase.GetValeur("IDgroupe")
+    #         if IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], IDgroupe)) == False :
+    #             listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
+    #             valide = False
+    #
+    #         # IDconso pour les modifications
+    #         if self.IDconso != None :
+    #             dictConso["IDconso"] = self.IDconso
+    #
+    #         # Insertion de la conso validée
+    #         if valide == True :
+    #             self.listeConso.append(dictConso)
+    #             nbreConsoValides += 1
+    #
+    #             index += 1
+    #
+    #     # Signalement des anomalies
+    #     if len(listeAnomalies) :
+    #         message1 = _(u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
+    #         message2 = u"\n".join(listeAnomalies)
+    #         dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
+    #         reponse = dlg.ShowModal()
+    #         dlg.Destroy()
+    #         if reponse != wx.ID_YES :
+    #             return False
+    #
+    #     if nbreConsoValides == 0 :
+    #         dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation valide à générer !"), _(u"Génération"), wx.OK | wx.ICON_EXCLAMATION)
+    #         dlg.ShowModal()
+    #         dlg.Destroy()
+    #         return False
+    #
+    #     # Demande de confirmation
+    #     if self.IDconso == None :
+    #         dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+    #         reponse = dlg.ShowModal()
+    #         dlg.Destroy()
+    #         if reponse != wx.ID_YES :
+    #             return False
+    #
+    #     return True
 
     def GetListeConso(self):
         return self.listeConso
@@ -660,16 +541,17 @@ class Dialog(wx.Dialog):
 
 
 
+
+
+
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    clsbase = {
-        "IDactivite" : 43,
-        "IDunite" : 34,
-        "IDunite_prevision" : None,
-        "date_debut" : datetime.date(2015, 1, 1),
-        "date_fin" : datetime.date(2015, 12, 31),
-    }
+    # Importation d'un contrat pour les tests
+    from DLG_Saisie_contratpsu import Base
+    clsbase = Base(IDcontrat=8)
+    clsbase.Calculer()
+    # Ouverture DLG
     dlg = Dialog(None, clsbase=clsbase)
     app.SetTopWindow(dlg)
     dlg.ShowModal()

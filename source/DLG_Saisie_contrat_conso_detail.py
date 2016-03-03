@@ -26,6 +26,8 @@ from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 
 LISTE_SEMAINES = [
     (1, _(u"Toutes les semaines")),
+    (5, _(u"Les semaines paires")),
+    (6, _(u"Les semaines impaires")),
     (2, _(u"Une semaine sur deux")),
     (3, _(u"Une semaine sur trois")),
     (4, _(u"Une semaine sur quatre")),

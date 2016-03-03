@@ -1335,6 +1335,7 @@ DB_DATA = {
                                     ("duree_absences_prevues", "VARCHAR(50)", u"Temps d'absences prévues PSU"),
                                     ("duree_heures_regularisation", "VARCHAR(50)", u"Temps de régularisation PSU"),
                                     ("duree_tolerance_depassement", "VARCHAR(50)", u"Temps de tolérance dépassements PSU"),
+                                    ("planning", "VARCHAR(900)", u"Données de planning serialisées"),
                                     ], # Contrats
 
     "modeles_contrats":[ ("IDmodele", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID modèle"),

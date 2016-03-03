@@ -17,7 +17,7 @@ import GestionDB
 import UTILS_Dates
 import DLG_Saisie_contrat_conso_detail
 import cPickle
-
+import copy
 
 import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -58,8 +58,12 @@ class Track(object):
         listeTemp = []
         for dictUnite in self.unites :
             if self.parent.dictUnites.has_key(dictUnite["IDunite"]) :
-                listeTemp.append(self.parent.dictUnites[dictUnite["IDunite"]]["nom"])
-        self.unites_txt = "+".join(listeTemp)
+                nomUnite = self.parent.dictUnites[dictUnite["IDunite"]]["nom"]
+                if dictUnite.has_key("options") :
+                    if dictUnite["options"].has_key("heure_debut") :
+                        nomUnite += u" (%s-%s)" % (dictUnite["options"]["heure_debut"].replace(":", "h"), dictUnite["options"]["heure_fin"].replace(":", "h"))
+                listeTemp.append(nomUnite)
+        self.unites_txt = " + ".join(listeTemp)
         
         
         
@@ -78,6 +82,11 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeDonnees = []
+
+        # Init autres données
+        self.listeVacances = self.GetListeVacances()
+        self.listeFeries = self.GetListeFeries()
+
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -142,7 +151,7 @@ class ListView(FastObjectListView):
             ]
         
         self.SetColumns(liste_Colonnes)
-        self.SetEmptyListMsg(_(u"Aucun paramètre"))
+        self.SetEmptyListMsg(_(u"Aucun paramètre de planning"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(0)
         
@@ -289,32 +298,146 @@ class ListView(FastObjectListView):
         self.listeDonnees.pop(track.index)
         self.MAJ() 
 
-##    def Importation(self):
-##        """ Importation des données """
-##        DB = GestionDB.DB()
-##        req = """SELECT IDmodele, nom, donnees 
-##        FROM modeles_plannings
-##        WHERE IDmodele=%d;""" % self.IDmodele
-##        DB.ExecuterReq(req)
-##        listeDonnees = DB.ResultatReq()
-##        if len(listeDonnees) > 0 :
-##            donnees = listeDonnees[0][2]
-##            self.listeDonnees = cPickle.loads(str(donnees))
-    
     def GetElementsStr(self):
         return cPickle.dumps(self.listeDonnees)
     
     def SetElementsStr(self, donnees=""):
+        if donnees == None : return
         self.listeDonnees = cPickle.loads(str(donnees))
         self.MAJ() 
-        
-##    def Sauvegarde(self):
-##        """ Sauvegarde des éléments de planning """
-##        donneesStr = self.GetElementsStr() 
-##        DB = GestionDB.DB() 
-##        listeDonnees = [("donnees", donneesStr),]
-##        DB.ReqMAJ("modeles_plannings", listeDonnees, "IDmodele", self.IDmodele)
-##        DB.Close() 
+
+    def GetListeVacances(self):
+        db = GestionDB.DB()
+        req = """SELECT date_debut, date_fin, nom, annee
+        FROM vacances
+        ORDER BY date_debut; """
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        return listeDonnees
+
+    def GetListeFeries(self):
+        db = GestionDB.DB()
+        req = """SELECT type, nom, jour, mois, annee
+        FROM jours_feries
+        ; """
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        return listeDonnees
+
+    def EstEnVacances(self, dateDD):
+        date = str(dateDD)
+        for valeurs in self.listeVacances :
+            date_debut = valeurs[0]
+            date_fin = valeurs[1]
+            if date >= date_debut and date <= date_fin :
+                return True
+        return False
+
+    def EstFerie(self, dateDD):
+        jour = dateDD.day
+        mois = dateDD.month
+        annee = dateDD.year
+        for type, nom, jourTmp, moisTmp, anneeTmp in self.listeFeries :
+            jourTmp = int(jourTmp)
+            moisTmp = int(moisTmp)
+            anneeTmp = int(anneeTmp)
+            if type == "fixe" :
+                if jourTmp == jour and moisTmp == mois :
+                    return True
+            else:
+                if jourTmp == jour and moisTmp == mois and anneeTmp == annee :
+                    return True
+        return False
+
+    def GetConso(self, date_debut=None, date_fin=None):
+        """ Récupération des conso générées par le planning saisi """
+        donneesPlanning = self.GetDonnees()
+
+        listeConso = []
+        for dictPlanning in donneesPlanning :
+
+            # Recherche des dates
+            listeDates = []
+            date = date_debut
+            semaines = dictPlanning["semaines"]
+            numSemaine = copy.copy(semaines)
+            dateTemp = date
+            while date < (date_fin + datetime.timedelta(days=1)) :
+
+                # Vérifie période et jour
+                valide = False
+                if self.EstEnVacances(date) :
+                    if date.weekday() in dictPlanning["jours_vacances"] :
+                        valide = True
+                else :
+                    if date.weekday() in dictPlanning["jours_scolaires"] :
+                        valide = True
+
+                # Vérifie si férié
+                if dictPlanning["feries"] == False and self.EstFerie(date) == True :
+                    valide = False
+
+                # Calcul le numéro de semaine
+                if len(listeDates) > 0 :
+                    if date.weekday() < dateTemp.weekday() :
+                        numSemaine += 1
+
+                # Fréquence semaines
+                if semaines in (2, 3, 4) :
+                    if numSemaine % semaines != 0 :
+                        valide = False
+
+                # Semaines paires et impaires
+                if valide == True and semaines in (5, 6) :
+                    numSemaineAnnee = date.isocalendar()[1]
+                    if numSemaineAnnee % 2 == 0 and semaines == 6 :
+                        valide = False
+                    if numSemaineAnnee % 2 != 0 and semaines == 5 :
+                        valide = False
+
+                # Ajout de la date à la liste
+                if valide == True :
+                    listeDates.append(date)
+
+                dateTemp = date
+                date += datetime.timedelta(days=1)
+
+            # Mémorisation des consommations
+            for date in listeDates :
+
+                for dictUnite in dictPlanning["unites"] :
+                    IDunite = dictUnite["IDunite"]
+                    options = dictUnite["options"]
+
+                    if options.has_key("heure_debut"):
+                        heure_debut = options["heure_debut"]
+                    else :
+                        heure_debut = self.dictUnites[IDunite]["heure_debut"]
+                    if options.has_key("heure_fin"):
+                        heure_fin = options["heure_fin"]
+                    else :
+                        heure_fin = self.dictUnites[IDunite]["heure_fin"]
+
+                    if options.has_key("quantite"):
+                        quantite = options["quantite"]
+                    else :
+                        quantite = None
+
+                    dictConso = {
+                        "IDconso" : None,
+                        "date" : date,
+                        "IDunite" : IDunite,
+                        "heure_debut" : heure_debut,
+                        "heure_fin" : heure_fin,
+                        "quantite" : quantite,
+                        "etat" : "reservation",
+                        "etiquettes" : [],
+                        }
+                    listeConso.append(dictConso)
+
+        return listeConso
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

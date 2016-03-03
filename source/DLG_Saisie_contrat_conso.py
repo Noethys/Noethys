@@ -389,7 +389,7 @@ class Dialog(wx.Dialog):
             listeDates = []
             date = date_debut
             semaines = dictPlanning["semaines"]
-            numSemaine = semaines
+            numSemaine = copy.copy(semaines)
             dateTemp = date
             while date < (date_fin + datetime.timedelta(days=1)) :
                             
@@ -412,10 +412,18 @@ class Dialog(wx.Dialog):
                         numSemaine += 1
 
                 # Fréquence semaines
-                if semaines != 1 :
+                if semaines in (2, 3, 4) :
                     if numSemaine % semaines != 0 :
                         valide = False
-                
+
+                # Semaines paires et impaires
+                if valide == True and semaines in (5, 6) :
+                    numSemaineAnnee = date.isocalendar()[1]
+                    if numSemaineAnnee % 2 == 0 and semaines == 6 :
+                        valide = False
+                    if numSemaineAnnee % 2 != 0 and semaines == 5 :
+                        valide = False
+
                 # Ajout de la date à la liste
                 if valide == True :
                     listeDates.append(date)

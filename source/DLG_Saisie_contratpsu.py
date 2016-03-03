@@ -337,6 +337,7 @@ class Base(object) :
             ("duree_heures_regularisation", UTILS_Dates.DeltaEnStr(self.GetValeur("duree_heures_regularisation", datetime.timedelta(0)), separateur=":")),
             ("arrondi_type", self.GetValeur("arrondi_type", None)),
             ("arrondi_delta", self.GetValeur("arrondi_delta", 30)),
+            ("planning", self.GetValeur("planning", None)),
         )
         if self.IDcontrat == None :
             self.IDcontrat = DB.ReqInsert("contrats", listeDonnees)
@@ -344,33 +345,81 @@ class Base(object) :
             DB.ReqMAJ("contrats", listeDonnees, "IDcontrat", self.IDcontrat)
 
         # Enregistrement des consommations
+        # liste_IDconso = []
+        # for track in self.GetValeur("tracks_previsions", []):
+        #     listeDonnees = (
+        #         ("IDindividu", self.GetValeur("IDindividu", None)),
+        #         ("IDinscription", self.GetValeur("IDinscription", None)),
+        #         ("IDactivite", self.GetValeur("IDactivite", None)),
+        #         ("date", track.date),
+        #         ("IDunite", track.IDunite),
+        #         ("IDgroupe", self.GetValeur("IDgroupe", None)),
+        #         ("heure_debut", track.heure_debut),
+        #         ("heure_fin", track.heure_fin),
+        #         ("etat", track.etat),
+        #         #("date_saisie", track.date_saisie),
+        #         ("IDutilisateur", UTILS_Identification.GetIDutilisateur()),
+        #         ("IDcategorie_tarif", self.GetValeur("IDcategorie_tarif", None)),
+        #         ("IDcompte_payeur", self.GetValeur("IDcompte_payeur", None)),
+        #         #("IDprestation", track.IDprestation),#TODO
+        #         #("forfait", track.forfait),#TODO
+        #         ("quantite", track.quantite),
+        #         #("etiquettes", track.etiquettes),#TODO
+        #     )
+        #     if track.IDconso == None :
+        #         IDconso = DB.ReqInsert("consommations", listeDonnees)
+        #     else :
+        #         IDconso = track.IDconso
+        #         DB.ReqMAJ("consommations", listeDonnees, "IDconso", IDconso)
+        #     liste_IDconso.append(IDconso)
+
+        # Version optimisée
+        listeChamps = [
+            "IDindividu", "IDinscription", "IDactivite", "date", "IDunite", "IDgroupe", "heure_debut", "heure_fin",
+            "etat", "IDutilisateur", "IDcategorie_tarif", "IDcompte_payeur", "quantite",
+        ]
         liste_IDconso = []
+        listeAjouts = []
+        listeModifications = []
         for track in self.GetValeur("tracks_previsions", []):
-            listeDonnees = (
-                ("IDindividu", self.GetValeur("IDindividu", None)),
-                ("IDinscription", self.GetValeur("IDinscription", None)),
-                ("IDactivite", self.GetValeur("IDactivite", None)),
-                ("date", track.date),
-                ("IDunite", track.IDunite),
-                ("IDgroupe", self.GetValeur("IDgroupe", None)),
-                ("heure_debut", track.heure_debut),
-                ("heure_fin", track.heure_fin),
-                ("etat", track.etat),
-                #("date_saisie", track.date_saisie),
-                ("IDutilisateur", UTILS_Identification.GetIDutilisateur()),
-                ("IDcategorie_tarif", self.GetValeur("IDcategorie_tarif", None)),
-                ("IDcompte_payeur", self.GetValeur("IDcompte_payeur", None)),
-                #("IDprestation", track.IDprestation),#TODO
-                #("forfait", track.forfait),#TODO
-                ("quantite", track.quantite),
-                #("etiquettes", track.etiquettes),#TODO
-            )
+            listeDonnees = [
+                self.GetValeur("IDindividu", None),
+                self.GetValeur("IDinscription", None),
+                self.GetValeur("IDactivite", None),
+                track.date,
+                track.IDunite,
+                self.GetValeur("IDgroupe", None),
+                track.heure_debut,
+                track.heure_fin,
+                track.etat,
+                UTILS_Identification.GetIDutilisateur(),
+                self.GetValeur("IDcategorie_tarif", None),
+                self.GetValeur("IDcompte_payeur", None),
+                track.quantite,
+                ]
             if track.IDconso == None :
-                IDconso = DB.ReqInsert("consommations", listeDonnees)
+                listeAjouts.append(listeDonnees)
             else :
                 IDconso = track.IDconso
-                DB.ReqMAJ("consommations", listeDonnees, "IDconso", IDconso)
-            liste_IDconso.append(IDconso)
+                listeDonnees.append(IDconso)
+                listeModifications.append(listeDonnees)
+                liste_IDconso.append(IDconso)
+
+        # Ajout optimisé des conso
+        if len(listeAjouts) > 0 :
+            texteChampsTemp = ", ".join(listeChamps)
+            listeInterrogations = []
+            for champ in listeChamps :
+                listeInterrogations.append("?")
+            texteInterrogations = ", ".join(listeInterrogations)
+            DB.Executermany("INSERT INTO consommations (%s) VALUES (%s)" % (texteChampsTemp, texteInterrogations), listeAjouts, commit=True)
+
+        # Modification optimisée des conso
+        if len(listeModifications) > 0 :
+            listeChampsTemp = []
+            for champ in listeChamps :
+                listeChampsTemp.append(("%s=?" % champ))
+            DB.Executermany("UPDATE consommations SET %s WHERE IDconso=?" % ", ".join(listeChampsTemp), listeModifications, commit=True)
 
         # Suppression des consommations supprimées
         listeSuppressions = []
@@ -479,7 +528,7 @@ class Base(object) :
         if self.IDcontrat != None :
 
             req = """SELECT contrats.IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type,
-            duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement,
+            duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement, planning,
             individus.nom, individus.prenom
             FROM contrats
             LEFT JOIN individus ON individus.IDindividu = contrats.IDindividu
@@ -488,7 +537,7 @@ class Base(object) :
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             if len(listeDonnees) > 0 :
-                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement, individu_nom, individu_prenom = listeDonnees[0]
+                IDindividu, IDinscription, date_debut, date_fin, observations, IDactivite, type_contrat, duree_absences_prevues, duree_heures_regularisation, arrondi_type, arrondi_delta, duree_tolerance_depassement, planning, individu_nom, individu_prenom = listeDonnees[0]
 
                 self.IDinscription = IDinscription
                 dictValeurs["IDinscription"] = self.IDinscription
@@ -504,6 +553,7 @@ class Base(object) :
                 dictValeurs["individu_prenom"] = individu_prenom
                 dictValeurs["arrondi_type"] = arrondi_type
                 dictValeurs["arrondi_delta"] = arrondi_delta
+                dictValeurs["planning"] = planning
 
                 if individu_prenom != None :
                     dictValeurs["individu_nom_complet"] = u"%s %s" %(individu_nom, individu_prenom)
@@ -845,7 +895,7 @@ class Assistant(wx.Dialog, Base):
 
 class Notebook(wx.Notebook, Base):
     def __init__(self, parent, IDcontrat=None):
-        wx.Notebook.__init__(self, parent, id=-1, style= wx.BK_DEFAULT)
+        wx.Notebook.__init__(self, parent, id=10, style= wx.BK_DEFAULT)
         Base.__init__(self, IDcontrat=IDcontrat)
 
         # Initialisation des pages
@@ -877,22 +927,26 @@ class Notebook(wx.Notebook, Base):
         self.GetPage(0).MAJ()
 
     def OnPageChanging(self, event):
-        page = self.GetPage(event.GetOldSelection())
+        if event.GetId() == 10 :
 
-        # Validation de la page quittée
-        if page.Validation() == False :
-            event.Veto()
-            return
+            page = self.GetPage(event.GetOldSelection())
 
-        # Sauvegarde de la page quittée
-        page.Sauvegarde()
+            # Validation de la page quittée
+            if page.Validation() == False :
+                event.Veto()
+                return
+
+            # Sauvegarde de la page quittée
+            page.Sauvegarde()
 
         event.Skip()
 
     def OnPageChanged(self, event):
-        # MAJ de la page affichée
-        page = self.GetPage(event.GetSelection())
-        page.MAJ()
+        if event.GetId() == 10 :
+
+            # MAJ de la page affichée
+            page = self.GetPage(event.GetSelection())
+            page.MAJ()
 
         event.Skip()
 
@@ -998,7 +1052,7 @@ if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     #frame_1 = Assistant(None, IDinscription=1856)
-    frame_1 = Dialog(None, IDcontrat=7)
+    frame_1 = Dialog(None, IDcontrat=8)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

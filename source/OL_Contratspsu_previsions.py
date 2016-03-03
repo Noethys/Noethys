@@ -14,7 +14,7 @@ import wx
 import GestionDB
 import UTILS_Dates
 import datetime
-
+import wx.lib.dialogs as dialogs
 
 import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
@@ -86,9 +86,14 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
-        #self.Importation_unites()
+
+        # Init autres données
+        self.dictUnites = self.Importation_unites()
+        self.dictOuvertures = self.GetOuverturesUnites()
+
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
+
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
@@ -145,12 +150,12 @@ class ListView(FastObjectListView):
 
         liste_Colonnes = [
             ColumnDefn(_(u"IDconso"), "left", 0, "IDconso", typeDonnee="entier"),
-            ColumnDefn(_(u"Date"), 'left', 150, "date", typeDonnee="date", isSpaceFilling=True, stringConverter=FormateDate),
+            ColumnDefn(_(u"Date"), 'left', 190, "date", typeDonnee="date", stringConverter=FormateDate),
             #ColumnDefn(_(u"Unité"), 'left', 70, "nomUnite", typeDonnee="texte", isSpaceFilling=True),
             #ColumnDefn(_(u"Etat"), 'left', 50, "texteEtat", typeDonnee="texte"),
-            ColumnDefn(_(u"Détail"), 'left', 120, "texteDetail", typeDonnee="texte"),
-            ColumnDefn(_(u"Durée réelle"), 'center', 100, "duree_reelle", typeDonnee="texte", stringConverter=FormateDuree),
-            ColumnDefn(_(u"Durée retenue"), 'center', 100, "duree_arrondie", typeDonnee="texte", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Détail"), 'left', 100, "texteDetail", typeDonnee="texte"),
+            ColumnDefn(_(u"Durée réelle"), 'center', 90, "duree_reelle", typeDonnee="texte", stringConverter=FormateDuree),
+            ColumnDefn(_(u"Durée retenue"), 'center', 90, "duree_arrondie", typeDonnee="texte", stringConverter=FormateDuree),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -161,7 +166,8 @@ class ListView(FastObjectListView):
         
     def MAJ(self):
         self.SetObjects(self.donnees)
-        self._ResizeSpaceFillingColumns() 
+        self._ResizeSpaceFillingColumns()
+        self.MAJ_label_page()
 
     def SetDonnees(self, listeDonnees=[]):
         self.donnees = []
@@ -176,6 +182,19 @@ class ListView(FastObjectListView):
         for track in self.donnees :
             track.MAJ()
         self.RefreshObjects(self.donnees)
+        self.MAJ_label_page()
+
+    def MAJ_label_page(self):
+        """ Envoie un label de la page du notebook qui contient cette liste """
+        nbreConso = len(self.GetTracks())
+        if nbreConso == 0 :
+            label = _(u"Consommations")
+        else :
+            label = _(u"Consommations (%d)") % nbreConso
+        try :
+            self.GetGrandParent().GetParent().SetLabelPage(1, label)
+        except :
+            pass
 
     def GetTracks(self):
         return self.GetObjects()
@@ -288,6 +307,7 @@ class ListView(FastObjectListView):
         import UTILS_Export
         UTILS_Export.ExportExcel(self, titre=_(u"Liste des prévisions"), autoriseSelections=False)
 
+
     def Ajouter(self, event):
         import DLG_Saisie_contratpsu_conso
         dlg = DLG_Saisie_contratpsu_conso.Dialog(self, clsbase=self.clsbase)
@@ -297,6 +317,7 @@ class ListView(FastObjectListView):
             for dictConso in listeConso :
                 listeTracks.append(Track(self.clsbase, dictConso))
             self.AddObjects(listeTracks)
+            self.MAJ_label_page()
         dlg.Destroy()
         
     def Modifier(self, event):  
@@ -313,6 +334,7 @@ class ListView(FastObjectListView):
             track.dictValeurs = dlg.GetListeConso()[0]
             track.MAJ()
             self.RefreshObject(track)
+            self.MAJ_label_page()
         dlg.Destroy()
 
     def Supprimer(self, event):  
@@ -353,6 +375,7 @@ class ListView(FastObjectListView):
 
         # Suppression de la liste
         self.RemoveObjects(listeSuppressions)
+        self.MAJ_label_page()
 
     def CocheTout(self, event=None):
         if self.GetFilter() != None :
@@ -370,6 +393,147 @@ class ListView(FastObjectListView):
 
     def GetTracksCoches(self):
         return self.GetCheckedObjects()
+
+
+
+
+
+
+    def Importation_unites(self):
+        # Récupération des unités
+        DB = GestionDB.DB()
+        req = """SELECT IDunite, nom, abrege, type, heure_debut, heure_fin
+        FROM unites
+        WHERE IDactivite=%d
+        ORDER BY ordre;""" % self.clsbase.GetValeur("IDactivite")
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        dictUnites = {}
+        for IDunite, nom, abrege, type, heure_debut, heure_fin in listeDonnees :
+            dictUnites[IDunite] = {"nom":nom, "abrege":abrege, "type":type, "heure_debut":heure_debut, "heure_fin":heure_fin, "unites_incompatibles" : []}
+
+        # Récupère les incompatibilités entre unités
+        req = """SELECT IDunite_incompat, IDunite, IDunite_incompatible
+        FROM unites_incompat;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        for IDunite_incompat, IDunite, IDunite_incompatible in listeDonnees :
+            if dictUnites.has_key(IDunite) : dictUnites[IDunite]["unites_incompatibles"].append(IDunite_incompatible)
+            if dictUnites.has_key(IDunite_incompatible) : dictUnites[IDunite_incompatible]["unites_incompatibles"].append(IDunite)
+
+        return dictUnites
+
+    def GetOuverturesUnites(self):
+        DB = GestionDB.DB()
+        req = """SELECT IDouverture, IDunite, IDgroupe, date
+        FROM ouvertures
+        WHERE IDactivite=%d
+        ORDER BY date; """ % self.clsbase.GetValeur("IDactivite")
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        dictOuvertures = {}
+        for IDouverture, IDunite, IDgroupe, date in listeDonnees :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            dictOuvertures[(date, IDunite, IDgroupe)] = IDouverture
+        return dictOuvertures
+
+    def VerifieCompatibilitesUnites(self, IDunite1=None, IDunite2=None):
+        listeIncompatibilites = self.dictUnites[IDunite1]["unites_incompatibles"]
+        if IDunite2 in listeIncompatibilites :
+            return False
+        return True
+
+    def Generation(self, listeConso=[], IDconso=None):
+
+        # Vérification de la validité des dates
+        listeAnomalies = []
+        nbreConsoValides = 0
+        listeConsoFinale = []
+
+        for dictConso in listeConso :
+
+            index = 0
+            dateFr = UTILS_Dates.DateDDEnFr(dictConso["date"])
+            valide = True
+
+            # Recherche si pas d'incompatibilités avec les conso déjà saisies
+            for track in self.GetTracks() :
+                if dictConso["date"] == track.date :
+                    nomUnite1 = self.dictUnites[dictConso["IDunite"]]["nom"]
+                    nomUnite2 = self.dictUnites[track.IDunite]["nom"]
+
+                    if self.VerifieCompatibilitesUnites(track.IDunite, dictConso["IDunite"]) == False :
+                        listeAnomalies.append(_(u"%s : Unité %s incompatible avec unité %s déjà présente") % (dateFr, nomUnite1, nomUnite2))
+                        valide = False
+
+                    if dictConso["IDunite"] == track.IDunite :
+                        if self.dictUnites[dictConso["IDunite"]]["type"] == "Multihoraire" :
+                            if dictConso["heure_fin"] > track.heure_debut and dictConso["heure_debut"] < track.heure_fin :
+                                listeAnomalies.append(_(u"%s : L'unité multihoraires %s chevauche une consommation d'une unité identique") % (dateFr, nomUnite1))
+                                valide = False
+                        else :
+                            listeAnomalies.append(_(u"%s : Unité %s déjà présente") % (dateFr, nomUnite1))
+                            valide = False
+
+            # Vérifie si unité ouverte
+            IDgroupe = self.clsbase.GetValeur("IDgroupe")
+            if IDgroupe != None and self.dictOuvertures.has_key((dictConso["date"], dictConso["IDunite"], IDgroupe)) == False :
+                listeAnomalies.append(_(u"%s : Unité %s fermée") % (dateFr, self.dictUnites[dictConso["IDunite"]]["nom"]))
+                valide = False
+
+            # IDconso pour les modifications
+            if IDconso != None :
+                dictConso["IDconso"] = IDconso
+
+            # Insertion de la conso validée
+            if valide == True :
+                listeConsoFinale.append(dictConso)
+                nbreConsoValides += 1
+
+                index += 1
+
+        # Signalement des anomalies
+        if len(listeAnomalies) :
+            message1 = _(u"Les %d anomalies suivantes ont été trouvées.\n\nSouhaitez-vous tout de même générer les %d autres consommations ?") % (len(listeAnomalies), nbreConsoValides)
+            message2 = u"\n".join(listeAnomalies)
+            dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Génération"), msg2=message2, style = wx.ICON_EXCLAMATION | wx.YES|wx.CANCEL|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Oui"), wx.ID_CANCEL : _(u"Annuler")})
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
+        if nbreConsoValides == 0 :
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation à générer !"), _(u"Génération"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Demande de confirmation
+        if IDconso == None :
+            dlg = wx.MessageDialog(self, _(u"Confirmez-vous la génération de %d consommations ?") % nbreConsoValides, _(u"Génération"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
+        return listeConsoFinale
+
+    def GenerationSelonPlanning(self, listeConso=[]):
+        """ Génération des consommations selon le planning général """
+        # Recherche des conso à générer
+        listeConso = self.Generation(listeConso=listeConso)
+        if listeConso == False :
+            return
+
+        # Création des tracks
+        listeTracks = []
+        for dictConso in listeConso :
+            listeTracks.append(Track(self.clsbase, dictConso))
+        self.AddObjects(listeTracks)
+        self.MAJ_label_page()
+
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
