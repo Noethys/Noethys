@@ -129,11 +129,16 @@ class Analyse():
                 pourcentage = 0.0
             
             totalSolde += solde 
-            
+
+            if dictInfosCategories.has_key(IDcategorie) :
+                nomCategorie = dictInfosCategories[IDcategorie]["nom"]
+            else :
+                nomCategorie = _(u"Catégorie inconnue")
+
             listeIDcategories.append(IDcategorie)
             listeCategories.append({
                 "IDcategorie_budget" : IDcategorie_budget, "typeCategorie" : typeCategorie, 
-                "IDcategorie" : IDcategorie, "valeur" : valeur, "nomCategorie" : dictInfosCategories[IDcategorie]["nom"],
+                "IDcategorie" : IDcategorie, "valeur" : valeur, "nomCategorie" : nomCategorie,
                 "plafond" : plafond, "realise" : realise, "solde" : solde, "pourcentage" : pourcentage,
                 })
 
