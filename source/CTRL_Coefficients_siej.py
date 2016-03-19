@@ -39,8 +39,11 @@ class Track(object):
         self.ctrl_type = None
         self.ctrl_coeff  = None
         self.ctrl_arrondi  = None
-        self.ctrl_plafond  = None
-    
+        self.ctrl_duree_seuil  = None
+        self.ctrl_duree_plafond  = None
+        self.ctrl_heure_seuil  = None
+        self.ctrl_heure_plafond  = None
+
     def GetType(self):
         """ Retourne le type de calcul sélectionné """
         return self.ctrl_type.GetSelection() 
@@ -60,14 +63,25 @@ class Track(object):
     def GetArrondi(self):
         return self.ctrl_arrondi.GetValeur() 
 
-    def ValidationPlafond(self):
-        if self.ctrl_plafond.GetHeure() != None and self.ctrl_plafond.Validation() == False :
+    def GetDureePlafond(self):
+        if self.ctrl_duree_plafond.GetHeure() != None and self.ctrl_duree_plafond.Validation() == False :
             return False
-        else:
-            return True
+        return self.ctrl_duree_plafond.GetValeur()
 
-    def GetPlafond(self):
-        return self.ctrl_plafond.GetValeur() 
+    def GetDureeSeuil(self):
+        if self.ctrl_duree_seuil.GetHeure() != None and self.ctrl_duree_seuil.Validation() == False :
+            return False
+        return self.ctrl_duree_seuil.GetValeur()
+
+    def GetHeurePlafond(self):
+        if self.ctrl_heure_plafond.GetHeure() != None and self.ctrl_heure_plafond.Validation() == False :
+            return False
+        return self.ctrl_heure_plafond.GetValeur()
+
+    def GetHeureSeuil(self):
+        if self.ctrl_heure_seuil.GetHeure() != None and self.ctrl_heure_seuil.Validation() == False :
+            return False
+        return self.ctrl_heure_seuil.GetValeur()
 
 # --------------------------------------------------------------------------------------------------------------------------------
 
@@ -91,29 +105,57 @@ class CTRL_Type(wx.Choice):
         if self.GetSelection() == 0 :
             self.track.ctrl_coeff.Enable(True)
             self.track.ctrl_arrondi.Enable(False)
-            self.track.ctrl_plafond.Enable(False)
+            self.track.ctrl_duree_seuil.Enable(False)
+            self.track.ctrl_duree_plafond.Enable(False)
+            self.track.ctrl_heure_seuil.Enable(False)
+            self.track.ctrl_heure_plafond.Enable(False)
         elif self.GetSelection() == 1 :
             self.track.ctrl_coeff.Enable(False)
             self.track.ctrl_arrondi.Enable(True)
-            self.track.ctrl_plafond.Enable(True)
+            self.track.ctrl_duree_seuil.Enable(True)
+            self.track.ctrl_duree_plafond.Enable(True)
+            self.track.ctrl_heure_seuil.Enable(True)
+            self.track.ctrl_heure_plafond.Enable(True)
         else:
             self.track.ctrl_coeff.Enable(False)
             self.track.ctrl_arrondi.Enable(False)
-            self.track.ctrl_plafond.Enable(False)
-        
+            self.track.ctrl_duree_seuil.Enable(False)
+            self.track.ctrl_duree_plafond.Enable(False)
+            self.track.ctrl_heure_seuil.Enable(False)
+            self.track.ctrl_heure_plafond.Enable(False)
+
 # -------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Arrondi(wx.Choice):
     def __init__(self, parent, id=-1, item=None, track=None):
         """ Arrondi à appliquer. Ex : Au quart d'heures supérieur """
-        wx.Choice.__init__(self, parent, id=id, size=(85, -1)) 
+        wx.Choice.__init__(self, parent, id=id, size=(140, -1))
         self.parent = parent
         self.item = item
         self.track = track
-        self.listeLabels = [_(u"Aucun"), _(u"5 min. sup."), _(u"10 min. sup."), _(u"15 min. sup."), _(u"30 min. sup."), _(u"45 min. sup."), _(u"60 min. sup.")]
-        self.listeArrondis=[None, 5, 10, 15, 30, 45, 60]
+
+        self.listeValeurs = [
+            (_(u"Aucun"), None),
+            (_(u"Durée : 5 min. sup."), ("duree", 5)),
+            (_(u"Durée : 10 min. sup."), ("duree", 10)),
+            (_(u"Durée : 15 min. sup."), ("duree", 15)),
+            (_(u"Durée : 30 min. sup."), ("duree", 30)),
+            (_(u"Durée : 60 min. sup."), ("duree", 60)),
+            (_(u"Horaire : 5 min."), ("tranche_horaire", 5)),
+            (_(u"Horaire : 10 min."), ("tranche_horaire", 10)),
+            (_(u"Horaire : 15 min."), ("tranche_horaire", 15)),
+            (_(u"Horaire : 30 min."), ("tranche_horaire", 30)),
+            (_(u"Horaire : 60 min."), ("tranche_horaire", 60)),
+            ]
+
+        self.listeLabels = []
+        self.listeArrondis = []
+        for label, valeur in self.listeValeurs :
+            self.listeLabels.append(label)
+            self.listeArrondis.append(valeur)
+
         self.SetItems(self.listeLabels)
-        self.SetToolTipString(_(u"Sélectionnez un arrondi à appliquer à chaque consommation. Ex : Arrondir au quart d'heure supérieur."))
+        self.SetToolTipString(_(u"Sélectionnez un arrondi à appliquer à chaque consommation. \n\nExemples : \n\nDurée 15 min. sup. = Arrondit la durée de la consommation aux 15 minutes supérieures (Si durée = 1h20 alors la durée devient 1h30)\n\nHoraire 30 min. = Arrondit l'heure de début à la demi-heure inférieure et l'heure de fin à la demi-heure supérieure (Si consommation de 13h10 à 13h45 alors durée = 1h)"))
         # Defaut
         self.SetSelection(0)
     
@@ -164,15 +206,14 @@ class CTRL_Coeff(wx.TextCtrl):
                     
 # -------------------------------------------------------------------------------------------------------------------
 
-class CTRL_Plafond(CTRL_Saisie_heure.Heure):
-    def __init__(self, parent, id=-1, item=None, track=None):
-        """ Plafond à appliquer sur heures réelles """
-        CTRL_Saisie_heure.Heure.__init__(self, parent) 
+class CTRL_Heure(CTRL_Saisie_heure.Heure):
+    def __init__(self, parent, id=-1, item=None, track=None, tooltip=""):
+        CTRL_Saisie_heure.Heure.__init__(self, parent)
         self.parent = parent
-        self.SetSize((70, -1))
+        self.SetSize((80, -1))
         self.item = item
         self.track = track
-        self.SetToolTipString(_(u"Saisissez le nombre d'heures plafond"))
+        self.SetToolTipString(tooltip)
     
     def GetValeur(self):
         valeur = self.GetHeure() 
@@ -180,7 +221,6 @@ class CTRL_Plafond(CTRL_Saisie_heure.Heure):
             return valeur
         else:
             return None
-                    
 
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -199,8 +239,11 @@ class CTRL(HTL.HyperTreeList):
             ( _(u"Unité de consommation"), 225, wx.ALIGN_LEFT),
             ( _(u"Type de calcul"), 210, wx.ALIGN_LEFT),
             ( _(u"Coefficient"), 80, wx.ALIGN_LEFT),
-            ( _(u"Arrondi"), 92, wx.ALIGN_LEFT),
-            ( _(u"Plafond"), 80, wx.ALIGN_LEFT),
+            ( _(u"Arrondi"), 150, wx.ALIGN_LEFT),
+            ( _(u"Durée seuil"), 90, wx.ALIGN_LEFT),
+            ( _(u"Durée plafond"), 90, wx.ALIGN_LEFT),
+            ( _(u"Heure seuil"), 90, wx.ALIGN_LEFT),
+            ( _(u"Heure plafond"), 90, wx.ALIGN_LEFT),
             ]
         numColonne = 0
         for label, largeur, alignement in listeColonnes :
@@ -316,13 +359,34 @@ class CTRL(HTL.HyperTreeList):
                     if track.ctrl_type.GetSelection() == 0 :
                         ctrl_arrondi.Enable(False)
 
-                    # CTRL du plafond
-                    ctrl_plafond = CTRL_Plafond(self.GetMainWindow(), item=brancheUnite, track=track)
-                    self.SetItemWindow(brancheUnite, ctrl_plafond, 4)        
-                    track.ctrl_plafond = ctrl_plafond      
+                    # CTRL durée seuil
+                    ctrl_duree_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durée seuil pour chaque consommation : La durée de chaque consommation ne pourra être inférieure à cette valeur"))
+                    self.SetItemWindow(brancheUnite, ctrl_duree_seuil, 4)
+                    track.ctrl_duree_seuil = ctrl_duree_seuil
                     if track.ctrl_type.GetSelection() == 0 :
-                        ctrl_plafond.Enable(False)
-        
+                        ctrl_duree_seuil.Enable(False)
+
+                    # CTRL durée plafond
+                    ctrl_duree_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez la durée plafond pour chaque consommation : La durée de chaque consommation ne pourra être supérieure à cette valeur"))
+                    self.SetItemWindow(brancheUnite, ctrl_duree_plafond, 5)
+                    track.ctrl_duree_plafond = ctrl_duree_plafond
+                    if track.ctrl_type.GetSelection() == 0 :
+                        ctrl_duree_plafond.Enable(False)
+
+                    # CTRL heure seuil
+                    ctrl_heure_seuil = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure seuil pour chaque consommation : La durée sera calculée uniquement à partir de cette heure-là"))
+                    self.SetItemWindow(brancheUnite, ctrl_heure_seuil, 6)
+                    track.ctrl_heure_seuil = ctrl_heure_seuil
+                    if track.ctrl_type.GetSelection() == 0 :
+                        ctrl_heure_seuil.Enable(False)
+
+                    # CTRL heure plafond
+                    ctrl_heure_plafond = CTRL_Heure(self.GetMainWindow(), item=brancheUnite, track=track, tooltip=_(u"Saisissez une heure plafond pour chaque consommation : La durée sera calculée uniquement jusqu'à cette heure-là"))
+                    self.SetItemWindow(brancheUnite, ctrl_heure_plafond, 7)
+                    track.ctrl_heure_plafond = ctrl_heure_plafond
+                    if track.ctrl_type.GetSelection() == 0 :
+                        ctrl_heure_plafond.Enable(False)
+
         self.ExpandAllChildren(self.root)
         
         # Pour éviter le bus de positionnement des contrôles
@@ -363,25 +427,59 @@ class CTRL(HTL.HyperTreeList):
                         return False
                     coeff = track.GetCoeff() 
                     arrondi = None
-                    plafond = None
-                    
+                    duree_plafond = None
+                    duree_seuil = None
+                    heure_plafond = None
+                    heure_seuil = None
+
                 elif typeCalcul == 1 :
                     # heures réelles
-                    if track.ValidationPlafond() == False :
+                    if track.GetDureeSeuil() == False :
+                        dlg = wx.MessageDialog(self, _(u"Le seuil de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return False
+
+                    if track.GetDureePlafond() == False :
                         dlg = wx.MessageDialog(self, _(u"Le plafond de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
+
+                    if track.GetHeureSeuil() == False :
+                        dlg = wx.MessageDialog(self, _(u"L'heure seuil de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return False
+
+                    if track.GetHeurePlafond() == False :
+                        dlg = wx.MessageDialog(self, _(u"L'heure plafond de l'unité '%s' semble incorrecte !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return False
+
+                    if track.GetHeurePlafond() != None and track.GetHeureSeuil() != None and track.GetHeurePlafond() < track.GetHeureSeuil() :
+                        dlg = wx.MessageDialog(self, _(u"L'heure plafond de l'unité '%s' doit obligatoirement être supérieure à l'heure seuil !") % track.nomUnite, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                        dlg.ShowModal()
+                        dlg.Destroy()
+                        return False
+
                     coeff = None
                     arrondi = track.GetArrondi() 
-                    plafond = track.GetPlafond()
-                    
+                    duree_seuil = track.GetDureeSeuil()
+                    duree_plafond = track.GetDureePlafond()
+                    heure_seuil = track.GetHeureSeuil()
+                    heure_plafond = track.GetHeurePlafond()
+
                 else :
                     # Heures facturées
                     coeff = None
                     arrondi = None
-                    plafond = None
-                    
+                    duree_plafond = None
+                    duree_seuil = None
+                    heure_plafond = None
+                    heure_seuil = None
+
                 # Mémorisation des valeurs
                 dictValeurs = {
                     "IDunite" : track.IDunite,
@@ -391,7 +489,10 @@ class CTRL(HTL.HyperTreeList):
                     "typeCalcul" : typeCalcul,
                     "coeff" : coeff,
                     "arrondi" : arrondi,
-                    "plafond" : plafond,
+                    "duree_plafond" : duree_plafond,
+                    "duree_seuil" : duree_seuil,
+                    "heure_plafond" : heure_plafond,
+                    "heure_seuil" : heure_seuil,
                     }
                 dictDonnees[track.IDunite] = dictValeurs
         
