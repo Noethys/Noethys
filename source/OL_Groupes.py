@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Copyright:       (c) 2010-16 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -13,13 +13,10 @@ from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import GestionDB
-
+import DLG_Saisie_groupe
 
 import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-
-try: import psyco; psyco.full()
-except: pass
 
 
 
@@ -30,6 +27,7 @@ class Track(object):
         self.nom = donnees[2]
         self.ordre = donnees[3]
         self.abrege = donnees[4]
+        self.nbre_inscrits_max = donnees[5]
     
     
 class ListView(FastObjectListView):
@@ -58,7 +56,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT IDgroupe, IDactivite, nom, ordre, abrege
+        req = """SELECT IDgroupe, IDactivite, nom, ordre, abrege, nbre_inscrits_max
         FROM groupes 
         WHERE IDactivite=%d 
         ORDER BY ordre;""" % self.IDactivite
@@ -90,6 +88,7 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Ordre"), "left", 0, "ordre"),
             ColumnDefn(_(u"Nom"), 'left', 300, "nom", isSpaceFilling=True),
             ColumnDefn(_(u"Abrégé"), 'left', 160, "abrege"),
+            ColumnDefn(_(u"Nbre inscrits max."), 'left', 150, "nbre_inscrits_max"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -211,12 +210,13 @@ class ListView(FastObjectListView):
         else :
             ordre = 1
         # DLG Saisie
-        dlg = Saisie(self)
+        dlg = DLG_Saisie_groupe.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetNom()
             abrege = dlg.GetAbrege()
+            nbre_inscrits_max = dlg.GetNbreInscritsMax()
             DB = GestionDB.DB()
-            listeDonnees = [ ("IDactivite", self.IDactivite), ("nom", nom), ("ordre", ordre), ("abrege", abrege),]
+            listeDonnees = [ ("IDactivite", self.IDactivite), ("nom", nom), ("ordre", ordre), ("abrege", abrege), ("nbre_inscrits_max", nbre_inscrits_max)]
             IDgroupe = DB.ReqInsert("groupes", listeDonnees)
             DB.Close()
             self.MAJ(IDgroupe)
@@ -228,17 +228,20 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        IDgroupe = self.Selection()[0].IDgroupe
-        nom = self.Selection()[0].nom
-        abrege = self.Selection()[0].abrege
-        
+        track = self.Selection()[0]
+        IDgroupe = track.IDgroupe
+        nom = track.nom
+        abrege = track.abrege
+        nbre_inscrits_max = track.nbre_inscrits_max
+
         # DLG Saisie
-        dlg = Saisie(self, nom, abrege)
+        dlg = DLG_Saisie_groupe.Dialog(self, nom, abrege, nbre_inscrits_max)
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetNom()
             abrege = dlg.GetAbrege()
+            nbre_inscrits_max = dlg.GetNbreInscritsMax()
             DB = GestionDB.DB()
-            listeDonnees = [ ("IDactivite", self.IDactivite), ("nom", nom), ("abrege", abrege)]
+            listeDonnees = [ ("IDactivite", self.IDactivite), ("nom", nom), ("abrege", abrege), ("nbre_inscrits_max", nbre_inscrits_max)]
             DB.ReqMAJ("groupes", listeDonnees, "IDgroupe", IDgroupe)
             DB.Close()
             self.MAJ(IDgroupe)
@@ -411,88 +414,6 @@ class ListView(FastObjectListView):
         DB.ReqMAJ("groupes", [("ordre", ordre),], "IDgroupe", IDgroupe2)
         DB.Close()
         self.MAJ(IDgroupe)
-
-
-# -------------------------------------------------------------------------------------------------------------------------------------------
-
-class Saisie(wx.Dialog):
-    def __init__(self, parent, nom=None, abrege=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
-        self.parent = parent
-        
-        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
-        self.ctrl_nom = wx.TextCtrl(self, -1, "")
-        if nom != None :
-            self.ctrl_nom.SetValue(nom)
-            
-        self.label_abrege = wx.StaticText(self, -1, _(u"Abrégé :"))
-        self.ctrl_abrege = wx.TextCtrl(self, -1, "")
-        if abrege !=None :
-            self.ctrl_abrege.SetValue(abrege)
-            
-        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
-        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
-        
-        if nom == None :
-            self.SetTitle(_(u"Saisie d'un groupe"))
-        else:
-            self.SetTitle(_(u"Modification d'un groupe"))
-        self.SetMinSize((500, -1))
-        
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici l'intitulé du groupe (Ex : '3-6 ans', 'Grands'...)"))
-        self.ctrl_abrege.SetToolTipString(_(u"Saisissez ici le nom abrégé du groupe (Ex : '3-6', 'GRANDS'..."))
-
-        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-        grid_sizer_contenu.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_contenu.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
-        grid_sizer_contenu.Add(self.label_abrege, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_contenu.Add(self.ctrl_abrege, 0, 0, 0)
-        grid_sizer_contenu.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
-        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
-        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
-        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableCol(0)
-        self.Layout()
-        self.CenterOnScreen()
-        
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-    
-    def GetNom(self):
-        return self.ctrl_nom.GetValue()
-    
-    def GetAbrege(self):
-        return self.ctrl_abrege.GetValue()
-        
-    def OnBoutonOk(self, event):
-        nom = self.ctrl_nom.GetValue()
-        abrege = self.ctrl_abrege.GetValue()
-        if nom == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un nom de groupe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_nom.SetFocus()
-            return
-        if abrege == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de nom abrégé pour ce groupe ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-            reponse = dlg.ShowModal()
-            dlg.Destroy()
-            if reponse !=  wx.ID_YES :
-                return
-        self.EndModal(wx.ID_OK)
-
-    def OnBoutonAide(self, event): 
-        import UTILS_Aide
-        UTILS_Aide.Aide("Groupes")
 
 
 

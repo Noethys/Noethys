@@ -270,6 +270,7 @@ DB_DATA = {
                                     ("nom", "VARCHAR(200)", u"Nom du groupe"),
                                     ("abrege", "VARCHAR(100)", u"Nom abrégé du groupe"),
                                     ("ordre", "INTEGER", u"Ordre"),
+                                    ("nbre_inscrits_max", "INTEGER", u"Nombre d'inscrits max"),
                                     ], # Groupes
 
     "pieces_activites":[    ("IDpiece_activite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Pièce activité"),

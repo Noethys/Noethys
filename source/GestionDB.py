@@ -1815,12 +1815,13 @@ class DB:
 
         # =============================================================
 
-        # versionFiltre = (1, 1, 6, 5)
-        # if versionFichier < versionFiltre :
-        #     try :
-        #         self.AjoutChamp("contrats", "planning", "VARCHAR(900)")
-        #     except Exception, err :
-        #         return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+        versionFiltre = (1, 1, 6, 5)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("contrats", "planning", "VARCHAR(900)")
+                self.AjoutChamp("groupes", "nbre_inscrits_max", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
 
@@ -2123,7 +2124,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     db = DB(suffixe="DATA")
-    db.AjoutChamp("contrats", "planning", "VARCHAR(900)")
+    db.AjoutChamp("groupes", "nbre_inscrits_max", "INTEGER")
     db.Close()
 
     # Exportation d'une table dans la base DEFAUT
