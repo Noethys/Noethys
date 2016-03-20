@@ -397,10 +397,9 @@ class ListView(FastObjectListView):
             ville = dictAdresse["ville"]
         except :
             pass
-            
-        # Ouverture de la fenêtre d'inscription
+
         import DLG_Inscription
-        dlg = DLG_Inscription.Dialog(self, cp=cp, ville=ville)
+        dlg = DLG_Inscription.Dialog(self, mode="saisie", cp=cp, ville=ville)
         dlg.SetFamille(listeNoms, listeFamille, IDfamille, False)
         if dlg.ShowModal() == wx.ID_OK:
             IDfamille = dlg.GetIDfamille()
@@ -465,7 +464,8 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+        track = self.Selection()[0]
+
         # Recherche si l'individu est rattaché à d'autres familles
         listeNoms = []
         listeFamille = []
@@ -474,15 +474,11 @@ class ListView(FastObjectListView):
             listeNoms.append(dictFamille["nomsTitulaires"])
 
         import DLG_Inscription
-        IDinscription = self.Selection()[0].IDinscription
-        IDfamille = self.Selection()[0].IDfamille
-        dlg = DLG_Inscription.Dialog(self)
+        IDinscription = track.IDinscription
+        IDfamille = track.IDfamille
+        dlg = DLG_Inscription.Dialog(self, mode="modification")
         dlg.SetFamille(listeNoms, listeFamille, self.Selection()[0].IDfamille, True)
-        dlg.SetIDactivite(self.Selection()[0].IDactivite)
-        dlg.ctrl_activites.Enable(False)
-        dlg.SetIDgroupe(self.Selection()[0].IDgroupe)
-        dlg.SetIDcategorie(self.Selection()[0].IDcategorie_tarif)
-        dlg.SetParti(self.Selection()[0].parti)
+        dlg.SetDonnees(IDactivite=track.IDactivite, IDgroupe=track.IDgroupe, IDcategorie=track.IDcategorie_tarif, parti=track.parti)
         if dlg.ShowModal() == wx.ID_OK:
             IDactivite = dlg.GetIDactivite()
             IDgroupe = dlg.GetIDgroupe()
