@@ -667,6 +667,7 @@ class Page_Options(wx.Panel):
         self.checkbox_pieces_manquantes = wx.CheckBox(self, -1, _(u"Afficher les pièces manquantes"))
         self.checkbox_pieces_manquantes.SetValue(True)
         self.checkbox_tous_inscrits = wx.CheckBox(self, -1, _(u"Afficher tous les inscrits"))
+        self.checkbox_masquer_conso = wx.CheckBox(self, -1, _(u"Masquer les consommations"))
         self.checkbox_photos = wx.CheckBox(self, -1, _(u"Afficher les photos :"))
         self.checkbox_photos.SetValue(False)
         self.ctrl_taille_photos = wx.Choice(self, -1, choices=[_(u"Petite taille"), _(u"Moyenne taille"), _(u"Grande taille")])
@@ -686,13 +687,14 @@ class Page_Options(wx.Panel):
         self.checkbox_etiquettes.SetToolTipString(_(u"Cochez cette case pour afficher le détail des étiquettes pour chaque consommation"))
         self.checkbox_cotisations_manquantes.SetToolTipString(_(u"Cochez cette case pour afficher les cotisations manquantes"))
         self.checkbox_pieces_manquantes.SetToolTipString(_(u"Cochez cette case pour afficher les pièces manquantes"))
+        self.checkbox_masquer_conso.SetToolTipString(_(u"Cochez cette case pour masquer les consommations afin d'obtenir des cases vides"))
         self.checkbox_tous_inscrits.SetToolTipString(_(u"Cochez cette case pour inclure tous les inscrits dans la liste"))
         self.checkbox_photos.SetToolTipString(_(u"Cochez cette case pour afficher les photos des individus"))
         self.ctrl_nbre_lignes.SetToolTipString(_(u"Sélectionnez le nombre de lignes à afficher"))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
-        grid_sizer_base = wx.FlexGridSizer(rows=10, cols=1, vgap=8, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=11, cols=1, vgap=8, hgap=10)
         
         grid_sizer_options_grille = wx.FlexGridSizer(rows=8, cols=2, vgap=5, hgap=10)
         grid_sizer_options_grille.Add(self.label_modele, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -726,7 +728,8 @@ class Page_Options(wx.Panel):
         grid_sizer_base.Add(self.checkbox_cotisations_manquantes, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
         grid_sizer_base.Add(self.checkbox_pieces_manquantes, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
         grid_sizer_base.Add(self.checkbox_tous_inscrits, 0, wx.ALIGN_CENTER_VERTICAL, 0) 
-        
+        grid_sizer_base.Add(self.checkbox_masquer_conso, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
         grid_sizer_photos = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_photos.Add(self.checkbox_photos, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_photos.Add(self.ctrl_taille_photos, 0, 0, 0)
@@ -1853,7 +1856,10 @@ class Dialog(wx.Dialog):
                                                                     label += u"%s > %s" % (heure_debut, heure_fin)
                                                                 if typeUnite == "Quantite" :
                                                                      label = str(quantite)
-                                                
+
+                                                                if self.GetPage("options").checkbox_masquer_conso.GetValue() == True :
+                                                                    label = ""
+
                                                                 listeLabels.append(Paragraph(label, styleConso))
                                                 
                                                                 # Affichage de l'étiquette
@@ -1891,6 +1897,9 @@ class Dialog(wx.Dialog):
                                                                             label = str(quantite)
                                                                         else :
                                                                             label = u"X"
+
+                                                                        if self.GetPage("options").checkbox_masquer_conso.GetValue() == True :
+                                                                            label = ""
 
                                                                         listeLabels.append(Paragraph(label, styleConso))
                                                                 
@@ -2244,7 +2253,10 @@ class Dialog(wx.Dialog):
 
         param_tous_inscrits = UTILS_Config.GetParametre("impression_conso_journ_tous_inscrits", defaut=0)
         self.GetPage("options").checkbox_tous_inscrits.SetValue(param_tous_inscrits)
-        
+
+        param_masquer_conso = UTILS_Config.GetParametre("impression_conso_journ_masquer_conso", defaut=0)
+        self.GetPage("options").checkbox_masquer_conso.SetValue(param_masquer_conso)
+
         param_photos = UTILS_Config.GetParametre("impression_conso_journ_photos", defaut=0)
         self.GetPage("options").checkbox_photos.SetValue(param_photos)
         
@@ -2287,6 +2299,7 @@ class Dialog(wx.Dialog):
             UTILS_Config.SetParametre("impression_conso_journ_afficher_etiquettes", int(self.GetPage("options").checkbox_etiquettes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_cotisations", int(self.GetPage("options").checkbox_cotisations_manquantes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_tous_inscrits", int(self.GetPage("options").checkbox_tous_inscrits.GetValue()))
+            UTILS_Config.SetParametre("impression_conso_journ_masquer_conso", int(self.GetPage("options").checkbox_masquer_conso.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_pieces", int(self.GetPage("options").checkbox_pieces_manquantes.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_photos", int(self.GetPage("options").checkbox_photos.GetValue()))
             UTILS_Config.SetParametre("impression_conso_journ_taille_photos", int(self.GetPage("options").ctrl_taille_photos.GetSelection())) 
