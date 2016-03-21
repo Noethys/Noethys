@@ -29,7 +29,7 @@ class Dialog(wx.Dialog):
         # Options
         self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
         self.label_tri = wx.StaticText(self, wx.ID_ANY, _(u"Critère de tri :"))
-        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activité"), _(u"Nombre d'inscrits"), _(u"Nombre de places max"), _(u"Date de début d'activité"), _(u"Date de fin d'activité")])
+        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activité"), _(u"Date de début d'activité"), _(u"Date de fin d'activité")])
         self.ctrl_tri.SetSelection(0)
 
         self.label_sens = wx.StaticText(self, wx.ID_ANY, _(u"Sens de tri :"))
@@ -38,6 +38,9 @@ class Dialog(wx.Dialog):
 
         self.label_alerte = wx.StaticText(self, wx.ID_ANY, _(u"Seuil d'alerte :"))
         self.ctrl_alerte = wx.SpinCtrl(self, wx.ID_ANY, "", min=0, max=100)
+
+        self.label_ouvert = wx.StaticText(self, wx.ID_ANY, _(u"Ancienneté :"))
+        self.ctrl_ouvert = wx.CheckBox(self, -1, _(u"Masquer les activités obsolètes"))
         
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -59,6 +62,7 @@ class Dialog(wx.Dialog):
         self.ctrl_tri.SetToolTipString(_(u"Sélectionner un critère de tri"))
         self.ctrl_sens.SetToolTipString(_(u"Sélectionner un sens de tri"))
         self.ctrl_alerte.SetToolTipString(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur"))
+        self.ctrl_ouvert.SetToolTipString(_(u"Masquer les activités dont la date de fin de validité est supérieure à la date du jour"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
@@ -72,13 +76,15 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(box_activites, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
 
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
-        grid_sizer_options = wx.FlexGridSizer(3, 2, 10, 10)
+        grid_sizer_options = wx.FlexGridSizer(4, 2, 10, 10)
         grid_sizer_options.Add(self.label_tri, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_tri, 0, wx.EXPAND, 0)
         grid_sizer_options.Add(self.label_sens, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_sens, 0, wx.EXPAND, 0)
         grid_sizer_options.Add(self.label_alerte, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_alerte, 0, 0, 0)
+        grid_sizer_options.Add(self.label_ouvert, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_ouvert, 0, 0, 0)
         grid_sizer_options.AddGrowableCol(1)
         box_options.Add(grid_sizer_options, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_options, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
@@ -122,6 +128,7 @@ class Dialog(wx.Dialog):
         self.ctrl_tri.SetSelection(UTILS_Config.GetParametre("nbre_inscrits_parametre_tri", 3))
         self.ctrl_sens.SetSelection(UTILS_Config.GetParametre("nbre_inscrits_parametre_sens", 1))
         self.ctrl_alerte.SetValue(UTILS_Config.GetParametre("nbre_inscrits_parametre_alerte", 5))
+        self.ctrl_ouvert.SetValue(UTILS_Config.GetParametre("nbre_inscrits_parametre_ouvert", 1))
 
     def OnBoutonOk(self, event):  
         if self.ctrl_activites.Validation() == False :
@@ -144,7 +151,8 @@ class Dialog(wx.Dialog):
         UTILS_Config.SetParametre("nbre_inscrits_parametre_tri", self.ctrl_tri.GetSelection())
         UTILS_Config.SetParametre("nbre_inscrits_parametre_sens", self.ctrl_sens.GetSelection())
         UTILS_Config.SetParametre("nbre_inscrits_parametre_alerte", int(self.ctrl_alerte.GetValue()))
-        
+        UTILS_Config.SetParametre("nbre_inscrits_parametre_ouvert", int(self.ctrl_ouvert.GetValue()))
+
         self.EndModal(wx.ID_OK)
         
         

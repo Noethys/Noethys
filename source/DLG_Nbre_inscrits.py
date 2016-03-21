@@ -14,8 +14,10 @@ import wx
 import CTRL_Bouton_image
 import os
 import copy
+import datetime
 import GestionDB
 import UTILS_Config
+import UTILS_Interface
 
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC
@@ -37,9 +39,9 @@ class Renderer_gauge(object):
         self.parent = parent
         self.hauteurGauge = 18
         self.seuil_alerte = self.parent.seuil_alerte
-        self.nbrePlacesPrises = 0
-        self.nbrePlacesDispo = 0
-        self.nbrePlacesAttente = 0
+        self.nbre_inscrits = 0
+        self.nbre_inscrits_max = 0
+        self.mode = "activite"
 
     def DrawSubItem(self, dc, rect, line, highlighted, enabled):
         canvas = wx.EmptyBitmap(rect.width, rect.height)
@@ -47,28 +49,35 @@ class Renderer_gauge(object):
         mdc.SelectObject(canvas)
         
         # Dessin du fond
-        if highlighted:
-            mdc.SetBackground(wx.Brush(wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHT)))
+        # if highlighted:
+        #     mdc.SetBackground(wx.Brush(wx.SystemSettings_GetColour(wx.SYS_COLOUR_HIGHLIGHT)))
+        # else:
+        #     couleurFond = self.parent.couleurFond
+        #     mdc.SetBackground(wx.Brush(couleurFond))
+
+        if self.couleur_fond != None :
+            couleur_fond = self.couleur_fond
         else:
-            couleurFond = self.parent.couleurFond
-            mdc.SetBackground(wx.Brush(couleurFond))
+            couleur_fond = self.parent.couleurFond
+        mdc.SetBackground(wx.Brush(couleur_fond))
         mdc.Clear()
         
         # Dessin de la gauge
-        self.DrawGauge(mdc, 0, 0, rect.width, rect.height)
+        if self.nbre_inscrits_max > 0 :
+            self.DrawGauge(mdc, 0, 0, rect.width, rect.height)
         
         # Dessin du texte
         mdc.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-        if self.nbrePlacesPrises == 1 :
+        if self.nbre_inscrits == 1 :
             texte = _(u"1 inscrit")
         else :
-            texte = _(u"%d inscrits") % self.nbrePlacesPrises
-        if self.nbrePlacesAttente > 0 :
-            texte += _(u" + %d en attente") % self.nbrePlacesAttente
-        if self.nbrePlacesDispo > 0 :
-            texte += _(u" / %d places") % self.nbrePlacesDispo
-        else :
-            texte += _(u" / places illimitées")
+            texte = _(u"%d inscrits") % self.nbre_inscrits
+        #if self.nbrePlacesAttente > 0 :
+        #    texte += _(u" + %d en attente") % self.nbrePlacesAttente
+        if self.nbre_inscrits_max > 0 :
+            texte += _(u" / %d places") % self.nbre_inscrits_max
+        #else :
+        #    texte += _(u" / places illimitées")
         textWidth, dummy = mdc.GetTextExtent(texte)
         mdc.SetTextForeground(COULEUR_TEXTE)
         x = rect.width/2 - textWidth/2
@@ -95,18 +104,18 @@ class Renderer_gauge(object):
         dc.DrawRectangle(0, (h-self.hauteurGauge)/2 , w, self.hauteurGauge)
 
         # Gauge d'inscriptions
-        if self.nbrePlacesDispo != 0 :
-            largeurGauge = 1.0 * self.nbrePlacesPrises / self.nbrePlacesDispo * w
+        if self.nbre_inscrits_max != 0 :
+            largeurGauge = 1.0 * self.nbre_inscrits / self.nbre_inscrits_max * w
         else :
             largeurGauge = w
         if largeurGauge > w :
             largeurGauge = w
         
         etat = "disponible"
-        if self.nbrePlacesDispo == 0 :
+        if self.nbre_inscrits_max == 0 :
             couleur = COULEUR_DISPONIBLE
         else :
-            nbrePlacesRestantes = self.nbrePlacesDispo - self.nbrePlacesPrises
+            nbrePlacesRestantes = self.nbre_inscrits_max - self.nbre_inscrits
             if nbrePlacesRestantes > self.seuil_alerte : 
                 etat = "disponible"
                 couleur = COULEUR_DISPONIBLE
@@ -125,11 +134,12 @@ class Renderer_gauge(object):
             tailleImage = 16
             dc.DrawBitmap(wx.Bitmap("Images/16x16/Attention.png", wx.BITMAP_TYPE_ANY) , largeurGauge-tailleImage-2, (h-tailleImage)/2)
 
-    def SetValeurs(self, nbrePlacesPrises=0, nbrePlacesDispo=0, nbrePlacesAttente=0):
-        self.nbrePlacesPrises = nbrePlacesPrises
-        self.nbrePlacesDispo = nbrePlacesDispo
-        self.nbrePlacesAttente = nbrePlacesAttente
-        
+    def SetValeurs(self, mode="activite", couleur_fond=None, nbre_inscrits=0, nbre_inscrits_max=0):
+        self.mode = mode
+        self.couleur_fond = couleur_fond
+        self.nbre_inscrits = nbre_inscrits
+        self.nbre_inscrits_max = nbre_inscrits_max
+
         
         
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -139,6 +149,7 @@ class CTRL(ULC.UltimateListCtrl):
         ULC.UltimateListCtrl.__init__(self, parent, -1, agwStyle=style)
         self.parent = parent
         self.listeActivites = []
+        self.filtre = None
         
         self.couleurFond = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
         # self.couleurFond = wx.SystemSettings.GetColour(wx.SYS_COLOUR_FRAMEBK)
@@ -160,7 +171,7 @@ class CTRL(ULC.UltimateListCtrl):
 
     def MAJ(self, forcerActualisation=False):
         condition = ""
-        
+
         # Recherche des paramètres
         parametres = UTILS_Config.GetParametre("nbre_inscrits_parametre_activites", defaut=None)
         if parametres != None :
@@ -179,12 +190,8 @@ class CTRL(ULC.UltimateListCtrl):
         if tri == 0 :
             tri = "activites.nom"
         elif tri == 1 :
-            tri = "nbre_inscriptions"
-        elif tri == 2 :
-            tri = "activites.nbre_inscrits_max"
-        elif tri == 3 :
             tri = "activites.date_debut"
-        elif tri == 4 :
+        elif tri == 2 :
             tri = "activites.date_fin"
         else :
             tri = "activites.nom"
@@ -200,24 +207,65 @@ class CTRL(ULC.UltimateListCtrl):
         self.seuil_alerte = UTILS_Config.GetParametre("nbre_inscrits_parametre_alerte", 5)
 
         # Recherche des données
-        DB = GestionDB.DB() 
-        req = """SELECT activites.IDactivite, activites.nom, activites.abrege, activites.nbre_inscrits_max, COUNT(inscriptions.IDinscription) as nbre_inscriptions
-        FROM activites
-        LEFT JOIN inscriptions ON inscriptions.IDactivite = activites.IDactivite
-        LEFT JOIN groupes_activites ON groupes_activites.IDactivite = activites.IDactivite
+        DB = GestionDB.DB()
+
+        # Récupération des groupes
+        req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.nbre_inscrits_max,
+        COUNT(inscriptions.IDinscription) as nbre_inscriptions
+        FROM groupes
+        LEFT JOIN groupes_activites ON groupes_activites.IDactivite = groupes.IDactivite
+        LEFT JOIN inscriptions ON inscriptions.IDgroupe = groupes.IDgroupe
         %s
-        GROUP BY activites.IDactivite
-        ORDER BY %s %s
-        ;""" % (condition, tri, sens)
+        GROUP BY groupes.IDgroupe
+        ORDER BY groupes.ordre
+        ;""" % condition
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq() 
-        DB.Close()
-        listeActivitesTemp = []
-        for IDactivite, nom, abrege, nbre_inscrits_max, nbre_inscrits in listeDonnees :
+        listeGroupes = DB.ResultatReq()
+
+        dictGroupes = {}
+        for IDgroupe, IDactivite, nom, nbre_inscrits_max, nbre_inscrits in listeGroupes :
             if nbre_inscrits_max == None : nbre_inscrits_max = 0
             if nbre_inscrits == None : nbre_inscrits = 0
             if nom == None : nom = _(u"Sans nom !")
-            listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "nbrePlacesDispo" : nbre_inscrits_max, "nbrePlacesPrises" : nbre_inscrits, "nbrePlacesAttente" : 0}) # nbrePlacesAttente à coder plus tard
+
+            if dictGroupes.has_key(IDactivite) == False :
+                dictGroupes[IDactivite] = []
+            dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits})
+
+        # Récupération des activités
+        activite_ouverte = UTILS_Config.GetParametre("nbre_inscrits_parametre_ouvert", 1)
+        if activite_ouverte == 1 :
+            if condition == "" :
+                condition = "WHERE activites.date_fin>='%s'" % str(datetime.date.today())
+            else :
+                condition += " AND WHERE activites.date_fin>='%s'" % str(datetime.date.today())
+
+        req = """SELECT activites.IDactivite, activites.nom, activites.nbre_inscrits_max
+        FROM activites
+        LEFT JOIN groupes_activites ON groupes_activites.IDactivite = activites.IDactivite
+        %s
+        GROUP BY activites.IDactivite
+        ;""" % condition
+        DB.ExecuterReq(req)
+        listeActivites = DB.ResultatReq()
+
+        DB.Close()
+
+        listeActivitesTemp = []
+        for IDactivite, nom, nbre_inscrits_max in listeActivites :
+            if nbre_inscrits_max == None : nbre_inscrits_max = 0
+            if nom == None : nom = _(u"Sans nom !")
+
+            liste_groupes = []
+            if dictGroupes.has_key(IDactivite) :
+                liste_groupes = dictGroupes[IDactivite]
+            nbre_inscrits = 0
+            liste_infos = [nom,]
+            for dictGroupe in liste_groupes :
+                nbre_inscrits += dictGroupe["nbre_inscrits"]
+                liste_infos.append(dictGroupe["nom"])
+
+            listeActivitesTemp.append({"IDactivite" : IDactivite, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "liste_groupes" : liste_groupes, "infos" : " ".join(liste_infos)})
         
         # Pour éviter l'actualisation de l'affichage si aucune modification des données
         if self.listeActivites != listeActivitesTemp or forcerActualisation == True :
@@ -231,20 +279,45 @@ class CTRL(ULC.UltimateListCtrl):
         self.dictRenderers = {}
         index = 0
         for dictActivite in self.listeActivites :
-            
-            # Colonne Activité
-            label = u" " + dictActivite["nom"]
-            self.InsertStringItem(index, label)
-            self.SetItemData(index, dictActivite)       
-            
-            # Colonne Gauge
-            renderer = Renderer_gauge(self)
-            renderer.SetValeurs(nbrePlacesPrises=dictActivite["nbrePlacesPrises"], nbrePlacesDispo=dictActivite["nbrePlacesDispo"], nbrePlacesAttente=dictActivite["nbrePlacesAttente"])
-            self.dictRenderers[index] = renderer
-            self.SetItemCustomRenderer(index, 1, renderer)
-                
-            index += 1
-        
+
+            if self.filtre == None or (self.filtre.lower() in dictActivite["infos"].lower()) :
+
+                couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(214, 250, 199))
+
+                # Colonne Activité
+                label = u" " + dictActivite["nom"]
+                self.InsertStringItem(index, label)
+                self.SetItemData(index, dictActivite)
+                self.SetItemBackgroundColour(index, couleur_fond)
+
+                item = self.GetItem(index, 0)
+                font = wx.SystemSettings_GetFont(wx.SYS_DEFAULT_GUI_FONT)
+                font.SetWeight(wx.BOLD)
+                item.SetFont(font)
+                self.SetItem(item)
+
+                # Colonne Gauge
+                renderer = Renderer_gauge(self)
+                renderer.SetValeurs(mode="activite", couleur_fond=couleur_fond, nbre_inscrits=dictActivite["nbre_inscrits"], nbre_inscrits_max=dictActivite["nbre_inscrits_max"])
+                self.dictRenderers[index] = renderer
+                self.SetItemCustomRenderer(index, 1, renderer)
+
+                index += 1
+
+                for dictGroupe in dictActivite["liste_groupes"] :
+
+                    label = u" " + dictGroupe["nom"]
+                    self.InsertStringItem(index, label)
+                    self.SetItemData(index, dictGroupe)
+
+                    # Colonne Gauge
+                    renderer = Renderer_gauge(self)
+                    renderer.SetValeurs(mode="groupe", nbre_inscrits=dictGroupe["nbre_inscrits"], nbre_inscrits_max=dictGroupe["nbre_inscrits_max"])
+                    self.dictRenderers[index] = renderer
+                    self.SetItemCustomRenderer(index, 1, renderer)
+
+                    index += 1
+
         # Ajuste la taille des colonnes
         self.SetColumnWidth(0, wx.LIST_AUTOSIZE)
         self.SetColumnWidth(1, ULC.ULC_AUTOSIZE_FILL)
@@ -254,7 +327,11 @@ class CTRL(ULC.UltimateListCtrl):
             self.DoLayout() 
         except :
             pass
-            
+
+    def SetFiltre(self, filtre=""):
+        self.filtre = filtre
+        self.MAJ(forcerActualisation=True)
+
     def Tests(self):
         """ UNIQUEMENT POUR TESTS : Test de mise à jour des gauges sur 50 """
         import random
@@ -288,6 +365,9 @@ class Panel(wx.Panel):
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
 
+        # Barre de recherche
+        self.ctrl_recherche = BarreRecherche(self, ctrl=self.ctrl_inscriptions)
+
         self.__do_layout()
         
         # Binds
@@ -297,18 +377,19 @@ class Panel(wx.Panel):
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
-        grid_sizer.Add(self.ctrl_inscriptions, 1, wx.EXPAND|wx.TOP|wx.LEFT|wx.BOTTOM, 10)
+        grid_sizer.Add(self.ctrl_inscriptions, 1, wx.EXPAND|wx.TOP|wx.LEFT, 10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_parametres, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer.Add(grid_sizer_boutons, 1, wx.EXPAND|wx.TOP|wx.RIGHT|wx.BOTTOM, 10)
+        grid_sizer.Add(self.ctrl_recherche, 1, wx.EXPAND|wx.LEFT|wx.BOTTOM, 10)
         grid_sizer.AddGrowableRow(0)
         grid_sizer.AddGrowableCol(0)
         self.SetSizer(grid_sizer)
         self.Layout()
     
     def MAJ(self):
-        self.ctrl_inscriptions.MAJ() 
+        self.ctrl_inscriptions.MAJ()
 
     def OnBoutonParametres(self, event):
         import DLG_Parametres_nbre_inscrits
@@ -343,8 +424,56 @@ class Panel(wx.Panel):
     def Aide(self, event):
         import UTILS_Aide
         UTILS_Aide.Aide("Villesetcodespostaux")
-        
-        
+
+# ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+class BarreRecherche(wx.SearchCtrl):
+    def __init__(self, parent, ctrl=None):
+        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
+        self.parent = parent
+        self.ctrl = ctrl
+        self.rechercheEnCours = False
+
+        self.SetDescriptiveText(_(u"Rechercher..."))
+        self.ShowSearchButton(True)
+
+        self.SetCancelBitmap(wx.Bitmap("Images/16x16/Interdit.png", wx.BITMAP_TYPE_PNG))
+        self.SetSearchBitmap(wx.Bitmap("Images/16x16/Loupe.png", wx.BITMAP_TYPE_PNG))
+
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
+        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
+        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
+        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
+
+        # HACK pour avoir le EVT_CHAR
+        for child in self.GetChildren():
+            if isinstance(child, wx.TextCtrl):
+                child.Bind(wx.EVT_CHAR, self.OnKeyDown)
+                break
+
+    def OnKeyDown(self, event):
+        """ Efface tout si touche ECHAP """
+        keycode = event.GetKeyCode()
+        if keycode == wx.WXK_ESCAPE :
+            self.OnCancel(None)
+        event.Skip()
+
+    def OnSearch(self, evt):
+        self.Recherche()
+
+    def OnCancel(self, evt):
+        self.SetValue("")
+
+    def OnDoSearch(self, evt):
+        self.Recherche()
+
+    def Recherche(self):
+        filtre = self.GetValue()
+        self.ShowCancelButton(len(filtre))
+        self.ctrl.SetFiltre(filtre)
+        self.Refresh()
+
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
