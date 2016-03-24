@@ -19,6 +19,8 @@ import GestionDB
 import UTILS_Config
 import UTILS_Interface
 
+
+
 if wx.VERSION < (2, 9, 0, 0) :
     from Outils import ultimatelistctrl as ULC
 else :
@@ -154,20 +156,54 @@ class CTRL(ULC.UltimateListCtrl):
         self.couleurFond = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
         # self.couleurFond = wx.SystemSettings.GetColour(wx.SYS_COLOUR_FRAMEBK)
         self.SetBackgroundColour(self.couleurFond)
-        
+
         # Création des colonnes
         self.InsertColumn(0, _(u"Nom de l'activité"), width=200, format=ULC.ULC_FORMAT_RIGHT)
         self.InsertColumn(1, _(u"Nbre inscrits"), width=200, format=ULC.ULC_FORMAT_CENTRE)
         
-        # Binds        
+        # Binds
+        self.Bind(ULC.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_RIGHT_DOWN, self.OnContextMenu)
-        self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
+        #self.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDown)
 
     def OnLeftDown(self, event):
         pass
 
     def OnContextMenu(self, event):
-        pass
+        # Sélection de l'item cliqué
+        item, flags = self.HitTest((event.GetX(), event.GetY()))
+        if item != wx.NOT_FOUND and flags & wx.LIST_HITTEST_ONITEM:
+            self.Select(item)
+
+        # Création du menu contextuel
+        menuPop = wx.Menu()
+
+        # Item Actualiser
+        item = wx.MenuItem(menuPop, 10, _(u"Consulter les tarifs de l'activité"))
+        item.SetBitmap(wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OuvrirTarifs, id=10)
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
+    def OnItemActivated(self, event):
+        self.OuvrirTarifs()
+
+    def OuvrirTarifs(self, event=None):
+        index = self.GetFirstSelected()
+        if index == -1 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune activité dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        data = self.GetItemPyData(index)
+        IDactivite = data["IDactivite"]
+        import DLG_Liste_tarifs
+        dlg = DLG_Liste_tarifs.DLG_Tarifs(self, IDactivite=IDactivite)
+        dlg.ShowModal()
+        dlg.Destroy()
+
 
     def MAJ(self, forcerActualisation=False):
         condition = ""
@@ -230,7 +266,7 @@ class CTRL(ULC.UltimateListCtrl):
 
             if dictGroupes.has_key(IDactivite) == False :
                 dictGroupes[IDactivite] = []
-            dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits})
+            dictGroupes[IDactivite].append({"IDgroupe" : IDgroupe, "nom" : nom, "nbre_inscrits_max" : nbre_inscrits_max, "nbre_inscrits" : nbre_inscrits, "IDactivite" : IDactivite})
 
         # Récupération des activités
         activite_ouverte = UTILS_Config.GetParametre("nbre_inscrits_parametre_ouvert", 1)
@@ -287,7 +323,7 @@ class CTRL(ULC.UltimateListCtrl):
                 # Colonne Activité
                 label = u" " + dictActivite["nom"]
                 self.InsertStringItem(index, label)
-                self.SetItemData(index, dictActivite)
+                self.SetItemPyData(index, dictActivite)
                 self.SetItemBackgroundColour(index, couleur_fond)
 
                 item = self.GetItem(index, 0)
@@ -308,7 +344,7 @@ class CTRL(ULC.UltimateListCtrl):
 
                     label = u" " + dictGroupe["nom"]
                     self.InsertStringItem(index, label)
-                    self.SetItemData(index, dictGroupe)
+                    self.SetItemPyData(index, dictGroupe)
 
                     # Colonne Gauge
                     renderer = Renderer_gauge(self)
@@ -343,13 +379,11 @@ class CTRL(ULC.UltimateListCtrl):
             renderer.SetValeurs(nbrePlacesPrises=nbrePlacesPrises, nbrePlacesDispo=nbrePlacesDispo, nbrePlacesAttente=nbrePlacesAttente)
             self.RefreshItem(index)
     
-    
-    
 
-        
+
+
 
 # ----------------------------------------------------------------------------------------------------------------------        
-
 
 class Panel(wx.Panel):
     def __init__(self, parent):
@@ -364,6 +398,8 @@ class Panel(wx.Panel):
         self.bouton_parametres.SetToolTipString(_(u"Cliquez ici pour modifier les paramètres d'affichage"))
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Outils.png", wx.BITMAP_TYPE_PNG))
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
+        self.bouton_tarifs = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Euro.png", wx.BITMAP_TYPE_PNG))
+        self.bouton_tarifs.SetToolTipString(_(u"Cliquez ici pour consulter les tarifs de l'activité sélectionnée (ou double-cliquez sur une activité dans la liste)"))
 
         # Barre de recherche
         self.ctrl_recherche = BarreRecherche(self, ctrl=self.ctrl_inscriptions)
@@ -373,6 +409,7 @@ class Panel(wx.Panel):
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonTarifs, self.bouton_tarifs)
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -381,6 +418,8 @@ class Panel(wx.Panel):
         grid_sizer_boutons = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_parametres, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
+        grid_sizer_boutons.Add( (5, 5), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_tarifs, 0, 0, 0)
         grid_sizer.Add(grid_sizer_boutons, 1, wx.EXPAND|wx.TOP|wx.RIGHT|wx.BOTTOM, 10)
         grid_sizer.Add(self.ctrl_recherche, 1, wx.EXPAND|wx.LEFT|wx.BOTTOM, 10)
         grid_sizer.AddGrowableRow(0)
@@ -417,13 +456,18 @@ class Panel(wx.Panel):
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
-    
+
+    def OnBoutonTarifs(self, event=None):
+        self.ctrl_inscriptions.OuvrirTarifs()
+
     def Actualiser(self, event):
         self.ctrl_inscriptions.MAJ(forcerActualisation=True) 
     
     def Aide(self, event):
         import UTILS_Aide
-        UTILS_Aide.Aide("Villesetcodespostaux")
+        UTILS_Aide.Aide("")
+
+
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
