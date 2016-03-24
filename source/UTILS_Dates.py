@@ -235,4 +235,4 @@ def CalculerArrondi(arrondi_type="duree", arrondi_delta=15, heure_debut=None, he
 
 if __name__ == "__main__":
     # Tests
-    print CalculerArrondi(arrondi_type="tranche_horaire", arrondi_delta=15, heure_debut=datetime.time(9, 25), heure_fin=datetime.time(9, 45))
+    print CalculerArrondi(arrondi_type="tranche_horaire", arrondi_delta=15, heure_debut=datetime.time(9, 25), heure_fin=datetime.time(9, 35))

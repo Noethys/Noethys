@@ -286,10 +286,11 @@ class DB:
     def Close(self):
         try :
             self.connexion.close()
-            del DICT_CONNEXIONS[self.IDconnexion]
-            #print "Fermeture connexion ID =", self.IDconnexion
-        except :
+        except Exception, err :
             pass
+
+        if DICT_CONNEXIONS.has_key(self.IDconnexion) :
+            del DICT_CONNEXIONS[self.IDconnexion]
                 
     def Executermany(self, req="", listeDonnees=[], commit=True):
         """ Executemany pour local ou réseau """    

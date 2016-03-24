@@ -20,6 +20,7 @@ import OL_Vaccins
 import OL_Pb_sante
 
 import UTILS_Utilisateurs
+import UTILS_Interface
 
 
 class CTRL_Medecin(html.HtmlWindow):
@@ -136,8 +137,9 @@ class Panel(wx.Panel):
         self.staticbox_vaccinations_staticbox = wx.StaticBox(self, -1, _(u"Vaccinations"))
         self.ctrl_maladies = OL_Vaccins_obligatoires.ListView(self, IDindividu=IDindividu, id=-1, name="OL_maladies", style=wx.LC_NO_HEADER|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
         self.ctrl_maladies.SetMinSize((150, 20))
-        self.ctrl_maladies.SetBackgroundColour("#F0FBED")
-        
+        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+        self.ctrl_maladies.SetBackgroundColour(couleur_fond)
+
         self.ctrl_vaccins = OL_Vaccins.ListView(self, IDindividu=IDindividu, id=-1, name="OL_vaccins", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_vaccins.SetMinSize((150, 20))
         self.bouton_ajouter_vaccin = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))

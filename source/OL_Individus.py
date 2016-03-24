@@ -708,7 +708,7 @@ class BarreRecherche(wx.SearchCtrl):
             
     def OnCancel(self, evt):
         self.SetValue("")
-        self.Recherche(self.GetValue())
+        #self.Recherche(self.GetValue())
 
     def OnText(self, evt):
         txtSearch = self.GetValue()

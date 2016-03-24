@@ -15,6 +15,7 @@ import CTRL_Bouton_image
 import OL_Pieces
 import CTRL_Pieces_obligatoires
 import OL_Liste_cotisations
+import UTILS_Interface
 
 
 class Panel(wx.Panel):
@@ -27,7 +28,8 @@ class Panel(wx.Panel):
         # Pièces à fournir
         self.staticbox_pieces_obligatoires = wx.StaticBox(self, -1, _(u"Pièces à fournir"))
         self.ctrl_pieces_obligatoires = CTRL_Pieces_obligatoires.CTRL(self, IDindividu=IDindividu, dictFamillesRattachees=dictFamillesRattachees, largeurColonne=140)
-        self.ctrl_pieces_obligatoires.SetBackgroundColour("#F0FBED")
+        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+        self.ctrl_pieces_obligatoires.SetBackgroundColour(couleur_fond)
         self.ctrl_pieces_obligatoires.SetMinSize((150, 50))
         
         # Pièces fournies

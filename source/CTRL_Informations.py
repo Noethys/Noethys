@@ -19,6 +19,7 @@ from dateutil import relativedelta
 import GestionDB
 import DATA_Renseignements as Renseignements
 import UTILS_Utilisateurs
+import UTILS_Interface
 
 
 def DateEngEnDateDD(dateEng):
@@ -54,7 +55,8 @@ class CTRL(wx.TreeCtrl):
         import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
 
-        self.SetBackgroundColour("#F0FBED")
+        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+        self.SetBackgroundColour(couleur_fond)
         
         self.listePiecesObligatoires = []
         self.dictItems = {}

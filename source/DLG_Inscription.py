@@ -15,7 +15,7 @@ import CTRL_Bouton_image
 import datetime
 import CTRL_Bandeau
 import DLG_Inscription_activite
-
+import UTILS_Interface
 import GestionDB
 
 
@@ -127,7 +127,8 @@ class CTRL_Activite(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.BORDER_THEME|wx.TAB_TRAVERSAL)
         self.parent = parent
         self.IDactivite = None
-        self.SetBackgroundColour('White')
+        couleur_fond = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+        self.SetBackgroundColour(couleur_fond)
 
         self.ctrl_activite = wx.StaticText(self, -1, "")
         self.ctrl_activite.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.BOLD))

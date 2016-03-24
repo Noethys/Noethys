@@ -1,5 +1,14 @@
-Version 1.1.6.4 (21/02/2016) :
+Version 1.1.6.5 (24/03/2016) :
 
+- Ajout de la liste des tarifs dans le menu Facturation
+- Ajout de la limitation du nombre d'inscrits sur les groupes
+- Ajout de l'option Masquer les conso dans l'édition de la liste des conso
+- Ajout de la mémorisation des plannings dans les contrats PSU
+- Amélioration de la saisie d'une inscription dans la fiche individuelle
+- Amélioration de la liste des inscriptions du cadre Effectifs de la page d'accueil
+- Etat global : Ajout des regroupements par âge
+- Etat global : Ajout des arrondis par tranche horaire
+- Etat global : Ajout des heures seuil et plafond
 - Ajout de la prise en charge des adresses d'expédition authentifiées sans starttls [mpasteur]
 - Correction de divers bugs
 

@@ -248,8 +248,8 @@ class Panel(wx.Panel):
         self.ctrl_validite_du.SetToolTipString(_(u"Saisissez une date de debut de validité"))
         self.ctrl_validite_au.SetToolTipString(_(u"Saisissez ici une date de fin de validité"))
         self.ctrl_public.SetToolTipString(_(u"Cochez les publics autorisés à être inscrit à cette activité"))
-        self.check_limitation_inscrits.SetToolTipString(_(u"Cochez cette case pour définir un nombre maximal d'inscrits pour cette activité"))
-        self.ctrl_limitation_inscrits.SetToolTipString(_(u"Saisissez le nombre maximal d'inscrits de cette activité"))
+        self.check_limitation_inscrits.SetToolTipString(_(u"Cochez cette case pour définir un nombre maximal d'inscrits pour cette activité (Utile uniquement pour les activités à durée limitée)"))
+        self.ctrl_limitation_inscrits.SetToolTipString(_(u"Saisissez le nombre maximal d'inscrits de cette activité (Utile uniquement pour les activités à durée limitée)"))
         self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des écritures comptables vers des logiciels de compta"))
 
     def __do_layout(self):
