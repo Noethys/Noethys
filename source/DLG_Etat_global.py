@@ -920,12 +920,13 @@ class Dialog(wx.Dialog):
                         regroup = 0
                     else :
                         for key, dictTemp in dictResultats.iteritems() :
-                            if dictTemp["min"] == None and age < dictTemp["max"] :
-                                regroup = key
-                            if dictTemp["max"] == None and age >= dictTemp["min"] :
-                                regroup = key
-                            if dictTemp["min"] != None and dictTemp["max"] != None and age >= dictTemp["min"] and age < dictTemp["max"] :
-                                regroup = key
+                            if dictTemp.has_key("min") :
+                                if dictTemp["min"] == None and age < dictTemp["max"] :
+                                    regroup = key
+                                if dictTemp["max"] == None and age >= dictTemp["min"] :
+                                    regroup = key
+                                if dictTemp["min"] != None and dictTemp["max"] != None and age >= dictTemp["min"] and age < dictTemp["max"] :
+                                    regroup = key
 
                     if age == None :
                         regroup = None
