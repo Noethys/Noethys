@@ -394,7 +394,7 @@ class CTRL(ULC.UltimateListCtrl):
             return 
         
         # Demande le nouveau nom du fichier
-        dlg = wx.TextEntryDialog(self, _(u"Saisissez un nouveau nom pour le fichier '%s' :") % titre, _(u"Modifier le nom"), titre)
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez un nouveau nom pour le fichier '%s' :") % titre.decode("iso-8859-15"), _(u"Modifier le nom"), titre)
         if dlg.ShowModal() == wx.ID_OK:
             nouveauTitre = dlg.GetValue()
             dlg.Destroy()
