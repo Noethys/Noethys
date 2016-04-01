@@ -360,7 +360,7 @@ class CTRL(ULC.UltimateListCtrl):
         
         # Actualiser l'affichage pour éviter bug de positionnement
         try :
-            self.DoLayout() 
+            self.DoLayout()
         except :
             pass
 

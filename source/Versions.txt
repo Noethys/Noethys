@@ -1,4 +1,9 @@
-Version 1.1.6.5 (24/03/2016) :
+Version 1.1.6.6 (02/04/2016) :
+
+- Ajout des types de quotients
+- Ajout de la tarification selon le type de quotient
+
+Version 1.1.6.5 (01/04/2016) :
 
 - Ajout de la liste des tarifs dans le menu Facturation
 - Ajout de la limitation du nombre d'inscrits sur les groupes
