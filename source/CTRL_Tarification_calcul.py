@@ -372,7 +372,7 @@ class Tableau(gridlib.Grid):
         
         # Importation des questions des questionnaires
         self.listeQuestions = self.GetQuestionnaires() 
-        
+
         # Binds
         self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
         self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
@@ -413,7 +413,7 @@ class Tableau(gridlib.Grid):
         for dictQuestion in Questionnaires.GetQuestions(None) :
             listeQuestions.append(dictQuestion)
         return listeQuestions
-        
+
     def RechercherChamp(self, codeChamp):
         index = 0
         for dictColonne in LISTE_COLONNES :
@@ -549,7 +549,7 @@ class Tableau(gridlib.Grid):
             if editeur.startswith("decimal") and valeur != "" : valeur = float(valeur) 
             if editeur == "entier" and valeur != "" : valeur = int(valeur) 
             if editeur == "questionnaire" and valeur != "" : valeur = int(valeur) 
- 
+
        # Mémorisation
         if IDligne != None : self.dictDonnees[self.code][numLigne]["IDligne"] = IDligne
         if valeur == None or valeur == "" :
@@ -735,6 +735,53 @@ class Tableau(gridlib.Grid):
 
 # -----------------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Type_quotient(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1, size=(150, -1))
+        self.parent = parent
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 0 :
+            self.Enable(False)
+        else :
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        db = GestionDB.DB()
+        req = """SELECT IDtype_quotient, nom
+        FROM types_quotients
+        ORDER BY nom;"""
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        listeItems = [_(u"Indifférent")]
+        self.dictDonnees = {0 : {"ID" : None, "nom" : _(u"Indifférent")}}
+        index = 1
+        for IDtype_quotient, nom in listeDonnees :
+            self.dictDonnees[index] = { "ID" : IDtype_quotient, "nom " : nom}
+            listeItems.append(nom)
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=0):
+        if ID == None :
+            self.SetSelection(0)
+        for index, values in self.dictDonnees.iteritems():
+            if values["ID"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0 : return None
+        return self.dictDonnees[index]["ID"]
+
+
+
+# -----------------------------------------------------------------------------------------------------------------------------
 
 class Panel(wx.Panel):
     def __init__(self, parent, IDactivite=None, IDtarif=None):
@@ -753,6 +800,7 @@ class Panel(wx.Panel):
                 label += u"*"
             listeLabels.append(label)
         self.ctrl_methode = wx.Choice(self, -1, choices=listeLabels)
+
         self.label_parametres = wx.StaticText(self, -1, _(u"Paramètres :"))
         self.ctrl_parametres = Tableau(self)
         
@@ -761,7 +809,10 @@ class Panel(wx.Panel):
         
         self.label_info = wx.StaticText(self, -1, _(u"L'astérisque (*) indique les méthodes de calcul compatibles avec les tarifs de type forfait."))
         self.label_info.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL, False))
-        
+
+        self.label_type_quotient = wx.StaticText(self, -1, _(u"Type de QF :"))
+        self.ctrl_type_quotient = CTRL_Type_quotient(self)
+
         self.__set_properties()
         self.__do_layout()
 
@@ -775,11 +826,12 @@ class Panel(wx.Panel):
         self.ctrl_methode.SetToolTipString(_(u"Sélectionnez une méthode de calcul dans la liste"))
         self.bouton_ajouter_ligne.SetToolTipString(_(u"Cliquez ici pour ajouter une ligne dans le tableau"))
         self.bouton_supprimer_ligne.SetToolTipString(_(u"Cliquez ici pour supprimer la dernière ligne du tableau"))
+        self.ctrl_type_quotient.SetToolTipString(_(u"[OPTIONNEL] Sélectionnez ici le type de QF que vous souhaitez utiliser dans ce tarif. Indifférent par défaut."))
         self.ctrl_parametres.SetMinSize((100, 50))
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         
         grid_sizer_contenu.Add(self.label_methode, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_contenu.Add(self.ctrl_methode, 0, wx.EXPAND, 0)
@@ -789,7 +841,6 @@ class Panel(wx.Panel):
         grid_sizer_parametres.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
         
         grid_sizer_boutons_parametres = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
-##        grid_sizer_boutons_parametres.Add((10, 26), 0, 0, 0)
         grid_sizer_boutons_parametres.Add(self.bouton_ajouter_ligne, 0, 0, 0)
         grid_sizer_boutons_parametres.Add(self.bouton_supprimer_ligne, 0, 0, 0)
         grid_sizer_parametres.Add(grid_sizer_boutons_parametres, 1, wx.EXPAND, 0)
@@ -799,7 +850,10 @@ class Panel(wx.Panel):
         
         grid_sizer_contenu.Add( (5, 5), 0, 0, 0)
         grid_sizer_contenu.Add(self.label_info, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        
+
+        grid_sizer_contenu.Add(self.label_type_quotient, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_contenu.Add(self.ctrl_type_quotient, 0, wx.EXPAND, 0)
+
         grid_sizer_contenu.AddGrowableRow(1)
         grid_sizer_contenu.AddGrowableCol(1)
 
@@ -828,13 +882,19 @@ class Panel(wx.Panel):
         if indexSelection == -1 : return None
         code = LISTE_METHODES[indexSelection]["code"]
         return code
-    
+
+    def GetTypeQuotient(self):
+        return self.ctrl_type_quotient.GetID()
+
+    def SetTypeQuotient(self, IDtype_quotient=None):
+        self.ctrl_type_quotient.SetID(IDtype_quotient)
+
     def GetTarifsCompatibles(self):
         indexSelection = self.ctrl_methode.GetSelection()
         if indexSelection == -1 : return None
         tarifs_compatibles = LISTE_METHODES[indexSelection]["tarifs_compatibles"]
         return tarifs_compatibles
-        
+
     def OnBoutonAjouter(self, event): 
         if self.ctrl_methode.GetSelection() == -1 :
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une méthode de calcul !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)

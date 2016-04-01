@@ -19,6 +19,53 @@ import GestionDB
 
 
 
+class CTRL_Type_quotient(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1, size=(150, -1))
+        self.parent = parent
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 0 :
+            self.Enable(False)
+        else :
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        db = GestionDB.DB()
+        req = """SELECT IDtype_quotient, nom
+        FROM types_quotients
+        ORDER BY nom;"""
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        listeItems = []
+        self.dictDonnees = {}
+        index = 0
+        for IDtype_quotient, nom in listeDonnees :
+            self.dictDonnees[index] = { "ID" : IDtype_quotient, "nom " : nom}
+            listeItems.append(nom)
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=0):
+        if ID == None :
+            self.SetSelection(0)
+        for index, values in self.dictDonnees.iteritems():
+            if values["ID"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]["ID"]
+
+
+# -----------------------------------------------------------------------------------------------------------------------
+
 class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
@@ -33,6 +80,12 @@ class Dialog(wx.Dialog):
         
         # Paramètres
         self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres"))
+
+        self.label_type_quotient = wx.StaticText(self, -1, _(u"Type de quotient :"))
+        self.ctrl_type_quotient = CTRL_Type_quotient(self)
+        self.ctrl_type_quotient.SetMinSize((140, -1))
+        self.bouton_types_quotients = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
+
         self.label_quotient = wx.StaticText(self, -1, _(u"Quotient familial :"))
         self.ctrl_quotient = wx.TextCtrl(self, -1, u"")
 
@@ -50,12 +103,15 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonTypesQuotients, self.bouton_types_quotients)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_type_quotient.SetToolTipString(_(u"Sélectionnez un type de quotient"))
+        self.bouton_types_quotients.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des types de quotients"))
         self.ctrl_quotient.SetToolTipString(_(u"Saisissez ici le quotient familial"))
         self.ctrl_revenu.SetToolTipString(_(u"Saisissez ici le revenu"))
         self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient/revenu"))
@@ -77,14 +133,23 @@ class Dialog(wx.Dialog):
         staticbox_dates.Add(grid_sizer_dates, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_dates, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
 
-        grid_sizer_parametres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
+        grid_sizer_parametres = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+
+        grid_sizer_parametres.Add(self.label_type_quotient, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_type_quotient = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_type_quotient.Add(self.ctrl_type_quotient, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_type_quotient.Add(self.bouton_types_quotients, 0, 0, 0)
+        grid_sizer_type_quotient.AddGrowableCol(0)
+        grid_sizer_parametres.Add(grid_sizer_type_quotient, 1, wx.ALL|wx.EXPAND, 0)
+
         grid_sizer_parametres.Add(self.label_quotient, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_quotient, 0, 0, 0)
         grid_sizer_parametres.Add(self.label_revenu, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_revenu, 0, 0, 0)
         grid_sizer_parametres.Add(self.label_observations, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_observations, 0, wx.EXPAND, 0)
-        grid_sizer_parametres.AddGrowableRow(1)
+        grid_sizer_parametres.AddGrowableRow(3)
         grid_sizer_parametres.AddGrowableCol(1)
         staticbox_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
 
@@ -100,9 +165,19 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
+        self.SetMinSize((self.GetSize()))
         self.Layout()
         self.CenterOnScreen() 
-    
+
+    def OnBoutonTypesQuotients(self, event):
+        IDtype_quotient = self.ctrl_type_quotient.GetID()
+        import DLG_Types_quotients
+        dlg = DLG_Types_quotients.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_type_quotient.MAJ()
+        self.ctrl_type_quotient.SetID(IDtype_quotient)
+
     def OnBoutonAide(self, event): 
         import UTILS_Aide
         UTILS_Aide.Aide("Quotientsfamiliaux")
@@ -112,7 +187,10 @@ class Dialog(wx.Dialog):
 
     def SetDateFin(self, date=None):
         self.ctrl_date_fin.SetDate(date)
-    
+
+    def SetTypeQuotient(self, IDtype_quotient=None):
+        self.ctrl_type_quotient.SetID(IDtype_quotient)
+
     def SetQuotient(self, quotient=None):
         if quotient != None :
             self.ctrl_quotient.SetValue(str(quotient))
@@ -130,6 +208,9 @@ class Dialog(wx.Dialog):
 
     def GetDateFin(self):
         return self.ctrl_date_fin.GetDate() 
+
+    def GetTypeQuotient(self):
+        return self.ctrl_type_quotient.GetID()
 
     def GetQuotient(self):
         try :

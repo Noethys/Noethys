@@ -1826,6 +1826,16 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 6, 6)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("types_quotients") == False : self.CreationTable("types_quotients", Tables.DB_DATA)
+                self.AjoutChamp("quotients", "IDtype_quotient", "INTEGER")
+                self.AjoutChamp("tarifs", "IDtype_quotient", "INTEGER")
+                import UTILS_Procedures
+                UTILS_Procedures.A8971()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2075,12 +2085,12 @@ def AfficheConnexionOuvertes():
 if __name__ == "__main__":
                 
     # Création d'une table données
-##    db = DB(suffixe="DATA")
-##    listeTables = ("etiquettes",)
-##    for nomTable in listeTables :
-##        db.CreationTable(nomTable, Tables.DB_DATA)
-##    db.Close()
-##    print "creation tables ok."                
+    # db = DB(suffixe="DATA")
+    # listeTables = ("types_quotients",)
+    # for nomTable in listeTables :
+    #     db.CreationTable(nomTable, Tables.DB_DATA)
+    # db.Close()
+    # print "creation tables ok."
     
     # Création des tables COMPTA
 ##    db = DB(suffixe="DATA")
@@ -2124,14 +2134,14 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    db = DB(suffixe="DATA")
-    db.AjoutChamp("groupes", "nbre_inscrits_max", "INTEGER")
-    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.AjoutChamp("tarifs", "IDtype_quotient", "INTEGER")
+    # db.Close()
 
     # Exportation d'une table dans la base DEFAUT
-##    db = DB(suffixe="DATA")
-##    db.Exportation_vers_base_defaut(nomTable="compta_comptes_comptables")
-##    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.Exportation_vers_base_defaut(nomTable="types_quotients")
+    # db.Close()
     
     # Réparation d'une table
 ##    db = DB(suffixe="DATA")

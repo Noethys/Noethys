@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Copyright:       (c) 2010-16 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -51,6 +51,8 @@ class Track(object):
         self.quotient = donnees[4]
         self.observations = donnees[5]
         self.revenu = donnees[6]
+        self.IDtype_quotient = donnees[7]
+        self.nom_type_quotient = donnees[8]
         
         date_jour = datetime.date.today()
         self.nbreJoursRestants = (self.date_fin - date_jour).days
@@ -92,8 +94,10 @@ class ListView(FastObjectListView):
         listeID = None
         db = GestionDB.DB()
         req = """
-        SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu
+        SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu, quotients.IDtype_quotient,
+        types_quotients.nom
         FROM quotients
+        LEFT JOIN types_quotients ON types_quotients.IDtype_quotient = quotients.IDtype_quotient
         WHERE IDfamille=%d
         ORDER BY date_debut
         """ % self.IDfamille
@@ -143,6 +147,7 @@ class ListView(FastObjectListView):
             ColumnDefn(u"", "left", 22, "IDquotient", typeDonnee="entier", imageGetter=GetImage),
             ColumnDefn(_(u"Date de début"), 'left', 165, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             ColumnDefn(_(u"Date de fin"), 'left', 165, "date_fin", typeDonnee="date", stringConverter=FormateDate),
+            ColumnDefn(_(u"Type de quotient"), 'left', 120, "nom_type_quotient", typeDonnee="texte"),
             ColumnDefn(_(u"Quotient familial"), 'center', 110, "quotient", typeDonnee="entier"),
             ColumnDefn(_(u"Revenu"), 'center', 100, "revenu", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Observations"), 'left', 260, "observations", typeDonnee="texte"),
@@ -248,6 +253,7 @@ class ListView(FastObjectListView):
             date_fin = dlg.GetDateFin()
             quotient = dlg.GetQuotient()
             revenu = dlg.GetRevenu()
+            IDtype_quotient = dlg.GetTypeQuotient()
             observations = dlg.GetObservations()
             DB = GestionDB.DB()
             listeDonnees = [
@@ -257,6 +263,7 @@ class ListView(FastObjectListView):
                 ("quotient", quotient),
                 ("revenu", revenu),
                 ("observations", observations),
+                ("IDtype_quotient", IDtype_quotient),
                 ]
             IDquotient = DB.ReqInsert("quotients", listeDonnees)
             DB.Close()
@@ -277,11 +284,13 @@ class ListView(FastObjectListView):
         quotient = self.Selection()[0].quotient
         revenu = self.Selection()[0].revenu
         observations = self.Selection()[0].observations
+        IDtype_quotient = self.Selection()[0].IDtype_quotient
         dlg.SetDateDebut(date_debut)
         dlg.SetDateFin(date_fin)
         dlg.SetQuotient(quotient)
         dlg.SetRevenu(revenu)
         dlg.SetObservations(observations)
+        dlg.SetTypeQuotient(IDtype_quotient)
         dlg.SetTitle(_(u"Modification d'un quotient familial/revenu"))
         if dlg.ShowModal() == wx.ID_OK:
             date_debut = dlg.GetDateDebut()
@@ -289,6 +298,7 @@ class ListView(FastObjectListView):
             quotient = dlg.GetQuotient()
             revenu = dlg.GetRevenu()
             observations = dlg.GetObservations()
+            IDtype_quotient = dlg.GetTypeQuotient()
             DB = GestionDB.DB()
             listeDonnees = [
                 ("date_debut", date_debut ),
@@ -296,6 +306,7 @@ class ListView(FastObjectListView):
                 ("quotient", quotient),
                 ("revenu", revenu),
                 ("observations", observations),
+                ("IDtype_quotient", IDtype_quotient),
                 ]
             DB.ReqMAJ("quotients", listeDonnees, "IDquotient", IDquotient)
             DB.Close()

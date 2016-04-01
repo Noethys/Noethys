@@ -19,6 +19,7 @@ TABLES_IMPORTATION_OPTIONNELLES = [
         [u"Modèles de documents", ("documents_modeles", "documents_objets"), True],
         [u"Niveaux scolaires", ("niveaux_scolaires",), True],
         [u"Comptes comptables", ("compta_comptes_comptables",), True],
+        [u"Types de quotients", ("types_quotients",), True],
         ] # [Nom Categorie, (liste des tables...,), Selectionné]
 
 TABLES_IMPORTATION_OBLIGATOIRES = []
@@ -414,6 +415,7 @@ DB_DATA = {
                                     ("date_facturation", "VARCHAR(450)", u"Date de facturation de la prestation"),
                                     ("etiquettes", "VARCHAR(450)", u"Etiquettes rattachées à ce tarif"),
                                     ("etats", "VARCHAR(150)", u"Etats de consommations rattachés à ce tarif"),
+                                    ("IDtype_quotient", "INTEGER", u"ID du type de quotient"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),
@@ -619,6 +621,7 @@ DB_DATA = {
                                     ("quotient", "INTEGER", u"Quotient familial"),
                                     ("observations", "VARCHAR(500)", u"Observations"),
                                     ("revenu", "FLOAT", u"Montant du revenu"),
+                                    ("IDtype_quotient", "INTEGER", u"Type de quotient"),
                                     ], # Quotients familiaux
 
     "caisses":[                ("IDcaisse", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Caisse"),
@@ -1473,6 +1476,13 @@ DB_DATA = {
                                     ("tarif_base", "FLOAT", u"Montant du tarif de base"),
                                     ("tarif_depassement", "FLOAT", u"Montant du tarif de dépassement"),
                                     ], # Tarifs de contrats
+
+    "types_quotients":              [("IDtype_quotient", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Type quotient"),
+                                    ("nom", "VARCHAR(255)", u"Nom du type de quotient"),
+                                    ], # Types de quotients
+
+
+
 
 
 

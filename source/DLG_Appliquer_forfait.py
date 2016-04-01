@@ -136,14 +136,14 @@ class Forfaits():
         req = """SELECT 
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         forfait_saisie_manuelle, forfait_saisie_auto, forfait_suppression_auto,
-        methode, categories_tarifs, groupes, options, date_facturation
+        methode, categories_tarifs, groupes, options, date_facturation, IDtype_quotient
         FROM tarifs
         LEFT JOIN noms_tarifs ON noms_tarifs.IDnom_tarif = tarifs.IDnom_tarif
         %s
         ORDER BY date_debut;""" % condition
         DB.ExecuterReq(req)
         listeTarifs = DB.ResultatReq()      
-        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, forfait_saisie_manuelle, forfait_saisie_auto, forfait_suppression_auto, methode, categories_tarifs, groupes, options, date_facturation in listeTarifs :
+        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, forfait_saisie_manuelle, forfait_saisie_auto, forfait_suppression_auto, methode, categories_tarifs, groupes, options, date_facturation, IDtype_quotient in listeTarifs :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
@@ -155,7 +155,7 @@ class Forfaits():
                 "forfait_saisie_manuelle" : forfait_saisie_manuelle, "forfait_saisie_auto" : forfait_saisie_auto, 
                 "forfait_suppression_auto" : forfait_suppression_auto, "methode" : methode,
                 "categories_tarifs" : listeCategoriesTarifs, "groupes" : listeGroupes, "options" : options, "date_facturation" : date_facturation,
-                "combinaisons" : [], "lignes_calcul" : [],
+                "combinaisons" : [], "lignes_calcul" : [], "IDtype_quotient" : IDtype_quotient,
                 }
                 
             # Recherche si ce tarif a des combinaisons d'unités
@@ -181,6 +181,26 @@ class Forfaits():
         DB.Close()
         
         return dictActivites
+
+    def RechercheQF(self, dictQuotientsFamiliaux=None, dictTarif=None, IDfamille=None, date=None):
+        """ Pour Facturation Recherche du QF de la famille """
+        # Si la famille a un QF :
+        if dictQuotientsFamiliaux.has_key(IDfamille) :
+            listeQuotientsFamiliaux = dictQuotientsFamiliaux[IDfamille]
+            for date_debut, date_fin, quotient, IDtype_quotient in listeQuotientsFamiliaux :
+                if date >= date_debut and date <= date_fin and (dictTarif["IDtype_quotient"] == None or dictTarif["IDtype_quotient"] == IDtype_quotient) :
+                    return quotient
+
+        # Si la famille n'a pas de QF, on attribue le QF le plus élevé :
+        listeQF = []
+        for ligneCalcul in dictTarif["lignes_calcul"] :
+            listeQF.append(ligneCalcul["qf_max"])
+        listeQF.sort()
+        if len(listeQF) > 0 :
+            if listeQF[-1] != None :
+                return listeQF[-1]
+
+        return None
 
     def Applique_forfait(self, selectionIDcategorie_tarif=None, selectionIDtarif=None, inscription=False, selectionIDactivite=None, labelTarif=None):
         """ Recherche et applique les forfaits auto à l'inscription """
@@ -328,17 +348,23 @@ class Forfaits():
                                         qf_min = ligneCalcul["qf_min"]
                                         qf_max = ligneCalcul["qf_max"]
                                         montant_tarif = ligneCalcul["montant_unique"]
-                                        if dictQuotientsFamiliaux.has_key(self.IDfamille) :
-                                            listeQuotientsFamiliaux = dictQuotientsFamiliaux[self.IDfamille]
-                                        else:
-                                            listeQuotientsFamiliaux = []
-                                        for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                                            if date_facturation >= date_debut and date_facturation <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                                tarifFound = True
-                                            if tarifFound == True :
+
+                                        QFfamille = self.RechercheQF(dictQuotientsFamiliaux, dictTarif, self.IDfamille, date_facturation)
+                                        if QFfamille != None :
+                                            if QFfamille >= qf_min and QFfamille <= qf_max :
                                                 break
-                                        if tarifFound == True :
-                                            break
+
+                                        # if dictQuotientsFamiliaux.has_key(self.IDfamille) :
+                                        #     listeQuotientsFamiliaux = dictQuotientsFamiliaux[self.IDfamille]
+                                        # else:
+                                        #     listeQuotientsFamiliaux = []
+                                        # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                                        #     if date_facturation >= date_debut and date_facturation <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                                        #         tarifFound = True
+                                        #     if tarifFound == True :
+                                        #         break
+                                        # if tarifFound == True :
+                                        #     break
 
                                 # -------------- Recherche du montant du tarif : CHOIX (MONTANT ET LABEL SELECTIONNES PAR L'UTILISATEUR)
                                 if methode_calcul == "choix" :
@@ -568,19 +594,19 @@ class Forfaits():
         dictQuotientsFamiliaux = {}
         # Récupère le QF de la famille
         DB = GestionDB.DB()
-        req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
+        req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient
         FROM quotients
         WHERE IDfamille=%d
         ORDER BY date_debut
         ;""" % self.IDfamille
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        for IDquotient, IDfamille, date_debut, date_fin, quotient in listeDonnees :
+        for IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient in listeDonnees :
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
             if dictQuotientsFamiliaux.has_key(IDfamille) == False :
                 dictQuotientsFamiliaux[IDfamille] = []
-            dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient))
+            dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient, IDtype_quotient))
         DB.Close() 
         return dictQuotientsFamiliaux
 

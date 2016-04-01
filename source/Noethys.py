@@ -679,6 +679,7 @@ class MainFrame(wx.Frame):
                             {"code" : "types_pieces", "label" : _(u"Types de pièces"), "infobulle" : _(u"Paramétrage des types de pièces"), "image" : "Images/16x16/Piece.png", "action" : self.On_param_pieces},
                             {"code" : "regimes_sociaux", "label" : _(u"Régimes sociaux"), "infobulle" : _(u"Paramétrage des régimes sociaux"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regimes},
                             {"code" : "caisses", "label" : _(u"Caisses"), "infobulle" : _(u"Paramétrage des caisses"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_caisses},
+                            {"code" : "types_quotients", "label" : _(u"Types de quotients"), "infobulle" : _(u"Paramétrage des types de quotients"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_types_quotients},
                             {"code" : "categories_travail", "label" : _(u"Catégories socio-professionnelles"), "infobulle" : _(u"Paramétrage des catégories socio-professionnelles"), "image" : "Images/16x16/Camion.png", "action" : self.On_param_categories_travail},
                             {"code" : "villes", "label" : _(u"Villes et codes postaux"), "infobulle" : _(u"Paramétrage des villes et codes postaux"), "image" : "Images/16x16/Carte.png", "action" : self.On_param_villes},
                             {"code" : "secteurs", "label" : _(u"Secteurs géographiques"), "infobulle" : _(u"Paramétrage des secteurs géographiques"), "image" : "Images/16x16/Secteur.png", "action" : self.On_param_secteurs},
@@ -1878,6 +1879,13 @@ class MainFrame(wx.Frame):
         import DLG_Caisses
         dlg = DLG_Caisses.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_types_quotients(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_types_quotients", "consulter") == False : return
+        import DLG_Types_quotients
+        dlg = DLG_Types_quotients.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_param_modeles_aides(self, event):

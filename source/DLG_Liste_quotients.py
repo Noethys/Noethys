@@ -20,18 +20,66 @@ import OL_Liste_quotients
 import CTRL_Saisie_date
 import DLG_calendrier_simple
 import CTRL_Selection_activites
+import UTILS_Dates
 
 
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
+
+class CTRL_Type_quotient(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1, size=(150, -1))
+        self.parent = parent
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 0 :
+            self.Enable(False)
+        else :
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        db = GestionDB.DB()
+        req = """SELECT IDtype_quotient, nom
+        FROM types_quotients
+        ORDER BY nom;"""
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        listeItems = []
+        self.dictDonnees = {}
+        index = 0
+        for IDtype_quotient, nom in listeDonnees :
+            self.dictDonnees[index] = { "ID" : IDtype_quotient, "nom " : nom}
+            listeItems.append(nom)
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=0):
+        if ID == None :
+            self.SetSelection(0)
+        for index, values in self.dictDonnees.iteritems():
+            if values["ID"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]["ID"]
+
 
 
 class Options(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, name="panel_presents", style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        
+
+        self.label_date = wx.StaticText(self, -1, _(u"Date de situation :"))
+        self.ctrl_date = CTRL_Saisie_date.Date(self)
+        self.ctrl_date.SetDate(datetime.date.today())
+        self.bouton_date = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
+
         self.radio_toutes = wx.RadioButton(self, -1, _(u"Toutes les familles"), style=wx.RB_GROUP)
         self.radio_avec = wx.RadioButton(self, -1, _(u"Uniquement familles avec QF"))
         self.radio_sans = wx.RadioButton(self, -1, _(u"Uniquement familles sans QF"))
@@ -47,7 +95,8 @@ class Options(wx.Panel):
 
         self.__set_properties()
         self.__do_layout()
-        
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonDate, self.bouton_date)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_inscrits)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadio, self.radio_presents)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonDateDebut, self.bouton_date_debut)
@@ -56,14 +105,24 @@ class Options(wx.Panel):
         self.OnRadio(None)
 
     def __set_properties(self):
+        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de situation"))
+        self.bouton_date.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de situation dans un calendrier"))
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici une date de début"))
         self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour saisir une date de début"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici une date de fin"))
         self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour saisir une date de fin"))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
-        
+        grid_sizer_base = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)
+
+        # Date de référence
+        grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
+        grid_sizer_periode.Add(self.label_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_periode.Add(self.bouton_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(grid_sizer_periode, 1, wx.RIGHT|wx.EXPAND, 5)
+        grid_sizer_base.Add( (5, 5), 0, 0, 0)
+
         grid_sizer_base.Add(self.radio_toutes, 0, 0, 0)
         grid_sizer_base.Add(self.radio_avec, 0, 0, 0)
         grid_sizer_base.Add(self.radio_sans, 0, 0, 0)
@@ -84,6 +143,13 @@ class Options(wx.Panel):
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableCol(0)
+
+    def OnBoutonDate(self, event):
+        dlg = DLG_calendrier_simple.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK :
+            date = dlg.GetDate()
+            self.ctrl_date.SetDate(date)
+        dlg.Destroy()
 
     def OnRadio(self, event): 
         if self.radio_inscrits.GetValue() == True :
@@ -154,12 +220,10 @@ class Parametres(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, name="panel_parametres", style=wx.TAB_TRAVERSAL)
         self.parent = parent
         
-        # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Date de référence"))
-        self.ctrl_date = CTRL_Saisie_date.Date(self)
-        self.ctrl_date.SetDate(datetime.date.today())
-        self.bouton_date = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Calendrier.png", wx.BITMAP_TYPE_ANY))
-        
+        # Type de quotient
+        self.staticbox_type_quotient_staticbox = wx.StaticBox(self, -1, _(u"Type de quotient"))
+        self.ctrl_type_quotient = CTRL_Type_quotient(self)
+
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
@@ -171,31 +235,25 @@ class Parametres(wx.Panel):
         
         # Boutons afficher
         self.bouton_afficher = CTRL_Bouton_image.CTRL(self, texte=_(u"Rafraîchir la liste"), cheminImage="Images/32x32/Actualiser.png")
-        self.bouton_afficher.SetMinSize((-1, 50)) 
+        self.bouton_afficher.SetMinSize((-1, 30))
 
         self.__set_properties()
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAfficher, self.bouton_afficher)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonDate, self.bouton_date)
 
     def __set_properties(self):
         self.bouton_afficher.SetToolTipString(_(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés"))
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de référence"))
-        self.bouton_date.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de référence dans un calendrier"))
+        self.ctrl_type_quotient.SetToolTipString(_(u"Sélectionnez un type de quotient dans la liste"))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        
-        # Date de référence
-        staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
-        grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
-        grid_sizer_periode.Add((13, 10), 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_periode.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_periode.Add(self.bouton_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(staticbox_periode, 1, wx.RIGHT|wx.EXPAND, 5)
-        
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+
+        # Type de quotient
+        staticbox_type_quotient = wx.StaticBoxSizer(self.staticbox_type_quotient_staticbox, wx.VERTICAL)
+        staticbox_type_quotient.Add(self.ctrl_type_quotient, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_base.Add(staticbox_type_quotient, 1, wx.RIGHT|wx.EXPAND, 5)
+
         # Activités
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
@@ -214,22 +272,24 @@ class Parametres(wx.Panel):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
 
-    def OnBoutonDate(self, event): 
-        dlg = DLG_calendrier_simple.Dialog(self)
-        if dlg.ShowModal() == wx.ID_OK :
-            date = dlg.GetDate()
-            self.ctrl_date.SetDate(date)
-        dlg.Destroy()
-    
     def OnBoutonAfficher(self, event):
         """ Validation des données saisies """
-        # Vérifie date de référence
-        date_reference = self.ctrl_date.GetDate()
-        if self.ctrl_date.FonctionValiderDate() == False or date_reference == None :
-            dlg = wx.MessageDialog(self, _(u"La date de référence ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        # Vérifie le type de quotient
+        IDtype_quotient = self.ctrl_type_quotient.GetID()
+        if IDtype_quotient == None :
+            dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner obligatoirement un type de quotient dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_date.SetFocus()
+            self.ctrl_type_quotient.SetFocus()
+            return False
+
+        # Vérifie date de référence
+        date_reference = self.ctrl_options.ctrl_date.GetDate()
+        if self.ctrl_options.ctrl_date.FonctionValiderDate() == False or date_reference == None :
+            dlg = wx.MessageDialog(self, _(u"La date de situation ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_options.ctrl_date.SetFocus()
             return False
                 
         # Vérifie les activités sélectionnées
@@ -248,7 +308,7 @@ class Parametres(wx.Panel):
         if presents == False : return
         
         # Envoi des données
-        self.parent.MAJ(date_reference=date_reference, listeActivites=listeActivites, presents=presents, familles=familles)
+        self.parent.MAJ(date_reference=date_reference, listeActivites=listeActivites, presents=presents, familles=familles, IDtype_quotient=IDtype_quotient)
         
         return True
     
@@ -368,17 +428,21 @@ class Dialog(wx.Dialog):
         import UTILS_Aide
         UTILS_Aide.Aide("Listedesquotientsfamiliaux")
 
-    def MAJ(self, date_reference=None, listeActivites=None, presents=None, familles=None):
+    def MAJ(self, date_reference=None, listeActivites=None, presents=None, familles=None, IDtype_quotient=None):
         labelParametres = self.GetLabelParametres() 
-        self.ctrl_listview.MAJ(date_reference, listeActivites, presents, familles, labelParametres) 
+        self.ctrl_listview.MAJ(date_reference, listeActivites, presents, familles, labelParametres, IDtype_quotient)
 
     def GetLabelParametres(self):
         listeParametres = []
-        
+
+        # Type de quotient
+        nom_type_quotient = self.ctrl_parametres.ctrl_type_quotient.GetStringSelection()
+        listeParametres.append(_(u"Type de quotient : %s") % nom_type_quotient)
+
         # Date
-        date = self.ctrl_parametres.ctrl_date.GetDate()
+        date = self.ctrl_parametres.ctrl_options.ctrl_date.GetDate()
         if date != None :
-            listeParametres.append(_(u"Situation au %s") % DateEngFr(str(date)))
+            listeParametres.append(_(u"Situation au %s") % UTILS_Dates.DateEngFr(str(date)))
                 
         # Activités
         activites = ", ".join(self.ctrl_parametres.ctrl_activites.GetLabelActivites())
@@ -396,7 +460,7 @@ class Dialog(wx.Dialog):
         if presents == None :
             listeParametres.append(_(u"Toutes les familles dont un des membres est inscrit"))
         else :
-            listeParametres.append(_(u"Uniquement les familles dont un des membres est présent du %s au %s") % (DateEngFr(str(presents[0])), DateEngFr(str(presents[1]))))
+            listeParametres.append(_(u"Uniquement les familles dont un des membres est présent du %s au %s") % (UTILS_Dates.DateEngFr(str(presents[0])), UTILS_Dates.DateEngFr(str(presents[1]))))
         
         labelParametres = " | ".join(listeParametres)
         return labelParametres

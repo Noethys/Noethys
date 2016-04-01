@@ -66,6 +66,7 @@ LISTE_CATEGORIES = [
     { "label" : _(u"Lots de rappels"), "code" : "parametrage_lots_rappels", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Régimes sociaux"), "code" : "parametrage_regimes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Caisses"), "code" : "parametrage_caisses", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Types de quotients"), "code" : "parametrage_types_quotients", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Modèles d'aides journalières"), "code" : "parametrage_modeles_aides", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Types de cotisations"), "code" : "parametrage_types_cotisations", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Adresses d'expédition d'Emails"), "code" : "parametrage_emails_exp", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },

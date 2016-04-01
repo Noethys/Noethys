@@ -77,6 +77,8 @@ class ListView(FastObjectListView):
         self.presents = None
         self.familles = "TOUTES"
         self.labelParametres = ""
+        self.IDtype_quotient = None
+
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -90,6 +92,7 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         if self.dateReference == None : return
+        if self.IDtype_quotient == None : return
         
         # Conditions Activites
         if self.listeActivites == None or self.listeActivites == [] :
@@ -149,16 +152,16 @@ class ListView(FastObjectListView):
         listeFamilles = DB.ResultatReq()
         
         # Récupération des quotients valides à la date de référence
-        req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu
+        req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu, IDtype_quotient
         FROM quotients
-        WHERE date_debut<='%s' AND date_fin>='%s'
+        WHERE date_debut<='%s' AND date_fin>='%s' AND IDtype_quotient=%d
         ORDER BY date_fin
-        ;""" % (self.dateReference, self.dateReference)
+        ;""" % (self.dateReference, self.dateReference, self.IDtype_quotient)
         DB.ExecuterReq(req)
         listeQuotients = DB.ResultatReq()
         dictQuotients = {}
-        for IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu in listeQuotients :
-            dictQuotients[IDfamille] = {"IDquotient":IDquotient, "date_debut":DateEngEnDateDD(date_debut), "date_fin":DateEngEnDateDD(date_fin), "quotient":quotient, "revenu" : revenu, "observations":observations}
+        for IDquotient, IDfamille, date_debut, date_fin, quotient, observations, revenu, IDtype_quotient in listeQuotients :
+            dictQuotients[IDfamille] = {"IDquotient":IDquotient, "date_debut":DateEngEnDateDD(date_debut), "date_fin":DateEngEnDateDD(date_fin), "quotient":quotient, "revenu" : revenu, "IDtype_quotient" : IDtype_quotient, "observations":observations}
         
         DB.Close()
 
@@ -211,12 +214,14 @@ class ListView(FastObjectListView):
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
-    def MAJ(self, date_reference=None, listeActivites=None, presents=None, familles="TOUTES", labelParametres=""):
+    def MAJ(self, date_reference=None, listeActivites=None, presents=None, familles="TOUTES", labelParametres="", IDtype_quotient=None):
         self.dateReference = date_reference
         self.listeActivites = listeActivites
         self.presents = presents
         self.familles = familles
         self.labelParametres = labelParametres
+        self.IDtype_quotient = IDtype_quotient
+
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()

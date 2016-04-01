@@ -189,7 +189,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         
         # Importation du tarif
-        req = """SELECT date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta FROM tarifs WHERE IDtarif=%d;""" % self.IDtarif
+        req = """SELECT date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient FROM tarifs WHERE IDtarif=%d;""" % self.IDtarif
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         
@@ -201,7 +201,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         
-        date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta = listeDonnees[0]
+        date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient = listeDonnees[0]
 
         # Date début
         self.toolbook.GetPage("generalites").SetDateDebut(date_debut)
@@ -244,6 +244,10 @@ class Dialog(wx.Dialog):
 
         # Type
         self.toolbook.GetPage("type").SetType(type)
+
+        # Type de quotient
+        self.toolbook.GetPage("calcul").SetTypeQuotient(IDtype_quotient)
+
         
 
     def OnBoutonAide(self, event): 
@@ -291,7 +295,10 @@ class Dialog(wx.Dialog):
         # Méthode
         codeMethode = self.toolbook.GetPage("calcul").GetCodeMethode()
         tarifsCompatibles = self.toolbook.GetPage("calcul").GetTarifsCompatibles()
-        
+
+        # Type de quotient
+        IDtype_quotient = self.toolbook.GetPage("calcul").GetTypeQuotient()
+
         # Vérifie que la méthode est compatible avec le type de tarif
         if typeTarif not in tarifsCompatibles :
             dlg = wx.MessageDialog(self, _(u"La méthode de calcul sélectionnée n'est pas compatible avec le type de tarif sélectionné !"), _(u"Information"), wx.OK | wx.ICON_EXCLAMATION)
@@ -319,6 +326,7 @@ class Dialog(wx.Dialog):
             ("observations", observations),
             ("tva", tva),
             ("code_compta", code_compta),
+            ("IDtype_quotient", IDtype_quotient),
             ]
         DB.ReqMAJ("tarifs", listeDonnees, "IDtarif", self.IDtarif)
         

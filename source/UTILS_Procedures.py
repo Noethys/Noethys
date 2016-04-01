@@ -46,6 +46,9 @@ DICT_PROCEDURES = {
     "A8836" : _(u"Suppression des consommations avec prestation disparue"),
     "A8941" : _(u"Remplit automatiquement le champ états de la table Tarifs"),
     "A8956" : _(u"Réparation des factures : Rapprochement des factures et des prestations détachées"),
+    "A8967" : _(u"Transfert des numéros des numéros des factures vers le champ str"),
+    "A8971" : _(u"Attribution du type de quotient CAF à tous les quotients existants"),
+
     }
 
 
@@ -755,6 +758,45 @@ def A8956():
     dlg.Destroy()
 
 
+def A8967():
+    """ Transfert des numéros des numéros des factures vers le champ str """
+    DB = GestionDB.DB()
+
+    # Recherche des IDinscription NULL dans les consommations
+    req = """SELECT IDfacture, numero
+    FROM factures
+    WHERE IDfacture IS NOT NULL;"""
+    DB.ExecuterReq(req)
+    listeFactures = DB.ResultatReq()
+
+    listeModifications = []
+    for IDfacture, numero in listeFactures :
+        listeModifications.append((str(numero), IDfacture))
+
+    if len(listeModifications) > 0 :
+        DB.Executermany(_(u"UPDATE factures SET numerostr=? WHERE IDfacture=?"), listeModifications, commit=False)
+        DB.Commit()
+
+def A8971():
+    """ Attribution du type de quotient CAF à tous les quotients existants """
+    # Recherche des types de quotients existants
+    DB = GestionDB.DB()
+    req = """SELECT IDtype_quotient, nom FROM types_quotients;"""
+    DB.ExecuterReq(req)
+    listeTypesQuotients = DB.ResultatReq()
+    if len(listeTypesQuotients) == 0 :
+        IDtype_quotient = DB.ReqInsert("types_quotients", [("nom", u"CAF"),])
+    else :
+        IDtype_quotient = listeTypesQuotients[0][0]
+    # Remplissage des quotients
+    DB.ExecuterReq("UPDATE quotients SET IDtype_quotient=%d;" % IDtype_quotient)
+    DB.Commit()
+    DB.Close()
+
+
+
+
+
 
 
 ##def A8360():
@@ -839,7 +881,6 @@ def A8956():
 
 if __name__ == u"__main__":
     app = wx.App(0)
-    #wx.InitAllImageHandlers()
     # TEST D'UNE PROCEDURE :
-    A8956()
+    A8971()
     app.MainLoop()

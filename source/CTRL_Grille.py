@@ -1564,13 +1564,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees,
         condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances,
-        code_compta, tva, date_facturation, etats
+        code_compta, tva, date_facturation, etats, IDtype_quotient
         FROM tarifs
         LEFT JOIN noms_tarifs ON noms_tarifs.IDnom_tarif = tarifs.IDnom_tarif
         ORDER BY date_debut;"""
         self.DB.ExecuterReq(req)
         listeTarifs = self.DB.ResultatReq()      
-        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation, etats in listeTarifs :
+        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation, etats, IDtype_quotient in listeTarifs :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
@@ -1594,7 +1594,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "cotisations" : listeCotisations, "filtres" : [], "caisses" : listeCaisses, 
                 "jours_scolaires" : jours_scolaires, "jours_vacances" : jours_vacances,
                 "code_compta" : code_compta, "tva" : tva, "date_facturation" : date_facturation,
-                "quantitesMax" : [], "etats" : listeEtats,
+                "quantitesMax" : [], "etats" : listeEtats, "IDtype_quotient" : IDtype_quotient,
                 }
                 
             # Recherche si ce tarif a des combinaisons d'unités
@@ -2008,24 +2008,24 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictQuotientsFamiliaux = {}
         # Récupère le QF de la famille
         if self.mode == "individu" :
-            req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
+            req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient
             FROM quotients
             WHERE IDfamille=%d
             ORDER BY date_debut
             ;""" % self.IDfamille
         else:
-            req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
+            req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient
             FROM quotients
             ORDER BY date_debut
             ;"""
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
-        for IDquotient, IDfamille, date_debut, date_fin, quotient in listeDonnees :
+        for IDquotient, IDfamille, date_debut, date_fin, quotient, IDtype_quotient in listeDonnees :
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
             if dictQuotientsFamiliaux.has_key(IDfamille) == False :
                 dictQuotientsFamiliaux[IDfamille] = []
-            dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient))
+            dictQuotientsFamiliaux[IDfamille].append((date_debut, date_fin, quotient, IDtype_quotient))
         return dictQuotientsFamiliaux
 
 
@@ -2679,17 +2679,23 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                             montant_enfant_4 = ligneCalcul["montant_enfant_4"]
                                             montant_enfant_5 = ligneCalcul["montant_enfant_5"]
                                             montant_enfant_6 = ligneCalcul["montant_enfant_6"]
-                                            if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                                                listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                                            else:
-                                                listeQuotientsFamiliaux = []
-                                            for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                                                if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                                    tarifFound = True
-                                                if tarifFound == True :
+
+                                            QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
+                                            if QFfamille != None :
+                                                if QFfamille >= qf_min and QFfamille <= qf_max :
                                                     break
-                                            if tarifFound == True :
-                                                break
+
+                                            # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
+                                            #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
+                                            # else:
+                                            #     listeQuotientsFamiliaux = []
+                                            # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                                            #     if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                                            #         tarifFound = True
+                                            #     if tarifFound == True :
+                                            #         break
+                                            # if tarifFound == True :
+                                            #     break
 
                                     # Recherche combien d'individus de la famille sont déjà présents ce jour-là
                                     listeIndividusPresents = []
@@ -3115,24 +3121,24 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return True
 
 
-    def RechercheQF(self, lignes_calcul=[], IDfamille=None, datePrestation=None):
+    def RechercheQF(self, dictTarif=None, IDfamille=None, date=None):
         """ Pour Facturation Recherche du QF de la famille """
         # Si la famille a un QF :
         if self.dictQuotientsFamiliaux.has_key(IDfamille) :
             listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-            for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                if datePrestation >= date_debut and datePrestation <= date_fin :
+            for date_debut, date_fin, quotient, IDtype_quotient in listeQuotientsFamiliaux :
+                if date >= date_debut and date <= date_fin and (dictTarif["IDtype_quotient"] == None or dictTarif["IDtype_quotient"] == IDtype_quotient) :
                     return quotient
-        
+
         # Si la famille n'a pas de QF, on attribue le QF le plus élevé :
         listeQF = []
-        for ligneCalcul in lignes_calcul :
+        for ligneCalcul in dictTarif["lignes_calcul"] :
             listeQF.append(ligneCalcul["qf_max"])
         listeQF.sort() 
         if len(listeQF) > 0 :
             if listeQF[-1] != None :
                 return listeQF[-1]
-        
+
         return None
     
     def CalculeDuree(self, IDindividu=None, datePrestation=None, combinaisons_unites=[]):
@@ -3210,14 +3216,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 qf_min = ligneCalcul["qf_min"]
                 qf_max = ligneCalcul["qf_max"]
                 montant_tarif = ligneCalcul["montant_unique"]
-                if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                    listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                    for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                        if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                            tarifFound = True
-                            break
-                    if tarifFound == True :
-                            break
+
+                QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
+                if QFfamille != None :
+                    if QFfamille >= qf_min and QFfamille <= qf_max :
+                        break
+
+                # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
+                #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
+                #     for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                #         if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                #             tarifFound = True
+                #             break
+                #     if tarifFound == True :
+                #             break
         
         # Recherche du montant du tarif : HORAIRE - MONTANT UNIQUE
         if methode_calcul == "horaire_montant_unique" :
@@ -3313,38 +3325,68 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     montant_tarif = montant_tarif_ligne
                     
                     # Recherche le QF de la famille
-                    if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                        listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                        for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                            if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                montant_tarif = montant_tarif_ligne
-                                if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
-                                    temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"]) 
-                                    temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
-                                else :
-                                    temps_facture = SoustractionHeures(heure_fin_max, heure_debut_min)
+                    QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
+                    if QFfamille != None :
+                        if QFfamille >= qf_min and QFfamille <= qf_max :
+                            montant_tarif = montant_tarif_ligne
+                            if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
+                                temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"])
+                                temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
+                            else :
+                                temps_facture = SoustractionHeures(heure_fin_max, heure_debut_min)
 
-                                heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
-                                heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
-                                duree_delta = heure_fin_delta - heure_debut_delta
-                                
-                                # Création du label personnalisé
-                                label = ligneCalcul["label"]
-                                if label != None and label != "" :
-                                    if "{TEMPS_REALISE}" in label : 
-                                        label = label.replace("{TEMPS_REALISE}", DeltaEnStr(duree_delta))
-                                    if "{TEMPS_FACTURE}" in label : 
-                                        label = label.replace("{TEMPS_FACTURE}", DeltaEnStr(temps_facture))
-                                    if "{HEURE_DEBUT}" in label : 
-                                        label = label.replace("{HEURE_DEBUT}", DeltaEnStr(heure_debut_delta))
-                                    if "{HEURE_FIN}" in label : 
-                                        label = label.replace("{HEURE_FIN}", DeltaEnStr(heure_fin_delta))
-                                    nom_tarif = label
+                            heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
+                            heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
+                            duree_delta = heure_fin_delta - heure_debut_delta
 
-                                tarifFound = True
-                                break
-                        if tarifFound == True :
+                            # Création du label personnalisé
+                            label = ligneCalcul["label"]
+                            if label != None and label != "" :
+                                if "{TEMPS_REALISE}" in label :
+                                    label = label.replace("{TEMPS_REALISE}", DeltaEnStr(duree_delta))
+                                if "{TEMPS_FACTURE}" in label :
+                                    label = label.replace("{TEMPS_FACTURE}", DeltaEnStr(temps_facture))
+                                if "{HEURE_DEBUT}" in label :
+                                    label = label.replace("{HEURE_DEBUT}", DeltaEnStr(heure_debut_delta))
+                                if "{HEURE_FIN}" in label :
+                                    label = label.replace("{HEURE_FIN}", DeltaEnStr(heure_fin_delta))
+                                nom_tarif = label
                             break
+
+
+
+                    # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
+                    #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
+                    #     for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                    #         if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                    #             montant_tarif = montant_tarif_ligne
+                    #             if ligneCalcul["temps_facture"] != None and ligneCalcul["temps_facture"] != "" :
+                    #                 temps_facture = HeureStrEnTime(ligneCalcul["temps_facture"])
+                    #                 temps_facture = datetime.timedelta(hours=temps_facture.hour, minutes=temps_facture.minute)
+                    #             else :
+                    #                 temps_facture = SoustractionHeures(heure_fin_max, heure_debut_min)
+                    #
+                    #             heure_debut_delta = datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
+                    #             heure_fin_delta = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute)
+                    #             duree_delta = heure_fin_delta - heure_debut_delta
+                    #
+                    #             # Création du label personnalisé
+                    #             label = ligneCalcul["label"]
+                    #             if label != None and label != "" :
+                    #                 if "{TEMPS_REALISE}" in label :
+                    #                     label = label.replace("{TEMPS_REALISE}", DeltaEnStr(duree_delta))
+                    #                 if "{TEMPS_FACTURE}" in label :
+                    #                     label = label.replace("{TEMPS_FACTURE}", DeltaEnStr(temps_facture))
+                    #                 if "{HEURE_DEBUT}" in label :
+                    #                     label = label.replace("{HEURE_DEBUT}", DeltaEnStr(heure_debut_delta))
+                    #                 if "{HEURE_FIN}" in label :
+                    #                     label = label.replace("{HEURE_FIN}", DeltaEnStr(heure_fin_delta))
+                    #                 nom_tarif = label
+                    #
+                    #             tarifFound = True
+                    #             break
+                    #     if tarifFound == True :
+                    #         break
                 
         
         # Recherche du montant du tarif : DUREE - MONTANT UNIQUE
@@ -3464,15 +3506,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         nom_tarif = label
 
                     # Recherche le QF
-                    if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                        listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                        for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                            if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                tarifFound = True
-                                break
+                    QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
+                    if QFfamille != None :
+                        if QFfamille >= qf_min and QFfamille <= qf_max :
+                            break
 
-                    if tarifFound == True :
-                        break
+                    # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
+                    #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
+                    #     for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                    #         if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                    #             tarifFound = True
+                    #             break
+                    # if tarifFound == True :
+                    #     break
 
         # Recherche du montant du tarif : MONTANT UNIQUE EN FONCTION DE LA DATE
         if methode_calcul == "montant_unique_date" :
@@ -3504,14 +3550,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 
                 if date == dateLigne : 
                     dateFound = True
-                    if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                        listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                        for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                            if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                                tarifFound = True
-                                break
-                        if tarifFound == True :
+
+                    # Recherche le QF
+                    QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
+                    if QFfamille != None :
+                        if QFfamille >= qf_min and QFfamille <= qf_max :
                             break
+
+                    # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
+                    #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
+                    #     for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                    #         if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                    #             tarifFound = True
+                    #             break
+                    #     if tarifFound == True :
+                    #         break
             
             if dateFound == False : 
                 montant_tarif = 0.0
@@ -3583,17 +3636,23 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     montant_enfant_4 = ligneCalcul["montant_enfant_4"]
                     montant_enfant_5 = ligneCalcul["montant_enfant_5"]
                     montant_enfant_6 = ligneCalcul["montant_enfant_6"]
-                    if self.dictQuotientsFamiliaux.has_key(IDfamille) :
-                        listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
-                    else:
-                        listeQuotientsFamiliaux = []
-                    for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
-                        if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
-                            tarifFound = True
-                        if tarifFound == True :
+
+                    QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
+                    if QFfamille != None :
+                        if QFfamille >= qf_min and QFfamille <= qf_max :
                             break
-                    if tarifFound == True :
-                        break
+
+                    # if self.dictQuotientsFamiliaux.has_key(IDfamille) :
+                    #     listeQuotientsFamiliaux = self.dictQuotientsFamiliaux[IDfamille]
+                    # else:
+                    #     listeQuotientsFamiliaux = []
+                    # for date_debut, date_fin, quotient in listeQuotientsFamiliaux :
+                    #     if date >= date_debut and date <= date_fin and quotient >= qf_min and quotient <= qf_max :
+                    #         tarifFound = True
+                    #     if tarifFound == True :
+                    #         break
+                    # if tarifFound == True :
+                    #     break
 
             if "horaire" in methode_calcul  :
                 tarifFound = False
@@ -3753,7 +3812,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 # Condition QF
                 conditionQF = True
                 if methode_calcul == "duree_coeff_qf" :
-                    QFfamille = self.RechercheQF(lignes_calcul, IDfamille, date)
+                    QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
                     if QFfamille != None :
                         if QFfamille >= qf_min and QFfamille <= qf_max :
                             conditionQF = True
@@ -3806,7 +3865,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             lignes_calcul = dictTarif["lignes_calcul"]
             
             # Recherche QF de la famille
-            QFfamille = self.RechercheQF(lignes_calcul, IDfamille, date)
+            QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
             
             for ligneCalcul in lignes_calcul :
                 qf_min = ligneCalcul["qf_min"]
@@ -3866,7 +3925,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             lignes_calcul = dictTarif["lignes_calcul"]
             
             # Recherche QF de la famille
-            QFfamille = self.RechercheQF(lignes_calcul, IDfamille, date)
+            QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
             
             # Recherche de la durée
             duree, heure_debut_delta, heure_fin_delta = self.CalculeDuree(IDindividu, date, combinaisons_unites)
