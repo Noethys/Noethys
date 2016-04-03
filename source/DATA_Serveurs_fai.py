@@ -38,4 +38,4 @@ LISTE_SERVEURS_FAI = [
     ( u"TISCALI-FREESBEE", "smtp.freesbee.fr", None, False, False),
     ( u"WANADOO", "smtp.wanadoo.fr", None, False, False),
     ( u"YAHOO", "smtp.mail.yahoo.fr", 465, True, True),
-    ] # Nom FAI, serveur smtp, port, connexion ssl
+    ] # Nom FAI, serveur smtp, port, connexionAuthentifiee, startTLS

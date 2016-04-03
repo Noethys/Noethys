@@ -243,7 +243,10 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 ##  On positionne dans ce cas le parametre avecAuthentification a True
 ##  et le parametre avecStartTLS est positionné selon l'état du support de la fonction startTLS par le SMTP
 
-    if avecAuthentification == False :
+    if motdepasse == None :
+        motdepasse = ""
+
+    if avecAuthentification in (0, False, None) :
         # Envoi standard
         smtp = smtplib.SMTP(serveur, timeout=150)
     else:
