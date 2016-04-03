@@ -130,7 +130,7 @@ options = {
                 "api-ms-win-core-heap-l1-2-0.dll", "api-ms-win-core-handle-l1-1-0.dll",
                 "api-ms-win-core-io-l1-1-1.dll", "api-ms-win-core-com-l1-1-1.dll",
                 "api-ms-win-core-memory-l1-1-2.dll", "api-ms-win-core-version-l1-1-1.dll",
-                "api-ms-win-core-version-l1-1-0.dll",
+                "api-ms-win-core-version-l1-1-0.dll", "crypt32.dll",
                 ],
 
         "packages": [

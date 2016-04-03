@@ -1,7 +1,9 @@
-Version 1.1.6.6 (02/04/2016) :
+Version 1.1.6.6 (03/04/2016) :
 
 - Ajout des types de quotients
 - Ajout de la tarification selon le type de quotient
+- Correction d'un bug sur l'envoi des Emails
+- Correction d'un bug sur la compilation pour Windows XP
 
 Version 1.1.6.5 (01/04/2016) :
 
