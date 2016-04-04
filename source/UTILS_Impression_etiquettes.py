@@ -38,10 +38,11 @@ class Impression():
                     margeDroite=10,
                     espaceVertical=5,
                     espaceHorizontal=5,
+                    nbre_copies=1,
                     AfficherContourEtiquette=True,
                     AfficherReperesDecoupe=True,
                     ):
-        
+
         # ----------------------------------------------------------------------------------------------------------------------------------------
         
         def AfficheReperesDecoupe():
@@ -87,46 +88,48 @@ class Impression():
         numColonne = 0
         numLigne = 0
         for dictValeurs in listeValeurs :
-            x = margeGauche + ((largeurEtiquette + espaceHorizontal) * numColonne)
-            y = hauteurPage - margeHaut - hauteurEtiquette - ((hauteurEtiquette + espaceVertical) * numLigne)
-            
-            # Positionnement sur la feuille
-            canvas.saveState()
-            canvas.translate(x*mm, y*mm)
-            
-            # Création du clipping
-            p = canvas.beginPath()
-            canvas.setStrokeColor( (1, 1, 1) )
-            canvas.setLineWidth(0.25)
-            p.rect(0, 0, largeurEtiquette*mm, hauteurEtiquette*mm)
-            canvas.clipPath(p)
-            
-            # Dessin de l'étiquette
-            modeleDoc.DessineFond(canvas, dictChamps=dictValeurs)
-            etat = modeleDoc.DessineTousObjets(canvas, dictChamps=dictValeurs) 
-            if etat == False :
-                return
-            
-            # Dessin du contour de l'étiquette
-            if AfficherContourEtiquette == True :
-                canvas.setStrokeColor( (0, 0, 0) )
+            for num_copie in range(0, nbre_copies) :
+                print num_copie, nbre_copies
+                x = margeGauche + ((largeurEtiquette + espaceHorizontal) * numColonne)
+                y = hauteurPage - margeHaut - hauteurEtiquette - ((hauteurEtiquette + espaceVertical) * numLigne)
+
+                # Positionnement sur la feuille
+                canvas.saveState()
+                canvas.translate(x*mm, y*mm)
+
+                # Création du clipping
+                p = canvas.beginPath()
+                canvas.setStrokeColor( (1, 1, 1) )
                 canvas.setLineWidth(0.25)
-                canvas.rect(0, 0, largeurEtiquette*mm, hauteurEtiquette*mm)
-            
-            canvas.restoreState()
-            
-            # Saut de colonne
-            numColonne += 1
-            # Saut de ligne
-            if numColonne > nbreColonnes - 1 :
-                numLigne += 1
-                numColonne = 0
-            # Saut de page
-            if numLigne > nbreLignes - 1 :
-                AfficheReperesDecoupe()
-                canvas.showPage()
-                numLigne = 0
-        
+                p.rect(0, 0, largeurEtiquette*mm, hauteurEtiquette*mm)
+                canvas.clipPath(p)
+
+                # Dessin de l'étiquette
+                modeleDoc.DessineFond(canvas, dictChamps=dictValeurs)
+                etat = modeleDoc.DessineTousObjets(canvas, dictChamps=dictValeurs)
+                if etat == False :
+                    return
+
+                # Dessin du contour de l'étiquette
+                if AfficherContourEtiquette == True :
+                    canvas.setStrokeColor( (0, 0, 0) )
+                    canvas.setLineWidth(0.25)
+                    canvas.rect(0, 0, largeurEtiquette*mm, hauteurEtiquette*mm)
+
+                canvas.restoreState()
+
+                # Saut de colonne
+                numColonne += 1
+                # Saut de ligne
+                if numColonne > nbreColonnes - 1 :
+                    numLigne += 1
+                    numColonne = 0
+                # Saut de page
+                if numLigne > nbreLignes - 1 :
+                    AfficheReperesDecoupe()
+                    canvas.showPage()
+                    numLigne = 0
+
         # Affichage des repères de découpe
         AfficheReperesDecoupe()
                     

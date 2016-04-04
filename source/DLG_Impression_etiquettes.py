@@ -298,8 +298,10 @@ class Dialog(wx.Dialog):
 
         # Options
         self.box_options_staticbox = wx.StaticBox(self, -1, _(u"Options"))
-        self.check_contour = wx.CheckBox(self, -1, _(u"Contour des étiquettes"))
-        self.check_reperes = wx.CheckBox(self, -1, _(u"Repères de découpe"))
+        self.label_nbre_copies = wx.StaticText(self, -1, _(u"Nbre copies :"))
+        self.ctrl_nbre_copies = wx.SpinCtrl(self, -1, u"", size=(50, -1), min=1, max=1000)
+        self.check_contour = wx.CheckBox(self, -1, _(u"Contours"))
+        self.check_reperes = wx.CheckBox(self, -1, _(u"Repères"))
         
         # Données
         self.box_donnees_staticbox = wx.StaticBox(self, -1, _(u"Données"))
@@ -406,6 +408,7 @@ class Dialog(wx.Dialog):
         self.ctrl_espace_horiz.SetToolTipString(_(u"Saisissez ici l'espace horizontal entre 2 étiquettes de la page (en mm)"))
         self.ctrl_marge_droite.SetMinSize((60, -1))
         self.ctrl_marge_droite.SetToolTipString(_(u"Saisissez ici la marge droite de la page (en mm)"))
+        self.ctrl_nbre_copies.SetToolTipString(_(u"Saisissez le nombre de copies de chaque étiquette"))
         self.check_contour.SetToolTipString(_(u"Cochez ici pour afficher un cadre noir autour de chaque étiquette"))
         self.check_reperes.SetToolTipString(_(u"Cochez cette case pour afficher les repères de découpe sur chaque page"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
@@ -460,7 +463,10 @@ class Dialog(wx.Dialog):
 
         # Options
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+        grid_sizer_options.Add(self.label_nbre_copies, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_nbre_copies, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add((10, 5), 0, 0, 0)
         grid_sizer_options.Add(self.check_contour, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.check_reperes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         box_options.Add(grid_sizer_options, 1, wx.ALL|wx.EXPAND, 5)
@@ -606,6 +612,7 @@ class Dialog(wx.Dialog):
         margeDroite = self.ctrl_marge_droite.GetValue()
         espaceVertical = self.ctrl_espace_vertic.GetValue()
         espaceHorizontal = self.ctrl_espace_horiz.GetValue()
+        nbre_copies = self.ctrl_nbre_copies.GetValue()
         AfficherContourEtiquette = self.check_contour.GetValue()
         AfficherReperesDecoupe = self.check_reperes.GetValue()
         
@@ -629,6 +636,7 @@ class Dialog(wx.Dialog):
                     margeDroite=margeDroite,
                     espaceVertical=espaceVertical,
                     espaceHorizontal=espaceHorizontal,
+                    nbre_copies=nbre_copies,
                     AfficherContourEtiquette=AfficherContourEtiquette,
                     AfficherReperesDecoupe=AfficherReperesDecoupe,
                     )
