@@ -310,6 +310,7 @@ class CTRL(ULC.UltimateListCtrl):
             return
         
         # MAJ du contrôle
+        self.Freeze()
         self.DeleteAllItems() 
         
         self.dictRenderers = {}
@@ -363,6 +364,8 @@ class CTRL(ULC.UltimateListCtrl):
             self.DoLayout()
         except :
             pass
+
+        self.Thaw()
 
     def SetFiltre(self, filtre=""):
         self.filtre = filtre
