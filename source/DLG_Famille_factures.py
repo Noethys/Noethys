@@ -102,7 +102,7 @@ class Panel(wx.Panel):
         # OL Factures
         codesColonnes = ["IDfacture", "date", "numero", "date_debut", "date_fin", "total", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = True
-        triColonne = "date"
+        triColonne = "IDfacture"
         self.listviewAvecFooter = OL_Factures.ListviewAvecFooter(self, kwargs={"codesColonnes" : codesColonnes, "checkColonne" : checkColonne, "triColonne" : triColonne, "afficherAnnulations" : True}) 
         self.ctrl_listview = self.listviewAvecFooter.GetListview()
 

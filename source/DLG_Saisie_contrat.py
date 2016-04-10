@@ -398,21 +398,29 @@ class Dialog(wx.Dialog):
             dictConso[IDprestation].append(dictTemp)
 
         # Importation des périodes de contrat
-        req = """SELECT prestations.IDprestation, forfait_date_debut, forfait_date_fin, label, montant, prestations.date, prestations.IDfacture, factures.numero,
+        req = """SELECT prestations.IDprestation, forfait_date_debut, forfait_date_fin, label, montant, prestations.date,
+        prestations.IDfacture, factures.IDprefixe, factures_prefixe.prefixe, factures.numero,
         COUNT(consommations.IDconso)
         FROM prestations 
         LEFT JOIN consommations ON consommations.IDprestation = prestations.IDprestation
         LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         WHERE IDcontrat=%d
         GROUP BY prestations.IDprestation
         ORDER BY forfait_date_debut;""" % IDcontrat
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listePeriodes = []
-        for IDprestation, date_debut, date_fin, label, montant, date_prestation, IDfacture, numFacture, nbreConso in listeDonnees :
+        for IDprestation, date_debut, date_fin, label, montant, date_prestation, IDfacture, IDprefixe, prefixe, numFacture, nbreConso in listeDonnees :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             date_prestation = UTILS_Dates.DateEngEnDateDD(date_prestation)
+
+            if IDprefixe != None :
+                numFacture = u"%s-%06d" % (prefixe, numFacture)
+            else :
+                numFacture = u"%06d" % numFacture
+
             if dictConso.has_key(IDprestation) and copie_conso == True :
                 listeConso = dictConso[IDprestation]
             else :

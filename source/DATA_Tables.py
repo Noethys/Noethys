@@ -761,6 +761,7 @@ DB_DATA = {
                                     ("IDlot", "INTEGER", u"ID du lot de factures"),
                                     ("prestations", "VARCHAR(500)", u"Liste des types de prestations intégrées"),
                                     ("etat", "VARCHAR(100)", u"Etat de la facture"),
+                                    ("IDprefixe", "INTEGER", u"ID du préfixe"),
                                     ], # Factures éditées
 
     "textes_rappels":[      ("IDtexte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDtexte"),
@@ -1481,7 +1482,10 @@ DB_DATA = {
                                     ("nom", "VARCHAR(255)", u"Nom du type de quotient"),
                                     ], # Types de quotients
 
-
+    "factures_prefixes":            [("IDprefixe", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID préfixe facture"),
+                                    ("nom", "VARCHAR(450)", u"Nom du préfixe"),
+                                    ("prefixe", "VARCHAR(100)", u"Préfixe de facture"),
+                                    ], # Préfixes de factures
 
 
 

@@ -671,12 +671,13 @@ class Facturation():
         DB = GestionDB.DB()
         req = """
         SELECT 
-        factures.IDfacture, factures.numero, factures.IDcompte_payeur, factures.activites, factures.individus,
+        factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur, factures.activites, factures.individus,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
         factures.date_debut, factures.date_fin, factures.total, factures.regle, factures.solde,
         factures.prestations, lots_factures.nom
         FROM factures
         LEFT JOIN lots_factures ON lots_factures.IDlot = factures.IDlot
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         WHERE factures.IDfacture IN %s
         GROUP BY factures.IDfacture
         ORDER BY factures.date_edition
@@ -714,7 +715,7 @@ class Facturation():
         
         listeFactures = []
         index = 0
-        for IDfacture, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
             
             self.EcritStatusbar(_(u"Recherche de la facture %d sur %d") % (index+1, len(listeDonnees)))
             
@@ -738,7 +739,7 @@ class Facturation():
                 liste_individus.append(int(IDindividu))
 
             dictFacture = {
-                "IDfacture" : IDfacture, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
+                "IDfacture" : IDfacture, "IDprefixe" : IDprefixe, "prefixe" : prefixe, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
                 "IDutilisateur" : IDutilisateur, "date_debut" : date_debut, "date_fin" : date_fin, "total" : total, "regle" : regle, "solde" : solde, 
                 "activites" : liste_activites, "individus" : liste_individus, "prestations" : prestations,
                 }
@@ -755,7 +756,7 @@ class Facturation():
         dictFactures = {}
         dictChampsFusion = {}
         
-        for IDfacture, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
             total = FloatToDecimal(total) 
             regle = FloatToDecimal(regle)
             solde = FloatToDecimal(solde) 
@@ -771,12 +772,18 @@ class Facturation():
                     dictCompte["solde"] = solde
                 
                 # Attribue un numéro de facture
-                dictCompte["num_facture"] = numero
-                dictCompte["num_codeBarre"] = "%07d" % numero
-                dictCompte["numero"] = _(u"Facture n°%07d") % numero
-                dictCompte["{NUM_FACTURE}"] = u"%06d" % numero
-                dictCompte["{CODEBARRES_NUM_FACTURE}"] = "F%06d" % numero
+                if IDprefixe != None :
+                    numeroStr = u"%s-%06d" % (prefixe, numero)
+                else :
+                    numeroStr = u"%06d" % numero
+
+                dictCompte["num_facture"] = numeroStr
+                dictCompte["num_codeBarre"] = numeroStr #"%07d" % numero
+                dictCompte["numero"] = _(u"Facture n°%s") % numeroStr
+                dictCompte["{NUM_FACTURE}"] = numeroStr #u"%06d" % numero
+                dictCompte["{CODEBARRES_NUM_FACTURE}"] = u"F%s" % numeroStr
                 dictCompte["{NUMERO_FACTURE}"] = dictCompte["{NUM_FACTURE}"]
+
                 dictCompte["{DATE_DEBUT}"] = UTILS_Dates.DateEngFr(str(date_debut))
                 dictCompte["{DATE_FIN}"] = UTILS_Dates.DateEngFr(str(date_fin))
                 dictCompte["{DATE_EDITION_FACTURE}"] = UTILS_Dates.DateEngFr(str(date_edition))

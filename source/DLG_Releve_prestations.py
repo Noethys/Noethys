@@ -371,12 +371,13 @@ class Impression():
         """ Récupération des factures de la famille """
         # Récupération des factures
         req = """
-        SELECT factures.IDfacture, factures.numero, factures.IDcompte_payeur, 
+        SELECT factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
         factures.date_debut, factures.date_fin, factures.total, factures.regle, factures.solde,
         comptes_payeurs.IDfamille
         FROM factures
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         WHERE comptes_payeurs.IDfamille=%d
         ORDER BY factures.date_edition
         ;""" % self.IDfamille
@@ -384,7 +385,7 @@ class Impression():
         listeFacturesTemp = self.DB.ResultatReq()
                 
         listeFactures = []
-        for IDfacture, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDfamille in listeFacturesTemp :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDfamille in listeFacturesTemp :
             if numero == None : numero = 0
             date_edition = DateEngEnDateDD(date_edition) 
             date_debut = DateEngEnDateDD(date_debut)
@@ -402,7 +403,7 @@ class Impression():
                     totalVentilation += dictPrestation["montant_ventilation"]
 
             dictTemp = {
-                "IDfacture" : IDfacture, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
+                "IDfacture" : IDfacture, "IDprefixe" : IDprefixe, "prefixe" : prefixe, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
                 "IDutilisateur" : IDutilisateur, "date_debut" : date_debut, "date_fin" : date_fin, "total" : total, "regle" : regle, "solde" : solde, 
                 "totalPrestations" : totalPrestations, "totalVentilation" : totalVentilation, "listePrestations" : listePrestations, "IDfamille" : IDfamille,
                 }
@@ -813,7 +814,11 @@ class Impression():
                             listeLigne.append(Paragraph(u"<para align='center'>%s</para>" % DateEngFr(str(date)), paraStyle))
 
                             # Numéro de facture
-                            listeLigne.append(Paragraph(_(u"Facture n°%s") % dictFacture["numero"], paraStyle))
+                            if dictFacture["IDprefixe"] != None :
+                                numero = u"%s-%06d" % (dictFacture["prefixe"], dictFacture["numero"])
+                            else :
+                                numero = u"%06d" % dictFacture["numero"]
+                            listeLigne.append(Paragraph(_(u"Facture n°%s") % numero, paraStyle))
 
                             # Période facture
                             listeLigne.append(Paragraph(_(u"Du %s au %s") % (DateEngFr(str(dictFacture["date_debut"])), DateEngFr(str(dictFacture["date_fin"]))), paraStyle))

@@ -76,6 +76,64 @@ class CTRL_Lot_factures(wx.Choice):
 
 # -----------------------------------------------------------------------------------------------------------------------
 
+class CTRL_Prefixe_factures(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 0 :
+            self.Enable(False)
+        else :
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        db = GestionDB.DB()
+        req = """SELECT IDprefixe, nom, prefixe
+        FROM factures_prefixes
+        ORDER BY prefixe;"""
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        listeItems = [_(u"Aucun préfixe"),]
+        self.dictDonnees = {}
+        self.dictDonnees[0] = { "ID" : None, "nom" : _(u"Aucun préfixe"), "prefixe" : None}
+        index = 1
+        for IDprefixe, nom, prefixe in listeDonnees :
+            self.dictDonnees[index] = { "ID" : IDprefixe, "nom" : nom, "prefixe" : prefixe}
+            label = u"%s - %s" % (prefixe, nom)
+            listeItems.append(label)
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=0):
+        if ID == None :
+            self.SetSelection(0)
+        for index, values in self.dictDonnees.iteritems():
+            if values["ID"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0 : return None
+        return self.dictDonnees[index]["ID"]
+
+    def GetNom(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0 : return None
+        return self.dictDonnees[index]["nom"]
+
+    def GetPrefixe(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0 : return None
+        return self.dictDonnees[index]["prefixe"]
+
+# -----------------------------------------------------------------------------------------------------------------------
+
 class CTRL_Famille(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1) 
@@ -148,6 +206,9 @@ class Panel(wx.Panel):
         self.bouton_lots = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         
         # Paramètres
+        self.label_prefixe = wx.StaticText(self, -1, _(u"Préfixe de numéro :"))
+        self.ctrl_prefixe = CTRL_Prefixe_factures(self)
+        self.bouton_prefixes = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_ANY))
         self.label_prochain_numero = wx.StaticText(self, -1, _(u"Prochain numéro :"))
         self.ctrl_prochain_numero = wx.TextCtrl(self, -1, u"", size=(95, -1))
         self.bouton_prochain_numero = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Actualiser2.png", wx.BITMAP_TYPE_ANY))
@@ -178,6 +239,8 @@ class Panel(wx.Panel):
         self.__do_layout()
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLots, self.bouton_lots)
+        self.Bind(wx.EVT_CHOICE, self.OnChoixPrefixe, self.ctrl_prefixe)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonPrefixes, self.bouton_prefixes)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckNumeroAuto, self.check_numero_auto)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_toutes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_unique)
@@ -190,21 +253,13 @@ class Panel(wx.Panel):
         self.check_autres.SetValue(True)
         self.OnRadioFamilles(None)
                 
-        # Recherche du prochain numéro de facture
-        DB = GestionDB.DB()
-        req = """SELECT MAX(numero) FROM factures;""" 
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()  
-        DB.Close() 
-        if listeDonnees[0][0] == None :
-            self.prochain_numero_defaut = 1
-        else:
-            self.prochain_numero_defaut = listeDonnees[0][0] + 1
         self.AfficheProchainNumeroDefaut()
         self.check_numero_auto.SetValue(True)
         self.OnCheckNumeroAuto()
 
     def __set_properties(self):
+        self.ctrl_prefixe.SetToolTipString(_(u"Sélectionnez un préfixe de numéro de factures dans la liste proposée. Cet paramètre permet d'obtenir des numéros de facture de type 'ABC-00001'."))
+        self.bouton_prefixes.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des préfixes de factures"))
         self.ctrl_lot.SetToolTipString(_(u"Sélectionnez un nom de lot à associer aux factures générées. Ex : Janvier 2013, Février, 2013, etc... Ce nom vous permettra de retrouver vos factures facilement [Optionnel]"))
         self.bouton_lots.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des lots"))
         self.ctrl_prochain_numero.SetToolTipString(_(u"Numéro de la prochaine facture générée. Vous pouvez modifier ce numéro si vous souhaitez par exemple modifier la numérotation en début d'année"))
@@ -223,7 +278,6 @@ class Panel(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
         grid_sizer_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
-
 
         # Période
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
@@ -248,7 +302,15 @@ class Panel(wx.Panel):
         # Paramètres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
         grid_sizer_parametres = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
-        
+
+        grid_sizer_parametres.Add(self.label_prefixe, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_prefixe = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_prefixe.Add(self.ctrl_prefixe, 0, wx.EXPAND, 0)
+        grid_sizer_prefixe.Add(self.bouton_prefixes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prefixe.AddGrowableCol(0)
+        grid_sizer_parametres.Add(grid_sizer_prefixe, 1, wx.EXPAND, 0)
+
         grid_sizer_parametres.Add(self.label_prochain_numero, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         
         grid_sizer_numero = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
@@ -261,6 +323,7 @@ class Panel(wx.Panel):
         grid_sizer_parametres.Add(self.ctrl_date_emission, 0, 0, 0)
         grid_sizer_parametres.Add(self.label_date_echeance, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_date_echeance, 0, 0, 0)
+        grid_sizer_parametres.AddGrowableCol(1)
         box_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_parametres, 1, wx.EXPAND, 0)
 
@@ -279,7 +342,6 @@ class Panel(wx.Panel):
         grid_sizer_familles.Add(self.radio_familles_toutes, 0, 0, 0)
         grid_sizer_familles.Add(self.radio_familles_unique, 0, 0, 0)
         grid_sizer_familles.Add(self.ctrl_famille, 0, wx.LEFT|wx.EXPAND, 18)
-        grid_sizer_familles.AddGrowableRow(2)
         grid_sizer_familles.AddGrowableCol(0)
         box_familles.Add(grid_sizer_familles, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_familles, 1, wx.EXPAND, 0)
@@ -305,6 +367,19 @@ class Panel(wx.Panel):
         self.ctrl_lot.MAJ() 
         if IDlot == None : IDlot = 0
         self.ctrl_lot.SetID(IDlot)
+
+    def OnChoixPrefixe(self, event=None):
+        self.AfficheProchainNumeroDefaut()
+
+    def OnBoutonPrefixes(self, event):
+        IDprefixe = self.ctrl_prefixe.GetID()
+        import DLG_Prefixes_factures
+        dlg = DLG_Prefixes_factures.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        self.ctrl_prefixe.MAJ()
+        self.ctrl_prefixe.SetID(IDprefixe)
+        self.AfficheProchainNumeroDefaut()
 
     def OnRadioFamilles(self, event):
         self.ctrl_famille.Enable(self.radio_familles_unique.GetValue())
@@ -351,7 +426,11 @@ class Panel(wx.Panel):
             dlg.Destroy()
             if resultat != wx.ID_YES :
                 return False
-        
+
+        # Préfixe de facture
+        IDprefixe = self.ctrl_prefixe.GetID()
+        prefixe = self.ctrl_prefixe.GetPrefixe()
+
         # Prochain numéro de facture
         if self.check_numero_auto.GetValue() == True :
             # Numéro auto
@@ -444,6 +523,8 @@ class Panel(wx.Panel):
             "prestations" : prestations,
             "IDcompte_payeur" : IDcompte_payeur_unique,
             "listeActivites" : listeActivites,
+            "IDprefixe" : IDprefixe,
+            "prefixe" : prefixe,
             }
 
         return True
@@ -461,8 +542,30 @@ class Panel(wx.Panel):
     
     def AfficheProchainNumeroDefaut(self, event=None):
         """ Recherche numéro de facture suivant """
+        # Recherche du prochain numéro de facture
+        IDprefixe = self.ctrl_prefixe.GetID()
+        if IDprefixe == None :
+            conditions = "WHERE IDprefixe IS NULL"
+        else :
+            conditions = "WHERE IDprefixe=%d" % IDprefixe
+        DB = GestionDB.DB()
+        req = """SELECT MAX(numero)
+        FROM factures
+        %s
+        ;""" % conditions
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if listeDonnees[0][0] == None :
+            self.prochain_numero_defaut = 1
+        else:
+            self.prochain_numero_defaut = listeDonnees[0][0] + 1
+
+        # Affichage du numéro trouvé
         self.ctrl_prochain_numero.SetValue(str(self.prochain_numero_defaut))
-    
+
+
+
 
 
 class MyFrame(wx.Frame):

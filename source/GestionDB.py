@@ -1837,7 +1837,15 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
+        versionFiltre = (1, 1, 6, 7)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("factures_prefixes") == False : self.CreationTable("factures_prefixes", Tables.DB_DATA)
+                self.AjoutChamp("factures", "IDprefixe", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 
@@ -2086,7 +2094,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("types_quotients",)
+    # listeTables = ("factures_prefixes",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2135,7 +2143,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("tarifs", "IDtype_quotient", "INTEGER")
+    # db.AjoutChamp("factures", "IDprefixe", "INTEGER")
     # db.Close()
 
     # Exportation d'une table dans la base DEFAUT

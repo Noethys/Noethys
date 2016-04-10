@@ -122,11 +122,18 @@ class Panel(wx.Panel):
         
         # Sélection du prochain numéro de facture
         numero = self.parent.dictParametres["prochain_numero"]
+        IDprefixe = self.parent.dictParametres["IDprefixe"]
         
         if numero == None :
             # Recherche du prochain numéro de facture si mode AUTO
+            if IDprefixe == None :
+                conditions = "WHERE IDprefixe IS NULL"
+            else :
+                conditions = "WHERE IDprefixe=%d" % IDprefixe
             DB = GestionDB.DB()
-            req = """SELECT MAX(numero) FROM factures;""" 
+            req = """SELECT MAX(numero)
+            FROM factures
+            %s;""" % conditions
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()  
             DB.Close() 
@@ -165,20 +172,21 @@ class Panel(wx.Panel):
 
                 # Sauvegarde de la facture
                 listeDonnees = [ 
-                    ("numero", numero ), 
-                    ("IDcompte_payeur", IDcompte_payeur ), 
-                    ("date_edition", str(datetime.date.today()) ), 
-                    ("date_echeance", date_echeance ), 
-                    ("activites", texteActivites ), 
-                    ("individus", texteIndividus ), 
-                    ("IDutilisateur", IDutilisateur ), 
-                    ("date_debut", str(dictCompte["date_debut"]) ), 
-                    ("date_fin", str(dictCompte["date_fin"]) ), 
-                    ("total", float(total) ), 
-                    ("regle", float(regle) ), 
-                    ("solde", float(solde) ), 
-                    ("IDlot", self.parent.dictParametres["IDlot"] ), 
-                    ("prestations", ";".join(self.parent.dictParametres["prestations"]) ),
+                    ("IDprefixe", IDprefixe),
+                    ("numero", numero),
+                    ("IDcompte_payeur", IDcompte_payeur),
+                    ("date_edition", str(datetime.date.today())),
+                    ("date_echeance", date_echeance),
+                    ("activites", texteActivites),
+                    ("individus", texteIndividus),
+                    ("IDutilisateur", IDutilisateur),
+                    ("date_debut", str(dictCompte["date_debut"])),
+                    ("date_fin", str(dictCompte["date_fin"])),
+                    ("total", float(total)),
+                    ("regle", float(regle)),
+                    ("solde", float(solde)),
+                    ("IDlot", self.parent.dictParametres["IDlot"]),
+                    ("prestations", ";".join(self.parent.dictParametres["prestations"])),
                     ]
                 IDfacture = DB.ReqInsert("factures", listeDonnees)
                                     

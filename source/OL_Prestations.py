@@ -61,14 +61,19 @@ class Track(object):
         if self.IDfacture == None :
             self.label_facture = u""
         else:
+            IDprefixe = donnees["IDprefixe"]
+            prefixe = donnees["prefixe"]
             num_facture = donnees["num_facture"]
             date_facture = donnees["date_facture"]
-            if num_facture != None :
-                if type(num_facture) == int :
-                    num_facture = str(num_facture)
-                self.label_facture = u"n°%s" % num_facture
-            else :
+            if num_facture == None :
                 self.label_facture = u""
+            else :
+                if IDprefixe != None :
+                    num_facture = u"%s-%06d" % (prefixe, num_facture)
+                else :
+                    num_facture = u"%06d" % num_facture
+                self.label_facture = u"n°%s" % num_facture
+
         self.IDfamille = donnees["IDfamille"]
         self.IDindividu = donnees["IDindividu"]
         self.nomIndividu = donnees["nomIndividu"]
@@ -150,7 +155,8 @@ class ListView(GroupListView):
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, prestations.date, categorie, 
         prestations.label, prestations.montant, 
         prestations.IDactivite, activites.nom, activites.abrege,
-        prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, prestations.IDfacture, factures.numero, factures.date_edition,
+        prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom,
+        prestations.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.date_edition,
         prestations.forfait, prestations.IDcategorie_tarif,
         IDfamille, prestations.IDindividu, 
         individus.nom, individus.prenom,
@@ -165,6 +171,7 @@ class ListView(GroupListView):
         LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
         LEFT JOIN deductions ON deductions.IDprestation = prestations.IDprestation
         LEFT JOIN factures ON prestations.IDfacture = factures.IDfacture
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         WHERE %s %s %s %s
         GROUP BY prestations.IDprestation
         ORDER BY prestations.date
@@ -197,7 +204,7 @@ class ListView(GroupListView):
         listeActivites = []
         listeFactures = []
         total = 0.0
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, nomAbregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, num_facture, date_facture, forfait, IDcategorie_tarif, IDfamille, IDindividu, nomIndividu, prenomIndividu, montant_deduction, nbre_deductions, reglement_frais in listeDonnees :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, nomAbregeActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDprefixe, prefixe, num_facture, date_facture, forfait, IDcategorie_tarif, IDfamille, IDindividu, nomIndividu, prenomIndividu, montant_deduction, nbre_deductions, reglement_frais in listeDonnees :
             date = DateEngEnDateDD(date)  
             if dictVentilation.has_key(IDprestation) :
                 montant_ventilation = FloatToDecimal(dictVentilation[IDprestation])
@@ -209,7 +216,7 @@ class ListView(GroupListView):
             dictTemp = {
                 "IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "date" : date, "categorie" : categorie,
                 "label" : label, "montant" : FloatToDecimal(montant), "IDactivite" : IDactivite, "nomActivite" : nomActivite, "nomAbregeActivite" : nomAbregeActivite, "IDtarif" : IDtarif, "nomTarif" : nomTarif, 
-                "nomCategorieTarif" : nomCategorieTarif, "IDfacture" : IDfacture, "num_facture" : num_facture, "date_facture" : date_facture, "forfait" : forfait,
+                "nomCategorieTarif" : nomCategorieTarif, "IDfacture" : IDfacture, "IDprefixe" : IDprefixe, "prefixe" : prefixe, "num_facture" : num_facture, "date_facture" : date_facture, "forfait" : forfait,
                 "IDfamille" : IDfamille, "IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu,
                 "montant_ventilation" : FloatToDecimal(montant_ventilation), "montant_deduction" : FloatToDecimal(montant_deduction), 
                 "nbre_deductions" : nbre_deductions, "reglement_frais" : reglement_frais,

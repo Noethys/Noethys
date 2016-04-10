@@ -70,7 +70,7 @@ class Dialog(wx.Dialog):
         self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
         self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
-        self.SetMinSize((760, 670))
+        self.SetMinSize((760, 685))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)

@@ -28,9 +28,6 @@ import OL_Deductions
 import CTRL_Saisie_duree
 import UTILS_Dates
 
-try: import psyco; psyco.full()
-except: pass
-
 
 def DateEngEnDateDD(dateEng):
     if dateEng != None :
@@ -557,18 +554,19 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         req = """SELECT IDprestation, prestations.IDcompte_payeur, date, categorie, label, montant_initial, montant, prestations.IDactivite, 
         prestations.IDtarif, prestations.IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, prestations.IDcategorie_tarif, prestations.code_compta, prestations.tva,
-        factures.numero
+        factures.IDprefixe, factures_prefixes.prefixe, factures.numero
         FROM prestations 
         LEFT JOIN tarifs ON prestations.IDtarif = tarifs.IDtarif
         LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
         LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         WHERE IDprestation=%d;""" % self.IDprestation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
         prestation = listeDonnees[0]
-        IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, tva, numFacture = prestation
+        IDprestation, IDcompte_payeur, date, categorie, label, montant_initial, montant, IDactivite, IDtarif, IDfacture, IDfamille, IDindividu, temps_facture, categories_tarifs, IDcategorie_tarif, code_compta, tva, IDprefixe, prefixe, numFacture = prestation
         
         # Date
         self.ctrl_date.SetDate(date)
@@ -605,7 +603,13 @@ class Dialog(wx.Dialog):
         # Facture
         self.IDfacture = IDfacture
         if numFacture != None :
-            self.ctrl_facture.SetLabel(_(u"Facture n°%d") % numFacture)
+
+            if IDprefixe != None :
+                numFacture = u"%s-%06d" % (prefixe, numFacture)
+            else :
+                numFacture = u"%06d" % numFacture
+            self.ctrl_facture.SetLabel(_(u"Facture n°%s") % numFacture)
+
             self.ctrl_deductions.Enable(False)
             self.bouton_ajouter.Enable(False)
             self.bouton_modifier.Enable(False)

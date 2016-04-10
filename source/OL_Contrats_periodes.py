@@ -332,7 +332,7 @@ class ListView(FastObjectListView):
         for track in listeSelections :
 
             if track.IDfacture != None :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation '%s' car elle apparaît déjà sur la facture n°%d !") % (track.label_prestation, track.numFacture) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas supprimer la prestation '%s' car elle apparaît déjà sur la facture n°%s !") % (track.label_prestation, track.numFacture) , _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return

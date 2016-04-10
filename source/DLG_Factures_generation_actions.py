@@ -28,9 +28,10 @@ class Panel(wx.Panel):
 
         codesColonnes = ["IDfacture", "date", "numero", "famille", "prelevement", "email", "total", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = False
-        triColonne = "numero"
+        triColonne = "IDfacture"
         self.ctrl_factures = OL_Factures.ListView(self, id=-1, codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, 
                                                                     style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.ctrl_factures.SetMinSize((100, 100))
 
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Apercu.png", wx.BITMAP_TYPE_ANY))
         self.bouton_email_facture = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Emails_exp.png", wx.BITMAP_TYPE_ANY))

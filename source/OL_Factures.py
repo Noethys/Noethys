@@ -35,8 +35,17 @@ from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, 
 class Track(object):
     def __init__(self, donnees):
         self.IDfacture = donnees["IDfacture"]
+
+        self.IDprefixe = donnees["IDprefixe"]
+        self.prefixe = donnees["prefixe"]
         self.numero = donnees["numero"]
         if self.numero == None : self.numero = 0
+
+        if self.IDprefixe != None :
+            self.numero = u"%s-%06d" % (self.prefixe, self.numero)
+        else :
+            self.numero = u"%06d" % self.numero
+
         self.IDcompte_payeur = donnees["IDcompte_payeur"]
         self.etat = donnees["etat"]
         self.date_edition = donnees["date_edition"]
@@ -112,7 +121,7 @@ class ListView(FastObjectListView):
         self.IDcompte_payeur = kwds.pop("IDcompte_payeur", None)
         self.codesColonnes = kwds.pop("codesColonnes", [])
         self.checkColonne = kwds.pop("checkColonne", False)
-        self.triColonne = kwds.pop("triColonne", "numero")
+        self.triColonne = kwds.pop("triColonne", "IDfacture")
         self.afficherAnnulations = kwds.pop("afficherAnnulations", False)
         self.filtres = None
         self.selectionID = None
@@ -170,9 +179,16 @@ class ListView(FastObjectListView):
                     else : listeTemp = str(tuple(filtre["liste"]))
                     listeConditions.append( "factures.IDfacture IN %s" % listeTemp)
 
+                # Préfixe
+                if filtre["type"] == "prefixe" :
+                    if filtre["IDprefixe"] == None :
+                        listeConditions.append( "factures.IDprefixe IS NULL")
+                    else :
+                        listeConditions.append( "factures.IDprefixe=%d" % filtre["IDprefixe"])
+
                 # Lot de factures
                 if filtre["type"] == "lot" :
-                    listeConditions.append( "factures.IDlot=%d" % filtre["IDlot"] )
+                    listeConditions.append( "factures.IDlot=%d" % filtre["IDlot"])
             
                 # Date d'émission
                 if filtre["type"] == "date_emission" :
@@ -216,13 +232,14 @@ class ListView(FastObjectListView):
         
         # Récupération des factures
         req = """
-        SELECT factures.IDfacture, factures.numero, factures.IDcompte_payeur, 
+        SELECT factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
         factures.date_debut, factures.date_fin, factures.total, factures.regle, factures.solde,
         comptes_payeurs.IDfamille, factures.IDlot, lots_factures.nom, factures.etat
         FROM factures
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
         LEFT JOIN lots_factures ON lots_factures.IDlot = factures.IDlot
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         %s
         ORDER BY factures.date_edition
         ;""" % conditions.replace("prestations.IDcompte_payeur", "comptes_payeurs.IDcompte_payeur")
@@ -284,7 +301,7 @@ class ListView(FastObjectListView):
         DB.Close() 
                 
         listeResultats = []
-        for IDfacture, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDfamille, IDlot, nomLot, etat in listeFactures :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDfamille, IDlot, nomLot, etat in listeFactures :
             if numero == None : numero = 0
             date_edition = UTILS_Dates.DateEngEnDateDD(date_edition) 
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
@@ -306,7 +323,7 @@ class ListView(FastObjectListView):
                 adresse_famille = dictTitulaires[IDfamille]["adresse"]
                 
                 dictTemp = {
-                    "IDfacture" : IDfacture, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
+                    "IDfacture" : IDfacture, "IDprefixe" : IDprefixe, "prefixe" : prefixe, "numero" : numero, "IDcompte_payeur" : IDcompte_payeur, "date_edition" : date_edition, "date_echeance" : date_echeance,
                     "IDutilisateur" : IDutilisateur, "date_debut" : date_debut, "date_fin" : date_fin, "total" : total, "regle" : regle, "solde" : solde, 
                     "totalPrestations" : totalPrestations, "totalVentilation" : totalVentilation, "IDfamille" : IDfamille, "titulaires" : titulaires, "IDlot" : IDlot, "nomLot" : nomLot,
                     "adresse_famille" : adresse_famille, "etat" : etat,
@@ -442,7 +459,9 @@ class ListView(FastObjectListView):
         dictColonnes = {
             "IDfacture" : ColumnDefn(u"", "left", 0, "IDfacture", typeDonnee="entier"),
             "date" : ColumnDefn(_(u"Date"), "centre", 80, "date_edition", typeDonnee="date", stringConverter=FormateDate),
-            "numero" : ColumnDefn(u"N°", "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
+            "prefixe" : ColumnDefn(_(u"Préfixe"), "centre", 50, "prefixe", typeDonnee="texte"),
+            #"numero" : ColumnDefn(_(u"N°"), "centre", 65, "numero", typeDonnee="entier", stringConverter=FormateNumero),
+            "numero" : ColumnDefn(_(u"N°"), "centre", 80, "numero", typeDonnee="texte"),
             "famille" : ColumnDefn(_(u"Famille"), "left", 180, "nomsTitulaires", typeDonnee="texte"),
             "date_debut" : ColumnDefn(_(u"Date début"), "centre", 80, "date_debut", typeDonnee="date", stringConverter=FormateDate),
             "date_fin" : ColumnDefn(_(u"Date fin"), "centre", 80, "date_fin", typeDonnee="date", stringConverter=FormateDate),
@@ -471,7 +490,7 @@ class ListView(FastObjectListView):
         if self.checkColonne == True :
             self.CreateCheckStateColumn(1)
         if tri != None :
-            if self.checkColonne == True : tri += 1
+            if self.checkColonne == True and tri > 0 : tri += 1
             self.SetSortColumn(self.columns[tri])
 
         self.SetEmptyListMsg(_(u"Aucune facture"))
@@ -722,7 +741,7 @@ class ListView(FastObjectListView):
         else :
             # Suppression unique
             listeSelections = self.Selection()        
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s la facture n°%d ?") % (verbe, listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s la facture n°%s ?") % (verbe, listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
             reponse = dlg.ShowModal() 
             dlg.Destroy()
             if reponse != wx.ID_YES :
@@ -828,9 +847,9 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
 
         IDcompte_payeur = None
-        codesColonnes = ["IDfacture", "date", "numero", "famille", "prelevement", "email", "date_debut", "date_fin", "total", "regle", "solde", "solde_actuel", "date_echeance", "nom_lot"]
+        codesColonnes = ["IDfacture", "date", "prefixe", "numero", "famille", "prelevement", "email", "date_debut", "date_fin", "total", "regle", "solde", "solde_actuel", "date_echeance", "nom_lot"]
         checkColonne = True
-        triColonne = "numero"
+        triColonne = "IDfacture"
 
 ##        listview = ListView(panel, -1, IDcompte_payeur=IDcompte_payeur, codesColonnes=codesColonnes, checkColonne=checkColonne, triColonne=triColonne, style=wx.LC_HRULES|wx.LC_VRULES|wx.LC_REPORT|wx.SUNKEN_BORDER)
 ##        listview.MAJ() 

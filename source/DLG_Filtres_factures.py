@@ -20,6 +20,7 @@ import CTRL_Bandeau
 import CTRL_Saisie_date
 import CTRL_Saisie_euros
 from DLG_Factures_generation_parametres import CTRL_Lot_factures
+from DLG_Factures_generation_parametres import CTRL_Prefixe_factures
 
 import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
@@ -58,6 +59,19 @@ def GetTexteFiltres(filtres):
         # Date d'échéance
          if filtre["type"] == "date_echeance" :
             listeTextes.append(_(u"Date d'échéance de %s à %s") % (DateEngFr(str(filtre["date_min"])), DateEngFr(str(filtre["date_max"]))))
+
+        # Préfixes de factures
+         if filtre["type"] == "prefixe" :
+            if filtre["IDprefixe"] == None :
+                listeTextes.append(_(u"Préfixe de factures 'Aucun préfixe'"))
+            else :
+                DB = GestionDB.DB()
+                req = """SELECT IDprefixe, prefixe FROM factures_prefixes WHERE IDprefixe=%d;""" % filtre["IDprefixe"]
+                DB.ExecuterReq(req)
+                listeDonnees = DB.ResultatReq()
+                DB.Close()
+                if len(listeDonnees) > 0 :
+                    listeTextes.append(_(u"Préfixe de factures '%s'") % listeDonnees[0][1])
 
         # Numéros Intervalle
          if filtre["type"] == "numero_intervalle" :
@@ -194,7 +208,10 @@ class Dialog(wx.Dialog):
         self.ctrl_echeance_min = CTRL_Saisie_date.Date2(self)
         self.label_echeance_a = wx.StaticText(self, -1, u"à")
         self.ctrl_echeance_max = CTRL_Saisie_date.Date2(self)
-        
+
+        self.check_prefixe = wx.CheckBox(self, -1, _(u"Préfixe de numéro :"))
+        self.ctrl_prefixe = CTRL_Prefixe_factures(self)
+
         self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"Numéros de factures de"))
         self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_min.SetMinSize((70, -1))
@@ -236,6 +253,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_lot)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_emission)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_echeance)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_prefixe)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_numeros_intervalle)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_numeros_liste)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_solde_initial)
@@ -259,6 +277,8 @@ class Dialog(wx.Dialog):
         self.check_echeance.SetToolTipString(_(u"Filtre Date d'échéance"))
         self.ctrl_echeance_min.SetToolTipString(_(u"Sélectionnez une date min"))
         self.ctrl_echeance_max.SetToolTipString(_(u"Sélectionnez une date max"))
+        self.check_prefixe.SetToolTipString(_(u"Filtre Préfixe de factures"))
+        self.ctrl_prefixe.SetToolTipString(_(u"Sélectionnez un préfixe de factures dans la liste"))
         self.check_numeros_intervalle.SetToolTipString(_(u"Filtre Intervalle de numéros de facture"))
         self.ctrl_numeros_intervalle_min.SetToolTipString(_(u"Saisissez un numéro de facture min"))
         self.ctrl_numeros_intervalle_max.SetToolTipString(_(u"Saisissez un numéro de facture max"))
@@ -304,7 +324,13 @@ class Dialog(wx.Dialog):
         grid_sizer_echeance.Add(self.label_echeance_a, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_echeance.Add(self.ctrl_echeance_max, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_echeance, 1, wx.EXPAND, 0)
-        
+
+        grid_sizer_prefixe = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_prefixe.Add(self.check_prefixe, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_prefixe.Add(self.ctrl_prefixe, 0, wx.EXPAND, 0)
+        grid_sizer_prefixe.AddGrowableCol(1)
+        grid_sizer_contenu.Add(grid_sizer_prefixe, 1, wx.EXPAND, 0)
+
         grid_sizer_numeros_intervalle = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_numeros_intervalle.Add(self.check_numeros_intervalle, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_numeros_intervalle.Add(self.ctrl_numeros_intervalle_min, 0, 0, 0)
@@ -374,7 +400,9 @@ class Dialog(wx.Dialog):
 
         self.ctrl_echeance_min.Enable(self.check_echeance.GetValue())
         self.ctrl_echeance_max.Enable(self.check_echeance.GetValue())
-        
+
+        self.ctrl_prefixe.Enable(self.check_prefixe.GetValue())
+
         self.ctrl_numeros_intervalle_min.Enable(self.check_numeros_intervalle.GetValue())
         self.ctrl_numeros_intervalle_max.Enable(self.check_numeros_intervalle.GetValue())
 
@@ -427,6 +455,11 @@ class Dialog(wx.Dialog):
                 return False
         
             filtres.append({"type" : "date_echeance", "date_min" : date_min, "date_max" : date_max})
+
+        # Préfixes de factures
+        if self.check_prefixe.GetValue() == True :
+            IDprefixe = self.ctrl_prefixe.GetID()
+            filtres.append({"type" : "prefixe", "IDprefixe" : IDprefixe})
 
         # Numéros Intervalle
         if self.check_numeros_intervalle.GetValue() == True :
@@ -530,6 +563,11 @@ class Dialog(wx.Dialog):
                 self.check_echeance.SetValue(True)
                 self.ctrl_echeance_min.SetDate(filtre["date_min"])
                 self.ctrl_echeance_max.SetDate(filtre["date_max"])
+
+            # Préfixe de factures
+            if filtre["type"] == "prefixe" :
+                self.check_prefixe.SetValue(True)
+                self.ctrl_prefixe.SetID(filtre["IDprefixe"])
 
             # numero_intervalle
             if filtre["type"] == "numero_intervalle" :

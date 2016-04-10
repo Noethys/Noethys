@@ -161,7 +161,9 @@ class MainFrame(wx.Frame):
         self.ChargeTraduction() 
 
         # Récupération du nom du dernier fichier chargé
-        self.nomDernierFichier = self.userConfig["nomFichier"]
+        self.nomDernierFichier = ""
+        if self.userConfig.has_key("nomFichier") :
+            self.nomDernierFichier = self.userConfig["nomFichier"]
         self.userConfig["nomFichier"] = ""
         
         if self.userConfig.has_key("assistant_demarrage") :
@@ -650,6 +652,7 @@ class MainFrame(wx.Frame):
                     {"code" : "synthese_vocale", "label" : _(u"Synthèse vocale"), "infobulle" : _(u"Paramétrage de la synthèse vocale"), "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
                     "-",
                     {"code" : "menu_parametrage_factures", "label" : _(u"Facturation"), "items" : [
+                            {"code" : "prefixes_factures", "label" : _(u"Préfixes de factures"), "infobulle" : _(u"Paramétrage des préfixes de factures"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_prefixes_factures},
                             {"code" : "lots_factures", "label" : _(u"Lots de factures"), "infobulle" : _(u"Paramétrage des lots de factures"), "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_factures},
                             {"code" : "lots_rappels", "label" : _(u"Lots de rappels"), "infobulle" : _(u"Paramétrage des lots de rappels"), "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_rappels},
                             ],
@@ -1851,6 +1854,13 @@ class MainFrame(wx.Frame):
         import DLG_Banques
         dlg = DLG_Banques.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_prefixes_factures(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_prefixes_factures", "consulter") == False : return
+        import DLG_Prefixes_factures
+        dlg = DLG_Prefixes_factures.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_param_lots_factures(self, event):
@@ -3740,8 +3750,8 @@ class MyApp(wx.App):
                 os.makedirs(rep)
                 print "Creation du repertoire : ", rep
         
-        # Réinitialisation du fichier des parametres en conservant la touche ALT
-        if wx.GetKeyState(307) == True :
+        # Réinitialisation du fichier des parametres en conservant la touche ALT ou CTRL enfoncée
+        if wx.GetKeyState(307) == True or wx.GetKeyState(308) == True :
             dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser Noethys ?"), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() == wx.ID_YES :
                 os.remove("Data/Config.dat")

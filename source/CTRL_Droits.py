@@ -62,6 +62,7 @@ LISTE_CATEGORIES = [
     { "label" : _(u"Modes de règlements"), "code" : "parametrage_modes_reglements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Emetteurs de règlements"), "code" : "parametrage_emetteurs", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Etablissements bancaires"), "code" : "parametrage_banques", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Préfixes de factures"), "code" : "parametrage_prefixes_factures", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Lots de factures"), "code" : "parametrage_lots_factures", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Lots de rappels"), "code" : "parametrage_lots_rappels", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Régimes sociaux"), "code" : "parametrage_regimes", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },

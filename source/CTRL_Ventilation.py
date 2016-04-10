@@ -196,11 +196,15 @@ class Ligne_prestation(object):
         if self.IDfacture == None or self.IDfacture == "" :
             self.label_facture = _(u"Non facturé")
         else:
+            IDprefixe = donnees["IDprefixe"]
+            prefixe = donnees["prefixe"]
             num_facture = donnees["num_facture"]
+            if IDprefixe != None :
+                numeroStr = u"%s-%06d" % (prefixe, num_facture)
+            else :
+                numeroStr = u"%06d" % num_facture
             date_facture = donnees["date_facture"]
-            if type(num_facture) == int :
-                num_facture = str(num_facture)
-            self.label_facture = u"n°%s" % num_facture
+            self.label_facture = u"n°%s" % numeroStr
         self.IDfamille = donnees["IDfamille"]
         self.IDindividu = donnees["IDindividu"]
         self.nomIndividu = donnees["nomIndividu"]
@@ -567,7 +571,7 @@ class CTRL_Ventilation(gridlib.Grid):
         SELECT prestations.IDprestation, prestations.IDcompte_payeur, date, categorie, label, prestations.montant, 
         prestations.IDactivite, activites.nom,
         prestations.IDtarif, noms_tarifs.nom, categories_tarifs.nom, 
-        prestations.IDfacture, factures.numero, factures.date_edition,
+        prestations.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.date_edition,
         IDfamille, prestations.IDindividu, 
         individus.nom, individus.prenom,
         SUM(ventilation.montant) AS montant_ventilation
@@ -579,6 +583,7 @@ class CTRL_Ventilation(gridlib.Grid):
         LEFT JOIN noms_tarifs ON tarifs.IDnom_tarif = noms_tarifs.IDnom_tarif
         LEFT JOIN categories_tarifs ON tarifs.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
         LEFT JOIN factures ON prestations.IDfacture = factures.IDfacture
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
         WHERE prestations.IDcompte_payeur = %d 
         GROUP BY prestations.IDprestation
         ORDER BY date
@@ -587,7 +592,7 @@ class CTRL_Ventilation(gridlib.Grid):
         listeDonnees = DB.ResultatReq()     
         DB.Close() 
         listeLignesPrestations = []
-        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, num_facture, date_facture, IDfamille, IDindividu, nomIndividu, prenomIndividu, montantVentilation in listeDonnees :
+        for IDprestation, IDcompte_payeur, date, categorie, label, montant, IDactivite, nomActivite, IDtarif, nomTarif, nomCategorieTarif, IDfacture, IDprefixe, prefixe, num_facture, date_facture, IDfamille, IDindividu, nomIndividu, prenomIndividu, montantVentilation in listeDonnees :
             montant = FloatToDecimal(montant)
             montantVentilation = FloatToDecimal(montantVentilation)
             if num_facture == None : num_facture = 0
@@ -599,7 +604,7 @@ class CTRL_Ventilation(gridlib.Grid):
                 dictTemp = {
                     "IDprestation" : IDprestation, "IDcompte_payeur" : IDcompte_payeur, "date" : date, "categorie" : categorie,
                     "label" : label, "montant" : montant, "IDactivite" : IDactivite, "nomActivite" : nomActivite, "IDtarif" : IDtarif, "nomTarif" : nomTarif, 
-                    "nomCategorieTarif" : nomCategorieTarif, "IDfacture" : IDfacture, "num_facture" : num_facture, "date_facture" : date_facture, 
+                    "nomCategorieTarif" : nomCategorieTarif, "IDfacture" : IDfacture, "IDprefixe" : IDprefixe, "prefixe" : prefixe, "num_facture" : num_facture, "date_facture" : date_facture,
                     "IDfamille" : IDfamille, "IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu,
                     "ventilationPassee" : montantVentilation,
                     }

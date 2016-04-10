@@ -41,26 +41,26 @@ class CTRL(wx.SearchCtrl):
         txtSearch = self.GetValue()
         self.ShowCancelButton(len(txtSearch))
         if len(txtSearch) > 6 and txtSearch.startswith("F") :
-            txtSearch = txtSearch[1:]
-            try :
-                numFacture = int(txtSearch)
-            except :
-                dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
+            numFacture = txtSearch[1:]
+            # try :
+            #     numFacture = int(txtSearch)
+            # except :
+            #     dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            #     dlg.ShowModal()
+            #     dlg.Destroy()
+            #     return
             self.ReglerFacture(numFacture)
             self.SetValue("")
 
     def Recherche(self, event):
-        txtSearch = self.GetValue()
-        try :
-            numFacture = int(txtSearch)
-        except :
-            dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
+        numFacture = self.GetValue()
+        # try :
+        #     numFacture = int(txtSearch)
+        # except :
+        #     dlg = wx.MessageDialog(self, _(u"Ce numéro de facture n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     return
         self.ReglerFacture(numFacture)
     
     def ReglerFacture(self, numFacture=None):
@@ -70,6 +70,23 @@ class CTRL(wx.SearchCtrl):
         else:
             texteSupp = u""
             conditionFamille = ""
+
+        try :
+            if "-" in numFacture :
+                prefixe, numero = numFacture.split("-")
+                numero = int(numero)
+                conditionNumero = u"WHERE factures_prefixes.prefixe='%s' AND factures.numero=%d" % (prefixe, numero)
+            else :
+                numero = int(numFacture)
+                conditionNumero = u"WHERE factures.numero=%d" % numero
+        except :
+            conditionNumero = None
+
+        if conditionNumero == None :
+            dlg = wx.MessageDialog(self, _(u"Ce numéro de facture ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
 
         DB = GestionDB.DB()
 
@@ -89,7 +106,7 @@ class CTRL(wx.SearchCtrl):
 ##                dictPrestations[IDfacture] = totalPrestations
 
         # Recherche si le numéro de facture existe
-        req = """
+        req = u"""
         SELECT 
         factures.IDfacture, factures.total, factures.regle, factures.solde,
         SUM(ventilation.montant), etat,
@@ -98,9 +115,10 @@ class CTRL(wx.SearchCtrl):
         LEFT JOIN prestations ON prestations.IDfacture = factures.IDfacture
         LEFT JOIN ventilation ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
-        WHERE factures.numero=%d %s
+        LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
+        %s %s
         GROUP BY factures.IDfacture
-        ;""" % (numFacture, conditionFamille)
+        ;""" % (conditionNumero, conditionFamille)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()     
         DB.Close() 
@@ -113,7 +131,7 @@ class CTRL(wx.SearchCtrl):
         
         IDfacture, totalInitial, regleInitial, soldeInitial, regleActuel, etat, IDfamille = listeDonnees[0]
         if etat == "annulation" :
-            dlg = wx.MessageDialog(self, _(u"La facture n°%d a été annulée !") % numFacture, _(u"Facture annulée"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La facture n°%s a été annulée !") % numFacture, _(u"Facture annulée"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
@@ -137,7 +155,7 @@ class CTRL(wx.SearchCtrl):
         if totalActuel == None : totalActuel = 0.0 
         if regleActuel == None : regleActuel = 0.0 
         if totalActuel - regleActuel == 0.0 :
-            dlg = wx.MessageDialog(self, _(u"La facture n°%d a déjà été réglée en intégralité !") % numFacture, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(self, _(u"La facture n°%s a déjà été réglée en intégralité !") % numFacture, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
