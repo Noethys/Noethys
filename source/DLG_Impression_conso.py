@@ -37,6 +37,7 @@ import UTILS_Pieces_manquantes
 import DATA_Civilites as Civilites
 import CTRL_Etiquettes
 import UTILS_Texte
+import UTILS_Fichiers
 
 from DLG_Saisie_pb_sante import LISTE_TYPES
 
@@ -1442,7 +1443,7 @@ class Dialog(wx.Dialog):
                 IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
                 
                 # Création de la photo dans le répertoire Temp
-                nomFichier = "Temp/photoTmp" + str(IDindividu) + ".jpg"
+                nomFichier = UTILS_Fichiers.GetRepTemp(fichier="photoTmp%d.jpg" % IDindividu)
                 bmp.SaveFile(nomFichier, type=wx.BITMAP_TYPE_JPEG)
                 img = Image(nomFichier, width=tailleImageFinal, height=tailleImageFinal)
                 dictPhotos[IDindividu] = img
@@ -1513,7 +1514,7 @@ class Dialog(wx.Dialog):
             largeur_page = A4[1]
 
         # Initialisation du PDF
-        nomDoc = "Temp/liste_consommations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("LISTE_CONSO", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur_page, hauteur_page), topMargin=30, bottomMargin=30)
         story = []

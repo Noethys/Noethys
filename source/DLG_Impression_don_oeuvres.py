@@ -406,12 +406,12 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RECUDONOEUVRES%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="recu_don_oeuvres")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("RECUDONAUXOEUVRES", "pdf") , categorie="recu_don_oeuvres")
 
     def OnBoutonOk(self, event): 
         self.CreationPDF() 
 
-    def CreationPDF(self, nomDoc="Temp/Recu_don_oeuvres.pdf", afficherDoc=True):        
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RECUDONAUXOEUVRES", "pdf"), afficherDoc=True):
         dictChampsFusion = {}
 
         # Vérifie que la cotisation a été payée
@@ -584,7 +584,7 @@ class Dialog(wx.Dialog):
 # -----------------------------------------------------------------------------------------------------------------
 
 class Impression():
-    def __init__(self, dictDonnees={}, nomDoc="Temp/RECUDONOEUVRES%s.pdf" % FonctionsPerso.GenerationIDdoc(), afficherDoc=True):
+    def __init__(self, dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RECUDONAUXOEUVRES", "pdf") , afficherDoc=True):
         """ Imprime un reçu Dons aux Oeuvres """
         
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle

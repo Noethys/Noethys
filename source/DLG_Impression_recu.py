@@ -588,7 +588,7 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RECU%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="recu_reglement", listeAdresses=self.listeAdresses)
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("RECU", "pdf"), categorie="recu_reglement", listeAdresses=self.listeAdresses)
     
     def GetPrestations(self):
         DB = GestionDB.DB()
@@ -622,7 +622,7 @@ class Dialog(wx.Dialog):
         return listePrestations
     
 
-    def CreationPDF(self, nomDoc="Temp/Recu_reglement.pdf", afficherDoc=True):        
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RECU_REGLEMENT", "pdf"), afficherDoc=True):
         dictChampsFusion = {}
         
         # Récupération des valeurs de base

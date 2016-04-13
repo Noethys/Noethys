@@ -109,7 +109,7 @@ class Impression():
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = "Temp/Cotisations_%s.pdf" % FonctionsPerso.GenerationIDdoc()
+            nomDoc = FonctionsPerso.GenerationNomDoc("COTISATIONS", "pdf")
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)

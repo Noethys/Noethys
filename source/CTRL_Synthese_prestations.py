@@ -483,7 +483,7 @@ class CTRL(HTL.HyperTreeList):
         largeur_page = A4[1]
             
         # Initialisation du PDF
-        nomDoc = "Temp/Synthese_prestations_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("SYNTHESE_PRESTATIONS", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur_page, hauteur_page), topMargin=30, bottomMargin=20, leftMargin=40, rightMargin=40)
         story = []

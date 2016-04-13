@@ -11,6 +11,8 @@
 import shelve
 import os
 import re
+import UTILS_Fichiers
+
 
 DICT_TRADUCTIONS = None
 
@@ -116,7 +118,7 @@ def ConvertShelveEnTexte():
     listeTextes.sort() 
     
     # Enregistrement du fichier texte
-    fichier = open("Temp/Textes.txt", "w")
+    fichier = open(UTILS_Fichiers.GetRepTemp(fichier="Textes.txt"), "w")
     for texte in listeTextes :
         fichier.write(texte + "\n")
     fichier.close() 

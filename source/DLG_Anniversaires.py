@@ -24,6 +24,7 @@ import sys
 import operator
 import CTRL_Photo
 import DATA_Civilites as Civilites
+import UTILS_Fichiers
 
 ##from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
 ##from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
@@ -381,7 +382,7 @@ class Dialog(wx.Dialog):
                 IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
                 
                 # Création de la photo dans le répertoire Temp
-                nomFichier = "Temp/photoTmp" + str(IDindividu) + ".jpg"
+                nomFichier = UTILS_Fichiers.GetRepTemp(fichier="photoTmp%d.jpg" % IDindividu)
                 bmp.SaveFile(nomFichier, type=wx.BITMAP_TYPE_JPEG)
                 img = Image(nomFichier, width=tailleImageFinal, height=tailleImageFinal)
                 dictPhotos[IDindividu] = img
@@ -392,7 +393,7 @@ class Dialog(wx.Dialog):
         self.EcritStatusBar(_(u"Création du PDF...")) 
         
         # Initialisation du PDF
-        nomDoc = "Temp/anniversaires_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("ANNIVERSAIRES", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = BaseDocTemplate(nomDoc, pagesize=(self.largeur_page, self.hauteur_page), topMargin=30, bottomMargin=30, showBoundary=False)
         doc.addPageTemplates(MyPageTemplate(pageSize=(self.largeur_page, self.hauteur_page)))

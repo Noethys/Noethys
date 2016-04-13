@@ -19,6 +19,7 @@ import wx.lib.agw.customtreectrl as CT
 import CTRL_Bandeau
 import GestionDB
 import UTILS_Sauvegarde
+import UTILS_Fichiers
 import UTILS_Cryptage_fichier
 import DLG_Saisie_param_reseau
 
@@ -50,7 +51,7 @@ def SelectionFichier():
             dlg.Destroy()
             return None
         dlg.Destroy()
-        fichierTemp = "Temp/savedecrypte.zip"
+        fichierTemp = UTILS_Fichiers.GetRepTemp(fichier="savedecrypte.zip")
         resultat = UTILS_Cryptage_fichier.DecrypterFichier(fichier, fichierTemp, motdepasse)
         fichier = fichierTemp
         messageErreur = _(u"Le mot de passe que vous avez saisi semble erroné !")

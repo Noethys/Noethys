@@ -924,12 +924,12 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/ATTESTATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="attestation_presence")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("ATTESTATION", "pdf") , categorie="attestation_presence")
 
     def OnBoutonOk(self, event): 
         self.CreationPDF() 
 
-    def CreationPDF(self, nomDoc="Temp/ATTESTATION%s.pdf" % FonctionsPerso.GenerationIDdoc(), afficherDoc=True):        
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("ATTESTATION", "pdf") , afficherDoc=True):
         # Récupération du dictOptions
         dictOptions = self.ctrl_parametres.GetOptions() 
         if dictOptions == False :

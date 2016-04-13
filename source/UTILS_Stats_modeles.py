@@ -19,6 +19,7 @@ import datetime
 import calendar
 import GestionDB
 import UTILS_Dates
+import UTILS_Fichiers
 
 from numpy import arange, sqrt, array, asarray, ones, exp, convolve, linspace
 
@@ -520,9 +521,7 @@ class Graphe(Objet):
         self.wximage.SetData(im.convert("RGB").tobytes())
 ##        self.wximage = self.wximage.Rescale(self.taille[0], self.taille[1], quality=wx.IMAGE_QUALITY_HIGH)
         self.wximbmp = wx.BitmapFromImage(self.wximage)
-        
-##        figure.savefig("Temp/img.png", format='png', transparent=False)
-        
+
         return self.wximbmp
 
 

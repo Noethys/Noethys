@@ -24,6 +24,7 @@ import time
 import UTILS_Config
 import UTILS_Cryptage_fichier
 import UTILS_Envoi_email
+import UTILS_Fichiers
 import GestionDB
 
 
@@ -84,7 +85,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     
     # Création du fichier ZIP temporaire
     nomFichierTemp = u"%s.%s" % (nom, EXTENSIONS["decrypte"])
-    fichierZip = zipfile.ZipFile(_(u"Temp/%s") % nomFichierTemp, "w", compression=zipfile.ZIP_DEFLATED)
+    fichierZip = zipfile.ZipFile(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), "w", compression=zipfile.ZIP_DEFLATED)
     numEtape = 1
     dlgprogress.Update(numEtape, _(u"Création du fichier de compression..."));numEtape += 1
     
@@ -105,7 +106,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     if len(listeFichiersReseau) > 0 and dictConnexion != None :
         
         # Création du répertoire temporaire
-        repTemp = _(u"Temp/savetemp")
+        repTemp = UTILS_Fichiers.GetRepTemp(fichier="savetemp")
         if os.path.isdir(repTemp) == True :
             shutil.rmtree(repTemp)
         os.mkdir(repTemp)
@@ -120,7 +121,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
             return False
         
         # Création du fichier de login
-        nomFichierLoginTemp = os.path.abspath(os.curdir) + "/" + repTemp + "/logintemp.cnf"
+        nomFichierLoginTemp = repTemp + "/logintemp.cnf" #os.path.abspath(os.curdir) + "/" + repTemp + "/logintemp.cnf"
         CreationFichierLoginTemp(host=dictConnexion["host"], port=dictConnexion["port"], user=dictConnexion["user"], password=dictConnexion["password"], nomFichier=nomFichierLoginTemp)
         
         # Création du backup pour chaque fichier MySQL
@@ -196,7 +197,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     if motdepasse != None :
         dlgprogress.Update(numEtape, _(u"Cryptage du fichier..."));numEtape += 1
         fichierCrypte = u"%s.%s" % (nom, EXTENSIONS["crypte"])
-        UTILS_Cryptage_fichier.CrypterFichier(_(u"Temp/%s") % nomFichierTemp, "Temp/%s" % fichierCrypte, base64.b64decode(motdepasse))
+        UTILS_Cryptage_fichier.CrypterFichier(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), UTILS_Fichiers.GetRepTemp(fichier=fichierCrypte), base64.b64decode(motdepasse))
         nomFichierTemp = fichierCrypte
         extension = EXTENSIONS["crypte"]
     else:
@@ -206,7 +207,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     if repertoire != None :
         dlgprogress.Update(numEtape, _(u"Création du fichier dans le répertoire cible..."));numEtape += 1
         try :
-            shutil.copy2(_(u"Temp/%s") % nomFichierTemp, fichierDest) 
+            shutil.copy2(UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp), fichierDest)
         except :
             print "Le repertoire de destination de sauvegarde n'existe pas."
     
@@ -220,7 +221,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
                 #listeDestinatairesCCI=[], 
                 sujetMail=_(u"Sauvegarde Noethys : %s") % nom, 
                 texteMail=_(u"Envoi de la sauvegarde de Noethys"), 
-                listeFichiersJoints=["Temp/%s" % nomFichierTemp,], 
+                listeFichiersJoints=[UTILS_Fichiers.GetRepTemp(fichier=nomFichierTemp),],
                 serveur=dictAdresse["smtp"], 
                 port=dictAdresse["port"], 
                 avecAuthentification=dictAdresse["auth"],
@@ -239,10 +240,10 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     
     # Suppression des répertoires et fichiers temporaires
     dlgprogress.Update(numEtape, _(u"Suppression des fichiers temporaires..."));numEtape += 1
-    fichier = _(u"Temp/%s.%s") % (nom, EXTENSIONS["decrypte"])
+    fichier = UTILS_Fichiers.GetRepTemp(fichier=u"%s.%s" % (nom, EXTENSIONS["decrypte"]))
     if os.path.isfile(fichier) == True :
         os.remove(fichier)
-    fichier = _(u"Temp/%s.%s") % (nom, EXTENSIONS["crypte"])
+    fichier = UTILS_Fichiers.GetRepTemp(fichier=u"%s.%s" % (nom, EXTENSIONS["crypte"]))
     if os.path.isfile(fichier) == True :
         os.remove(fichier)
     
@@ -347,13 +348,13 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
                 return False
 
         # Création du répertoire temporaire
-        repTemp = "Temp/restoretemp"
+        repTemp = UTILS_Fichiers.GetRepTemp(fichier="restoretemp")
         if os.path.isdir(repTemp) == True :
             shutil.rmtree(repTemp)
         os.mkdir(repTemp)
 
         # Création du fichier de login
-        nomFichierLoginTemp = os.path.abspath(os.curdir) + "/" + repTemp + "/logintemp.cnf"
+        nomFichierLoginTemp = repTemp + "/logintemp.cnf" #os.path.abspath(os.curdir) + "/" + repTemp + "/logintemp.cnf"
         CreationFichierLoginTemp(host=dictConnexion["host"], port=dictConnexion["port"], user=dictConnexion["user"], password=dictConnexion["password"], nomFichier=nomFichierLoginTemp)
 
         # Restauration
@@ -372,7 +373,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
             
             fichierRestore = u"%s/%s.sql" % (repTemp, fichier)
             
-            # Copie du fichier SQL dans le répertoire Temp/restoretemp
+            # Copie du fichier SQL dans le répertoire Temp / restoretemp
             buffer = fichierZip.read(u"%s.sql" % fichier)
             f = open(fichierRestore, "wb")
             f.write(buffer)

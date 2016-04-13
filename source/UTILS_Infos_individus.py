@@ -21,6 +21,7 @@ import UTILS_Titulaires
 import UTILS_Cotisations_manquantes
 import UTILS_Pieces_manquantes
 import UTILS_Questionnaires
+import UTILS_Fichiers
 
 from DATA_Liens import DICT_TYPES_LIENS, DICT_AUTORISATIONS
 import DATA_Civilites as Civilites
@@ -829,7 +830,7 @@ class Informations() :
         
         DB.Close() 
     
-    def StockagePickleFichier(self, mode="famille", nomFichier="Temp/infos_individus.pickle"):
+    def StockagePickleFichier(self, mode="famille", nomFichier=UTILS_Fichiers.GetRepTemp(fichier="infos_individus.pickle")):
         import pickle
         dictValeurs = self.GetDictValeurs(mode=mode, formatChamp=False)
         fichier = open(nomFichier, 'wb')
@@ -842,13 +843,13 @@ class Informations() :
             chaine = base64.b64encode(chaine)
         return chaine
     
-    def EnregistreFichier(self, mode="famille", nomFichier="Temp/infos_f.dat"):
+    def EnregistreFichier(self, mode="famille", nomFichier=UTILS_Fichiers.GetRepTemp(fichier="infos_f.dat")):
         chaine = self.GetPickleChaine(mode=mode, cryptage=True)
         fichier = open(nomFichier, "w")
         fichier.write(chaine)
         fichier.close()
     
-    def LectureFichier(self, nomFichier="Temp/infos_f.dat"):
+    def LectureFichier(self, nomFichier=UTILS_Fichiers.GetRepTemp(fichier="infos_f.dat")):
         fichier = open(nomFichier, "r")
         chaine = fichier.read()
         fichier.close()
@@ -856,7 +857,7 @@ class Informations() :
         dictTemp = cPickle.loads(chaine)
         return dictTemp
     
-    def EnregistreDansDB(self, nomFichier="Temp/database.dat"):
+    def EnregistreDansDB(self, nomFichier=UTILS_Fichiers.GetRepTemp(fichier="database.dat")):
         dbdest = GestionDB.DB(suffixe=None, nomFichier=nomFichier, modeCreation=True)
         dictTables = {
 

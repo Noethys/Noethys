@@ -1204,7 +1204,7 @@ class Dialog(wx.Dialog):
                     
                     if reponse == wx.ID_YES :
                         # Envoi direct
-                        nomDoc="Temp/RECU%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+                        nomDoc=FonctionsPerso.GenerationNomDoc("RECU", "pdf")
                         categorie="recu_reglement"
                         dictChamps = dlg1.CreationPDF(nomDoc=nomDoc, afficherDoc=False)
                         if dictChamps == False :

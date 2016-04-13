@@ -162,8 +162,7 @@ class Panel(wx.Panel):
         else:
             # Récupération du nom de la DB directement dans le fichier de config sur le disque dur
             import UTILS_Config
-            nomFichierConfig = "Data/Config.dat"
-            cfg = UTILS_Config.FichierConfig(nomFichierConfig)
+            cfg = UTILS_Config.FichierConfig()
             nomFichier = cfg.GetItemConfig("nomFichier")
         if "[RESEAU]" in nomFichier :
             nomFichier = nomFichier[nomFichier.index("[RESEAU]") + 8:]

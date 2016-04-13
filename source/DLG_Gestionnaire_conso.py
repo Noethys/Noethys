@@ -444,7 +444,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
         # Récupère les perspectives
-        cfg = UTILS_Config.FichierConfig("Data/Config.dat")
+        cfg = UTILS_Config.FichierConfig()
         self.userConfig = cfg.GetDictConfig()
         if self.userConfig.has_key("gestionnaire_perspectives") == True :
             self.perspectives = self.userConfig["gestionnaire_perspectives"]

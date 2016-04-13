@@ -23,15 +23,16 @@ def AdaptePolice(ctrl):
 
 def AdaptationsDemarrage():
     """ Adaptations au démarrage de Noethys """
-    # Vérifie que le chemin est ok
     os.chdir(sys.path[0])
     # Vérifie que les répertoires vides sont bien là
-    for rep in ("Temp", "Updates", "Aide") :
+    for rep in ("Temp",) :
         if os.path.isdir(rep) == False :
             try :
                 os.mkdir(rep)
             except Exception, err:
                 pass
+
+
 
 
 if __name__ == "__main__":

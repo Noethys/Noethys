@@ -14,6 +14,7 @@ import wx
 import CTRL_Bouton_image
 import sys
 import FonctionsPerso
+import UTILS_Fichiers
 
 import matplotlib
 matplotlib.interactive(False)
@@ -75,15 +76,15 @@ class PanelGraph(wx.Panel):
 
     def Imprimer_image(self):
         # Enregistrement de l'image dans repertoire Temp
-        self.canvas.print_figure("Temp/grapheTemp.png", dpi=300)
+        self.canvas.print_figure(UTILS_Fichiers.GetRepTemp(fichier="grapheTemp.png"), dpi=300)
         # Création du PDF
         from reportlab.pdfgen import canvas as canvasPDF
         from reportlab.lib.pagesizes import A4
         hauteur, largeur = A4
-        cheminFichier = "Temp/grapheTemp.pdf"
+        cheminFichier = UTILS_Fichiers.GetRepTemp(fichier="grapheTemp.pdf")
         if sys.platform.startswith("win") : cheminFichier = cheminFichier.replace("/", "\\")
         c = canvasPDF.Canvas(cheminFichier, pagesize=(largeur, hauteur), pageCompression = 1)
-        img = c.drawImage("Temp/grapheTemp.png", 0, 0, width=largeur, height=hauteur, preserveAspectRatio=True)
+        img = c.drawImage(UTILS_Fichiers.GetRepTemp(fichier="grapheTemp.png"), 0, 0, width=largeur, height=hauteur, preserveAspectRatio=True)
         c.save()
         FonctionsPerso.LanceFichierExterne(cheminFichier)
         

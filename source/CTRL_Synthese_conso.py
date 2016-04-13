@@ -624,7 +624,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         story.insert(2, Paragraph(self.labelParametres, styleA))       
 
         # Enregistrement du PDF
-        nomDoc = "Temp/Synthese_conso_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("SYNTHESE_CONSO", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(largeur, hauteur), leftMargin=tailleMarge, rightMargin=tailleMarge, topMargin=tailleMarge, bottomMargin=tailleMarge)
         doc.build(story)

@@ -214,7 +214,7 @@ class Impression():
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = _(u"Temp/%ss_%s.pdf") % (mode, FonctionsPerso.GenerationIDdoc())
+            nomDoc = FonctionsPerso.GenerationNomDoc(mode + "s", "pdf")
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)

@@ -20,6 +20,7 @@ import os
 import subprocess
 import webbrowser
 import random
+import UTILS_Fichiers
 
 
 
@@ -886,7 +887,7 @@ def Parametres(mode="get", categorie="", nom="", valeur=None):
 
 
 def CompareVersions(versionApp="", versionMaj=""):
-    """ Compare 2 versions de TeamWorks """
+    """ Compare 2 versions """
     """ Return True si la version MAJ est plus récente """
     a,b = [[int(n) for n in version.split(".")] for version in [versionMaj, versionApp]]
     return a>b
@@ -966,34 +967,33 @@ def RecupIDfichier():
 
 def VideRepertoireTemp():
     """ Supprimer tous les fichiers du répertoire TEMP """
-    listeFichiers = os.listdir("Temp")
-    try :
-        for nomFichier in listeFichiers :
-            os.remove("Temp/" + nomFichier)
-    except Exception, err : 
-        print err
-        pass
+    for rep in ("Temp/", UTILS_Fichiers.GetRepTemp()) :
+        try :
+            if os.path.isdir(rep) :
+                for nomFichier in os.listdir(rep) :
+                    os.remove(os.path.join(rep, nomFichier))
+        except Exception, err :
+            print err
+            pass
 
 def VideRepertoireUpdates(forcer=False):
     """ Supprimer les fichiers temporaires du répertoire Updates """
-    listeReps = os.listdir("Updates")
-    numVersionActuelle = GetVersionLogiciel()
-    import shutil
     try :
-        for nomRep in listeReps :
+        listeReps = UTILS_Fichiers.GetRepUpdates()
+        numVersionActuelle = GetVersionLogiciel()
+        import shutil
+        for nomRep in os.listdir(listeReps) :
             resultat = CompareVersions(versionApp=numVersionActuelle, versionMaj=nomRep)
             if resultat == False or forcer == True :
                 # Le rep est pour une version égale ou plus ancienne
                 if numVersionActuelle != nomRep or forcer == True :
-                    # La version est ancienne
-                    print "Suppression du repertoire temporaire Updates %s" % nomRep
-                    listeFichiersRep = os.listdir("Updates/%s" % nomRep)
-                    # Suppression du répertoire
-                    shutil.rmtree("Updates/%s" % nomRep)
+                    # Si la version est ancienne, suppression du répertoire
+                    shutil.rmtree(UTILS_Fichiers.GetRepUpdates(nomRep))
                 else:
                     # La version est égale : on la laisse pour l'instant
                     pass
-    except : 
+    except Exception, err:
+        print err
         pass
         
 def ListeImprimantes():
@@ -1120,7 +1120,7 @@ def GetNomDB():
         nom = topWindow.userConfig["nomFichier"]
     else:
         # Récupération du nom de la DB directement dans le fichier de config sur le disque dur
-        cfg = FichierConfig(nomFichier="userconfig.dat")
+        cfg = FichierConfig()
         nom = cfg.GetItemConfig("nomFichier")
     return nom
 
@@ -1349,7 +1349,7 @@ def RechercheImports():
 def RechercherAideManquante():
     listeFichiers = os.listdir(os.getcwd())
     listeFichiersTrouves = []
-    fichierResultats = open("Temp/resultats.txt", 'w')
+    fichierResultats = open(UTILS_Fichiers.GetRepTemp(fichier="resultats.txt"), 'w')
     for nomFichier in listeFichiers :
         if nomFichier.endswith(".py") :
             fichier = open(nomFichier, 'r')
@@ -1425,7 +1425,7 @@ def ReplacementChaine(chaine="", avant="", apres="", remplacement=""):
 
 def PrepareFichierBIC():
     fichier = open("liste_bic_france.txt", 'r')
-    nouveauFichier = open("Temp/liste_bic_france_new.txt", 'w')
+    nouveauFichier = open(UTILS_Fichiers.GetRepTemp(fichier="liste_bic_france_new.txt"), 'w')
     for ligne in fichier :
         ID, nom, ville, divers, bic = ligne.split("\t")
         nouvelleLigne = """("%s", "%s", "%s")\n""" % (nom, ville, bic[:-1])
@@ -1467,6 +1467,10 @@ def GenerationIDdoc():
     IDdoc = "%s%s%d" % (horodatage, IDfichier, numAleatoire)
     return IDdoc
 
+def GenerationNomDoc(prefixe="", extension="pdf"):
+    """ Génération d'un nom de document dans le répertoire Temp"""
+    nomDoc = "%s%s.%s" % (prefixe, GenerationIDdoc() , extension)
+    return UTILS_Fichiers.GetRepTemp(nomDoc)
 
 def InsertUnicodeLiterals():
     """ Pour insérer  dans tous les fichiers """
@@ -1646,7 +1650,10 @@ if __name__ == "__main__":
 ##    print "-------------------- Modules trouves : %d --------------------" % len(listeModules) 
     
     # Créer des données virtuelles dans DB
-    InsertThemeDansOL()
-    
+    #InsertThemeDansOL()
 
+    # Génération d'un nom de document
+    #print GenerationNomDoc("document", "pdf")
+    
+    VideRepertoireUpdates(forcer=True)
     

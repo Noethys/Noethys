@@ -248,7 +248,7 @@ class Impression():
         
         # Initialisation du document
         if nomFichier == None :
-            nomDoc = "Temp/RAPPELS%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+            nomDoc = FonctionsPerso.GenerationNomDoc("RAPPELS", "pdf")
         else :
             nomDoc = nomFichier
         doc = BaseDocTemplate(nomDoc, pagesize=TAILLE_PAGE, showBoundary=False)

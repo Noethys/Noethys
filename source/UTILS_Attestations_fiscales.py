@@ -39,6 +39,7 @@ import UTILS_Dates
 import DLG_Apercu_attestation_fiscale
 import UTILS_Conversion
 import UTILS_Infos_individus
+import UTILS_Fichiers
 
 import DATA_Civilites
 DICT_CIVILITES = DATA_Civilites.GetDictCivilites()
@@ -277,7 +278,7 @@ class Attestations_fiscales():
         # Répertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
-            dictPieces = CreationPDFunique("Temp")
+            dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
             if dictPieces == False :
                 return False
 

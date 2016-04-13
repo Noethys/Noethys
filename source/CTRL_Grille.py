@@ -4082,7 +4082,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         """ Impression des consommations """
         self.CreationPDF() 
         
-    def CreationPDF(self, nomDoc="Temp/Reservations.pdf", afficherDoc=True):
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATIONS", "pdf"), afficherDoc=True):
         # Recherche des numéros d'agréments
         DB = GestionDB.DB() 
         req = """
@@ -4185,7 +4185,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
     def EnvoyerEmail(self):
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/CONSOMMATIONS%s.pdf" % FonctionsPerso.GenerationIDdoc() , categorie="reservations")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("CONSOMMATIONS", "pdf"), categorie="reservations")
         
         
         

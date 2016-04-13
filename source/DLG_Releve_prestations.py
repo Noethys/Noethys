@@ -192,7 +192,7 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event): 
         self.CreationPDF()
     
-    def CreationPDF(self, nomDoc="Temp/Releve_prestations.pdf", afficherDoc=True):
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RELEVE_PRESTATIONS", "pdf"), afficherDoc=True):
         dictOptionsImpression = {}
         
         # Création PDF
@@ -232,7 +232,7 @@ class Dialog(wx.Dialog):
         
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/RELEVE%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="releve_prestations")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("RELEVE", "pdf"), categorie="releve_prestations")
 
 
 class Impression():
@@ -411,7 +411,7 @@ class Impression():
         
         return listeFactures
 
-    def CreationPDF(self, nomDoc="Temp/Releve_prestations.pdf", afficherDoc=True):
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("RELEVE_PRESTATIONS", "pdf"), afficherDoc=True):
         """ Création du PDF """
         from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak

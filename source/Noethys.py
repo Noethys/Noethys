@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-15 Ivan LUCAS
+# Copyright:       (c) 2010-16 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -17,6 +17,7 @@ import CTRL_Bouton_image
 import sys
 import platform
 import os
+import shutil
 import datetime
 import traceback
 
@@ -36,6 +37,7 @@ import UTILS_Sauvegarde_auto
 import UTILS_Rapport_bugs
 import UTILS_Utilisateurs
 import UTILS_Interface
+import UTILS_Fichiers
 
 import GestionDB
 
@@ -114,38 +116,14 @@ class MainFrame(wx.Frame):
     
     def Initialisation(self):
         # Vérifie que le fichier de configuration existe bien
-        self.nomFichierConfig = "Data/Config.dat"
-        test = os.path.isfile(self.nomFichierConfig) 
-        if test == False :
-            # Création du fichier de configuration
-            cfg = UTILS_Config.FichierConfig(nomFichier=self.nomFichierConfig)
-            cfg.SetDictConfig(dictConfig={ 
-                "nomFichier" : "", 
-                "derniersFichiers" : [], 
-                "taille_fenetre" : (0, 0),
-                "dict_selection_periodes_activites" : {
-                        'listeActivites': [], 
-                        'listeSelections': (), 
-                        'listePeriodes': [], 
-                        'modeAffichage': 'nbrePlacesPrises', 
-                        'dateDebut': None, 
-                        'dateFin': None, 
-                        'annee': 2011, 
-                        'page': 0,
-                        },
-                "assistant_demarrage" : False,
-                "perspectives" : [],
-                "perspective_active" : None,
-                "annonce" : None,
-                "autodeconnect" : None,
-                "interface_mysql" : "mysqldb",
-                 },)
+        if UTILS_Config.IsFichierExists() == False :
+            UTILS_Config.GenerationFichierConfig()
             self.nouveauFichierConfig = True
         else:
             self.nouveauFichierConfig = False
 
         # Récupération des fichiers de configuration
-        self.userConfig = self.GetFichierConfig(nomFichier=self.nomFichierConfig) # Fichier de config de l'utilisateur
+        self.userConfig = self.GetFichierConfig() # Fichier de config de l'utilisateur
         
         # Gestion des utilisateurs
         self.listeUtilisateurs = [] 
@@ -316,14 +294,14 @@ class MainFrame(wx.Frame):
         titreFrame = NOM_APPLICATION + " v" + VERSION_APPLICATION + nomFichier
         self.SetTitle(titreFrame)
 
-    def GetFichierConfig(self, nomFichier=""):
+    def GetFichierConfig(self):
         """ Récupère le dictionnaire du fichier de config """
-        cfg = UTILS_Config.FichierConfig(nomFichier)
+        cfg = UTILS_Config.FichierConfig()
         return cfg.GetDictConfig()
 
-    def SaveFichierConfig(self, nomFichier):
+    def SaveFichierConfig(self):
         """ Sauvegarde le dictionnaire du fichier de config """
-        cfg = UTILS_Config.FichierConfig(nomFichier)
+        cfg = UTILS_Config.FichierConfig()
         cfg.SetDictConfig(dictConfig=self.userConfig )
     
     def OnSize(self, event):
@@ -364,7 +342,7 @@ class MainFrame(wx.Frame):
             self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive() 
 
         # Sauvegarde du fichier de configuration
-        self.SaveFichierConfig(nomFichier=self.nomFichierConfig)
+        self.SaveFichierConfig()
 
         # Sauvegarde automatique
         if self.userConfig["nomFichier"] != "" and sauvegardeAuto == True :
@@ -3281,7 +3259,7 @@ class MainFrame(wx.Frame):
 ##        menuItem.Enable(etatMenu)
 
         # Sauvegarde du fichier de configuration
-        self.SaveFichierConfig(nomFichier=self.nomFichierConfig)
+        self.SaveFichierConfig()
         
         # Active les items de la barre de menus
         self.ActiveBarreMenus(True) 
@@ -3744,22 +3722,26 @@ class MyApp(wx.App):
 
         heure_debut = time.time()
         
-        # Vérifie l'existence des répertoires
-        for rep in ("Aide", "Temp", "Updates", "Sync", "Lang") :
+        # Vérifie l'existence des répertoires dans le répertoire d'installation de Noethys (Obsolète : A supprimer à l'avenir)
+        for rep in ("Sync", "Lang") : # "Updates", "Temp",
             if os.path.isdir(rep) == False :
                 os.makedirs(rep)
-                print "Creation du repertoire : ", rep
-        
+
+        # Vérifie l'existence des répertoire dans le répertoire Utilisateur
+        for rep in ("Temp", "Updates", "Sync", "Lang") :
+            rep = UTILS_Fichiers.GetRepUtilisateur(rep)
+            if os.path.isdir(rep) == False :
+                os.makedirs(rep)
+
         # Réinitialisation du fichier des parametres en conservant la touche ALT ou CTRL enfoncée
         if wx.GetKeyState(307) == True or wx.GetKeyState(308) == True :
             dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser Noethys ?"), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() == wx.ID_YES :
-                os.remove("Data/Config.dat")
+                UTILS_Config.SupprimerFichier()
             dlg.Destroy()
         
         # Suppression du fichier temporaire s'il existe pour éviter bugs
-        if os.path.isfile("Data/__db.Config.dat") :
-            os.remove("Data/__db.Config.dat")
+        UTILS_Config.SupprimerFichierTemporaire()
 
         # Lit les paramètres de l'interface
         theme = CUSTOMIZE.GetValeur("interface", "theme", "Vert")
@@ -3820,6 +3802,11 @@ class MyApp(wx.App):
 
 
 if __name__ == "__main__":
+    # Vérifie si des fichiers du répertoire Data sont à déplacer vers le répertoire Utilisateur
+    for fichier in ("journal.log", "Data/Config.dat", "Data/Customize.ini") :
+        if os.path.isfile(fichier) :
+            nouveauNom = UTILS_Fichiers.GetRepUtilisateur(fichier.replace("Data/", ""))
+            shutil.move(fichier, nouveauNom)
 
     # Initialisation du fichier de customisation
     CUSTOMIZE = UTILS_Customize.Customize()
@@ -3828,19 +3815,19 @@ if __name__ == "__main__":
     UTILS_Rapport_bugs.Activer_rapport_erreurs(version=VERSION_APPLICATION)
 
     # Log
-    fichierLog = CUSTOMIZE.GetValeur("journal", "nom", "journal.log")
+    nomJournal = UTILS_Fichiers.GetRepUtilisateur(CUSTOMIZE.GetValeur("journal", "nom", "journal.log"))
 
     # Supprime le journal.log si supérieur à 10 Mo
-    if os.path.isfile(fichierLog) :
-        taille = os.path.getsize(fichierLog)
+    if os.path.isfile(nomJournal) :
+        taille = os.path.getsize(nomJournal)
         if taille > 5000000 :
-            os.remove(fichierLog)
+            os.remove(nomJournal)
 
     # Lancement de l'application
     nomFichier = sys.executable
     if nomFichier.endswith("python.exe") or CUSTOMIZE.GetValeur("journal", "actif", "1") == "0" or os.path.isfile("nolog.txt") :
         app = MyApp(redirect=False)
     else :
-        app = MyApp(redirect=True, filename=fichierLog)
+        app = MyApp(redirect=True, filename=nomJournal)
     app.MainLoop()
     

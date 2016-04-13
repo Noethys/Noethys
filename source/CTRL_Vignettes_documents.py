@@ -16,6 +16,7 @@ from PIL import Image
 import os
 import cStringIO
 import FonctionsPerso
+import UTILS_Fichiers
 
 from Outils import thumbnailctrl as TC
 
@@ -462,7 +463,7 @@ Tous les fichiers (*.*)|*.*"
             dlg.Show(True)
         else:
             # Création du doc dans le répertoire Temp et ouverture
-            nomFichier = _(u"Temp/document.%s") % track.type
+            nomFichier = UTILS_Fichiers.GetRepTemp(fichier="document.%s" % track.type)
             buffer = track.buffer
             file = open(nomFichier,"wb")
             file.write(buffer)
@@ -485,7 +486,7 @@ Tous les fichiers (*.*)|*.*"
         imgPIL = track.image
         
         buffer = track.buffer
-        file = open ("Temp/test.%s" % track.type,"wb")
+        file = open(UTILS_Fichiers.GetRepTemp(fichier="test.%s" % track.type),"wb")
         file.write(buffer.getvalue())
         file.close()
 

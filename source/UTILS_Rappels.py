@@ -37,6 +37,7 @@ import UTILS_Dates
 import DLG_Apercu_rappel
 import UTILS_Conversion
 import UTILS_Infos_individus
+import UTILS_Fichiers
 
 from DLG_Saisie_texte_rappel import MOTSCLES
 
@@ -421,7 +422,7 @@ class Facturation():
         # Répertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
-            dictPieces = CreationPDFunique("Temp")
+            dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
             if dictPieces == False :
                 return False
 

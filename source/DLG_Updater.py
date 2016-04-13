@@ -4,7 +4,7 @@
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
 # Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Copyright:       (c) 2010-16 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ import zipfile
 import glob
 
 import CTRL_Bandeau
-
+import UTILS_Fichiers
 
 
 
@@ -341,7 +341,7 @@ class Page_recherche(wx.Panel):
         if etat == "trouvee" :
             # Une mise à jour a été trouvée !
             self.parent.versionFichier = self.versionFichier
-            self.parent.fichierDest = "Updates/" + self.parent.versionFichier
+            self.parent.fichierDest = UTILS_Fichiers.GetRepUpdates(fichier=self.parent.versionFichier)
             if sys.platform.startswith("win") : self.parent.fichierDest = self.parent.fichierDest.replace("/", "\\")
             # Vérifie qu'elle n'a pas déjà été téléchargée sur le disque dur
             fichierAverifier = self.parent.fichierDest+ "/" + self.parent.nomFichier
@@ -352,14 +352,14 @@ class Page_recherche(wx.Panel):
                 if tailleFichierAverifier == tailleFichierOrigin :
                     # Ok le fichier existe bien déjà
                     texteIntro1 = _(u"La mise à jour ") + self.versionFichier + _(u" a déjà été téléchargée précédemment.")
-                    self.parent.page_fin_telechargement.label_introduction1.SetLabel(texteIntro1)
+                    self.parent.GetPage("page_fin_telechargement").label_introduction1.SetLabel(texteIntro1)
                     self.parent.Active_page("page_fin_telechargement")
             else:
                 # Sinon, on la télécharge...
                 texteIntro1 = _(u"La version ") + self.versionFichier + " de Noethys est disponible (" + self.tailleFichier + ")."
-                self.parent.page_disponible.label_introduction1.SetLabel(texteIntro1)
+                self.parent.GetPage("page_disponible").label_introduction1.SetLabel(texteIntro1)
                 texteNouveautes = self.texteNouveautes
-                self.parent.page_disponible.textCtrl_nouveautes.SetValue(texteNouveautes.decode("iso-8859-15"))
+                self.parent.GetPage("page_disponible").textCtrl_nouveautes.SetValue(texteNouveautes.decode("iso-8859-15"))
                 self.parent.Active_page("page_disponible")
               
 
@@ -579,6 +579,12 @@ class Page_telechargement(wx.Panel):
             self.downloader.abort()
             self.label_introduction.SetLabel(_(u"Vous avez interrompu le téléchargement."))
             self.bouton_ok.Show(True)
+
+            # Pour le debug, passe à la page suivante
+            if DEBUG :
+                self.parent.Active_page("page_fin_telechargement")
+                return
+
         else:
             # Si le téléchargement n'est pas en cours, on ferme la fenêtre
             self.parent.Fermer()
@@ -651,6 +657,7 @@ class Page_fin_telechargement(wx.Panel):
 
     def Activation(self):
         self.SetSize((500, 600))
+        #self.SendSizeEvent()
         self.Refresh()
         
         
@@ -717,6 +724,7 @@ class Page_installation(wx.Panel):
     def Activation(self):
         # Pour contrer bug de Layout
         self.SetSize((500, 700))
+        self.Refresh()
         self.Installation()
     
     def Installation(self):
@@ -726,14 +734,9 @@ class Page_installation(wx.Panel):
         self.bouton_annuler.Enable(False)
         
         # Lancement de la sauvegarde
-##        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous faire une sauvegarde de sécurité complète ?"), _(u"Sauvegarde"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-##        reponse = dlg.ShowModal()
-##        dlg.Destroy()
-##        if reponse == wx.ID_YES :
-        self._Sauvegarde()
-##        else:
-##            # Lance la suite de l'installation
-##        self._Installation()
+        #self._Sauvegarde()
+
+        wx.CallLater(5, self._Installation)
         
     def _Sauvegarde(self):
         """ Procédure de sauvegarde globale du répertoire """
@@ -751,8 +754,10 @@ class Page_installation(wx.Panel):
     def _Installation(self):
         """ Procédure d'installation """
         self.label_introduction.SetLabel(_(u"Chargement de l'installeur..."))
-        self.journal.WriteText(_(u"\n\nInstalleur en cours de chargement. Veuillez patienter..."))
-        
+        self.journal.WriteText(_(u"Installeur en cours de chargement. Veuillez patienter..."))
+
+        sleep(1)
+
         # Lancement de l'installeur
         fichierMAJ = self.parent.fichierDest + "/" + self.parent.nomFichier
         if "linux" in sys.platform :
@@ -795,7 +800,10 @@ class Dialog(wx.Dialog):
         
         # Changer ci-dessous pour ne pas afficher la page de recherche (1ere page)
         self.afficher_page_recherche = True 
-        
+
+        # Vider répertoire Updates
+        FonctionsPerso.VideRepertoireUpdates(forcer=True)
+
         # Fichiers
         if "linux" in sys.platform :
             # Version Debian
@@ -816,12 +824,13 @@ class Dialog(wx.Dialog):
         self.sizer_base.AddGrowableCol(0)
         
         # Création des pages dans le sizer
-        self.Creation_page("page_recherche", "Page_recherche")
-        self.Creation_page("page_disponible", "Page_disponible")
-        self.Creation_page("page_telechargement", "Page_telechargement")
-        self.Creation_page("page_fin_telechargement", "Page_fin_telechargement")
-        self.Creation_page("page_installation", "Page_installation")
-        
+        self.dictPages = {}
+        self.Creation_page("page_recherche", Page_recherche)
+        self.Creation_page("page_disponible", Page_disponible)
+        self.Creation_page("page_telechargement", Page_telechargement)
+        self.Creation_page("page_fin_telechargement", Page_fin_telechargement)
+        self.Creation_page("page_installation", Page_installation)
+
         self.sizer_base.AddGrowableRow(1)
         self.sizer_base.AddGrowableRow(2)
         self.sizer_base.AddGrowableRow(3)
@@ -844,22 +853,26 @@ class Dialog(wx.Dialog):
     def GetEtat(self):
         return self.installation
     
-    def Creation_page(self, nomPage="", nomClasse=""):
+    def Creation_page(self, nomPage="", classe=None):
         """ Création d'une page """
-        exec("self." + nomPage + " = " + nomClasse + "(self)")
-        exec("self.sizer_base.Add(self." + nomPage + ", 1, wx.EXPAND, 0)")
-        exec("self." + nomPage +".Show(False)")
-    
+        page = classe(self)
+        self.sizer_base.Add(page, 1, wx.EXPAND, 0)
+        page.Show(False)
+        self.dictPages[nomPage] = page
+
+    def GetPage(self, nomPage=""):
+        return self.dictPages[nomPage]
+
     def Active_page(self, choixPage=""):
         """ Active une page choisie """
         # Faire disparaître la page actuelle
-        if self.page_active != "" : 
-            exec("self." + self.page_active + ".Show(False)")
+        if self.page_active != "" :
+            self.dictPages[self.page_active].Show(False)
         # Faire apparaître et active la page choisie
         if choixPage != "" :
             self.page_active = choixPage
-            exec("self." + choixPage + ".Show(True)")
-            exec("self." + choixPage + ".Activation()")
+            self.dictPages[self.page_active].Show(True)
+            self.dictPages[self.page_active].Activation()
             self.Layout()
     
     def Aide(self):

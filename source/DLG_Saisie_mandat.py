@@ -759,12 +759,12 @@ class Dialog(wx.Dialog):
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
         import UTILS_Envoi_email
-        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc="Temp/MANDATSEPA%s.pdf" % FonctionsPerso.GenerationIDdoc(), categorie="mandat_sepa")
+        UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("MANDAT_SEPA", "pdf") , categorie="mandat_sepa")
 
     def OnBoutonImprimer(self, event):
         self.CreationPDF() 
 
-    def CreationPDF(self, nomDoc="Temp/Mandat_sepa.pdf", afficherDoc=True):        
+    def CreationPDF(self, nomDoc=FonctionsPerso.GenerationNomDoc("MANDAT_SEPA", "pdf"), afficherDoc=True):
         dictChampsFusion = {}
         dictDonnees = {}
         
@@ -841,7 +841,7 @@ class Dialog(wx.Dialog):
 
 
 class Impression():
-    def __init__(self, dictDonnees={}, nomDoc="Temp/Mandat_sepa.pdf", afficherDoc=True):
+    def __init__(self, dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("MANDAT_SEPA", "pdf"), afficherDoc=True):
         """ Imprime un mandat SEPA """
         styleSheet = getSampleStyleSheet()
         self.hauteur_page = defaultPageSize[1]
@@ -860,25 +860,6 @@ class Impression():
         # ---------------- Titre du document ----------------------------------------------------------------
         
         largeursColonnes = (100, largeurContenu-100-100, 100)
-        
-##        logo = dictDonnees["organisateur"]["logo"]
-##        tailleImageFinal = 50
-##        if logo != None :
-##            nomFichier = "Temp/logoTmp.png"
-##            logo.SaveFile(nomFichier, type=wx.BITMAP_TYPE_PNG)
-##            logo = Image(nomFichier, width=tailleImageFinal, height=tailleImageFinal)
-##        else :
-##            logo = ""
-##        
-##        titre = Paragraph(_(u"<para align=center fontSize=16>Mandat de prélèvement SEPA</para>"), styleSheet['BodyText'])
-##        dataTableauTitre = [[ logo, titre, ""],]
-##        style = TableStyle([
-##                            ('VALIGN', (0, 0), (-1, -1), "MIDDLE"), 
-##                            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-##                            ])
-##        tableauTitre = Table(dataTableauTitre, largeursColonnes)
-##        tableauTitre.setStyle(style)
-##        dataTableau.append([tableauTitre,])
 
         titre = Paragraph(u"""<para align=center fontSize=16><b>Mandat de prélèvement SEPA</b></para>""", styleSheet['BodyText'])
         dataTableau.append([titre,])

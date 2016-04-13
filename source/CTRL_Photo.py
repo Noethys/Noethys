@@ -18,6 +18,7 @@ import cStringIO
 
 import GestionDB
 import UTILS_Utilisateurs
+import UTILS_Fichiers
 
 
 def GetPhoto(IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=wx.IMAGE_QUALITY_HIGH):
@@ -249,7 +250,7 @@ class CTRL_Photo(wx.StaticBitmap):
             listeVisages = dlg.GetListeVisages() 
         dlg.Destroy()
         if image != None :
-            fichier = "Temp/capture_video.jpg"
+            fichier = UTILS_Fichiers.GetRepTemp(fichier="capture_video.jpg")
             image.SaveFile(fichier, type=wx.BITMAP_TYPE_JPEG)
             self.ChargeEditeurPhoto(fichier, listeVisages=listeVisages)
 

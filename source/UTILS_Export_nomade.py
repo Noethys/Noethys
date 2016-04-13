@@ -27,6 +27,7 @@ import random
 import UTILS_Cryptage_fichier
 import UTILS_Config
 import UTILS_Titulaires
+import UTILS_Fichiers
 
 import DATA_Tables as TABLES
 
@@ -130,11 +131,7 @@ class Export():
         try :
             
             # Génération du nom de fichier
-##            codeUnique = ""
-##            for x in range(2) :
-##                codeUnique += random.choice("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-##            self.nomFichier = _(u"Temp/data_%s_%s%s") % (dictParametres["IDfichier"], dictParametres["horodatage"].replace("-", ""), codeUnique)
-            self.nomFichier = _(u"Temp/data_%s") % dictParametres["IDfichier"]
+            self.nomFichier = UTILS_Fichiers.GetRepTemp(fichier=u"data_%s" % dictParametres["IDfichier"])
 
             # Vérifie si le fichier existe déjà
             nomFichierTemp = self.nomFichier + ".dat"

@@ -412,7 +412,7 @@ class Dialog(wx.Dialog):
         
         # Initialisation du PDF
         PAGE_WIDTH, PAGE_HEIGHT=defaultPageSize
-        nomDoc = "Temp/RECAPFACTURES%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("RECAP_FACTURES", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, topMargin=30, bottomMargin=30)
         story = []

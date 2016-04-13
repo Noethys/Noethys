@@ -37,6 +37,7 @@ import UTILS_Dates
 import DLG_Apercu_facture
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 import UTILS_Infos_individus
+import UTILS_Fichiers
 
 
 
@@ -915,7 +916,7 @@ class Facturation():
         # Répertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
-            dictPieces = CreationPDFunique("Temp")
+            dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
             if dictPieces == False :
                 return False
 

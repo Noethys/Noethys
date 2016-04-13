@@ -12,6 +12,7 @@ import zipfile
 
 from distutils.core import setup 
 import py2exe
+import numpy
 
 
 manifest = """
@@ -150,7 +151,6 @@ options = {
 data_files=[
     
           # Dossiers à importer:
-          ('Aide', glob.glob('Aide\\*.*')),
           ('Outils', glob.glob('Outils\\*.*')),
           ('Data', GetFichiersExemples("Data/")),
           
@@ -171,8 +171,6 @@ data_files=[
           ('Images\\Interface\\Bleu', listdirectory('Images\\Interface\\Bleu')),
           ('Images\\Interface\\Noir', listdirectory('Images\\Interface\\Noir')),
 
-          ('Temp', [] ),
-          ('Updates', [] ),
           ('Sync', [] ),
           ('Lang', glob.glob('Lang\\*.*')),
           

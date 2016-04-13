@@ -25,6 +25,7 @@ import CTRL_Bandeau
 import GestionDB
 import UTILS_Config
 import UTILS_Organisateur
+import UTILS_Fichiers
 import DATA_Civilites as Civilites
 
 from DLG_Saisie_pb_sante import LISTE_TYPES
@@ -619,7 +620,7 @@ class Dialog(wx.Dialog):
                 IDphoto, bmp = CTRL_Photo.GetPhoto(IDindividu=IDindividu, nomFichier=nomFichier, taillePhoto=(taillePhoto, taillePhoto), qualite=100)
                 
                 # Création de la photo dans le répertoire Temp
-                nomFichier = "Temp/photoTmp" + str(IDindividu) + ".jpg"
+                nomFichier = UTILS_Fichiers.GetRepTemp(fichier="photoTmp%d.jpg" % IDindividu)
                 bmp.SaveFile(nomFichier, type=wx.BITMAP_TYPE_JPEG)
                 img = Image(nomFichier, width=tailleImageFinal, height=tailleImageFinal)
                 dictPhotos[IDindividu] = img
@@ -627,7 +628,7 @@ class Dialog(wx.Dialog):
         # ---------------- Création du PDF -------------------
         
         # Initialisation du PDF
-        nomDoc = "Temp/liste_informations_medicales_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("LISTE_INFORMATIONS_MEDICALES", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=(self.largeur_page, self.hauteur_page), topMargin=30, bottomMargin=30)
         story = []

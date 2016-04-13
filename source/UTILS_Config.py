@@ -12,10 +12,57 @@
 import wx
 import CTRL_Bouton_image
 import os
+import UTILS_Fichiers
+
+
+def GetNomFichierConfig(nomFichier="Config.dat"):
+    return UTILS_Fichiers.GetRepUtilisateur(nomFichier)
+
+def IsFichierExists() :
+    nomFichier = GetNomFichierConfig()
+    return os.path.isfile(nomFichier)
+
+def GenerationFichierConfig():
+    cfg = FichierConfig()
+    cfg.SetDictConfig(dictConfig={
+        "nomFichier" : "",
+        "derniersFichiers" : [],
+        "taille_fenetre" : (0, 0),
+        "dict_selection_periodes_activites" : {
+                'listeActivites': [],
+                'listeSelections': (),
+                'listePeriodes': [],
+                'modeAffichage': 'nbrePlacesPrises',
+                'dateDebut': None,
+                'dateFin': None,
+                'annee': 2011,
+                'page': 0,
+                },
+        "assistant_demarrage" : False,
+        "perspectives" : [],
+        "perspective_active" : None,
+        "annonce" : None,
+        "autodeconnect" : None,
+        "interface_mysql" : "mysqldb",
+         },)
+
+def SupprimerFichier():
+    nomFichier = GetNomFichierConfig()
+    os.remove(nomFichier)
+
+def SupprimerFichierTemporaire():
+    nomFichier = GetNomFichierConfig("__db.Config.dat")
+    try :
+        os.remove(nomFichier)
+    except:
+        pass
+
+
 
 
 class FichierConfig():
-    def __init__(self, nomFichier="" ):
+    def __init__(self):
+        nomFichier = GetNomFichierConfig()
         self.nomFichier = nomFichier
         
     def GetDictConfig(self):
@@ -88,8 +135,7 @@ def GetParametre(nomParametre="", defaut=None):
             parametre = defaut
     else:
         # Récupération du nom de la DB directement dans le fichier de config sur le disque dur
-        nomFichierConfig = "Data/Config.dat"
-        cfg = FichierConfig(nomFichierConfig)
+        cfg = FichierConfig()
         parametre = cfg.GetItemConfig(nomParametre, defaut)
     return parametre
 
@@ -104,8 +150,7 @@ def SetParametre(nomParametre="", parametre=None):
         topWindow.userConfig[nomParametre] = parametre
     else:
         # Enregistrement du nom de la DB directement dans le fichier de config sur le disque dur
-        nomFichierConfig = "Data/Config.dat"
-        cfg = FichierConfig(nomFichierConfig)
+        cfg = FichierConfig()
         cfg.SetItemConfig(nomParametre, parametre)
 
 
@@ -125,8 +170,7 @@ def GetParametres(dictParametres={}):
     if nomWindow == "general" : 
         dictSource = topWindow.userConfig
     else :
-        nomFichierConfig = "Data/Config.dat"
-        cfg = FichierConfig(nomFichierConfig)
+        cfg = FichierConfig()
         dictSource = cfg.GetDictConfig()
         
     # Lit les données
@@ -152,8 +196,7 @@ def SetParametres(dictParametres={}):
             topWindow.userConfig[nom] = valeur
     else:
         # Enregistrement dans le fichier de config sur le disque dur
-        nomFichierConfig = "Data/Config.dat"
-        cfg = FichierConfig(nomFichierConfig)
+        cfg = FichierConfig()
         cfg.SetItemsConfig(dictParametres)
     return dictParametres
 

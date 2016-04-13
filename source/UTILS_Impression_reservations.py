@@ -26,7 +26,7 @@ def DateEngFr(textDate):
     return text
 
 
-def Impression(dictDonnees={}, nomDoc="Temp/Reservations.pdf", afficherDoc=True):
+def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATIONS", "pdf"), afficherDoc=True):
     # Création du PDF
     from reportlab.platypus.doctemplate import PageTemplate, BaseDocTemplate, NextPageTemplate
     from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak

@@ -1010,7 +1010,7 @@ class Dialog(wx.Dialog):
         taillePage = landscape(A4)
         HAUTEUR_PAGE = defaultPageSize[0]
         LARGEUR_PAGE = defaultPageSize[1]
-        nomDoc = "Temp/Etat_global_%s.pdf" % FonctionsPerso.GenerationIDdoc() 
+        nomDoc = FonctionsPerso.GenerationNomDoc("ETAT_GLOBAL", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
         doc = SimpleDocTemplate(nomDoc, pagesize=taillePage, topMargin=20, bottomMargin=20)
         story = []

@@ -11,6 +11,7 @@
 import wx
 import os
 import ConfigParser
+import UTILS_Fichiers
 
 
 LISTE_DONNEES = [
@@ -30,9 +31,13 @@ LISTE_DONNEES = [
 ]
 
 
+def GetNomFichier(nomFichier="Customize.ini"):
+    return UTILS_Fichiers.GetRepUtilisateur(nomFichier)
+
+
 class Customize():
-    def __init__(self, nomFichier="Data/Customize.ini"):
-        self.nomFichier = nomFichier
+    def __init__(self):
+        self.nomFichier = GetNomFichier()
         self.cfg = ConfigParser.ConfigParser()
         self.InitFichier()
 

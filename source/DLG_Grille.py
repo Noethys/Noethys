@@ -342,7 +342,7 @@ class Dialog(wx.Dialog):
         self.SetTitle(_(u"Grille des consommations"))
         
         # Récupère les perspectives
-        cfg = UTILS_Config.FichierConfig("Data/Config.dat")
+        cfg = UTILS_Config.FichierConfig()
         self.userConfig = cfg.GetDictConfig()
         if self.userConfig.has_key("grille_perspectives") == True :
             self.perspectives = self.userConfig["grille_perspectives"]

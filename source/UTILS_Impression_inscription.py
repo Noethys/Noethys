@@ -79,7 +79,7 @@ class MyPageTemplate(PageTemplate):
         
         
 class Impression():
-    def __init__(self, dictValeurs={}, IDmodele=None, nomDoc="Temp/Inscription.pdf", afficherDoc=True):
+    def __init__(self, dictValeurs={}, IDmodele=None, nomDoc=FonctionsPerso.GenerationNomDoc("INSCRIPTION", "pdf"), afficherDoc=True):
         """ Impression """
         global DICT_VALEURS
         DICT_VALEURS = dictValeurs

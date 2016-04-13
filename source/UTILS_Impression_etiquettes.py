@@ -81,7 +81,7 @@ class Impression():
         nbreLignes = (hauteurPage - margeHaut - margeBas + espaceVertical) / (hauteurEtiquette + espaceVertical)
         
         # Initialisation du PDF
-        nomDoc = "Temp/ETIQUETTES%s.pdf" % FonctionsPerso.GenerationIDdoc()
+        nomDoc = FonctionsPerso.GenerationNomDoc("ETIQUETTES", "pdf")
         canvas = Canvas(nomDoc, pagesize=(largeurPage*mm, hauteurPage*mm))
         
         # Création des étiquettes

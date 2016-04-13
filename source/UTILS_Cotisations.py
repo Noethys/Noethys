@@ -40,6 +40,7 @@ import DLG_Apercu_cotisation
 import UTILS_Conversion
 import UTILS_Infos_individus
 import UTILS_Divers
+import UTILS_Fichiers
 
 
 class Cotisation():
@@ -420,7 +421,7 @@ class Cotisation():
         # Répertoire TEMP (pour Emails)
         dictPieces = {}
         if repertoireTemp == True :
-            dictPieces = CreationPDFunique("Temp")
+            dictPieces = CreationPDFunique(UTILS_Fichiers.GetRepTemp())
             if dictPieces == False :
                 return False
 
