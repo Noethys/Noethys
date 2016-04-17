@@ -132,58 +132,6 @@ class CTRL_Infos(html.HtmlWindow):
     def OnLinkClicked(self, linkinfo):
         IDfamille = int(linkinfo.GetHref())
 
-# ---------------------------------------------------------------------------------------------------------------------------------------
-
-class CTRL_Mode(wx.Choice):
-    def __init__(self, parent):
-        wx.Choice.__init__(self, parent, -1) 
-        self.parent = parent
-        self.MAJ() 
-    
-    def MAJ(self):
-        listeItems = self.GetListeDonnees()
-        if len(listeItems) == 0 :
-            self.Enable(False)
-        self.SetItems(listeItems)
-                                        
-    def GetListeDonnees(self):
-        db = GestionDB.DB()
-        req = """SELECT IDmode, label, numero_piece, nbre_chiffres, 
-        frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label
-        FROM modes_reglements
-        ORDER BY label;"""
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        listeItems = []
-        self.dictDonnees = {}
-        index = 0
-        for IDmode, label, numero_piece, nbre_chiffres, frais_gestion, frais_montant, frais_pourcentage, frais_arrondi, frais_label in listeDonnees :
-            self.dictDonnees[index] = { 
-                "ID" : IDmode, "label" : label, "numero_piece" : numero_piece, "nbre_chiffres" : nbre_chiffres,
-                "frais_gestion" : frais_gestion, "frais_montant" : frais_montant, "frais_pourcentage" : frais_pourcentage, 
-                "frais_arrondi" : frais_arrondi, "frais_label" : frais_label, 
-                }
-            listeItems.append(label)
-            index += 1
-        return listeItems
-
-    def SetID(self, ID=0):
-        for index, values in self.dictDonnees.iteritems():
-            if values["ID"] == ID :
-                 self.SetSelection(index)
-
-    def GetID(self):
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]["ID"]
-    
-    def GetInfosMode(self):
-        """ Récupère les infos sur le mode sélectionné """
-        index = self.GetSelection()
-        if index == -1 : return None
-        return self.dictDonnees[index]
-        
 
 # -----------------------------------------------------------------------------------------------------------------------
 
@@ -237,12 +185,13 @@ class CTRL_Emetteur(wx.Choice):
 
 
 class CTRL_Payeurs(wx.ListBox):
-    def __init__(self, parent, IDcompte_payeur=None):
+    def __init__(self, parent, IDcompte_payeur=None, IDreglement=None):
         wx.ListBox.__init__(self, parent, id=-1, choices=[])
         self.parent = parent
         self.IDcompte_payeur = IDcompte_payeur
-        self.MAJ() 
-    
+        self.IDreglement = IDreglement
+        self.MAJ()
+
     def MAJ(self, IDpayeur=None):
         self.listeDonnees = []
         self.Importation() 
@@ -256,14 +205,14 @@ class CTRL_Payeurs(wx.ListBox):
             self.SetID(IDpayeur)
         
     def Importation(self):
-        db = GestionDB.DB()
+        DB = GestionDB.DB()
         req = """SELECT IDpayeur, nom
         FROM payeurs 
         WHERE IDcompte_payeur=%d
         ORDER BY nom; """ % self.IDcompte_payeur
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
         for IDpayeur, nom in listeDonnees :
             valeurs = { "ID" : IDpayeur, "nom" : nom }
             self.listeDonnees.append(valeurs)
@@ -282,7 +231,7 @@ class CTRL_Payeurs(wx.ListBox):
         ID = self.listeDonnees[index]["ID"]
         return ID
 
-    def Ajouter(self):
+    def Ajouter(self, event=None):
         dlg = wx.TextEntryDialog(self, _(u"Saisissez le nom du nouveau payeur :"), _(u"Saisie d'un payeur"), u"")
         if dlg.ShowModal() == wx.ID_OK:
             nom = dlg.GetValue()
@@ -299,13 +248,24 @@ class CTRL_Payeurs(wx.ListBox):
                 self.MAJ(IDpayeur)
         dlg.Destroy()
 
-    def Modifier(self):
+    def Modifier(self, event=None):
         IDpayeur = self.GetID()
         if IDpayeur == None :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun payeur à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
+
+        # Vérifie si payeur rattaché
+        nbreReglements = self.GetNbreReglements(IDpayeur)
+        if nbreReglements > 0 :
+            dlg = wx.MessageDialog(self, _(u"Ce payeur a déjà été associé à %d règlement(s).\n\nSouhaitez-vous tout de même le modifier ?") % nbreReglements, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+            if dlg.ShowModal() != wx.ID_YES :
+                dlg.Destroy()
+                return
+            else :
+                dlg.Destroy()
+
         nom = self.listeDonnees[self.GetSelection()]["nom"]
         dlg = wx.TextEntryDialog(self, _(u"Modifiez le nom du payeur :"), _(u"Modification d'un payeur"), nom)
         if dlg.ShowModal() == wx.ID_OK:
@@ -323,18 +283,23 @@ class CTRL_Payeurs(wx.ListBox):
                 self.MAJ(IDpayeur)
         dlg.Destroy()
 
-    def Supprimer(self):
+    def Supprimer(self, event=None):
         IDpayeur = self.GetID()
         if IDpayeur == None :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun payeur à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-##        if self.Selection()[0].nbreTitulaires > 0 :
-##            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une catégorie déjà assignée à un ou plusieurs individus !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
-##            dlg.ShowModal()
-##            dlg.Destroy()
-##            return
+
+        # Vérifie si payeur rattaché
+        nbreReglements = self.GetNbreReglements(IDpayeur)
+        if nbreReglements > 0 :
+            dlg = wx.MessageDialog(self, _(u"Impossible de supprimer ce payeur.\n\n Il a déjà été attribué à %d règlement(s) !") % nbreReglements, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Suppression
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce payeur ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             DB = GestionDB.DB()
@@ -343,6 +308,20 @@ class CTRL_Payeurs(wx.ListBox):
             self.MAJ()
         dlg.Destroy()
 
+    def GetNbreReglements(self, IDpayeur=None):
+        DB = GestionDB.DB()
+        req = """SELECT IDreglement, date
+        FROM reglements
+        WHERE IDpayeur=%d
+        ;""" % IDpayeur
+        DB.ExecuterReq(req)
+        listeReglements = DB.ResultatReq()
+        DB.Close()
+        nbreReglements = 0
+        for IDreglement, date in listeReglements :
+            if IDreglement != self.IDreglement :
+                nbreReglements += 1
+        return nbreReglements
 
 class CTRL_Mode(wx.Choice):
     def __init__(self, parent):
@@ -630,7 +609,7 @@ class Dialog(wx.Dialog):
         font = wx.Font(14, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD, 0, u"")
         self.ctrl_montant = CTRL_Saisie_euros.CTRL(self, font)
         self.label_payeur = wx.StaticText(self, -1, _(u"Payeur :"))
-        self.ctrl_payeur = CTRL_Payeurs(self, self.IDcompte_payeur)
+        self.ctrl_payeur = CTRL_Payeurs(self, self.IDcompte_payeur, IDreglement=self.IDreglement)
         self.bouton_ajouter_payeur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier_payeur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_payeur = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))

@@ -189,7 +189,7 @@ class Panel(wx.Panel):
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Modifier.png", wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Supprimer.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Imprimante.png", wx.BITMAP_TYPE_ANY))
+        self.bouton_rembourser = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Remboursement.png", wx.BITMAP_TYPE_ANY))
         self.bouton_ventilationAuto = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Magique.png", wx.BITMAP_TYPE_ANY))
 ##        self.bouton_repartition = wx.BitmapButton(self, -1, wx.Bitmap(u"Images/16x16/Repartition.png", wx.BITMAP_TYPE_ANY))
         
@@ -202,7 +202,7 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouter, self.bouton_ajouter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonRembourser, self.bouton_rembourser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonVentilationAuto, self.bouton_ventilationAuto)
 ##        self.Bind(wx.EVT_BUTTON, self.OnBoutonRepartition, self.bouton_repartition)
         
@@ -210,6 +210,7 @@ class Panel(wx.Panel):
         self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un règlement"))
         self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le règlement sélectionné"))
         self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le règlement sélectionné"))
+        self.bouton_rembourser.SetToolTipString(_(u"Cliquez ici pour saisir un remboursement"))
         self.bouton_ventilationAuto.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes de ventilation automatique"))
 ##        self.bouton_repartition.SetToolTipString(_(u"Cliquez ici pour afficher la ventilation détaillée"))
 
@@ -225,7 +226,7 @@ class Panel(wx.Panel):
         grid_sizer_boutons.Add(self.bouton_modifier, 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_supprimer, 0, wx.ALL, 0)
         grid_sizer_boutons.Add( (2, 2), 0, wx.ALL, 0)
-        grid_sizer_boutons.Add(self.bouton_imprimer, 0, wx.ALL, 0)
+        grid_sizer_boutons.Add(self.bouton_rembourser, 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_ventilationAuto, 0, wx.ALL, 0)
 ##        grid_sizer_boutons.Add(self.bouton_repartition, 0, wx.ALL, 0)
         grid_sizer_reglements.Add(grid_sizer_boutons, 1, wx.ALL, 0)
@@ -262,6 +263,9 @@ class Panel(wx.Panel):
 
     def OnBoutonSupprimer(self, event):
         self.ctrl_reglements.Supprimer(None)
+
+    def OnBoutonRembourser(self, event):
+        self.ctrl_reglements.Rembourser(None)
 
     def OnBoutonImprimer(self, event):
         if len(self.ctrl_reglements.Selection()) == 0:
