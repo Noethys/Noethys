@@ -1229,10 +1229,14 @@ class MainFrame(wx.Frame):
             return False
         
         # Affiche d'une fenêtre d'attente
-        message = _(u"Création du nouveau fichier en cours... Veuillez patienter...")
-        dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Création d'un fichier"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
-            
+        message = _(u"Création du nouveau fichier en cours...")
+        #dlgAttente = PBI.PyBusyInfo(message, parent=None, title=_(u"Création d'un fichier"), icon=wx.Bitmap("Images/16x16/Logo.png", wx.BITMAP_TYPE_ANY))
+        #wx.Yield()
+
+        nbreEtapes = len(Tables.DB_DATA) + 7 # Tables + autres étapes
+        dlgprogress = wx.ProgressDialog(message, _(u"Veuillez patienter..."), maximum=nbreEtapes, parent=None, style= wx.PD_SMOOTH | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        numEtape = 1
+
         if "[RESEAU]" in nomFichier :
             self.SetStatusText(_(u"Création du fichier '%s' en cours...") % nomFichier[nomFichier.index("[RESEAU]"):])
         else:
@@ -1240,7 +1244,7 @@ class MainFrame(wx.Frame):
         
         # Vérification de validité du fichier
         if nomFichier == "" :
-            del dlgAttente
+            dlgprogress.Destroy()
             dlg = wx.MessageDialog(self, _(u"Le nom que vous avez saisi n'est pas valide !"), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
@@ -1256,7 +1260,7 @@ class MainFrame(wx.Frame):
             fichier = "Data/" + nomFichier + "_DATA.dat"
             test = os.path.isfile(fichier) 
             if test == True :
-                del dlgAttente
+                dlgprogress.Destroy()
                 dlg = wx.MessageDialog(self, _(u"Vous possédez déjà un fichier qui porte le nom '") + nomFichier + _(u"'.\n\nVeuillez saisir un autre nom."), "Erreur", wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -1269,7 +1273,7 @@ class MainFrame(wx.Frame):
             
             # Vérifie la connexion au réseau
             if dictResultats["connexion"][0] == False :
-                del dlgAttente
+                dlgprogress.Destroy()
                 erreur = dictResultats["connexion"][1]
                 dlg = wx.MessageDialog(self, _(u"La connexion au réseau MySQL est impossible. \n\nErreur : %s") % erreur, _(u"Erreur de connexion"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
@@ -1278,7 +1282,7 @@ class MainFrame(wx.Frame):
             
             # Vérifie que le fichier n'est pas déjà utilisé
             if dictResultats["fichier"][0] == True and modeFichier != "internet" :
-                del dlgAttente
+                dlgprogress.Destroy()
                 dlg = wx.MessageDialog(self, _(u"Le fichier existe déjà."), _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -1290,7 +1294,7 @@ class MainFrame(wx.Frame):
         # Création de la base DATA
         DB = GestionDB.DB(suffixe="DATA", modeCreation=True)
         if DB.echec == 1 :
-            del dlgAttente
+            dlgprogress.Destroy()
             erreur = DB.erreur
             dlg = wx.MessageDialog(self, _(u"Erreur dans la création du fichier de données.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -1298,8 +1302,16 @@ class MainFrame(wx.Frame):
             self.userConfig["nomFichier"] = ancienFichier 
             return False
         self.SetStatusText(_(u"Création des tables de données..."))
-        DB.CreationTables(Tables.DB_DATA, fenetreParente=self)
-        self.SetStatusText(_(u"Importation des données par défaut..."))
+        #DB.CreationTables(Tables.DB_DATA, fenetreParente=self)
+
+        for table in Tables.DB_DATA:
+            dlgprogress.Update(numEtape, _(u"Création de la table '%s'...") % table);numEtape += 1
+            DB.CreationTable(nomTable=table, dicoDB=Tables.DB_DATA)
+
+        # Importation des données par défaut
+        message = _(u"Importation des données par défaut...")
+        self.SetStatusText(message)
+        dlgprogress.Update(numEtape, message);numEtape += 1
         DB.Importation_valeurs_defaut(listeTables)
         DB.Close()
         
@@ -1307,14 +1319,16 @@ class MainFrame(wx.Frame):
         if modeFichier != "internet" :
             DB = GestionDB.DB(suffixe="PHOTOS", modeCreation=True)
             if DB.echec == 1 :
-                del dlgAttente
+                dlgprogress.Destroy()
                 erreur = DB.erreur
                 dlg = wx.MessageDialog(self, _(u"Erreur dans la création du fichier de photos.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.userConfig["nomFichier"] = ancienFichier 
                 return False
-            self.SetStatusText(_(u"Création de la table de données des photos..."))
+            message = _(u"Création de la table de données des photos...")
+            self.SetStatusText(message)
+            dlgprogress.Update(numEtape, message);numEtape += 1
             DB.CreationTables(Tables.DB_PHOTOS)
             DB.Close()
         
@@ -1322,19 +1336,23 @@ class MainFrame(wx.Frame):
         if modeFichier != "internet" :
             DB = GestionDB.DB(suffixe="DOCUMENTS", modeCreation=True)
             if DB.echec == 1 :
-                del dlgAttente
+                dlgprogress.Destroy()
                 erreur = DB.erreur
                 dlg = wx.MessageDialog(self, _(u"Erreur dans la création du fichier de documents.\n\nErreur : %s") % erreur, _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.userConfig["nomFichier"] = ancienFichier 
                 return False
-            self.SetStatusText(_(u"Création de la table de données des documents..."))
+            message = _(u"Création de la table de données des documents...")
+            self.SetStatusText(message)
+            dlgprogress.Update(numEtape, message);numEtape += 1
             DB.CreationTables(Tables.DB_DOCUMENTS)
             DB.Close()
         
         # Création des index
-        self.SetStatusText(_(u"Création des index des tables..."))
+        message = _(u"Création des index des tables...")
+        self.SetStatusText(message)
+        dlgprogress.Update(numEtape, message);numEtape += 1
         DB = GestionDB.DB(suffixe="DATA")
         DB.CreationTousIndex() 
         DB.Close() 
@@ -1343,7 +1361,9 @@ class MainFrame(wx.Frame):
         DB.Close() 
 
         # Créé un identifiant unique pour ce fichier
-        self.SetStatusText(_(u"Création des informations sur le fichier..."))
+        message = _(u"Création des informations sur le fichier...")
+        self.SetStatusText(message)
+        dlgprogress.Update(numEtape, message);numEtape += 1
         d = datetime.datetime.now()
         IDfichier = d.strftime("%Y%m%d%H%M%S")
         for x in range(0, 3) :
@@ -1362,7 +1382,10 @@ class MainFrame(wx.Frame):
         DB.Close()
                 
         # Sauvegarde et chargement de l'identité Administrateur
-        self.SetStatusText(_(u"Création de l'identité administrateur..."))
+        message = _(u"Création de l'identité administrateur...")
+        self.SetStatusText(message)
+        dlgprogress.Update(numEtape, message);numEtape += 1
+
         DB = GestionDB.DB()
         listeDonnees = [    
                 ("sexe", dictAdministrateur["sexe"]),
@@ -1375,7 +1398,11 @@ class MainFrame(wx.Frame):
             ]
         IDutilisateur = DB.ReqInsert("utilisateurs", listeDonnees)
         DB.Close()
-        
+
+        message = _(u"Création terminée...")
+        self.SetStatusText(message)
+        dlgprogress.Update(numEtape, message);numEtape += 1
+
         # Chargement liste utilisateurs
         self.listeUtilisateurs = self.GetListeUtilisateurs() 
         self.ChargeUtilisateur(IDutilisateur=IDutilisateur)
@@ -1402,14 +1429,14 @@ class MainFrame(wx.Frame):
         self.MAJmenuDerniersFichiers()
                 
         # Sauvegarde du fichier de configuration
-        self.SaveFichierConfig(nomFichier=self.nomFichierConfig)
+        self.SaveFichierConfig()
         
         # Boîte de dialogue pour confirmer la création
         if "[RESEAU]" in nomFichier :
                 nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
         
         # Fermeture de la fenêtre d'attente
-        del dlgAttente
+        dlgprogress.Destroy()
         
         # Affichage d'un confirmation de succès de la création
         self.SetStatusText(_(u"Le fichier '%s' a été créé avec succès.") % nomFichier)
