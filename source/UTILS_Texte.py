@@ -11,7 +11,14 @@
 
 import re
 
-    
+
+def Supprime_accent(texte):
+    liste = [ (u"é", u"e"), (u"è", u"e"), (u"ê", u"e"), (u"ë", u"e"), (u"à", u"a"), (u"û", u"u"), (u"ô", u"o"), (u"ç", u"c"), (u"î", u"i"), (u"ï", u"i"),]
+    for a, b in liste :
+        texte = texte.replace(a, b)
+        texte = texte.replace(a.upper(), b.upper())
+    return texte
+
 def ConvertStrToListe(texte=None, siVide=[], separateur=";", typeDonnee="entier"):
     """ Convertit un texte "1;2;3;4" en [1, 2, 3, 4] """
     if texte == None or texte == "" :

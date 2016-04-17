@@ -1,6 +1,10 @@
-Version 1.1.6.7 (10/04/2016) :
+Version 1.1.6.7 (13/04/2016) :
 
 - Ajout des préfixes dans les numéros de factures
+- Ajout des remboursements depuis l'onglet Règlements de la fiche famille
+- Déplacement des répertoires et fichiers temporaires vers le répertoire Utilisateur
+- Amélioration de l'outil de mise à jour du logiciel
+- Mise à jour de l'installeur (5.5.9)
 
 Version 1.1.6.6 (03/04/2016) :
 

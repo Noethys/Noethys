@@ -248,6 +248,13 @@ class DB:
             if self.isNetwork == True and typeChamp == "INTEGER PRIMARY KEY AUTOINCREMENT" : typeChamp = "INTEGER PRIMARY KEY AUTO_INCREMENT"
             if self.isNetwork == True and typeChamp == "FLOAT" : typeChamp = "REAL"
             if self.isNetwork == True and typeChamp == "DATE" : typeChamp = "VARCHAR(10)"
+            if self.isNetwork == True and typeChamp.startswith("VARCHAR") :
+                nbreCaract = int(typeChamp[typeChamp.find("(")+1:typeChamp.find(")")])
+                if nbreCaract > 255 :
+                    typeChamp = "TEXT(%d)" % nbreCaract
+                if nbreCaract > 20000 :
+                    typeChamp = "MEDIUMTEXT"
+
             # ------------------------------
             req = req + "%s %s, " % (nomChamp, typeChamp)
         req = req[:-2] + ")"

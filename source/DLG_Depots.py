@@ -103,13 +103,11 @@ class Dialog(wx.Dialog):
         self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "selectionPossible" : False, "size" : (-1, 180) }) 
         self.ctrl_reglements = self.listviewAvecFooter1.GetListview()
         self.ctrl_reglements.SetMinSize((100, 150))
-        self.MAJreglements() 
 
         # Dépôts
         self.staticbox_depots = wx.StaticBox(self, -1, _(u"Dépôts"))
         self.listviewAvecFooter2 = OL_Depots.ListviewAvecFooter(self, kwargs={}) 
         self.ctrl_depots = self.listviewAvecFooter2.GetListview()
-        self.ctrl_depots.MAJ()
         self.ctrl_recherche = OL_Depots.CTRL_Outils(self, listview=self.ctrl_depots)
 
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap("Images/16x16/Ajouter.png", wx.BITMAP_TYPE_ANY))
@@ -134,6 +132,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckImages, self.check_images)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
+
+        # Init
+        self.MAJreglements()
+        self.ctrl_depots.MAJ()
+
 
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des dépôts"))

@@ -257,6 +257,8 @@ class Panel(wx.Panel):
         self.check_numero_auto.SetValue(True)
         self.OnCheckNumeroAuto()
 
+        wx.CallLater(1, self.SendSizeEvent)
+
     def __set_properties(self):
         self.ctrl_prefixe.SetToolTipString(_(u"Sélectionnez un préfixe de numéro de factures dans la liste proposée. Cet paramètre permet d'obtenir des numéros de facture de type 'ABC-00001'."))
         self.bouton_prefixes.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des préfixes de factures"))
@@ -306,7 +308,7 @@ class Panel(wx.Panel):
         grid_sizer_parametres.Add(self.label_prefixe, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
 
         grid_sizer_prefixe = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_prefixe.Add(self.ctrl_prefixe, 0, wx.EXPAND, 0)
+        grid_sizer_prefixe.Add(self.ctrl_prefixe, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_prefixe.Add(self.bouton_prefixes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_prefixe.AddGrowableCol(0)
         grid_sizer_parametres.Add(grid_sizer_prefixe, 1, wx.EXPAND, 0)

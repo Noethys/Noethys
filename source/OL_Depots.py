@@ -219,7 +219,7 @@ class ListView(FastObjectListView):
         self.selectionID = None
         self.selectionTrack = None
         if ID == None :
-            self.DefileDernier() 
+            self.DefileDernier()
 
     def Selection(self):
         return self.GetSelectedObjects()

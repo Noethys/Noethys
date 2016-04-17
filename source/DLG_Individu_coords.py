@@ -179,6 +179,7 @@ class CTRL_diff(wx.CheckListBox):
     def __init__(self, parent):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
+        self.SetMinSize((20, 20))
         self.SetToolTipString(_(u"Cochez les listes de diffusion souhaitées"))
         self.listeDiff = []
         self.dictDiff = {}
