@@ -215,7 +215,7 @@ class Page_ftp(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(None, _(u"La connexion a été établie avec succès !\n\nLes paramètres de connexion saisis sont valides."), "Succès ", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"La connexion a été établie avec succès !\n\nLes paramètres de connexion saisis sont valides."), u"Succès ", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -654,7 +654,7 @@ class Dialog(wx.Dialog):
             dlgAttente.Destroy() 
             del dlgAttente
             if resultat == True :
-                dlg = wx.MessageDialog(self, _(u"Le fichier a été réceptionné avec succès !"), "Succès ", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Le fichier a été réceptionné avec succès !"), u"Succès ", wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
 

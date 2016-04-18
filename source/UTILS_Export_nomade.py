@@ -288,7 +288,7 @@ class Export():
         
         dlgAttente.Destroy() 
         del dlgAttente
-        dlg = wx.MessageDialog(None, _(u"Le fichier a été envoyé avec succès !"), "Succès ", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"Le fichier a été envoyé avec succès !"), u"Succès ", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
@@ -304,4 +304,3 @@ if __name__ == '__main__':
 ##    export.EnvoyerVersRepertoire(nomFichier) 
 ##    export.EnvoyerVersFTP(nomFichier)
     app.MainLoop()
-    

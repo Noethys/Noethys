@@ -77,9 +77,9 @@ class CTRL(ULC.UltimateListCtrl):
             
         try :
             if len(self.listePieces) > 0 :
-                self.parent.box_pieces_staticbox.SetLabel("Pièces jointes communes (%d)" % len(self.listePieces))
+                self.parent.box_pieces_staticbox.SetLabel(u"Pièces jointes communes (%d)" % len(self.listePieces))
             else:
-                self.parent.box_pieces_staticbox.SetLabel("Pièces jointes communes")
+                self.parent.box_pieces_staticbox.SetLabel(u"Pièces jointes communes")
         except :
             pass
     

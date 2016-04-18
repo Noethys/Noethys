@@ -1895,7 +1895,7 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if dictResultats["fichier"][0] == True :
-            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), "Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             print "le nom existe deja."
@@ -1943,7 +1943,7 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if os.path.isfile(nouveauNom)  == True :
-            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), "Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Le fichier existe déjà."), u"Erreur de création de fichier", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             print "le nom existe deja."
@@ -2187,4 +2187,3 @@ if __name__ == "__main__":
 ##    DB.Close()
 
     pass
-    

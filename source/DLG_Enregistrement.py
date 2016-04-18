@@ -256,7 +256,7 @@ class Dialog(wx.Dialog):
             html = h.read()
             h.close()
         except Exception, err:
-            self.AfficheEtatValidite(texte="Vérification impossible. Vérifiez votre connexion internet !", image="attention")
+            self.AfficheEtatValidite(texte=u"Vérification impossible. Vérifiez votre connexion internet !", image="attention")
             del dlgAttente
             print "pb dans verification code enregistrement."
             traceback.print_exc(file=sys.stdout)
