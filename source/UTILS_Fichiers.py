@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 import os
+import sys
 
 
 def GetRepTemp(fichier=""):
@@ -24,30 +25,27 @@ def GetRepUtilisateur(fichier=""):
     """'safer' function to find user path."""
     chemin = None
 
-    try:
-        path = os.path.expanduser("~")
-        if os.path.isdir(path):
+    # Variable d'environnement
+    for evar in ('XDG_CONFIG_HOME', 'LOCALAPPDATA', 'APPDATA'):
+        path = os.environ.get(evar, None)
+        if path and os.path.isdir(path):
             chemin = path
-    except:
-        pass
+            break
+    if not chemin:
+        # ... ou répertoire de l'utilisateur
+        path = os.path.expanduser("~")
+        if path != "~" and os.path.isdir(path):
+            if sys.platform.startswith('linux'):
+                chemin = os.path.join(path, '.config')
+            else:
+                chemin = path
+        # ... ou dossier courrant.
+        else:
+            chemin = os.path.dirname(os.path.abspath(__file__))
 
-    # Autre méthode
-    if chemin == None :
-        for evar in ('HOME', 'USERPROFILE', 'TMP'):
-            try:
-                path = os.environ[evar]
-                if os.path.isdir(path):
-                    chemin = path
-                    break
-            except:
-                pass
-
-    if chemin == None :
-        chemin = os.path.dirname(os.path.abspath(__file__))
-
-    # Création du répertoire noethys si besoin
+    # Ajoute 'noethys' dans le chemin et création du répertoire
     chemin = os.path.join(chemin, "noethys")
-    if os.path.isdir(chemin) == False :
+    if not os.path.isdir(chemin):
         os.mkdir(chemin)
 
     # Ajoute le dirname si besoin
