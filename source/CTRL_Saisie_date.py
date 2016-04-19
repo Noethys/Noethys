@@ -9,15 +9,18 @@
 #-----------------------------------------------------------
 
 
-from UTILS_Traduction import _
-import wx
-import CTRL_Bouton_image
+import re
 import sys
-import wx.lib.masked as masked
 import datetime
 import calendar
+
+import wx
+import wx.lib.masked as masked
 import dateutil
 from dateutil import relativedelta
+
+import CTRL_Bouton_image
+from UTILS_Traduction import _
 
 ID_AIDE = 5
 ID_AUJOURDHUI = 10
@@ -33,7 +36,12 @@ ID_ANNEE_ACTUELLE = 300
 ID_ANNEE_PRECEDENTE = 310
 ID_ANNEE_SUIVANTE = 320
 
-    
+# expression régulière pour une date (JJ/MM/AAAA)
+datePattern = re.compile(
+    r"(?P<jour>[\d]{1,2})/(?P<mois>[\d]{1,2})/(?P<annee>[\d]{4})"
+)
+
+
 class Date(masked.TextCtrl):
     """ Contrôle Date simple """
     def __init__(self, parent, date_min="01/01/1900", date_max="01/01/2999"):
@@ -273,82 +281,76 @@ class Date(masked.TextCtrl):
         
         if id == ID_AIDE :
             import UTILS_Aide
-            UTILS_Aide.Aide("Slectionnerunedate")        
+            UTILS_Aide.Aide("Slectionnerunedate")
+
 
 def ValideDate(texte, date_min="01/01/1900", date_max="01/01/2999", avecMessages=True):
     """ Verificateur de validite de date """
+    if texte == "  /  /    ":
+        return True
+
     listeErreurs = []
-    # On vérifie si les cases ne sont pas vides
-    if texte[0] == " " or texte[1] == " ":
-        listeErreurs.append(_(u"le jour"))
-    if texte[3] == " " or texte[4] == " ":
-        listeErreurs.append(_(u"le mois"))
-    if texte[6] == " " or texte[7] == " " or texte[8] == " " or texte[9] == " ":
-        listeErreurs.append(_(u"l'année"))
-    
-    if texte != "  /  /    ":
 
+    # Recherche depuis l'expression régulière
+    date = datePattern.match(texte)
+    if date:
         # On vérifie que les chiffres existent
-        if _(u"le jour") not in listeErreurs:
-            jour = int(texte[:2])
-            if jour == 0 or jour > 31:
-                listeErreurs.append(_(u"le jour"))
+        jour = int(date.group("jour"))
+        if jour == 0 or jour > 31:
+            listeErreurs.append(_(u"le jour"))
+        mois = int(date.group("mois"))
+        if mois == 0 or mois > 12:
+            listeErreurs.append(_(u"le mois"))
+        annee = int(date.group("annee"))
+        if annee < 1900 or annee > 2999:
+            listeErreurs.append(_(u"l'année"))
 
-        if _(u"le mois") not in listeErreurs:
-            mois = int(texte[3:5])
-            if mois == 0 or mois > 12:
-                listeErreurs.append(_(u"le mois"))
-                
-        if _(u"l'année") not in listeErreurs:
-            annee = int(texte[6:10])
-            if annee < 1900 or annee > 2999:
-                listeErreurs.append(_(u"l'année"))
-              
         # Affichage du message d'erreur
-        
-        if len(listeErreurs) != 0:
+        if listeErreurs:
             # Message en cas de date incomplète
-            if len(listeErreurs) == 1:
-                message = _(u"Une incohérence a été détectée dans ") + listeErreurs[0]
-            if len(listeErreurs) == 2:
-                message = _(u"Des incohérences ont été détectées dans ") + listeErreurs[0] + " et " + listeErreurs[1]
-            if len(listeErreurs) == 3:
-                message = _(u"Des incohérences ont été détectées dans ") + listeErreurs[0]  + ", " + listeErreurs[1]  + " et " + listeErreurs[2]
-            message = message + _(u" de la date que vous venez de saisir. Veuillez la vérifier.")
-            
             if avecMessages == True :
+                nbErreurs = len(listeErreurs)
+                if nbErreurs == 1:
+                    message = _(u"Une incohérence a été détectée dans ") + listeErreurs[0]
+                else:
+                    message = _(u"Des incohérences ont été détectées dans ") + listeErreurs[0]
+                    if nbErreurs == 2:
+                        message += " et " + listeErreurs[1]
+                    elif nbErreurs == 3:
+                        message += ", " + listeErreurs[1]  + " et " + listeErreurs[2]
+                message += _(u" de la date que vous venez de saisir. Veuillez la vérifier.")
                 wx.MessageBox(message, "Erreur de date")
             return False
         else:
             # On vérifie que les dates sont comprises dans l'intervalle donné en paramètre
             date_min = int(str(date_min[6:10]) + str(date_min[3:5]) + str(date_min[:2]))
             date_max = int(str(date_max[6:10]) + str(date_max[3:5]) + str(date_max[:2]))
-            date_sel = int(str(texte[6:10]) + str(texte[3:5]) + str(texte[:2]))
+            date_sel = int(str(annee) + ('0' if mois < 10 else '') + str(mois) +
+                                        ('0' if jour < 10 else '') + str(jour))
 
             if date_sel < date_min:
-                message = _(u"La date que vous venez de saisir semble trop ancienne. Veuillez la vérifier.")
                 if avecMessages == True :
+                    message = _(u"La date que vous venez de saisir semble trop ancienne. Veuillez la vérifier.")
                     wx.MessageBox(message, "Erreur de date")
                 return False
             if date_sel > date_max:
-                message = _(u"La date que vous venez de saisir semble trop élevée. Veuillez la vérifier.")
                 if avecMessages == True :
+                    message = _(u"La date que vous venez de saisir semble trop élevée. Veuillez la vérifier.")
                     wx.MessageBox(message, "Erreur de date")
                 return False
-            
-            # On vérifie que la date peut être transformée en Datetime :
-            try :
-                dateDD = datetime.date(year=int(texte[6:10]), month=int(texte[3:5]), day=int(texte[:2]))
+
+            # On vérifie que la date peut être transformée en Datetime
+            try:
+                datetime.date(year=annee, month=mois, day=jour)
             except :
-                message = _(u"La date que vous venez de saisir ne semble pas valide !")
-                if avecMessages == True :
-                    wx.MessageBox(message, "Erreur de date")
-                return False
-        
-    else:
-        return True
+                pass
+            else:
+                return True
 
-
+    if avecMessages == True :
+        message = _(u"La date que vous venez de saisir ne semble pas valide !")
+        wx.MessageBox(message, "Erreur de date")
+    return False
 
 
 class Date2(wx.Panel):
