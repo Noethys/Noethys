@@ -40,6 +40,7 @@ class CTRL_Choix(wx.Choice):
         DB.Close()
         listeLabels = []
         for ID, nom in listeDonnees :
+            if nom == None : nom = _(u"Activité inconnue")
             listeLabels.append(nom)
             self.listeID.append(ID)
         self.SetItems(listeLabels)

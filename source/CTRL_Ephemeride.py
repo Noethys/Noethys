@@ -147,7 +147,7 @@ class CTRL(wx.Panel):
             texte = self.GetSoleil()
             if texte != None :
                 listePages.append(texte)
-            
+
             # Ajout de la météo
 ##            texte = self.GetMeteo()
 ##            if texte != None :
@@ -270,7 +270,7 @@ class CTRL(wx.Panel):
             ville = self.dictOrganisateur["ville"]
             lat = self.dictOrganisateur["lat"]
             long = self.dictOrganisateur["long"]
-            if ville == "" or ville == None or lat == None or long == None : 
+            if ville == "" or ville == None or lat == None or long == None :
                 return None
             
             # Récupère les heures de lever et de coucher du soleil
@@ -280,7 +280,7 @@ class CTRL(wx.Panel):
             texte = _(u"<t>HORAIRES DU SOLEIL</t>Aujourd'hui à %s, le soleil se lève à %dh%02d et se couche à %dh%02d.") % (ville.capitalize(), heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
             return texte
         
-        except :
+        except Exception, err :
             return None
     
     def GetMeteo(self):

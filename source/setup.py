@@ -202,9 +202,14 @@ setup(
     ],)
 
 # Insertions manuelles dans le ZIP
-z = zipfile.ZipFile(os.path.join("dist/" 'library.zip'), 'a')
+z = zipfile.ZipFile(os.path.join("dist/", "library.zip"), 'a')
+
+# IMPORTANT : Ce code ne fonctione que si Pytz est unzippé :
+# Commande easy_install --upgrade --always-unzip pytz
+# Pour la mettre à jour avec un dézippe automatique
 
 # Timezone de pytz :
+print "Ajout manuel du repertoire Zoneinfo de pytz..."
 import pytz
 zoneinfo_dir = os.path.join(os.path.dirname(pytz.__file__), 'zoneinfo')
 disk_basedir = os.path.dirname(os.path.dirname(pytz.__file__))
@@ -212,10 +217,13 @@ for absdir, directories, filenames in os.walk(zoneinfo_dir):
     assert absdir.startswith(disk_basedir), (absdir, disk_basedir)
     zip_dir = absdir[len(disk_basedir):]
     for f in filenames:
-      z.write(os.path.join(absdir, f), os.path.join(zip_dir, f))
+        z.write(os.path.join(absdir, f), os.path.join(zip_dir, f))
 
 # Typelibs Microsoft Speech pour Windows XP
+print "Ajout manuel du Typelibs Microsoft Speech pour Windows XP..."
 nom = "C866CA3A-32F7-11D2-9602-00C04F8EE628x0x5x0.py"
 z.write("Outils/%s" % nom, "win32com/gen_py/%s" % nom)
 
 z.close()
+
+print "Fini !"

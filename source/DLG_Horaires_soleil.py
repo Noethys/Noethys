@@ -244,8 +244,8 @@ class Dialog(wx.Dialog):
                 dateFr = DateDDEnDateFR(date) 
                 texte = u"%s : %dh%02d > %dh%02d \n" % (dateFr, heureLever.hour, heureLever.minute, heureCoucher.hour, heureCoucher.minute)
                 self.ctrl_resultats.WriteText(texte)
-            except :
-                pass
+            except Exception, err :
+                print err
                 
 
 if __name__ == u"__main__":
