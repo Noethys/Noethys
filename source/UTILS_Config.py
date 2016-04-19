@@ -35,7 +35,7 @@ def GenerationFichierConfig():
                 'modeAffichage': 'nbrePlacesPrises',
                 'dateDebut': None,
                 'dateFin': None,
-                'annee': 2011,
+                'annee': None,
                 'page': 0,
                 },
         "assistant_demarrage" : False,
