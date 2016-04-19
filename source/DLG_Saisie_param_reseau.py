@@ -48,8 +48,8 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Paramètres de connexion"))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTipString("Saisissez ici le numéro de port")
-        self.ctrl_hote.SetToolTipString("Saisissez ici l'hôte")
+        self.ctrl_port.SetToolTipString(u"Saisissez ici le numéro de port")
+        self.ctrl_hote.SetToolTipString(u"Saisissez ici l'hôte")
         self.ctrl_utilisateur.SetToolTipString("Saisissez ici l'utilisateur")
         self.ctrl_mdp.SetToolTipString("Saisissez ici le mot de passe")
         self.bouton_aide.SetToolTipString("Cliquez ici pour obtenir de l'aide")
