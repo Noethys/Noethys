@@ -211,11 +211,11 @@ class Page_ftp(wx.Panel):
             ftp.cwd(dictParametres["synchro_ftp_repertoire"])
             ftp.quit()
         except Exception, err :
-            dlg = wx.MessageDialog(self, _(u"La connexion n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"La connexion n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(None, _(u"La connexion a été établie avec succès !\n\nLes paramètres de connexion saisis sont valides."), "Succès ", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"La connexion a été établie avec succès !\n\nLes paramètres de connexion saisis sont valides."), u"Succès", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -654,7 +654,7 @@ class Dialog(wx.Dialog):
             dlgAttente.Destroy() 
             del dlgAttente
             if resultat == True :
-                dlg = wx.MessageDialog(self, _(u"Le fichier a été réceptionné avec succès !"), "Succès ", wx.OK | wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Le fichier a été réceptionné avec succès !"), u"Succès", wx.OK | wx.ICON_INFORMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
 

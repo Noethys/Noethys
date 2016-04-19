@@ -396,7 +396,7 @@ class ListView(FastObjectListView):
         """ Importer un modèle """
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_docs", "creer") == False : return
         # Ouverture de la fenêtre de dialogue
-        wildcard = "Modèle Noedoc (*.ndc)|*.ndc|Tous les fichiers (*.*)|*.*"
+        wildcard = u"Modèle Noedoc (*.ndc)|*.ndc|Tous les fichiers (*.*)|*.*"
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez un modèle à importer"),
@@ -464,7 +464,7 @@ class ListView(FastObjectListView):
         standardPath = wx.StandardPaths.Get()
         dlg = wx.FileDialog(self, message=_(u"Enregistrer le modèle sous..."),
                             defaultDir = standardPath.GetDocumentsDir(), defaultFile="modele.ndc",
-                            wildcard="Modèle Noedoc (*.ndc)|*.ndc", style=wx.SAVE)
+                            wildcard=u"Modèle Noedoc (*.ndc)|*.ndc", style=wx.SAVE)
 
         if dlg.ShowModal() == wx.ID_OK:
             path = dlg.GetPath()

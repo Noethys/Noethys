@@ -437,7 +437,7 @@ class Cotisation():
             except Exception, err:
                 del dlgAttente
                 traceback.print_exc(file=sys.stdout)
-                dlg = wx.MessageDialog(None, "Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(None, u"Désolé, le problème suivant a été rencontré dans l'édition des cotisations : \n\n%s" % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
