@@ -309,7 +309,7 @@ def GetXML(dictDonnees={}):
 
         if dictPiece["natidtiers_helios"] != "" :
             NatIdTiers = doc.createElement("NatIdTiers")
-            NatIdTiers.setAttribute("V", dictPiece["natidtiers_helios"])
+            NatIdTiers.setAttribute("V", str(dictPiece["natidtiers_helios"]))
             InfoTiers.appendChild(NatIdTiers)
 
         if dictPiece["reftiers_helios"] != "" :
