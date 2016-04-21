@@ -17,7 +17,6 @@ import CTRL_Bouton_image
 import sys
 import platform
 import os
-import shutil
 import datetime
 import traceback
 
@@ -3830,10 +3829,7 @@ class MyApp(wx.App):
 
 if __name__ == "__main__":
     # Vérifie si des fichiers du répertoire Data sont à déplacer vers le répertoire Utilisateur
-    for fichier in ("journal.log", "Data/Config.dat", "Data/Customize.ini") :
-        if os.path.isfile(fichier) :
-            nouveauNom = UTILS_Fichiers.GetRepUtilisateur(fichier.replace("Data/", ""))
-            shutil.move(fichier, nouveauNom)
+    UTILS_Fichiers.DeplaceFichiers()
 
     # Initialisation du fichier de customisation
     CUSTOMIZE = UTILS_Customize.Customize()

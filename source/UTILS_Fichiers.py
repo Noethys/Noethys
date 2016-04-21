@@ -10,6 +10,7 @@
 
 import os
 import sys
+import shutil
 
 
 def GetRepTemp(fichier=""):
@@ -22,7 +23,7 @@ def GetRepUpdates(fichier=""):
 
 
 def GetRepUtilisateur(fichier=""):
-    """'safer' function to find user path."""
+    """ Recherche le répertoire Utilisateur pour stockage des fichiers de config et provisoires """
     chemin = None
 
     # Variable d'environnement
@@ -51,8 +52,21 @@ def GetRepUtilisateur(fichier=""):
     # Ajoute le dirname si besoin
     return os.path.join(chemin, fichier)
 
+def DeplaceFichiers():
+    """ Vérifie si des fichiers du répertoire Data ou du répertoire Utilisateur sont à déplacer vers le répertoire Utilisateur>AppData>Roaming """
+    for nom in ("journal.log", "Config.dat", "Customize.ini") :
+        for rep in ("", "Data", os.path.join(os.path.expanduser("~"), "noethys")) :
+            fichier = os.path.join(rep, nom)
+            if os.path.isfile(fichier) :
+                nouveauNom = GetRepUtilisateur(nom)
+                shutil.move(fichier, nouveauNom)
+
+
+
 
 if __name__ == "__main__":
+    # Test les chemins
     print "Chemin Fichier config =", GetRepUtilisateur("Config.dat")
-    print "Repertoire Temp =", GetRepTemp()
-    print "Fichier Txt dans repertoire Temp =", GetRepTemp("Test.txt")
+
+    # Test les déplacements de fichiers
+    DeplaceFichiers()
