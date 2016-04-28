@@ -1262,18 +1262,26 @@ class Dialog(wx.Dialog):
             dictUnites[IDunite] = {"IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : typeTemp, "heure_debut" : heure_debut, "heure_fin" : heure_fin, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre}
         
         # Récupération des infos sur les unités de remplissage
-        req = """SELECT 
-        unites_remplissage_unites.IDunite_remplissage_unite, 
-        unites_remplissage_unites.IDunite_remplissage, 
-        unites_remplissage_unites.IDunite,
-        nom, abrege, etiquettes
-        FROM unites_remplissage_unites
-        LEFT JOIN unites_remplissage ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
+        # req = """SELECT
+        # unites_remplissage_unites.IDunite_remplissage_unite,
+        # unites_remplissage_unites.IDunite_remplissage,
+        # unites_remplissage_unites.IDunite,
+        # nom, abrege, etiquettes
+        # FROM unites_remplissage_unites
+        # LEFT JOIN unites_remplissage ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
+        # ;"""
+
+        req = """SELECT
+        unites_remplissage.IDunite_remplissage, nom, abrege, etiquettes,
+        unites_remplissage_unites.IDunite_remplissage_unite,
+        unites_remplissage_unites.IDunite
+        FROM unites_remplissage
+        LEFT JOIN unites_remplissage_unites ON unites_remplissage.IDunite_remplissage = unites_remplissage_unites.IDunite_remplissage
         ;"""
         DB.ExecuterReq(req)
         listeUnitesRemplissage = DB.ResultatReq()
         dictUnitesRemplissage = {}
-        for IDunite_remplissage_unite, IDunite_remplissage, IDunite, nom, abrege, etiquettes in listeUnitesRemplissage :
+        for IDunite_remplissage, nom, abrege, etiquettes, IDunite_remplissage_unite, IDunite in listeUnitesRemplissage :
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
             if dictUnitesRemplissage.has_key(IDunite_remplissage) == False :
                 dictUnitesRemplissage[IDunite_remplissage] = {"nom" : nom, "abrege" : abrege, "etiquettes" : etiquettes, "unites" : [] }
@@ -1873,8 +1881,13 @@ class Dialog(wx.Dialog):
                                                     
                                                 else:
                                                     # Unité de Remplissage
-                                                    unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
-                                                    etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
+                                                    if dictUnitesRemplissage.has_key(IDunite) :
+                                                        unitesLiees = dictUnitesRemplissage[IDunite]["unites"]
+                                                        etiquettesUnitesRemplissage = dictUnitesRemplissage[IDunite]["etiquettes"]
+                                                    else :
+                                                        unitesLiees = []
+                                                        etiquettesUnitesRemplissage = []
+
                                                     for IDuniteLiee in unitesLiees :
                                                         if dictIndividu["listeConso"].has_key(date) :
                                                             if dictIndividu["listeConso"][date].has_key(IDuniteLiee) :
