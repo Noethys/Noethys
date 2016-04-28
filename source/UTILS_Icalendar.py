@@ -60,14 +60,15 @@ class Calendrier():
         """ Récupère les périodes de vacances """
         listeEvents = self.GetEvents() 
         listeResultats = []
+
+        # Recherche les petites vacances
         listeCorrespondances = [
             (_(u"hiver"), _(u"Février")),
             (_(u"printemps"), _(u"Pâques")),
-            (u"été", _(u"Eté")),
             (_(u"Toussaint"), _(u"Toussaint")),
             (_(u"Noël"), _(u"Noël")),
             ]
-            
+
         for nomOriginal, nomFinal in listeCorrespondances :
             for dictEvent in listeEvents :
                 if nomOriginal in dictEvent["description"] :
@@ -76,7 +77,23 @@ class Calendrier():
                         date_debut = dictEvent["date_debut"]
                         date_fin = dictEvent["date_fin"] - datetime.timedelta(days=1)
                         listeResultats.append({"annee" : annee, "nom" : nomFinal, "date_debut" : date_debut, "date_fin" : date_fin})
-        
+
+        # Recherche les grandes vacances
+        dictTemp = {}
+        for dictEvent in listeEvents :
+            if u"élèves" or u"été" in dictEvent["description"] :
+                annee = dictEvent["date_debut"].year
+                if dictTemp.has_key(annee) == False :
+                    dictTemp[annee] = {"date_debut" : None, "date_fin" : None}
+                if u"été" in dictEvent["description"] :
+                    dictTemp[annee]["date_debut"] = dictEvent["date_debut"] + datetime.timedelta(days=1)
+                if u"élèves" in dictEvent["description"] :
+                    dictTemp[annee]["date_fin"] = dictEvent["date_debut"] - datetime.timedelta(days=1)
+
+        for annee, dictDates in dictTemp.iteritems() :
+            if dictDates["date_debut"] != None and dictDates["date_fin"] != None :
+                listeResultats.append({"annee" : annee, "nom" : _(u"Eté"), "date_debut" : dictDates["date_debut"], "date_fin" : dictDates["date_fin"]})
+
         # Tri par date de début
         listeResultats.sort(lambda x,y: cmp(x["date_debut"], y["date_debut"]))
         
