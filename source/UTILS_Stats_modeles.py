@@ -243,8 +243,16 @@ def GetPeriodesComparatives(DB=None, dictParametres={}, date_min=None, date_max=
         if date_debut.year != date_fin.year :
             return listePeriodes
         for annee in range(date_min.year, date_max.year+1) :
-            date_debut_temp = datetime.date(annee, date_debut.month, date_debut.day)
-            date_fin_temp = datetime.date(annee, date_fin.month, date_fin.day)
+            nbreJoursMois = calendar.monthrange(annee, date_debut.month)[1]
+            if date_debut.day < nbreJoursMois :
+                date_debut_temp = datetime.date(annee, date_debut.month, date_debut.day)
+            else :
+                date_debut_temp = datetime.date(annee, date_debut.month, nbreJoursMois)
+            nbreJoursMois = calendar.monthrange(annee, date_fin.month)[1]
+            if date_fin.day < nbreJoursMois :
+                date_fin_temp = datetime.date(annee, date_fin.month, date_fin.day)
+            else :
+                date_fin_temp = datetime.date(annee, date_fin.month, nbreJoursMois)
             label = _(u"Du %s au %s") % (DateEngFr(str(date_debut_temp)), DateEngFr(str(date_fin_temp)))
             dictTemp = {"date_debut":date_debut_temp, "date_fin":date_fin_temp, "label":label}
             listePeriodes.append(dictTemp)
