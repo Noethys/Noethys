@@ -439,16 +439,31 @@ class Dialog(wx.Dialog):
             return
         
         # Vérifie qu'il reste au moins un administrateur dans la base de données
-        if self.radio_droits_admin.GetValue() == False : 
+        if self.radio_droits_admin.GetValue() == False :
             DB = GestionDB.DB()
             req = """SELECT IDutilisateur, profil
-            FROM utilisateurs 
+            FROM utilisateurs
             WHERE profil='administrateur' AND IDutilisateur!=%d;""" % IDutilisateurTmp
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close()
             if len(listeDonnees) == 0 :
                 dlg = wx.MessageDialog(self, _(u"Il doit rester au moins un administrateur dans le fichier !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+        # Vérifie qu'il reste au moins un administrateur ACTIF dans la base de données
+        if self.ctrl_actif.GetValue() == False :
+            DB = GestionDB.DB()
+            req = """SELECT IDutilisateur, profil, actif
+            FROM utilisateurs
+            WHERE profil='administrateur' AND actif=1 AND IDutilisateur!=%d;""" % IDutilisateurTmp
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Il doit rester au moins un administrateur ACTIF dans le fichier ! Cochez la case Actif."), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
