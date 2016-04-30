@@ -22,7 +22,7 @@ import OL_Synchronisation_donnees
 from threading import Thread 
 import DLG_Badgeage_grille
 import DLG_Messagebox
-
+import UTILS_Fichiers
 
 
 class Dialog(wx.Dialog):
@@ -286,10 +286,10 @@ class Dialog(wx.Dialog):
                 # Renommage et archivage
                 if nomFichier.endswith(".archive") == False :
                     # Renommage
-                    nomTemp = "Sync/" + nomFichier.replace(".dat", ".archive")
+                    nomTemp = UTILS_Fichiers.GetRepSync(nomFichier.replace(".dat", ".archive"))
                     if os.path.isfile(nomTemp) == True :
                         os.remove(nomTemp)
-                    os.rename("Sync/" + nomFichier, nomTemp)
+                    os.rename(UTILS_Fichiers.GetRepSync(nomFichier), nomTemp)
                     # Mémorisation de l'archivage dans la base
                     nomFichierTemp = nomFichier.replace(".dat", "").replace(".archive", "")
                     ID_appareil = self.ctrl_donnees.dictIDappareil[nomFichierTemp]

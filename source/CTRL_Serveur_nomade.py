@@ -19,7 +19,7 @@ import time
 from urllib2 import urlopen
 from threading import Thread 
 import FonctionsPerso
-
+import UTILS_Fichiers
 import UTILS_Config
 import UTILS_Export_nomade
 
@@ -122,7 +122,7 @@ class Echo(Protocol):
                 nom_appareil = message["nom_appareil"]
                 tailleFichier = message["taille"]
                 nomInitial = message["nom"]
-                nomFinal = "Sync/%s" % nomInitial
+                nomFinal = UTILS_Fichiers.GetRepSync(nomInitial)
                 self.EcritLog(_(u"Prêt à recevoir de l'appareil ") + nom_appareil + " le fichier " + nomInitial + " (" + FonctionsPerso.Formate_taille_octets(tailleFichier) + ")")
                 fichier = open(nomFinal,"wb")
                 self.dictFichierReception = {

@@ -18,7 +18,7 @@ import datetime
 import GestionDB
 import FonctionsPerso
 import UTILS_Dates
-
+import UTILS_Fichiers
 
 import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -58,7 +58,7 @@ class ListView(FastObjectListView):
         IDfichier = FonctionsPerso.GetIDfichier()
         
         # Lecture des fichiers du répertoire SYNC
-        listeFichiers = os.listdir("Sync")
+        listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
         
         listeListeView = []
         for nomFichier in listeFichiers :
@@ -66,14 +66,14 @@ class ListView(FastObjectListView):
                 nomFichierCourt = nomFichier.replace(".dat", "").replace(".archive", "")
                 
                 # Taille fichier
-                tailleFichier = os.path.getsize("Sync/" + nomFichier) 
+                tailleFichier = os.path.getsize(UTILS_Fichiers.GetRepSync(nomFichier))
                 
                 # Horodatage
                 horodatage = nomFichierCourt.split("_")[2]
                 horodatage = UTILS_Dates.HorodatageEnDatetime(horodatage)
                                 
                 # Lecture du contenu du fichier
-                DB = GestionDB.DB(suffixe=None, nomFichier="Sync/" + nomFichier, modeCreation=False)
+                DB = GestionDB.DB(suffixe=None, nomFichier=UTILS_Fichiers.GetRepSync(nomFichier), modeCreation=False)
                 req = """SELECT IDparametre, nom, valeur 
                 FROM parametres;"""
                 DB.ExecuterReq(req)
@@ -214,7 +214,7 @@ class ListView(FastObjectListView):
             
             DB = GestionDB.DB()
             # Renommage des fichiers
-            os.rename("Sync/" + nomFichier, "Sync/" + nomFichier.replace(".dat", ".archive"))
+            os.rename(UTILS_Fichiers.GetRepSync(nomFichier), UTILS_Fichiers.GetRepSync(nomFichier.replace(".dat", ".archive")))
             # Mémorisation de l'archivage dans la base
             nomFichierTemp = nomFichier.replace(".dat", "").replace(".archive", "")
             IDarchive = DB.ReqInsert("nomade_archivage", [("nom_fichier", nomFichierTemp), ("ID_appareil", IDappareil), ("date", datetime.date.today())])

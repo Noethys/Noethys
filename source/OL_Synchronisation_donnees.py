@@ -18,8 +18,7 @@ import datetime
 import GestionDB
 import FonctionsPerso
 import UTILS_Dates
-
-
+import UTILS_Fichiers
 import UTILS_Interface
 from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils
 
@@ -128,14 +127,14 @@ class ListView(GroupListView):
                     self.listeFichiersTrouves.append(nomFichier) 
                     
                 # Taille fichier
-                tailleFichier = os.path.getsize("Sync/" + nomFichier) 
+                tailleFichier = os.path.getsize(UTILS_Fichiers.GetRepSync(nomFichier))
                 
                 # Horodatage
                 horodatage = nomFichierCourt.split("_")[2]
                 horodatage = UTILS_Dates.HorodatageEnDatetime(horodatage)
                                 
                 # Lecture du contenu du fichier
-                DB = GestionDB.DB(suffixe=None, nomFichier="Sync/" + nomFichier, modeCreation=False)
+                DB = GestionDB.DB(suffixe=None, nomFichier=UTILS_Fichiers.GetRepSync(nomFichier), modeCreation=False)
                 req = """SELECT IDparametre, nom, valeur 
                 FROM parametres;"""
                 DB.ExecuterReq(req)

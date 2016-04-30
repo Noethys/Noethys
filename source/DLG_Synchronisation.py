@@ -26,7 +26,7 @@ import UTILS_Export_nomade
 import UTILS_Dates
 import UTILS_Parametres
 import FonctionsPerso
-
+import UTILS_Fichiers
 import UTILS_Config
 import UTILS_Cryptage_fichier
 
@@ -38,7 +38,7 @@ import OL_Synchronisation_fichiers
 
 
 def AnalyserFichier(nomFichier="", tailleFichier=None, typeTransfert=None):
-    cheminFichier = "Sync/" + nomFichier
+    cheminFichier = UTILS_Fichiers.GetRepSync(nomFichier)
     listeAnomalies = []
     
     # Vérification de la taille du fichier
@@ -647,7 +647,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
         if chemin != None :
             nomFichier = os.path.basename(chemin)
-            shutil.copyfile(chemin, "Sync/" + nomFichier)
+            shutil.copyfile(chemin, UTILS_Fichiers.GetRepSync(nomFichier))
             # Analyse du fichier
             dlgAttente = wx.BusyInfo(_(u"Analyse du fichier synchronisation..."), self)
             resultat = AnalyserFichier(nomFichier, typeTransfert="manuel") 
@@ -680,7 +680,7 @@ class Dialog(wx.Dialog):
             for nomFichier in ftp.nlst() :
                 if nomFichier.startswith("actions_%s" % IDfichier) and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
                     tailleFichier = ftp.size(nomFichier) 
-                    ftp.retrbinary("RETR %s" % nomFichier, open("Sync/" + nomFichier, "wb").write) 
+                    ftp.retrbinary("RETR %s" % nomFichier, open(UTILS_Fichiers.GetRepSync(nomFichier), "wb").write)
                     listeFichiersRecus.append((nomFichier, tailleFichier))
             ftp.quit()
         except Exception, err :
@@ -761,7 +761,7 @@ class Dialog(wx.Dialog):
                 
                 # Suppression
                 if nbreJours > synchro_archivage_delai :
-                    os.remove("Sync/" + nomFichier)
+                    os.remove(UTILS_Fichiers.GetRepSync(nomFichier))
     
     def AfficheAvertissement(self):
         if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="synchronisation_nomadhys", valeur=False) == True :

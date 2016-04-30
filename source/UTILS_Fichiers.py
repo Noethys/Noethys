@@ -25,6 +25,10 @@ def GetRepLang(fichier=""):
     chemin = GetRepUtilisateur("Lang")
     return os.path.join(chemin, fichier)
 
+def GetRepSync(fichier=""):
+    chemin = GetRepUtilisateur("Sync")
+    return os.path.join(chemin, fichier)
+
 
 def GetRepUtilisateur(fichier=""):
     """ Recherche le répertoire Utilisateur pour stockage des fichiers de config et provisoires """
@@ -70,6 +74,11 @@ def DeplaceFichiers():
     for nomFichier in os.listdir("Lang/") :
         if nomFichier.endswith(".xlang") :
             shutil.move(u"Lang/%s" % nomFichier, GetRepLang(nomFichier))
+
+    # Déplace les fichiers du répertoire Sync
+    for nomFichier in os.listdir("Sync/") :
+        shutil.move(u"Sync/%s" % nomFichier, GetRepSync(nomFichier))
+
 
 
 
