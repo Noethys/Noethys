@@ -21,13 +21,17 @@ def GetRepUpdates(fichier=""):
     chemin = GetRepUtilisateur("Updates")
     return os.path.join(chemin, fichier)
 
+def GetRepLang(fichier=""):
+    chemin = GetRepUtilisateur("Lang")
+    return os.path.join(chemin, fichier)
+
 
 def GetRepUtilisateur(fichier=""):
     """ Recherche le répertoire Utilisateur pour stockage des fichiers de config et provisoires """
     chemin = None
 
     # Variable d'environnement
-    for evar in ('XDG_CONFIG_HOME', 'LOCALAPPDATA', 'APPDATA'):
+    for evar in ('XDG_CONFIG_HOME', 'APPDATA', 'LOCALAPPDATA'):
         path = os.environ.get(evar, None)
         if path and os.path.isdir(path):
             chemin = path
@@ -54,13 +58,18 @@ def GetRepUtilisateur(fichier=""):
 
 def DeplaceFichiers():
     """ Vérifie si des fichiers du répertoire Data ou du répertoire Utilisateur sont à déplacer vers le répertoire Utilisateur>AppData>Roaming """
+
+    # Déplace les fichiers de config et le journal
     for nom in ("journal.log", "Config.dat", "Customize.ini") :
         for rep in ("", "Data", os.path.join(os.path.expanduser("~"), "noethys")) :
             fichier = os.path.join(rep, nom)
             if os.path.isfile(fichier) :
-                nouveauNom = GetRepUtilisateur(nom)
-                shutil.move(fichier, nouveauNom)
+                shutil.move(fichier, GetRepUtilisateur(nom))
 
+    # Déplace les fichiers xlang
+    for nomFichier in os.listdir("Lang/") :
+        if nomFichier.endswith(".xlang") :
+            shutil.move(u"Lang/%s" % nomFichier, GetRepLang(nomFichier))
 
 
 

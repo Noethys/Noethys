@@ -21,7 +21,7 @@ import shutil
 import DLG_Messagebox
 
 from wx.lib import langlistctrl
-
+import UTILS_Fichiers
 
 
 class Track(object):
@@ -49,26 +49,26 @@ class ListView(FastObjectListView):
     def GetTracks(self):
         """ Récupération des données """
         # Langues existantes
-        listeFichiers = os.listdir("Lang/") 
         dictLangues = {}
-        for nomFichier in listeFichiers :
-            if nomFichier.endswith("lang") :
-                code, extension = nomFichier.split(".")
-                fichier = shelve.open("Lang/" + nomFichier, "r")
-                dictInfos = fichier["###INFOS###"]
-                nom = dictInfos["nom_langue"]
-                code = dictInfos["code_langue"]
-                nbreTextes = len(fichier) - 1
-                fichier.close()
-                
-                if dictLangues.has_key(code) == False :
-                    dictLangues[code] = {"nom" : nom, "initial" : 0, "perso" : 0}
-                
-                if extension == "lang" :
-                    dictLangues[code]["initial"] = nbreTextes
-                else :
-                    dictLangues[code]["perso"] = nbreTextes
-        
+        for rep in ("Lang/", UTILS_Fichiers.GetRepLang()) :
+            for nomFichier in os.listdir(rep) :
+                if nomFichier.endswith("lang") :
+                    code, extension = nomFichier.split(".")
+                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
+                    dictInfos = fichier["###INFOS###"]
+                    nom = dictInfos["nom_langue"]
+                    code = dictInfos["code_langue"]
+                    nbreTextes = len(fichier) - 1
+                    fichier.close()
+
+                    if dictLangues.has_key(code) == False :
+                        dictLangues[code] = {"nom" : nom, "initial" : 0, "perso" : 0}
+
+                    if extension == "lang" :
+                        dictLangues[code]["initial"] = nbreTextes
+                    else :
+                        dictLangues[code]["perso"] = nbreTextes
+
         # Remplissage
         listeListeView = []
         for code, valeurs in dictLangues.iteritems() :
@@ -232,7 +232,7 @@ class ListView(FastObjectListView):
 
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce fichier de traduction personnalisé (%d traductions) ?\n\nAttention, toute suppression est irréversible.") % track.perso, _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
-            nomFichier = "Lang/%s.xlang" % track.code
+            nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % track.code)
             os.remove(nomFichier)
             self.MAJ() 
         dlg.Destroy()
@@ -258,8 +258,8 @@ class ListView(FastObjectListView):
             return
         
         # Vérifie si un fichier existe déjà
-        if os.path.isfile("Lang/" + nomFichierCourt) == False :
-            shutil.copyfile(nomFichierLong, "Lang/" + nomFichierCourt)
+        if os.path.isfile(UTILS_Fichiers.GetRepLang(nomFichierCourt)) == False :
+            shutil.copyfile(nomFichierLong, UTILS_Fichiers.GetRepLang(nomFichierCourt))
             self.MAJ()
         else :
             dlg = DLG_Messagebox.Dialog(self, titre=_(u"Importer"), introduction=_(u"Ce fichier est déjà présent !"), detail=None, conclusion=_(u"Souhaitez-vous le remplacer ou les fusionner ?"), icone=wx.ICON_EXCLAMATION, boutons=[_(u"Fusionner"), _(u"Remplacer"), _(u"Annuler")])
@@ -276,14 +276,14 @@ class ListView(FastObjectListView):
                 
                 # Lecture des 2 fichiers
                 dictDonnees = {}
-                for nomFichier in ["Lang/" + nomFichierCourt, nomFichierLong] :
+                for nomFichier in [UTILS_Fichiers.GetRepLang(nomFichierCourt), nomFichierLong] :
                     fichier = shelve.open(nomFichier, "r")
                     for key, valeur in fichier.iteritems() :
                         dictDonnees[key] = valeur
                     fichier.close()
                 
                 # Ecriture du fichier final
-                nomFichier = "Lang/" + nomFichierCourt
+                nomFichier = UTILS_Fichiers.GetRepLang(nomFichierCourt)
                 if os.path.isfile(nomFichier) :
                     flag = "w"
                 else :
@@ -308,8 +308,8 @@ class ListView(FastObjectListView):
                     return
                 
                 # Copie du fichier vers le répertoire Lang
-                os.remove("Lang/" + nomFichierCourt)
-                shutil.copyfile(nomFichierLong, "Lang/" + nomFichierCourt)
+                os.remove(UTILS_Fichiers.GetRepLang(nomFichierCourt))
+                shutil.copyfile(nomFichierLong, UTILS_Fichiers.GetRepLang(nomFichierCourt))
                 self.MAJ()
  
                 dlg = wx.MessageDialog(self, _(u"Le fichier a été importé avec succès !"), _(u"Confirmation"), wx.OK | wx.ICON_INFORMATION)
@@ -359,7 +359,7 @@ class ListView(FastObjectListView):
                 dlg.Destroy()
 
         # Exportation
-        shutil.copyfile("Lang/" + nomFichier, path)
+        shutil.copyfile(UTILS_Fichiers.GetRepLang(nomFichier), path)
 
         # Confirmation
         dlg = wx.MessageDialog(self, _(u"Le fichier de traduction a été exporté avec succès !"), _(u"Exportation"), wx.OK | wx.ICON_INFORMATION)

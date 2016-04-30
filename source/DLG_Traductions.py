@@ -20,6 +20,7 @@ import os
 import FonctionsPerso
 import datetime
 import GestionDB
+import UTILS_Fichiers
 
 
 
@@ -181,7 +182,7 @@ class DLG_Envoi(wx.Dialog):
         self.label_ligne_1 = wx.StaticText(self, wx.ID_ANY, _(u"Vos fichiers seront envoyés pour validation au concepteur de Noethys\npuis intégrés dans la prochaine version du logiciel. En effectuant cette\ndémarche, vous acceptez que votre traduction soit diffusée auprès de\nla communauté sous la licence libre GNU GPL."))
         self.label_ligne_2 = wx.StaticText(self, wx.ID_ANY, _(u"Cochez le ou les fichiers de traduction à envoyer :"))
         
-        listeFichiers = os.listdir("Lang/") 
+        listeFichiers = os.listdir(UTILS_Fichiers.GetRepLang())
         listeFichiersTemp = []
         for nomFichier in listeFichiers :
             if nomFichier.endswith(".xlang") :
@@ -267,8 +268,8 @@ class DLG_Envoi(wx.Dialog):
         listeSelections = self.ctrl_fichiers.GetCheckedStrings() 
         listeFichiers = []
         for nomFichier in listeSelections :
-            listeFichiers.append("Lang/%s.xlang" % nomFichier)
-        
+            listeFichiers.append(UTILS_Fichiers.GetRepLang(u"%s.xlang" % nomFichier))
+
         if len(listeFichiers) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher un ou plusieurs fichiers de traduction personnalisés à envoyer !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()

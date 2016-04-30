@@ -16,7 +16,7 @@ import CTRL_Bandeau
 import wx.lib.filebrowsebutton as filebrowse
 import os
 import shelve
-
+import UTILS_Fichiers
 
 
 
@@ -31,31 +31,32 @@ class CTRL_Langue(wx.Choice):
         self.listeDonnees = []
         
         # Recherche les fichiers de langues existants
-        listeFichiers = os.listdir("Lang/") 
         listeCodes = []
-        for nomFichier in listeFichiers :
-            code, extension = nomFichier.split(".")
-            fichier = shelve.open("Lang/" + nomFichier, "r")
-            
-            # Lecture des caractéristiques
-            dictInfos = fichier["###INFOS###"]
-            nom = dictInfos["nom_langue"]
-            code = dictInfos["code_langue"]
-            
-            # Lecture des textes
-            listeTextes = []
-            for texte, traduction in fichier.iteritems() :
-                if texte != "###INFOS###" :
-                    listeTextes.append(texte)
-            
-            # Fermeture du fichier
-            fichier.close()
-            
-            label = u"%s (%s)" % (nom, code)
-            if code not in listeCodes :
-                listeCodes.append(code)
-                self.listeLabels.append(label)
-                self.listeDonnees.append({"nom":nom, "code":code, "textes":listeTextes})
+        for rep in ("Lang/", UTILS_Fichiers.GetRepLang()) :
+            for nomFichier in os.listdir(rep) :
+                if nomFichier.endswith("lang") :
+                    code, extension = nomFichier.split(".")
+                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
+
+                    # Lecture des caractéristiques
+                    dictInfos = fichier["###INFOS###"]
+                    nom = dictInfos["nom_langue"]
+                    code = dictInfos["code_langue"]
+
+                    # Lecture des textes
+                    listeTextes = []
+                    for texte, traduction in fichier.iteritems() :
+                        if texte != "###INFOS###" :
+                            listeTextes.append(texte)
+
+                    # Fermeture du fichier
+                    fichier.close()
+
+                    label = u"%s (%s)" % (nom, code)
+                    if code not in listeCodes :
+                        listeCodes.append(code)
+                        self.listeLabels.append(label)
+                        self.listeDonnees.append({"nom":nom, "code":code, "textes":listeTextes})
             
         # Remplissage du contrôle
         if len(self.listeLabels) == 0 :
@@ -299,7 +300,7 @@ class Dialog(wx.Dialog):
             indexLigne += 1
         
         # Création du fichier de traduction perso
-        nomFichier = "Lang/%s.xlang" % code_langue
+        nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % code_langue)
         if os.path.isfile(nomFichier) :
             flag = "w"
         else :

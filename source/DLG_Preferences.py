@@ -20,6 +20,7 @@ import GestionDB
 import UTILS_Config
 import UTILS_Utilisateurs
 import UTILS_Interface
+import UTILS_Fichiers
 
 
 
@@ -47,19 +48,19 @@ class Interface(wx.Panel):
         self.liste_labels_langue = [u"Français (par défaut)",]
         self.liste_codes_langue = [None,]
 
-        listeFichiers = os.listdir("Lang/") 
-        for nomFichier in listeFichiers :
-            if nomFichier.endswith("lang") :
-                code, extension = nomFichier.split(".")
-                fichier = shelve.open("Lang/" + nomFichier, "r")
-                dictInfos = fichier["###INFOS###"]
-                nom = dictInfos["nom_langue"]
-                code = dictInfos["code_langue"]
-                fichier.close()
-                
-                if code not in self.liste_codes_langue :
-                    self.liste_codes_langue.append(code)
-                    self.liste_labels_langue.append(nom)
+        for rep in ("Lang/", UTILS_Fichiers.GetRepLang()) :
+            for nomFichier in os.listdir(rep) :
+                if nomFichier.endswith("lang") :
+                    code, extension = nomFichier.split(".")
+                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
+                    dictInfos = fichier["###INFOS###"]
+                    nom = dictInfos["nom_langue"]
+                    code = dictInfos["code_langue"]
+                    fichier.close()
+
+                    if code not in self.liste_codes_langue :
+                        self.liste_codes_langue.append(code)
+                        self.liste_labels_langue.append(nom)
         
 
         self.label_langue = wx.StaticText(self, -1, _(u"Langue :"))

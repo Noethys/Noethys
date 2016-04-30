@@ -248,26 +248,28 @@ class MainFrame(wx.Frame):
 
     def Select_langue(self):
         # Recherche les fichiers de langues existants
-        listeFichiers = os.listdir("Lang/") 
         listeLabels = [u"Français (fr_FR - par défaut)",]
         listeCodes = [None,]
-        for nomFichier in listeFichiers :
-            code, extension = nomFichier.split(".")
-            fichier = shelve.open("Lang/" + nomFichier, "r")
-            
-            # Lecture des caractéristiques
-            dictInfos = fichier["###INFOS###"]
-            nom = dictInfos["nom_langue"]
-            code = dictInfos["code_langue"]
-                    
-            # Fermeture du fichier
-            fichier.close()
-            
-            label = u"%s (%s)" % (nom, code)
-            if code not in listeCodes :
-                listeLabels.append(label)
-                listeCodes.append(code)
-        
+
+        for rep in ("Lang/", UTILS_Fichiers.GetRepLang()) :
+            for nomFichier in os.listdir(rep) :
+                if nomFichier.endswith("lang") :
+                    code, extension = nomFichier.split(".")
+                    fichier = shelve.open(os.path.join(rep, nomFichier), "r")
+
+                    # Lecture des caractéristiques
+                    dictInfos = fichier["###INFOS###"]
+                    nom = dictInfos["nom_langue"]
+                    code = dictInfos["code_langue"]
+
+                    # Fermeture du fichier
+                    fichier.close()
+
+                    label = u"%s (%s)" % (nom, code)
+                    if code not in listeCodes :
+                        listeLabels.append(label)
+                        listeCodes.append(code)
+
         # DLG
         code = None
         dlg = wx.SingleChoiceDialog(self, u"Sélectionnez la langue de l'interface :", u"Bienvenue dans Noethys", listeLabels, wx.CHOICEDLG_STYLE)
@@ -781,6 +783,8 @@ class MainFrame(wx.Frame):
                             {"code" : "purger_journal_badgeage", "label" : _(u"Purger le journal de badgeage"), "infobulle" : _(u"Purger le journal de badgeage"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_journal_badgeage},
                             {"code" : "purger_archives_badgeage", "label" : _(u"Purger les archives des badgeages importés"), "infobulle" : _(u"Purger les archives des badgeages importés"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_archives_badgeage},
                             {"code" : "purger_repertoire_updates", "label" : _(u"Purger le répertoire Updates"), "infobulle" : _(u"Purger le répertoire Updates"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_rep_updates},
+                            "-",
+                            {"code" : "ouvrir_rep_utilisateur", "label" : _(u"Ouvrir le répertoire utilisateur"), "infobulle" : _(u"Ouvrir le répertoire utilisateur"), "image" : "Images/16x16/Dossier.png", "action" : self.On_outils_ouvrir_rep_utilisateur},
                             "-",
                             {"code" : "extensions", "label" : _(u"Extensions"), "infobulle" : _(u"Extensions"), "image" : "Images/16x16/Terminal.png", "action" : self.On_outils_extensions},
                             {"code" : "procedures", "label" : _(u"Procédures"), "infobulle" : _(u"Procédures"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_procedures},
@@ -2413,6 +2417,17 @@ class MainFrame(wx.Frame):
         if dlg.ShowModal() == wx.ID_YES :
             FonctionsPerso.VideRepertoireUpdates(forcer=True) 
         dlg.Destroy()
+
+    def On_outils_ouvrir_rep_utilisateur(self, event):
+        """ Ouvrir le répertoire Utilisateur """
+        rep = UTILS_Fichiers.GetRepUtilisateur()
+        import subprocess
+        if platform.system() == "Windows":
+            subprocess.Popen(["explorer", rep])
+        elif platform.system() == "Darwin":
+            subprocess.Popen(["open", rep])
+        else:
+            subprocess.Popen(["xdg-open", rep])
 
     def On_outils_extensions(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return

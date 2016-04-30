@@ -14,8 +14,7 @@ import wx
 import CTRL_Bouton_image
 import os
 import shelve
-
-
+import UTILS_Fichiers
 import UTILS_Interface
 from ObjectListView import ObjectListView, FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
@@ -66,8 +65,9 @@ class ListView(FastObjectListView):
         if self.code == None : return {}, {}
         dictTraductionsInitiales = {}
         dictTraductionsPerso = {}
-        for extension, dictTemp in [("lang", dictTraductionsInitiales), ("xlang", dictTraductionsPerso)] :
-            nomFichier = "Lang/%s.%s" % (self.code, extension)
+
+        for extension, rep, dictTemp in [("lang", "Lang/", dictTraductionsInitiales), ("xlang", UTILS_Fichiers.GetRepLang(), dictTraductionsPerso)] :
+            nomFichier = os.path.join(rep, u"%s.%s" % (self.code, extension))
             if os.path.isfile(nomFichier) :
                 fichier = shelve.open(nomFichier, "r")
                 for key, valeur in fichier.iteritems() :
