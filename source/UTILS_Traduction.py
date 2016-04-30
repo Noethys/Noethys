@@ -22,14 +22,15 @@ def ChargeTraduction(nom=""):
     dictTraductions = {}
     
     # Recherche le fichier de langage par défaut ".lang" puis un éventuel fichier perso ".xlang"
-    for extension in ("lang", "xlang") :
-        nomFichier = "Lang/%s.%s" % (nom, extension)
-        if os.path.isfile(nomFichier) :
-            fichier = shelve.open(nomFichier, "r")
-            for key, valeur in fichier.iteritems() :
-                key = key.decode("iso-8859-15")
-                dictTraductions[key] = valeur
-            fichier.close()
+    for rep in ("Lang/", UTILS_Fichiers.GetRepLang()) :
+        for extension in ("lang", "xlang") :
+            nomFichier = os.path.join(rep, u"%s.%s" % (nom, extension))
+            if os.path.isfile(nomFichier) :
+                fichier = shelve.open(nomFichier, "r")
+                for key, valeur in fichier.iteritems() :
+                    key = key.decode("iso-8859-15")
+                    dictTraductions[key] = valeur
+                fichier.close()
             
     # Mémorise les traductions
     DICT_TRADUCTIONS = dictTraductions
@@ -126,7 +127,7 @@ def ConvertShelveEnTexte():
 
 def FusionneFichiers(code="en_GB"):
     # Lecture du fichier xlang
-    fichier = shelve.open("Lang/%s.xlang" % code, "r")
+    fichier = shelve.open(UTILS_Fichiers.GetRepLang(u"%s.xlang" % code), "r")
     dictDonnees = {}
     for texte, traduction in fichier.iteritems() :
         if texte != "###INFOS###" :

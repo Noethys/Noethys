@@ -16,7 +16,7 @@ import CTRL_Bandeau
 import OL_Traductions
 import os
 import shelve
-
+import UTILS_Fichiers
 
 
 class Dialog(wx.Dialog):
@@ -159,7 +159,7 @@ class Dialog(wx.Dialog):
         dictTraductions = self.ctrl_traductions.GetDictTraductionsPerso() 
         
         # Création du fichier de traduction perso
-        nomFichier = "Lang/%s.xlang" % code_langue
+        nomFichier = UTILS_Fichiers.GetRepLang(u"%s.xlang" % code_langue)
         if os.path.isfile(nomFichier) :
             flag = "w"
         else :
