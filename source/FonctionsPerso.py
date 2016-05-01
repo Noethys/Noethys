@@ -1627,10 +1627,7 @@ if __name__ == "__main__":
 ##    AfficheStatsProgramme()
     
 ##    InsertUnicodeLiterals() 
-    
-    # ------- Prépare le fichier des tables par défaut -------
-    #PreparationFichierDefaut(nomFichier="Data/defaut_DATA.dat")
-    
+
     # Adaptation wxPython 2.9
     #RemplacerDeprecatedWxpython()
     

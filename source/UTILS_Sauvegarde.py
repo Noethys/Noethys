@@ -21,6 +21,7 @@ import subprocess
 import shutil
 import time
 
+import UTILS_Fichiers
 import UTILS_Config
 import UTILS_Cryptage_fichier
 import UTILS_Envoi_email
@@ -92,7 +93,7 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
     # Intégration des fichiers locaux
     for nomFichier in listeFichiersLocaux :
         dlgprogress.Update(numEtape, _(u"Compression du fichier %s...") % nomFichier);numEtape += 1
-        fichier = u"Data/%s" % nomFichier
+        fichier = UTILS_Fichiers.GetRepData(nomFichier)
         if os.path.isfile(fichier) == True :
             fichierZip.write(fichier, nomFichier)
         else :
@@ -278,7 +279,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
         # Vérifie qu'on les remplace bien
         listeExistantsTemp = []
         for fichier in listeFichiersLocaux :
-            if os.path.isfile(u"Data/%s" % fichier) == True :
+            if os.path.isfile(UTILS_Fichiers.GetRepData(fichier)) == True :
                 listeExistantsTemp.append(fichier)
                 
         if len(listeExistantsTemp) > 0 :
@@ -301,7 +302,7 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
             dlgprogress.Update(numEtape, _(u"Restauration du fichier %s...") % fichier);numEtape += 1
             try :
                 buffer = fichierZip.read(fichier)
-                f = open(u"Data/%s" % fichier, "wb")
+                f = open(UTILS_Fichiers.GetRepData(fichier), "wb")
                 f.write(buffer)
                 f.close()
             except Exception, err:

@@ -41,12 +41,6 @@ TAILLE_PAGE = A4
 LARGEUR_PAGE = TAILLE_PAGE[0]
 HAUTEUR_PAGE = TAILLE_PAGE[1]
 
-
-##if os.path.isfile("Data/Fond_lettre.png") == True :
-##    IMAGE_FOND = "Data/Fond_lettre.png"
-##else:
-##    IMAGE_FOND = "Images/Special/Fond_lettre.png"
-
 TAILLE_CADRE_CONTENU = (5*cm, 5*cm, 14*cm, 17*cm)
 
 ##IMAGES = [

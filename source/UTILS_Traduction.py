@@ -97,7 +97,7 @@ def GenerationFichierTextes() :
                         dictTextes[chaine].append(nomFichier)
     
     # Génération du fichier Shelve
-    nomFichier = "Textes.dat"
+    nomFichier = "Data/Textes.dat"
     if os.path.isfile(nomFichier) :
         flag = "w"
     else :
@@ -111,7 +111,7 @@ def GenerationFichierTextes() :
 def ConvertShelveEnTexte():
     """ Convertit le fichier Textes.dat en fichier Textes.txt """
     # Lecture du fichier dat
-    fichier = shelve.open("Textes.dat", "r")
+    fichier = shelve.open("Data/Textes.dat", "r")
     listeTextes = []
     for texte, listeFichiers in fichier.iteritems() :
         listeTextes.append(texte)

@@ -27,6 +27,7 @@ import sqlite3
 import cStringIO
 import GestionDB
 import UTILS_Utilisateurs
+import UTILS_Fichiers
 
 TAILLE_IMAGE = (32, 32)
 
@@ -230,7 +231,7 @@ class CTRL(ULC.UltimateListCtrl):
     def GetListeFichiersLocal(self) :
         """ Récupère la liste des fichiers locaux à afficher """
         # Lit le répertoire
-        chemin = "Data"
+        chemin = UTILS_Fichiers.GetRepData()
         fichiers = os.listdir(chemin)
         fichiers.sort()
         
@@ -245,7 +246,7 @@ class CTRL(ULC.UltimateListCtrl):
                 # Taille des 3 bases de données
                 taille = 0
                 for suffixe in ("DATA", "DOCUMENTS", "PHOTOS") :
-                    fichierTemp = "%s/%s_%s.dat" % (chemin, titre, suffixe)
+                    fichierTemp = u"%s/%s_%s.dat" % (chemin, titre, suffixe)
                     if os.path.isfile(fichierTemp) :
                         taille += os.path.getsize(fichierTemp)
                 taille = FormatFileSize(taille)
@@ -277,7 +278,7 @@ class CTRL(ULC.UltimateListCtrl):
                     image = None
 
                 # Mémorisation
-                listeFichiers.append({"titre" : titre, "image" : None, "image" : image, "description" : description, "taille" : taille, "dateModif" : dateModif})
+                listeFichiers.append({"titre" : titre, "image" : image, "description" : description, "taille" : taille, "dateModif" : dateModif})
         
         return listeFichiers
     
@@ -418,8 +419,8 @@ class CTRL(ULC.UltimateListCtrl):
         # Modifier un fichier local
         for suffixe in ("DATA", "DOCUMENTS", "PHOTOS") :
             try :
-                source = u"Data/%s_%s.dat" % (titre, suffixe)
-                destination = u"Data/%s_%s.dat" % (nouveauTitre, suffixe)
+                source = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (titre, suffixe))
+                destination = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (nouveauTitre, suffixe))
                 os.rename(source, destination)
             except Exception, err :
                 print "Erreur dans le renommage de fichier : " + err
@@ -447,7 +448,7 @@ class CTRL(ULC.UltimateListCtrl):
         if self.mode == "local" :
             for suffixe in ("DATA", "DOCUMENTS", "PHOTOS") :
                 try :
-                    os.remove(u"Data/%s_%s.dat" % (titre, suffixe))
+                    os.remove(UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (titre, suffixe)))
                 except Exception, err :
                     pass
         

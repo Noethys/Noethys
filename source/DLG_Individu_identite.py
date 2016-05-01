@@ -558,7 +558,7 @@ class Panel_identite(wx.Panel):
         import FonctionsPerso
         #prenom = FonctionsPerso.supprime_accent(prenom)
         """ Recherche le genre de l'individu suivant son prénom """
-        db = GestionDB.DB(nomFichier="Prenoms.dat", suffixe=None)
+        db = GestionDB.DB(nomFichier="Data/Prenoms.dat", suffixe=None)
         req = """SELECT prenom, genre
         FROM prenoms WHERE prenom='%s';""" % prenom.lower()
         db.ExecuterReq(req)

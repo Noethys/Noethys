@@ -28,6 +28,9 @@ LISTE_DONNEES = [
     ("correction_anomalies", [
         ("actif", "1"),
     ]),
+    ("repertoire_donnees", [
+        ("chemin", ""),
+    ]),
 ]
 
 

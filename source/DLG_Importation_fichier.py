@@ -12,9 +12,7 @@
 from UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
-import FonctionsPerso
-import os
-
+import UTILS_Fichiers
 import CTRL_Bandeau
 import CTRL_Liste_fichiers
 import DATA_Tables as Tables
@@ -381,7 +379,7 @@ class Dialog(wx.Dialog):
             # Importation des données
             print "Importation de la table %s..." % nomTable
             if self.radio_local.GetValue() == True :
-                DB.Importation_table(nomTable=nomTable, nomFichierdefault=u"Data/%s_DATA.dat" % nomFichier)
+                DB.Importation_table(nomTable=nomTable, nomFichierdefault=UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier))
             else :
                 DB.Importation_table(nomTable=nomTable, nomFichierdefault=nomFichier+"_data", mode="reseau")
         DB.Close()

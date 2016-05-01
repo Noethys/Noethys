@@ -55,7 +55,7 @@ def GetAnnonce():
         try :
             
             # Init base de données
-            con = sqlite3.connect("Annonces.dat")
+            con = sqlite3.connect("Data/Annonces.dat")
             cur = con.cursor()
             
             def ListeEnDict(donnees):

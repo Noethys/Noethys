@@ -69,7 +69,7 @@ class SaisiePays(wx.Panel):
 
     def Recherche_Pays(self, IDpays=0, nomPays=""):
         """ Récupération de la liste des pays dans la base """
-        con = sqlite3.connect("Geographie.dat")
+        con = sqlite3.connect("Data/Geographie.dat")
         cur = con.cursor()
         if nomPays == "" :
             req = "SELECT IDpays, code_drapeau, nom, nationalite FROM pays WHERE IDpays=%d" % IDpays

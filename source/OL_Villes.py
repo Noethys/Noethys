@@ -150,7 +150,7 @@ class ListView(FastObjectListView):
                     self.criteres += " AND " + criteres
         
         # Importation des villes par défaut
-        DB = GestionDB.DB(nomFichier="Geographie.dat", suffixe=None)
+        DB = GestionDB.DB(nomFichier="Data/Geographie.dat", suffixe=None)
         req = """SELECT IDville, nom, cp
         FROM villes %s ORDER BY nom; """ % self.criteres
         DB.ExecuterReq(req)

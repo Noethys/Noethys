@@ -219,7 +219,7 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
         
         # Lecture du fichier dat
-        fichier = shelve.open("Textes.dat", "r")
+        fichier = shelve.open("Data/Textes.dat", "r")
         listeTextes = []
         for texte, listeFichiers in fichier.iteritems() :
             listeTextes.append(texte)

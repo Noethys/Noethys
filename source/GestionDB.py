@@ -19,6 +19,7 @@ import traceback
 import time
 import random
 import DATA_Tables as Tables
+import UTILS_Fichiers
 
 DICT_CONNEXIONS = {}
 
@@ -58,7 +59,7 @@ def SetInterfaceMySQL(nom="mysqldb"):
 class DB:
     def __init__(self, suffixe="DATA", nomFichier="", modeCreation=False, IDconnexion=None):
         """ Utiliser GestionDB.DB(suffixe="PHOTOS") pour accéder à un fichier utilisateur """
-        """ Utiliser GestionDB.DB(nomFichier="Geographie.dat", suffixe=None) pour ouvrir un autre type de fichier """
+        """ Utiliser GestionDB.DB(nomFichier="Data/Geographie.dat", suffixe=None) pour ouvrir un autre type de fichier """
         self.nomFichier = nomFichier
         self.modeCreation = modeCreation
         
@@ -83,7 +84,7 @@ class DB:
         else:
             self.isNetwork = False
             if suffixe != None :
-                self.nomFichier = u"Data/%s.dat" % self.nomFichier
+                self.nomFichier = UTILS_Fichiers.GetRepData(u"%s.dat" % self.nomFichier)
         
         # Ouverture de la base de données
         if self.isNetwork == True :
@@ -730,7 +731,7 @@ class DB:
             
             print "Reparation de la table '%s' terminee." % nomTable
 
-    def Importation_table(self, nomTable="", nomFichierdefault="Defaut.dat", mode="local"):
+    def Importation_table(self, nomTable="", nomFichierdefault="Data/Defaut.dat", mode="local"):
         """ Importe toutes les données d'une table donnée """
         # Ouverture de la base par défaut
         if mode == "local" :
@@ -911,7 +912,7 @@ class DB:
             req = "ALTER TABLE %s CHANGE %s %s %s;" % (nomTable, nomChamp, nomChamp, typeChamp)
             self.ExecuterReq(req)
 
-    def Exportation_vers_base_defaut(self, nomTable="", nomFichierdefault="Defaut.dat"):
+    def Exportation_vers_base_defaut(self, nomTable="", nomFichierdefault="Data/Defaut.dat"):
         """ Exporte toutes les données d'une table donnée vers la base défaut """
         """ ATTENTION, la TABLE défaut sera supprimée !!! """
         # Ouverture de la base par défaut
@@ -1880,7 +1881,7 @@ def ConversionLocalReseau(nomFichier="", nouveauFichier="", fenetreParente=None)
     
     for suffixe, dictTables in ( ("DATA", Tables.DB_DATA), ("PHOTOS", Tables.DB_PHOTOS), ("DOCUMENTS", Tables.DB_DOCUMENTS) ) :
         
-        nomFichierActif = u"Data/%s_%s.dat" % (nomFichier, suffixe)
+        nomFichierActif = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (nomFichier, suffixe))
         nouveauNom = nouveauFichier[nouveauFichier.index("[RESEAU]"):].replace("[RESEAU]", "")
         
         dictResultats = TestConnexionMySQL(typeTest="fichier", nomFichier=u"%s_%s" % (nouveauFichier, suffixe) )
@@ -1939,7 +1940,7 @@ def ConversionReseauLocal(nomFichier="", nouveauFichier="", fenetreParente=None)
     for suffixe, dictTables in ( ("DATA", Tables.DB_DATA), ("PHOTOS", Tables.DB_PHOTOS), ("DOCUMENTS", Tables.DB_DOCUMENTS) ) :
         
         nomFichierActif = nomFichier[nomFichier.index("[RESEAU]"):].replace("[RESEAU]", "") 
-        nouveauNom = u"Data/%s_%s.dat" % (nomFichier, suffixe)
+        nouveauNom = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (nomFichier, suffixe))
         
         # Vérifie que le fichier n'est pas déjà utilisé
         if os.path.isfile(nouveauNom)  == True :
@@ -2032,12 +2033,12 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
 # ----------------------------------------------------------------------------------------------------------------------------------------
                                 
 def ImporterFichierDonnees() :
-    db = DB(nomFichier="Prenoms.dat", suffixe=None, modeCreation=True)
+    db = DB(nomFichier="Data/Prenoms.dat", suffixe=None, modeCreation=True)
     db.CreationTable("prenoms", DB_DATA2)
     db.Close()
     
     txt = open("prenoms.txt", 'r').readlines()
-    db = DB(nomFichier="Prenoms.dat", suffixe=None)
+    db = DB(nomFichier="Data/Prenoms.dat", suffixe=None)
     index = 0
     for ligne in txt :
         ID, prenom, genre = ligne.split(";")
@@ -2078,7 +2079,7 @@ def CreationBaseAnnonces():
                                                             ],
 
         }
-    db = DB(nomFichier="Annonces.dat", suffixe=None, modeCreation=True)
+    db = DB(nomFichier="Data/Annonces.dat", suffixe=None, modeCreation=True)
     db.CreationTable("annonces_aleatoires", DB_DATA_ANNONCES)
     db.CreationTable("annonces_dates", DB_DATA_ANNONCES)
     db.CreationTable("annonces_periodes", DB_DATA_ANNONCES)

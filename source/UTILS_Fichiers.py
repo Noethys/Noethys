@@ -11,6 +11,38 @@
 import os
 import sys
 import shutil
+import platform
+import subprocess
+import UTILS_Customize
+
+from Outils import appdirs
+
+
+def GetRepData(fichier=""):
+    # Recherche s'il existe un chemin personnalisé dans le Customize.ini
+    chemin = UTILS_Customize.GetValeur("repertoire_donnees", "chemin", "")
+    if chemin != "" and os.path.isdir(chemin):
+        return os.path.join(chemin, fichier)
+
+    # Recherche le chemin du répertoire des données
+    chemin = appdirs.site_data_dir(appname=None, appauthor=False, multipath=False)
+
+    if platform.release() == "Vista" :
+
+        # Création du répertoire Data s'il n'existe pas
+        chemin = os.path.join(GetRepUtilisateur(), "Data")
+        if not os.path.isdir(chemin):
+            os.mkdir(chemin)
+
+    else :
+
+        # Ajoute 'noethys' dans le chemin et création du répertoire
+        chemin = os.path.join(chemin, "noethys")
+        if not os.path.isdir(chemin):
+            os.mkdir(chemin)
+
+    # Ajoute le dirname si besoin
+    return os.path.join(chemin, fichier)
 
 
 def GetRepTemp(fichier=""):
@@ -29,28 +61,30 @@ def GetRepSync(fichier=""):
     chemin = GetRepUtilisateur("Sync")
     return os.path.join(chemin, fichier)
 
-
 def GetRepUtilisateur(fichier=""):
     """ Recherche le répertoire Utilisateur pour stockage des fichiers de config et provisoires """
     chemin = None
 
-    # Variable d'environnement
-    for evar in ('XDG_CONFIG_HOME', 'APPDATA', 'LOCALAPPDATA'):
-        path = os.environ.get(evar, None)
-        if path and os.path.isdir(path):
-            chemin = path
-            break
-    if not chemin:
-        # ... ou répertoire de l'utilisateur
-        path = os.path.expanduser("~")
-        if path != "~" and os.path.isdir(path):
-            if sys.platform.startswith('linux'):
-                chemin = os.path.join(path, '.config')
-            else:
-                chemin = path
-        # ... ou dossier courrant.
-        else:
-            chemin = os.path.dirname(os.path.abspath(__file__))
+    # # Variable d'environnement
+    # for evar in ('XDG_CONFIG_HOME', 'APPDATA', 'LOCALAPPDATA'):
+    #     path = os.environ.get(evar, None)
+    #     if path and os.path.isdir(path):
+    #         chemin = path
+    #         break
+    # if not chemin:
+    #     # ... ou répertoire de l'utilisateur
+    #     path = os.path.expanduser("~")
+    #     if path != "~" and os.path.isdir(path):
+    #         if sys.platform.startswith('linux'):
+    #             chemin = os.path.join(path, '.config')
+    #         else:
+    #             chemin = path
+    #     # ... ou dossier courrant.
+    #     else:
+    #         chemin = os.path.dirname(os.path.abspath(__file__))
+
+    # Recherche le chemin du répertoire de l'utilisateur
+    chemin = appdirs.user_config_dir(appname=None, appauthor=False, roaming=True)
 
     # Ajoute 'noethys' dans le chemin et création du répertoire
     chemin = os.path.join(chemin, "noethys")
@@ -76,15 +110,43 @@ def DeplaceFichiers():
             shutil.move(u"Lang/%s" % nomFichier, GetRepLang(nomFichier))
 
     # Déplace les fichiers du répertoire Sync
-    for nomFichier in os.listdir("Sync/") :
-        shutil.move(u"Sync/%s" % nomFichier, GetRepSync(nomFichier))
+    if os.path.isdir("Sync/") :
+        for nomFichier in os.listdir("Sync/") :
+            shutil.move(u"Sync/%s" % nomFichier, GetRepSync(nomFichier))
 
+    # Déplace les fichiers de données du répertoire Data
+    if GetRepData() != "Data/" :
+        for nomFichier in os.listdir("Data/") :
+            if nomFichier.endswith(".dat") and "_" in nomFichier and "EXEMPLE_" not in nomFichier and "_archive.dat" not in nomFichier :
+                # Déplace le fichier vers le répertoire des fichiers de données
+                shutil.copy(u"Data/%s" % nomFichier, GetRepData(nomFichier))
+                # Renomme le fichier de données en archive (par sécurité)
+                os.rename(u"Data/%s" % nomFichier, u"Data/%s" % nomFichier.replace(".dat", "_archive.dat"))
+
+def DeplaceExemples():
+    """ Déplace les fichiers exemples vers le répertoire des fichiers de données """
+    if GetRepData() != "Data/" :
+        for nomFichier in os.listdir("Data/") :
+            if nomFichier.endswith(".dat") and "EXEMPLE_" in nomFichier :
+                # Déplace le fichier vers le répertoire des fichiers de données
+                shutil.copy(u"Data/%s" % nomFichier, GetRepData(nomFichier))
+
+def OuvrirRepertoire(rep):
+    if platform.system() == "Windows":
+        subprocess.Popen(["explorer", rep])
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", rep])
+    else:
+        subprocess.Popen(["xdg-open", rep])
 
 
 
 if __name__ == "__main__":
-    # Test les chemins
-    print "Chemin Fichier config =", GetRepUtilisateur("Config.dat")
+    # Teste les déplacements de fichiers
+    # DeplaceFichiers()
 
-    # Test les déplacements de fichiers
-    DeplaceFichiers()
+    # Répertoire utilisateur
+    print GetRepUtilisateur()
+
+    # Répertoire des données
+    print GetRepData()

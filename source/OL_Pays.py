@@ -66,7 +66,7 @@ class ListView(FastObjectListView):
                 else:
                     self.criteres += " AND " + criteres
                     
-        db = GestionDB.DB(nomFichier="Geographie.dat", suffixe=None)
+        db = GestionDB.DB(nomFichier="Data/Geographie.dat", suffixe=None)
         req = """SELECT IDpays, code_drapeau, nom, nationalite
         FROM pays %s ORDER BY nom; """ % self.criteres
         db.ExecuterReq(req)

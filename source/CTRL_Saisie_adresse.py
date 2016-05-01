@@ -21,7 +21,7 @@ import GestionDB
     
 def Importation_donnees():
     # Importation de la base par défaut
-    con = sqlite3.connect("Geographie.dat")
+    con = sqlite3.connect("Data/Geographie.dat")
     cur = con.cursor()
     cur.execute("SELECT IDville, nom, cp FROM villes")
     listeVillesTmp = cur.fetchall()

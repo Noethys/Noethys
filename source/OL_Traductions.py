@@ -79,7 +79,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         # Récupération des textes originaux
         dictTextes = {}
-        fichier = shelve.open("Textes.dat", "r")
+        fichier = shelve.open("Data/Textes.dat", "r")
         for texte, listeFichiers in fichier.iteritems() :
             dictTextes[texte] = listeFichiers
         fichier.close()

@@ -785,6 +785,7 @@ class MainFrame(wx.Frame):
                             {"code" : "purger_repertoire_updates", "label" : _(u"Purger le répertoire Updates"), "infobulle" : _(u"Purger le répertoire Updates"), "image" : "Images/16x16/Poubelle.png", "action" : self.On_outils_purger_rep_updates},
                             "-",
                             {"code" : "ouvrir_rep_utilisateur", "label" : _(u"Ouvrir le répertoire utilisateur"), "infobulle" : _(u"Ouvrir le répertoire utilisateur"), "image" : "Images/16x16/Dossier.png", "action" : self.On_outils_ouvrir_rep_utilisateur},
+                            {"code" : "ouvrir_rep_donnees", "label" : _(u"Ouvrir le répertoire des données"), "infobulle" : _(u"Ouvrir le répertoire des données"), "image" : "Images/16x16/Dossier.png", "action" : self.On_outils_ouvrir_rep_donnees},
                             "-",
                             {"code" : "extensions", "label" : _(u"Extensions"), "infobulle" : _(u"Extensions"), "image" : "Images/16x16/Terminal.png", "action" : self.On_outils_extensions},
                             {"code" : "procedures", "label" : _(u"Procédures"), "infobulle" : _(u"Procédures"), "image" : "Images/16x16/Outils.png", "action" : self.On_outils_procedures},
@@ -1053,7 +1054,7 @@ class MainFrame(wx.Frame):
                 listeDerniersFichiers.append(nomFichier)
             else:
                 # VERSION LOCAL
-                fichier = "Data/" + nomFichier + "_DATA.dat"
+                fichier = UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier)
                 test = os.path.isfile(fichier)
                 if test == True : 
                     listeDerniersFichiers.append(nomFichier)
@@ -1260,7 +1261,7 @@ class MainFrame(wx.Frame):
             # Version LOCAL
             
             # Vérifie si un fichier ne porte pas déjà ce nom :
-            fichier = "Data/" + nomFichier + "_DATA.dat"
+            fichier = UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier)
             test = os.path.isfile(fichier) 
             if test == True :
                 dlgprogress.Destroy()
@@ -2420,14 +2421,11 @@ class MainFrame(wx.Frame):
 
     def On_outils_ouvrir_rep_utilisateur(self, event):
         """ Ouvrir le répertoire Utilisateur """
-        rep = UTILS_Fichiers.GetRepUtilisateur()
-        import subprocess
-        if platform.system() == "Windows":
-            subprocess.Popen(["explorer", rep])
-        elif platform.system() == "Darwin":
-            subprocess.Popen(["open", rep])
-        else:
-            subprocess.Popen(["xdg-open", rep])
+        UTILS_Fichiers.OuvrirRepertoire(UTILS_Fichiers.GetRepUtilisateur())
+
+    def On_outils_ouvrir_rep_donnees(self, event):
+        """ Ouvrir le répertoire Utilisateur """
+        UTILS_Fichiers.OuvrirRepertoire(UTILS_Fichiers.GetRepData())
 
     def On_outils_extensions(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("outils_utilitaires", "consulter") == False : return
@@ -3341,7 +3339,7 @@ class MainFrame(wx.Frame):
             
         else:
             # Test de validité du fichier SQLITE :
-            fichier = "Data/" + nomFichier + "_DATA.dat"
+            fichier = UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier)
             test = os.path.isfile(fichier) 
             if test == False :
                 dlg = wx.MessageDialog(self, _(u"Il est impossible d'ouvrir le fichier demandé !"), "Erreur d'ouverture de fichier", wx.OK | wx.ICON_ERROR)
@@ -3585,6 +3583,9 @@ class MainFrame(wx.Frame):
             versionAnnonce = self.GetVersionAnnonce()
             versionLogiciel = self.ConvertVersionTuple(VERSION_APPLICATION)
             if versionAnnonce < versionLogiciel :
+                # Déplace les fichiers exemples vers le répertoire des fichiers de données
+                UTILS_Fichiers.DeplaceExemples()
+                # Affiche le message d'accueil
                 import DLG_Message_accueil
                 dlg = DLG_Message_accueil.Dialog(self)
                 dlg.ShowModal()

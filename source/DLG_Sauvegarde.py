@@ -22,6 +22,7 @@ import GestionDB
 import UTILS_Sauvegarde
 import UTILS_Config
 import DLG_Saisie_param_reseau
+import UTILS_Fichiers
 
 
 LISTE_CATEGORIES = UTILS_Sauvegarde.LISTE_CATEGORIES
@@ -62,7 +63,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
                     brancheFichier = self.AppendItem(brancheNom, nomCategorie, ct_type=1)
                     self.SetPyData(brancheFichier, fichier)
                     
-                    if os.path.isfile(u"Data/%s" % fichier) == False :
+                    if os.path.isfile(UTILS_Fichiers.GetRepData(fichier)) == False :
                         brancheFichier.Enable(False)
 
         # Fichiers réseaux
@@ -94,7 +95,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
         
     def GetListeFichiersLocaux(self):
         """ Trouver les fichiers présents sur le DD """
-        listeFichiersTmp = os.listdir("Data/")
+        listeFichiersTmp = os.listdir(UTILS_Fichiers.GetRepData())
         listeFichiers = []
         for fichier in listeFichiersTmp :
             if fichier[-9:] == "_DATA.dat" : 

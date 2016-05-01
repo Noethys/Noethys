@@ -22,7 +22,7 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     if depuisFichierDefaut == False :
         DB = GestionDB.DB()
     else :
-        DB = GestionDB.DB(nomFichier="Defaut.dat", suffixe=None)
+        DB = GestionDB.DB(nomFichier="Data/Defaut.dat", suffixe=None)
     
     # Récupération des infos sur le modèle
     req = """SELECT nom, categorie, largeur, hauteur, IDfond, defaut

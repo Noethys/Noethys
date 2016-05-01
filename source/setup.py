@@ -9,10 +9,12 @@ import os
 import glob
 import os.path
 import zipfile
+import shutil
 
 from distutils.core import setup 
 import py2exe
 import numpy
+import UTILS_Fichiers
 
 
 manifest = """
@@ -62,6 +64,12 @@ manifest = """
 """
 
 
+# Déplace les fichiers de données du répertoire des données vers le répertoire Data
+for nomFichier in os.listdir(UTILS_Fichiers.GetRepData()) :
+    if nomFichier.startswith("EXEMPLE_") and nomFichier.endswith(".dat") :
+        shutil.copy(UTILS_Fichiers.GetRepData(nomFichier), u"Data/%s" % nomFichier)
+
+
 import matplotlib as mp
 matplotlib_font_afm = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\afm\\*']))
 matplotlib_font_pdfcorefonts = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\pdfcorefonts\\*']))
@@ -73,12 +81,12 @@ def GetVersion():
     """ Recherche du numéro de version """
     fichierVersion = open("Versions.txt", "r")
     txtVersion = fichierVersion.readlines()[0]
-    fichierVersion.close() 
+    fichierVersion.close()
     pos_debut_numVersion = txtVersion.find("n")
     pos_fin_numVersion = txtVersion.find("(")
     numVersion = txtVersion[pos_debut_numVersion+1:pos_fin_numVersion].strip()
     return numVersion
-    
+
 VERSION_APPLICATION = GetVersion()
 
 
@@ -86,15 +94,15 @@ def listdirectory(path):
     listeFichiers = filter(os.path.isfile, glob.glob(path + os.sep + '*'))
     return listeFichiers
 
-def GetFichiersExemples(chemin="Data/"):
-    listeFichiersExemples = []
-    fichiers = os.listdir(chemin)
-    for fichier in fichiers :
-        if fichier.startswith("EXEMPLE_") :
-            listeFichiersExemples.append(chemin + fichier)
-    return listeFichiersExemples
-    
-    
+# def GetFichiersExemples(chemin="Data/"):
+#     listeFichiersExemples = []
+#     fichiers = os.listdir(chemin)
+#     for fichier in fichiers :
+#         if fichier.startswith("EXEMPLE_") :
+#             listeFichiersExemples.append(chemin + fichier)
+#     return listeFichiersExemples
+
+
 
 options = {
     "py2exe": {
@@ -106,7 +114,7 @@ options = {
                 "email.mime.image", "email.mime.audio", "email.base64mime",
                 "pyttsx.drivers.sapi5", "zope.interface",
                 ],
-        
+
          'excludes' : [
                 '_gtkagg', '_tkagg', '_agg2', '_cairo', '_cocoaagg',
                 '_fltkagg', '_gtk', '_gtkcairo',
@@ -141,7 +149,7 @@ options = {
         "typelibs": [
                 ('{C866CA3A-32F7-11D2-9602-00C04F8EE628}', 0, 5, 4), # Pour Pyttsx - Version Windows 7
                 ],
-                        
+
         #'compressed' : 1 ,.
         #'optimize': 2,
         }
@@ -149,11 +157,12 @@ options = {
 
 
 data_files=[
-    
+
           # Dossiers à importer:
           ('Outils', glob.glob('Outils\\*.*')),
-          ('Data', GetFichiersExemples("Data/")),
-          
+          ('Data', glob.glob('Data\\*.*')),
+          ('Lang', glob.glob('Lang\\*.*')),
+
           ('Images\\16x16', listdirectory('Images\\16x16')),
           ('Images\\22x22', listdirectory('Images\\22x22')),
           ('Images\\32x32', listdirectory('Images\\32x32')),
@@ -171,15 +180,10 @@ data_files=[
           ('Images\\Interface\\Bleu', listdirectory('Images\\Interface\\Bleu')),
           ('Images\\Interface\\Noir', listdirectory('Images\\Interface\\Noir')),
 
-          ('Sync', [] ),
-          ('Lang', glob.glob('Lang\\*.*')),
-          
           # Fichiers à importer :
-          ('', ['Versions.txt', 'Licence.txt', 'Geographie.dat', 'Prenoms.dat',
-                'Defaut.dat', 'Annonces.dat', 'Textes.dat', 'Icone.ico', 
+          ('', ['Versions.txt', 'Licence.txt', 'Icone.ico',
                 'msvcm90.dll', 'msvcp90.dll', 'msvcr90.dll',
-                'Microsoft.VC90.CRT.manifest',
-                'gdiplus.dll', ]), 
+                'Microsoft.VC90.CRT.manifest', 'gdiplus.dll', ]),
            ]
 
 data_files += mp.get_py2exe_datafiles()
@@ -190,7 +194,7 @@ setup(
     version=VERSION_APPLICATION,
     description="Noethys",
     author="Ivan LUCAS",
-    options = options, 
+    options = options,
     data_files = data_files,
     windows= [
         {
@@ -198,7 +202,7 @@ setup(
             "icon_resources" : [(1, "Icone.ico")],
             "other_resources": [(24,1, manifest)]
         }
-        
+
     ],)
 
 # Insertions manuelles dans le ZIP

@@ -14,9 +14,8 @@ import wx
 import CTRL_Bouton_image
 import os
 import GestionDB
+import UTILS_Fichiers
 
-try: import psyco; psyco.full() 
-except: pass
 
 # ------------------------------------ CONVERSION LOCAL -> RESEAU -------------------------------
 
@@ -110,7 +109,7 @@ def ConversionReseauLocal(parent, nomFichier=""):
         return False
     
     # Vérifie que le fichier n'est pas déjà utilisé
-    if os.path.isfile("Data/%s_DATA.dat" % nomFichier)  == True :
+    if os.path.isfile(UTILS_Fichiers.GetRepData(u"%s_DATA.dat" % nomFichier))  == True :
         dlg = wx.MessageDialog(parent, _(u"Le fichier existe déjà."), _(u"Erreur de création de fichier"), wx.OK | wx.ICON_ERROR)
         dlg.ShowModal()
         dlg.Destroy()
