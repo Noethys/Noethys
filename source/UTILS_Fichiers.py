@@ -14,18 +14,19 @@ import shutil
 import platform
 import subprocess
 import UTILS_Customize
-
-from Outils import appdirs
+import appdirs
 
 
 def GetRepData(fichier=""):
     # Recherche s'il existe un chemin personnalisé dans le Customize.ini
     chemin = UTILS_Customize.GetValeur("repertoire_donnees", "chemin", "")
+    chemin = chemin.decode("iso-8859-15")
     if chemin != "" and os.path.isdir(chemin):
         return os.path.join(chemin, fichier)
 
     # Recherche le chemin du répertoire des données
     chemin = appdirs.site_data_dir(appname=None, appauthor=False, multipath=False)
+    chemin = chemin.decode("iso-8859-15")
 
     if platform.release() == "Vista" :
 
@@ -85,6 +86,7 @@ def GetRepUtilisateur(fichier=""):
 
     # Recherche le chemin du répertoire de l'utilisateur
     chemin = appdirs.user_config_dir(appname=None, appauthor=False, roaming=True)
+    chemin = chemin.decode("iso-8859-15")
 
     # Ajoute 'noethys' dans le chemin et création du répertoire
     chemin = os.path.join(chemin, "noethys")
@@ -149,4 +151,6 @@ if __name__ == "__main__":
     print GetRepUtilisateur()
 
     # Répertoire des données
-    print GetRepData()
+    chemin = GetRepData()
+    print 1, os.path.join(chemin, u"Testé.pdf")
+    print 2, os.path.join(chemin, "Test.pdf")

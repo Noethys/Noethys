@@ -2,7 +2,7 @@ Noethys
 ==================
 Logiciel de gestion libre et gratuit de gestion multi-activités pour 
 les accueils de loisirs, crèches, garderies périscolaires, cantines, 
-clubs sportifs et culturels...
+TAP ou NAP, clubs sportifs et culturels...
 
 Plus d'infos sur www.noethys.com
 
@@ -35,6 +35,7 @@ rechercher et installer les bibliothèques suivantes.
 - pyExcelerator (http://sourceforge.net/projects/pyexcelerator/)
 - videoCapture (http://videocapture.sourceforge.net/)
 - Pyttsx (http://pypi.python.org/pypi/pyttsx)
+- Appdirs (https://pypi.python.org/pypi/appdirs)
 
 
 Dépendances pour Linux
@@ -55,11 +56,12 @@ Dépendances pour Linux
 - python-pyscard (pour pouvoir configurer les procédures de badgeage)
 - python-opencv (pour la détection automatique des visages)
 - python-pip (qui permet d'installer pyttsx et icalendar)
+- python-appdirs (pour rechercher les répertoires de stockage des données)
 
 Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
 ```
-apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto
+apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto python-appdirs
 ```
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fait dans l'étape précédente) et les installer par:
