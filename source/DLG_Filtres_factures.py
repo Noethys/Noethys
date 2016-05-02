@@ -79,7 +79,7 @@ def GetTexteFiltres(filtres):
 
         # Numéros Liste
          if filtre["type"] == "numero_liste" :
-            listeTextes.append(_(u"Numéros de factures suivants : %s") % ";".join(filtre["listeNumeros"]))
+            listeTextes.append(_(u"Numéros de factures suivants : %s") % ";".join([str(x) for x in filtre["liste"]]))
 
         # Solde initial
          if filtre["type"] == "solde_initial" :
@@ -578,7 +578,7 @@ class Dialog(wx.Dialog):
             # numero_liste
             if filtre["type"] == "numero_liste" :
                 self.check_numeros_liste.SetValue(True)
-                self.ctrl_numeros_liste.SetValue(";".join(filtre["liste"]))
+                self.ctrl_numeros_liste.SetValue(";".join([str(x) for x in filtre["liste"]]))
 
             # Solde initial
             if filtre["type"] == "solde_initial" :
