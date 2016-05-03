@@ -889,7 +889,7 @@ class Facturation():
                     if dictFacture["select"] == True :
                         num_facture = dictFacture["num_facture"]
                         nomTitulaires = self.Supprime_accent(dictFacture["nomSansCivilite"])
-                        nomFichier = _(u"Facture %d - %s") % (num_facture, nomTitulaires)
+                        nomFichier = _(u"Facture %s - %s") % (num_facture, nomTitulaires)
                         cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
                         dictComptesTemp = {IDfacture : dictFacture}
                         self.EcritStatusbar(_(u"Edition de la facture %d/%d : %s") % (index, len(dictFactures), nomFichier))

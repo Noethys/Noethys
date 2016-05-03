@@ -40,6 +40,7 @@ class Track(object):
         self.prefixe = donnees["prefixe"]
         self.numero = donnees["numero"]
         if self.numero == None : self.numero = 0
+        self.numero_int = int(self.numero)
 
         if self.IDprefixe != None :
             self.numero = u"%s-%06d" % (self.prefixe, self.numero)

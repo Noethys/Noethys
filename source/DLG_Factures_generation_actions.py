@@ -158,11 +158,15 @@ class Panel(wx.Panel):
         self.ctrl_factures.ExportExcel()
 
     def GetFiltreNumerosFactures(self):
-        """ Retourn un filtre par numéro de factures générées """
+        """ Retourne un filtre par numéro de factures générées """
         listeNumeros = []
+        filtre_prefixe = None
         for track in self.ctrl_factures.GetTracksTous() :
-            listeNumeros.append(track.numero)
-        return {"type" : "numero_intervalle", "numero_min" : min(listeNumeros), "numero_max" : max(listeNumeros)}
+            listeNumeros.append(track.numero_int)
+            if track.IDprefixe != None :
+                filtre_prefixe = {"type" : "prefixe", "IDprefixe" : track.IDprefixe}
+        filtre_numeros = {"type" : "numero_intervalle", "numero_min" : min(listeNumeros), "numero_max" : max(listeNumeros)}
+        return filtre_numeros, filtre_prefixe
         
     def OnBoutonPrelevements(self, event): 
         """ Gestion des prélèvements """
@@ -179,11 +183,14 @@ class Panel(wx.Panel):
         import DLG_Lots_prelevements
         dlg = DLG_Lots_prelevements.Dialog(self)
         if reponse == wx.ID_YES :
+            filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
             filtres = [
-                self.GetFiltreNumerosFactures(),
+                filtre_numeros,
                 {"type" : "solde_actuel", "operateur" : "<", "montant" : 0.0},
                 {"type" : "prelevement", "choix" : True},
                 ]
+            if filtre_prefixe != None :
+                filtres.append(filtre_prefixe)
             dlg.Assistant(filtres=filtres, nomLot=self.parent.dictParametres["nomLot"])
         dlg.ShowModal() 
         dlg.Destroy()
@@ -197,9 +204,13 @@ class Panel(wx.Panel):
             
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_helios", "creer") == False : return
             import DLG_Export_helios
+            filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
             filtres = [
-                self.GetFiltreNumerosFactures(),
+                filtre_numeros,
                 ]
+            if filtre_prefixe != None :
+                filtres.append(filtre_prefixe)
+
             dlg = DLG_Export_helios.Dialog(self, filtres=filtres)
             dlg.ShowModal() 
             dlg.Destroy()
@@ -219,9 +230,12 @@ class Panel(wx.Panel):
             import DLG_Lots_pes
             dlg = DLG_Lots_pes.Dialog(self)
             if reponse == wx.ID_YES :
+                filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
                 filtres = [
-                    self.GetFiltreNumerosFactures(),
+                    filtre_numeros,
                     ]
+                if filtre_prefixe != None :
+                    filtres.append(filtre_prefixe)
                 dlg.Assistant(filtres=filtres, nomLot=self.parent.dictParametres["nomLot"])
             dlg.ShowModal() 
             dlg.Destroy()
@@ -229,7 +243,12 @@ class Panel(wx.Panel):
 
     def OnBoutonEmail(self, event): 
         """ Envoi par Email des factures """
-        filtres = [self.GetFiltreNumerosFactures(),]
+        filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
+        filtres = [
+            filtre_numeros,
+            ]
+        if filtre_prefixe != None :
+            filtres.append(filtre_prefixe)
         # Demande d'application automatique de filtres
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles souhaitent recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
@@ -246,7 +265,12 @@ class Panel(wx.Panel):
 
     def OnBoutonImprimer(self, event): 
         """ Impression des factures """
-        filtres = [self.GetFiltreNumerosFactures(),]
+        filtre_numeros, filtre_prefixe = self.GetFiltreNumerosFactures()
+        filtres = [
+            filtre_numeros,
+            ]
+        if filtre_prefixe != None :
+            filtres.append(filtre_prefixe)
         # Demande d'application automatique de filtres
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous que Noethys sélectionne automatiquement les factures dont les familles ne souhaitent pas recevoir leurs factures par Email ?\n\n(Si non, notez que vous pouvez toujours effectuer cette sélection ultérieurement avec les filtres de sélection)"), _(u"Application automatique de filtres"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal() 
