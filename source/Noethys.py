@@ -3763,17 +3763,6 @@ class MyApp(wx.App):
             wx.InitAllImageHandlers() 
 
         heure_debut = time.time()
-        
-        # Vérifie l'existence des répertoires dans le répertoire d'installation de Noethys (Obsolète : A supprimer à l'avenir)
-        for rep in ("Sync", "Lang") : # "Updates", "Temp",
-            if os.path.isdir(rep) == False :
-                os.makedirs(rep)
-
-        # Vérifie l'existence des répertoire dans le répertoire Utilisateur
-        for rep in ("Temp", "Updates", "Sync", "Lang") :
-            rep = UTILS_Fichiers.GetRepUtilisateur(rep)
-            if os.path.isdir(rep) == False :
-                os.makedirs(rep)
 
         # Réinitialisation du fichier des parametres en conservant la touche ALT ou CTRL enfoncée
         if wx.GetKeyState(307) == True or wx.GetKeyState(308) == True :
@@ -3844,6 +3833,13 @@ class MyApp(wx.App):
 
 
 if __name__ == "__main__":
+
+    # Vérifie l'existence des répertoires dans le répertoire Utilisateur
+    for rep in ("Temp", "Updates", "Sync", "Lang") :
+        rep = UTILS_Fichiers.GetRepUtilisateur(rep)
+        if os.path.isdir(rep) == False :
+            os.makedirs(rep)
+
     # Vérifie si des fichiers du répertoire Data sont à déplacer vers le répertoire Utilisateur
     UTILS_Fichiers.DeplaceFichiers()
 
