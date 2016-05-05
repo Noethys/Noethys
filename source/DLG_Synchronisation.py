@@ -749,7 +749,7 @@ class Dialog(wx.Dialog):
             return False
         
         # Lecture des fichiers du répertoire SYNC
-        for nomFichier in os.listdir("Sync") :
+        for nomFichier in os.listdir(UTILS_Fichiers.GetRepSync()) :
             if nomFichier.startswith("actions_") and nomFichier.endswith(".archive") :
                 nomFichierCourt = nomFichier.replace(".dat", "").replace(".archive", "")
                 

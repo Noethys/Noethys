@@ -280,7 +280,7 @@ class Panel(wx.Panel):
         """ MAJ du bouton Analyser """
         # Lecture des fichiers du répertoire SYNC
         IDfichier = FonctionsPerso.GetIDfichier()
-        listeFichiers = os.listdir("Sync")
+        listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
         nbreFichiers = 0
         for nomFichier in listeFichiers :
             if nomFichier.startswith("actions_%s" % IDfichier) and nomFichier.endswith(".dat") :

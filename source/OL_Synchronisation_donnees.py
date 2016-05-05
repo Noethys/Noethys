@@ -115,7 +115,7 @@ class ListView(GroupListView):
         IDfichier = FonctionsPerso.GetIDfichier()
         
         # Lecture des fichiers du répertoire SYNC
-        listeFichiers = os.listdir("Sync")
+        listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
         
         listeListeView = []
         listeDictTempTraites = []
