@@ -592,28 +592,47 @@ class Dialog(wx.Dialog):
     
     def GetPrestations(self):
         DB = GestionDB.DB()
-        req = """SELECT prestations.IDprestation, date, categorie, label, 
+
+        # Recherche de la ventilation
+        req = """SELECT IDprestation, SUM(ventilation.montant) AS total_ventilation
+        FROM ventilation
+        WHERE ventilation.IDreglement=%d
+        GROUP BY IDprestation;""" % self.IDreglement
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        liste_prestations = []
+        dict_ventilation = {}
+        for IDprestation, total_ventilation in listeDonnees :
+            liste_prestations.append(IDprestation)
+            dict_ventilation[IDprestation] = total_ventilation
+
+        # Recherche des prestations
+        if len(liste_prestations) == 0 : condition_prestations = "()"
+        elif len(liste_prestations) == 1 : condition_prestations = "(%d)" % liste_prestations[0]
+        else : condition_prestations = str(tuple(liste_prestations))
+
+        req = """SELECT IDprestation, date, categorie, label,
         activites.IDactivite, activites.nom, activites.abrege,
         individus.nom, individus.prenom,
-        prestations.montant, SUM(ventilation.montant) AS total_ventilation
+        montant
         FROM prestations
-        LEFT JOIN ventilation ON ventilation.IDprestation = prestations.IDprestation
         LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
         LEFT JOIN individus ON individus.IDindividu = prestations.IDindividu
-        WHERE IDreglement=%d
-        GROUP BY prestations.IDprestation
-        ORDER BY prestations.date;""" % self.IDreglement
+        WHERE IDprestation IN %s
+        GROUP BY IDprestation
+        ORDER BY date;""" % condition_prestations
+
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()      
-        DB.Close() 
+        DB.Close()
         listePrestations = []
-        for IDprestation, date, categorie, label, IDactivite, nomActivite, abregeActivite, nomIndividu, prenomIndividu, montant, ventilation in listeDonnees :
+        for IDprestation, date, categorie, label, IDactivite, nomActivite, abregeActivite, nomIndividu, prenomIndividu, montant in listeDonnees :
             dateDD = DateEngEnDateDD(date)
             if nomActivite == None : nomActivite = ""
             if abregeActivite == None : abregeActivite = ""
             if prenomIndividu == None : prenomIndividu = u""
             montant = FloatToDecimal(montant)
-            ventilation = FloatToDecimal(ventilation)
+            ventilation = FloatToDecimal(dict_ventilation[IDprestation])
             dictTemp = {
                 "IDprestation" : IDprestation, "date" : dateDD, "categorie" : categorie, "label" : label, "IDactivite" : IDactivite, 
                 "nomActivite" : nomActivite, "abregeActivite" : abregeActivite, "prenomIndividu" : prenomIndividu, "montant" : montant, "ventilation" : ventilation,
@@ -627,7 +646,7 @@ class Dialog(wx.Dialog):
         
         # Récupération des valeurs de base
         dictDonnees = DICT_DONNEES
-        
+
         # Récupération des infos sur l'organisme
         DB = GestionDB.DB()
         req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape
