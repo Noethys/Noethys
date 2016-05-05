@@ -18,6 +18,14 @@ import appdirs
 
 
 def GetRepData(fichier=""):
+    # Vérifie si un répertoire 'Portable' existe
+    chemin = "Portable"
+    if os.path.isdir(chemin):
+        chemin = os.path.join(chemin, "Data")
+        if not os.path.isdir(chemin):
+            os.mkdir(chemin)
+        return os.path.join(chemin, fichier)
+
     # Recherche s'il existe un chemin personnalisé dans le Customize.ini
     chemin = UTILS_Customize.GetValeur("repertoire_donnees", "chemin", "")
     chemin = chemin.decode("iso-8859-15")
@@ -83,6 +91,11 @@ def GetRepUtilisateur(fichier=""):
     #     # ... ou dossier courrant.
     #     else:
     #         chemin = os.path.dirname(os.path.abspath(__file__))
+
+    # Vérifie si un répertoire 'Portable' existe
+    chemin = "Portable"
+    if os.path.isdir(chemin):
+        return os.path.join(chemin, fichier)
 
     # Recherche le chemin du répertoire de l'utilisateur
     chemin = appdirs.user_config_dir(appname=None, appauthor=False, roaming=True)
