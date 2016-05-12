@@ -32,10 +32,6 @@ def GetRepData(fichier=""):
     if chemin != "" and os.path.isdir(chemin):
         return os.path.join(chemin, fichier)
 
-    # Recherche le chemin du répertoire des données
-    chemin = appdirs.site_data_dir(appname=None, appauthor=False, multipath=False)
-    chemin = chemin.decode("iso-8859-15")
-
     if platform.release() == "Vista" :
 
         # Création du répertoire Data s'il n'existe pas
@@ -45,8 +41,11 @@ def GetRepData(fichier=""):
 
     else :
 
-        # Ajoute 'noethys' dans le chemin et création du répertoire
-        chemin = os.path.join(chemin, "noethys")
+        # Recherche le chemin du répertoire des données pour noethys
+        chemin = appdirs.user_data_dir(appname="noethys", appauthor=False)
+        chemin = chemin.decode("iso-8859-15")
+
+        # Création du répertoire s'il n'existe pas
         if not os.path.isdir(chemin):
             os.mkdir(chemin)
 
