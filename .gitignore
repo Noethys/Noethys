@@ -8,9 +8,7 @@ Sync/
 Installeur/
 PaquetDebian/
 Travaux/
-source/Data/*_DATA.dat
-source/Data/*_DOCUMENTS.dat
-source/Data/*_PHOTOS.dat
+Noethys.egg-info/
 SQLiteSpy.exe
 SQLiteSpy.db3
 TODO.xlsx
@@ -18,7 +16,9 @@ nologin.txt
 PackagerLinux.py
 CreateurANNONCES.py
 CreateurMAJ.py
-setup.bat
+setup_source.bat
+setup_wheel.bat
+setup_windows.bat
 gdiplus.dll
 libiconv-2.dll
 libzbar-0.dll
@@ -84,18 +84,18 @@ docs/_build/
 
 # PyBuilder
 target/
-source/Images/128x128/Thumbs.db
-source/Images/128x128/Thumbs.db
-source/Images/128x128/Thumbs.db
-source/Images/128x128/Thumbs.db
-source/Images/16x16/Thumbs.db
-source/Images/22x22/Thumbs.db
-source/Images/32x32/Thumbs.db
-source/Images/48x48/Thumbs.db
-source/Images/80x80/Thumbs.db
-source/Images/Badgeage/Thumbs.db
-source/Images/BoutonsImages/Thumbs.db
-source/Images/Special/Thumbs.db
+noethys/Static/Images/128x128/Thumbs.db
+noethys/Static/Images/128x128/Thumbs.db
+noethys/Static/Images/128x128/Thumbs.db
+noethys/Static/Images/128x128/Thumbs.db
+noethys/Static/Images/16x16/Thumbs.db
+noethys/Static/Images/22x22/Thumbs.db
+noethys/Static/Images/32x32/Thumbs.db
+noethys/Static/Images/48x48/Thumbs.db
+noethys/Static/Images/80x80/Thumbs.db
+noethys/Static/Images/Badgeage/Thumbs.db
+noethys/Static/Images/BoutonsImages/Thumbs.db
+noethys/Static/Images/Special/Thumbs.db
 
 # =========================
 # Operating System Files

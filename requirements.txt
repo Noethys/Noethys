@@ -1,0 +1,14 @@
+appdirs>=1.4.0
+comtypes>=0.6.4
+icalendar>=3.1
+numpy>=1.6.1
+Pillow==2.9.0
+pycrypto>=2.3
+PyExcelerator>=0.6.4.1
+pyttsx>=1.0
+pytz>=2016.3
+reportlab==2.5
+Twisted>=15.0.0
+xlrd>=0.6.1
+zope.interface>=4.1.2
+py-dateutil>=2.2

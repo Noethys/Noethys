@@ -1,0 +1,3 @@
+recursive-include noethys/Static *
+include noethys/*.txt
+include noethys/*.ico
