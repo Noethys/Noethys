@@ -9,7 +9,6 @@ import os
 import glob
 import os.path
 import zipfile
-import shutil
 
 
 # Chemins
@@ -18,10 +17,11 @@ sys.path.insert(0, REP_COURANT)
 NOETHYS_PATH = os.path.join(REP_COURANT, "noethys")
 sys.path.insert(1, NOETHYS_PATH)
 
-from Utils import UTILS_Fichiers
 from setuptools import setup, find_packages
-import py2exe
-import numpy
+
+if "py2exe" in sys.argv :
+    import py2exe
+    import numpy
 
 
 
@@ -71,18 +71,6 @@ manifest = """
 </assembly>
 """
 
-
-# Déplace les fichiers de données du répertoire des données vers le répertoire Data
-for nomFichier in os.listdir(UTILS_Fichiers.GetRepData()) :
-    if nomFichier.startswith("EXEMPLE_") and nomFichier.endswith(".dat") :
-        shutil.copy(UTILS_Fichiers.GetRepData(nomFichier), u"%s/Static/Exemples/%s" % (NOETHYS_PATH, nomFichier))
-
-
-import matplotlib as mp
-matplotlib_font_afm = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\afm\\*']))
-matplotlib_font_pdfcorefonts = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\pdfcorefonts\\*']))
-matplotlib_font_ttf = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\ttf\\*']))
-matplotlib_images = glob.glob(os.sep.join([mp.get_data_path(), 'images\\*']))
 
 
 def GetVersion():
@@ -191,13 +179,24 @@ data_files=[
             GetDossiers("Static/Polices"),
 
             # Fichiers à importer :
-            ('', ['noethys/Versions.txt', 'noethys/Licence.txt', 'noethys/Icone.ico',
-            'noethys/msvcm90.dll', 'noethys/msvcp90.dll', 'noethys/msvcr90.dll',
-            'noethys/Microsoft.VC90.CRT.manifest', 'noethys/gdiplus.dll', ]),
+            ('', ['noethys/Versions.txt', 'noethys/Licence.txt', 'noethys/Icone.ico']),
 
             ]
 
-data_files += mp.get_py2exe_datafiles()
+# Autres data_files
+if "py2exe" in sys.argv :
+
+    # Ajoute les fichiers de Matplotlib
+    import matplotlib as mp
+    matplotlib_font_afm = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\afm\\*']))
+    matplotlib_font_pdfcorefonts = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\pdfcorefonts\\*']))
+    matplotlib_font_ttf = glob.glob(os.sep.join([mp.get_data_path(), 'fonts\\ttf\\*']))
+    matplotlib_images = glob.glob(os.sep.join([mp.get_data_path(), 'images\\*']))
+    data_files += mp.get_py2exe_datafiles()
+
+    # Ajoute les fichiers Windows
+    data_files.append(('', ['noethys/msvcm90.dll', 'noethys/msvcp90.dll', 'noethys/msvcr90.dll', 'noethys/Microsoft.VC90.CRT.manifest', 'noethys/gdiplus.dll', ]))
+
 
 
 setup(
@@ -214,7 +213,7 @@ setup(
                     "Topic :: Utilities"],
     options = options,
     data_files = data_files,
-    dependency_links = ["git+https://github.com/wxWidgets/wxPython.git#egg=wxPython"],
+    #dependency_links = [],
     packages = ["noethys", "noethys.Ctrl", "noethys.Data", "noethys.Dlg", "noethys.ObjectListView", "noethys.Ol", "noethys.Outils", "noethys.Utils"],
     install_requires = open("requirements.txt").readlines(),
     windows = [
@@ -226,8 +225,8 @@ setup(
 
     ],)
 
-# Insertions manuelles dans le ZIP
 
+# Insertions manuelles dans le ZIP
 if "py2exe" in sys.argv :
 
     z = zipfile.ZipFile(os.path.join("dist/", "library.zip"), 'a')
