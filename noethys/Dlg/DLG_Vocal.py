@@ -41,7 +41,7 @@ class MyHtml(html.HtmlWindow):
         texte = u"""
         <FONT SIZE=-1>
         <CENTER>
-            <IMG SRC="Images/32x32/Telecharger.png">
+            <IMG SRC="Static/Images/32x32/Telecharger.png">
             <BR><BR>
             <B>Téléchargement de la voix française</B>
             <BR><BR>

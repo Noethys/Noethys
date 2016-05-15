@@ -121,7 +121,7 @@ class Dialog(wx.Dialog):
         
         # Txt remarque
         txtRemarque = u"""
-        <IMG SRC="Images/16x16/Attention2.png">
+        <IMG SRC="Static/Images/16x16/Attention2.png">
         <FONT SIZE=-1>
         Si l'individu à rattacher n'apparaît pas dans cette liste, 
         vous devez cliquez sur ce bouton 

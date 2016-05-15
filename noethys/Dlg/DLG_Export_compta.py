@@ -1591,7 +1591,7 @@ class Dialog(wx.Dialog):
             return
 
         texte = u"""
-<CENTER><IMG SRC="Images/32x32/Information.png">
+<CENTER><IMG SRC="Static/Images/32x32/Information.png">
 <BR><BR>
 <FONT SIZE=2>
 <B>Avertissement</B>

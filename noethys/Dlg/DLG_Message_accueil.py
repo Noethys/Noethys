@@ -20,7 +20,7 @@ import FonctionsPerso
 VERSION_LOGICIEL = FonctionsPerso.GetVersionLogiciel()
 
 TEXTE_ACCUEIL = u"""
-<CENTER><IMG SRC="Images/80x80/Logo.png">
+<CENTER><IMG SRC="Static/Images/80x80/Logo.png">
 <BR>
 <FONT SIZE=2>
 <B>Bienvenue dans Noethys</B><BR>

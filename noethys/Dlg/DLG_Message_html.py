@@ -18,7 +18,7 @@ import FonctionsPerso
 
 
 TEXTE = u"""
-<CENTER><IMG SRC="Images/80x80/Logo.png">
+<CENTER><IMG SRC="Static/Images/80x80/Logo.png">
 <BR>
 <FONT SIZE=2>
 <B>Ceci est un exemple de Titre</B><BR>

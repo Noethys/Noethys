@@ -288,7 +288,7 @@ class Panel(wx.Panel):
         # Vérifie si case Ne plus Afficher cochée ou non
         if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="acces_cafpro", valeur=False) == False :
             texte = u"""
-<CENTER><IMG SRC="Images/32x32/Astuce.png">
+<CENTER><IMG SRC="Static/Images/32x32/Astuce.png">
 <FONT SIZE=3>
 <BR>
 <B>Astuce</B>
