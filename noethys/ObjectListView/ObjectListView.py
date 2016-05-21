@@ -2218,7 +2218,7 @@ class ObjectListView(wx.ListCtrl):
         """ Pour une liste avec possibilités de configuration """
         self.nomListe = nomListe
         if self.listeColonnes == [] :
-            import DLG_Configuration_listes
+            from Dlg import DLG_Configuration_listes
             self.listeColonnesDefaut = copy.deepcopy(colonnes)
             self.listeColonnes = DLG_Configuration_listes.RestaurationConfiguration(nomListe=nomListe, listeColonnesDefaut=colonnes)
         self.SetColumns(self.listeColonnes)
@@ -2262,7 +2262,7 @@ class ObjectListView(wx.ListCtrl):
             listeDonneesDefaut.append((col.valueGetter, col.visible))
             
         # DLG de la configuration de listes
-        import DLG_Configuration_listes
+        from Dlg import DLG_Configuration_listes
         dlg = DLG_Configuration_listes.Dialog(self, listeDonnees=listeDonnees, listeDonneesDefaut=listeDonneesDefaut)      
         if dlg.ShowModal() == wx.ID_OK:
             listeDonnees = dlg.GetListeDonnees()
@@ -2290,7 +2290,7 @@ class ObjectListView(wx.ListCtrl):
     def SauvegardeConfiguration(self, event=None):
         """ Sauvegarde de la configuration """
         if self.nomListe != None :
-            import DLG_Configuration_listes
+            from Dlg import DLG_Configuration_listes
             DLG_Configuration_listes.SauvegardeConfiguration(nomListe=self.nomListe, listeColonnes=self.listeColonnes)
     
         
@@ -2648,7 +2648,7 @@ class CTRL_Outils(wx.Panel):
         
     def OnBoutonFiltrer(self, event):
         listeFiltres = []
-        import DLG_Filtres_listes
+        from Dlg import DLG_Filtres_listes
         dlg = DLG_Filtres_listes.Dialog(self, ctrl_listview=self.listview)
         if dlg.ShowModal() == wx.ID_OK :
             listeFiltres = dlg.GetDonnees()                 

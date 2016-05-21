@@ -841,7 +841,7 @@ class Dialog(wx.Dialog):
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un label pour la facturation !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
-                self.ctrl_label_prestation.SetFocus()
+                self.ctrl_label.SetFocus()
                 return False
         
         else:
