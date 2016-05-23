@@ -105,6 +105,7 @@ LISTE_CATEGORIES = [
     { "label" : _(u"Factures"), "code" : "familles_factures", "actions" : ["consulter", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Param. factures par Email"), "code" : "familles_factures_email", "actions" : ["modifier",], "restriction" : False },
     { "label" : _(u"Règlements"), "code" : "familles_reglements", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
+    { "label" : _(u"Remboursements"), "code" : "familles_remboursements", "actions" : ["creer",], "restriction" : False },
     { "label" : _(u"Param. prélèvement"), "code" : "familles_prelevement", "actions" : ["modifier",], "restriction" : False },
     { "label" : _(u"Mandats SEPA"), "code" : "familles_mandats", "actions" : ["consulter", "modifier", "creer", "supprimer"], "restriction" : False },
     { "label" : _(u"Param. reçu par Email"), "code" : "familles_recu_email", "actions" : ["modifier",], "restriction" : False },

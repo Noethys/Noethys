@@ -584,6 +584,7 @@ class ListView(FastObjectListView):
             self.MAJ()
 
     def Rembourser(self, event=None):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_remboursements", "creer") == False : return
         from Dlg import DLG_Saisie_remboursement
 
         # Recherche le solde de la famille
