@@ -23,8 +23,6 @@ from Outils import thumbnailctrl as TC
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
 
 ID_AJOUTER = wx.NewId() 
 ID_ROTATION_GAUCHE = wx.NewId() 
@@ -112,7 +110,7 @@ class Track(object):
         # Si c'est un document :
         if DICT_TYPES.has_key(self.type) :        
             cheminImage = DICT_TYPES[self.type]
-            img = Image.open(cheminImage)
+            img = Image.open(Chemins.GetStaticPath(cheminImage))
             self.isImage = False
             return img
         return None
