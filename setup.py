@@ -109,7 +109,18 @@ options = {
 
         'dll_excludes': [
                 "tcl84.dll", "tk84.dll", "wxmsw26uh_vc.dll", "libgdk-win32-2.0-0.dll",
-                "libgobject-2.0-0.dll", "UxTheme.dll", "mswsock.dll", "powrprof.dll", "MSVCP90.dll",
+                "libgobject-2.0-0.dll", "UxTheme.dll", "mswsock.dll", "powrprof.dll",
+                "msvcp90.dll", "msvcm90.dll",
+            
+                "AVICAP32.dll", "AVIFIL32.dll", "MPR.dll", "MSACM32.dll", "MSVFW32.dll",
+                "KERNELBASE.dll", "crypt32.dll", "WLDAP32.dll",
+                "combase.dll", "dhcpcsvc.DLL",
+                "iertutil.dll", "IPHLPAPI.DLL", "NSI.dll", "OLEACC.dll",
+                "PSAPI.DLL", "Secur32.dll", "SETUPAPI.dll", "urlmon.dll",
+                "USERENV.dll", "USP10.dll", "WININET.dll", "WTSAPI32.dll",
+
+                "api-ms-win-core-delayload-l1-1-1.dll", "api-ms-win-core-heap-obsolete-l1-1-0.dll",
+                "api-ms-win-core-localization-obsolete-l1-2-0.dll", "api-ms-win-core-string-obsolete-l1-1-0.dll",
                 "api-ms-win-core-string-l1-1-0.dll", "api-ms-win-core-registry-l1-1-0.dll",
                 "api-ms-win-core-errorhandling-l1-1-1.dll", "api-ms-win-core-string-l2-1-0.dll",
                 "api-ms-win-core-profile-l1-1-0.dll", "api-ms-win*.dll",
@@ -121,7 +132,8 @@ options = {
                 "api-ms-win-core-heap-l1-2-0.dll", "api-ms-win-core-handle-l1-1-0.dll",
                 "api-ms-win-core-io-l1-1-1.dll", "api-ms-win-core-com-l1-1-1.dll",
                 "api-ms-win-core-memory-l1-1-2.dll", "api-ms-win-core-version-l1-1-1.dll",
-                "api-ms-win-core-version-l1-1-0.dll", "crypt32.dll",
+                "api-ms-win-core-version-l1-1-0.dll",
+
                 ],
 
         "packages": [
@@ -183,6 +195,7 @@ data_files=[
 
             ]
 
+
 # Autres data_files
 if "py2exe" in sys.argv :
 
@@ -196,7 +209,6 @@ if "py2exe" in sys.argv :
 
     # Ajoute les fichiers Windows
     data_files.append(('', ['noethys/msvcm90.dll', 'noethys/msvcp90.dll', 'noethys/msvcr90.dll', 'noethys/Microsoft.VC90.CRT.manifest', 'noethys/gdiplus.dll', ]))
-
 
 
 setup(
