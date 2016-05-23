@@ -19,6 +19,7 @@ from Ctrl import CTRL_Saisie_euros
 from Utils import UTILS_Identification
 from Ctrl import CTRL_Bandeau
 import wx.lib.agw.hyperlink as Hyperlink
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Ol.OL_Verification_ventilation import VentilationAuto
 from DLG_Saisie_reglement import CTRL_Mode, CTRL_Compte
@@ -354,7 +355,7 @@ class Dialog(wx.Dialog):
             self.ctrl_montant.SetFocus()
             return
 
-        if montant > self.solde :
+        if self.solde != None and FloatToDecimal(montant) > FloatToDecimal(self.solde) :
             dlg = wx.MessageDialog(self, _(u"Le montant du remboursement ne doit pas être supérieur au solde du compte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
