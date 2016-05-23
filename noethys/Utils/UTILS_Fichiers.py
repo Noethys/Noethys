@@ -29,7 +29,7 @@ def GetRepData(fichier=""):
 
     # Recherche s'il existe un chemin personnalisé dans le Customize.ini
     chemin = UTILS_Customize.GetValeur("repertoire_donnees", "chemin", "")
-    chemin = chemin.decode("iso-8859-15")
+    #chemin = chemin.decode("iso-8859-15")
     if chemin != "" and os.path.isdir(chemin):
         return os.path.join(chemin, fichier)
 
@@ -37,7 +37,7 @@ def GetRepData(fichier=""):
     if sys.platform == "win32" and platform.release() != "Vista" :
 
         chemin = appdirs.site_data_dir(appname=None, appauthor=False)
-        chemin = chemin.decode("iso-8859-15")
+        #chemin = chemin.decode("iso-8859-15")
 
         chemin = os.path.join(chemin, "noethys")
         if not os.path.isdir(chemin):
@@ -46,7 +46,7 @@ def GetRepData(fichier=""):
     else :
 
         chemin = appdirs.user_data_dir(appname=None, appauthor=False)
-        chemin = chemin.decode("iso-8859-15")
+        #chemin = chemin.decode("iso-8859-15")
 
         chemin = os.path.join(chemin, "noethys")
         if not os.path.isdir(chemin):
@@ -80,24 +80,6 @@ def GetRepUtilisateur(fichier=""):
     """ Recherche le répertoire Utilisateur pour stockage des fichiers de config et provisoires """
     chemin = None
 
-    # # Variable d'environnement
-    # for evar in ('XDG_CONFIG_HOME', 'APPDATA', 'LOCALAPPDATA'):
-    #     path = os.environ.get(evar, None)
-    #     if path and os.path.isdir(path):
-    #         chemin = path
-    #         break
-    # if not chemin:
-    #     # ... ou répertoire de l'utilisateur
-    #     path = os.path.expanduser("~")
-    #     if path != "~" and os.path.isdir(path):
-    #         if sys.platform.startswith('linux'):
-    #             chemin = os.path.join(path, '.config')
-    #         else:
-    #             chemin = path
-    #     # ... ou dossier courrant.
-    #     else:
-    #         chemin = os.path.dirname(os.path.abspath(__file__))
-
     # Vérifie si un répertoire 'Portable' existe
     chemin = Chemins.GetMainPath("Portable")
     if os.path.isdir(chemin):
@@ -105,7 +87,7 @@ def GetRepUtilisateur(fichier=""):
 
     # Recherche le chemin du répertoire de l'utilisateur
     chemin = appdirs.user_config_dir(appname=None, appauthor=False, roaming=True)
-    chemin = chemin.decode("iso-8859-15")
+    #chemin = chemin.decode("iso-8859-15")
 
     # Ajoute 'noethys' dans le chemin et création du répertoire
     chemin = os.path.join(chemin, "noethys")
@@ -123,12 +105,14 @@ def DeplaceFichiers():
         for rep in ("", Chemins.GetMainPath("Data"), os.path.join(os.path.expanduser("~"), "noethys")) :
             fichier = os.path.join(rep, nom)
             if os.path.isfile(fichier) :
+                print ["deplacement fichier config :", fichier, " > ", GetRepUtilisateur(nom)]
                 shutil.move(fichier, GetRepUtilisateur(nom))
 
     # Déplace les fichiers xlang
     if os.path.isdir(Chemins.GetMainPath("Lang")) :
         for nomFichier in os.listdir(Chemins.GetMainPath("Lang")) :
             if nomFichier.endswith(".xlang") :
+                print ["deplacement fichier xlang :", fichier, " > ", GetRepLang(nomFichier)]
                 shutil.move(u"Lang/%s" % nomFichier, GetRepLang(nomFichier))
 
     # Déplace les fichiers du répertoire Sync
@@ -139,8 +123,10 @@ def DeplaceFichiers():
     # Déplace les fichiers de données du répertoire Data
     if GetRepData() != "Data/" and os.path.isdir(Chemins.GetMainPath("Data")) :
         for nomFichier in os.listdir(Chemins.GetMainPath("Data")) :
+            nomFichier = nomFichier.decode("iso-8859-15")
             if nomFichier.endswith(".dat") and "_" in nomFichier and "EXEMPLE_" not in nomFichier and "_archive.dat" not in nomFichier :
                 # Déplace le fichier vers le répertoire des fichiers de données
+                print ["copie base de donnees :", nomFichier, " > ", GetRepData(nomFichier)]
                 shutil.copy(Chemins.GetMainPath(u"Data/%s" % nomFichier), GetRepData(nomFichier))
                 # Renomme le fichier de données en archive (par sécurité)
                 os.rename(Chemins.GetMainPath(u"Data/%s" % nomFichier), Chemins.GetMainPath(u"Data/%s" % nomFichier.replace(".dat", "_archive.dat")))
