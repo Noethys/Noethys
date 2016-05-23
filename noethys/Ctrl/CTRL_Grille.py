@@ -349,7 +349,7 @@ class Ligne():
             dateTemp = None
 
         if self.estSeparation == True :
-                couleurCase = (150, 150, 150)
+            couleurCase = (150, 150, 150)
         if self.estSeparation == True :
             self.renderer_label = CTRL_Grille_renderers.LabelLigneSeparation(couleurCase, dateTemp)
         else :
@@ -463,6 +463,8 @@ class Ligne():
         return False
 
     def OnLeftClick(self):
+        if self.estSeparation == True :
+            return
         self.coche = not self.coche
         self.renderer_label.MAJCase()
 
