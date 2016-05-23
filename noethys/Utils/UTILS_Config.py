@@ -68,7 +68,7 @@ class FichierConfig():
     def GetDictConfig(self):
         """ Recupere une copie du dictionnaire du fichier de config """
         import shelve
-        db = shelve.open(self.nomFichier, "r")
+        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "r")
         dictDonnees = {}
         for key in db.keys():
             dictDonnees[key] = db[key]
@@ -79,7 +79,7 @@ class FichierConfig():
     def SetDictConfig(self, dictConfig={} ):
         """ Remplace le fichier de config présent sur le disque dur par le dict donné """
         import shelve
-        db = shelve.open(self.nomFichier, "n")
+        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "n")
         for key in dictConfig.keys():
             db[key] = dictConfig[key]
         db.close()
@@ -87,7 +87,7 @@ class FichierConfig():
     def GetItemConfig(self, key, defaut=None):
         """ Récupère une valeur du dictionnaire du fichier de config """
         import shelve
-        db = shelve.open(self.nomFichier, "r")
+        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "r")
         if db.has_key(key) :
             valeur = db[key]
         else:
@@ -98,7 +98,7 @@ class FichierConfig():
     def SetItemConfig(self, key, valeur ):
         """ Remplace une valeur dans le fichier de config """
         import shelve
-        db = shelve.open(self.nomFichier, "w")
+        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "w")
         db[key] = valeur
         db.close()
 
@@ -106,7 +106,7 @@ class FichierConfig():
         """ Remplace plusieurs valeur dans le fichier de config """
         """ dictParametres = {nom : valeur, nom : valeur...} """
         import shelve
-        db = shelve.open(self.nomFichier, "w")
+        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "w")
         for key, valeur in dictParametres.iteritems() :
             db[key] = valeur
         db.close()
@@ -114,7 +114,7 @@ class FichierConfig():
     def DelItemConfig(self, key ):
         """ Supprime une valeur dans le fichier de config """
         import shelve
-        db = shelve.open(self.nomFichier, "w")
+        db = shelve.open(self.nomFichier.encode("iso-8859-15"), "w")
         del db[key]
         db.close()
 
