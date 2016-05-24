@@ -1,3 +1,13 @@
+Version 1.1.6.9 (24/05/2016) :
+
+- Ajout du droit Créer un remboursement
+- Correction bug validation remboursement
+- Correction bug sur documents associés aux pièces
+- Correction bug d'encodages de chemins
+- Correction bug avec DLL pour Windows
+- Correction bug unicode sur sauvegarde manuelle
+- Correction bug sur prélèvements SEPA
+
 Version 1.1.6.8 (21/05/2016) :
 
 - Ajout des préfixes alphanumériques dans les numéros de factures
