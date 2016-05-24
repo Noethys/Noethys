@@ -60,7 +60,7 @@ class CTRL_Donnees(CT.CustomTreeCtrl):
                 self.SetPyData(brancheNom, nomFichier)
                 
                 for nomCategorie, codeCategorie in LISTE_CATEGORIES :
-                    fichier = u"%s_%s.dat" % (nomFichier.decode("iso-8859-15"), codeCategorie)
+                    fichier = u"%s_%s.dat" % (nomFichier, codeCategorie)
                     brancheFichier = self.AppendItem(brancheNom, nomCategorie, ct_type=1)
                     self.SetPyData(brancheFichier, fichier)
                     
