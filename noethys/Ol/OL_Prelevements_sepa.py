@@ -476,7 +476,7 @@ class ListView(FastObjectListView):
                 # Mémorisation du track
                 if track.IDfacture != None :
                     typeTrack = "facture"
-                    libelle = _(u"FACT%06d") % track.numero
+                    libelle = _(u"FACT%s") % track.numero
                 else :
                     typeTrack = "manuel"
                     libelle = track.libelle
