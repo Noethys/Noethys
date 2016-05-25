@@ -15,6 +15,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import os
+import sys
 import wx.lib.agw.customtreectrl as CT
 
 from Ctrl import CTRL_Bandeau
@@ -22,6 +23,8 @@ import GestionDB
 from Utils import UTILS_Sauvegarde
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Cryptage_fichier
+sys.modules['UTILS_Cryptage_fichier'] = UTILS_Cryptage_fichier
+
 import DLG_Saisie_param_reseau
 
 try: import psyco; psyco.full()
