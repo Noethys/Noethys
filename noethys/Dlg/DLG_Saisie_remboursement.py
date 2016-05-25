@@ -431,7 +431,7 @@ class Dialog(wx.Dialog):
             ("date", str(datetime.date.today())),
             ("IDmode", IDmode),
             ("montant", -montant),
-            ("IDpayeur", None),
+            ("IDpayeur", IDpayeur),
             ("observations", observations),
             ("IDcompte", IDcompte),
             ("date_saisie", str(datetime.date.today())),
