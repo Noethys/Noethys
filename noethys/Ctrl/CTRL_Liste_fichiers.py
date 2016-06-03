@@ -389,14 +389,14 @@ class CTRL(ULC.UltimateListCtrl):
             return
 
         # Demande de confirmation 1
-        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment modifier le nom du fichier '%s' ?") % titre.decode("iso-8859-15"), _(u"Modifier un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment modifier le nom du fichier '%s' ?") % titre, _(u"Modifier un fichier"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
         if reponse != wx.ID_YES :
             return 
         
         # Demande le nouveau nom du fichier
-        dlg = wx.TextEntryDialog(self, _(u"Saisissez un nouveau nom pour le fichier '%s' :") % titre.decode("iso-8859-15"), _(u"Modifier le nom"), titre)
+        dlg = wx.TextEntryDialog(self, _(u"Saisissez un nouveau nom pour le fichier '%s' :") % titre, _(u"Modifier le nom"), titre)
         if dlg.ShowModal() == wx.ID_OK:
             nouveauTitre = dlg.GetValue()
             dlg.Destroy()
@@ -424,7 +424,7 @@ class CTRL(ULC.UltimateListCtrl):
                 destination = UTILS_Fichiers.GetRepData(u"%s_%s.dat" % (nouveauTitre, suffixe))
                 os.rename(source, destination)
             except Exception, err :
-                print "Erreur dans le renommage de fichier : " + err
+                print suffixe, "Erreur dans le renommage de fichier : ", err
         self.Remplissage() 
         
 
