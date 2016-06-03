@@ -23,11 +23,9 @@ import cStringIO
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-import CTRL_Questionnaire
+from Ctrl import CTRL_Questionnaire
 import DLG_Saisie_choix_question
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def ConvertCouleur(couleur=None):
