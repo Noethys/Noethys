@@ -299,7 +299,7 @@ class MyDialog(wx.Dialog):
         # Version LOCAL
         if modeLocal == True :
             nomFichier = dictItem["titre"]
-            nomFichier = nomFichier.decode("iso-8859-15")
+            #nomFichier = nomFichier.decode("iso-8859-15")
     
         # Version RESEAU
         if modeLocal == False :
