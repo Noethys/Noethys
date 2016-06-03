@@ -3423,7 +3423,7 @@ class MainFrame(wx.Frame):
                 <CENTER>
                 <BR>
                 <FONT SIZE=3>
-                <IMG SRC="Images/16x16/Astuce.png"><B>Astuce</B><BR><BR>
+                <IMG SRC="Static/Images/16x16/Astuce.png"><B>Astuce</B><BR><BR>
                 Personnalisez l'interface de Noethys en fonction de vos envies !
                 <BR><BR>
                 <IMG SRC="Static/Images/Special/pub_themes.png">
@@ -3627,7 +3627,7 @@ class MainFrame(wx.Frame):
             return False
 
         texte = u"""
-<CENTER><IMG SRC="Images/32x32/Information.png">
+<CENTER><IMG SRC="Static/Images/32x32/Information.png">
 <BR><BR>
 <FONT SIZE=2>
 <B>Appel à témoignages</B>

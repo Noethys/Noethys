@@ -129,7 +129,10 @@ def DeplaceFichiers():
                 print ["copie base de donnees :", nomFichier, " > ", GetRepData(nomFichier)]
                 shutil.copy(Chemins.GetMainPath(u"Data/%s" % nomFichier), GetRepData(nomFichier))
                 # Renomme le fichier de données en archive (par sécurité)
-                os.rename(Chemins.GetMainPath(u"Data/%s" % nomFichier), Chemins.GetMainPath(u"Data/%s" % nomFichier.replace(".dat", "_archive.dat")))
+                try :
+                    os.rename(Chemins.GetMainPath(u"Data/%s" % nomFichier), Chemins.GetMainPath(u"Data/%s" % nomFichier.replace(".dat", "_archive.dat")))
+                except :
+                    pass
 
 def DeplaceExemples():
     """ Déplace les fichiers exemples vers le répertoire des fichiers de données """
