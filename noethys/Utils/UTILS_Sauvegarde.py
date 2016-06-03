@@ -8,7 +8,6 @@
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
-
 import Chemins
 from UTILS_Traduction import _
 import wx
@@ -130,36 +129,24 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
         for nomFichier in listeFichiersReseau :
             dlgprogress.Update(numEtape, _(u"Compression du fichier %s...") % nomFichier);numEtape += 1
             fichierSave = u"%s/%s.sql" % (repTemp, nomFichier)
-                
-##            args = [
-##                "%sbin/mysqldump" % repMySQL,
-##                "--host=%s" % dictConnexion["host"],
-##                "--port=%s" % dictConnexion["port"],
-##                "--user=%s" % dictConnexion["user"],
-##                "--password=%s" % dictConnexion["password"],
-##                "--single-transaction", 
-##                "--opt", 
-##                "--databases",
-##                nomFichier,
-##                ">",
-##                fichierSave,
-##                ]
 
-            if "linux" in sys.platform :
-                args = "%sbin/mysqldump --defaults-extra-file=%s --single-transaction --opt --databases %s > %s" % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
-            else :
-                args = [
-                    "%sbin/mysqldump" % repMySQL,
-                    "--defaults-extra-file=%s" % nomFichierLoginTemp,
-                    "--single-transaction", 
-                    "--opt", 
-                    "--databases",
-                    nomFichier,
-                    ">",
-                    fichierSave,
-                    ]
-            
-            proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            # if "linux" in sys.platform :
+            #     args = u""""%sbin/mysqldump" --defaults-extra-file=%s --single-transaction --opt --databases %s > %s""" % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
+            # else :
+            #     args = [
+            #         "%sbin/mysqldump" % repMySQL,
+            #         "--defaults-extra-file=%s" % nomFichierLoginTemp,
+            #         "--single-transaction",
+            #         "--opt",
+            #         "--databases",
+            #         nomFichier,
+            #         ">",
+            #         fichierSave,
+            #         ]
+
+            args = u""""%sbin/mysqldump" --defaults-extra-file=%s --single-transaction --opt --databases %s > %s""" % (repMySQL, nomFichierLoginTemp, nomFichier, fichierSave)
+
+            proc = subprocess.Popen(args.encode('utf8'), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
             
             if out != "" :
@@ -173,13 +160,13 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
                 dlgErreur.ShowModal() 
                 dlgErreur.Destroy()
                 return False
-            
+
             # Insère le fichier Sql dans le ZIP
             try :
-                fichierZip.write(fichierSave, u"%s.sql" % nomFichier) #.decode("iso-8859-15")
+                fichierZip.write(fichierSave.encode('utf8'), u"%s.sql" % nomFichier)
             except Exception, err :
                 dlgprogress.Destroy()
-                print (err,)
+                print ("insertion sql dans zip : ", err,)
                 try :
                     err = str(err).decode("iso-8859-15")
                 except :
@@ -188,10 +175,10 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
                 dlgErreur.ShowModal() 
                 dlgErreur.Destroy()
                 return False
-            
+
         # Supprime le répertoire temp
         shutil.rmtree(repTemp)
-        
+
     # Finalise le fichier ZIP
     fichierZip.close()
     
@@ -395,22 +382,23 @@ def Restauration(parent=None, fichier="", listeFichiersLocaux=[], listeFichiersR
 ##                fichierRestore,
 ##                ]
             
-            if "linux" in sys.platform :
-                args = "%sbin/mysql --defaults-extra-file=%s %s < %s" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
-            else :
-                args = [
-                    "%sbin/mysql" % repMySQL,
-                    "--defaults-extra-file=%s" % nomFichierLoginTemp,
-                    fichier,
-                    "<",
-                    fichierRestore,
-                    ]
-            
-            proc = subprocess.Popen(args, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
+            # if "linux" in sys.platform :
+            #     args = "%sbin/mysql --defaults-extra-file=%s %s < %s" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
+            # else :
+            #     args = [
+            #         "%sbin/mysql" % repMySQL,
+            #         "--defaults-extra-file=%s" % nomFichierLoginTemp,
+            #         fichier,
+            #         "<",
+            #         fichierRestore,
+            #         ]
+
+            args = u""""%sbin/mysql" --defaults-extra-file=%s %s < %s""" % (repMySQL, nomFichierLoginTemp, fichier, fichierRestore)
+            proc = subprocess.Popen(args.encode("iso-8859-15"), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=subprocess.PIPE)
             out, temp = proc.communicate()
 
             if out != "" :
-                print (out,)
+                print ("subprocess de restauration mysql :", out)
                 out = str(out).decode("iso-8859-15")
                 dlgprogress.Destroy()
                 dlgErreur = wx.MessageDialog(None, _(u"Une erreur a été détectée dans la procédure de restauration !\n\nErreur : %s") % out, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
