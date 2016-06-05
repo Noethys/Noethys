@@ -269,7 +269,8 @@ class CTRL_Categorie(wx.Choice):
         ORDER BY ordre
         ;""" % self.type
         DB.ExecuterReq(req)
-        listeCategories = DB.ResultatReq()     
+        listeCategories = DB.ResultatReq()
+        DB.Close()
         listeItems = []
         self.dictDonnees = {}
         self.dictCategories = {}

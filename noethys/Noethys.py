@@ -3547,7 +3547,7 @@ class MainFrame(wx.Frame):
         try :
             if "linux" in sys.platform :
                 # Version Debian
-                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/source/Versions.txt', timeout=5)
+                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=5)
             else:
                 # Version Windows
                 fichierVersions = urllib2.urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=5)
