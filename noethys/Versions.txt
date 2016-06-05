@@ -1,3 +1,7 @@
+Version 1.1.7.0 (05/06/2016) :
+
+- Correction de divers bugs
+
 Version 1.1.6.9 (24/05/2016) :
 
 - Ajout du droit Créer un remboursement
