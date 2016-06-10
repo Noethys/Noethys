@@ -1610,10 +1610,10 @@ class ValidationDonnees():
         
         # Allocataire titulaire
         if code.endswith("famille_allocataire") :
-            if code in (_(u"Père"), _(u"père"), u"P") :
+            if valeur in (_(u"Père"), _(u"père"), u"P") :
                 valeur = "pere"
                 label = _(u"Père")
-            elif code in (_(u"Mère"), _(u"mère"), u"M") :
+            elif valeur in (_(u"Mère"), _(u"mère"), u"M") :
                 valeur = "mere"
                 label = _(u"Mère")
             else :
