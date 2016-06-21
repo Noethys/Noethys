@@ -290,7 +290,7 @@ class Page_recherche(wx.Panel):
         try :
             if "linux" in sys.platform :
                 # Version Debian
-                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/source/Versions.txt', timeout=10)
+                fichierVersions = urllib2.urlopen('https://raw.githubusercontent.com/Noethys/Noethys/master/noethys/Versions.txt', timeout=10)
             else:
                 # Version Windows
                 fichierVersions = urllib2.urlopen('http://www.noethys.com/fichiers/windows/Versions.txt', timeout=10)
@@ -762,12 +762,13 @@ class Page_installation(wx.Panel):
         # Lancement de l'installeur
         fichierMAJ = self.parent.fichierDest + "/" + self.parent.nomFichier
         if "linux" in sys.platform :
+	    dirTemp = UTILS_Fichiers.GetRepTemp()
             self.journal.WriteText(_(u"\n\nExtraction des fichiers. Veuillez patienter..."))
-            os.system("unzip -d Temp " + fichierMAJ)
+            os.system("unzip -d " + dirTemp + " " + fichierMAJ)
             self.journal.WriteText(_(u"\n\nCopie des fichiers. Veuillez patienter..."))
-            os.system("cp -a Temp/Noethys-master/source/* .")
+            os.system("cp -a " + dirTemp +"/Noethys-master/noethys/* .")
             self.journal.WriteText(_(u"\n\nEffacement fichiers temporaires. Veuillez patienter..."))
-            os.system("rm -rf Temp/Noethys-master")
+            os.system("rm -rf " + dirTemp +"/Noethys-master")
         else :
             FonctionsPerso.LanceFichierExterne(fichierMAJ)
         
