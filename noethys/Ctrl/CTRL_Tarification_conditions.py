@@ -735,8 +735,8 @@ class Panel(wx.Panel):
         # Validité
         self.notebook = FNB.FlatNotebook(self, -1, agwStyle= FNB.FNB_NO_TAB_FOCUS | FNB.FNB_NO_X_BUTTON)
 
-        if self.GetParent().GetName() == "notebook" :
-            couleur = self.GetParent().GetThemeBackgroundColour()
+        if self.GetGrandParent().GetName() == "notebook" :
+            couleur = self.GetGrandParent().GetThemeBackgroundColour()
             self.SetBackgroundColour(couleur)
             self.notebook.SetBackgroundColour(couleur)
             self.notebook.SetTabAreaColour(couleur)
