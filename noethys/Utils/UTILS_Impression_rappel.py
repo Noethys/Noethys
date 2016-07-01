@@ -321,11 +321,12 @@ class Impression():
                 texte = dictCompte["texte"]
                 listeParagraphes = texte.split("</para>")
                 for paragraphe in listeParagraphes :
-                    paragraphe = u"%s</para>" % paragraphe
-                    textePara = Paragraph(paragraphe, paraStyle)
-                    story.append(textePara)
-                    if "> </para" in paragraphe :
-                        story.append(Spacer(0, 13))
+                    if "<para" in paragraphe :
+                        paragraphe = u"%s</para>" % paragraphe
+                        textePara = Paragraph(paragraphe, paraStyle)
+                        story.append(textePara)
+                        if "> </para" in paragraphe :
+                            story.append(Spacer(0, 13))
                 
                 # Saut de page
                 story.append(PageBreak())
