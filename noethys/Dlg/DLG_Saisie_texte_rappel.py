@@ -520,7 +520,8 @@ class Dialog(wx.Dialog):
         source = source.replace("</p>", "</para>")
         # Supprime des sauts à la ligne
         source = source.replace("<br>", "")
-        source = source.replace("\r\n", "")
+        source = source.replace("\r", "")
+        source = source.replace("\n", "")
         # Pour faire des sauts de ligne
         source = source.replace("></para>", "> </para>")
         
