@@ -257,6 +257,11 @@ DB_DATA = {
                                     ("psu_unite_presence", "INTEGER", u"Mode PSU : IDunite présence"),
                                     ("psu_tarif_forfait", "INTEGER", u"Mode PSU : IDtarif forfait-crédit"),
                                     ("psu_etiquette_rtt", "INTEGER", u"Mode PSU : IDetiquette Absences RTT"),
+                                    ("portail_inscriptions_affichage", "INTEGER", u"Inscriptions autorisées sur le portail (0/1)"),
+                                    ("portail_inscriptions_date_debut", "DATE", u"Inscriptions autorisées - début d'affichage"),
+                                    ("portail_inscriptions_date_fin", "DATE", u"Inscriptions autorisées - fin d'affichage"),
+                                    ("portail_reservations_affichage", "INTEGER", u"Réservations autorisées sur le portail (0/1)"),
+                                    ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
@@ -1487,6 +1492,23 @@ DB_DATA = {
                                     ("prefixe", "VARCHAR(100)", u"Préfixe de facture"),
                                     ], # Préfixes de factures
 
+    "portail_periodes":             [("IDperiode", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID période"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité"),
+                                    ("nom", "VARCHAR(300)", u"Nom de la période"),
+                                    ("date_debut", "DATE", u"Date de début de la période"),
+                                    ("date_fin", "DATE", u"Date de fin de la période"),
+                                    ("affichage", "INTEGER", u"Affiché sur le portail (0/1)"),
+                                    ("affichage_date_debut", "DATE", u"Date de début d'affichage"),
+                                    ("affichage_date_fin", "DATE", u"Date de fin d'affichage"),
+                                    ], # Périodes de réservations pour le portail
+
+    "portail_unites":               [("IDunite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID unité"),
+                                    ("IDactivite", "INTEGER", u"ID de l'activité"),
+                                    ("nom", "VARCHAR(300)", u"Nom de l'unité de réservation"),
+                                    ("unites_principales", "VARCHAR(300)", u"Unités de consommation principales"),
+                                    ("unites_secondaires", "VARCHAR(300)", u"Unités de consommation secondaires"),
+                                    ("ordre", "INTEGER", u"Ordre"),
+                                    ], # Unités de réservations pour le portail
 
 
 
@@ -1509,6 +1531,7 @@ DB_DOCUMENTS = {
     "documents":[            ("IDdocument", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID du document"),
                                     ("IDpiece", "INTEGER", u"ID de la pièce"),
                                     ("IDreponse", "INTEGER", u"ID de la réponse du Questionnaire"),
+                                    ("IDtype_piece", "INTEGER", u"ID du type de pièce"),
                                     ("document", "LONGBLOB", u"Document converti en binaire"),
                                     ("type", "VARCHAR(50)", u"Type de document : jpeg, pdf..."),
                                     ("label", "VARCHAR(400)", u"Label du document"),

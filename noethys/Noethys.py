@@ -426,12 +426,19 @@ class MainFrame(wx.Frame):
         self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(_(u"Ephéméride")).
                           Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
 
-        # Panneau Serveur
+        # Panneau Serveur Nomadhys
         if UTILS_Config.GetParametre("synchro_serveur_activer", defaut=False) == True :
             from Ctrl import CTRL_Serveur_nomade
             self.ctrl_serveur_nomade = CTRL_Serveur_nomade.Panel(self)
             self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Serveur Nomadhys")).
                               Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
+
+        # Panneau Serveur Connecthys
+        if UTILS_Config.GetParametre("serveur_portail_activation", defaut=False) == True :
+            from Ctrl import CTRL_Portail_serveur
+            self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
+            self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
+                              Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
@@ -761,7 +768,8 @@ class MainFrame(wx.Frame):
             {"code" : "menu_outils", "label" : _(u"Outils"), "items" : [
                     {"code" : "statistiques", "label" : _(u"Statistiques"), "infobulle" : _(u"Statistiques"), "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
                     "-",
-                    {"code" : "nomadhys_synchro", "label" : _(u"Synchroniser Nomadhys"), "infobulle" : _(u"Synchroniser Nomadhys, l'application nomade de Noethys"), "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
+                    {"code" : "nomadhys_synchro", "label" : _(u"Nomadhys - l'application nomade"), "infobulle" : _(u"Synchroniser et configurer Nomadhys, l'application nomade de Noethys"), "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
+                    {"code" : "connecthys_synchro", "label" : _(u"Connecthys - le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Planete.png", "action" : self.On_outils_connecthys_synchro},
                     "-",
                     {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "calculatrice", "label" : _(u"Calculatrice\tF12"), "infobulle" : _(u"Calculatrice"), "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},
@@ -1213,6 +1221,7 @@ class MainFrame(wx.Frame):
         if hasattr(self, "ctrl_individus") : self.ctrl_individus.MAJ()
         if hasattr(self, "ctrl_messages") : self.ctrl_messages.MAJ() 
         if hasattr(self, "ctrl_serveur_nomade") : self.ctrl_serveur_nomade.MAJ()
+        if hasattr(self, "ctrl_serveur_portail") : self.ctrl_serveur_portail.MAJ()
         if hasattr(self, "ctrl_individus") : wx.CallAfter(self.ctrl_individus.ctrl_recherche.SetFocus)
 
     def On_fichier_Nouveau(self, event):
@@ -2312,6 +2321,14 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
         if hasattr(self, "ctrl_serveur_nomade") :
             self.ctrl_serveur_nomade.MAJ()
+
+    def On_outils_connecthys_synchro(self, event):
+        from Dlg import DLG_Portail_config
+        dlg = DLG_Portail_config.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
+        if hasattr(self, "ctrl_serveur_portail") :
+            self.ctrl_serveur_portail.MAJ()
 
     def On_outils_villes(self, event):
         from Dlg import DLG_Villes
@@ -3823,10 +3840,14 @@ class MyApp(wx.App):
                 if financement == False and CUSTOMIZE.GetValeur("correction_anomalies", "actif", "1") == "1" :
                     frame.AutodetectionAnomalies() 
         
-        # Démarrage du serveur
+        # Démarrage du serveur Nomadhys
         if hasattr(frame, "ctrl_serveur_nomade") :
             frame.ctrl_serveur_nomade.StartServeur()
-        
+
+        # Démarrage du serveur Connecthys
+        if hasattr(frame, "ctrl_serveur_portail") :
+            frame.ctrl_serveur_portail.StartServeur()
+
         #print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
         return True
 

@@ -161,18 +161,21 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     dictFinal = {}
     titulaires = UTILS_Titulaires.GetTitulaires() 
     for IDfamille, dictTemp in dictPieces.iteritems() :
+
         if IDfamille != None and titulaires.has_key(IDfamille) :
             nomTitulaires = titulaires[IDfamille]["titulairesSansCivilite"]
         else :
             nomTitulaires = _(u"Aucun titulaire")
         listePieces = []
+        listeDetailPieces = []
         for piece in dictTemp :
             if piece[6] != "ok" :
                 listePieces.append(piece[7])
+                listeDetailPieces.append(piece)
         textePieces = ", ".join(listePieces)
-        
+
         if concernes == False or (concernes == True and len(listePieces) > 0) :
-            dictFinal[IDfamille] = {"titulaires" : nomTitulaires, "pieces" : textePieces, "nbre" : len(listePieces) }
+            dictFinal[IDfamille] = {"titulaires" : nomTitulaires, "pieces" : textePieces, "nbre" : len(listePieces), "liste" : listeDetailPieces}
     
     return dictFinal
     

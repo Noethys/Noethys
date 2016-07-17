@@ -721,7 +721,7 @@ class CTRL_documents(wx.Panel):
         # Contrôles
         if hauteur < 30 : 
             hauteur = 30
-        self.ctrl_vignettes = CTRL_Vignettes_documents.CTRL(self, IDreponse=None, afficheLabels=False, tailleVignette=hauteur-20, style=wx.BORDER_SUNKEN)
+        self.ctrl_vignettes = CTRL_Vignettes_documents.CTRL(self, type_donnee="reponse", IDreponse=None, afficheLabels=False, tailleVignette=hauteur-20, style=wx.BORDER_SUNKEN)
         
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes disponibles"))
@@ -758,7 +758,7 @@ class CTRL_documents(wx.Panel):
         return "##DOCUMENTS##"
 
     def Sauvegarde(self, IDreponse=None) :
-        nbreDocuments = self.ctrl_vignettes.Sauvegarde(IDreponseFinal=IDreponse)
+        nbreDocuments = self.ctrl_vignettes.Sauvegarde(IDreponse)
         return nbreDocuments
     
     def GetNbreDocuments(self):

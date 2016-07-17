@@ -195,14 +195,16 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
         else :
             nomTitulaires = _(u"Aucun titulaire")
         listeCotisations = []
+        listeDetailCotisations = []
         for cotisation in dictTemp :
             labelCotisation = cotisation[7]
             if cotisation[6] != "ok" and labelCotisation not in listeCotisations :
                 listeCotisations.append(labelCotisation)
+        listeDetailCotisations.append(cotisation)
         texteCotisations = ", ".join(listeCotisations)
         
         if concernes == False or (concernes == True and len(listeCotisations) > 0) :
-            dictFinal[IDfamille] = {"titulaires" : nomTitulaires, "cotisations" : texteCotisations, "nbre" : len(listeCotisations)}
+            dictFinal[IDfamille] = {"titulaires" : nomTitulaires, "cotisations" : texteCotisations, "nbre" : len(listeCotisations), "liste" : listeDetailCotisations}
     
     return dictFinal
     

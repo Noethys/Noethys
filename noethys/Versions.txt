@@ -1,3 +1,15 @@
+Version 1.1.7.1 (17/07/2016) :
+
+Version Alpha
+
+- Ajout du portail internet Connecthys en version alpha
+- Ajout du serveur de synchronisation Connecthys
+- Ajout des paramètres de portail dans les activités
+- Ajout des documents associés aux types de pièces
+- Ajout des périodes et des unités de réservations
+- Correction d'un bug sur la mise à jour sur Linux
+- Correction d'un bug sur les lettres de rappel
+
 Version 1.1.7.0 (05/06/2016) :
 
 - Correction de divers bugs

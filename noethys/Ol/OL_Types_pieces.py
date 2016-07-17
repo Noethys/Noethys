@@ -236,15 +236,7 @@ class ListView(FastObjectListView):
         from Dlg import DLG_Saisie_typesPieces
         dlg = DLG_Saisie_typesPieces.Dialog(self)
         if dlg.ShowModal() == wx.ID_OK:
-            nom = dlg.GetNom()
-            public = dlg.GetPublic()
-            rattachement = dlg.GetRattachement()
-            validite = dlg.GetValidite()
-            # Sauvegarde vaccin
-            DB = GestionDB.DB()
-            listeDonnees = [("nom", nom ), ("public", public ), ("valide_rattachement", rattachement ), ("duree_validite", validite),]
-            IDtype_piece = DB.ReqInsert("types_pieces", listeDonnees)
-            DB.Close()
+            IDtype_piece = dlg.GetIDtype_piece()
             self.MAJ(IDtype_piece)
         dlg.Destroy()
 
@@ -256,26 +248,9 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         IDtype_piece = self.Selection()[0].IDtype_piece
-        nom = self.Selection()[0].nom
-        public = self.Selection()[0].public
-        validite = self.Selection()[0].duree_validite
-        rattachement = self.Selection()[0].valide_rattachement
         from Dlg import DLG_Saisie_typesPieces
-        dlg = DLG_Saisie_typesPieces.Dialog(self)      
-        dlg.SetNom(nom)
-        dlg.SetPublic(public)
-        dlg.SetValidite(validite)
-        dlg.SetRattachement(rattachement)
+        dlg = DLG_Saisie_typesPieces.Dialog(self, IDtype_piece=IDtype_piece)
         if dlg.ShowModal() == wx.ID_OK:
-            nom = dlg.GetNom()
-            public = dlg.GetPublic()
-            rattachement = dlg.GetRattachement()
-            validite = dlg.GetValidite()
-            # Sauvegarde vaccin
-            DB = GestionDB.DB()
-            listeDonnees = [("nom", nom ), ("public", public ), ("valide_rattachement", rattachement ), ("duree_validite", validite),]
-            DB.ReqMAJ("types_pieces", listeDonnees, "IDtype_piece", IDtype_piece)
-            DB.Close()
             self.MAJ(IDtype_piece)
         dlg.Destroy()
 
@@ -321,9 +296,17 @@ class ListView(FastObjectListView):
         # Confirmation
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer ce type de pièce ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
+
+            # Suppression du type de pièce
             DB = GestionDB.DB()
             DB.ReqDEL("types_pieces", "IDtype_piece", IDtype_piece)
-            DB.Close() 
+            DB.Close()
+
+            # Suppression des documents scannés rattachés
+            DB = GestionDB.DB(suffixe="DOCUMENTS")
+            DB.ReqDEL("documents", "IDtype_piece", IDtype_piece)
+            DB.Close()
+
             self.MAJ()
         dlg.Destroy()
 

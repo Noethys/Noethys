@@ -83,10 +83,11 @@ def wxtopil(wxImage, wantAlpha=True):
 
 
 class Track(object):
-    def __init__(self, IDdocument=None, IDpiece=None, IDreponse=None, buffer=None, type=None, image=None, label=u""):
+    def __init__(self, IDdocument=None, IDpiece=None, IDreponse=None, IDtype_piece=None, buffer=None, type=None, image=None, label=u""):
         self.IDdocument = IDdocument
         self.IDpiece = IDpiece
         self.IDreponse = IDreponse
+        self.IDtype_piece = IDtype_piece
         self.buffer = buffer
         self.type = type
         self.isImage = None
@@ -133,13 +134,15 @@ class Track(object):
 
 
 class CTRL(TC.ThumbnailCtrl):
-    def __init__(self, parent, IDpiece=None, IDreponse=None, 
+    def __init__(self, parent, type_donnee="piece", IDpiece=None, IDreponse=None, IDtype_piece=None,
                                          afficheLabels=True, tailleVignette=128,
                                          style=0):
         TC.ThumbnailCtrl.__init__(self, parent, style=style)
         self.SetThumbOutline(TC.THUMB_OUTLINE_IMAGE)
+        self.type_donnee = type_donnee
         self.IDpiece = IDpiece
         self.IDreponse = IDreponse
+        self.IDtype_piece = IDtype_piece
         
         self.listePages = []
         self.listePagesInitiale = []
@@ -170,18 +173,20 @@ class CTRL(TC.ThumbnailCtrl):
         self.listePages = []
         listeDonnees = []
         # Recherche des images dans la base de données
-        if self.IDpiece != None :
-            req = "SELECT IDdocument, IDpiece, IDreponse, document, type, label FROM documents WHERE IDpiece=%d AND document IS NOT NULL;" % self.IDpiece
-        elif self.IDreponse != None :
-            req = "SELECT IDdocument, IDpiece, IDreponse, document, type, label FROM documents WHERE IDreponse=%d AND document IS NOT NULL;" % self.IDreponse
+        if self.type_donnee == "piece" and self.IDpiece != None :
+            req = "SELECT IDdocument, IDpiece, IDreponse, IDtype_piece, document, type, label FROM documents WHERE IDpiece=%d AND document IS NOT NULL;" % self.IDpiece
+        elif self.type_donnee == "reponse" and self.IDreponse != None :
+            req = "SELECT IDdocument, IDpiece, IDreponse, IDtype_piece, document, type, label FROM documents WHERE IDreponse=%d AND document IS NOT NULL;" % self.IDreponse
+        elif self.type_donnee == "type_piece" and self.IDtype_piece != None :
+            req = "SELECT IDdocument, IDpiece, IDreponse, IDtype_piece, document, type, label FROM documents WHERE IDtype_piece=%d AND document IS NOT NULL;" % self.IDtype_piece
         else:
             return
-        db = GestionDB.DB(suffixe="DOCUMENTS")
-        db.ExecuterReq(req)
-        listeDonnees = db.ResultatReq()
-        db.Close()
-        for IDdocument, IDpiece, IDreponse, buffer, type, label in listeDonnees :
-            track = Track(IDdocument=IDdocument, IDpiece=IDpiece, IDreponse=IDreponse, buffer=buffer, type=type, label=label)
+        DB = GestionDB.DB(suffixe="DOCUMENTS")
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        for IDdocument, IDpiece, IDreponse, IDtype_piece, buffer, type, label in listeDonnees :
+            track = Track(IDdocument=IDdocument, IDpiece=IDpiece, IDreponse=IDreponse, IDtype_piece=IDtype_piece, buffer=buffer, type=type, label=label)
             self.listePages.append(track)
             self.listePagesInitiale.append(track)
     
@@ -272,7 +277,7 @@ Tous les fichiers (*.*)|*.*"
             label = self.SaisirLabel(nomFichier=nomFichierCourt)
             
             # Conserve l'image en mémoire
-            track = Track(IDdocument=0, IDpiece=self.IDpiece, buffer=blob, type=extension, label=label)
+            track = Track(IDdocument=0, IDpiece=self.IDpiece, IDreponse=self.IDreponse, IDtype_piece=self.IDtype_piece, buffer=blob, type=extension, label=label)
             self.listePages.append(track)
         
         # MAJ de l'affichage
@@ -301,7 +306,7 @@ Tous les fichiers (*.*)|*.*"
     def GetNbreDocuments(self):
         return len(self.listePages)
     
-    def Sauvegarde(self, IDpieceFinal=None, IDreponseFinal=None):
+    def Sauvegarde(self, ID=None):
         nbreDocuments = len(self.listePages)
         if len(self.listePages) == 0 and len(self.listePagesInitiale) == 0 : 
             return nbreDocuments
@@ -311,10 +316,12 @@ Tous les fichiers (*.*)|*.*"
         for track in self.listePages :
             if track.IDdocument == 0 :
                 # Crée un document
-                if IDpieceFinal != None :
-                    listeDonnees = [("IDpiece", IDpieceFinal), ("type", track.type), ("label", track.label)]
-                else:
-                    listeDonnees = [("IDreponse", IDreponseFinal), ("type", track.type), ("label", track.label)]
+                if self.type_donnee == "piece" :
+                    listeDonnees = [("IDpiece", ID), ("type", track.type), ("label", track.label)]
+                elif self.type_donnee == "reponse" :
+                    listeDonnees = [("IDreponse", ID), ("type", track.type), ("label", track.label)]
+                elif self.type_donnee == "type_piece" :
+                    listeDonnees = [("IDtype_piece", ID), ("type", track.type), ("label", track.label)]
                 IDdocument = DB.ReqInsert("documents", listeDonnees)
                 DB.MAJimage(table="documents", key="IDdocument", IDkey=IDdocument, blobImage=track.buffer, nomChampBlob="document")
         
@@ -397,7 +404,7 @@ Tous les fichiers (*.*)|*.*"
         self.PopupMenu(menu)
         menu.Destroy()
         
-    def RotationGauche(self, event):
+    def RotationGauche(self, event=None):
         index = self.GetSelection()
         if index == -1 : 
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une image !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -413,7 +420,7 @@ Tous les fichiers (*.*)|*.*"
             return
         self._scrolled.Rotate(90)
     
-    def RotationDroite(self, event):
+    def RotationDroite(self, event=None):
         index = self.GetSelection()
         if index == -1 : 
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner une image !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -429,7 +436,7 @@ Tous les fichiers (*.*)|*.*"
             return
         self._scrolled.Rotate(-90)
     
-    def ModifierLabel(self, event):
+    def ModifierLabel(self, event=None):
         index = self.GetSelection()
         if index == -1 : 
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un document !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -445,7 +452,7 @@ Tous les fichiers (*.*)|*.*"
         track.label = label
         self.MAJ() 
         
-    def VisualiserPage(self, event):
+    def VisualiserPage(self, event=None):
         index = self.GetSelection()
         if index == -1 :
             dlg = wx.MessageDialog(self, _(u"Vous devez d'abord sélectionner un document !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
@@ -469,10 +476,10 @@ Tous les fichiers (*.*)|*.*"
             file.close()
             FonctionsPerso.LanceFichierExterne(nomFichier)
     
-    def ZoomPlus(self):
+    def ZoomPlus(self, event=None):
         self.ZoomIn()
         
-    def ZoomMoins(self):
+    def ZoomMoins(self, event=None):
         self.ZoomOut()
         
     def Test1(self):

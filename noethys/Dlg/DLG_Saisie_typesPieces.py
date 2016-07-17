@@ -15,13 +15,15 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Ctrl import CTRL_Saisie_date
+from Ctrl import CTRL_Vignettes_documents
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, IDtype_piece=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent      
-        self.SetTitle(_(u"Saisie d'un type de pièce"))  
+        self.SetTitle(_(u"Saisie d'un type de pièce"))
+        self.IDtype_piece = IDtype_piece
         
         self.sizer_nom_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
@@ -29,7 +31,7 @@ class Dialog(wx.Dialog):
         self.label_public = wx.StaticText(self, -1, _(u"Public :"))
         self.ctrl_public = wx.Choice(self, -1, (100, -1), choices = ("Individu", "Famille"))
         self.ctrl_rattachement = wx.CheckBox(self, -1, u"")
-        self.label_rattachement = wx.StaticText(self, -1, _(u"Cochez cette case si, lorsqu'un individu est rattaché à plusieurs \nfamilles, cette pièce est valable pour toutes les familles rattachée."))
+        self.label_rattachement = wx.StaticText(self, -1, _(u"Cochez cette case si, lorsqu'un individu est rattaché à plusieurs \nfamilles, cette pièce est valable pour toutes les familles rattachées."))
         
         self.sizer_duree_staticbox = wx.StaticBox(self, -1, _(u"Validité par défaut"))
         
@@ -45,6 +47,16 @@ class Dialog(wx.Dialog):
         
         self.radio_duree_3 = wx.RadioButton(self, -1, _(u"La date suivante : "))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
+
+        # Pages capturées
+        self.sizer_pages_staticbox = wx.StaticBox(self, -1, _(u"Documents associés"))
+        self.ctrl_pages = CTRL_Vignettes_documents.CTRL(self, type_donnee="type_piece", IDtype_piece=self.IDtype_piece, style=wx.BORDER_SUNKEN)
+        self.ctrl_pages.SetMinSize((160, 280))
+        self.bouton_ajouter_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_supprimer_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_visualiser_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_zoom_plus = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/zoom_plus.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_zoom_moins = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/zoom_moins.png"), wx.BITMAP_TYPE_ANY))
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -59,10 +71,19 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDuree, self.radio_duree_3)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-    
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.AjouterPage, self.bouton_ajouter_page)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.SupprimerPage, self.bouton_supprimer_page)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.VisualiserPage, self.bouton_visualiser_page)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.ZoomPlus, self.bouton_zoom_plus)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.ZoomMoins, self.bouton_zoom_moins)
+
         self.OnChoice_public(None)
         self.OnRadioDuree(None)
-        
+
+        # Importation
+        if self.IDtype_piece != None :
+            self.Importation()
+
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom de pièce. Par exemple : 'Fiche sanitaire'"))
@@ -76,11 +97,13 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
-        self.SetMinSize((440, 340))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        
+
+        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+
+        grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         
         sizer_nom = wx.StaticBoxSizer(self.sizer_nom_staticbox, wx.VERTICAL)
         grid_sizer_nom = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
@@ -97,7 +120,7 @@ class Dialog(wx.Dialog):
         
         grid_sizer_nom.AddGrowableCol(1)
         sizer_nom.Add(grid_sizer_nom, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(sizer_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+        grid_sizer_gauche.Add(sizer_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 0)
         
         sizer_duree = wx.StaticBoxSizer(self.sizer_duree_staticbox, wx.VERTICAL)
         
@@ -126,11 +149,41 @@ class Dialog(wx.Dialog):
         grid_sizer_duree1.Add(grid_sizer_duree4, 1, wx.EXPAND, 0)
         
         grid_sizer_duree4.Add(self.ctrl_date, 1, wx.LEFT|wx.EXPAND, 20)
-
         
         sizer_duree.Add(grid_sizer_duree1, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(sizer_duree, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
-        
+        grid_sizer_gauche.Add(sizer_duree, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 0)
+
+        grid_sizer_gauche.AddGrowableRow(1)
+        grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
+
+
+        # Pages
+        sizer_pages = wx.StaticBoxSizer(self.sizer_pages_staticbox, wx.VERTICAL)
+
+        grid_sizer_pages = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+
+        grid_sizer_pages.Add(self.ctrl_pages, 0, wx.EXPAND, 0)
+        grid_sizer_pages.AddGrowableRow(0)
+        grid_sizer_pages.AddGrowableCol(0)
+
+        grid_sizer_commandes_pages = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_commandes_pages.Add(self.bouton_ajouter_page, 0, 0, 0)
+        grid_sizer_commandes_pages.Add(self.bouton_supprimer_page, 0, 0, 0)
+        grid_sizer_commandes_pages.Add( (10, 10), 0, 0, 0)
+        grid_sizer_commandes_pages.Add(self.bouton_visualiser_page, 0, 0, 0)
+        grid_sizer_commandes_pages.Add( (10, 10), 0, 0, 0)
+        grid_sizer_commandes_pages.Add(self.bouton_zoom_plus, 0, 0, 0)
+        grid_sizer_commandes_pages.Add(self.bouton_zoom_moins, 0, 0, 0)
+        grid_sizer_pages.Add(grid_sizer_commandes_pages, 1, wx.EXPAND, 0)
+
+        sizer_pages.Add(grid_sizer_pages, 1, wx.ALL|wx.EXPAND, 10)
+
+        grid_sizer_contenu.Add(sizer_pages, 1, wx.EXPAND, 0)
+        grid_sizer_contenu.AddGrowableRow(0)
+        grid_sizer_contenu.AddGrowableCol(1)
+
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((15, 15), 0, wx.EXPAND, 0)
@@ -139,12 +192,13 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
         self.SetSizer(grid_sizer_base)
-        grid_sizer_base.AddGrowableRow(2)
+        grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         self.Layout()
         self.CentreOnScreen()
+        self.SetMinSize(self.GetSize())
     
     def OnChoice_public(self, event):
         if self.ctrl_public.GetSelection() == 0 :
@@ -169,13 +223,14 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event):
         # Vérification des données saisies
-        if self.ctrl_nom.GetValue() == "" :
+        nom = self.ctrl_nom.GetValue()
+        if nom == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement donner un nom à cette pièce !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
-        
+
         if self.ctrl_public.GetSelection() == -1 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner le public !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -202,15 +257,40 @@ class Dialog(wx.Dialog):
             self.ctrl_date.SetFocus()
             return
 
+        # Sauvegarde
+        public = self.GetPublic()
+        rattachement = self.GetRattachement()
+        validite = self.GetValidite()
+
+        DB = GestionDB.DB()
+        listeDonnees = [("nom", nom ), ("public", public ), ("valide_rattachement", rattachement ), ("duree_validite", validite),]
+        if self.IDtype_piece == None :
+            self.IDtype_piece = DB.ReqInsert("types_pieces", listeDonnees)
+        else :
+            DB.ReqMAJ("types_pieces", listeDonnees, "IDtype_piece", self.IDtype_piece)
+        DB.Close()
+
+        # Sauvegarde des pages scannées
+        self.ctrl_pages.Sauvegarde(self.IDtype_piece)
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
 
-    def GetNom(self):
-        return self.ctrl_nom.GetValue()
+    def Importation(self):
+        DB = GestionDB.DB()
+        req = """SELECT nom, public, duree_validite, valide_rattachement
+        FROM types_pieces WHERE IDtype_piece=%d; """ % self.IDtype_piece
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        nom, public, duree_validite, valide_rattachement = listeDonnees[0]
 
-    def SetNom(self, nom=""):
         self.ctrl_nom.SetValue(nom)
-        
+        self.SetPublic(public)
+        self.SetValidite(duree_validite)
+        self.SetRattachement(valide_rattachement)
+
+
     def GetValidite(self):
         if self.radio_duree_1.GetValue() == True:
             return None
@@ -234,23 +314,7 @@ class Dialog(wx.Dialog):
         elif validite != None and validite.startswith("d") :
             self.ctrl_date.SetDate(validite[1:])
             self.radio_duree_3.SetValue(True)
-        
-##        if validite != None :
-##            posM = validite.find("m")
-##            posA = validite.find("a")
-##            jours = int(validite[1:posM-1])
-##            mois = int(validite[posM+1:posA-1])
-##            annees = int(validite[posA+1:])
-##        if validite == None or (jours == 0 and mois == 0 and annees == 0) :
-##            self.radio_duree_1.SetValue(True)
-##            self.radio_duree_2.SetValue(False)
-##        else:
-##            self.radio_duree_1.SetValue(False)
-##            self.radio_duree_2.SetValue(True)
-##            self.spin_jours.SetValue(jours)
-##            self.spin_mois.SetValue(mois)
-##            self.spin_annees.SetValue(annees)
-            
+
         self.OnRadioDuree(None)
     
     def GetPublic(self):
@@ -273,6 +337,8 @@ class Dialog(wx.Dialog):
         if valeur == 1 :
             self.ctrl_rattachement.SetValue(True)
 
+    def GetIDtype_piece(self):
+        return self.IDtype_piece
 
 
 

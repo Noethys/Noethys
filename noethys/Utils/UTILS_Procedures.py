@@ -49,7 +49,7 @@ DICT_PROCEDURES = {
     "A8956" : _(u"Réparation des factures : Rapprochement des factures et des prestations détachées"),
     "A8967" : _(u"Transfert des numéros des numéros des factures vers le champ str"),
     "A8971" : _(u"Attribution du type de quotient CAF à tous les quotients existants"),
-
+    "A9001" : _(u"Modification de la structure de la table Documents"),
     }
 
 
@@ -794,6 +794,11 @@ def A8971():
     DB.Commit()
     DB.Close()
 
+def A9001():
+    """ Modification de la table DOCUMENTS """
+    DB = GestionDB.DB(suffixe="DOCUMENTS")
+    DB.AjoutChamp("documents", "IDtype_piece", "INTEGER")
+    DB.Close()
 
 
 
@@ -883,5 +888,5 @@ def A8971():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A8971()
+    A9001()
     app.MainLoop()

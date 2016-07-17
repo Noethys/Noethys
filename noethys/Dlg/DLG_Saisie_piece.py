@@ -182,7 +182,7 @@ class Dialog(wx.Dialog):
         
         # Pages capturées
         self.sizer_pages_staticbox = wx.StaticBox(self, -1, _(u"Documents associés"))
-        self.ctrl_pages = CTRL_Vignettes_documents.CTRL(self, IDpiece=self.IDpiece, style=wx.BORDER_SUNKEN)
+        self.ctrl_pages = CTRL_Vignettes_documents.CTRL(self, type_donnee="piece", IDpiece=self.IDpiece, style=wx.BORDER_SUNKEN)
         self.bouton_ajouter_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_visualiser_page = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
@@ -217,11 +217,11 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_TEXT, self.OnDateDebut, self.ctrl_date_debut)
         self.Bind(wx.EVT_CHOICE, self.OnChoixAutres, self.ctrl_pieces_autres)
-        self.Bind(wx.EVT_BUTTON, self.AjouterPage, self.bouton_ajouter_page)
-        self.Bind(wx.EVT_BUTTON, self.SupprimerPage, self.bouton_supprimer_page)
-        self.Bind(wx.EVT_BUTTON, self.VisualiserPage, self.bouton_visualiser_page)
-        self.Bind(wx.EVT_BUTTON, self.ZoomPlus, self.bouton_zoom_plus)
-        self.Bind(wx.EVT_BUTTON, self.ZoomMoins, self.bouton_zoom_moins)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.AjouterPage, self.bouton_ajouter_page)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.SupprimerPage, self.bouton_supprimer_page)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.VisualiserPage, self.bouton_visualiser_page)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.ZoomPlus, self.bouton_zoom_plus)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_pages.ZoomMoins, self.bouton_zoom_moins)
 
     def __set_properties(self):
         self.radio_pieces_1.SetValue(1)
@@ -636,20 +636,6 @@ class Dialog(wx.Dialog):
         # Fermeture
         self.EndModal(wx.ID_OK)
 
-    def AjouterPage(self, event):
-        self.ctrl_pages.AjouterPage()
-
-    def SupprimerPage(self, event):
-        self.ctrl_pages.SupprimerPage(None)
-    
-    def VisualiserPage(self, event):
-        self.ctrl_pages.VisualiserPage(None)
-    
-    def ZoomPlus(self, event):
-        self.ctrl_pages.ZoomPlus()
-
-    def ZoomMoins(self, event):
-        self.ctrl_pages.ZoomMoins()
 
 
 if __name__ == u"__main__":

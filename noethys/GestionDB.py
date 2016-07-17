@@ -1859,6 +1859,22 @@ class DB:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
+        # =============================================================
+
+        versionFiltre = (1, 1, 7, 1)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("portail_periodes") == False : self.CreationTable("portail_periodes", Tables.DB_DATA)
+                if self.IsTableExists("portail_unites") == False : self.CreationTable("portail_unites", Tables.DB_DATA)
+                self.AjoutChamp("activites", "portail_inscriptions_affichage", "INTEGER")
+                self.AjoutChamp("activites", "portail_inscriptions_date_debut", "DATE")
+                self.AjoutChamp("activites", "portail_inscriptions_date_fin", "DATE")
+                self.AjoutChamp("activites", "portail_reservations_affichage", "INTEGER")
+                self.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9001()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
         return True
@@ -2105,24 +2121,11 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("factures_prefixes",)
+    # listeTables = ("portail_unites",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
     # print "creation tables ok."
-    
-    # Création des tables COMPTA
-##    db = DB(suffixe="DATA")
-##    listeTables = (
-##        "compta_virements", "compta_categories_budget", "compta_budgets",
-##        )
-##    for nomTable in listeTables :
-##        try :
-##            db.CreationTable(nomTable, Tables.DB_DATA)
-##        except :
-##            pass
-##    db.Close()
-##    print "creation tables ok."                
 
 
 ## ----------------------------------------------------------------------
@@ -2153,9 +2156,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    # db = DB(suffixe="DATA")
-    # db.AjoutChamp("factures", "IDprefixe", "INTEGER")
-    # db.Close()
+    db = DB(suffixe="DATA")
+    db.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
+    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")

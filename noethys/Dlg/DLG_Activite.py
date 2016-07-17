@@ -25,7 +25,7 @@ from DLG_Activite_unites import Panel as Page5
 from DLG_Activite_calendrier import Panel as Page6
 from DLG_Activite_tarification import Panel as Page7
 from DLG_Activite_etiquettes import Panel as Page8
-
+from DLG_Activite_portail import Panel as Page9
 
 
 def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
@@ -113,6 +113,8 @@ def Supprimer_activite(IDactivite=None, nouvelleActivite=False):
     DB.ReqDEL("tarifs", "IDactivite", IDactivite)
     DB.ReqDEL("tarifs_lignes", "IDactivite", IDactivite)
     DB.ReqDEL("etiquettes", "IDactivite", IDactivite)
+    DB.ReqDEL("portail_periodes", "IDactivite", IDactivite)
+    DB.ReqDEL("portail_unites", "IDactivite", IDactivite)
     
     # Suppressions spéciales
     DB.ExecuterReq("DELETE FROM combi_tarifs WHERE IDtarif IN %s" % conditionTarifs)
@@ -254,6 +256,7 @@ class ClsCommune():
             ("etiquettes", _(u"Etiquettes"), Page8(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Etiquette.png"),
             ("unites", _(u"Unités"), Page5(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Mecanisme.png"),
             ("calendrier", _(u"Calendrier"), Page6(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Calendrier.png"),
+            ("portail", _(u"Portail"), Page9(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Planete.png"),
             ("tarification", _(u"Tarification"), Page7(self, IDactivite=self.IDactivite, nouvelleActivite=self.nouvelleActivite), "Euro.png"),
             ]
         return listePages
@@ -292,7 +295,6 @@ class Assistant(wx.Dialog, ClsCommune):
         titre = _(u"Paramétrage d'une activité")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
-        #self.listePages = ("Page1", "Page2", "Page3", "Page4", "Page8", "Page5", "Page6", "Page7")
         self.listePages = self.GetListePages()
 
         self.static_line = wx.StaticLine(self, -1)
@@ -596,7 +598,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.SetMinSize((800, 740))
+        self.SetMinSize((850, 740))
         self.CenterOnScreen()
     
     def CreateIDactivite(self):
@@ -643,7 +645,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    IDactivite = None#43 # <<<<<<<<<<<<<<<< pour les tests
+    IDactivite = 1#43 # <<<<<<<<<<<<<<<< pour les tests
     if IDactivite == None :
         frame_1 = Assistant(None, IDactivite=None)
     else:
