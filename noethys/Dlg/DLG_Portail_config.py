@@ -472,10 +472,10 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"")
+        intro = _(u"Connecthys est le portail internet de Noethys. Vous devez au préalable disposer d'un hébergement internet compatible. Utilisez les fonctionnalités ci-dessous pour installer et synchroniser le portail avec votre fichier de données Noethys.")
         titre = _(u"Connecthys")
         self.SetTitle(titre)
-        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Nomadhys.png")
+        self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
         
         # Paramètres
         self.box_parametres = wx.StaticBox(self, -1, _(u"Paramètres"))
@@ -483,8 +483,8 @@ class Dialog(wx.Dialog):
 
         # Actions
         self.box_actions = wx.StaticBox(self, -1, _(u"Actions"))
-        self.bouton_installer = CTRL_Bouton_image.CTRL(self, texte=_(u"Installer"), cheminImage="Images/32x32/Fleche_haut.png")
-        self.bouton_desinstaller = CTRL_Bouton_image.CTRL(self, texte=_(u"Désinstaller"), cheminImage="Images/32x32/Absenti.png")
+        self.bouton_installer = CTRL_Bouton_image.CTRL(self, texte=_(u"Installer / Mettre à jour"), cheminImage="Images/32x32/Fleche_haut.png")
+        #self.bouton_desinstaller = CTRL_Bouton_image.CTRL(self, texte=_(u"Désinstaller"), cheminImage="Images/32x32/Absenti.png")
         self.bouton_synchroniser = CTRL_Bouton_image.CTRL(self, texte=_(u"Synchroniser les données"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_traiter = CTRL_Bouton_image.CTRL(self, texte=_(u"Traiter les demandes"), cheminImage="Images/32x32/Loupe.png")
 
@@ -496,7 +496,7 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonInstaller, self.bouton_installer)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonDesinstaller, self.bouton_desinstaller)
+        #self.Bind(wx.EVT_BUTTON, self.OnBoutonDesinstaller, self.bouton_desinstaller)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSynchroniser, self.bouton_synchroniser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTraiter, self.bouton_traiter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
@@ -504,7 +504,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.bouton_installer.SetToolTipString(_(u"Cliquez ici pour installer l'application Connecthys sur internet"))
-        self.bouton_desinstaller.SetToolTipString(_(u"Cliquez ici pour désinstaller l'application Connecthys sur internet"))
+        #self.bouton_desinstaller.SetToolTipString(_(u"Cliquez ici pour désinstaller l'application Connecthys sur internet"))
         self.bouton_synchroniser.SetToolTipString(_(u"Cliquez ici pour synchroniser les données entre Connecthys et Noethys"))
         self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour traiter les demandes importées depuis Connecthys"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
@@ -523,7 +523,7 @@ class Dialog(wx.Dialog):
         staticbox_actions = wx.StaticBoxSizer(self.box_actions, wx.VERTICAL)
         grid_sizer_actions = wx.BoxSizer(wx.HORIZONTAL)
         grid_sizer_actions.Add(self.bouton_installer, 1, wx.EXPAND | wx.RIGHT, 10)
-        grid_sizer_actions.Add(self.bouton_desinstaller, 1, wx.EXPAND | wx.RIGHT, 10)
+        #grid_sizer_actions.Add(self.bouton_desinstaller, 1, wx.EXPAND | wx.RIGHT, 10)
         grid_sizer_actions.Add(self.bouton_synchroniser, 1, wx.EXPAND | wx.RIGHT, 10)
         grid_sizer_actions.Add(self.bouton_traiter, 1, wx.EXPAND, 0)
         staticbox_actions.Add(grid_sizer_actions, 1, wx.ALL|wx.EXPAND, 10)

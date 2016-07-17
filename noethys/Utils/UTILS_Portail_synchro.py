@@ -43,6 +43,7 @@ from Crypto.Hash import SHA256
 
 
 
+
 class Synchro():
     def __init__(self, dict_parametres=None, log=None):
         # Récupération des données de config du portail si besoin
@@ -67,8 +68,11 @@ class Synchro():
         self.nbre_etapes = 24
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
         self.Download_data()
-        self.Upload_data()
-        self.log.EcritLog(_(u"Synchronisation terminée"))
+        resultat = self.Upload_data()
+        if resultat == False :
+            self.log.EcritLog(_(u"Synchronisation arrêtée."))
+        else :
+            self.log.EcritLog(_(u"Synchronisation terminée."))
         self.log.EcritLog(_(u"Serveur prêt"))
         self.log.SetGauge(0)
 
@@ -160,9 +164,13 @@ class Synchro():
 
             # Envoi du logo par FTP
             if ftp != None :
-                ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
-                fichier = open(cheminLogo, "rb")
-                ftp.storbinary('STOR ' + nomFichier, fichier)
+                try :
+                    ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
+                    fichier = open(cheminLogo, "rb")
+                    ftp.storbinary('STOR ' + nomFichier, fichier)
+                except Exception, err :
+                    print str(err)
+                    return False
 
         else :
             liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
@@ -214,16 +222,29 @@ class Synchro():
         self.log.EcritLog(_(u"Connexion FTP..."))
         self.Pulse_gauge()
 
-        ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
+        try :
+            ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
+        except Exception, err :
+            print "Connexion FTP du serveur", str(err)
+            self.log.EcritLog(_(u"[ERREUR] Connexion FTP impossible."))
+            return False
 
         # Envoi du fichier de config par FTP
         self.log.EcritLog(_(u"Envoi du fichier de configuration..."))
         self.Pulse_gauge()
-        self.Upload_config(ftp=ftp)
+        resultat = self.Upload_config(ftp=ftp)
+        if resultat == False :
+            self.log.EcritLog(_(u"[ERREUR] Envoi impossible."))
+            return False
 
         # Récupération du fichier models par FTP
         self.log.EcritLog(_(u"Téléchargement des modèles de données..."))
-        chemin, nomFichier = self.TelechargeModels(ftp)
+        resultat = self.TelechargeModels(ftp)
+        if resultat == False :
+            self.log.EcritLog(_(u"[ERREUR] Téléchargement impossible."))
+            return False
+
+        chemin, nomFichier = resultat
 
         # Import du fichier models.py
         sys.path.append(chemin)
@@ -727,10 +748,14 @@ class Synchro():
             pass
 
         # Téléchargement du fichier vers le répertoire temporaire
-        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application")
-        fichier = open(os.path.join(rep, nomFichier), 'wb')
-        ftp.retrbinary('RETR ' + nomFichier, fichier.write)
-        fichier.close()
+        try :
+            ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application")
+            fichier = open(os.path.join(rep, nomFichier), 'wb')
+            ftp.retrbinary('RETR ' + nomFichier, fichier.write)
+            fichier.close()
+        except Exception, err :
+            print str(err)
+            return False
 
         return rep, nomFichier
 

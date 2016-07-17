@@ -769,7 +769,7 @@ class MainFrame(wx.Frame):
                     {"code" : "statistiques", "label" : _(u"Statistiques"), "infobulle" : _(u"Statistiques"), "image" : "Images/16x16/Barres.png", "action" : self.On_outils_stats},
                     "-",
                     {"code" : "nomadhys_synchro", "label" : _(u"Nomadhys - l'application nomade"), "infobulle" : _(u"Synchroniser et configurer Nomadhys, l'application nomade de Noethys"), "image" : "Images/16x16/Nomadhys.png", "action" : self.On_outils_nomadhys_synchro},
-                    {"code" : "connecthys_synchro", "label" : _(u"Connecthys - le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Planete.png", "action" : self.On_outils_connecthys_synchro},
+                    {"code" : "connecthys_synchro", "label" : _(u"Connecthys - le portail internet"), "infobulle" : _(u"Synchroniser et configurer Connecthys, le portail internet de Noethys"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_outils_connecthys_synchro},
                     "-",
                     {"code" : "editeur_emails", "label" : _(u"Editeur d'Emails"), "infobulle" : _(u"Editeur d'Emails"), "image" : "Images/16x16/Editeur_email.png", "action" : self.On_outils_emails},
                     {"code" : "calculatrice", "label" : _(u"Calculatrice\tF12"), "infobulle" : _(u"Calculatrice"), "image" : "Images/16x16/Calculatrice.png", "action" : self.On_outils_calculatrice},

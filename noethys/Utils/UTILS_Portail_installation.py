@@ -23,6 +23,9 @@ import shutil
 import UTILS_Fichiers
 import UTILS_Portail_synchro
 import traceback
+import sys
+import importlib
+import json
 
 
 LISTE_EXCEPTIONS = ["*.pyc", "*.db", "*.db3", "*.exe"]
@@ -71,6 +74,40 @@ def FormateTailleFichier(taille):
         texte = str(taille/1000000) + " Mo"
     return texte
 
+def GetExclusions(liste_versions=[], version_ancienne=""):
+    """ Récupération de la liste des exclusions entre 2 numéros de versions """
+    """ Cette astuce permet d'alléger le téléchargement des mises à jour de Connecthys """
+    nbre_versions = None
+    dict_exclusions = {}
+    for dictVersion in liste_versions :
+
+        # Recherche de la version actuelle
+        if dictVersion["version"] == version_ancienne :
+            nbre_versions = 0
+
+        else :
+
+            # Recherche les exclusions à partir de la version trouvée
+            if nbre_versions != None :
+
+                if dictVersion.has_key("exclusions") :
+                    for exclusion in dictVersion["exclusions"] :
+                        if not dict_exclusions.has_key(exclusion) :
+                            dict_exclusions[exclusion] = 0
+                        dict_exclusions[exclusion] += 1
+
+                nbre_versions += 1
+
+    liste_exclusions = []
+    for exclusion, nbre in dict_exclusions.iteritems() :
+        if nbre == nbre_versions :
+            liste_exclusions.append(exclusion)
+
+    return liste_exclusions
+
+
+
+
 
 
 class Abort(Exception):
@@ -79,6 +116,8 @@ class Abort(Exception):
 
     def __str__(self):
         return repr(self.value)
+
+
 
 class Installer():
     def __init__(self, dict_parametres={}):
@@ -123,23 +162,27 @@ class Installer():
             index += 1
         zfile.close()
 
-    def EnvoiRepertoire(self, path, ftp, nbre_total):
+    def EnvoiRepertoire(self, path="", ftp=None, nbre_total=0, liste_exclusions=[]):
         for name in os.listdir(path):
-
-            self.index += 1
-
-            # Barre de progression
-            pourcentage = GetPourcentage(self.index, nbre_total)
-            keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Installation : Transfert du fichier %s...") % name)
-
-            # Stoppe la procédure
-            if keepGoing == False :
-                raise Abort(u"Transfert interrompu")
 
             # Envoi des fichiers
             if IsException(name) == False :
                 localpath = os.path.join(path, name)
                 if os.path.isfile(localpath):
+
+                    self.index += 1
+
+                    # Barre de progression
+                    pourcentage = GetPourcentage(self.index, nbre_total)
+                    try :
+                        keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Installation : Transfert du fichier %s...") % name)
+                    except :
+                        keepGoing = True
+
+                    # Stoppe la procédure
+                    if keepGoing == False :
+                        raise Abort(u"Transfert interrompu")
+
                     ftp.storbinary('STOR ' + name, open(localpath, 'rb'))
 
                     # Permission spéciale
@@ -148,17 +191,20 @@ class Installer():
 
                 # Envoi des répertoires
                 elif os.path.isdir(localpath):
-                    try:
-                        ftp.mkd(name)
-                    except Exception, e:
-                        # ignore "directory already exists"
-                        if not e.args[0].startswith('550'):
-                            raise
 
-                    ftp.cwd(name)
-                    self.EnvoiRepertoire(localpath, ftp, nbre_total)
+                    if name not in liste_exclusions :
 
-                    ftp.cwd("..")
+                        try:
+                            ftp.mkd(name)
+                        except Exception, e:
+                            # ignore "directory already exists"
+                            if not e.args[0].startswith('550'):
+                                raise
+
+                        ftp.cwd(name)
+                        self.EnvoiRepertoire(localpath, ftp, nbre_total, liste_exclusions)
+
+                        ftp.cwd("..")
 
     def Upload(self, source_repertoire=""):
         # Récupération du nombre de fichiers à transférer
@@ -180,9 +226,32 @@ class Installer():
 
         keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion FTP effectuée..."))
 
+        # Recherche le numéro de version de l'application déjà installée
+        try :
+            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/get_version"
+            # Récupération des données au format json
+            req = urllib2.Request(url)
+            reponse = urllib2.urlopen(req)
+            page = reponse.read()
+            data = json.loads(page)
+            version_ancienne = data["version_str"]
+        except Exception, err :
+            version_ancienne = None
+
+        # Recherche des exclusions
+        if version_ancienne == None :
+            liste_exclusions = []
+        else :
+            # Importation de la liste des exclusions dans le répertoire source
+            nomFichier = "versions.py"
+            chemin = os.path.join(source_repertoire, "application")
+            sys.path.append(chemin)
+            versions = importlib.import_module(nomFichier.replace(".py", ""))
+            liste_exclusions = GetExclusions(liste_versions=versions.VERSIONS, version_ancienne=version_ancienne)
+
         # Envoi des données
         self.index = 0
-        #self.EnvoiRepertoire(source_repertoire, ftp, nbre_total=nbreFichiers+4)
+        self.EnvoiRepertoire(source_repertoire, ftp, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
 
         synchro = UTILS_Portail_synchro.Synchro(self.dict_parametres)
 
@@ -200,6 +269,13 @@ class Installer():
 
     def Installer(self):
         """ Installation de Connecthys """
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'installation du portail internet Connecthys ?\n\nRemarque : Ce processus peut nécessiter plusieurs dizaines de minutes (selon votre connexion internet)"), _(u"Installation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return False
+
+        # Init de la dlgprogress
         self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
 
         try :
