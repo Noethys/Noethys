@@ -212,7 +212,145 @@ class Synchro():
 
         return True
 
+    def CopieToLocal_config(self, destdir=""):
+        """ Copie le fichier de config vers un repertoire local"""
+        liste_lignes = [
+            u"#!/usr/bin/env python\n",
+            u"# -*- coding: utf-8 -*-\n",
+            u"\n",
+            u"import os\n",
+            u"basedir = os.path.abspath(os.path.dirname(__file__))\n",
+            u"\n",
+            u"class Config_application(object):\n"
+        ]
 
+        def Ecrit_ligne(key="", valeur="", type_valeur=None):
+            if type_valeur == unicode :
+                valeur = u'u"%s"' % valeur
+            elif type_valeur == str :
+                valeur = u'"%s"' % valeur
+            elif type_valeur == None :
+                valeur = valeur
+            else :
+                valeur = str(valeur)
+            return u"     %s = %s\n" % (key, valeur)
+
+        # Valeurs Application
+        if self.dict_parametres["db_type"] == 0 :
+            # Base Sqlite
+            liste_lignes.append(Ecrit_ligne("SQLALCHEMY_DATABASE_URI", "'sqlite:///' + os.path.join(basedir, 'data.db')", type_valeur=None))
+        else :
+            # Base MySQL
+            db_serveur = self.dict_parametres["db_serveur"]
+            db_utilisateur = self.dict_parametres["db_utilisateur"]
+            db_mdp = self.dict_parametres["db_mdp"]
+            db_nom = self.dict_parametres["db_nom"]
+            liste_lignes.append(Ecrit_ligne("SQLALCHEMY_DATABASE_URI", "mysql://%s:%s@%s/%s" % (db_utilisateur, db_mdp, db_serveur, db_nom), type_valeur=str))
+
+        liste_lignes.append(Ecrit_ligne("SQLALCHEMY_TRACK_MODIFICATIONS", True, type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("SQLALCHEMY_ECHO", False, type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("SECRET_KEY", self.dict_parametres["secret_key"], type_valeur=str))
+        liste_lignes.append(Ecrit_ligne("WTF_CSRF_ENABLED", True, type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
+
+        # Valeurs Utilisateur
+        liste_lignes.append("\nclass Config_utilisateur(object):\n")
+
+        # Thème
+        index = 0
+        for code, label in LISTE_THEMES :
+            if index == self.dict_parametres["theme"] :
+                theme = "skin-%s" % code
+            index += 1
+        liste_lignes.append(Ecrit_ligne("SKIN", theme, type_valeur=str))
+
+        # Image de fond identification
+        if self.dict_parametres["image_identification"] != "" :
+            image = os.path.basename(self.dict_parametres["image_identification"])
+        else :
+            image = ""
+        liste_lignes.append(Ecrit_ligne("IMAGE_FOND", image, type_valeur=unicode))
+
+
+        # Cadre logo organisateur
+        if self.dict_parametres["cadre_logo"] == 0 :
+            rond = False
+        else :
+            rond = True
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE_ROND", rond, type_valeur=bool))
+
+        # Données organisateur
+        dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
+
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_NOM", dict_organisateur["nom"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_RUE", dict_organisateur["rue"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_CP", dict_organisateur["cp"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_VILLE", dict_organisateur["ville"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_TEL", dict_organisateur["tel"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_FAX", dict_organisateur["fax"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_EMAIL", dict_organisateur["mail"], type_valeur=unicode))
+
+        # Logo organisateur
+        logo = dict_organisateur["logo"]
+        if logo != None :
+            nomFichier = "logo.png"
+            cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+            logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
+            liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", nomFichier, type_valeur=unicode))
+
+            # Copie du logo vers le repertoire local
+            if self.dict_parametres["hebergement_local_repertoire"] != None:
+                try :
+                    #ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
+                    #fichier = open(cheminLogo, "rb")
+                    #ftp.storbinary('STOR ' + nomFichier, fichier)
+		    destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "/application/static")
+		    shutil.copy2(cheminLogo, destfilepath)
+                except Exception, err :
+                    print str(err)
+                    return False
+
+        else :
+            liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
+
+        # Autres
+        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_EMAIL", self.dict_parametres["recevoir_document_email"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_POSTE", self.dict_parametres["recevoir_document_courrier"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER", self.dict_parametres["recevoir_document_site"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER_LIEU", self.dict_parametres["recevoir_document_site_lieu"], type_valeur=unicode))
+        liste_lignes.append(Ecrit_ligne("PAIEMENT_EN_LIGNE_ACTIF", self.dict_parametres["paiement_ligne_actif"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("ACTIVITES_AFFICHER", self.dict_parametres["activites_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("ACTIVITES_AUTORISER_INSCRIPTION", self.dict_parametres["activites_autoriser_inscription"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("RESERVATIONS_AFFICHER", self.dict_parametres["reservations_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("FACTURES_AFFICHER", self.dict_parametres["factures_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("FACTURES_DEMANDE_FACTURE", self.dict_parametres["factures_demande_facture"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("REGLEMENTS_AFFICHER", self.dict_parametres["reglements_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("REGLEMENTS_DEMANDE_RECU", self.dict_parametres["reglements_demande_recu"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("PIECES_AFFICHER", self.dict_parametres["pieces_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("PIECES_AUTORISER_TELECHARGEMENT", self.dict_parametres["pieces_autoriser_telechargement"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("COTISATIONS_AFFICHER", self.dict_parametres["cotisations_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("HISTORIQUE_AFFICHER", self.dict_parametres["historique_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("CONTACT_AFFICHER", self.dict_parametres["contact_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("MENTIONS_AFFICHER", self.dict_parametres["mentions_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("AIDE_AFFICHER", self.dict_parametres["aide_afficher"], type_valeur=bool))
+
+        # Génération du fichier
+        nomFichier = "config.py"
+        nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+        fichier = codecs.open(nomFichierComplet, 'w', encoding='utf8')
+        for ligne in liste_lignes :
+            fichier.write(ligne)
+        fichier.close()
+
+        # Deplacement du fichier dans le repertoire local
+        if self.dict_parametres["hebergement_local_repertoire"] != None :
+            #ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/data")
+            #fichier = open(nomFichierComplet, "rb")#codecs.open(nomFichierComplet, 'rb', encoding='utf8')
+            #ftp.storbinary('STOR ' + nomFichier, fichier)
+	    destfile = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "/application/data")
+	    os.renames(nomFichierComplet,destfile)
+
+        return True
 
 
     def Upload_data(self) :

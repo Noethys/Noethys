@@ -40,11 +40,14 @@ VALEURS_DEFAUT = {
     "serveur_portail_activation" : False,
     "serveur_synchro_delai" : 2,
     "serveur_synchro_ouverture" : True,
+    "hebergement_ftp_activation" : False,
     "ftp_serveur" : "",
     "ftp_utilisateur" : "",
     "ftp_mdp" : "",
     "ftp_repertoire" : "www/connecthys",
     "url_repertoire" : "http://",
+    "hebergement_local_activation" : False,
+    "hebergement_local_repertoire" : "",
     "db_type" : 1,
     "db_serveur" : "",
     "db_utilisateur" : "",
@@ -112,6 +115,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Hébergement FTP")) )
 
+	# Activation Hebergement FTP
+	nom = "hebergement_ftp_activation"
+	propriete = wxpg.BoolProperty(label=_(u"Activer Hebergement FTP"), name=nom, value=VALEURS_DEFAUT[nom])
+	propriete.SetHelpString(_(u"Cochez cette case pour activer un hebergement FTP"))
+	propriete.SetAttribute("UseCheckbox", True)
+	self.Append(propriete)
+
         # Serveur FTP
         nom = "ftp_serveur"
         propriete = wxpg.StringProperty(label=_(u"Adresse du serveur"), name=nom, value=VALEURS_DEFAUT[nom])
@@ -147,6 +157,23 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+	# Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Hébergement Local")) )
+
+	# Activation Hebergement Local
+	nom = "hebergement_local_activation"
+	propriete = wxpg.BoolProperty(label=_(u"Activer Hebergement Local"), name=nom, value=VALEURS_DEFAUT[nom])
+	propriete.SetHelpString(_(u"Cochez cette case pour activer un hebergement Local"))
+	propriete.SetAttribute("UseCheckbox", True)
+	self.Append(propriete)
+
+        # Repertoire Hebergement Local
+        nom = "hebergement_local_repertoire"
+        propriete = wxpg.StringProperty(label=_(u"Repertoire local"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le repertoire local (Ex : /home/bogucool/connecthys_www)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Base de données")) )
 
@@ -157,7 +184,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Serveur FTP
+        # Serveur SQL
         nom = "db_serveur"
         propriete = wxpg.StringProperty(label=_(u"Adresse du serveur MySQL"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez l'adresse du serveur MySQL"))
@@ -441,6 +468,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         dictParametres["serveur_portail_activation"] = UTILS_Config.GetParametre("serveur_portail_activation", False)
         dictParametres["serveur_synchro_delai"] = UTILS_Config.GetParametre("serveur_synchro_delai", 2)
         dictParametres["serveur_synchro_ouverture"] = UTILS_Config.GetParametre("serveur_synchro_ouverture", True)
+	dictParametres["hebergement_ftp_activation"] = UTILS_Config.GetParametre("hebergement_ftp_activation", True)
+	dictParametres["hebergement_local_activation"] = UTILS_Config.GetParametre("hebergement_local_activation", True)
 
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
@@ -455,7 +484,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="portail", dictParametres=dictValeurs)
 
         # Mémorisation de la config sur cet ordi
-        for key in ("serveur_portail_activation", "serveur_synchro_delai", "serveur_synchro_ouverture") :
+        for key in ("serveur_portail_activation", "serveur_synchro_delai", "serveur_synchro_ouverture", "hebergement_ftp_activation", "hebergement_local_activation") :
             UTILS_Config.SetParametre(key, self.GetPropertyByName(key).GetValue())
 
     def GetValeurs(self) :
@@ -503,7 +532,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
     def __set_properties(self):
-        self.bouton_installer.SetToolTipString(_(u"Cliquez ici pour installer l'application Connecthys sur internet"))
+        self.bouton_installer.SetToolTipString(_(u"Cliquez ici pour installer l'application Connecthys sur internet ou en local"))
         #self.bouton_desinstaller.SetToolTipString(_(u"Cliquez ici pour désinstaller l'application Connecthys sur internet"))
         self.bouton_synchroniser.SetToolTipString(_(u"Cliquez ici pour synchroniser les données entre Connecthys et Noethys"))
         self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour traiter les demandes importées depuis Connecthys"))
@@ -570,29 +599,45 @@ class Dialog(wx.Dialog):
             return False
         dict_parametres = self.ctrl_parametres.GetValeurs()
 
-        if dict_parametres["ftp_serveur"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'adresse du serveur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+	if dict_parametres["hebergement_ftp_activation"] == "True" :
 
-        if dict_parametres["ftp_utilisateur"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nomde de l'utilisateur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+    	    if dict_parametres["ftp_serveur"] == "" :
+        	dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'adresse du serveur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        	dlg.ShowModal()
+        	dlg.Destroy()
+        	return False
 
-        if dict_parametres["ftp_mdp"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le mot de passe FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+    	    if dict_parametres["ftp_utilisateur"] == "" :
+        	dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nomde de l'utilisateur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        	dlg.ShowModal()
+        	dlg.Destroy()
+        	return False
 
-        if dict_parametres["ftp_repertoire"] == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+    	    if dict_parametres["ftp_mdp"] == "" :
+        	dlg = wx.MessageDialog(self, _(u"Vous devez saisir le mot de passe FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        	dlg.ShowModal()
+        	dlg.Destroy()
+        	return False
+
+    	    if dict_parametres["ftp_repertoire"] == "" :
+        	dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        	dlg.ShowModal()
+        	dlg.Destroy()
+        	return False
+
+	elif dict_parametres["hebergement_local_activation"] == "True" :
+
+	    if dict_parametres["hebergement_local_repertoire"] == "" :
+        	dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire local !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        	dlg.ShowModal()
+        	dlg.Destroy()
+        	return False
+	elif ( dict_parametres["hebergement_ftp_activation"] == "False" and dict_parametres["hebergement_local_activation"] == "False" ):
+
+	    dlg = wx.MessageDialog(self, _(u"Vous devez activer un hebergement FTP ou local !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+    	    dlg.ShowModal()
+    	    dlg.Destroy()
+    	    return False
 
         # Procédure d'installation
         import UTILS_Portail_installation
