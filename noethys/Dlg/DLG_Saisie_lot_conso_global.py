@@ -437,6 +437,10 @@ class Dialog(wx.Dialog):
             self.Layout()
             
             # Traitement
+            # Ajout de la liste des individus dans l'action sinon problème dans CTRL_Grille.TraitementLot_processus
+            for track in tracks :
+                self.dictAction["individus"].append(dict((key, value) for key, value in track.__dict__.iteritems() 
+                                                         if not callable(value) and not key.startswith('__')))
             self.traitement = Traitement(self, IDactivite=IDactivite, dictAction=self.dictAction, tracks=tracks) 
             self.traitement.start()
         
