@@ -34,6 +34,7 @@ import UTILS_Pieces_manquantes
 import UTILS_Cotisations_manquantes
 import UTILS_Organisateur
 import UTILS_Cryptage_fichier
+import FonctionsPerso
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Dlg.DLG_Portail_config import VALEURS_DEFAUT as VALEURS_DEFAUT_CONFIG
@@ -119,6 +120,10 @@ class Synchro():
 
         # Valeurs Utilisateur
         liste_lignes.append("\nclass Config_utilisateur(object):\n")
+
+        # IDfichier
+        IDfichier = FonctionsPerso.GetIDfichier()
+        liste_lignes.append(Ecrit_ligne("IDfichier", IDfichier, type_valeur=str))
 
         # Thème
         index = 0
@@ -380,6 +385,7 @@ class Synchro():
         resultat = self.TelechargeModels(ftp)
         if resultat == False :
             self.log.EcritLog(_(u"[ERREUR] Téléchargement impossible."))
+            ftp.quit()
             return False
 
         chemin, nomFichier = resultat

@@ -186,8 +186,9 @@ class Installer():
                     ftp.storbinary('STOR ' + name, open(localpath, 'rb'))
 
                     # Permission spéciale
-		    # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
-		    # TODO: boite de dialogue pour indiquer de modifier les droits autrement
+
+                    # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
+                    # TODO: boite de dialogue pour indiquer de modifier les droits autrement
                     if name == "portail.cgi" :
                         ftp.sendcmd("chmod 0755 portail.cgi")
 
@@ -274,7 +275,8 @@ class Installer():
             # Copie des fichiers
             if IsException(name) == False :
                 localpath = os.path.join(path, name)
-		fulldestpath = os.path.join(destpath, name)
+                fulldestpath = os.path.join(destpath, name)
+
                 if os.path.isfile(localpath):
 
                     self.index += 1
@@ -290,7 +292,7 @@ class Installer():
                     if keepGoing == False :
                         raise Abort(u"Copie interrompue")
 
-		    os.renames(localpath, fulldestpath)
+                    os.renames(localpath, fulldestpath)
 
                     # Permission spéciale
 #                    if name == "portail.cgi" :
@@ -302,12 +304,12 @@ class Installer():
                     if name not in liste_exclusions :
 
                         try:
-			    os.makedirs(fulldestpath)
+                            os.makedirs(fulldestpath)
                         except Exception, e:
                             # ignore "directory already exists"
                             #if not e.args[0].startswith('550'):
                             #    raise
-			    print
+                            pass
 
                         self.CopieRepertoire(localpath, fulldestpath, nbre_total, liste_exclusions)
 
@@ -320,14 +322,14 @@ class Installer():
         keepGoing, skip = self.dlgprogress.Update(1, _(u"Copie en cours..."))
 
         # Création du répertoire s'il n'existe pas
-	localrep = self.dict_parametres["hebergement_local_repertoire"]
+        localrep = self.dict_parametres["local_repertoire"]
         try:
             os.makedirs(localrep)
         except Exception, e:
-	    print e
+            print e
             # ignore "directory already exists"
-        #    if not e.args[0].startswith('550'):
-        #        raise
+            #    if not e.args[0].startswith('550'):
+            #        raise
 
         # Recherche le numéro de version de l'application déjà installée
         try :
@@ -398,35 +400,30 @@ class Installer():
 
             # Dézippage du fichier
             self.Dezipper(self.nom_fichier_dest, UTILS_Fichiers.GetRepTemp())
+            source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
 
-	    if self.dict_parametres["hebergement_ftp_activation"] == True :
+            if self.dict_parametres["hebergement_type"] == 1 :
 
-        	# Envoi des fichiers par FTP
-        	source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
-        	self.Upload(source_repertoire)
+                # Envoi des fichiers par FTP
+                self.Upload(source_repertoire)
 
-        	# Fermeture dlgprogress
-        	self.dlgprogress.Destroy()
+                # Fermeture dlgprogress
+                self.dlgprogress.Destroy()
 
-        	return True
+                return True
 
-	    elif self.dict_parametres["hebergement_local_activation"] == True :
+            if self.dict_parametres["hebergement_type"] == 0 :
 
-		# deplacement des fichiers dans le repertoire local
-		source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
-		dest_repertoire = self.dict_parametres["hebergement_local_repertoire"]
-		self.CopieLocale(source_repertoire, dest_repertoire)
+                # deplacement des fichiers dans le repertoire local
+                dest_repertoire = self.dict_parametres["local_repertoire"]
+                self.CopieLocale(source_repertoire, dest_repertoire)
 
-		# Fermeture dlgprogress
-    		self.dlgprogress.Destroy()
+                # Fermeture dlgprogress
+                self.dlgprogress.Destroy()
 
-    		return True
+                return True
 
-	    else :
-
-		# Fermeture dlgprogress
-        	self.dlgprogress.Destroy()
-		return False
+            return False
 
         except Abort as err:
             if self.dlgprogress != None :

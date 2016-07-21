@@ -32,20 +32,33 @@ class Serveur(Thread):
         self.parent = parent
         self.start_synchro = False
         self.synchro_en_cours = False
+        self.active = False
 
     def Start(self):
-        self.keepGoing = self.running = True
-        self.start()
+        if self.IsRunning() == False :
+            self.keepGoing = self.active = True
+            self.start()
+        else :
+            self.active = True
 
     def Stop(self):
         self.keepGoing = False
 
+    def Pause(self):
+        self.active = False
+
     def IsRunning(self):
-        return self.running
+        if hasattr(self, "keepGoing") :
+            return True
+        else :
+            return False
 
     def Start_synchro(self, event=None):
         if self.synchro_en_cours == False :
             self.start_synchro = True
+
+    def HasSynchroEnCours(self):
+        return self.synchro_en_cours
 
     def GetHeureProchaineSynchro(self):
         return self.parent.last_synchro + datetime.timedelta(minutes=self.parent.delai)
@@ -53,45 +66,46 @@ class Serveur(Thread):
     def run(self):
         while self.keepGoing:
 
-            try :
+            if self.active == True :
 
-                if self.parent.last_synchro == None :
-                    # Lance une synchro quelques secondes après le démarrage
-                    if self.parent.synchro_ouverture == True :
-                        self.parent.last_synchro = datetime.datetime.now()
-                        time.sleep(3)
-                        self.start_synchro = True
+                try :
+
+                    if self.parent.last_synchro == None :
+                        # Lance une synchro quelques secondes après le démarrage
+                        if self.parent.synchro_ouverture == True :
+                            self.parent.last_synchro = datetime.datetime.now()
+                            time.sleep(3)
+                            self.start_synchro = True
+                        else :
+                            self.parent.last_synchro = datetime.datetime.now()
                     else :
+                        # Vérifie si une synchro est nécessaire selon le délai choisi
+                        if datetime.datetime.now() >= self.GetHeureProchaineSynchro() :
+                            self.start_synchro = True
+
+                    # Lancement de la procédure de synchronisation
+                    if self.start_synchro == True and self.synchro_en_cours == False :
+
+                        self.start_synchro = False
+
+                        # Mémorise l'heure de la dernière synchro
                         self.parent.last_synchro = datetime.datetime.now()
-                else :
-                    # Vérifie si une synchro est nécessaire selon le délai choisi
-                    if datetime.datetime.now() >= self.GetHeureProchaineSynchro() :
-                        self.start_synchro = True
 
-                # Lancement de la procédure de synchronisation
-                if self.start_synchro == True and self.synchro_en_cours == False :
+                        # Effectue la synchro
+                        self.parent.SetImage("upload")
+                        self.synchro_en_cours = True
+                        synchro = UTILS_Portail_synchro.Synchro(log=self.parent)
+                        synchro.Synchro_totale()
+                        self.synchro_en_cours = False
+                        self.parent.SetImage("on")
 
-                    self.start_synchro = False
-
-                    # Mémorise l'heure de la dernière synchro
-                    self.parent.last_synchro = datetime.datetime.now()
-
-                    # Effectue la synchro
-                    self.parent.SetImage("upload")
-                    self.synchro_en_cours = True
-                    synchro = UTILS_Portail_synchro.Synchro(log=self.parent)
-                    synchro.Synchro_totale()
-                    self.synchro_en_cours = False
-                    self.parent.SetImage("on")
-
-            except Exception, err :
-                if not str(err).startswith("The C++ part"):
-                    raise
+                except Exception, err :
+                    if not str(err).startswith("The C++ part"):
+                        raise
 
             # Attends 1 seconde
             time.sleep(1)
 
-        self.running = False
 
     def abort(self):
         self.stop = True
@@ -105,7 +119,8 @@ class Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
-        
+        self.last_synchro = None
+
         self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/48x48/Sync_off.png"), wx.BITMAP_TYPE_ANY))
     
         self.log = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_READONLY)
@@ -126,8 +141,7 @@ class Panel(wx.Panel):
 
         # Init
         self.SetGauge(0)
-        self.last_synchro = None
-        
+        self.SetImage("on")
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
@@ -184,13 +198,23 @@ class Panel(wx.Panel):
             self.bouton_analyse.Enable(True)
         
     def StartServeur(self):
-        #StartServer(log=self)
-        self.serveur = Serveur(self)
+        if not hasattr(self, "serveur") :
+            self.serveur = Serveur(self)
         self.serveur.Start()
         self.EcritLog(_(u"Serveur prêt"))
 
-        # Lance une première synchro après le démarrage
-        #self.serveur.Start_synchro()
+    def PauseServeur(self):
+        if hasattr(self, "serveur") :
+            self.serveur.Pause()
+
+    def StopServeur(self):
+        if hasattr(self, "serveur") :
+            self.serveur.Stop()
+
+    def HasSynchroEnCours(self):
+        if hasattr(self, "serveur") :
+            return self.serveur.HasSynchroEnCours()
+        return False
 
     def OnBoutonAnalyse(self, event=None):
         from Dlg import DLG_Synchronisation
@@ -235,6 +259,7 @@ class Panel(wx.Panel):
         dlg.ShowModal()
         dlg.Destroy()
         self.MAJ()
+        self.parent.AfficherServeurConnecthys()
 
     def SetImage(self, etat="on"):
         if etat == "upload" : 

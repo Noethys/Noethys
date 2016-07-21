@@ -315,7 +315,11 @@ class MainFrame(wx.Frame):
         
     def Quitter(self, videRepertoiresTemp=True, sauvegardeAuto=True):
         """ Fin de l'application """
-        
+
+        # Vérifie si une synchronisation Connecthys n'est pas en route
+        if self.IsSynchroConnecthys() == True :
+            return False
+
         # Mémorise l'action dans l'historique
         if self.userConfig["nomFichier"] != "" :
             try :
@@ -433,12 +437,12 @@ class MainFrame(wx.Frame):
             self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Serveur Nomadhys")).
                               Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
-        # Panneau Serveur Connecthys
-        if UTILS_Config.GetParametre("serveur_portail_activation", defaut=False) == True :
-            from Ctrl import CTRL_Portail_serveur
-            self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
-            self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
-                              Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
+        # # Panneau Serveur Connecthys
+        # if UTILS_Config.GetParametre("serveur_portail_activation", defaut=False) == True :
+        #     from Ctrl import CTRL_Portail_serveur
+        #     self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
+        #     self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
+        #                       Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
         # Panneau Effectifs
         self.ctrl_remplissage = DLG_Effectifs.CTRL(self)
@@ -2327,8 +2331,7 @@ class MainFrame(wx.Frame):
         dlg = DLG_Portail_config.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
-        if hasattr(self, "ctrl_serveur_portail") :
-            self.ctrl_serveur_portail.MAJ()
+        self.AfficherServeurConnecthys()
 
     def On_outils_villes(self, event):
         from Dlg import DLG_Villes
@@ -3223,7 +3226,7 @@ class MainFrame(wx.Frame):
     def OuvrirFichier(self, nomFichier):
         """ Suite de la commande menu Ouvrir """
         self.SetStatusText(_(u"Ouverture d'un fichier en cours..."))
-                        
+
         # Vérifie que le fichier n'est pas déjà ouvert
         if self.userConfig["nomFichier"] == nomFichier :
             if "[RESEAU]" in nomFichier :
@@ -3330,8 +3333,46 @@ class MainFrame(wx.Frame):
         
         # Affiche les messages importants
         wx.CallLater(2000, self.AfficheMessagesOuverture)
-        
+
+        # Démarrage du serveur Connecthys
+        self.AfficherServeurConnecthys()
+
         return True
+
+    def AfficherServeurConnecthys(self):
+        if UTILS_Config.GetParametre("serveur_portail_activation", defaut=False) == True and UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="portail_activation", valeur=False) == True :
+
+            if hasattr(self, "ctrl_serveur_portail") :
+                self._mgr.GetPane("serveur_portail").Show(True)
+
+            else :
+                # Chargement du serveur
+                from Ctrl import CTRL_Portail_serveur
+                self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
+                self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
+                                  Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
+
+            # Lancement du serveur
+            self._mgr.Update()
+            self.ctrl_serveur_portail.MAJ()
+            self.ctrl_serveur_portail.StartServeur()
+
+        else :
+            if hasattr(self, "ctrl_serveur_portail") :
+                self._mgr.GetPane("serveur_portail").Show(False)
+                self._mgr.Update()
+                self.ctrl_serveur_portail.PauseServeur()
+
+    def IsSynchroConnecthys(self):
+        if hasattr(self, "ctrl_serveur_portail") :
+            if self.ctrl_serveur_portail.HasSynchroEnCours() == True :
+                import wx.lib.dialogs as dialogs
+                dlg = dialogs.MultiMessageDialog(self, _(u"Une synchronisation Connecthys est en cours.\n\n Merci de patienter quelques instants..."), caption = _(u"Information"), msg2=None, style = wx.ICON_EXCLAMATION | wx.YES|wx.NO|wx.YES_DEFAULT, btnLabels={wx.ID_YES : _(u"Attendre (Conseillé)"), wx.ID_NO : _(u"Forcer la fermeture")})
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse != wx.ID_NO :
+                    return True
+        return False
 
 
     def TesterUnFichier(self, nomFichier):
@@ -3843,10 +3884,6 @@ class MyApp(wx.App):
         # Démarrage du serveur Nomadhys
         if hasattr(frame, "ctrl_serveur_nomade") :
             frame.ctrl_serveur_nomade.StartServeur()
-
-        # Démarrage du serveur Connecthys
-        if hasattr(frame, "ctrl_serveur_portail") :
-            frame.ctrl_serveur_portail.StartServeur()
 
         #print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
         return True
