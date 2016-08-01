@@ -854,21 +854,28 @@ class Facturation():
 
 
 
-    def Impression(self, listeFactures=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False):
+    def Impression(self, listeFactures=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False, afficherOptions=True):
         """ Impression des factures """
         # Récupération des paramètres d'affichage
         if dictOptions == None :
-            if afficherDoc == False :
-                dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture à envoyer par Email."))
-                dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
+            if afficherOptions == True :
+
+                if afficherDoc == False :
+                    dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture à envoyer par Email."))
+                    dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
+                else :
+                    dlg = DLG_Apercu_facture.Dialog(None)
+                if dlg.ShowModal() == wx.ID_OK:
+                    dictOptions = dlg.GetParametres()
+                    dlg.Destroy()
+                else :
+                    dlg.Destroy()
+                    return False
+
             else :
-                dlg = DLG_Apercu_facture.Dialog(None)
-            if dlg.ShowModal() == wx.ID_OK:
+                dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture à envoyer par Email."))
                 dictOptions = dlg.GetParametres()
                 dlg.Destroy()
-            else :
-                dlg.Destroy()
-                return False
 
         # Récupération des données à partir des IDfacture
         resultat = self.GetDonneesImpression(listeFactures, dictOptions)

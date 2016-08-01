@@ -98,14 +98,17 @@ class CTRL_Titre(wx.Panel):
     
     def SetNom(self, nom=u""):
         self.label_individu.SetLabel(nom)
-    
+
+    def GetNom(self):
+        return self.label_individu.GetLabel()
+
     def SetInformation(self, information=u""):
         self.label_information.SetLabel(information)
 
 # ------------------------------------------------------------------------------------------------------------
 
 class CTRL(wx.Panel):
-    def __init__(self, parent):
+    def __init__(self, parent, panel_facturation=None):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
         self.mode = "reservation"
@@ -115,7 +118,10 @@ class CTRL(wx.Panel):
         
         # Contrôles Grille des conso
         self.panel_activites = Panel_Activites(self)
-        self.panel_facturation = Panel_Facturation(self) 
+        if panel_facturation != None :
+            self.panel_facturation = panel_facturation
+        else :
+            self.panel_facturation = Panel_Facturation(self)
         self.panel_etiquettes = Panel_Etiquettes(self) 
         self.panel_grille = PanelGrille(self)
         self.grille = self.panel_grille.grille
@@ -160,11 +166,23 @@ class CTRL(wx.Panel):
                     if case.date == date or date == None :
                         return case
         return None
-    
+
+    def GetDictLignesParDate(self):
+        dictLignesParDate = {}
+        for numLigne, ligne in self.grille.dictLignes.iteritems() :
+            dictLignesParDate[ligne.date] = ligne
+        return dictLignesParDate
+
     def HasPlacesDisponibles(self, IDunite=None, date=None):
         case = self.GetCase(IDunite, date)
         return case.HasPlaceDisponible() 
-        
+
+    def IsOuvert(self, IDunite=None, date=None):
+        case = self.GetCase(IDunite, date)
+        if case == None :
+            return _(u"Cette case est inexistante.")
+        return case.ouvert
+
     def SaisieConso(self, IDunite=None, mode="reservation", etat="reservation", heure_debut="defaut", heure_fin="defaut", date=None, quantite=None):
         """ Crée ou modifie une conso pour l'unité indiquée """
         case = self.GetCase(IDunite, date)
@@ -273,7 +291,7 @@ class CTRL(wx.Panel):
         case.SetTexte(texte)
         return True        
     
-    def RecalculerToutesPrestations(self):
+    def RecalculerToutesPrestations(self, event=None):
         self.grille.RecalculerToutesPrestations(modeSilencieux=True) 
     
     def TraitementLot_processus(self, resultats={}):

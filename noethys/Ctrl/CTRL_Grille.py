@@ -4081,7 +4081,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
     
 
     
-    def Imprimer(self):
+    def Imprimer(self, event=None):
         """ Impression des consommations """
         self.CreationPDF() 
         
@@ -4186,7 +4186,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         dictChamps = UTILS_Impression_reservations.Impression(dictDonnees, nomDoc=nomDoc, afficherDoc=afficherDoc)
         return dictChamps
     
-    def EnvoyerEmail(self):
+    def EnvoyerEmail(self, event=None):
         from Utils import UTILS_Envoi_email
         UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("CONSOMMATIONS", "pdf"), categorie="reservations")
         

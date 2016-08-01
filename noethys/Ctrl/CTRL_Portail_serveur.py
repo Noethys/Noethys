@@ -17,6 +17,7 @@ import time
 import datetime
 from threading import Thread
 import FonctionsPerso
+import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Fichiers
 from Utils import UTILS_Portail_synchro
@@ -98,6 +99,7 @@ class Serveur(Thread):
                         synchro.Synchro_totale()
                         self.synchro_en_cours = False
                         self.parent.SetImage("on")
+                        self.parent.MAJ_bouton()
 
                 except Exception, err :
                     if not str(err).startswith("The C++ part"):
@@ -128,14 +130,14 @@ class Panel(wx.Panel):
         
         self.gauge = wx.Gauge(self, -1, range=100, size=(-1, 8))
         
-        self.bouton_analyse = wx.Button(self, -1, _(u"Traiter les\ndemandes"))
-        self.couleur_defaut = self.bouton_analyse.GetBackgroundColour()
+        self.bouton_traiter = wx.Button(self, -1, _(u"Traiter les\ndemandes"))
+        self.couleur_defaut = self.bouton_traiter.GetBackgroundColour()
         self.bouton_outils = wx.Button(self, -1, _(u"Outils"))
         
         self.__do_layout()
         
         # Binds
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAnalyse, self.bouton_analyse)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonTraiter, self.bouton_traiter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
@@ -154,7 +156,7 @@ class Panel(wx.Panel):
         grid_sizer.Add(sizer_log, 1, wx.EXPAND, 0)
         
         grid_sizer_commandes = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
-        grid_sizer_commandes.Add(self.bouton_analyse, 1, wx.EXPAND, 0)
+        grid_sizer_commandes.Add(self.bouton_traiter, 1, wx.EXPAND, 0)
         grid_sizer_commandes.Add(self.bouton_outils, 0, wx.EXPAND, 0)
         grid_sizer_commandes.AddGrowableRow(0)
         grid_sizer_commandes.AddGrowableCol(0)
@@ -173,29 +175,34 @@ class Panel(wx.Panel):
         self.delai = LISTE_DELAIS_SYNCHRO[index][0]
         self.synchro_ouverture = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="serveur_synchro_ouverture", valeur=True)
 
-        return
+        self.MAJ_bouton()
 
+    def MAJ_bouton(self):
+        # Recherche le nombre d'actions enregistrées non traitées
+        DB = GestionDB.DB()
+        req = """SELECT IDaction, horodatage
+        FROM portail_actions
+        WHERE etat <> 'validation';"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        nbre_actions_attente = len(listeDonnees)
 
-        IDfichier = FonctionsPerso.GetIDfichier()
-        listeFichiers = os.listdir(UTILS_Fichiers.GetRepSync())
-        nbreFichiers = 0
-        for nomFichier in listeFichiers :
-            if nomFichier.startswith("actions_%s" % IDfichier) and nomFichier.endswith(".dat") :
-                nbreFichiers += 1
-        
         # MAJ du bouton Analyser
-        if nbreFichiers == 0 :
-            self.bouton_analyse.SetToolTipString(_(u"Aucun fichier à importer"))
-            self.bouton_analyse.SetBackgroundColour(self.couleur_defaut)
-            self.bouton_analyse.Enable(False)            
-        elif nbreFichiers == 1 :
-            self.bouton_analyse.SetToolTipString(_(u"1 fichier à importer"))
-            self.bouton_analyse.SetBackgroundColour((150, 255, 150))
-            self.bouton_analyse.Enable(True)
+        if nbre_actions_attente == 0 :
+            texte = _(u"Aucune\ndemande")
+            self.bouton_traiter.SetBackgroundColour(self.couleur_defaut)
+            #self.bouton_traiter.Enable(False)
+        elif nbre_actions_attente == 1 :
+            texte = _(u"1 demande\nà traiter")
+            self.bouton_traiter.SetBackgroundColour((150, 255, 150))
+            #self.bouton_traiter.Enable(True)
         else :
-            self.bouton_analyse.SetToolTipString(_(u"%d fichiers à importer") % nbreFichiers)
-            self.bouton_analyse.SetBackgroundColour((150, 255, 150))
-            self.bouton_analyse.Enable(True)
+            texte = _(u"%d demandes\nà traiter") % nbre_actions_attente
+            self.bouton_traiter.SetBackgroundColour((150, 255, 150))
+            #self.bouton_traiter.Enable(True)
+
+        self.bouton_traiter.SetLabel(texte)
         
     def StartServeur(self):
         if not hasattr(self, "serveur") :
@@ -216,9 +223,9 @@ class Panel(wx.Panel):
             return self.serveur.HasSynchroEnCours()
         return False
 
-    def OnBoutonAnalyse(self, event=None):
-        from Dlg import DLG_Synchronisation
-        dlg = DLG_Synchronisation.Dialog(self)
+    def OnBoutonTraiter(self, event=None):
+        from Dlg import DLG_Portail_demandes
+        dlg = DLG_Portail_demandes.Dialog(self)
         dlg.ShowModal() 
         dlg.Destroy()
         self.MAJ() 

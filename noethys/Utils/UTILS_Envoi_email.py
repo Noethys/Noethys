@@ -21,9 +21,13 @@ import re
 import UTILS_Titulaires
 
 
-def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", listeAdresses=[]):
+def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", listeAdresses=[], visible=True, log=None, CreationPDF=None):
     # Création du PDF
-    dictChamps = parent.CreationPDF(nomDoc=nomDoc, afficherDoc=False)
+    if CreationPDF != None :
+        temp = CreationPDF
+    else :
+        temp = parent.CreationPDF
+    dictChamps = temp(nomDoc=nomDoc, afficherDoc=False)
     if dictChamps == False :
         return False
     
@@ -42,14 +46,35 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
             "champs" : dictChamps,
             })
     from Dlg import DLG_Mailer
-    dlg = DLG_Mailer.Dialog(parent, categorie=categorie)
+    dlg = DLG_Mailer.Dialog(parent, categorie=categorie, afficher_confirmation_envoi=visible)
     dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
     dlg.ChargerModeleDefaut()
-    dlg.ShowModal() 
+
+    if visible == True :
+        # Fenêtre visible
+        dlg.ShowModal()
+
+    else :
+        # Fenêtre cachée
+        dlg.OnBoutonEnvoyer(None)
+
+    if len(dlg.listeSucces) > 0 :
+        resultat = True
+        if log : log.EcritLog(_(u"L'Email a été envoyé avec succès."))
+    else :
+        resultat = False
+        if log : log.EcritLog(_(u"[ERREUR] L'envoi de l'Email a rencontré une erreur."))
+
     dlg.Destroy()
 
     # Suppression du PDF temporaire
-    os.remove(nomDoc)        
+    try :
+        os.remove(nomDoc)
+    except :
+        pass
+
+    return resultat
+
 
 
 def ValidationEmail(email):

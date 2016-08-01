@@ -1510,6 +1510,26 @@ DB_DATA = {
                                     ("ordre", "INTEGER", u"Ordre"),
                                     ], # Unités de réservations pour le portail
 
+    "portail_actions":              [("IDaction", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID action"),
+                                    ("horodatage", "DATETIME", u"Horodatage de l'action"),
+                                    ("IDfamille", "INTEGER", u"ID de la famille"),
+                                    ("categorie", "VARCHAR(50)", u"Catégorie de l'action"),
+                                    ("action", "VARCHAR(50)", u"Nom de l'action"),
+                                    ("description", "VARCHAR(300)", u"Description de l'action"),
+                                    ("commentaire", "VARCHAR(300)", u"Commentaire de l'action"),
+                                    ("parametres", "VARCHAR(300)", u"Paramètres de l'action"),
+                                    ("etat", "VARCHAR(50)", u"Etat de l'action"),
+                                    ("traitement_date", "DATE", u"Date du traitement de l'action"),
+                                    ("IDperiode", "INTEGER", u"ID de la période"),
+                                    ], # Actions enregistrées sur le portail
+
+    "portail_reservations":         [("IDreservation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID réservation"),
+                                    ("date", "DATE", u"Date de la consommation"),
+                                    ("IDinscription", "INTEGER", u"ID de l'inscription"),
+                                    ("IDunite", "INTEGER", u"ID de l'unité"),
+                                    ("IDaction", "INTEGER", u"ID de l'action"),
+                                    ], # Réservations enregistrées sur le portail
+
 
 
     }

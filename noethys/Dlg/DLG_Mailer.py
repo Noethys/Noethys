@@ -448,7 +448,7 @@ class Dialog(wx.Dialog):
         listePiecesCommunes = self.ctrl_pieces.GetDonnees() 
 
         # Demande de confirmation
-        if adresseTest == None :
+        if adresseTest == None and self.afficher_confirmation_envoi == True :
             dlg = wx.MessageDialog(self, _(u"Confirmez-vous l'envoi de ce message pour %d destinataires ?\n\nAttention, l'envoi peut prendre quelques minutes...") % len(listeDestinataires), _(u"Confirmation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
             if dlg.ShowModal() != wx.ID_YES :
                 dlg.Destroy()

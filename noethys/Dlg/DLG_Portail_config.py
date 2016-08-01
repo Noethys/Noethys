@@ -677,8 +677,10 @@ class Dialog(wx.Dialog):
         synchro.Start()
 
     def OnBoutonTraiter(self, event):
-        pass
-        
+        from Dlg import DLG_Portail_demandes
+        dlg = DLG_Portail_demandes.Dialog(self)
+        dlg.ShowModal()
+        dlg.Destroy()
 
 
 class Synchro():

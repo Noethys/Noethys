@@ -38,8 +38,8 @@ class Track(object):
         else :
             self.labelCompte = u"%s - %s" % (self.numeroCompte, self.nomCompte)
         
-        
-    
+
+
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso

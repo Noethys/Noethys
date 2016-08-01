@@ -803,7 +803,7 @@ class Synchro():
             page = reponse.read()
 
         except Exception, err :
-            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier : %s") % str(err))
+            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier : %s") % err)
 
         # Suppression du fichier
         #ftp = ftplib.FTP(hote, identifiant, mdp)
@@ -833,24 +833,81 @@ class Synchro():
         # Codage de la clé de sécurité
         secret = self.GetSecretInteger()
 
+        # Recherche la dernière demande téléchargée
+        DB = GestionDB.DB()
+        req = """
+        SELECT horodatage, IDfamille
+        FROM portail_actions
+        ORDER BY IDaction DESC
+        LIMIT 1
+        ;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) > 0 :
+            horodatage, IDfamille = listeDonnees[0]
+            last = int("%s%06d" % (horodatage.strftime("%Y%m%d%H%M%S"), IDfamille))
+        else :
+            last = 0
+
+        # Envoi de la requête pour obtenir le XML
         try :
 
             # Création de l'url de syncdown
-            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/syncdown/%d" % int(secret)
+            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/syncdown/%d/%d" % (int(secret), last)
+            print url
 
             # Récupération des données au format json
             req = urllib2.Request(url)
             reponse = urllib2.urlopen(req)
             page = reponse.read()
-            data = json.loads(page)
+            liste_actions = json.loads(page)
 
-            print "Demandes :", data
-
-            self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(data))
+            self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
 
         except Exception, err :
+            print err
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le téléchargement : %s") % str(err))
             return False
+
+        # Sauvegarde des actions
+        if liste_actions != None and len(liste_actions) > 0 :
+
+            # Recherche le prochain IDaction
+            DB = GestionDB.DB()
+            prochainIDaction = DB.GetProchainID("portail_actions")
+
+            listeActions = []
+            listeReservations = []
+
+            for action in liste_actions :
+
+                # Mémorisation des actions
+                listeActions.append([
+                        prochainIDaction, action["horodatage"], action["IDfamille"],
+                        action["categorie"], action["action"], action["description"],
+                        action["commentaire"], action["parametres"], action["etat"],
+                        action["traitement_date"], action["IDperiode"],
+                        ])
+
+                # Mémorisation des réservations
+                if len(action["reservations"]) > 0 :
+
+                    for reservation in action["reservations"] :
+                        listeReservations.append([
+                                reservation["IDreservation"], reservation["date"], reservation["IDinscription"],
+                                reservation["IDunite"], prochainIDaction,
+                                ])
+
+                prochainIDaction += 1
+
+            # Commit
+            if len(listeActions) > 0 :
+                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
+            if len(listeReservations) > 0 :
+                DB.Executermany("INSERT INTO portail_reservations (IDreservation, date, IDinscription, IDunite, IDaction) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
+            DB.Commit()
+            DB.Close()
 
         self.log.EcritLog(_(u"Téléchargement terminé"))
         return True
@@ -861,6 +918,7 @@ class Synchro():
         # Codage de la clé de sécurité
         secret = self.GetSecretInteger()
 
+        liste_actions = []
         try :
 
             # Création de l'url de syncdown

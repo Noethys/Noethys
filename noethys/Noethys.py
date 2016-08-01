@@ -3350,7 +3350,7 @@ class MainFrame(wx.Frame):
                 from Ctrl import CTRL_Portail_serveur
                 self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
                 self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
-                                  Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
+                                  Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 90)).BestSize((-1, 90)) )
 
             # Lancement du serveur
             self._mgr.Update()

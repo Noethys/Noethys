@@ -1876,6 +1876,16 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 1, 7, 2)
+        if versionFichier < versionFiltre :
+            try :
+                if self.IsTableExists("portail_actions") == False : self.CreationTable("portail_actions", Tables.DB_DATA)
+                if self.IsTableExists("portail_reservations") == False : self.CreationTable("portail_reservations", Tables.DB_DATA)
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
 
         return True
 
@@ -2120,12 +2130,12 @@ def AfficheConnexionOuvertes():
 if __name__ == "__main__":
                 
     # Création d'une table données
-    # db = DB(suffixe="DATA")
-    # listeTables = ("portail_unites",)
-    # for nomTable in listeTables :
-    #     db.CreationTable(nomTable, Tables.DB_DATA)
-    # db.Close()
-    # print "creation tables ok."
+    db = DB(suffixe="DATA")
+    listeTables = ("portail_actions", "portail_reservations")
+    for nomTable in listeTables :
+        db.CreationTable(nomTable, Tables.DB_DATA)
+    db.Close()
+    print "creation tables ok."
 
 
 ## ----------------------------------------------------------------------
@@ -2156,9 +2166,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    db = DB(suffixe="DATA")
-    db.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
-    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
+    # db.Close()
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")
