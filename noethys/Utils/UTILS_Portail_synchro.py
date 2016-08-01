@@ -803,6 +803,7 @@ class Synchro():
             page = reponse.read()
 
         except Exception, err :
+            print err
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier : %s") % err)
 
         # Suppression du fichier
@@ -863,7 +864,12 @@ class Synchro():
             page = reponse.read()
             liste_actions = json.loads(page)
 
-            self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
+            if len(liste_actions) == 0 :
+                self.log.EcritLog(_(u"Aucune demande non traitée trouvée..."))
+            elif len(liste_actions) == 1 :
+                self.log.EcritLog(_(u"1 demande non traitée trouvée..."))
+            else :
+                self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
 
         except Exception, err :
             print err
@@ -895,7 +901,7 @@ class Synchro():
 
                     for reservation in action["reservations"] :
                         listeReservations.append([
-                                reservation["IDreservation"], reservation["date"], reservation["IDinscription"],
+                                reservation["date"], reservation["IDinscription"],
                                 reservation["IDunite"], prochainIDaction,
                                 ])
 
@@ -905,7 +911,7 @@ class Synchro():
             if len(listeActions) > 0 :
                 DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
-                DB.Executermany("INSERT INTO portail_reservations (IDreservation, date, IDinscription, IDunite, IDaction) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
+                DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction) VALUES (?, ?, ?, ?)", listeReservations, commit=False)
             DB.Commit()
             DB.Close()
 
