@@ -33,8 +33,9 @@ def GetSecretKey():
     return code
 
 LISTE_THEMES = [("blue", u"Bleu"), ("black", u"Noir"), ("green", u"Vert"), ("purple", u"Violet"), ("red", u"Rouge"), ("yellow", u"Jaune")]
-
 LISTE_DELAIS_SYNCHRO = [(15, u"Toutes les 15 minutes"), (30, u"Toutes les 30 minutes"), (60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures")]
+LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
+
 
 VALEURS_DEFAUT = {
     "portail_activation" : False,
@@ -75,6 +76,7 @@ VALEURS_DEFAUT = {
     "pieces_autoriser_telechargement" : True,
     "cotisations_afficher" : True,
     "historique_afficher" : True,
+    "historique_delai" : 0,
     "contact_afficher" : True,
     "mentions_afficher" : True,
     "aide_afficher" : True,
@@ -414,6 +416,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Délai d'affichage de l'historique
+        nom = "historique_delai"
+        propriete = wxpg.EnumProperty(label=_(u"Temps d'affichage de l'historique"), labels=[y for x, y in LISTE_AFFICHAGE_HISTORIQUE], values=range(0, len(LISTE_AFFICHAGE_HISTORIQUE)), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez un délai pour l'affichage de l'historique : Au-delà l'historique sera caché."))
+        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
 
