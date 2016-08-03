@@ -1521,6 +1521,7 @@ DB_DATA = {
                                     ("etat", "VARCHAR(50)", u"Etat de l'action"),
                                     ("traitement_date", "DATE", u"Date du traitement de l'action"),
                                     ("IDperiode", "INTEGER", u"ID de la période"),
+                                    ("ref_unique", "VARCHAR(50)", u"Référence unique de l'action"),
                                     ], # Actions enregistrées sur le portail
 
     "portail_reservations":         [("IDreservation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID réservation"),

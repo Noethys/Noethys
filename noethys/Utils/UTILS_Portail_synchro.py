@@ -55,7 +55,7 @@ class Synchro():
 
         self.log = log
         self.num_etape = 0
-        self.nbre_etapes = 24
+        self.nbre_etapes = 25
 
     def Pulse_gauge(self, num=None):
         if num == None :
@@ -741,6 +741,19 @@ class Synchro():
                 m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)
                 session.add(m)
 
+        # Création des actions
+        self.Pulse_gauge()
+
+        req = """SELECT IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique
+        FROM portail_actions
+        WHERE horodatage>='%s';""" % (datetime.datetime.now() - datetime.timedelta(days=90))
+        DB.ExecuterReq(req)
+        listeActions = DB.ResultatReq()
+        for IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique in listeActions :
+            traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
+            m = models.Action(horodatage=horodatage, IDfamille=IDfamille, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique)
+            session.add(m)
+
         # Fermeture de la base de données Noethys
         DB.Close()
 
@@ -798,6 +811,7 @@ class Synchro():
         page = None
         try :
             url = self.dict_parametres["url_repertoire"] + "/portail.cgi/syncup/%d" % secret
+            print "URL syncup =", url
             req = urllib2.Request(url)
             reponse = urllib2.urlopen(req)
             page = reponse.read()
@@ -837,7 +851,7 @@ class Synchro():
         # Recherche la dernière demande téléchargée
         DB = GestionDB.DB()
         req = """
-        SELECT horodatage, IDfamille
+        SELECT horodatage, IDfamille, ref_unique
         FROM portail_actions
         ORDER BY IDaction DESC
         LIMIT 1
@@ -846,8 +860,8 @@ class Synchro():
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            horodatage, IDfamille = listeDonnees[0]
-            last = int("%s%06d" % (horodatage.strftime("%Y%m%d%H%M%S"), IDfamille))
+            horodatage, IDfamille, ref_unique = listeDonnees[0]
+            last = int(ref_unique)
         else :
             last = 0
 
@@ -856,7 +870,7 @@ class Synchro():
 
             # Création de l'url de syncdown
             url = self.dict_parametres["url_repertoire"] + "/portail.cgi/syncdown/%d/%d" % (int(secret), last)
-            print url
+            print "URL syncdown =", url
 
             # Récupération des données au format json
             req = urllib2.Request(url)
@@ -893,7 +907,7 @@ class Synchro():
                         prochainIDaction, action["horodatage"], action["IDfamille"],
                         action["categorie"], action["action"], action["description"],
                         action["commentaire"], action["parametres"], action["etat"],
-                        action["traitement_date"], action["IDperiode"],
+                        action["traitement_date"], action["IDperiode"], action["ref_unique"]
                         ])
 
                 # Mémorisation des réservations
@@ -909,7 +923,7 @@ class Synchro():
 
             # Commit
             if len(listeActions) > 0 :
-                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
+                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction) VALUES (?, ?, ?, ?)", listeReservations, commit=False)
             DB.Commit()
