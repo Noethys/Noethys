@@ -894,6 +894,13 @@ class Synchro():
         # Sauvegarde des actions
         if liste_actions != None and len(liste_actions) > 0 :
 
+            # Recherche la réservation la plus récente pour chaque période
+            dict_dernieres_reservations = {}
+            for action in liste_actions :
+                if action["categorie"] == "reservations" :
+                    if not dict_dernieres_reservations.has_key(action["IDperiode"]) or (action["horodatage"] > dict_dernieres_reservations[action["IDperiode"]]["horodatage"] and action["etat"] != "suppression") :
+                        dict_dernieres_reservations[action["IDperiode"]] = action
+
             # Recherche le prochain IDaction
             DB = GestionDB.DB()
             prochainIDaction = DB.GetProchainID("portail_actions")
@@ -903,11 +910,17 @@ class Synchro():
 
             for action in liste_actions :
 
+                # Ecrase les réservations les plus anciennes pour chaque période
+                etat = action["etat"]
+                if action["categorie"] == "reservations" :
+                    if dict_dernieres_reservations[action["IDperiode"]] != action :
+                        etat = "suppression"
+
                 # Mémorisation des actions
                 listeActions.append([
                         prochainIDaction, action["horodatage"], action["IDfamille"],
                         action["categorie"], action["action"], action["description"],
-                        action["commentaire"], action["parametres"], action["etat"],
+                        action["commentaire"], action["parametres"], etat,
                         action["traitement_date"], action["IDperiode"], action["ref_unique"]
                         ])
 
@@ -922,7 +935,7 @@ class Synchro():
 
                 prochainIDaction += 1
 
-            # Commit
+            # Enregistrement des actions
             if len(listeActions) > 0 :
                 DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :

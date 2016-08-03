@@ -266,7 +266,10 @@ class Panel(wx.Panel):
         dlg.ShowModal()
         dlg.Destroy()
         self.MAJ()
-        self.parent.AfficherServeurConnecthys()
+        try :
+            self.parent.AfficherServeurConnecthys()
+        except :
+            pass
 
     def SetImage(self, etat="on"):
         if etat == "upload" : 
