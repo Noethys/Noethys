@@ -33,21 +33,21 @@ class Track(object):
 
         # Affichage
         self.affichage = bool(donnees[5])
-        self.affichage_date_debut = UTILS_Dates.DateEngEnDateDD(donnees[6])
-        self.affichage_date_fin = UTILS_Dates.DateEngEnDateDD(donnees[7])
+        self.affichage_date_debut = donnees[6]
+        self.affichage_date_fin = donnees[7]
 
         if self.affichage == True :
             if self.affichage_date_debut == None :
-                self.affichage_periode = _(u"Toujours afficher")
+                self.affichage_periode = True #_(u"Toujours afficher")
                 self.affichage_actuel = True
             else :
-                self.affichage_periode = u"%s;%s" % (self.affichage_date_fin, self.affichage_date_debut)
-                if self.affichage_date_debut <= datetime.date.today() and self.affichage_date_fin >= datetime.date.today() :
+                self.affichage_periode = (self.affichage_date_fin, self.affichage_date_debut)
+                if self.affichage_date_debut <= datetime.datetime.now() and self.affichage_date_fin >= datetime.datetime.now() :
                     self.affichage_actuel = True
                 else :
                     self.affichage_actuel = False
         else :
-            self.affichage_periode = _(u"Ne pas afficher")
+            self.affichage_periode = False #_(u"Ne pas afficher")
             self.affichage_actuel = False
     
 class ListView(FastObjectListView):
@@ -116,15 +116,24 @@ class ListView(FastObjectListView):
         def FormatePeriode(periode):
             if periode != None and ";" in periode :
                 date_fin, date_debut = periode.split(";")
-                return _(u"Du %s au %s") % (UTILS_Dates.DateEngFr(date_debut), UTILS_Dates.DateEngFr(date_fin))
+                return _(u"Du %s au %s") % (UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
             else :
                 return periode
 
+        def FormatePeriodeAffichage(periode):
+            if periode == True :
+                return _(u"Toujours afficher")
+            elif periode == False :
+                _(u"Ne pas afficher")
+            else :
+                return _(u"Du %s au %s") % (periode[1].strftime("%d/%m/%Y-%Hh%M"), periode[0].strftime("%d/%m/%Y-%Hh%M"))
+
+
         liste_Colonnes = [
             ColumnDefn(u"", "left", 0, "IDperiode", typeDonnee="entier"),
-            ColumnDefn(_(u"Période"), 'left', 200, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
+            ColumnDefn(_(u"Période"), 'left', 180, "periode", typeDonnee="texte", stringConverter=FormatePeriode),
             ColumnDefn(_(u"Nom"), "left", 180, "nom", typeDonnee="texte", isSpaceFilling=True),
-            ColumnDefn(_(u"Affichage"), 'left', 200, "affichage_periode", typeDonnee="texte", imageGetter=GetImageAffichage, stringConverter=FormatePeriode),
+            ColumnDefn(_(u"Affichage"), 'left', 280, "affichage_periode", typeDonnee="texte", imageGetter=GetImageAffichage, stringConverter=FormatePeriodeAffichage),
             ]
         
         self.SetColumns(liste_Colonnes)

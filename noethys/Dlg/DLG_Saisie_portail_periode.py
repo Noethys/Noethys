@@ -12,13 +12,12 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
+import datetime
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
+from Ctrl import CTRL_Saisie_heure
 import GestionDB
-
-
-
 
 
 class Dialog(wx.Dialog):
@@ -34,7 +33,7 @@ class Dialog(wx.Dialog):
         else :
             titre = _(u"Modification d'une période de réservations")
         self.SetTitle(titre)
-        intro = _(u"")
+        intro = _(u"Définissez ici une période en renseignant le nom de la période, la période correspondante dans le calendrier des ouvertures et une éventuelle période daffichage sur le portail.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Emails_exp.png")
         
         # Nom
@@ -51,10 +50,13 @@ class Dialog(wx.Dialog):
         # Affichage
         self.box_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage sur le portail"))
         self.radio_oui = wx.RadioButton(self, -1, _(u"Toujours afficher"), style=wx.RB_GROUP)
-        self.radio_dates = wx.RadioButton(self, -1, _(u"Afficher uniquement du"))
+        self.radio_dates = wx.RadioButton(self, -1, _(u"Afficher uniquement sur la période suivante :"))
+        self.label_affichage_date_debut = wx.StaticText(self, -1, _(u"Du"))
         self.ctrl_affichage_date_debut = CTRL_Saisie_date.Date2(self)
+        self.ctrl_affichage_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.label_affichage_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_affichage_date_fin = CTRL_Saisie_date.Date2(self)
+        self.ctrl_affichage_heure_fin = CTRL_Saisie_heure.Heure(self)
         self.radio_non = wx.RadioButton(self, -1, _(u"Ne pas afficher"))
         
         # Boutons
@@ -114,15 +116,19 @@ class Dialog(wx.Dialog):
         # Affichage
         box_affichage = wx.StaticBoxSizer(self.box_affichage_staticbox, wx.VERTICAL)
 
-        grid_sizer_affichage = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+        grid_sizer_affichage = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
         grid_sizer_affichage.Add(self.radio_oui, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
-        grid_sizer_affichage_periode = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
-        grid_sizer_affichage_periode.Add(self.radio_dates, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.radio_dates, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_affichage_periode = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
+        grid_sizer_affichage_periode.Add(self.label_affichage_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage_periode.Add(self.ctrl_affichage_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage_periode.Add(self.ctrl_affichage_heure_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage_periode.Add(self.label_affichage_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage_periode.Add(self.ctrl_affichage_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(grid_sizer_affichage_periode, 0, wx.EXPAND, 0)
+        grid_sizer_affichage_periode.Add(self.ctrl_affichage_heure_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(grid_sizer_affichage_periode, 0, wx.EXPAND | wx.LEFT, 16)
 
         grid_sizer_affichage.Add(self.radio_non, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.AddGrowableCol(0)
@@ -150,8 +156,12 @@ class Dialog(wx.Dialog):
 
     def OnRadioAffichage(self, event):
         etat = self.radio_dates.GetValue()
+        self.label_affichage_date_debut.Enable(etat)
         self.ctrl_affichage_date_debut.Enable(etat)
         self.ctrl_affichage_date_fin.Enable(etat)
+        self.label_affichage_date_fin.Enable(etat)
+        self.ctrl_affichage_heure_debut.Enable(etat)
+        self.ctrl_affichage_heure_fin.Enable(etat)
 
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
@@ -179,13 +189,15 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.SetValue(nom)
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)
-        self.ctrl_affichage_date_debut.SetDate(affichage_date_debut)
-        self.ctrl_affichage_date_fin.SetDate(affichage_date_fin)
 
         if affichage == 1 and affichage_date_debut == None :
             self.radio_oui.SetValue(True)
         elif affichage == 1 and affichage_date_debut != None :
             self.radio_dates.SetValue(True)
+            self.ctrl_affichage_date_debut.SetDate(affichage_date_debut.strftime("%Y-%m-%d"))
+            self.ctrl_affichage_date_fin.SetDate(affichage_date_fin.strftime("%Y-%m-%d"))
+            self.ctrl_affichage_heure_debut.SetHeure(affichage_date_debut.strftime("%H:%M"))
+            self.ctrl_affichage_heure_fin.SetHeure(affichage_date_fin.strftime("%H:%M"))
         else :
             self.radio_non.SetValue(True)
 
@@ -237,6 +249,14 @@ class Dialog(wx.Dialog):
                 self.ctrl_affichage_date_debut.SetFocus()
                 return
 
+            affichage_heure_debut = self.ctrl_affichage_heure_debut.GetHeure()
+            if affichage_heure_debut == None or self.ctrl_affichage_heure_debut.Validation() == False :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_affichage_heure_debut.SetFocus()
+                return
+
             affichage_date_fin = self.ctrl_affichage_date_fin.GetDate()
             if affichage_date_fin == None :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -245,12 +265,24 @@ class Dialog(wx.Dialog):
                 self.ctrl_affichage_date_fin.SetFocus()
                 return
 
+            affichage_heure_fin = self.ctrl_affichage_heure_fin.GetHeure()
+            if affichage_heure_fin == None or self.ctrl_affichage_heure_fin.Validation() == False :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de fin valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_affichage_heure_fin.SetFocus()
+                return
+
             if affichage_date_debut > affichage_date_fin :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin supérieure à la date de début pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_affichage_date_fin.SetFocus()
                 return
+
+            # Assemblage des dates et heures d'affichage
+            affichage_date_debut = datetime.datetime(year=affichage_date_debut.year, month=affichage_date_debut.month, day=affichage_date_debut.day, hour=int(affichage_heure_debut[:2]), minute=int(affichage_heure_debut[3:]))
+            affichage_date_fin = datetime.datetime(year=affichage_date_fin.year, month=affichage_date_fin.month, day=affichage_date_fin.day, hour=int(affichage_heure_fin[:2]), minute=int(affichage_heure_fin[3:]))
 
         else :
             affichage_date_debut = None

@@ -1867,8 +1867,8 @@ class DB:
                 if self.IsTableExists("portail_periodes") == False : self.CreationTable("portail_periodes", Tables.DB_DATA)
                 if self.IsTableExists("portail_unites") == False : self.CreationTable("portail_unites", Tables.DB_DATA)
                 self.AjoutChamp("activites", "portail_inscriptions_affichage", "INTEGER")
-                self.AjoutChamp("activites", "portail_inscriptions_date_debut", "DATE")
-                self.AjoutChamp("activites", "portail_inscriptions_date_fin", "DATE")
+                self.AjoutChamp("activites", "portail_inscriptions_date_debut", "DATETIME")
+                self.AjoutChamp("activites", "portail_inscriptions_date_fin", "DATETIME")
                 self.AjoutChamp("activites", "portail_reservations_affichage", "INTEGER")
                 self.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
                 from Utils import UTILS_Procedures
@@ -2131,7 +2131,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     db = DB(suffixe="DATA")
-    listeTables = ("portail_actions", "portail_reservations")
+    listeTables = ("portail_periodes", "portail_reservations")
     for nomTable in listeTables :
         db.CreationTable(nomTable, Tables.DB_DATA)
     db.Close()

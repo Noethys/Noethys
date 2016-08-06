@@ -611,8 +611,8 @@ class Synchro():
         listeActivites = DB.ResultatReq()
         dict_activites = {}
         for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples in listeActivites :
-            inscriptions_date_debut = UTILS_Dates.DateEngEnDateDD(inscriptions_date_debut)
-            inscriptions_date_fin = UTILS_Dates.DateEngEnDateDD(inscriptions_date_fin)
+            #inscriptions_date_debut = UTILS_Dates.DateEngEnDateDD(inscriptions_date_debut)
+            #inscriptions_date_fin = UTILS_Dates.DateEngEnDateDD(inscriptions_date_fin)
 
             m = models.Activite(IDactivite=IDactivite, nom=nom, inscriptions_affichage=inscriptions_affichage, \
                          inscriptions_date_debut=inscriptions_date_debut, inscriptions_date_fin=inscriptions_date_fin, \
@@ -691,8 +691,8 @@ class Synchro():
         for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin in listePeriodes :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
-            affichage_date_debut = UTILS_Dates.DateEngEnDateDD(affichage_date_debut)
-            affichage_date_fin = UTILS_Dates.DateEngEnDateDD(affichage_date_fin)
+            #affichage_date_debut = UTILS_Dates.DateEngEnDateDD(affichage_date_debut)
+            #affichage_date_fin = UTILS_Dates.DateEngEnDateDD(affichage_date_fin)
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
                         affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
@@ -710,7 +710,7 @@ class Synchro():
         listeConditions = []
         for IDactivite, periode in dict_dates_activites.iteritems() :
             listeConditions.append("(IDactivite=%d AND date>='%s' AND date<='%s')" % (IDactivite, periode["date_min"], periode["date_max"]))
-        texteConditions = " AND ".join(listeConditions)
+        texteConditions = " OR ".join(listeConditions)
 
         # Création des ouvertures
         self.Pulse_gauge()

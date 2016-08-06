@@ -258,8 +258,8 @@ DB_DATA = {
                                     ("psu_tarif_forfait", "INTEGER", u"Mode PSU : IDtarif forfait-crédit"),
                                     ("psu_etiquette_rtt", "INTEGER", u"Mode PSU : IDetiquette Absences RTT"),
                                     ("portail_inscriptions_affichage", "INTEGER", u"Inscriptions autorisées sur le portail (0/1)"),
-                                    ("portail_inscriptions_date_debut", "DATE", u"Inscriptions autorisées - début d'affichage"),
-                                    ("portail_inscriptions_date_fin", "DATE", u"Inscriptions autorisées - fin d'affichage"),
+                                    ("portail_inscriptions_date_debut", "DATETIME", u"Inscriptions autorisées - début d'affichage"),
+                                    ("portail_inscriptions_date_fin", "DATETIME", u"Inscriptions autorisées - fin d'affichage"),
                                     ("portail_reservations_affichage", "INTEGER", u"Réservations autorisées sur le portail (0/1)"),
                                     ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
                                     ], # Activités
@@ -1498,8 +1498,8 @@ DB_DATA = {
                                     ("date_debut", "DATE", u"Date de début de la période"),
                                     ("date_fin", "DATE", u"Date de fin de la période"),
                                     ("affichage", "INTEGER", u"Affiché sur le portail (0/1)"),
-                                    ("affichage_date_debut", "DATE", u"Date de début d'affichage"),
-                                    ("affichage_date_fin", "DATE", u"Date de fin d'affichage"),
+                                    ("affichage_date_debut", "DATETIME", u"Date et heure de début d'affichage"),
+                                    ("affichage_date_fin", "DATETIME", u"Date et heure de fin d'affichage"),
                                     ], # Périodes de réservations pour le portail
 
     "portail_unites":               [("IDunite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID unité"),

@@ -12,7 +12,8 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+import datetime
+from Ctrl import CTRL_Saisie_heure
 from Ol import OL_Portail_periodes
 from Ol import OL_Portail_unites
 from Ctrl import CTRL_Saisie_date
@@ -32,8 +33,10 @@ class Panel(wx.Panel):
         self.radio_inscriptions_oui = wx.RadioButton(self, -1, _(u"Autoriser"))
         self.radio_inscriptions_dates = wx.RadioButton(self, -1, _(u"Autoriser uniquement du"))
         self.ctrl_inscriptions_date_debut = CTRL_Saisie_date.Date2(self)
+        self.ctrl_inscriptions_heure_debut = CTRL_Saisie_heure.Heure(self)
         self.label_inscriptions_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_inscriptions_date_fin = CTRL_Saisie_date.Date2(self)
+        self.ctrl_inscriptions_heure_fin = CTRL_Saisie_heure.Heure(self)
 
         # Réservations
         self.box_reservations_staticbox = wx.StaticBox(self, -1, _(u"Réservations sur le portail"))
@@ -108,11 +111,13 @@ class Panel(wx.Panel):
         grid_sizer_affichage.Add(self.radio_inscriptions_non, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(self.radio_inscriptions_oui, 0, wx.ALIGN_CENTER_VERTICAL, 0)
 
-        grid_sizer_affichage_periode = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
+        grid_sizer_affichage_periode = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         grid_sizer_affichage_periode.Add(self.radio_inscriptions_dates, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage_periode.Add(self.ctrl_inscriptions_date_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage_periode.Add(self.ctrl_inscriptions_heure_debut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage_periode.Add(self.label_inscriptions_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage_periode.Add(self.ctrl_inscriptions_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage_periode.Add(self.ctrl_inscriptions_heure_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_affichage.Add(grid_sizer_affichage_periode, 0, wx.EXPAND, 0)
 
         staticbox_inscriptions.Add(grid_sizer_affichage, 1, wx.ALL|wx.EXPAND, 5)
@@ -168,6 +173,8 @@ class Panel(wx.Panel):
         etat = self.radio_inscriptions_dates.GetValue()
         self.ctrl_inscriptions_date_debut.Enable(etat)
         self.ctrl_inscriptions_date_fin.Enable(etat)
+        self.ctrl_inscriptions_heure_debut.Enable(etat)
+        self.ctrl_inscriptions_heure_fin.Enable(etat)
 
     def Importation(self):
         """ Importation des données """
@@ -186,12 +193,14 @@ class Panel(wx.Panel):
         if portail_inscriptions_affichage == 1 :
             if portail_inscriptions_date_debut != None :
                 self.radio_inscriptions_dates.SetValue(True)
+                self.ctrl_inscriptions_date_debut.SetDate(portail_inscriptions_date_debut.strftime("%Y-%m-%d"))
+                self.ctrl_inscriptions_heure_debut.SetHeure(portail_inscriptions_date_debut.strftime("%H:%M"))
+                self.ctrl_inscriptions_date_fin.SetDate(portail_inscriptions_date_fin.strftime("%Y-%m-%d"))
+                self.ctrl_inscriptions_heure_fin.SetHeure(portail_inscriptions_date_fin.strftime("%H:%M"))
             else :
                 self.radio_inscriptions_oui.SetValue(True)
         else :
             self.radio_inscriptions_non.SetValue(True)
-        self.ctrl_inscriptions_date_debut.SetDate(portail_inscriptions_date_debut)
-        self.ctrl_inscriptions_date_fin.SetDate(portail_inscriptions_date_fin)
 
         # Réservations
         if portail_reservations_affichage == 1 :
@@ -213,12 +222,28 @@ class Panel(wx.Panel):
                 self.ctrl_inscriptions_date_debut.SetFocus()
                 return False
 
+            affichage_heure_debut = self.ctrl_inscriptions_heure_debut.GetHeure()
+            if affichage_heure_debut == None or self.ctrl_inscriptions_heure_debut.Validation() == False :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de début valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_inscriptions_heure_debut.SetFocus()
+                return False
+
             affichage_date_fin = self.ctrl_inscriptions_date_fin.GetDate()
             if affichage_date_fin == None :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_inscriptions_date_fin.SetFocus()
+                return False
+
+            affichage_heure_fin = self.ctrl_inscriptions_heure_fin.GetHeure()
+            if affichage_heure_fin == None or self.ctrl_inscriptions_heure_fin.Validation() == False :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir une heure de fin valide pour l'affichage !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_inscriptions_heure_fin.SetFocus()
                 return False
 
             if affichage_date_debut > affichage_date_fin :
@@ -244,8 +269,13 @@ class Panel(wx.Panel):
             portail_inscriptions_affichage = True
         if self.radio_inscriptions_dates.GetValue() == True :
             portail_inscriptions_affichage = True
-            portail_inscriptions_date_debut = self.ctrl_inscriptions_date_debut.GetDate()
-            portail_inscriptions_date_fin = self.ctrl_inscriptions_date_debut.GetDate()
+            affichage_date_debut = self.ctrl_inscriptions_date_debut.GetDate()
+            affichage_heure_debut = self.ctrl_inscriptions_heure_debut.GetHeure()
+            portail_inscriptions_date_debut = datetime.datetime(year=affichage_date_debut.year, month=affichage_date_debut.month, day=affichage_date_debut.day, hour=int(affichage_heure_debut[:2]), minute=int(affichage_heure_debut[3:]))
+
+            affichage_date_fin = self.ctrl_inscriptions_date_fin.GetDate()
+            affichage_heure_fin = self.ctrl_inscriptions_heure_fin.GetHeure()
+            portail_inscriptions_date_fin = datetime.datetime(year=affichage_date_fin.year, month=affichage_date_fin.month, day=affichage_date_fin.day, hour=int(affichage_heure_fin[:2]), minute=int(affichage_heure_fin[3:]))
 
         # Données réservations
         if self.radio_reservations_oui.GetValue() == True : portail_reservations_affichage = True
