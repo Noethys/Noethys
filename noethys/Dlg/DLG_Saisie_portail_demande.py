@@ -318,7 +318,8 @@ class Dialog(wx.Dialog):
         self.ctrl_description.SetValue(self.track.description)
 
         # Commentaire
-        self.ctrl_commentaire.SetValue(self.track.commentaire)
+        if self.track.commentaire != None :
+            self.ctrl_commentaire.SetValue(self.track.commentaire)
 
         # Etat
         self.SetEtat(self.track.etat, self.track.traitement_date)

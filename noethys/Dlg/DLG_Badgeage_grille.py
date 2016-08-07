@@ -269,7 +269,7 @@ class CTRL(wx.Panel):
             return _(u"Interdit de supprimer une consommation déjà facturée.")
         if case.etat in ("present", "absenti", "absentj") :
             return _(u"Interdit de supprimer une consommation déjà pointée.")
-        case.OnClick(modeSilencieux=True)
+        case.OnClick(modeSilencieux=True, ForcerSuppr=True)
         return True
 
     def ModifieEtat(self, IDunite=None, etat="reservation", date=None):
