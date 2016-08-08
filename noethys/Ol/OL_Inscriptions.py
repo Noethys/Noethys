@@ -400,63 +400,9 @@ class ListView(FastObjectListView):
             pass
 
         from Dlg import DLG_Inscription
-        dlg = DLG_Inscription.Dialog(self, mode="saisie", cp=cp, ville=ville)
-        dlg.SetFamille(listeNoms, listeFamille, IDfamille, False)
+        dlg = DLG_Inscription.Dialog(self, mode="saisie", IDindividu=self.IDindividu, IDfamille=IDfamille, cp=cp, ville=ville)
         if dlg.ShowModal() == wx.ID_OK:
-            IDfamille = dlg.GetIDfamille()
-            IDactivite = dlg.GetIDactivite()
-            IDgroupe = dlg.GetIDgroupe()
-            IDcategorie_tarif = dlg.GetIDcategorie()
-            nomActivite = dlg.GetNomActivite()
-            nomGroupe = dlg.GetNomGroupe() 
-            nomCategorie = dlg.GetNomCategorie() 
-            IDcompte_payeur = self.GetCompteFamille(IDfamille)
-            parti = dlg.GetParti() 
-            
-            # Verrouillage utilisateurs
-            if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_inscriptions", "creer", IDactivite=IDactivite) == False : 
-                return
-            
-            # Vérifie que l'individu n'est pas déjà inscrit à cette activite
-            for inscription in self.donnees :
-                if inscription.IDactivite == IDactivite and inscription.IDfamille == IDfamille :
-                    dlg2 = wx.MessageDialog(self, _(u"Cet individu est déjà inscrit à l'activité '%s' !") % inscription.nom_activite, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
-                    dlg2.ShowModal()
-                    dlg2.Destroy()
-                    dlg.Destroy()
-                    return
-            
-            # Sauvegarde
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("IDindividu", self.IDindividu ),
-                ("IDfamille", IDfamille ),
-                ("IDactivite", IDactivite ),
-                ("IDgroupe", IDgroupe),
-                ("IDcategorie_tarif", IDcategorie_tarif),
-                ("IDcompte_payeur", IDcompte_payeur),
-                ("date_inscription", str(datetime.date.today()) ),
-                ("parti", parti),
-                ]
-            IDinscription = DB.ReqInsert("inscriptions", listeDonnees)
-            DB.Close()
-            
-            # Mémorise l'action dans l'historique
-            UTILS_Historique.InsertActions([{
-                "IDindividu" : self.IDindividu,
-                "IDfamille" : IDfamille,
-                "IDcategorie" : 18, 
-                "action" : _(u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
-                },])
-            
-            # Actualise l'affichage
-            self.MAJ(IDinscription)
-            
-            # Saisie de forfaits auto
-            from Dlg import DLG_Appliquer_forfait
-            f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.IDindividu,], saisieManuelle=False, saisieAuto=True)
-            f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite) 
-    
+            self.MAJ(dlg.GetIDinscription())
         dlg.Destroy()
 
     def Modifier(self, event):
@@ -467,54 +413,10 @@ class ListView(FastObjectListView):
             return
         track = self.Selection()[0]
 
-        # Recherche si l'individu est rattaché à d'autres familles
-        listeNoms = []
-        listeFamille = []
-        for IDfamille, dictFamille in self.dictFamillesRattachees.iteritems() :
-            listeFamille.append(IDfamille)
-            listeNoms.append(dictFamille["nomsTitulaires"])
-
         from Dlg import DLG_Inscription
-        IDinscription = track.IDinscription
-        IDfamille = track.IDfamille
-        dlg = DLG_Inscription.Dialog(self, mode="modification")
-        dlg.SetFamille(listeNoms, listeFamille, self.Selection()[0].IDfamille, True)
-        dlg.SetDonnees(IDactivite=track.IDactivite, IDgroupe=track.IDgroupe, IDcategorie=track.IDcategorie_tarif, parti=track.parti)
+        dlg = DLG_Inscription.Dialog(self, mode="modification", IDindividu=self.IDindividu, IDinscription=track.IDinscription, IDfamille=track.IDfamille)
         if dlg.ShowModal() == wx.ID_OK:
-            IDactivite = dlg.GetIDactivite()
-            IDgroupe = dlg.GetIDgroupe()
-            IDcategorie_tarif = dlg.GetIDcategorie()
-            nomActivite = dlg.GetNomActivite()
-            nomGroupe = dlg.GetNomGroupe() 
-            nomCategorie = dlg.GetNomCategorie() 
-            parti = dlg.GetParti() 
-
-            # Verrouillage utilisateurs
-            if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_inscriptions", "modifier", IDactivite=IDactivite) == False : 
-                return
-
-            # Sauvegarde
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("IDindividu", self.IDindividu ),
-                ("IDactivite", IDactivite ),
-                ("IDgroupe", IDgroupe),
-                ("IDcategorie_tarif", IDcategorie_tarif),
-                ("parti", parti),
-                ]
-            DB.ReqMAJ("inscriptions", listeDonnees, "IDinscription", IDinscription)
-            DB.Close()
-            
-            # Mémorise l'action dans l'historique
-            UTILS_Historique.InsertActions([{
-                "IDindividu" : self.IDindividu,
-                "IDfamille" : IDfamille,
-                "IDcategorie" : 20, 
-                "action" : _(u"Modification de l'inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
-                },])
-
-            # Actualise l'affichage
-            self.MAJ(IDinscription)
+            self.MAJ(track.IDinscription)
         dlg.Destroy()
 
     def Supprimer(self, event):
@@ -603,19 +505,7 @@ class ListView(FastObjectListView):
             self.MAJ()
         dlg.Destroy()
 
-    def GetCompteFamille(self, IDfamille=None):
-        """ Récupère le compte_payeur par défaut de la famille """
-        DB = GestionDB.DB()
-        req = """SELECT IDfamille, IDcompte_payeur
-        FROM familles
-        WHERE IDfamille=%d;""" % IDfamille
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()     
-        DB.Close() 
-        if len(listeDonnees) == 0 : return None
-        IDcompte_payeur = listeDonnees[0][1]
-        return IDcompte_payeur
-    
+
     def GetListeActivites(self):
         """ Retourne la liste des activités sur lesquelles l'individu est inscrit """
         """ Sert pour le ctrl DLG_Individu_inscriptions (saisir d'un forfait daté) """

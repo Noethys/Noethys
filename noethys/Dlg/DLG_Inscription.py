@@ -12,31 +12,45 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+
 import datetime
-from Ctrl import CTRL_Bandeau
-import DLG_Inscription_activite
-from Utils import UTILS_Interface
 import GestionDB
+from Ctrl import CTRL_Bouton_image
+from Ctrl import CTRL_Bandeau
+from Utils import UTILS_Interface
+from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Historique
+from Utils import UTILS_Titulaires
+from Dlg import DLG_Inscription_activite
+from Dlg import DLG_Appliquer_forfait
 
 
 
 class Choix_famille(wx.Choice):
-    def __init__(self, parent):
+    def __init__(self, parent, IDindividu=None, verrouillage=False):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
+        self.IDindividu = IDindividu
+        self.verrouillage = verrouillage
         self.listeNoms = []
         self.listeDonnees = []
-    
-    def SetListeDonnees(self, listeDonnees=[]):
-        self.listeNoms = []
-        self.listeDonnees = listeDonnees
-        for dictTemp in listeDonnees :
-            IDfamille = dictTemp["IDfamille"]
-            nom = _(u"Famille de %s") % dictTemp["nom"]
-            self.listeNoms.append(nom)
-        self.SetItems(self.listeNoms)
-    
+        self.MAJ()
+
+    def MAJ(self):
+        if self.IDindividu != None :
+            dictFamillesRattachees = UTILS_Titulaires.GetFamillesRattachees(self.IDindividu)
+
+            self.listeNoms = []
+            self.listeDonnees = []
+            for IDfamille, dictFamille in dictFamillesRattachees.iteritems() :
+                nom = _(u"Famille de %s") % dictFamille["nomsTitulaires"]
+                self.listeNoms.append(nom)
+                self.listeDonnees.append({"IDfamille" : IDfamille, "nom" : nom})
+            self.SetItems(self.listeNoms)
+
+            if len(self.listeDonnees) < 2 or self.verrouillage == True :
+                self.Enable(False)
+
     def SetID(self, ID=None):
         index = 0
         for dictTemp in self.listeDonnees :
@@ -156,34 +170,41 @@ class CTRL_Activite(wx.Panel):
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 
+
+
 class Dialog(wx.Dialog):
-    def __init__(self, parent, mode="saisie", cp=None, ville=None):
+    def __init__(self, parent, mode="saisie", IDindividu=None, IDinscription=None, IDfamille=None, cp=None, ville=None, intro=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
-        self.parent = parent     
+        self.parent = parent
+        self.IDindividu = IDindividu
+        self.IDinscription = IDinscription
+        self.IDfamille = IDfamille
         self.cp = cp
         self.ville = ville
         self.dictActivite = None
         self.IDgroupe = None
         self.mode = mode
-        
-        intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs.")
+
+        if intro == None :
+            intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs.")
         if self.mode == "saisie" :
             titre = _(u"Saisie d'une inscription")
         else :
             titre = _(u"Modification d'une inscription")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
-        self.ctrl_famille = Choix_famille(self)
+        self.ctrl_famille = Choix_famille(self, IDindividu=self.IDindividu, verrouillage=self.mode!="saisie")
         
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"1. Sélectionnez une activité"))
+        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self)
         self.bouton_activites = CTRL_Bouton_image.CTRL(self, texte=_(u"Rechercher"), cheminImage="Images/32x32/Loupe.png")
+        self.ctrl_activite.SetMinSize((-1, self.bouton_activites.GetSize()[1]))
 
-        self.staticbox_groupe_staticbox = wx.StaticBox(self, -1, _(u"2. Sélectionnez un groupe"))
+        self.staticbox_groupe_staticbox = wx.StaticBox(self, -1, _(u"Groupe"))
         self.ctrl_groupes = ListBox(self, type="groupes")
         self.ctrl_groupes.SetMinSize((-1, 80))
         
-        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"3. Sélectionnez une catégorie de tarif"))
+        self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie de tarif"))
         self.ctrl_categories = ListBox(self, type="categories")
         self.ctrl_categories.SetMinSize((-1, 80))
         
@@ -201,8 +222,18 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
         # Init contrôles
+        self.ctrl_famille.SetID(self.IDfamille)
         if self.mode != "saisie" :
-            self.bouton_activites.Enable(False)
+            self.bouton_activites.Show(False)
+            self.Importation()
+
+        if self.mode == "saisie" :
+            if cp == None :
+                # Recherche cp et ville
+                dict_coords = UTILS_Titulaires.GetCoordsIndividu(self.IDindividu)
+                if dict_coords != None :
+                    self.cp = dict_coords["cp_resid"]
+                    self.ville = dict_coords["ville_resid"]
 
 
     def __set_properties(self):
@@ -269,22 +300,55 @@ class Dialog(wx.Dialog):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Activits1")
 
+    def Importation(self):
+        self.ctrl_famille.SetID(self.IDfamille)
+
+        DB = GestionDB.DB()
+        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, parti
+        FROM inscriptions
+        WHERE IDindividu=%d AND IDfamille=%d;""" % (self.IDindividu, self.IDfamille)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) > 0 :
+            IDactivite, IDgroupe, IDcategorie_tarif, parti = listeDonnees[0]
+            self.SetIDactivite(IDactivite)
+            self.ctrl_groupes.SetID(IDgroupe)
+            self.IDgroupe = IDgroupe
+            self.ctrl_categories.SetID(IDcategorie_tarif)
+            if parti == None : parti = 0
+            self.ctrl_parti.SetValue(parti)
+
+
     def OnBoutonOk(self, event):
         # Vérification des données saisies
-        if self.ctrl_activite.GetID() == None :
+        IDactivite = self.GetIDactivite()
+        if IDactivite == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une activité !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        if self.ctrl_groupes.GetID() == None :
+
+        IDgroupe = self.ctrl_groupes.GetID()
+        if IDgroupe == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un groupe !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        if self.ctrl_categories.GetID() == None :
+
+        IDcategorie_tarif = self.ctrl_categories.GetID()
+        if IDcategorie_tarif == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie de tarifs !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
+            return
+
+        # Verrouillage utilisateurs
+        if self.mode == "saisie" :
+            action = "creer"
+        else :
+            action = "modifier"
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_inscriptions", action, IDactivite=IDactivite) == False :
             return
 
         # Vérification du nombre d'inscrits max de l'activité
@@ -297,7 +361,6 @@ class Dialog(wx.Dialog):
                     return
 
         # Vérification du nombre d'inscrits max du groupe
-        IDgroupe = self.ctrl_groupes.GetID()
         if IDgroupe != self.IDgroupe :
             for dictGroupe in self.dictActivite["groupes"] :
                 if dictGroupe["IDgroupe"] == IDgroupe and dictGroupe["nbre_places_disponibles"] != None :
@@ -307,9 +370,72 @@ class Dialog(wx.Dialog):
                         dlg.Destroy()
                         if reponse != wx.ID_YES :
                             return
-        
+
+        # Récupération autres variables
+        IDfamille = self.ctrl_famille.GetID()
+        nomActivite = self.ctrl_activite.GetNomActivite()
+        nomGroupe = self.ctrl_groupes.GetStringSelection()
+        nomCategorie = self.ctrl_categories.GetStringSelection()
+        IDcompte_payeur = self.GetCompteFamille(IDfamille)
+        parti = self.ctrl_parti.GetValue()
+
+        DB = GestionDB.DB()
+
+        # Vérifie que l'individu n'est pas déjà inscrit à cette activite
+        if self.mode == "saisie" :
+            req = """SELECT IDinscription, IDindividu, IDfamille
+            FROM inscriptions
+            WHERE IDindividu=%d AND IDfamille=%d AND IDactivite=%d;""" % (self.IDindividu, IDfamille, IDactivite)
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            if len(listeDonnees) > 0 :
+                DB.Close()
+                dlg = wx.MessageDialog(self, _(u"Cet individu est déjà inscrit à l'activité '%s' !") % nomActivite, _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+        # Sauvegarde
+        listeDonnees = [
+            ("IDindividu", self.IDindividu),
+            ("IDfamille", IDfamille),
+            ("IDactivite", IDactivite),
+            ("IDgroupe", IDgroupe),
+            ("IDcategorie_tarif", IDcategorie_tarif),
+            ("IDcompte_payeur", IDcompte_payeur),
+            ("parti", parti),
+            ]
+        if self.mode == "saisie" :
+            listeDonnees.append(("date_inscription", str(datetime.date.today())))
+            self.IDinscription = DB.ReqInsert("inscriptions", listeDonnees)
+        else :
+            DB.ReqMAJ("inscriptions", listeDonnees, "IDinscription", self.IDinscription)
+        DB.Close()
+
+        # Mémorise l'action dans l'historique
+        if self.mode == "saisie" :
+            IDcategorie_historique = 18
+            texte_historique = _(u"Inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
+        else :
+            IDcategorie_historique = 20
+            texte_historique = _(u"Modification de l'inscription à l'activité '%s' sur le groupe '%s' avec la tarification '%s'") % (nomActivite, nomGroupe, nomCategorie)
+
+        UTILS_Historique.InsertActions([{
+            "IDindividu" : self.IDindividu,
+            "IDfamille" : IDfamille,
+            "IDcategorie" : IDcategorie_historique,
+            "action" : texte_historique,
+            },])
+
+        # Saisie de forfaits auto
+        f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.IDindividu,], saisieManuelle=False, saisieAuto=True)
+        f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite)
+
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
+
+    def GetIDinscription(self):
+        return self.IDinscription
 
     def OnBoutonActivites(self, event):
         dlg = DLG_Inscription_activite.Dialog(self)
@@ -325,6 +451,9 @@ class Dialog(wx.Dialog):
         self.ctrl_groupes.MAJ()
         self.ctrl_categories.MAJ()
         self.ctrl_categories.SelectCategorieSelonVille(self.cp, self.ville)
+
+    def SetIDgroupe(self, IDgroupe=None):
+        self.ctrl_groupes.SetID(IDgroupe)
 
     def GetDictActivite(self, IDactivite=None):
         dictActivite = {}
@@ -420,53 +549,24 @@ class Dialog(wx.Dialog):
 
         return dictActivite
 
-    def SetDonnees(self, IDactivite=None, IDgroupe=None, IDcategorie=None, parti=0):
-        self.SetIDactivite(IDactivite)
-        self.ctrl_groupes.SetID(IDgroupe)
-        self.IDgroupe = IDgroupe
-        self.ctrl_categories.SetID(IDcategorie)
-        if parti == None : parti = 0
-        self.ctrl_parti.SetValue(parti)
-
-
-    def SetFamille(self, listeNoms=[], listeIDfamille=[], IDfamille=None, verrouillage=False) :
-        listeDonnees = []
-        for index in range(0, len(listeNoms)) :
-            dictTemp = {"IDfamille" : listeIDfamille[index], "nom" : listeNoms[index] }
-            listeDonnees.append(dictTemp)
-        self.ctrl_famille.SetListeDonnees(listeDonnees)
-        self.ctrl_famille.SetID(IDfamille)
-        if len(listeIDfamille) < 2 or verrouillage == True :
-            self.ctrl_famille.Enable(False)
-            
-    def GetIDfamille(self):
-        return self.ctrl_famille.GetID() 
-
     def GetIDactivite(self):
         if self.dictActivite != None :
             return self.dictActivite["IDactivite"]
         else :
             return None
-    
-    def GetNomActivite(self):
-        return self.ctrl_activite.GetNomActivite()
-    
-    def GetIDgroupe(self):
-        IDgroupe = self.ctrl_groupes.GetID()
-        return IDgroupe
 
-    def GetNomGroupe(self):
-        return self.ctrl_groupes.GetStringSelection() 
-
-    def GetIDcategorie(self):
-        IDcategorie = self.ctrl_categories.GetID()
-        return IDcategorie
-
-    def GetNomCategorie(self):
-        return self.ctrl_categories.GetStringSelection()
-
-    def GetParti(self):
-        return self.ctrl_parti.GetValue()
+    def GetCompteFamille(self, IDfamille=None):
+        """ Récupère le compte_payeur par défaut de la famille """
+        DB = GestionDB.DB()
+        req = """SELECT IDfamille, IDcompte_payeur
+        FROM familles
+        WHERE IDfamille=%d;""" % IDfamille
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        if len(listeDonnees) == 0 : return None
+        IDcompte_payeur = listeDonnees[0][1]
+        return IDcompte_payeur
 
 
 

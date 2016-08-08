@@ -304,6 +304,7 @@ class Dialog(wx.Dialog):
         dict_images = {
             "reglements" : "Reglement.png",
             "factures" : "Facture.png",
+            "inscriptions" : "Activite.png",
             "reservations" : "Calendrier_modifier.png",
             }
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
@@ -424,6 +425,10 @@ class Traitement():
         # Traitement des factures
         if self.track.categorie == "factures" :
             resultat = self.Traitement_factures()
+
+        # Traitement des inscriptions
+        if self.track.categorie == "inscriptions" :
+            resultat = self.Traitement_inscriptions()
 
         # Traitement des réservations
         if self.track.categorie == "reservations" :
@@ -551,6 +556,48 @@ class Traitement():
                 resultat = edition.EnvoyerEmail(visible=False)
 
             return True
+
+
+    def Traitement_inscriptions(self):
+        # Récupération des paramètres
+        IDindividu = int(self.dict_parametres["IDindividu"])
+        IDactivite = int(self.dict_parametres["IDactivite"])
+        IDgroupe = int(self.dict_parametres["IDgroupe"])
+
+        # Traitement manuel ou automatique
+        if self.mode == "manuel" or self.mode == "automatique" :
+
+            # Création du texte d'intro
+            DB = GestionDB.DB()
+            req = """SELECT nom, prenom, date_naiss FROM individus WHERE IDindividu=%d;""" % IDindividu
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            if len(listeDonnees) > 0 :
+                nom, prenom, date_naiss = listeDonnees[0]
+                if date_naiss != None :
+                    date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
+                    today = datetime.date.today()
+                    age = _(u"%d ans") % ((today.year - date_naiss.year) - int((today.month, today.day) < (date_naiss.month, date_naiss.day)))
+                else :
+                    age = _(u"Âge inconnu")
+            intro = _(u"Confirmez l'inscription de %s (%s) à l'activité sélectionnée et sur le groupe demandé par la famille." % (prenom, age))
+
+            from Dlg import DLG_Inscription
+            dlg = DLG_Inscription.Dialog(self.parent, mode="saisie", IDindividu=IDindividu, IDfamille=self.track.IDfamille, intro=intro)
+            dlg.bouton_activites.Show(False)
+            dlg.ctrl_parti.Show(False)
+            dlg.ctrl_famille.Enable(False)
+            dlg.SetIDactivite(IDactivite)
+            dlg.SetIDgroupe(IDgroupe)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse == wx.ID_OK :
+                self.EcritLog(_(u"Inscription de %s enregistrée.") % prenom)
+                return True
+            else :
+                self.EcritLog(_(u"Inscription de %s annulée.") % prenom)
+                return False
 
     def Traitement_reservations(self):
         if self.mode == "manuel" :

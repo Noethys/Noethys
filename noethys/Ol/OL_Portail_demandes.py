@@ -125,6 +125,7 @@ class ListView(GroupListView):
         self.image_validation = self.AddNamedImages("validation", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
         self.image_reglement = self.AddNamedImages("reglements", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Reglement.png"), wx.BITMAP_TYPE_PNG))
         self.image_facture = self.AddNamedImages("factures", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Facture.png"), wx.BITMAP_TYPE_PNG))
+        self.image_inscription = self.AddNamedImages("inscriptions", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Activite.png"), wx.BITMAP_TYPE_PNG))
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
 
         # Couleur en alternance des lignes

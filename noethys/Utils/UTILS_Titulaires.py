@@ -212,9 +212,87 @@ def GetIndividus():
     return dictIndividus
             
     
-    
-    
-            
+def GetFamillesRattachees(IDindividu=None):
+    # Recherche des familles rattachées
+    db = GestionDB.DB()
+    req = """SELECT IDrattachement, rattachements.IDfamille, IDcategorie, titulaire, IDcompte_payeur
+    FROM rattachements
+    LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = rattachements.IDfamille
+    WHERE rattachements.IDindividu=%d
+    ORDER BY IDcategorie;""" % IDindividu
+    db.ExecuterReq(req)
+    listeRattachements = db.ResultatReq()
+    dictFamilles = {}
+    for IDrattachement, IDfamille, IDcategorie, titulaire, IDcompte_payeur in listeRattachements :
+        if IDcategorie == 1 : nomCategorie = _(u"représentant")
+        if IDcategorie == 2 : nomCategorie = _(u"enfant")
+        if IDcategorie == 3 : nomCategorie = _(u"contact")
+        dictFamilles[IDfamille] = {"nomsTitulaires" : u"", "listeNomsTitulaires" : [], "IDcategorie" : IDcategorie, "nomCategorie" : nomCategorie, "IDcompte_payeur" : IDcompte_payeur }
+    # Recherche des noms des titulaires
+    if len(dictFamilles) == 0 : condition = "()"
+    if len(dictFamilles) == 1 : condition = "(%d)" % dictFamilles.keys()[0]
+    else : condition = str(tuple(dictFamilles))
+    req = """SELECT IDrattachement, individus.IDindividu, IDfamille, IDcategorie, titulaire, nom, prenom
+    FROM rattachements
+    LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+    WHERE IDfamille IN %s AND titulaire=1;""" % condition
+    db.ExecuterReq(req)
+    listeTitulaires = db.ResultatReq()
+    db.Close()
+    for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire, nom, prenom in listeTitulaires :
+        nomIndividu = u"%s %s" % (nom, prenom)
+        dictFamilles[IDfamille]["listeNomsTitulaires"].append(nomIndividu)
+        nbreTitulaires = len(dictFamilles[IDfamille]["listeNomsTitulaires"])
+        if nbreTitulaires == 1 :
+            dictFamilles[IDfamille]["nomsTitulaires"] = nomIndividu
+        if nbreTitulaires == 2 :
+            dictFamilles[IDfamille]["nomsTitulaires"] = _(u"%s et %s") % (dictFamilles[IDfamille]["listeNomsTitulaires"][0], dictFamilles[IDfamille]["listeNomsTitulaires"][1])
+        if nbreTitulaires > 2 :
+            texteNoms = ""
+            for nomTitulaire in dictFamilles[IDfamille]["listeNomsTitulaires"][:-1] :
+                texteNoms += u"%s, " % nomTitulaire
+            texteNoms = _(u"%s et %s") % (dictFamilles[IDfamille]["listeNomsTitulaires"][-2], dictFamilles[IDfamille]["listeNomsTitulaires"][-1])
+            dictFamilles[IDfamille]["nomsTitulaires"] = texteNoms
+    return dictFamilles
+
+
+def GetCoordsIndividu(IDindividu=None):
+    if IDindividu == None :
+        return None
+
+    DB = GestionDB.DB()
+    req = """SELECT adresse_auto, rue_resid, cp_resid, ville_resid,
+    travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail
+    FROM individus WHERE IDindividu=%d;""" % IDindividu
+    DB.ExecuterReq(req)
+    listeDonnees = DB.ResultatReq()
+    if len(listeDonnees) == 0 :
+        DB.Close()
+        return None
+
+    adresse_auto, rue_resid, cp_resid, ville_resid, travail_tel, travail_fax, travail_mail, tel_domicile, tel_mobile, tel_fax, mail = listeDonnees[0]
+
+    # Recherche d'une adresse associée
+    if adresse_auto != None :
+        req = """SELECT rue_resid, cp_resid, ville_resid
+        FROM individus WHERE IDindividu=%d;""" % adresse_auto
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        if len(listeDonnees) > 0 :
+            rue_resid, cp_resid, ville_resid = listeDonnees[0]
+
+    DB.Close()
+
+    # Renvoi des résultats
+    dict_coords = {
+        "rue_resid" : rue_resid, "cp_resid" : cp_resid, "ville_resid" : ville_resid,
+        "travail_tel" : travail_tel, "travail_fax" : travail_fax, "travail_mail" : travail_mail,
+        "tel_domicile" : tel_domicile, "tel_mobile" : tel_mobile, "tel_fax" : tel_fax, "mail" : mail,
+        }
+
+    return dict_coords
+
+
+
 if __name__ == '__main__':
-    print GetTitulaires()[10]
-    print GetIndividus() 
+    print GetCoordsIndividu(IDindividu=100)
