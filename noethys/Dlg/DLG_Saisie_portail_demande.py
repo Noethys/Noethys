@@ -624,12 +624,11 @@ class Traitement():
     def Init_grille(self, ctrl_grille=None):
         # Récupération des paramètres
         IDactivite = int(self.dict_parametres["IDactivite"])
-        IDindividu = int(self.dict_parametres["IDindividu"])
         date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
         date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
 
         # Init de la grille des conso
-        ctrl_grille.InitGrille(IDindividu=IDindividu, IDfamille=self.track.IDfamille, IDactivite=IDactivite, periode=(date_debut_periode, date_fin_periode))
+        ctrl_grille.InitGrille(IDindividu=self.track.IDindividu, IDfamille=self.track.IDfamille, IDactivite=IDactivite, periode=(date_debut_periode, date_fin_periode))
 
     def Save_grille(self, ctrl_grille=None):
         """ Sauvegarde de la grille des conso """
