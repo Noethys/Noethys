@@ -27,6 +27,7 @@ class Track(object):
         self.IDaction = donnees["IDaction"]
         self.horodatage = donnees["horodatage"]
         self.IDfamille = donnees["IDfamille"]
+        self.IDindividu = donnees["IDindividu"]
 
         self.categorie = donnees["categorie"]
         self.FormateCategorie()
@@ -99,15 +100,15 @@ class ListView(GroupListView):
         if self.cacher_traitees == True :
             conditions = "WHERE etat <> 'validation'"
 
-        req = """SELECT IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode
         FROM portail_actions %s;""" % conditions
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeActions = []
-        for IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             listeActions.append({
-                "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "categorie" : categorie,
+                "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "categorie" : categorie,
                 "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
                 "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode,
             })

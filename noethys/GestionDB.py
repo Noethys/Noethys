@@ -2130,12 +2130,12 @@ def AfficheConnexionOuvertes():
 if __name__ == "__main__":
                 
     # Création d'une table données
-    db = DB(suffixe="DATA")
-    listeTables = ("portail_periodes", "portail_reservations")
-    for nomTable in listeTables :
-        db.CreationTable(nomTable, Tables.DB_DATA)
-    db.Close()
-    print "creation tables ok."
+    # db = DB(suffixe="DATA")
+    # listeTables = ("portail_periodes", "portail_reservations")
+    # for nomTable in listeTables :
+    #     db.CreationTable(nomTable, Tables.DB_DATA)
+    # db.Close()
+    # print "creation tables ok."
 
 
 ## ----------------------------------------------------------------------
@@ -2166,9 +2166,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    # db = DB(suffixe="DATA")
-    # db.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
-    # db.Close()
+    db = DB(suffixe="DATA")
+    db.AjoutChamp("portail_actions", "IDindividu", "INTEGER")
+    db.Close()
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")

@@ -1513,6 +1513,7 @@ DB_DATA = {
     "portail_actions":              [("IDaction", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID action"),
                                     ("horodatage", "DATETIME", u"Horodatage de l'action"),
                                     ("IDfamille", "INTEGER", u"ID de la famille"),
+                                    ("IDindividu", "INTEGER", u"ID de l'individu"),
                                     ("categorie", "VARCHAR(50)", u"Catégorie de l'action"),
                                     ("action", "VARCHAR(50)", u"Nom de l'action"),
                                     ("description", "VARCHAR(300)", u"Description de l'action"),

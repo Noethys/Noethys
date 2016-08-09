@@ -745,14 +745,14 @@ class Synchro():
         # Création des actions
         self.Pulse_gauge()
 
-        req = """SELECT IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique
         FROM portail_actions
         WHERE horodatage>='%s';""" % (datetime.datetime.now() - datetime.timedelta(days=(self.dict_parametres["historique_delai"]+1)*30))
         DB.ExecuterReq(req)
         listeActions = DB.ResultatReq()
-        for IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique in listeActions :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique in listeActions :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
-            m = models.Action(horodatage=horodatage, IDfamille=IDfamille, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique)
+            m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique)
             session.add(m)
 
         # Fermeture de la base de données Noethys
@@ -888,7 +888,8 @@ class Synchro():
 
         except Exception, err :
             print err
-            self.log.EcritLog(_(u"[ERREUR] Erreur dans le téléchargement : %s") % str(err))
+            err = str(err).decode("iso-8859-15")
+            self.log.EcritLog(_(u"[ERREUR] Erreur dans le téléchargement : %s") % err)
             return False
 
         # Sauvegarde des actions
@@ -918,7 +919,7 @@ class Synchro():
 
                 # Mémorisation des actions
                 listeActions.append([
-                        prochainIDaction, action["horodatage"], action["IDfamille"],
+                        prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
                         action["categorie"], action["action"], action["description"],
                         action["commentaire"], action["parametres"], etat,
                         action["traitement_date"], action["IDperiode"], action["ref_unique"]
@@ -937,7 +938,7 @@ class Synchro():
 
             # Enregistrement des actions
             if len(listeActions) > 0 :
-                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
+                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
                 DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction) VALUES (?, ?, ?, ?)", listeReservations, commit=False)
             DB.Commit()
