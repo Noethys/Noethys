@@ -2049,7 +2049,14 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
             if nomFichier in listeDatabases :
                 # Ouverture Database
                 cursor.execute("USE %s;" % nomFichier)
-                dictResultats["fichier"] =  (True, None)
+                # Vérification des tables
+                cursor.execute("SHOW TABLES;")
+                listeTables = cursor.fetchall()
+                if not listeTables:
+                    dictResultats["fichier"] = (
+                        False, _(u"La base de données est vide."))
+                else:
+                    dictResultats["fichier"] =  (True, None)
             else:
                 dictResultats["fichier"] =  (False, _(u"Accès au fichier impossible."))
         except Exception, err :
