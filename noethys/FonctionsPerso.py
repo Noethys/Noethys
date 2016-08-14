@@ -18,6 +18,7 @@ import datetime
 import os
 import subprocess
 import webbrowser
+import shutil
 import random
 from Utils import UTILS_Fichiers
 
@@ -967,20 +968,21 @@ def RecupIDfichier():
 def VideRepertoireTemp():
     """ Supprimer tous les fichiers du répertoire TEMP """
     for rep in ("Temp/", UTILS_Fichiers.GetRepTemp()) :
-        try :
-            if os.path.isdir(rep) :
-                for nomFichier in os.listdir(rep) :
-                    os.remove(os.path.join(rep, nomFichier))
-        except Exception, err :
-            print err
-            pass
+        if os.path.isdir(rep) :
+            for nomFichier in os.listdir(rep) :
+                try :
+                    if os.path.isdir(rep) :
+                        shutil.rmtree(os.path.join(rep, nomFichier))
+                    else :
+                        os.remove(os.path.join(rep, nomFichier))
+                except Exception, err :
+                    print err
 
 def VideRepertoireUpdates(forcer=False):
     """ Supprimer les fichiers temporaires du répertoire Updates """
     try :
         listeReps = UTILS_Fichiers.GetRepUpdates()
         numVersionActuelle = GetVersionLogiciel()
-        import shutil
         for nomRep in os.listdir(listeReps) :
             resultat = CompareVersions(versionApp=numVersionActuelle, versionMaj=nomRep)
             if resultat == False or forcer == True :
