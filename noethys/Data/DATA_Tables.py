@@ -261,6 +261,8 @@ DB_DATA = {
                                     ("portail_inscriptions_date_debut", "DATETIME", u"Inscriptions autorisées - début d'affichage"),
                                     ("portail_inscriptions_date_fin", "DATETIME", u"Inscriptions autorisées - fin d'affichage"),
                                     ("portail_reservations_affichage", "INTEGER", u"Réservations autorisées sur le portail (0/1)"),
+                                    ("portail_reservations_limite", "VARCHAR(20)", u"Date limite de modification d'une réservation"),
+                                    ("portail_reservations_absenti", "VARCHAR(20)", u"Application d'une absence injustifiée"),
                                     ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
                                     ], # Activités
 

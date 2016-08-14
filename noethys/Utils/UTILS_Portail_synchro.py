@@ -605,24 +605,28 @@ class Synchro():
 
         req = """
         SELECT IDactivite, nom, portail_inscriptions_affichage, portail_inscriptions_date_debut,
-        portail_inscriptions_date_fin, portail_reservations_affichage, portail_unites_multiples
+        portail_inscriptions_date_fin, portail_reservations_affichage, portail_unites_multiples,
+        portail_reservations_limite, portail_reservations_absenti
         FROM activites;"""
         DB.ExecuterReq(req)
         listeActivites = DB.ResultatReq()
         dict_activites = {}
-        for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples in listeActivites :
+        for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples, portail_reservations_limite, portail_reservations_absenti in listeActivites :
             #inscriptions_date_debut = UTILS_Dates.DateEngEnDateDD(inscriptions_date_debut)
             #inscriptions_date_fin = UTILS_Dates.DateEngEnDateDD(inscriptions_date_fin)
 
             m = models.Activite(IDactivite=IDactivite, nom=nom, inscriptions_affichage=inscriptions_affichage, \
                          inscriptions_date_debut=inscriptions_date_debut, inscriptions_date_fin=inscriptions_date_fin, \
-                         reservations_affichage=reservations_affichage, unites_multiples=unites_multiples)
+                         reservations_affichage=reservations_affichage, unites_multiples=unites_multiples, \
+                         reservations_limite=portail_reservations_limite, reservations_absenti=portail_reservations_absenti,
+                         )
             session.add(m)
 
             dict_activites[IDactivite] = {
                 "IDactivite" : IDactivite, "nom" : nom, "inscriptions_affichage" : inscriptions_affichage, \
                  "inscriptions_date_debut" : inscriptions_date_debut, "inscriptions_date_fin" : inscriptions_date_fin, \
-                 "reservations_affichage" : reservations_affichage, "unites_multiples" : unites_multiples,
+                 "reservations_affichage" : reservations_affichage, "unites_multiples" : unites_multiples, \
+                 "reservations_limite" : portail_reservations_limite, "reservations_absenti" : portail_reservations_absenti,
                 }
 
         # Création des groupes

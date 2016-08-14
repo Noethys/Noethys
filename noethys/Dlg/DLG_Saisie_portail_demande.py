@@ -52,6 +52,8 @@ class DatePickerCtrl(wx.DatePickerCtrl):
 
 
 
+
+
 class Dialog(wx.Dialog):
     def __init__(self, parent, track=None, tracks=[]):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
@@ -121,7 +123,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         # Init
-        self.dictUnites = self.GetUnitesReservations()
+        self.Importation()
         self.MAJ()
 
 
@@ -225,22 +227,36 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.CenterOnScreen()
 
-    def GetUnitesReservations(self):
+    def Importation(self):
         DB = GestionDB.DB()
+
+        # Récupération des unités de réservations
         req = """SELECT IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre
         FROM portail_unites;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
-        DB.Close()
-        dictUnites = {}
+        self.dictUnites = {}
         for IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre in listeDonnees :
             unites_principales = UTILS_Texte.ConvertStrToListe(unites_principales)
             unites_secondaires = UTILS_Texte.ConvertStrToListe(unites_secondaires)
-            dictUnites[IDunite] = {
+            self.dictUnites[IDunite] = {
                 "IDactivite" : IDactivite, "nom" : nom, "unites_principales" : unites_principales,
                 "unites_secondaires" : unites_secondaires, "ordre" : ordre,
                 }
-        return dictUnites
+
+        # Récupération des activités
+        req = """SELECT IDactivite, nom, portail_reservations_limite, portail_reservations_absenti
+        FROM activites;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        self.dictActivites = {}
+        for IDactivite, nom, portail_reservations_limite, portail_reservations_absenti in listeDonnees :
+            self.dictActivites[IDactivite] = {
+                "nom" : nom, "portail_reservations_limite" : portail_reservations_limite,
+                "portail_reservations_absenti" : portail_reservations_absenti,
+                }
+
+        DB.Close()
 
     def OnClose(self, event):
         #self.Sauvegarde()
@@ -637,6 +653,7 @@ class Traitement():
     def Appliquer_reservations(self, ctrl_grille=None, log_jumeau=None):
         """ Appliquer la saisie ou suppression des réservations """
         # Récupération des paramètres
+        IDactivite = int(self.dict_parametres["IDactivite"])
         date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
         date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
 
@@ -684,7 +701,20 @@ class Traitement():
                 if not dictUnitesResaParDate.has_key(date) or IDunite not in dictUnitesResaParDate[date] :
                     nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
                     self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
-                    ctrl_grille.SupprimeConso(IDunite=IDunite, date=date)
+
+                    # Vérifie s'il faut appliquer l'état Absence Injustifiée
+                    portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
+                    absenti = False
+                    if portail_reservations_absenti != None :
+                        nbre_jours, heure = portail_reservations_absenti.split("#")
+                        dt_limite = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:])) - datetime.timedelta(days=int(nbre_jours))
+                        if self.track.horodatage > dt_limite :
+                            absenti = True
+                    
+                    if absenti == True :
+                        ctrl_grille.ModifieEtat(IDunite=IDunite, etat="absenti", date=date)
+                    else :
+                        ctrl_grille.SupprimeConso(IDunite=IDunite, date=date)
 
 
         # Saisie les nouvelles consommations

@@ -1870,6 +1870,8 @@ class DB:
                 self.AjoutChamp("activites", "portail_inscriptions_date_debut", "DATETIME")
                 self.AjoutChamp("activites", "portail_inscriptions_date_fin", "DATETIME")
                 self.AjoutChamp("activites", "portail_reservations_affichage", "INTEGER")
+                self.AjoutChamp("activites", "portail_reservations_limite", "VARCHAR(20)")
+                self.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
                 self.AjoutChamp("activites", "portail_unites_multiples", "INTEGER")
                 from Utils import UTILS_Procedures
                 UTILS_Procedures.A9001()
@@ -2167,7 +2169,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     db = DB(suffixe="DATA")
-    db.AjoutChamp("portail_actions", "IDindividu", "INTEGER")
+    db.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
     db.Close()
 
     # Exportation d'une table dans la base DEFAUT

@@ -20,8 +20,8 @@ import datetime
 
     
 class Heure(masked.TextCtrl):
-    def __init__(self, parent, heure_max=24, style=wx.TE_CENTRE):
-        masked.TextCtrl.__init__(self, parent, -1, "", style=style, mask="##:##", validRegex="[0-2][0-9]:[0-5][0-9]") # formatcodes="T", 
+    def __init__(self, parent, heure_max=24, id=wx.ID_ANY, pos=wx.DefaultPosition, size=wx.DefaultSize, style=wx.TE_CENTRE):
+        masked.TextCtrl.__init__(self, parent, id=id, value="", pos=pos, size=size, style=style, mask="##:##", validRegex="[0-2][0-9]:[0-5][0-9]") # formatcodes="T",
         self.parent = parent
         self.heure_max = heure_max
         self.SetMinSize((60, -1))

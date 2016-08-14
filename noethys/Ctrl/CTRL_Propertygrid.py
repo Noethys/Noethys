@@ -13,6 +13,7 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
+from Ctrl import CTRL_Saisie_heure
 import sys
 import datetime
 import wx.propgrid as wxpg
@@ -54,6 +55,72 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
 
 
 
+
+
+
+
+class EditeurHeure(wxpg.PyEditor):
+    def __init__(self):
+        wxpg.PyEditor.__init__(self)
+
+    def CreateControls(self, propgrid, property, pos, size):
+        try:
+            ctrl = CTRL_Saisie_heure.Heure(propgrid.GetPanel(), id=wxpg.PG_SUBID1, pos=pos, size=size, style=wx.TE_PROCESS_ENTER)
+            ctrl.SetHeure(property.GetDisplayedString())
+            return ctrl
+        except:
+            import traceback
+            print(traceback.print_exc())
+
+    def UpdateControl(self, property, ctrl):
+        ctrl.SetHeure(property.GetDisplayedString())
+
+    def DrawValue(self, dc, rect, property, text):
+        if not property.IsValueUnspecified():
+            dc.DrawText(property.GetDisplayedString(), rect.x+5, rect.y)
+
+    def OnEvent(self, propgrid, property, ctrl, event):
+        if not ctrl:
+            return False
+
+        evtType = event.GetEventType()
+
+        if evtType == wx.wxEVT_COMMAND_TEXT_ENTER:
+            if propgrid.IsEditorsValueModified():
+                return True
+        elif evtType == wx.wxEVT_COMMAND_TEXT_UPDATED:
+            event.Skip()
+            event.SetId(propgrid.GetId())
+            propgrid.EditorsValueWasModified()
+            return False
+
+        return False
+
+    def GetValueFromControl(self, property, ctrl):
+        valeur = ctrl.GetHeure()
+        if ctrl.Validation() == False :
+            valeur = ""
+
+        if property.UsesAutoUnspecified() and not valeur:
+            return (True, None)
+
+        res, value = property.StringToValue(valeur, wxpg.PG_EDITABLE_VALUE)
+
+        if not res and value is None:
+            res = True
+
+        return (res, value)
+
+    def SetValueToUnspecified(self, property, ctrl):
+        ctrl.Remove(0, len(ctrl.GetHeure()))
+
+    def SetControlStringValue(self, property, ctrl, text):
+        ctrl.SetHeure(text)
+
+    def OnFocus(self, property, ctrl):
+        ctrl.SetSelection(-1,-1)
+        ctrl.SetFocus()
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL(wxpg.PropertyGrid) :
@@ -64,6 +131,7 @@ class CTRL(wxpg.PropertyGrid) :
         # Définition des éditeurs personnalisés
         if not getattr(sys, '_PropGridEditorsRegistered', False):
             self.RegisterEditor(EditeurComboBoxAvecBoutons)
+            self.RegisterEditor(EditeurHeure)
             # ensure we only do it once
             sys._PropGridEditorsRegistered = True
         
@@ -305,6 +373,16 @@ class CTRL_TEST(CTRL) :
         CTRL.__init__(self, parent)
     
     def Remplissage(self):
+
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Tests")) )
+
+        # CTRL Heure
+        propriete = wxpg.StringProperty(label=_(u"Heure"), name="heure")
+        propriete.SetHelpString(_(u"Sélectionnez une heure"))
+        propriete.SetEditor("EditeurHeure")
+        self.Append(propriete)
+
         # Catégorie 
         self.Append( wxpg.PropertyCategory(_(u"Mémorisation")) )
         
