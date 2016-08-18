@@ -970,11 +970,12 @@ def VideRepertoireTemp():
     for rep in ("Temp/", UTILS_Fichiers.GetRepTemp()) :
         if os.path.isdir(rep) :
             for nomFichier in os.listdir(rep) :
+                nomComplet = os.path.join(rep, nomFichier)
                 try :
-                    if os.path.isdir(rep) :
-                        shutil.rmtree(os.path.join(rep, nomFichier))
+                    if os.path.isdir(nomComplet) :
+                        shutil.rmtree(nomComplet)
                     else :
-                        os.remove(os.path.join(rep, nomFichier))
+                        os.remove(nomComplet)
                 except Exception, err :
                     print err
 
