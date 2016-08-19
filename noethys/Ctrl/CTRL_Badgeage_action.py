@@ -43,8 +43,11 @@ def GetDetailAction(dictDonnees):
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
-        nomUnite, nomActivite = listeDonnees[0]
-        texte = u"%s (%s)" % (nomUnite, nomActivite)
+        if len(listeDonnees) > 0 :
+            nomUnite, nomActivite = listeDonnees[0]
+            texte = u"%s (%s)" % (nomUnite, nomActivite)
+        else :
+            texte = _(u"Unité inconnue")
         
     # Réserver
     if action == "reserver" :
@@ -454,6 +457,7 @@ class CTRL_Choix_unite(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, size=(-1, -1)) 
         self.parent = parent
+        self.dictDonnees = {}
         self.MAJ() 
     
     def MAJ(self, IDactivite=None):
