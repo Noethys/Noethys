@@ -15,14 +15,16 @@ import wx
 import os
 import time
 import datetime
-from threading import Thread
+from threading import Thread, Lock
 import FonctionsPerso
 import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Fichiers
+from Utils import UTILS_Customize
 from Utils import UTILS_Portail_synchro
 from Dlg.DLG_Portail_config import LISTE_DELAIS_SYNCHRO
 
+CUSTOMIZE = UTILS_Customize.Customize()
 
 class Abort(Exception):
     pass
@@ -84,6 +86,7 @@ class Serveur(Thread):
                         if datetime.datetime.now() >= self.GetHeureProchaineSynchro() :
                             self.start_synchro = True
 
+
                     # Lancement de la procédure de synchronisation
                     if self.start_synchro == True and self.synchro_en_cours == False :
 
@@ -120,26 +123,32 @@ class Serveur(Thread):
 class Panel(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.lock = Lock()
         self.parent = parent
         self.last_synchro = None
-
         self.ctrl_image = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/48x48/Sync_off.png"), wx.BITMAP_TYPE_ANY))
-    
-        self.log = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_READONLY)
-        self.log.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
-        
+
+
+
+        if CUSTOMIZE.GetValeur("connecthys_log", "type", "panel") == "panel" :
+            self.log = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_READONLY)
+            self.log.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
+
         self.gauge = wx.Gauge(self, -1, range=100, size=(-1, 8))
-        
+
         self.bouton_traiter = wx.Button(self, -1, _(u"Traiter les\ndemandes"))
         self.couleur_defaut = self.bouton_traiter.GetBackgroundColour()
+
         self.bouton_outils = wx.Button(self, -1, _(u"Outils"))
-        
+
         self.__do_layout()
-        
+        self.MAJ_bouton()
+
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTraiter, self.bouton_traiter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
+        self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
 
         # Init
         self.SetGauge(0)
@@ -149,35 +158,55 @@ class Panel(wx.Panel):
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
         grid_sizer = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer.Add(self.ctrl_image, 0, wx.ALL, 0)
-        
-        sizer_log = wx.BoxSizer(wx.VERTICAL)
-        sizer_log.Add(self.log, 1, wx.EXPAND|wx.ALL, 0)
-        sizer_log.Add(self.gauge, 0, wx.EXPAND|wx.ALL, 0)
-        grid_sizer.Add(sizer_log, 1, wx.EXPAND, 0)
-        
+
+        if CUSTOMIZE.GetValeur("connecthys_log", "type", "panel") == "panel" :
+            sizer_log = wx.BoxSizer(wx.VERTICAL)
+            sizer_log.Add(self.log, 1, wx.EXPAND|wx.ALL, 0)
+            sizer_log.Add(self.gauge, 0, wx.EXPAND|wx.ALL, 0)
+            grid_sizer.Add(sizer_log, 1, wx.EXPAND, 0)
+
         grid_sizer_commandes = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_commandes.Add(self.bouton_traiter, 1, wx.EXPAND, 0)
         grid_sizer_commandes.Add(self.bouton_outils, 0, wx.EXPAND, 0)
         grid_sizer_commandes.AddGrowableRow(0)
         grid_sizer_commandes.AddGrowableCol(0)
         grid_sizer.Add(grid_sizer_commandes, 0, wx.EXPAND|wx.ALL, 0)
-        
+
         grid_sizer.AddGrowableRow(0)
         grid_sizer.AddGrowableCol(1)
         sizer_base.Add(grid_sizer, 1, wx.EXPAND|wx.ALL, 10)
-        self.SetSizer(sizer_base)
+
+        self.lock.acquire(True)
+        try:
+            self.SetSizer(sizer_base)
+        except Exception as e:
+            self.lock.release()
+            raise e
+        else:
+            self.lock.release()
         self.Layout()
-    
-    def MAJ(self):
-        """ MAJ du bouton Analyser """
+
+    def MAJ(self, block=True):
+        """ MAJ du bouton Demandes """
         # Paramètres
-        index = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="serveur_synchro_delai", valeur=2)
-        self.delai = LISTE_DELAIS_SYNCHRO[index][0]
-        self.synchro_ouverture = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="serveur_synchro_ouverture", valeur=True)
 
-        self.MAJ_bouton()
+        if self.lock.acquire(block) == True:
+            try:
+                index = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="serveur_synchro_delai", valeur=2)
+                self.delai = LISTE_DELAIS_SYNCHRO[index][0]
+                self.synchro_ouverture = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="serveur_synchro_ouverture", valeur=True)
+            except Exception as e:
+                self.lock.release()
+                raise e
+            else:
+                self.lock.release()
+            self.MAJ_bouton()
+            return True
+        else:
+            return False
 
-    def MAJ_bouton(self):
+
+    def MAJ_bouton(self, block=True):
         # Recherche le nombre d'actions enregistrées non traitées
         DB = GestionDB.DB()
         req = """SELECT IDaction, horodatage
@@ -189,26 +218,45 @@ class Panel(wx.Panel):
         nbre_actions_attente = len(listeDonnees)
 
         # MAJ du bouton Analyser
-        if nbre_actions_attente == 0 :
-            texte = _(u"Aucune\ndemande")
-            self.bouton_traiter.SetBackgroundColour(self.couleur_defaut)
-            #self.bouton_traiter.Enable(False)
-        elif nbre_actions_attente == 1 :
-            texte = _(u"1 demande\nà traiter")
-            self.bouton_traiter.SetBackgroundColour((150, 255, 150))
-            #self.bouton_traiter.Enable(True)
-        else :
-            texte = _(u"%d demandes\nà traiter") % nbre_actions_attente
-            self.bouton_traiter.SetBackgroundColour((150, 255, 150))
-            #self.bouton_traiter.Enable(True)
+        if self.lock.acquire(block) == True:
+            try:
+                if nbre_actions_attente == 0 :
+                    texte = _(u"Aucune\ndemande")
+                    self.bouton_traiter.SetBackgroundColour(self.couleur_defaut)
+                    self.bouton_traiter.Enable(False)
+                elif nbre_actions_attente == 1 :
+                    texte = _(u"1 demande\nà traiter")
+                    self.bouton_traiter.SetBackgroundColour((150, 255, 150))
+                    self.bouton_traiter.Enable(True)
+                else :
+                    texte = _(u"%d demandes\nà traiter") % nbre_actions_attente
+                    self.bouton_traiter.SetBackgroundColour((150, 255, 150))
+                    self.bouton_traiter.Enable(True)
 
-        self.bouton_traiter.SetLabel(texte)
-        
-    def StartServeur(self):
+                self.bouton_traiter.SetLabel(texte)
+            except Exception as e:
+                self.lock.release()
+                raise e
+            else:
+                self.lock.release()
+            return True
+        else:
+            return False
+
+    def StartServeur(self, block=True):
         if not hasattr(self, "serveur") :
-            self.serveur = Serveur(self)
-        self.serveur.Start()
-        self.EcritLog(_(u"Serveur prêt"))
+            if self.lock.acquire(block) == True:
+                try:
+                    self.serveur = Serveur(self)
+                except Exception as e:
+                    self.lock.release()
+                    raise e
+                else:
+                    self.lock.release()
+            else:
+                return False
+            self.serveur.Start()
+            return self.EcritLog(_(u"Serveur prêt"))
 
     def PauseServeur(self):
         if hasattr(self, "serveur") :
@@ -226,9 +274,10 @@ class Panel(wx.Panel):
     def OnBoutonTraiter(self, event=None):
         from Dlg import DLG_Portail_demandes
         dlg = DLG_Portail_demandes.Dialog(self)
-        dlg.ShowModal() 
+        dlg.ShowModal()
         dlg.Destroy()
-        self.MAJ() 
+        self.MAJ()
+        pass
 
     def OnBoutonOutils(self, event=None):
         """ Création du menu Outils """
@@ -248,14 +297,30 @@ class Panel(wx.Panel):
         item = wx.MenuItem(menuPop, id, _(u"Synchroniser maintenant"), _(u"Synchroniser maintenant les données entre Noethys et Connecthys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.serveur.Start_synchro, id=id)
+
+        self.lock.acquire(True)
+        try:
+            self.Bind(wx.EVT_MENU, self.serveur.Start_synchro, id=id)
+        except Exception as e:
+            self.lock.release()
+            raise e
+        else:
+            self.lock.release()
 
         # Configuration du portail
         id = wx.NewId()
         item = wx.MenuItem(menuPop, id, _(u"Configuration"), _(u"Accéder à la configuration de Connecthys"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.OnMenuConfiguration, id=id)
+
+        self.lock.acquire(True)
+        try:
+            self.Bind(wx.EVT_MENU, self.OnMenuConfiguration, id=id)
+        except Exception as e:
+            self.lock.release()
+            raise e
+        else:
+            self.lock.release()
 
         self.PopupMenu(menuPop)
         menuPop.Destroy()
@@ -266,53 +331,109 @@ class Panel(wx.Panel):
         dlg.ShowModal()
         dlg.Destroy()
         self.MAJ()
-        try :
+        try:
             self.parent.AfficherServeurConnecthys()
-        except :
+        except AttributeError:
             pass
 
-    def SetImage(self, etat="on"):
-        if etat == "upload" : 
-            nomImage = "Sync_upload.png"
-        elif etat == "download" : 
-            nomImage = "Sync_download.png"
-        elif etat == "off" : 
-            nomImage = "Sync_off.png"
-        elif etat == "on" : 
-            nomImage = "Sync_on.png"
-        else :
-            nomImage = "Sync_on.png"
-        self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/48x48/%s" % nomImage), wx.BITMAP_TYPE_ANY))
-        
-    def EcritLog(self, message=""):
+    def SetImage(self, etat="on", block=True):
+        if self.lock.acquire(block) == True:
+            try:
+                if etat == "upload" : 
+                    nomImage = "Sync_upload.png"
+                elif etat == "download" : 
+                    nomImage = "Sync_download.png"
+                elif etat == "off" : 
+                    nomImage = "Sync_off.png"
+                elif etat == "on" : 
+                    nomImage = "Sync_on.png"
+                else :
+                    nomImage = "Sync_on.png"
+                wx.CallAfter(self.ctrl_image.SetBitmap, wx.Bitmap(Chemins.GetStaticPath("Images/48x48/%s" % nomImage), wx.BITMAP_TYPE_ANY))
+            except Exception as e:
+                self.lock.release()
+                raise e
+            else:
+                self.lock.release()
+            return True
+        else:
+            return False
+
+    def EcritLog(self, message="", block=True):
         horodatage = time.strftime("%d/%m/%y %H:%M:%S", time.localtime())
-        if len(self.log.GetValue()) >0 :
+        if CUSTOMIZE.GetValeur("connecthys_log", "type", "panel") == "panel" :
+            if self.lock.acquire(block) == True:
+                if len(self.log.GetValue()) > 0 :
+                    texte = u"\n"
+                else :
+                    texte = u""
+                try :
+                    texte += u"[%s] %s" % (horodatage, message)
+                except :
+                    texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+                wx.CallAfter(self.log.AppendText, texte)
+                self.lock.release()
+                return True
+            else:
+                return False
+        elif CUSTOMIZE.GetValeur("connecthys_log", "type", "panel") == "file" :
+            #filefullpath = UTILS_Fichiers.GetRepUtilisateur(CUSTOMIZE.GetValeur("connecthys_log", "file_name", "connecthys_synchro.log"))
+            file_log = open(UTILS_Fichiers.GetRepUtilisateur(CUSTOMIZE.GetValeur("connecthys_log", "file_name", "connecthys_synchro.log")), "a")
             texte = u"\n"
-        else :
-            texte = u""
-        try :
-            texte += u"[%s] %s" % (horodatage, message)
-        except :
-            texte += u"[%s] %s" % (horodatage, str(message).decode("iso-8859-15"))
-        self.log.AppendText(texte)
-        
-    def SetGauge(self, valeur=0):
-        if valeur == 0 :
-            if self.gauge.IsShown() :
-                self.gauge.Show(False)
-                self.Layout() 
-        else :
-            if not self.gauge.IsShown() :
-                self.gauge.Show(True)
-                self.Layout() 
-        self.gauge.SetValue(valeur)
-        
+            if self.lock.acquire(block) == True:
+                try :
+                    texte += u"[%s] %s" % (horodatage, message)
+                    file_log.write(unicode(texte).encode('UTF-8'))
+                except :
+                    texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+                    file_log.write(unicode(texte).encode('UTF-8'))
+
+                file_log.close()
+                self.lock.release()
+                return True
+            else:
+                return False
+
+    def SetGauge(self, valeur=0, block=True):
+        if self.lock.acquire(block) == True:
+            try:
+                if valeur == 0 :
+                    if self.gauge.IsShown() :
+                        wx.CallAfter(self.gauge.Show, False)
+                else :
+                    if not self.gauge.IsShown() :
+                        wx.CallAfter(self.gauge.Show, True)
+                self.Layout()
+                wx.CallAfter(self.gauge.SetValue, valeur)
+            except Exception as e:
+                self.lock.release()
+                raise e
+            else:
+                self.lock.release()
+            return True
+        else:
+            return False
+
     def OnClose(self, evt):
         self.serveur.Stop()
         time.sleep(0.1)
         self.Destroy()
 
-        
+    def OnDestroy(self, evt):
+        self.serveur.Stop()
+
+    def SetLastSynchro(self, last_synchro, block=True):
+        if self.lock.acquire(block) == True:
+            try:
+                self.last_synchro = last_synchro
+            except Exception as e:
+                self.lock.release()
+                raise e
+            else:
+                self.lock.release()
+            return True
+        else:
+            return False
 
 class MyFrame(wx.Frame):
     def __init__(self, *args, **kwds):
@@ -322,7 +443,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = Panel(panel)
-        self.ctrl.MAJ() 
+        self.ctrl.MAJ()
         wx.CallLater(10, self.ctrl.StartServeur)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)

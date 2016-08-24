@@ -50,10 +50,6 @@ class DatePickerCtrl(wx.DatePickerCtrl):
     def OnDateChanged(self, event):
         self.GetParent().Sauvegarde()
 
-
-
-
-
 class Dialog(wx.Dialog):
     def __init__(self, parent, track=None, tracks=[]):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
@@ -230,7 +226,7 @@ class Dialog(wx.Dialog):
     def Importation(self):
         DB = GestionDB.DB()
 
-        # Récupération des unités de réservations
+        # RÃ©cupÃ©ration des unitÃ©s de rÃ©servations
         req = """SELECT IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre
         FROM portail_unites;"""
         DB.ExecuterReq(req)
@@ -244,7 +240,7 @@ class Dialog(wx.Dialog):
                 "unites_secondaires" : unites_secondaires, "ordre" : ordre,
                 }
 
-        # Récupération des activités
+        # RÃ©cupÃ©ration des activitÃ©s
         req = """SELECT IDactivite, nom, portail_reservations_limite, portail_reservations_absenti
         FROM activites;"""
         DB.ExecuterReq(req)
@@ -326,7 +322,12 @@ class Dialog(wx.Dialog):
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
 
         # Horodatage
-        self.label_horodatage.SetLabel(self.track.horodatage.strftime("%d/%m/%Y  %H:%M:%S"))
+        #self.label_horodatage.SetLabel(datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S.%f").strftime("%d/%m/%Y  %H:%M:%S"))
+        if type(self.track.horodatage) == str :
+            dt = datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S.%f")
+        else :
+            dt = self.track.horodatage
+        self.label_horodatage.SetLabel(dt.strftime("%d/%m/%Y  %H:%M:%S"))
 
         # Famille
         self.ctrl_famille.SetValue(self.track.famille)
@@ -662,13 +663,41 @@ class Traitement():
 
         self.EcritLog(_(u"Traitement des réservations de %s sur la période du %s au %s") % (ctrl_grille.ctrl_titre.GetNom(), UTILS_Dates.DateDDEnFr(date_debut_periode), UTILS_Dates.DateDDEnFr(date_fin_periode)), log_jumeau)
 
-        # Lecture des consommations à réserver
+        # Lecture des consommations à réserver (uniquement dans le futur TODO: ou le jour même avant 9h00)
+        current_time = datetime.datetime.now()
+        current_date = current_time.date()
         DB = GestionDB.DB()
+
         req = """SELECT IDreservation, date, IDinscription, IDunite
-        FROM portail_reservations WHERE IDaction=%d;""" % self.track.IDaction
+        FROM portail_reservations WHERE IDaction=%d AND date >= "%s";""" % (self.track.IDaction, current_date.isoformat())
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
+
+        # lecture des IDunite et unites_principales
+        req = """SELECT IDunite, unites_principales
+                 FROM portail_unites;"""
+        DB.ExecuterReq(req)
+        reqUnites = DB.ResultatReq()
+
+        # Lectures de consommations modifiables (Aujourd'hui ou futur)
+        req = """SELECT IDconso, date, IDunite
+                 FROM consommations
+                 WHERE date >= "%s" AND IDindividu=%d;""" % (current_date.isoformat(), self.track.IDindividu)
+        DB.ExecuterReq(req)
+        listeConsommations = DB.ResultatReq()
+
         DB.Close()
+
+        # Création d'un tableau d'unites pour faciliter la verification
+        listeUnites = []
+        for IDunite, unites_principales in reqUnites:
+            listeUnites.append({"IDunite": IDunite, "unites_principales": unites_principales.split(';')})
+
+        # Création d'un dictionnaire de consommation pour faciliter la verification
+        dictConsommations = {}
+        for IDconso, date, IDunite in listeConsommations:
+            dictConsommations[date] = {"IDconso": IDconso, "IDunite": IDunite}
+
         listeReservations = []
         dictUnitesResaParDate = {}
         for IDreservation, date, IDinscription, IDunite in listeDonnees :
@@ -695,62 +724,65 @@ class Traitement():
                             dictUnitesConsoParDate[ligne.date] = []
                         dictUnitesConsoParDate[ligne.date].append(case.IDunite)
 
-        # Suppression des conso non souhaitées
-        for date, liste_unites in dictUnitesConsoParDate.iteritems() :
-            for IDunite in liste_unites :
-                if not dictUnitesResaParDate.has_key(date) or IDunite not in dictUnitesResaParDate[date] :
-                    nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
+        for reservation in listeReservations :
+            date = reservation["date"]
+            isoDate = date.isoformat()
+            IDunite = None
+            for row in listeUnites:
+                if reservation["IDunite"] == row["IDunite"]:
+                    IDunite = row["unites_principales"]
+                    break
+            if dictConsommations.has_key(isoDate) and unicode(dictConsommations[isoDate]["IDunite"]) in IDunite:
+                nomUnite = ctrl_grille.grille.dictUnites[dictConsommations[isoDate]["IDunite"]]["nom"]
+                if date >= current_date :
                     self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
-
-                    # Vérifie s'il faut appliquer l'état Absence Injustifiée
-                    portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
                     absenti = False
-                    if portail_reservations_absenti != None :
-                        nbre_jours, heure = portail_reservations_absenti.split("#")
-                        dt_limite = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:])) - datetime.timedelta(days=int(nbre_jours))
-                        if self.track.horodatage > dt_limite :
-                            absenti = True
-                    
+                    try:
+                        # VÃ©rifie s'il faut appliquer l'Ã©tat Absence InjustifiÃ©e
+                        portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
+                        if portail_reservations_absenti != None :
+                            nbre_jours, heure = portail_reservations_absenti.split("#")
+                            dt_limite = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:])) - datetime.timedelta(days=int(nbre_jours))
+                            if self.track.horodatage > dt_limite :
+                                absenti = True
+                    except Exception as e:
+                        self.EcritLog(_(u"Erreur: %s") % e)
                     if absenti == True :
                         ctrl_grille.ModifieEtat(IDunite=IDunite, etat="absenti", date=date)
                     else :
-                        ctrl_grille.SupprimeConso(IDunite=IDunite, date=date)
+                        ctrl_grille.SupprimeConso(IDunite=dictConsommations[isoDate]["IDunite"], date=date)
+                else :
+                    self.EcritLog(_(u"Suppression impossible de l'unité %s du %s. Date dans le passé") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
+            else:
+                IDunite_resa = reservation["IDunite"]
+                dict_unite_resa = self.parent.dictUnites[IDunite_resa]
+                liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
 
+                # Vérifie s'il y a de la place sur chaque unité de conso associée à l'unité de réservation
+                hasPlaces = True
+                for IDunite in liste_unites_conso :
+                    if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
+                        if ctrl_grille.GetCase(IDunite, date) == None and ctrl_grille.HasPlacesDisponibles(IDunite=IDunite, date=date) == False :
+                            hasPlaces = False
 
-        # Saisie les nouvelles consommations
-        for reservation in listeReservations :
+                # Si plus de places, met les unités de conso en mode "attente"
+                if hasPlaces == True :
+                    mode = "reservation"
+                else :
+                    mode = "attente"
 
-            date = reservation["date"]
-            IDunite_resa = reservation["IDunite"]
-            dict_unite_resa = self.parent.dictUnites[IDunite_resa]
-            liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
+                # Saisie les conso
+                for IDunite in liste_unites_conso :
+                    if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
 
-            # Vérifie s'il y a de la place sur chaque unité de conso associée à l'unité de réservation
-            hasPlaces = True
-            for IDunite in liste_unites_conso :
-                if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
-                    if ctrl_grille.GetCase(IDunite, date) == None and ctrl_grille.HasPlacesDisponibles(IDunite=IDunite, date=date) == False :
-                        hasPlaces = False
+                        nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
+                        self.EcritLog(_(u"Saisie de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
 
-            # Si plus de places, met les unités de conso en mode "attente"
-            if hasPlaces == True :
-                mode = "reservation"
-            else :
-                mode = "attente"
-
-            # Saisie les conso
-            for IDunite in liste_unites_conso :
-                if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
-
-                    nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
-                    self.EcritLog(_(u"Saisie de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
-
-                    resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
-                    if resultat != True :
-                        self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
+                        resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
+                        if resultat != True :
+                            self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
 
         return True
-
 
 
 class Edition_facture():

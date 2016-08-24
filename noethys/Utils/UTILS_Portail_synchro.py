@@ -17,15 +17,15 @@ import random
 import os.path
 import codecs
 import ftplib
-import base64
 import zipfile
 import shutil
 import json
 import urllib2
 import sys
 import importlib
+import time
 
-import GestionDB
+
 import UTILS_Dates
 import UTILS_Parametres
 import UTILS_Fichiers
@@ -35,6 +35,7 @@ import UTILS_Cotisations_manquantes
 import UTILS_Organisateur
 import UTILS_Cryptage_fichier
 import FonctionsPerso
+import GestionDB
 
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Dlg.DLG_Portail_config import VALEURS_DEFAUT as VALEURS_DEFAUT_CONFIG
@@ -66,7 +67,7 @@ class Synchro():
         self.log.SetGauge(num)
 
     def Synchro_totale(self):
-        self.nbre_etapes = 24
+        self.nbre_etapes = 25
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
         self.Download_data()
         resultat = self.Upload_data()
@@ -77,6 +78,7 @@ class Synchro():
         self.log.EcritLog(_(u"Serveur prêt"))
         self.log.SetGauge(0)
 
+    # FTP mode
     def Upload_config(self, ftp=None):
         """ Met en ligne le fichier de config """
         liste_lignes = [
@@ -167,15 +169,26 @@ class Synchro():
             logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
             liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", nomFichier, type_valeur=unicode))
 
+            # Envoi local
+            if self.dict_parametres["hebergement_type"] == 0 :
+                if self.dict_parametres["hebergement_local_repertoire"] != None:
+                    try :
+                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
+                        shutil.copy2(cheminLogo, destfilepath)
+                    except Exception, err :
+                        print str(err)
+                        return False
+
             # Envoi du logo par FTP
-            if ftp != None :
-                try :
-                    ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
-                    fichier = open(cheminLogo, "rb")
-                    ftp.storbinary('STOR ' + nomFichier, fichier)
-                except Exception, err :
-                    print str(err)
-                    return False
+            if self.dict_parametres["hebergement_type"] == 1 :
+                if ftp != None :
+                    try :
+                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
+                        fichier = open(cheminLogo, "rb")
+                        ftp.storbinary('STOR ' + nomFichier, fichier)
+                    except Exception, err :
+                        print str(err)
+                        return False
 
         else :
             liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
@@ -210,182 +223,60 @@ class Synchro():
             fichier.write(ligne)
         fichier.close()
 
-        # Envoi du fichier par FTP
-        if ftp != None :
-            ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/data")
-            fichier = open(nomFichierComplet, "rb")#codecs.open(nomFichierComplet, 'rb', encoding='utf8')
-            ftp.storbinary('STOR ' + nomFichier, fichier)
-
-        return True
-
-    def CopieToLocal_config(self, destdir=""):
-        """ Copie le fichier de config vers un repertoire local"""
-        liste_lignes = [
-            u"#!/usr/bin/env python\n",
-            u"# -*- coding: utf-8 -*-\n",
-            u"\n",
-            u"import os\n",
-            u"basedir = os.path.abspath(os.path.dirname(__file__))\n",
-            u"\n",
-            u"class Config_application(object):\n"
-        ]
-
-        def Ecrit_ligne(key="", valeur="", type_valeur=None):
-            if type_valeur == unicode :
-                valeur = u'u"%s"' % valeur
-            elif type_valeur == str :
-                valeur = u'"%s"' % valeur
-            elif type_valeur == None :
-                valeur = valeur
-            else :
-                valeur = str(valeur)
-            return u"     %s = %s\n" % (key, valeur)
-
-        # Valeurs Application
-        if self.dict_parametres["db_type"] == 0 :
-            # Base Sqlite
-            liste_lignes.append(Ecrit_ligne("SQLALCHEMY_DATABASE_URI", "'sqlite:///' + os.path.join(basedir, 'data.db')", type_valeur=None))
-        else :
-            # Base MySQL
-            db_serveur = self.dict_parametres["db_serveur"]
-            db_utilisateur = self.dict_parametres["db_utilisateur"]
-            db_mdp = self.dict_parametres["db_mdp"]
-            db_nom = self.dict_parametres["db_nom"]
-            liste_lignes.append(Ecrit_ligne("SQLALCHEMY_DATABASE_URI", "mysql://%s:%s@%s/%s" % (db_utilisateur, db_mdp, db_serveur, db_nom), type_valeur=str))
-
-        liste_lignes.append(Ecrit_ligne("SQLALCHEMY_TRACK_MODIFICATIONS", True, type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("SQLALCHEMY_ECHO", False, type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("SECRET_KEY", self.dict_parametres["secret_key"], type_valeur=str))
-        liste_lignes.append(Ecrit_ligne("WTF_CSRF_ENABLED", True, type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
-
-        # Valeurs Utilisateur
-        liste_lignes.append("\nclass Config_utilisateur(object):\n")
-
-        # Thème
-        index = 0
-        for code, label in LISTE_THEMES :
-            if index == self.dict_parametres["theme"] :
-                theme = "skin-%s" % code
-            index += 1
-        liste_lignes.append(Ecrit_ligne("SKIN", theme, type_valeur=str))
-
-        # Image de fond identification
-        if self.dict_parametres["image_identification"] != "" :
-            image = os.path.basename(self.dict_parametres["image_identification"])
-        else :
-            image = ""
-        liste_lignes.append(Ecrit_ligne("IMAGE_FOND", image, type_valeur=unicode))
-
-
-        # Cadre logo organisateur
-        if self.dict_parametres["cadre_logo"] == 0 :
-            rond = False
-        else :
-            rond = True
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE_ROND", rond, type_valeur=bool))
-
-        # Données organisateur
-        dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
-
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_NOM", dict_organisateur["nom"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_RUE", dict_organisateur["rue"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_CP", dict_organisateur["cp"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_VILLE", dict_organisateur["ville"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_TEL", dict_organisateur["tel"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_FAX", dict_organisateur["fax"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_EMAIL", dict_organisateur["mail"], type_valeur=unicode))
-
-        # Logo organisateur
-        logo = dict_organisateur["logo"]
-        if logo != None :
-            nomFichier = "logo.png"
-            cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
-            logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
-            liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", nomFichier, type_valeur=unicode))
-
-            # Copie du logo vers le repertoire local
-            if self.dict_parametres["hebergement_local_repertoire"] != None:
-                try :
-                    #ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
-                    #fichier = open(cheminLogo, "rb")
-                    #ftp.storbinary('STOR ' + nomFichier, fichier)
-		    destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "/application/static")
-		    shutil.copy2(cheminLogo, destfilepath)
-                except Exception, err :
-                    print str(err)
+        # Envoi local
+        if self.dict_parametres["hebergement_type"] == 0 :
+            if self.dict_parametres["hebergement_local_repertoire"] != None :
+                destfile = os.path.join(self.dict_parametres["hebergement_local_repertoire"] + ("" if self.dict_parametres["hebergement_local_repertoire"][-1] == '/' else "/"), "application/data/config.py")
+                try:
+                    shutil.move(nomFichierComplet, destfile)
+                except:
                     return False
 
-        else :
-            liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
-
-        # Autres
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_EMAIL", self.dict_parametres["recevoir_document_email"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_POSTE", self.dict_parametres["recevoir_document_courrier"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER", self.dict_parametres["recevoir_document_site"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER_LIEU", self.dict_parametres["recevoir_document_site_lieu"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("PAIEMENT_EN_LIGNE_ACTIF", self.dict_parametres["paiement_ligne_actif"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("ACTIVITES_AFFICHER", self.dict_parametres["activites_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("ACTIVITES_AUTORISER_INSCRIPTION", self.dict_parametres["activites_autoriser_inscription"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RESERVATIONS_AFFICHER", self.dict_parametres["reservations_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("FACTURES_AFFICHER", self.dict_parametres["factures_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("FACTURES_DEMANDE_FACTURE", self.dict_parametres["factures_demande_facture"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("REGLEMENTS_AFFICHER", self.dict_parametres["reglements_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("REGLEMENTS_DEMANDE_RECU", self.dict_parametres["reglements_demande_recu"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("PIECES_AFFICHER", self.dict_parametres["pieces_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("PIECES_AUTORISER_TELECHARGEMENT", self.dict_parametres["pieces_autoriser_telechargement"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("COTISATIONS_AFFICHER", self.dict_parametres["cotisations_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("HISTORIQUE_AFFICHER", self.dict_parametres["historique_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("CONTACT_AFFICHER", self.dict_parametres["contact_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("MENTIONS_AFFICHER", self.dict_parametres["mentions_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("AIDE_AFFICHER", self.dict_parametres["aide_afficher"], type_valeur=bool))
-
-        # Génération du fichier
-        nomFichier = "config.py"
-        nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
-        fichier = codecs.open(nomFichierComplet, 'w', encoding='utf8')
-        for ligne in liste_lignes :
-            fichier.write(ligne)
-        fichier.close()
-
-        # Deplacement du fichier dans le repertoire local
-        if self.dict_parametres["hebergement_local_repertoire"] != None :
-            #ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/data")
-            #fichier = open(nomFichierComplet, "rb")#codecs.open(nomFichierComplet, 'rb', encoding='utf8')
-            #ftp.storbinary('STOR ' + nomFichier, fichier)
-	    destfile = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "/application/data")
-	    os.renames(nomFichierComplet,destfile)
+        # Envoi du fichier par FTP
+        if self.dict_parametres["hebergement_type"] == 1 :
+            if ftp != None :
+                ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == '/' else "/") + "application/data")
+                fichier = open(nomFichierComplet, "rb")#codecs.open(nomFichierComplet, 'rb', encoding='utf8')
+                ftp.storbinary('STOR ' + nomFichier, fichier)
+            else :
+                return False
 
         return True
 
 
     def Upload_data(self) :
-        self.log.EcritLog(_(u"Lancement de la procédure de mise en ligne des données..."))
+        self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
+
+        # Avance gauge si local
+        if self.dict_parametres["hebergement_type"] == 0 :
+            self.Pulse_gauge()
+            ftp = None
 
         # Connexion FTP
-        self.log.EcritLog(_(u"Connexion FTP..."))
-        self.Pulse_gauge()
+        if self.dict_parametres["hebergement_type"] == 1 :
+            self.log.EcritLog(_(u"Connexion FTP..."))
+            self.Pulse_gauge()
 
-        try :
-            ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
-        except Exception, err :
-            print "Connexion FTP du serveur", str(err)
-            self.log.EcritLog(_(u"[ERREUR] Connexion FTP impossible."))
-            return False
+            try :
+                ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
+            except Exception, err :
+                print "Connexion FTP du serveur", str(err)
+                self.log.EcritLog(_(u"[ERREUR] Connexion FTP impossible."))
+                return False
 
         # Envoi du fichier de config par FTP
-        self.log.EcritLog(_(u"Envoi du fichier de configuration..."))
+        self.log.EcritLog(_(u"Synchro du fichier de configuration..."))
         self.Pulse_gauge()
         resultat = self.Upload_config(ftp=ftp)
         if resultat == False :
-            self.log.EcritLog(_(u"[ERREUR] Envoi impossible."))
+            self.log.EcritLog(_(u"[ERREUR] Synchro impossible."))
             return False
 
         # Récupération du fichier models par FTP
-        self.log.EcritLog(_(u"Téléchargement des modèles de données..."))
+        self.log.EcritLog(_(u"Récupération des modèles de données..."))
         resultat = self.TelechargeModels(ftp)
         if resultat == False :
-            self.log.EcritLog(_(u"[ERREUR] Téléchargement impossible."))
+            self.log.EcritLog(_(u"[ERREUR] Récupération impossible."))
             ftp.quit()
             return False
 
@@ -579,11 +470,18 @@ class Synchro():
                     fichier.write(buffer)
                     fichier.close()
 
+                    # Envoi en local
+                    if self.dict_parametres["hebergement_type"] == 0 :
+                        destpath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/pieces")
+                        destfile = os.path.join(destpath, "nomFichier")
+                        shutil.move(cheminFichier, destfile)
+
                     # Envoi du fichier par FTP
-                    ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/pieces")
-                    fichier = open(cheminFichier, "rb")
-                    ftp.storbinary('STOR ' + nomFichier, fichier)
-                    fichier.close()
+                    if self.dict_parametres["hebergement_type"] == 1 :
+                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == '/' else "/") + "application/static/pieces")
+                        fichier = open(cheminFichier, "rb")
+                        ftp.storbinary('STOR ' + nomFichier, fichier)
+                        fichier.close()
 
                     fichiers.append(u"%s;%s" % (dict_document["label"], nomFichier))
 
@@ -746,7 +644,7 @@ class Synchro():
                 m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)
                 session.add(m)
 
-        # Création des actions
+        # CrÃ©ation des actions
         self.Pulse_gauge()
 
         req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique
@@ -756,6 +654,8 @@ class Synchro():
         listeActions = DB.ResultatReq()
         for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique in listeActions :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
+            if type(horodatage) == str :
+                horodatage = datetime.datetime.strptime(horodatage, '%Y-%m-%d %H:%M:%S.%f')
             m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique)
             session.add(m)
 
@@ -775,7 +675,7 @@ class Synchro():
         fichierZip = zipfile.ZipFile(nomFichierZIP, "w", compression=zipfile.ZIP_DEFLATED)
         fichierZip.write(nomFichierDB, os.path.basename(nomFichierDB))
         fichierZip.close()
-        os.remove(nomFichierDB)
+        #os.remove(nomFichierDB)
 
         # Cryptage du fichier
         self.log.EcritLog(_(u"Cryptage du fichier d'export..."))
@@ -789,7 +689,11 @@ class Synchro():
         # Pour contrer le bug de Pickle dans le cryptage
         fichier2 = open(nomFichierCRYPT, "rb")
         content = fichier2.read()
+        # TODO: comprendre pourquoi quand appele via synchro arrriÃ¨re plan ou vian synchro du bouton outils du panel c'est Utils.UTILS_Cryptage
+        #       et via le DLG et le bouton Synchroniser maintenant c'est UTILS_Cryptage
+        #       WTF !!!!!
         content = content.replace(b"Utils.UTILS_Cryptage_fichier", b"cryptage")
+        content = content.replace(b"UTILS_Cryptage_fichier", b"cryptage")
         fichier2.close()
 
         fichier3 = open(nomFichierCRYPT, "wb")
@@ -799,31 +703,45 @@ class Synchro():
         # Envoi du fichier de données par FTP
         self.log.EcritLog(_(u"Envoi du fichier de données..."))
         self.Pulse_gauge()
+        time.sleep(0.5)
 
-        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/data")
-        fichier = open(nomFichierCRYPT, "rb")
-        ftp.storbinary("STOR %s" % os.path.basename(nomFichierCRYPT), fichier)
-        fichier.close()
+        # Envoi local
+        if self.dict_parametres["hebergement_type"] == 0 :
+            destpath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/data")
+            destfile = os.path.join(destpath, os.path.basename(nomFichierCRYPT))
+            shutil.move(nomFichierCRYPT, destfile)
 
-        self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
-        self.Pulse_gauge()
-        ftp.quit()
+        # Envoi par FTP
+        if self.dict_parametres["hebergement_type"] == 1 :
+            ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == "/" else "/") + "application/data")
+            fichier = open(nomFichierCRYPT, "rb")
+            ftp.storbinary("STOR %s" % os.path.basename(nomFichierCRYPT), fichier)
+            fichier.close()
+
+            self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
+            ftp.quit()
 
         # Envoi de la requête de traitement du fichier d'import
         self.log.EcritLog(_(u"Envoi de la requête de traitement du fichier d'export..."))
         self.Pulse_gauge()
+        time.sleep(0.5)
 
         page = None
         try :
-            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/syncup/%d" % secret
+            if self.dict_parametres["hebergement_type"] == 0 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["hebergement_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncup/%d" % secret
             print "URL syncup =", url
+
             req = urllib2.Request(url)
             reponse = urllib2.urlopen(req)
             page = reponse.read()
 
         except Exception, err :
             print err
-            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier : %s") % err)
+            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier"))
 
         # Suppression du fichier
         #ftp = ftplib.FTP(hote, identifiant, mdp)
@@ -835,8 +753,9 @@ class Synchro():
             print "Erreur dans le traitement du fichier :", page
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue : %s") % page)
 
-        self.log.EcritLog(_(u"Mise en ligne des données terminée"))
+        self.log.EcritLog(_(u"Synchronisation des données terminée"))
         self.Pulse_gauge(0)
+        time.sleep(0.5)
 
     def GetSecretInteger(self):
         secret = str(datetime.datetime.now().strftime("%Y%m%d"))
@@ -856,17 +775,17 @@ class Synchro():
         # Recherche la dernière demande téléchargée
         DB = GestionDB.DB()
         req = """
-        SELECT horodatage, IDfamille, ref_unique
+        SELECT ref_unique
         FROM portail_actions
         ORDER BY IDaction DESC
         LIMIT 1
         ;"""
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
+        result = DB.ResultatReq()
+        listeDonnees = [x[0] for x in result]
         DB.Close()
         if len(listeDonnees) > 0 :
-            horodatage, IDfamille, ref_unique = listeDonnees[0]
-            last = int(ref_unique)
+            last = int(listeDonnees[0])
         else :
             last = 0
 
@@ -874,7 +793,11 @@ class Synchro():
         try :
 
             # Création de l'url de syncdown
-            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/syncdown/%d/%d" % (int(secret), last)
+            if self.dict_parametres["hebergement_type"] == 0 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["hebergement_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
             print "URL syncdown =", url
 
             # Récupération des données au format json
@@ -887,19 +810,20 @@ class Synchro():
                 self.log.EcritLog(_(u"Aucune demande non traitée trouvée..."))
             elif len(liste_actions) == 1 :
                 self.log.EcritLog(_(u"1 demande non traitée trouvée..."))
+                self.log.EcritLog(_(u"Enregistrement de la demande non traitee"))
             else :
                 self.log.EcritLog(_(u"%s demandes non traitées trouvées...") % len(liste_actions))
+                self.log.EcritLog(_(u"Enregistrement des demandes non traitees"))
 
         except Exception, err :
             print err
-            err = str(err).decode("iso-8859-15")
-            self.log.EcritLog(_(u"[ERREUR] Erreur dans le téléchargement : %s") % err)
-            return False
+            self.log.EcritLog(_(u"[ERREUR] Téléchargement des demandes impossible"))
+            liste_actions = []
 
         # Sauvegarde des actions
         if liste_actions != None and len(liste_actions) > 0 :
 
-            # Recherche la réservation la plus récente pour chaque période
+            # Recherche la rÃ©servation la plus rÃ©cente pour chaque pÃ©riode
             dict_dernieres_reservations = {}
             for action in liste_actions :
                 if action["categorie"] == "reservations" :
@@ -915,11 +839,11 @@ class Synchro():
 
             for action in liste_actions :
 
-                # Ecrase les réservations les plus anciennes pour chaque période
+                # Ecrase les rÃ©servations les plus anciennes pour chaque pÃ©riode
                 etat = action["etat"]
-                if action["categorie"] == "reservations" :
-                    if dict_dernieres_reservations[action["IDperiode"]] != action :
-                        etat = "suppression"
+                #if action["categorie"] == "reservations" :
+                #    if dict_dernieres_reservations[action["IDperiode"]] != action :
+                #        etat = "suppression"
 
                 # Mémorisation des actions
                 listeActions.append([
@@ -948,9 +872,16 @@ class Synchro():
             DB.Commit()
             DB.Close()
 
-        self.log.EcritLog(_(u"Téléchargement terminé"))
+            self.log.EcritLog(_(u"Téléchargement terminé"))
+
         return True
 
+    def Valide_reception_demande(self, IDaction=None):
+        self.log.EcritLog(_(u"COMING SOON:Validation de la reception de la demande %s") % IDaction)
+        pass
+
+    def Traitement_demandes(self):
+        pass
 
     def Upgrade_application(self):
         """ Demande un upgrade de l'application """
@@ -961,7 +892,12 @@ class Synchro():
         try :
 
             # Création de l'url de syncdown
-            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/upgrade/%d" % int(secret)
+            if self.dict_parametres["hebergement_type"] == 0 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["hebergement_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "upgrade/%d" % int(secret)
+            print "URL upgrade =", url
 
             # Récupération des données au format json
             req = urllib2.Request(url)
@@ -989,15 +925,26 @@ class Synchro():
             pass
 
         # Téléchargement du fichier vers le répertoire temporaire
-        try :
-            ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application")
-            fichier = open(os.path.join(rep, nomFichier), 'wb')
-            ftp.retrbinary('RETR ' + nomFichier, fichier.write)
-            fichier.close()
-        except Exception, err :
-            print str(err)
-            return False
+        if self.dict_parametres["hebergement_type"] == 1 :
+            try :
+                ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == "/" else "/") + "application")
+                fichier = open(os.path.join(rep, nomFichier), 'wb')
+                ftp.retrbinary('RETR ' + nomFichier, fichier.write)
+                fichier.close()
+            except Exception, err :
+                print str(err)
+                return False
 
+        elif self.dict_parametres["hebergement_type"] == 0 :
+            infilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"] + ("" if self.dict_parametres["hebergement_local_repertoire"][-1] == "/" else "/"), "application")
+            infile = os.path.join(infilepath, nomFichier)
+            try :
+                shutil.copy2(infile,rep)
+            except Exception, err :
+                print str(err)
+                return False
+        else:
+            raise()
         return rep, nomFichier
 
 

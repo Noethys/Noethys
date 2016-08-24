@@ -107,9 +107,6 @@ def GetExclusions(liste_versions=[], version_ancienne=""):
 
 
 
-
-
-
 class Abort(Exception):
     def __init__(self, value=None):
         self.value = value
@@ -124,6 +121,7 @@ class Installer():
         self.dict_parametres = dict_parametres
 
         self.url_telechargement = "https://github.com/Noethys/Connecthys/archive/master.zip"
+        #self.url_telechargement = "https://github.com/CugeDe/Connecthys/archive/master.zip"
         self.nom_fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="connecthys.zip")
         self.index = 0
 
@@ -162,7 +160,7 @@ class Installer():
             index += 1
         zfile.close()
 
-    def EnvoieRepertoire(self, path="", ftp=None, nbre_total=0, liste_exclusions=[]):
+    def TransfertRepertoire(self, path="", ftp=None, destpath="", nbre_total=0, liste_exclusions=[]):
         for name in os.listdir(path):
 
             # Envoi des fichiers
@@ -181,57 +179,99 @@ class Installer():
 
                     # Stoppe la procédure
                     if keepGoing == False :
-                        raise Abort(u"Transfert interrompue")
+                        raise Abort(u"Transfert interrompu")
 
-                    ftp.storbinary('STOR ' + name, open(localpath, 'rb'))
+                    # Transfert local
+                    if self.dict_parametres["hebergement_type"] == 0 :
+                        fulldestpath = os.path.join(destpath, name)
+                        os.renames(localpath, fulldestpath)
 
-                    # Permission spéciale
+                    # Transfert FTP
+                    if self.dict_parametres["hebergement_type"] == 1 :
+                        ftp.storbinary('STOR ' + name, open(localpath, 'rb'))
 
-                    # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
-                    # TODO: boite de dialogue pour indiquer de modifier les droits autrement
-                    if name == "portail.cgi" :
-                        ftp.sendcmd("chmod 0755 portail.cgi")
+                        # Permission spéciale
+                        # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
+                        # TODO: boite de dialogue pour indiquer de modifier les droits autrement
+                        if name == "connecthys.cgi" :
+                            try :
+                                ftp.sendcmd("chmod 0755 connecthys.cgi")
+                            except Exception, err :
+                                print "CHMOD 755 sur connecthys.cgi impossible :"
+                                print err
 
                 # Envoi des répertoires
                 elif os.path.isdir(localpath):
 
                     if name not in liste_exclusions :
 
-                        try:
-                            ftp.mkd(name)
-                        except Exception, e:
-                            # ignore "directory already exists"
-                            if not e.args[0].startswith('550'):
-                                raise
+                        # Création d'un répertoire local
+                        if self.dict_parametres["hebergement_type"] == 0 :
+                            try:
+                                os.makedirs(fulldestpath)
+                            except Exception, err :
+                                pass
 
-                        ftp.cwd(name)
-                        self.EnvoiRepertoire(localpath, ftp, nbre_total, liste_exclusions)
+                            # Remplissage du répertoire local
+                            fulldestpath = os.path.join(destpath, name)
+                            self.TransfertRepertoire(path=localpath, destpath=fulldestpath, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
 
-                        ftp.cwd("..")
+                        # Création et remplissage d'un répertoire FTP
+                        if self.dict_parametres["hebergement_type"] == 1 :
+                            try :
+                                ftp.mkd(name)
+                            except Exception, e:
+                                # ignore "directory already exists"
+                                if not e.args[0].startswith('550'):
+                                    raise
+
+                            # Remplissage du répertoire FTP
+                            ftp.cwd(name)
+                            self.TransfertRepertoire(path=localpath, ftp=ftp, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
+                            ftp.cwd("..")
 
     def Upload(self, source_repertoire=""):
         # Récupération du nombre de fichiers à transférer
         nbreFichiers = GetNbreFichiers(source_repertoire)
 
-        # Ouverture du FTP
-        keepGoing, skip = self.dlgprogress.Update(1, _(u"Connexion FTP en cours..."))
-        ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
+        # Initialisation pour transfert local
+        if self.dict_parametres["hebergement_type"] == 0 :
+            keepGoing, skip = self.dlgprogress.Update(1, _(u"Préparation de la copie..."))
 
-        # Création du répertoire s'il n'existe pas
-        try:
-            ftp.mkd(self.dict_parametres["ftp_repertoire"])
-        except Exception, e:
-            # ignore "directory already exists"
-            if not e.args[0].startswith('550'):
-                raise
+            # Création du répertoire s'il n'existe pas
+            localrep = self.dict_parametres["hebergement_local_repertoire"]
+            try:
+                os.makedirs(localrep)
+            except Exception, e:
+                print e
 
-        ftp.cwd(self.dict_parametres["ftp_repertoire"])
+            keepGoing, skip = self.dlgprogress.Update(2, _(u"La copie va commencer..."))
+            ftp = None
 
-        keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion FTP effectuée..."))
+        # Initialisation pour transfert FTP
+        if self.dict_parametres["hebergement_type"] == 1 :
+            keepGoing, skip = self.dlgprogress.Update(1, _(u"Connexion FTP en cours..."))
+            ftp = ftplib.FTP(self.dict_parametres["ftp_serveur"], self.dict_parametres["ftp_utilisateur"], self.dict_parametres["ftp_mdp"])
+
+            # Création du répertoire s'il n'existe pas
+            try:
+                ftp.mkd(self.dict_parametres["ftp_repertoire"])
+            except Exception, e:
+                # ignore "directory already exists"
+                if not e.args[0].startswith('550'):
+                    raise
+
+            ftp.cwd(self.dict_parametres["ftp_repertoire"])
+            keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion FTP effectuée..."))
+
 
         # Recherche le numéro de version de l'application déjà installée
         try :
-            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/get_version"
+        # ATTENTION: ne peut fonctionner que si Connecthys est lance
+            if self.dict_parametres["hebergement_type"] == 0 : url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["hebergement_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            url += "/get_version"
+
             # Récupération des données au format json
             req = urllib2.Request(url)
             reponse = urllib2.urlopen(req)
@@ -254,7 +294,17 @@ class Installer():
 
         # Envoi des données
         self.index = 0
-        self.EnvoiRepertoire(source_repertoire, ftp, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
+
+        # Transfert local
+        if self.dict_parametres["hebergement_type"] == 0 :
+            dest_repertoire = self.dict_parametres["hebergement_local_repertoire"]
+            self.TransfertRepertoire(path=source_repertoire, destpath=dest_repertoire, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
+
+        # Transfert FTP
+        if self.dict_parametres["hebergement_type"] == 1 :
+            self.TransfertRepertoire(path=source_repertoire, ftp=ftp, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
+
+        #TODO: Démarrage du serveur ici si serveur autonome
 
         synchro = UTILS_Portail_synchro.Synchro(self.dict_parametres)
 
@@ -267,106 +317,8 @@ class Installer():
         synchro.Upgrade_application()
 
         # Fermeture du FTP
-        ftp.quit()
-
-    def CopieRepertoire(self, path="", destpath="", nbre_total=0, liste_exclusions=[]):
-        for name in os.listdir(path):
-
-            # Copie des fichiers
-            if IsException(name) == False :
-                localpath = os.path.join(path, name)
-                fulldestpath = os.path.join(destpath, name)
-
-                if os.path.isfile(localpath):
-
-                    self.index += 1
-
-                    # Barre de progression
-                    pourcentage = GetPourcentage(self.index, nbre_total)
-                    try :
-                        keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Installation : Copie du fichier %s...") % name)
-                    except :
-                        keepGoing = True
-
-                    # Stoppe la procédure
-                    if keepGoing == False :
-                        raise Abort(u"Copie interrompue")
-
-                    os.renames(localpath, fulldestpath)
-
-                    # Permission spéciale
-#                    if name == "portail.cgi" :
-#                        ftp.sendcmd("chmod 0755 portail.cgi")
-
-                # Envoi des répertoires
-                elif os.path.isdir(localpath):
-
-                    if name not in liste_exclusions :
-
-                        try:
-                            os.makedirs(fulldestpath)
-                        except Exception, e:
-                            # ignore "directory already exists"
-                            #if not e.args[0].startswith('550'):
-                            #    raise
-                            pass
-
-                        self.CopieRepertoire(localpath, fulldestpath, nbre_total, liste_exclusions)
-
-
-    def CopieLocale(self, source_repertoire="", dest_repertoire=""):
-        # Récupération du nombre de fichiers à transférer
-        nbreFichiers = GetNbreFichiers(source_repertoire)
-
-        # Demarage de la copie
-        keepGoing, skip = self.dlgprogress.Update(1, _(u"Copie en cours..."))
-
-        # Création du répertoire s'il n'existe pas
-        localrep = self.dict_parametres["local_repertoire"]
-        try:
-            os.makedirs(localrep)
-        except Exception, e:
-            print e
-            # ignore "directory already exists"
-            #    if not e.args[0].startswith('550'):
-            #        raise
-
-        # Recherche le numéro de version de l'application déjà installée
-        try :
-            url = self.dict_parametres["url_repertoire"] + "/portail.cgi/get_version"
-            # Récupération des données au format json
-            req = urllib2.Request(url)
-            reponse = urllib2.urlopen(req)
-            page = reponse.read()
-            data = json.loads(page)
-            version_ancienne = data["version_str"]
-        except Exception, err :
-            version_ancienne = None
-
-        # Recherche des exclusions
-        if version_ancienne == None :
-            liste_exclusions = []
-        else :
-            # Importation de la liste des exclusions dans le répertoire source
-            nomFichier = "versions.py"
-            chemin = os.path.join(source_repertoire, "application")
-            sys.path.append(chemin)
-            versions = importlib.import_module(nomFichier.replace(".py", ""))
-            liste_exclusions = GetExclusions(liste_versions=versions.VERSIONS, version_ancienne=version_ancienne)
-
-        # Envoi des données
-        self.index = 0
-        self.CopieRepertoire(source_repertoire, dest_repertoire, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
-
-        synchro = UTILS_Portail_synchro.Synchro(self.dict_parametres)
-
-        # Envoi du fichier de config
-        keepGoing, skip = self.dlgprogress.Update(98, _(u"Copie du fichier de configuration en cours..."))
-        #syncro.Copie_config(dest_repertoire)
-
-        # Demande un upgrade de l'application
-        keepGoing, skip = self.dlgprogress.Update(99, _(u"Demande la mise à jour de l'application..."))
-        synchro.Upgrade_application()
+        if self.dict_parametres["hebergement_type"] == 1 :
+            ftp.quit()
 
 
     def Installer(self):
@@ -402,32 +354,18 @@ class Installer():
             self.Dezipper(self.nom_fichier_dest, UTILS_Fichiers.GetRepTemp())
             source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
 
-            if self.dict_parametres["hebergement_type"] == 1 :
+            # Envoi des fichiers par FTP
+            self.Upload(source_repertoire)
 
-                # Envoi des fichiers par FTP
-                self.Upload(source_repertoire)
+            # Fermeture dlgprogress
+            self.dlgprogress.Destroy()
 
-                # Fermeture dlgprogress
-                self.dlgprogress.Destroy()
-
-                return True
-
-            if self.dict_parametres["hebergement_type"] == 0 :
-
-                # deplacement des fichiers dans le repertoire local
-                dest_repertoire = self.dict_parametres["local_repertoire"]
-                self.CopieLocale(source_repertoire, dest_repertoire)
-
-                # Fermeture dlgprogress
-                self.dlgprogress.Destroy()
-
-                return True
-
-            return False
+            return True
 
         except Abort as err:
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
+
             self.dlgprogress = None
 
             time.sleep(3)
@@ -441,10 +379,11 @@ class Installer():
                 self.dlgprogress.Destroy()
 
             traceback.print_exc()
-            print "Erreur dans l'installation de l'application : ", err
+            print "Erreur dans l'installation de l'application : "
+            print err
 
             time.sleep(3)
-            dlg = wx.MessageDialog(None, _(u"L'erreur suivante a été rencontrée : " + str(err)), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(None, _(u"Une erreur a été rencontrée !"), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False

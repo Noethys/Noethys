@@ -31,6 +31,13 @@ LISTE_DONNEES = [
     ("repertoire_donnees", [
         ("chemin", ""),
     ]),
+    ("ephemeride", [
+        ("actif", "1"),
+    ]),
+    ("connecthys_log", [
+        ("type", "panel"),
+        ("file_name", "connecthys_synchro.log"),
+    ]),
 ]
 
 

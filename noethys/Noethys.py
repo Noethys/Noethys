@@ -324,7 +324,7 @@ class MainFrame(wx.Frame):
         if self.userConfig["nomFichier"] != "" :
             try :
                 UTILS_Historique.InsertActions([{
-                    "IDcategorie" : 1, 
+                    "IDcategorie" : 1,
                     "action" : _(u"Fermeture du fichier"),
                     },])
             except :
@@ -338,20 +338,20 @@ class MainFrame(wx.Frame):
         self.userConfig["taille_fenetre"] = taille_fenetre
         
         # Mémorisation des perspectives
-        self.SauvegardePerspectiveActive() 
+        self.SauvegardePerspectiveActive()
         self.userConfig["perspectives"] = self.perspectives
         self.userConfig["perspective_active"] = self.perspective_active
         
         if hasattr(self, "ctrl_remplissage") :
             self.userConfig["perspective_ctrl_effectifs"] = self.ctrl_remplissage.SavePerspective()
-            self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive() 
+            self.userConfig["page_ctrl_effectifs"] = self.ctrl_remplissage.GetPageActive()
 
         # Sauvegarde du fichier de configuration
         self.SaveFichierConfig()
 
         # Sauvegarde automatique
         if self.userConfig["nomFichier"] != "" and sauvegardeAuto == True :
-            resultat = self.SauvegardeAutomatique() 
+            resultat = self.SauvegardeAutomatique()
             if resultat == wx.ID_CANCEL :
                 return False
 
@@ -365,8 +365,10 @@ class MainFrame(wx.Frame):
             self.autodeconnect_timer.Stop()
         
         # Affiche les connexions restées ouvertes
-        GestionDB.AfficheConnexionOuvertes() 
+        GestionDB.AfficheConnexionOuvertes()
         
+        self.Destroy()
+
         return True
     
     def SauvegardeAutomatique(self):
@@ -426,8 +428,9 @@ class MainFrame(wx.Frame):
                           CenterPane().PaneBorder(True).CaptionVisible(True) )
 
         # Panneau Ephéméride
-        self.ctrl_ephemeride = CTRL_Ephemeride.CTRL(self)
-        self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(_(u"Ephéméride")).
+        if CUSTOMIZE.GetValeur("ephemeride", "actif", "1") == "1" :
+            self.ctrl_ephemeride = CTRL_Ephemeride.CTRL(self)
+            self._mgr.AddPane(self.ctrl_ephemeride, aui.AuiPaneInfo().Name("ephemeride").Caption(_(u"Ephéméride")).
                           Top().Layer(0).Row(1).Position(0).CloseButton(True).MaximizeButton(True).MinimizeButton(True).MinSize((-1, 100)).BestSize((-1, 100)) )
 
         # Panneau Serveur Nomadhys
@@ -1427,7 +1430,8 @@ class MainFrame(wx.Frame):
         # Met à jour l'affichage des panels
         self.MAJ()
         self.SetTitleFrame(nomFichier=nomFichier)
-        self.ctrl_ephemeride.Initialisation()
+        if CUSTOMIZE.GetValeur("ephemeride", "actif", "1") == "1" :
+            self.ctrl_ephemeride.Initialisation()
         
         # Récupération de la perspective chargée
         if self.perspective_active != None :
@@ -1648,7 +1652,8 @@ class MainFrame(wx.Frame):
             dlg.Destroy()
         except :
             pass
-        self.ctrl_ephemeride.Initialisation()
+        if CUSTOMIZE.GetValeur("ephemeride", "actif", "1") == "1" :
+            self.ctrl_ephemeride.Initialisation()
 
     def On_param_groupes_activites(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_groupes_activites", "consulter") == False : return
@@ -3282,7 +3287,8 @@ class MainFrame(wx.Frame):
         # Met à jour l'affichage 
         self.MAJ()
         self.SetTitleFrame(nomFichier=nomFichier)
-        self.ctrl_ephemeride.Initialisation()
+        if CUSTOMIZE.GetValeur("ephemeride", "actif", "1") == "1" :
+            self.ctrl_ephemeride.Initialisation()
         
         # Récupération de la perspective chargée
         if self.perspective_active != None :
@@ -3521,6 +3527,8 @@ class MainFrame(wx.Frame):
                 if dictTemp["mdp"] == CUSTOMIZE.GetValeur("utilisateur", "pass", "") :
                     self.ChargeUtilisateur(dictTemp)
                     return True
+        # Permet de donner le focus à la fenetre de connection sur LXDE (Fonctionnait sans sur d'autres distributions)
+        self.Raise()
         dlg = CTRL_Identification.Dialog(self, listeUtilisateurs=listeUtilisateurs, nomFichier=nomFichier)
         reponse = dlg.ShowModal() 
         dictUtilisateur = dlg.GetDictUtilisateur()
@@ -3737,8 +3745,8 @@ Merci pour votre participation !
                         image = wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Cle.png"), wx.BITMAP_TYPE_ANY)
                         message1 = _(u"Votre licence d'accès au manuel de référence en ligne se termine dans %d jours. \n\nSi vous le souhaitez, vous pouvez continuer à bénéficier de cet accès et prolonger votre soutien financier au projet Noethys en renouvelant votre abonnement Classic ou Premium.") % nbreJoursRestants
                         dlg = dialogs.MultiMessageDialog(self, message1, caption = _(u"Enregistrement"), msg2=None, style = wx.ICON_INFORMATION | wx.YES|wx.CANCEL|wx.CANCEL_DEFAULT, icon=image, btnLabels={wx.ID_YES : _(u"Renouveler mon abonnement"), wx.ID_CANCEL : _(u"Fermer")})
-                        reponse = dlg.ShowModal() 
-                        dlg.Destroy() 
+                        reponse = dlg.ShowModal()
+                        dlg.Destroy()
                         if reponse == wx.ID_YES :
                             FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande.pdf"))
                         return True
@@ -3818,7 +3826,7 @@ class MyApp(wx.App):
     def OnInit(self):
         # Adaptation pour rétrocompatibilité wx2.8
         if wx.VERSION < (2, 9, 0, 0) :
-            wx.InitAllImageHandlers() 
+            wx.InitAllImageHandlers()
 
         heure_debut = time.time()
 
@@ -3853,13 +3861,13 @@ class MyApp(wx.App):
         frame = MainFrame(None)
         self.SetTopWindow(frame)
         frame.Initialisation()
-        frame.Show()   
+        frame.Show()
 
         # Affiche une annonce si c'est un premier démarrage ou après une mise à jour
         etat_annonce = frame.Annonce()
                 
         # Charge le fichier Exemple si l'utilisateur le souhaite
-        etat_exemple = frame.ChargeFichierExemple() 
+        etat_exemple = frame.ChargeFichierExemple()
         
         # Charge le dernier fichier
         fichierOuvert = frame.OuvrirDernierFichier()
@@ -3869,20 +3877,24 @@ class MyApp(wx.App):
         
         # Après ouverture d'un fichier :
         if fichierOuvert == True and frame.EstFichierExemple() == False and etat_maj == False :
-            
+
             # Témoignages
             temoignages = frame.AnnonceTemoignages()
-            
+
             # Financement
-            if temoignages == False : 
+            if temoignages == False :
                 financement = frame.AnnonceFinancement()
-            
+
                 # Détection d'anomalies
                 if financement == False and CUSTOMIZE.GetValeur("correction_anomalies", "actif", "1") == "1" :
-                    frame.AutodetectionAnomalies() 
-        
+                    frame.AutodetectionAnomalies()
+
+        # Démarrage du serveur Connecthys
+        if hasattr(frame, 'ctrl_serveur_portail') == True:
+            frame.ctrl_serveur_portail.StartServeur()
+
         # Démarrage du serveur Nomadhys
-        if hasattr(frame, "ctrl_serveur_nomade") :
+        if hasattr(frame, 'ctrl_serveur_nomade') == True:
             frame.ctrl_serveur_nomade.StartServeur()
 
         #print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
@@ -3923,4 +3935,3 @@ if __name__ == "__main__":
     else :
         app = MyApp(redirect=True, filename=nomJournal)
     app.MainLoop()
-    

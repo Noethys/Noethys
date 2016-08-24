@@ -42,7 +42,7 @@ class Track(object):
                 self.affichage_actuel = True
             else :
                 self.affichage_periode = (self.affichage_date_fin, self.affichage_date_debut)
-                if self.affichage_date_debut <= datetime.datetime.now() and self.affichage_date_fin >= datetime.datetime.now() :
+                if datetime.datetime.strptime(self.affichage_date_debut, "%Y-%m-%d %H:%M:%S") <= datetime.datetime.now() and datetime.datetime.strptime(self.affichage_date_fin, "%Y-%m-%d %H:%M:%S") >= datetime.datetime.now() :
                     self.affichage_actuel = True
                 else :
                     self.affichage_actuel = False
@@ -126,7 +126,7 @@ class ListView(FastObjectListView):
             elif periode == False :
                 _(u"Ne pas afficher")
             else :
-                return _(u"Du %s au %s") % (periode[1].strftime("%d/%m/%Y-%Hh%M"), periode[0].strftime("%d/%m/%Y-%Hh%M"))
+                return _(u"Du %s au %s") % (datetime.datetime.strftime(datetime.datetime.strptime(periode[1], "%Y-%m-%d %H:%M:%S"), "%d/%m/%Y-%Hh%M"), datetime.datetime.strftime(datetime.datetime.strptime(periode[1], "%Y-%m-%d %H:%M:%S"), "%d/%m/%Y-%Hh%M"))
 
 
         liste_Colonnes = [

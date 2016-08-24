@@ -25,7 +25,6 @@ import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
 
-
 def GetSecretKey():
     code = ""
     for x in range(0, 40) :
@@ -33,22 +32,22 @@ def GetSecretKey():
     return code
 
 LISTE_THEMES = [("blue", u"Bleu"), ("black", u"Noir"), ("green", u"Vert"), ("purple", u"Violet"), ("red", u"Rouge"), ("yellow", u"Jaune")]
+
 LISTE_DELAIS_SYNCHRO = [(15, u"Toutes les 15 minutes"), (30, u"Toutes les 30 minutes"), (60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures")]
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
-
 
 VALEURS_DEFAUT = {
     "portail_activation" : False,
     "serveur_portail_activation" : False,
     "serveur_synchro_delai" : 2,
-    "serveur_synchro_ouverture" : True,
+    "serveur_synchro_ouverture" : False,
     "hebergement_type" : 0,
-    "ftp_serveur" : "",
+    "ftp_serveur" : "127.0.0.1",
     "ftp_utilisateur" : "",
     "ftp_mdp" : "",
-    "ftp_repertoire" : "www/connecthys",
-    "url_repertoire" : "http://",
-    "local_repertoire" : "",
+    "ftp_repertoire" : "/tmp",
+    "url_connecthys" : "http://127.0.0.1:5000",
+    "hebergement_local_repertoire" : "/tmp",
     "db_type" : 1,
     "db_serveur" : "",
     "db_utilisateur" : "",
@@ -88,7 +87,81 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
     def __init__(self, parent):
         CTRL_Propertygrid.CTRL.__init__(self, parent)
         self.parent = parent
-        self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropChange )
+        self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropGridChange)
+
+    def OnPropGridChange(self, event):
+        if event.GetPropertyName() == "hebergement_type" :
+            value = event.GetPropertyValue()
+            if value == 0 :
+                self.SwitchHostingToLocal()
+            elif value == 1 :
+                self.SwitchHostingToFTP()
+            else :
+                raise
+        elif event.GetPropertyName() == "db_type" :
+            value = event.GetPropertyValue()
+            if value == 0 :
+                self.SwitchDatabaseToLocal()
+            elif value == 1 :
+                self.SwitchDatabaseToNetwork()
+            else :
+                raise
+        self.RefreshGrid()
+        event.Skip()
+
+    def SwitchHostingToLocal(self):
+        property = self.GetProperty("ftp_serveur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ftp_utilisateur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ftp_mdp")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ftp_repertoire")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("hebergement_local_repertoire")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+
+    def SwitchHostingToFTP(self):
+        property = self.GetProperty("ftp_serveur")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ftp_utilisateur")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ftp_mdp")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ftp_repertoire")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("hebergement_local_repertoire")
+        property.SetAttribute("obligatoire", False);
+        property.Hide(True);
+
+    def SwitchDatabaseToLocal(self):
+        property = self.GetProperty("db_serveur")
+        property.Hide(True)
+        property = self.GetProperty("db_utilisateur")
+        property.Hide(True)
+        property = self.GetProperty("db_mdp")
+        property.Hide(True)
+        property = self.GetProperty("db_nom")
+        property.Hide(True)
+
+    def SwitchDatabaseToNetwork(self):
+        property = self.GetProperty("db_serveur")
+        property.Hide(False)
+        property = self.GetProperty("db_utilisateur")
+        property.Hide(False)
+        property = self.GetProperty("db_mdp")
+        property.Hide(False)
+        property = self.GetProperty("db_nom")
+        property.Hide(False)
 
     def Remplissage(self):
 
@@ -128,61 +201,52 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
 
         # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Hébergement")) )
+        self.Append( wxpg.PropertyCategory(_(u"Hébergement du portail")) )
 
-        # TYpe d'hébergement
+        # Type d'hébergement
         nom = "hebergement_type"
         propriete = wxpg.EnumProperty(label=_(u"Type d'hébergement"), labels=[_(u"Local"), _(u"FTP")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser : Local (Connecthys est installé sur l'ordinateur) ou FTP (Connecthys est envoyé sur un répertoire FTP)"))
+	propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser : Local (Connecthys est installé sur l'ordinateur) ou FTP (Connecthys est envoyé sur un répertoire FTP)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
-
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Hébergement FTP")) )
 
         # Serveur FTP
         nom = "ftp_serveur"
         propriete = wxpg.StringProperty(label=_(u"Adresse du serveur"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez l'adresse du serveur FTP (Ex : ftp.monsite.com)"))
-        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Utilisateur
         nom = "ftp_utilisateur"
         propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez l'utilisateur FTP"))
-        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Mot de passe
         nom = "ftp_mdp"
         propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le mot de passe FTP"))
-        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Répertoire FTP
         nom = "ftp_repertoire"
         propriete = wxpg.StringProperty(label=_(u"Répertoire"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le répertoire FTP (ex : www/connecthys)"))
-        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # url FTP
-        nom = "url_repertoire"
-        propriete = wxpg.StringProperty(label=_(u"URL du répertoire"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez l'url du répertoire de Connecthys (ex : http://www.monsite.com/connecthys)"))
-        propriete.SetAttribute("obligatoire", True)
+
+        # Repertoire Hebergement Local
+        nom = "hebergement_local_repertoire"
+        propriete = wxpg.StringProperty(label=_(u"Répertoire local"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le répertoire local (Ex : /home/bogucool/connecthys)"))
         self.Append(propriete)
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Hébergement Local")) )
-
-        # Repertoire Hébergement Local
-        nom = "local_repertoire"
-        propriete = wxpg.DirProperty(label=_(u"Repertoire local"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le repertoire local (Ex : /home/bogucool/connecthys_www)"))
+        # Url Connecthys
+        nom = "url_connecthys"
+        propriete = wxpg.StringProperty(label=_(u"URL d'accès à Connecthys "), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'url d'accès à Connecthys (ex : http://127.0.0.1:5000 ou http://www.monsite.com/connecthys)"))
         self.Append(propriete)
+
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Base de données")) )
@@ -222,7 +286,6 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
-
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Sécurité")) )
 
@@ -246,6 +309,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Cochez cette case pour activer le mode debug (Ne surtout pas utiliser en production !)"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
+
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Affichage")) )
@@ -418,13 +482,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Délai d'affichage de l'historique
+        # DÃ©lai d'affichage de l'historique
         nom = "historique_delai"
         propriete = wxpg.EnumProperty(label=_(u"Temps d'affichage de l'historique"), labels=[y for x, y in LISTE_AFFICHAGE_HISTORIQUE], values=range(0, len(LISTE_AFFICHAGE_HISTORIQUE)), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez un délai pour l'affichage de l'historique : Au-delà l'historique sera caché."))
+        propriete.SetHelpString(_(u"SÃ©lectionnez un dÃ©lai pour l'affichage de l'historique : Au-delÃ  l'historique sera cachÃ©."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
-
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Contact'")) )
@@ -493,6 +556,27 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
 
+        property = self.GetProperty("hebergement_type")
+        if property is not None :
+            value = property.GetValue()
+            if value == 1 :
+                self.SwitchHostingToFTP()
+            elif value == 0 :
+                self.SwitchHostingToLocal()
+            else :
+                raise
+
+        property = self.GetProperty("db_type")
+        if property is not None :
+            value = property.GetValue()
+            if value == 1 :
+                self.SwitchDatabaseToNetwork()
+            elif value == 0 :
+                self.SwitchDatabaseToLocal()
+            else :
+                raise
+
+
     def Sauvegarde(self):
         """ Mémorisation des valeurs du contrôle """
         # Mémorisation des paramètres dans la base de données
@@ -520,13 +604,13 @@ class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
-        
+
         # Bandeau
         intro = _(u"Connecthys est le portail internet de Noethys. Vous devez au préalable disposer d'un hébergement internet compatible. Utilisez les fonctionnalités ci-dessous pour installer et synchroniser le portail avec votre fichier de données Noethys.")
         titre = _(u"Connecthys")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
-        
+
         # Paramètres
         self.box_parametres = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres(self)
@@ -544,7 +628,7 @@ class Dialog(wx.Dialog):
 
         self.__set_properties()
         self.__do_layout()
-        
+
         self.Bind(wx.EVT_BUTTON, self.OnBoutonInstaller, self.bouton_installer)
         #self.Bind(wx.EVT_BUTTON, self.OnBoutonDesinstaller, self.bouton_desinstaller)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSynchroniser, self.bouton_synchroniser)
@@ -566,7 +650,7 @@ class Dialog(wx.Dialog):
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
-        
+
         # Paramètres
         box_parametres = wx.StaticBoxSizer(self.box_parametres, wx.VERTICAL)
         box_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
@@ -589,7 +673,7 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
         grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
-        
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableRow(1)
@@ -597,7 +681,7 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.CenterOnScreen()
         self.SetSize((self.GetMinSize()))
-    
+
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
@@ -607,13 +691,13 @@ class Dialog(wx.Dialog):
             return False
         self.MemoriseParametres()
         self.EndModal(wx.ID_CANCEL)
-    
+
     def OnClose(self, event):
         if self.ctrl_parametres.Validation() == False :
             return False
         self.MemoriseParametres()
         event.Skip()
-        
+
     def MemoriseParametres(self):
         self.ctrl_parametres.Sauvegarde()
 
@@ -637,7 +721,7 @@ class Dialog(wx.Dialog):
                 return False
 
             if dict_parametres["ftp_utilisateur"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom de de l'utilisateur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nomde de l'utilisateur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -654,13 +738,21 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 return False
 
-        if dict_parametres["hebergement_type"] == 0 :
+        elif dict_parametres["hebergement_type"] == 0 :
 
-            if dict_parametres["local_repertoire"] == "" :
+            if dict_parametres["hebergement_local_repertoire"] == "" :
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire local !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
+        else :
+            raise
+
+        if dict_parametres["url_connecthys"] == "" :
+            dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'url d'accès à Connecthys !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
 
         # Procédure d'installation
         import UTILS_Portail_installation
@@ -729,4 +821,4 @@ if __name__ == u"__main__":
     frame_1 = Dialog(None)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
-    app.MainLoop()
+    #app.MainLoop()
