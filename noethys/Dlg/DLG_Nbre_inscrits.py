@@ -16,6 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import os
 import copy
 import datetime
+import time
 import GestionDB
 from Utils import UTILS_Config
 from Utils import UTILS_Interface
@@ -209,6 +210,8 @@ class CTRL(ULC.UltimateListCtrl):
     def MAJ(self, forcerActualisation=False):
         condition = ""
 
+        DB = GestionDB.DB()
+
         # Recherche des paramètres
         parametres = UTILS_Config.GetParametre("nbre_inscrits_parametre_activites", defaut=None)
         if parametres != None :
@@ -218,9 +221,19 @@ class CTRL(ULC.UltimateListCtrl):
                 for ID in liste.split(";") :
                     listeID.append(int(ID))
                 if code == "liste_groupes_activites" :
-                    condition = "WHERE groupes_activites.IDtype_groupe_activite IN %s" % GestionDB.ConvertConditionChaine(listeID)
+                    req = """SELECT IDtype_groupe_activite, IDactivite
+                    FROM groupes_activites
+                    WHERE IDtype_groupe_activite IN %s
+                    ;""" % GestionDB.ConvertConditionChaine(listeID)
+                    DB.ExecuterReq(req)
+                    listeDonnees = DB.ResultatReq()
+                    listeActivites = []
+                    for IDtype_groupe_activite, IDactivite in listeDonnees :
+                        listeActivites.append(IDactivite)
+                    condition = "WHERE activites.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeActivites)
+
                 if code == "liste_activites" :
-                    condition = "WHERE inscriptions.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeID)
+                    condition = "WHERE activites.IDactivite IN %s" % GestionDB.ConvertConditionChaine(listeID)
 
         # Tri
         tri = UTILS_Config.GetParametre("nbre_inscrits_parametre_tri", 3)
@@ -243,14 +256,11 @@ class CTRL(ULC.UltimateListCtrl):
         # Seuil d'alerte
         self.seuil_alerte = UTILS_Config.GetParametre("nbre_inscrits_parametre_alerte", 5)
 
-        # Recherche des données
-        DB = GestionDB.DB()
-
         # Récupération des groupes
         req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.nbre_inscrits_max,
         COUNT(inscriptions.IDinscription) as nbre_inscriptions
         FROM groupes
-        LEFT JOIN groupes_activites ON groupes_activites.IDactivite = groupes.IDactivite
+        LEFT JOIN activites ON activites.IDactivite = groupes.IDactivite
         LEFT JOIN inscriptions ON inscriptions.IDgroupe = groupes.IDgroupe
         %s
         GROUP BY groupes.IDgroupe
@@ -275,11 +285,10 @@ class CTRL(ULC.UltimateListCtrl):
             if condition == "" :
                 condition = "WHERE activites.date_fin>='%s'" % str(datetime.date.today())
             else :
-                condition += " AND WHERE activites.date_fin>='%s'" % str(datetime.date.today())
+                condition += " AND activites.date_fin>='%s'" % str(datetime.date.today())
 
         req = """SELECT activites.IDactivite, activites.nom, activites.nbre_inscrits_max
         FROM activites
-        LEFT JOIN groupes_activites ON groupes_activites.IDactivite = activites.IDactivite
         %s
         GROUP BY activites.IDactivite
         ;""" % condition
@@ -309,11 +318,11 @@ class CTRL(ULC.UltimateListCtrl):
             self.listeActivites = listeActivitesTemp
         else :
             return
-        
+
         # MAJ du contrôle
         self.Freeze()
-        self.DeleteAllItems() 
-        
+        self.DeleteAllItems()
+
         self.dictRenderers = {}
         index = 0
         for dictActivite in self.listeActivites :
@@ -532,9 +541,10 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-
         self.ctrl = Panel(panel)
-        self.ctrl.MAJ() 
+        t1 = time.time()
+        self.ctrl.MAJ()
+        print "Temps MAJ =", time.time() - t1
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
