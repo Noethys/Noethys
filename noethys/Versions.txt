@@ -1,4 +1,4 @@
-Version 1.1.7.1 (17/07/2016) :
+Version 1.1.7.2 (25/08/2016) :
 
 Version Alpha
 
@@ -7,8 +7,11 @@ Version Alpha
 - Ajout des paramètres de portail dans les activités
 - Ajout des documents associés aux types de pièces
 - Ajout des périodes et des unités de réservations
+- Améliorations sur liste nombre inscrits sur page d'accueil
 - Correction d'un bug sur la mise à jour sur Linux
 - Correction d'un bug sur les lettres de rappel
+- Correction d'un bug sur la procédure de badgeage
+- Correction d'un bug sur la validation des contrats PSU
 
 Version 1.1.7.0 (05/06/2016) :
 
