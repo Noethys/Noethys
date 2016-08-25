@@ -16,7 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.aui as aui
 
 import DLG_Remplissage
-import DLG_Nbre_inscrits
+import DLG_Nbre_inscrits_2 as DLG_Nbre_inscrits
 
 
 

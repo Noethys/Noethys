@@ -42,7 +42,10 @@ class Dialog(wx.Dialog):
 
         self.label_ouvert = wx.StaticText(self, wx.ID_ANY, _(u"Ancienneté :"))
         self.ctrl_ouvert = wx.CheckBox(self, -1, _(u"Masquer les activités obsolètes"))
-        
+
+        self.label_regroup = wx.StaticText(self, wx.ID_ANY, _(u"Regroupement :"))
+        self.ctrl_regroup = wx.CheckBox(self, -1, _(u"Regrouper les activités par groupe d'activités"))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -64,6 +67,7 @@ class Dialog(wx.Dialog):
         self.ctrl_sens.SetToolTipString(_(u"Sélectionner un sens de tri"))
         self.ctrl_alerte.SetToolTipString(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur"))
         self.ctrl_ouvert.SetToolTipString(_(u"Masquer les activités dont la date de fin de validité est supérieure à la date du jour"))
+        self.ctrl_regroup.SetToolTipString(_(u"Regrouper les activités par groupe d'activités"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
@@ -77,7 +81,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(box_activites, 1, wx.LEFT | wx.RIGHT | wx.TOP | wx.EXPAND, 10)
 
         box_options = wx.StaticBoxSizer(self.box_options_staticbox, wx.VERTICAL)
-        grid_sizer_options = wx.FlexGridSizer(4, 2, 10, 10)
+        grid_sizer_options = wx.FlexGridSizer(5, 2, 10, 10)
         grid_sizer_options.Add(self.label_tri, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_tri, 0, wx.EXPAND, 0)
         grid_sizer_options.Add(self.label_sens, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
@@ -86,6 +90,8 @@ class Dialog(wx.Dialog):
         grid_sizer_options.Add(self.ctrl_alerte, 0, 0, 0)
         grid_sizer_options.Add(self.label_ouvert, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.ctrl_ouvert, 0, 0, 0)
+        grid_sizer_options.Add(self.label_regroup, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_regroup, 0, 0, 0)
         grid_sizer_options.AddGrowableCol(1)
         box_options.Add(grid_sizer_options, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_base.Add(box_options, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
@@ -130,6 +136,7 @@ class Dialog(wx.Dialog):
         self.ctrl_sens.SetSelection(UTILS_Config.GetParametre("nbre_inscrits_parametre_sens", 1))
         self.ctrl_alerte.SetValue(UTILS_Config.GetParametre("nbre_inscrits_parametre_alerte", 5))
         self.ctrl_ouvert.SetValue(UTILS_Config.GetParametre("nbre_inscrits_parametre_ouvert", 1))
+        self.ctrl_regroup.SetValue(UTILS_Config.GetParametre("nbre_inscrits_parametre_regroup", 0))
 
     def OnBoutonOk(self, event):  
         if self.ctrl_activites.Validation() == False :
@@ -153,6 +160,7 @@ class Dialog(wx.Dialog):
         UTILS_Config.SetParametre("nbre_inscrits_parametre_sens", self.ctrl_sens.GetSelection())
         UTILS_Config.SetParametre("nbre_inscrits_parametre_alerte", int(self.ctrl_alerte.GetValue()))
         UTILS_Config.SetParametre("nbre_inscrits_parametre_ouvert", int(self.ctrl_ouvert.GetValue()))
+        UTILS_Config.SetParametre("nbre_inscrits_parametre_regroup", int(self.ctrl_regroup.GetValue()))
 
         self.EndModal(wx.ID_OK)
         
