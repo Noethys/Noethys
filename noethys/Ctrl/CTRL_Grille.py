@@ -3706,15 +3706,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         break
 
 
-            # Recherche combien d'individus de la famille sont déjà présents ce jour-là
-            listeIndividusPresents = []
+            # Recherche combien d'individus de la famille sont déjà présents
+            # ce jour-là ou au début du forfait
+            listeIndividusPresents = set()
             listePrestationsConcernees = []
             for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
-                if dictValeurs["date"] == date and dictValeurs["IDtarif"] == IDtarif and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] != IDindividu :
-                    if dictValeurs["IDindividu"] not in listeIndividusPresents :
-                        listeIndividusPresents.append(dictValeurs["IDindividu"])
+                if ((dictValeurs["date"] == date or
+                            dictValeurs["forfait_date_debut"]) and
+                        dictValeurs["IDtarif"] == IDtarif and
+                        dictValeurs["IDfamille"] == IDfamille and
+                        dictValeurs["IDindividu"] != IDindividu):
+                    listeIndividusPresents.add(dictValeurs["IDindividu"])
             nbreIndividus = len(listeIndividusPresents) + 1
-            
+
             # Recherche le tarif à appliquer à chaque individu
             if "degr" in methode_calcul :
                 # Si tarif dégressif différent pour chaque individu
