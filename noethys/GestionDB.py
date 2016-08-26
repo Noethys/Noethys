@@ -1885,6 +1885,8 @@ class DB:
             try :
                 if self.IsTableExists("portail_actions") == False : self.CreationTable("portail_actions", Tables.DB_DATA)
                 if self.IsTableExists("portail_reservations") == False : self.CreationTable("portail_reservations", Tables.DB_DATA)
+                self.AjoutChamp("activites", "portail_reservations_limite", "VARCHAR(20)")
+                self.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
