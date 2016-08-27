@@ -61,7 +61,9 @@ Dépendances pour Linux
 Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
 ```
-apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto python-appdirs
+apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib 
+python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto python-appdirs
+python-wxgtk3.0 python-sqlalchemy libcanberra-gtk-module
 ```
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fait dans l'étape précédente) et les installer par:
