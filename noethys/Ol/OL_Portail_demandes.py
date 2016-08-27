@@ -13,6 +13,7 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
+import datetime
 from Dlg import DLG_Saisie_portail_demande
 from Utils import UTILS_Interface
 from Utils import UTILS_Titulaires
@@ -141,7 +142,10 @@ class ListView(GroupListView):
             return track.categorie
 
         def FormateHorodatage(horodatage):
-            return horodatage.strftime("%d/%m/%Y  %H:%M:%S")
+            if isinstance(horodatage, str) or isinstance(horodatage, unicode) :
+                return datetime.datetime.strptime(horodatage, "%Y-%m-%d %H:%M:%S.%f").strftime("%d/%m/%Y  %H:%M:%S")
+            else :
+                return horodatage.strftime("%d/%m/%Y  %H:%M:%S")
 
         def FormateDate(dateDD):
             if dateDD == None :
