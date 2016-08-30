@@ -140,6 +140,8 @@ class CTRL(HTL.HyperTreeList):
             tri = "activites.date_debut"
         elif tri == 2 :
             tri = "activites.date_fin"
+        elif tri == 3 :
+            tri = "activites.abrege"
         else :
             tri = "activites.nom"
         
@@ -338,7 +340,7 @@ class CTRL(HTL.HyperTreeList):
                             self.SetPyData(niveau_groupe, dictGroupe)
 
                             # Abrégé
-                            self.SetItemText(niveau_activite, dictGroupe["abrege"], 1)
+                            self.SetItemText(niveau_groupe, dictGroupe["abrege"], 1)
 
                             nbre_inscrits = dictGroupe["nbre_inscrits"]
                             if nbre_inscrits == None :

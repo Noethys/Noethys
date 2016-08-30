@@ -30,7 +30,7 @@ class Dialog(wx.Dialog):
         # Options
         self.box_options_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Options"))
         self.label_tri = wx.StaticText(self, wx.ID_ANY, _(u"Critère de tri :"))
-        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activité"), _(u"Date de début d'activité"), _(u"Date de fin d'activité")])
+        self.ctrl_tri = wx.Choice(self, wx.ID_ANY, choices=[_(u"Nom d'activité"), _(u"Date de début d'activité"), _(u"Date de fin d'activité"), _(u"Nom abrégé de l'activité")])
         self.ctrl_tri.SetSelection(0)
 
         self.label_sens = wx.StaticText(self, wx.ID_ANY, _(u"Sens de tri :"))
