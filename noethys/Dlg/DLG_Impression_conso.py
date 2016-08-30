@@ -19,6 +19,7 @@ import wx.calendar
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 import wx.lib.colourselect as csel
+import wx.lib.platebtn as platebtn
 
 import FonctionsPerso
 import sys
@@ -85,6 +86,54 @@ def ConvertCouleurPDFpourWX(couleurpdf=(0, 0, 0)):
 
 
 
+
+class CTRL_Cocher(platebtn.PlateButton):
+    def __init__(self, parent, ctrl_liste=None):
+        platebtn.PlateButton.__init__(self, parent, -1, u" Cocher", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
+        self.SetToolTipString(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")
+        self.ctrl_liste = ctrl_liste
+        self.SetBackgroundColour(wx.WHITE)
+
+        menu = wx.Menu()
+        item = wx.MenuItem(menu, 10, u"Tout cocher", u"Cliquez ici pour cocher tous les éléments de la liste")
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
+        menu.AppendItem(item)
+        item = wx.MenuItem(menu, 20, u"Tout décocher", u"Cliquez ici pour décocher tous les éléments de la liste")
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Decocher.png"), wx.BITMAP_TYPE_ANY))
+        menu.AppendItem(item)
+        self.SetMenu(menu)
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonCocher, self)
+        self.Bind(wx.EVT_MENU, self.OnMenu)
+
+    def OnBoutonCocher(self, event):
+        self.ShowMenu()
+
+    def OnMenu(self, event):
+        ID = event.GetId()
+        # Tout cocher
+        if ID == 10 :
+            self.ctrl_liste.CocheListeTout()
+        # Tout décocher
+        if ID == 20:
+            self.ctrl_liste.CocheListeRien()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class PANEL_Calendrier(wx.Panel):
     def __init__(self, parent):
         wx.Panel.__init__(self, parent, -1)
@@ -144,6 +193,19 @@ class CTRL_Activites(HTL.HyperTreeList):
         # Binds
         self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem) 
         
+    def Cocher(self, etat=True):
+        self.MAJenCours = True
+        item = self.root
+        for index in range(0, self.GetChildrenCount(self.root)):
+            item = self.GetNext(item)
+            self.CheckItem(item, etat)
+        self.MAJenCours = False
+
+    def CocheListeTout(self):
+        self.Cocher(True)
+
+    def CocheListeRien(self):
+        self.Cocher(False)
 
     def OnCheckItem(self, event):
         if self.MAJenCours == False :
@@ -290,7 +352,21 @@ class CTRL_Ecoles(HTL.HyperTreeList):
 
         # Binds
         self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem) 
-    
+
+    def Cocher(self, etat=True):
+        self.MAJenCours = True
+        item = self.root
+        for index in range(0, self.GetChildrenCount(self.root)):
+            item = self.GetNext(item)
+            self.CheckItem(item, etat)
+        self.MAJenCours = False
+
+    def CocheListeTout(self):
+        self.Cocher(True)
+
+    def CocheListeRien(self):
+        self.Cocher(False)
+
     def Activation(self, etat=True):
         """ Active ou désactive le contrôle """
         self.activation = etat
@@ -470,17 +546,21 @@ class Page_Activites(wx.Panel):
         # Propriétés
         self.checkbox_saut_activites.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque activité"))
         self.checkbox_saut_groupes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque groupe"))
-        
+        self.ctrl_cocher = CTRL_Cocher(self, ctrl_liste=self.ctrl_activites)
+
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         
         grid_sizer_base.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
         
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=5)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=5)
         grid_sizer_options.Add(self.label_saut_activites, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_activites, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_groupes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add( (5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_cocher, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.EXPAND, 0)
 
         grid_sizer_base.AddGrowableRow(0)
@@ -503,7 +583,8 @@ class Page_Scolarite(wx.Panel):
         self.label_saut_ecoles = wx.StaticText(self, -1, _(u"Sauts de page :"))
         self.checkbox_saut_ecoles = wx.CheckBox(self, -1, _(u"Après l'école"))
         self.checkbox_saut_classes = wx.CheckBox(self, -1, _(u"Après la classe"))
-        
+        self.ctrl_cocher = CTRL_Cocher(self, ctrl_liste=self.ctrl_ecoles)
+
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckEcoles, self.checkbox_ecoles)
         
@@ -519,10 +600,13 @@ class Page_Scolarite(wx.Panel):
         grid_sizer_base.Add(self.checkbox_ecoles, 0, 0, 0)
         grid_sizer_base.Add(self.ctrl_ecoles, 1, wx.EXPAND, 0)
         
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=5)
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=5)
         grid_sizer_options.Add(self.label_saut_ecoles, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_ecoles, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_classes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add((5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_cocher, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.EXPAND, 0)
 
         grid_sizer_base.AddGrowableRow(1)
@@ -542,6 +626,7 @@ class Page_Scolarite(wx.Panel):
         self.label_saut_ecoles.Enable(etat)
         self.checkbox_saut_ecoles.Enable(etat)
         self.checkbox_saut_classes.Enable(etat)
+        self.ctrl_cocher.Enable(etat)
         
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -555,7 +640,8 @@ class Page_Etiquettes(wx.Panel):
         self.ctrl_etiquettes.SetMinSize((250, 50))
         self.label_saut_etiquettes = wx.StaticText(self, -1, _(u"Sauts de page :"))
         self.checkbox_saut_etiquettes = wx.CheckBox(self, -1, _(u"Après l'étiquette"))
-        
+        self.ctrl_cocher = CTRL_Cocher(self, ctrl_liste=self.ctrl_etiquettes)
+
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckEtiquettes, self.checkbox_etiquettes)
         
@@ -573,6 +659,9 @@ class Page_Etiquettes(wx.Panel):
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=4, vgap=2, hgap=5)
         grid_sizer_options.Add(self.label_saut_etiquettes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(self.checkbox_saut_etiquettes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add((5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_cocher, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.AddGrowableCol(2)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.EXPAND, 0)
 
         grid_sizer_base.AddGrowableRow(1)
@@ -591,6 +680,7 @@ class Page_Etiquettes(wx.Panel):
         self.ctrl_etiquettes.Activation(etat)
         self.label_saut_etiquettes.Enable(etat)
         self.checkbox_saut_etiquettes.Enable(etat)
+        self.ctrl_cocher.Enable(etat)
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
 

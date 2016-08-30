@@ -576,7 +576,14 @@ class CTRL(CT.CustomTreeCtrl):
                 item.Check(True)
             if rien == True :
                 item.Check(False)
-    
+        self.Refresh()
+
+    def CocheListeTout(self):
+        self.SetCoches(tout=True)
+
+    def CocheListeRien(self):
+        self.SetCoches(rien=True)
+
     def GetDictEtiquettes(self):
         dictEtiquettes = {}
         for dictEtiquette in self.listeEtiquettes :
