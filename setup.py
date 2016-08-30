@@ -137,7 +137,7 @@ options = {
                 ],
 
         "packages": [
-                "pytz", "reportlab", "twisted", "twisted.web.resource",
+                "pytz", "reportlab", "twisted", "twisted.web.resource", "sqlalchemy",
                 ],
 
         "typelibs": [
