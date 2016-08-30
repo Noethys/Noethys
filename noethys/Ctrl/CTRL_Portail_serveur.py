@@ -16,7 +16,6 @@ import os
 import time
 import datetime
 from threading import Thread, Lock
-import FonctionsPerso
 import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Fichiers

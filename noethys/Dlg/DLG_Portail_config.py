@@ -15,7 +15,7 @@ import wx
 import os
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
-import CTRL_Propertygrid
+from Ctrl import CTRL_Propertygrid
 import wx.propgrid as wxpg
 import copy
 import random

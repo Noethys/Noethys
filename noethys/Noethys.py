@@ -54,6 +54,7 @@ from Dlg import DLG_Effectifs
 from Dlg import DLG_Message_html
 from Dlg import DLG_Enregistrement
 from Ctrl import CTRL_Toaster
+from Ctrl import CTRL_Portail_serveur
 
 import shelve
 import dbhash
@@ -3353,7 +3354,6 @@ class MainFrame(wx.Frame):
 
             else :
                 # Chargement du serveur
-                from Ctrl import CTRL_Portail_serveur
                 self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
                 self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
                                   Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 90)).BestSize((-1, 90)) )
