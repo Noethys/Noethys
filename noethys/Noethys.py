@@ -3347,7 +3347,7 @@ class MainFrame(wx.Frame):
         return True
 
     def AfficherServeurConnecthys(self):
-        if UTILS_Config.GetParametre("serveur_portail_activation", defaut=False) == True and UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="portail_activation", valeur=False) == True :
+        if UTILS_Config.GetParametre("client_synchro_portail_activation", defaut=False) == True and UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="portail_activation", valeur=False) == True :
 
             if hasattr(self, "ctrl_serveur_portail") :
                 self._mgr.GetPane("serveur_portail").Show(True)

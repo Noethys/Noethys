@@ -38,9 +38,12 @@ LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"),
 
 VALEURS_DEFAUT = {
     "portail_activation" : False,
-    "serveur_portail_activation" : False,
-    "serveur_synchro_delai" : 2,
-    "serveur_synchro_ouverture" : False,
+    "client_synchro_portail_activation" : False,
+    "client_synchro_portail_delai" : 2,
+    "client_synchro_portail_ouverture" : False,
+    "serveur_type": 0,
+    "serveur_options": "",
+    "serveur_cgi_file": "connecthys.cgi",
     "hebergement_type" : 0,
     "ftp_serveur" : "127.0.0.1",
     "ftp_utilisateur" : "",
@@ -106,6 +109,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                 self.SwitchDatabaseToNetwork()
             else :
                 raise
+        elif event.GetPropertyName() == "serveur_type" :
+            value = event.GetPropertyValue()
+            if value == 0 :
+                self.SwitchServerToStandalone()
+            elif value == 1 :
+                self.SwitchServerToCgi()
+            else :
+                raise
         self.RefreshGrid()
         event.Skip()
 
@@ -163,6 +174,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("db_nom")
         property.Hide(False)
 
+    def SwitchServerToStandalone(self):
+        property = self.GetProperty("serveur_options")
+        property.Hide(False)
+        property = self.GetProperty("serveur_cgi_file")
+        property.Hide(True)
+
+    def SwitchServerToCgi(self):
+        property = self.GetProperty("serveur_cgi_file")
+        property.Hide(False)
+        property = self.GetProperty("serveur_options")
+        property.Hide(True)
+
     def Remplissage(self):
 
         # Catégorie
@@ -175,25 +198,44 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Catégorie
-        self.Append( wxpg.PropertyCategory(_(u"Serveur de synchronisation")) )
+        # Type de serveur
+        nom = "serveur_type"
+        propriete = wxpg.EnumProperty(label=_(u"Type de serveur"), labels=[_(u"Autonome"), _(u"CGI")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez le type de serveur utilisé : Autonome ou CGI"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
 
-        # Activation du serveur de synchronisation
-        nom = "serveur_portail_activation"
+        # Serveur autonome
+        nom = "serveur_options"
+        propriete = wxpg.StringProperty(label=_(u"Options pour le serveur autonome"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez les options du serveur autonome (Ex : -s tornado)"))
+        self.Append(propriete)
+
+        # Serveur CGI
+        nom = "serveur_cgi_file"
+        propriete = wxpg.StringProperty(label=_(u"Nom du fichier CGI"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le nom du fichier CGI (Ex : connecthys.cgi)"))
+        self.Append(propriete)
+
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Client de synchronisation")) )
+
+        # Activation du client de synchronisation
+        nom = "client_synchro_portail_activation"
         propriete = wxpg.BoolProperty(label=_(u"Activer sur cet ordinateur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour activer le serveur de synchronisation sur la page d'accueil de Noethys sur cet ordinateur"))
+        propriete.SetHelpString(_(u"Cochez cette case pour activer le client de synchronisation sur la page d'accueil de Noethys sur cet ordinateur"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # Délai de synchronisation du serveur
-        nom = "serveur_synchro_delai"
+        # Délai de synchronisation du client
+        nom = "client_synchro_portail_delai"
         propriete = wxpg.EnumProperty(label=_(u"Délai de synchronisation"), labels=[y for x, y in LISTE_DELAIS_SYNCHRO], values=range(0, len(LISTE_DELAIS_SYNCHRO)), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Sélectionnez un délai pour la synchronisation"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
-        # Synchroniser à l'ouverture du serveur
-        nom = "serveur_synchro_ouverture"
+        # Synchroniser à l'ouverture de Noethys
+        nom = "client_synchro_portail_ouverture"
         propriete = wxpg.BoolProperty(label=_(u"Synchroniser à l'ouverture"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour synchroniser automatiquement à l'ouverture de Noethys sur cet ordinateur"))
         propriete.SetAttribute("UseCheckbox", True)
@@ -545,10 +587,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         dictParametres = UTILS_Parametres.ParametresCategorie(mode="get", categorie="portail", dictParametres=dictValeurs)
 
         # Recherche des config mémorisés sur cet ordi
-        dictParametres["serveur_portail_activation"] = UTILS_Config.GetParametre("serveur_portail_activation", False)
-        dictParametres["serveur_synchro_delai"] = UTILS_Config.GetParametre("serveur_synchro_delai", 2)
-        dictParametres["serveur_synchro_ouverture"] = UTILS_Config.GetParametre("serveur_synchro_ouverture", True)
+        dictParametres["client_synchro_portail_activation"] = UTILS_Config.GetParametre("client_synchro_portail_activation", False)
+        dictParametres["client_synchro_portail_delai"] = UTILS_Config.GetParametre("client_synchro_portail_delai", 2)
+        dictParametres["client_synchro_portail_ouverture"] = UTILS_Config.GetParametre("client_synchro_portail_ouverture", True)
         dictParametres["hebergement_type"] = UTILS_Config.GetParametre("hebergement_type", 0)
+        dictParametres["serveur_type"] = UTILS_Config.GetParametre("serveur_type", 0)
 
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
@@ -576,6 +619,15 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             else :
                 raise
 
+        property = self.GetProperty("serveur_type")
+        if property is not None :
+            value = property.GetValue()
+        if value == 1 :
+            self.SwitchServerToCgi()
+        elif value == 0 :
+            self.SwitchServerToStandalone()
+        else :
+            raise
 
     def Sauvegarde(self):
         """ Mémorisation des valeurs du contrôle """
@@ -584,7 +636,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="portail", dictParametres=dictValeurs)
 
         # Mémorisation de la config sur cet ordi
-        for key in ("serveur_portail_activation", "serveur_synchro_delai", "serveur_synchro_ouverture", "hebergement_type") :
+        for key in ("client_synchro_portail_activation", "client_synchro_portail_delai", "client_synchro_portail_ouverture", "hebergement_type", "serveur_type") :
             UTILS_Config.SetParametre(key, self.GetPropertyByName(key).GetValue())
 
     def GetValeurs(self) :
@@ -745,6 +797,13 @@ class Dialog(wx.Dialog):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
+            elif dict_parametres["serveur_type"] == 1 :
+
+                if dict_parametres["serveur_cgi_file"] == "" :
+                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom du fichier CGI !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return False
         else :
             raise
 

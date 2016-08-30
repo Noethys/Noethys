@@ -595,9 +595,9 @@ class Synchro():
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             #affichage_date_debut = UTILS_Dates.DateEngEnDateDD(affichage_date_debut)
             #affichage_date_fin = UTILS_Dates.DateEngEnDateDD(affichage_date_fin)
-            if affichage_date_debut != None :
+            if affichage_date_debut != None and not isinstance(affichage_date_debut, datetime.datetime) :
                 affichage_date_debut = datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S")
-            if affichage_date_fin != None :
+            if affichage_date_fin != None and not isinstance(affichage_date_fin, datetime.datetime) :
                 affichage_date_fin = datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S")
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
@@ -732,10 +732,10 @@ class Synchro():
 
         page = None
         try :
-            if self.dict_parametres["hebergement_type"] == 0 :
+            if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
-            if self.dict_parametres["hebergement_type"] == 1 :
-                url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            if self.dict_parametres["serveur_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncup/%d" % secret
             print "URL syncup =", url
 
@@ -797,10 +797,10 @@ class Synchro():
         try :
 
             # Création de l'url de syncdown
-            if self.dict_parametres["hebergement_type"] == 0 :
+            if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
-            if self.dict_parametres["hebergement_type"] == 1 :
-                url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            if self.dict_parametres["serveur_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
             print "URL syncdown =", url
 
@@ -896,10 +896,10 @@ class Synchro():
         try :
 
             # Création de l'url de syncdown
-            if self.dict_parametres["hebergement_type"] == 0 :
+            if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["hebergement_type"] == 1 :
-                url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "upgrade/%d" % int(secret)
             print "URL upgrade =", url
 
