@@ -595,8 +595,10 @@ class Synchro():
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             #affichage_date_debut = UTILS_Dates.DateEngEnDateDD(affichage_date_debut)
             #affichage_date_fin = UTILS_Dates.DateEngEnDateDD(affichage_date_fin)
-            affichage_date_debut = datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S")
-            affichage_date_fin = datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S")
+            if affichage_date_debut != None :
+                affichage_date_debut = datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S")
+            if affichage_date_fin != None :
+                affichage_date_fin = datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S")
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
                         affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
