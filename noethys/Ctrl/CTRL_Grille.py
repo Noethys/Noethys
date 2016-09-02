@@ -2492,7 +2492,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     for conso in dictUnites[IDunite] :
                         heure_debut = conso.heure_debut
                         heure_fin = conso.heure_fin
-                        if heure_debut != None and heure_fin != None :
+                        if heure_debut not in (None, "") and heure_fin not in (None, "")  :
                             liste_temps.append((heure_debut, heure_fin))
             if len(liste_temps) > 0 :
                 temps_facture = Additionne_intervalles_temps(liste_temps)
@@ -3175,7 +3175,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if conso.statut != "suppression" and conso.etat in ("reservation", "present", "absenti") :
                         heure_debut = conso.heure_debut
                         heure_fin = conso.heure_fin
-                        if heure_debut != None and heure_fin != None :
+                        if heure_debut not in (None, "") and heure_fin not in (None, "") :
                             liste_temps.append((heure_debut, heure_fin))
                             if heure_min == None or HeureStrEnDelta(heure_debut)  < heure_min :
                                 heure_min = HeureStrEnDelta(heure_debut)
