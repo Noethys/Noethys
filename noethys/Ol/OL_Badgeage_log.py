@@ -231,7 +231,8 @@ class ListView(FastObjectListView):
         self.AddObject(track)
         self.EnsureCellVisible(self.nbreActions, 0)
         self.nbreActions += 1
-        self.MemoriserAction(track) 
+        self.MemoriserAction(track)
+        self.donnees.append(track)
     
     def MemoriserAction(self, track):
         """ Sauvegarde un track dans la base de données """
