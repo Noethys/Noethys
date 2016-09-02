@@ -236,7 +236,7 @@ class ListView(FastObjectListView):
         else :
             ordre = 1
         # DLG Saisie
-        import DLG_Saisie_portail_unite
+        from Dlg import DLG_Saisie_portail_unite
         dlg = DLG_Saisie_portail_unite.Dialog(self, IDunite=None, IDactivite=self.IDactivite, ordre=ordre)
         if dlg.ShowModal() == wx.ID_OK:
             IDunite = dlg.GetIDunite()
@@ -250,7 +250,7 @@ class ListView(FastObjectListView):
             dlg.Destroy()
             return
         track = self.Selection()[0]
-        import DLG_Saisie_portail_unite
+        from Dlg import DLG_Saisie_portail_unite
         dlg = DLG_Saisie_portail_unite.Dialog(self, IDunite=track.IDunite, IDactivite=self.IDactivite, ordre=track.ordre)
         if dlg.ShowModal() == wx.ID_OK:
             self.MAJ(track.IDunite)
