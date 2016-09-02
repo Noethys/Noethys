@@ -306,7 +306,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, parti
         FROM inscriptions
-        WHERE IDindividu=%d AND IDfamille=%d;""" % (self.IDindividu, self.IDfamille)
+        WHERE IDinscription=%d;""" % self.IDinscription
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -428,8 +428,9 @@ class Dialog(wx.Dialog):
             },])
 
         # Saisie de forfaits auto
-        f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.IDindividu,], saisieManuelle=False, saisieAuto=True)
-        f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite)
+        if self.mode == "saisie" :
+            f = DLG_Appliquer_forfait.Forfaits(IDfamille=IDfamille, listeActivites=[IDactivite,], listeIndividus=[self.IDindividu,], saisieManuelle=False, saisieAuto=True)
+            f.Applique_forfait(selectionIDcategorie_tarif=IDcategorie_tarif, inscription=True, selectionIDactivite=IDactivite)
 
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
@@ -450,7 +451,8 @@ class Dialog(wx.Dialog):
         self.ctrl_activite.MAJ()
         self.ctrl_groupes.MAJ()
         self.ctrl_categories.MAJ()
-        self.ctrl_categories.SelectCategorieSelonVille(self.cp, self.ville)
+        if self.mode == "saisie" :
+            self.ctrl_categories.SelectCategorieSelonVille(self.cp, self.ville)
 
     def SetIDgroupe(self, IDgroupe=None):
         self.ctrl_groupes.SetID(IDgroupe)

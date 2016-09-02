@@ -47,7 +47,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnCocheActivitesValides, self.ctrl_activites_valides)
 
         # Init contrôles
-        self.ctrl_activites.MAJ() 
+        self.ctrl_activites.MAJ()
+
+        wx.CallLater(10, self.ctrl_recherche.SetFocus)
 
     def __set_properties(self):
         self.SetTitle(_(u"Sélection d'une activité"))
