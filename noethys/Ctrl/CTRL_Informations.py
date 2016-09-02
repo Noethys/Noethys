@@ -413,9 +413,10 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN types_pieces ON types_pieces.IDtype_piece = pieces_activites.IDtype_piece
         LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-        WHERE inscriptions.parti=0 %s
+        LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
+        WHERE inscriptions.parti=0 %s AND activites.date_fin>='%s'
         GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu;
-        """ % condition
+        """ % (condition, datetime.date.today())
         self.DB.ExecuterReq(req)
         listePiecesObligatoires = self.DB.ResultatReq()
         
@@ -538,9 +539,10 @@ class CTRL(wx.TreeCtrl):
         FROM renseignements_activites 
         LEFT JOIN inscriptions ON inscriptions.IDactivite = renseignements_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-        WHERE inscriptions.parti=0 %s
+        LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
+        WHERE inscriptions.parti=0 %s AND activites.date_fin>='%s'
         GROUP BY individus.IDindividu, renseignements_activites.IDtype_renseignement;
-        """ % condition
+        """ % (condition, datetime.date.today())
         self.DB.ExecuterReq(req)
         listeRenseignementsObligatoires = self.DB.ResultatReq()
     
@@ -733,9 +735,9 @@ class CTRL(wx.TreeCtrl):
         FROM activites
         LEFT JOIN inscriptions ON inscriptions.IDactivite = activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-        WHERE inscriptions.parti=0 AND vaccins_obligatoires=1 %s
+        WHERE inscriptions.parti=0 AND vaccins_obligatoires=1 %s AND activites.date_fin>='%s'
         GROUP BY inscriptions.IDindividu;
-        """ % condition
+        """ % (condition, datetime.date.today())
         self.DB.ExecuterReq(req)
         listeIndividus = self.DB.ResultatReq()
         
@@ -832,12 +834,13 @@ class CTRL(wx.TreeCtrl):
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations_activites.IDtype_cotisation
         LEFT JOIN inscriptions ON inscriptions.IDactivite = cotisations_activites.IDactivite
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-        WHERE inscriptions.parti=0 AND types_cotisations.IDtype_cotisation IS NOT NULL %s
+        LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
+        WHERE inscriptions.parti=0 AND types_cotisations.IDtype_cotisation IS NOT NULL %s AND activites.date_fin>='%s'
         GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu;
-        """ % condition
+        """ % (condition, datetime.date.today())
         self.DB.ExecuterReq(req)
         listeCotisationsObligatoiresTemp = self.DB.ResultatReq()
-        
+
         dictCotisationObligatoires = {}
         for IDfamille, IDactivite, IDtype_cotisation, nomCotisation, typeCotisation, prenom, IDindividu in listeCotisationsObligatoiresTemp :
             if dictCotisationObligatoires.has_key(IDactivite) == False :
