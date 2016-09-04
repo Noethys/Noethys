@@ -39,7 +39,8 @@ CATEGORIES = [
     ("attestation_fiscale", _(u"Attestation fiscale")), 
     ("reservations", _(u"Liste des réservations")), 
     ("cotisation", _(u"Cotisation")),
-    ("rappel_pieces_manquantes", _(u"Rappel pièces manquantes"))
+    ("rappel_pieces_manquantes", _(u"Rappel pièces manquantes")),
+    ("portail", _(u"Rappel des données du compte internet"))
     ]
 
 
@@ -167,6 +168,12 @@ MOTSCLES = {
     "rappel_pieces_manquantes" : [
                 ("{NOM_FAMILLE}", _(u"Nom de la famille")),
                 ("{LISTE_PIECES_MANQUANTES}", _(u"Liste des pièces manquantes")),
+                ],
+
+    "portail" : [
+                ( "{NOM_FAMILLE}", _(u"Nom de la famille")),
+                ( "{IDENTIFIANT_INTERNET}", _(u"Identifiant du compte internet") ),
+                ( "{MOTDEPASSE_INTERNET}", _(u"Mot de passe du compte internet") ),
                 ],
 
     }
