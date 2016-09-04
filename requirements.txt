@@ -12,3 +12,4 @@ Twisted>=15.0.0
 xlrd>=0.6.1
 zope.interface>=4.1.2
 py-dateutil>=2.2
+psutil=>4.3.1
