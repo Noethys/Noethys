@@ -20,10 +20,13 @@ import wx.propgrid as wxpg
 import copy
 import random
 import time
+import psutil
+import subprocess
 
 import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
+
 
 def GetSecretKey():
     code = ""
@@ -667,24 +670,23 @@ class Dialog(wx.Dialog):
         self.box_parametres = wx.StaticBox(self, -1, _(u"Paramètres"))
         self.ctrl_parametres = CTRL_Parametres(self)
 
-        # Outils
-        self.box_actions = wx.StaticBox(self, -1, _(u"Outils"))
-        self.bouton_installer = CTRL_Bouton_image.CTRL(self, texte=_(u"Installer / Mettre à jour"), cheminImage="Images/32x32/Fleche_haut.png")
-        #self.bouton_desinstaller = CTRL_Bouton_image.CTRL(self, texte=_(u"Désinstaller"), cheminImage="Images/32x32/Absenti.png")
-        self.bouton_synchroniser = CTRL_Bouton_image.CTRL(self, texte=_(u"Synchroniser les données"), cheminImage="Images/32x32/Actualiser.png")
-        self.bouton_traiter = CTRL_Bouton_image.CTRL(self, texte=_(u"Traiter les demandes"), cheminImage="Images/32x32/Loupe.png")
+        # Log
+        self.box_log = wx.StaticBox(self, -1, _(u"Journal"))
+        self.log = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE|wx.TE_READONLY)
+        self.log.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
+        self.log.SetMinSize((-1, 55))
+        self.gauge = wx.Gauge(self, -1, range=100, size=(-1, 8))
+        self.gauge.Show(False)
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonInstaller, self.bouton_installer)
-        #self.Bind(wx.EVT_BUTTON, self.OnBoutonDesinstaller, self.bouton_desinstaller)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonSynchroniser, self.bouton_synchroniser)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonTraiter, self.bouton_traiter)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
@@ -692,10 +694,7 @@ class Dialog(wx.Dialog):
         self.SetActivation(self.ctrl_parametres.GetPropertyByName("portail_activation").GetValue())
 
     def __set_properties(self):
-        self.bouton_installer.SetToolTipString(_(u"Cliquez ici pour installer l'application Connecthys sur internet ou en local"))
-        #self.bouton_desinstaller.SetToolTipString(_(u"Cliquez ici pour désinstaller l'application Connecthys sur internet"))
-        self.bouton_synchroniser.SetToolTipString(_(u"Cliquez ici pour synchroniser les données entre Connecthys et Noethys"))
-        self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour traiter les demandes importées depuis Connecthys"))
+        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((750, 700))
 
@@ -708,13 +707,11 @@ class Dialog(wx.Dialog):
         box_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
-        # Actions
-        staticbox_actions = wx.StaticBoxSizer(self.box_actions, wx.VERTICAL)
-        grid_sizer_actions = wx.BoxSizer(wx.HORIZONTAL)
-        grid_sizer_actions.Add(self.bouton_installer, 1, wx.EXPAND | wx.RIGHT, 10)
-        #grid_sizer_actions.Add(self.bouton_desinstaller, 1, wx.EXPAND | wx.RIGHT, 10)
-        grid_sizer_actions.Add(self.bouton_synchroniser, 1, wx.EXPAND | wx.RIGHT, 10)
-        grid_sizer_actions.Add(self.bouton_traiter, 1, wx.EXPAND, 0)
+        # Log
+        staticbox_actions = wx.StaticBoxSizer(self.box_log, wx.VERTICAL)
+        grid_sizer_actions = wx.BoxSizer(wx.VERTICAL)
+        grid_sizer_actions.Add(self.log, 1, wx.EXPAND, 0)
+        grid_sizer_actions.Add(self.gauge, 0, wx.EXPAND, 0)
         staticbox_actions.Add(grid_sizer_actions, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_actions, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
@@ -722,6 +719,7 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
+        grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
         grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
@@ -754,11 +752,103 @@ class Dialog(wx.Dialog):
         self.ctrl_parametres.Sauvegarde()
 
     def SetActivation(self, activation=False):
-        self.bouton_installer.Enable(activation)
-        self.bouton_synchroniser.Enable(activation)
-        self.bouton_traiter.Enable(activation)
+        self.bouton_outils.Enable(activation)
 
-    def OnBoutonInstaller(self, event):
+    def EcritLog(self, message=""):
+        horodatage = time.strftime("%d/%m/%y %H:%M:%S", time.localtime())
+        if len(self.log.GetValue()) > 0 :
+            texte = u"\n"
+        else :
+            texte = u""
+        try :
+            texte += u"[%s] %s" % (horodatage, message)
+        except :
+            texte += u"[%s] %s" % (horodatage, str(message).decode('iso-8859-1'))
+        self.log.AppendText(texte)
+
+    def SetGauge(self, valeur=0):
+        try:
+            if valeur == 0 :
+                if self.gauge.IsShown() :
+                    self.gauge.Show(False)
+            else :
+                if not self.gauge.IsShown() :
+                    self.gauge.Show(True)
+            self.Layout()
+            self.gauge.SetValue(valeur)
+        except Exception as e:
+            pass
+
+    def OnBoutonOutils(self, event):
+        # Création du menu contextuel
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+
+        menu = wx.Menu()
+
+        # Installer / Mettre à jour
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Installer / Mettre à jour"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Installer, id=id)
+
+        menu.AppendSeparator()
+
+        # Démarrer
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Play.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Demarrer_serveur, id=id)
+        if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
+            if len(self.GetListeProcess()) > 0 :
+                item.Enable(False)
+        else :
+            item.Enable(False)
+
+        # Arrêter
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Arrêter le serveur"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Stop.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Arreter_serveur, id=id)
+        if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
+            if len(self.GetListeProcess()) == 0 :
+                item.Enable(False)
+        else :
+            item.Enable(False)
+
+        menu.AppendSeparator()
+
+        # Ouvrir
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Ouvrir Connecthys dans le navigateur"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Planete.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OuvrirNavigateur, id=id)
+
+        menu.AppendSeparator()
+
+        # Synchroniser
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Synchroniser les données"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Synchroniser, id=id)
+
+        # Traiter les données
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Traiter les données"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Traiter, id=id)
+
+
+
+        self.PopupMenu(menu)
+        menu.Destroy()
+
+    def Installer(self, event):
         # Récupération des paramètres de l'installation
         if self.ctrl_parametres.Validation() == False :
             return False
@@ -825,18 +915,77 @@ class Dialog(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
 
+    def GetListeProcess(self):
+        """ Recherche les process ouverts du portail """
+        listeProcess = []
+        for p in psutil.process_iter():
+            if "python" in p.name() :
+                if "connecthys" in p.cmdline()[1] and "run.py" in p.cmdline()[1] :
+                    listeProcess.append(p)
+        return listeProcess
 
-    def OnBoutonDesinstaller(self, event):
-        pass
-
-    def OnBoutonSynchroniser(self, event):
+    def Demarrer_serveur(self, event):
         if self.ctrl_parametres.Validation() == False :
             return False
         dict_parametres = self.ctrl_parametres.GetValeurs()
-        synchro = Synchro(dict_parametres)
+
+        # Récupération des paramètres
+        rep = dict_parametres["hebergement_local_repertoire"]
+        options = dict_parametres["serveur_options"]
+        chemin_executable = os.path.join(rep, "run.py")
+
+        if rep == "" or os.path.isfile(chemin_executable) == False :
+            dlg = wx.MessageDialog(None, _(u"Le chemin du répertoire d'installation de Connecthys n'est pas valide !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        args = ["python", chemin_executable]
+        for arg in options.split(" ") :
+            if arg != "" :
+                args.append(arg)
+
+        # Créé un nouveau process
+        self.EcritLog(_(u"Lancement du serveur..."))
+        self.EcritLog(_(u"Chemin : ") + " ".join(args))
+
+        p = subprocess.Popen(args, shell=False)
+
+        # Vérifie si le process est bien lancé
+        time.sleep(0.5)
+        if len(self.GetListeProcess()) > 0 :
+            self.EcritLog(_(u"Serveur démarré"))
+        else :
+            self.EcritLog(_(u"[ERREUR] Le serveur n'a pas pu être démarré"))
+
+
+    def Arreter_serveur(self, event):
+        """ Kill les process déjà ouverts """
+        self.EcritLog(_(u"Arrêt du serveur"))
+        for p in self.GetListeProcess() :
+            p.kill()
+
+    def OuvrirNavigateur(self, event):
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        url = dict_parametres["url_connecthys"]
+        if url == "" :
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accès à Connecthys !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        self.EcritLog(_(u"Ouverture dans le navigateur de l'url %s") % url)
+        import webbrowser
+        webbrowser.open(url)
+
+    def Synchroniser(self, event):
+        if self.ctrl_parametres.Validation() == False :
+            return False
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        synchro = Synchro(self, dict_parametres)
         synchro.Start()
 
-    def OnBoutonTraiter(self, event):
+    def Traiter(self, event):
         from Dlg import DLG_Portail_demandes
         dlg = DLG_Portail_demandes.Dialog(self)
         dlg.ShowModal()
@@ -844,8 +993,9 @@ class Dialog(wx.Dialog):
 
 
 class Synchro():
-    def __init__(self, dict_parametres=None):
+    def __init__(self, parent=None, dict_parametres=None):
         self.dict_parametres = dict_parametres
+        self.parent = parent
         self.num_etape = 0
         self.texte_etape = ""
 
@@ -863,6 +1013,7 @@ class Synchro():
 
     def EcritLog(self, texte=""):
         self.texte_etape = texte
+        self.parent.EcritLog(texte)
         self.Update_gauge()
 
     def SetGauge(self, num=None):

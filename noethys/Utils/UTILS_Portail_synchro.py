@@ -64,7 +64,10 @@ class Synchro():
         else :
             self.num_etape = num
         num = 100 * self.num_etape / self.nbre_etapes
-        self.log.SetGauge(num)
+        try :
+            self.log.SetGauge(num)
+        except :
+            pass
 
     def Synchro_totale(self):
         self.nbre_etapes = 25
@@ -76,7 +79,10 @@ class Synchro():
         else :
             self.log.EcritLog(_(u"Synchronisation terminée."))
         self.log.EcritLog(_(u"Serveur prêt"))
-        self.log.SetGauge(0)
+        try :
+            self.log.SetGauge(0)
+        except :
+            pass
 
     # FTP mode
     def Upload_config(self, ftp=None):
