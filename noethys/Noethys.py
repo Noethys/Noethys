@@ -853,6 +853,7 @@ class MainFrame(wx.Frame):
                     {"code" : "liste_regimes_caisses", "label" : _(u"Liste des régimes et caisses des familles"), "infobulle" : _(u"Editer la liste des régimes et caisses des familles"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_individus_regimes_caisses},
                     {"code" : "liste_quotients", "label" : _(u"Liste des quotients familiaux/revenus"), "infobulle" : _(u"Editer la liste des quotients familiaux/revenus des familles"), "image" : "Images/16x16/Calculatrice.png", "action" : self.On_individus_quotients},
                     {"code" : "liste_mandats_sepa", "label" : _(u"Liste des mandats SEPA"), "infobulle" : _(u"Editer la liste des mandats SEPA"), "image" : "Images/16x16/Prelevement.png", "action" : self.On_individus_mandats},
+                    {"code" : "liste_comptes_internet", "label" : _(u"Liste des comptes internet"), "infobulle" : _(u"Editer la liste des comptes internet"), "image" : "Images/16x16/Connecthys.png", "action" : self.On_individus_comptes_internet},
                     "-",
                     {"code" : "importer_photos", "label" : _(u"Importer des photos individuelles"), "infobulle" : _(u"Importer des photos individuelles"), "image" : "Images/16x16/Photos.png", "action" : self.On_individus_importer_photos},
                     {"code" : "menu_individus_importation", "label" : _(u"Importer des familles ou des individus"), "items" : [
@@ -3040,7 +3041,14 @@ class MainFrame(wx.Frame):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_mandats", "consulter") == False : return
         from Dlg import DLG_Liste_mandats
         dlg = DLG_Liste_mandats.Dialog(self)
-        dlg.ShowModal() 
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def On_individus_comptes_internet(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_comptes_internet", "consulter") == False : return
+        from Dlg import DLG_Comptes_internet
+        dlg = DLG_Comptes_internet.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_individus_importer_photos(self, event):

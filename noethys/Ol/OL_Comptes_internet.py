@@ -60,7 +60,7 @@ class ListView(FastObjectListView):
         DB.ExecuterReq(req)
         listeFamilles = DB.ResultatReq()
         DB.Close()
-        
+
         listeListeView = []
         for item in listeFamilles :
             track = Track(self, item)
