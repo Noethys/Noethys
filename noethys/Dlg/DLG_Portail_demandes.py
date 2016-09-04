@@ -95,9 +95,10 @@ class CTRL_Log(wx.TextCtrl):
 
 
 class Dialog(wx.Dialog):
-    def __init__(self, parent):
+    def __init__(self, parent, IDfamille=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
+        self.IDfamille = IDfamille
 
         # Bandeau
         intro = _(u"Double-cliquez sur une ligne pour traiter la demande correspondante ou cliquez sur le bouton 'Commencer' pour traiter la première demande de la liste.")
@@ -107,7 +108,7 @@ class Dialog(wx.Dialog):
 
         # Demandes
         self.box_demandes_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Liste des demandes"))
-        self.ctrl_demandes = OL_Portail_demandes.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_demandes = OL_Portail_demandes.ListView(self, id=-1, IDfamille=self.IDfamille, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.ctrl_demandes.SetMinSize((100, 100))
 
         self.bouton_traiter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))

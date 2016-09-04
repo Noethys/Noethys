@@ -60,6 +60,7 @@ def CreateIDfamille(DB):
 class Notebook(wx.Notebook):
     def __init__(self, parent, id=-1, IDfamille=None):
         wx.Notebook.__init__(self, parent, id, style= wx.BK_DEFAULT) # | wx.NB_MULTILINE
+        self.parent = parent
         self.IDfamille = IDfamille
         self.dictPages = {}
         

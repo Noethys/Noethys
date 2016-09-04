@@ -74,6 +74,7 @@ class Track(object):
     
 class ListView(GroupListView):
     def __init__(self, *args, **kwds):
+        self.IDfamille = kwds.pop("IDfamille", None)
         # Initialisation du listCtrl
         self.log = None
         self.cacher_traitees = True
@@ -97,9 +98,17 @@ class ListView(GroupListView):
         DB = GestionDB.DB()
         
         # Lecture Actions
-        conditions = ""
+        liste_conditions = []
         if self.cacher_traitees == True :
-            conditions = "WHERE etat <> 'validation'"
+            liste_conditions.append("etat <> 'validation'")
+
+        if self.IDfamille != None :
+            liste_conditions.append("IDfamille=%d" % self.IDfamille)
+
+        if len(liste_conditions) > 0 :
+            conditions = "WHERE %s" % " AND ".join(liste_conditions)
+        else :
+            conditions = ""
 
         req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode
         FROM portail_actions %s;""" % conditions
@@ -181,7 +190,7 @@ class ListView(GroupListView):
             listeTemp.append(dictColonnes[code])
         self.SetColumns(listeTemp)
 
-        self.SetEmptyListMsg(_(u"Aucune action"))
+        self.SetEmptyListMsg(_(u"Aucune demande"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetSortColumn(dictColonnes[self.tri]) #(self.columns[2])
         self.SetObjects(self.donnees)
