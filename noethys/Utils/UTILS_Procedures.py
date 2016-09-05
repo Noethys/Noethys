@@ -796,10 +796,12 @@ def A8971():
 
 def A9001():
     """ Modification de la table DOCUMENTS """
-    DB = GestionDB.DB(suffixe="DOCUMENTS")
-    DB.AjoutChamp("documents", "IDtype_piece", "INTEGER")
-    DB.Close()
-
+    try :
+        DB = GestionDB.DB(suffixe="DOCUMENTS")
+        DB.AjoutChamp("documents", "IDtype_piece", "INTEGER")
+        DB.Close()
+    except :
+        pass
 
 
 
