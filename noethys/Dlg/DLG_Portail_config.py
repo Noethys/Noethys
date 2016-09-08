@@ -51,9 +51,9 @@ VALEURS_DEFAUT = {
     "ftp_serveur" : "127.0.0.1",
     "ftp_utilisateur" : "",
     "ftp_mdp" : "",
-    "ftp_repertoire" : "/tmp",
+    "ftp_repertoire" : "/www/connecthys",
     "url_connecthys" : "http://127.0.0.1:5000",
-    "hebergement_local_repertoire" : "/tmp",
+    "hebergement_local_repertoire" : "/tmp/connecthys",
     "db_type" : 1,
     "db_serveur" : "",
     "db_utilisateur" : "",
@@ -113,13 +113,15 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             else :
                 raise
         elif event.GetPropertyName() == "serveur_type" :
-            value = event.GetPropertyValue()
-            if value == 0 :
-                self.SwitchServerToStandalone()
-            elif value == 1 :
-                self.SwitchServerToCgi()
-            else :
-                raise
+            property  = event.GetPropertyValue()
+            if property is not None :
+                value = property.GetValue()
+                if value == 1 :
+                    self.SwitchServerToCgi()
+                elif value == 0 :
+                    self.SwitchServerToStandalone()
+                else :
+                    raise
         self.RefreshGrid()
         event.Skip()
 
@@ -887,13 +889,15 @@ class Dialog(wx.Dialog):
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
-            elif dict_parametres["serveur_type"] == 1 :
 
-                if dict_parametres["serveur_cgi_file"] == "" :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom du fichier CGI !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-                    dlg.ShowModal()
-                    dlg.Destroy()
-                    return False
+        elif dict_parametres["serveur_type"] == 1 :
+
+            if dict_parametres["serveur_cgi_file"] == "" :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom du fichier CGI !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
         else :
             raise
 
@@ -920,7 +924,8 @@ class Dialog(wx.Dialog):
         listeProcess = []
         for p in psutil.process_iter():
             if "python" in p.name() :
-                if "connecthys" in p.cmdline()[1] and "run.py" in p.cmdline()[1] :
+                cmdline = p.cmdline()
+                if len(cmdline) > 0 and "run.py" in cmdline[1] :
                     listeProcess.append(p)
         return listeProcess
 
@@ -946,17 +951,23 @@ class Dialog(wx.Dialog):
                 args.append(arg)
 
         # Créé un nouveau process
-        self.EcritLog(_(u"Lancement du serveur..."))
+        self.EcritLog(_(u"Lancement du serveur Connecthys..."))
         self.EcritLog(_(u"Chemin : ") + " ".join(args))
 
-        p = subprocess.Popen(args, shell=False)
+        p = subprocess.Popen(args, shell=False, cwd=rep)
 
         # Vérifie si le process est bien lancé
         time.sleep(0.5)
         if len(self.GetListeProcess()) > 0 :
             self.EcritLog(_(u"Serveur démarré"))
+            dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys a bien été démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
         else :
             self.EcritLog(_(u"[ERREUR] Le serveur n'a pas pu être démarré"))
+            dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys n'a pas pu être démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
 
 
     def Arreter_serveur(self, event):
