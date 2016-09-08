@@ -288,7 +288,7 @@ class Dialog(wx.Dialog):
         listePeriodes = self.ctrl_periodes.GetDatesSelections() 
         # Image fond
         if self.check_theme.GetValue() == True :
-            IMAGE_FOND = THEMES[self.ctrl_theme.GetStringSelection()]
+            IMAGE_FOND = Chemins.GetStaticPath(THEMES[self.ctrl_theme.GetStringSelection()])
         else:
             IMAGE_FOND = None
         # Création du PDF
