@@ -245,7 +245,10 @@ class Importer():
 
                             # recherche le champ à remplacer
                             if nomChamp == champ and valeur != None :
-                                valeur_remplacement = self.dictID[champ_reference][valeur]
+                                if self.dictID[champ_reference].has_key(valeur) :
+                                    valeur_remplacement = self.dictID[champ_reference][valeur]
+                                else :
+                                    print "valeur non trouvee =", champ_reference, "avec la valeur", valeur
 
                         # Remplacement de la valeur
                         if newIDligne != None and valeur_remplacement != None :
@@ -257,26 +260,124 @@ class Importer():
         
         # Récupère les types de champs
         dictTypesChamps, champCle = self.GetTypesChamps(nomTable)
-        
+
+        # Recherche le prochain ID
+        prochainID = self.DB.GetProchainID(nomTable)
+
         # Duplique les lignes
+        index_ligne = 0
+        liste_ajouts = []
+        liste_champs = []
+        listeBlobs = []
+
         for ligne in listeLignes :
-            
+
             # Récupération des valeurs
-            listeDonnees = []
-            dictBlobs = {}
+            dictDonnees = {}
             ancienID = None
+            newID = prochainID
+
             for nomChamp, valeur in ligne.iteritems() :
                 
                 if dictTypesChamps.has_key(nomChamp) :
-                    
+
                     if nomChamp == champCle :
                         ancienID = valeur
                     
                     # Blob
                     if "BLOB" in dictTypesChamps[nomChamp] and valeur != None :
-                        dictBlobs[nomChamp] = valeur
+                        listeBlobs.append({"table":nomTable, "champCle":champCle, "newID":newID, "valeur":valeur, "nomChamp":nomChamp})
                         valeur = None
                     
+                    # Remplacement des ID avec le dict des correspondances
+                    if self.dictID.has_key(nomChamp) :
+                        if self.dictID[nomChamp].has_key(valeur) :
+                            valeur = self.dictID[nomChamp][valeur]
+
+                    # Remplacement d'un champ 'parent' (Prévu pour les étiquettes dans les activités)
+                    #if nomChamp == "parent" and valeur != None :
+                    #    if self.dictID.has_key(champCle) :
+                    #        if self.dictID[champCle].has_key(valeur) :
+                    #            valeur = self.dictID[champCle][valeur]
+
+                    # Chaîne de liste
+                    for nomChampChaine, champRemplacement, separateur in chainesListes :
+                        if nomChamp == nomChampChaine :
+                            if valeur == None or champRemplacement == None :
+                                valeur = None
+                            else :
+                                listeTemp = []
+                                for chaine in valeur.split(separateur) :
+                                    donnee = int(chaine)
+                                    if self.dictID.has_key(champRemplacement) :
+                                        if self.dictID[champRemplacement].has_key(donnee) :
+                                            donnee = self.dictID[champRemplacement][donnee]
+                                    listeTemp.append(str(donnee))
+                                valeur = separateur.join(listeTemp)
+                            
+                    # Mémorisation des valeurs
+                    if nomChamp != champCle :
+                        dictDonnees[nomChamp] = valeur
+                        if nomChamp not in liste_champs :
+                            liste_champs.append(nomChamp)
+
+            # Formatage des données pour executermany
+            listeDonnees = []
+            for nomChamp in liste_champs :
+                if dictDonnees.has_key(nomChamp) :
+                    listeDonnees.append(dictDonnees[nomChamp])
+
+            # Enregistrement
+            liste_ajouts.append(listeDonnees)
+
+            # Mémorisation de L'ID dans la table des correspondances
+            if self.dictID.has_key(champCle) == False :
+                self.dictID[champCle] = {}
+            self.dictID[champCle][ancienID] = newID
+
+            prochainID += 1
+            index_ligne += 1
+
+        # Executermany sur toute la table à importer
+        texteChampsTemp = ", ".join(liste_champs)
+        listeInterrogations = []
+        for champ in liste_champs :
+            listeInterrogations.append("?")
+        texteInterrogations = ", ".join(listeInterrogations)
+        self.DB.Executermany("INSERT INTO %s (%s) VALUES (%s)" % (nomTable, texteChampsTemp, texteInterrogations), liste_ajouts, commit=True)
+
+        # Enregistrement des blobs à part
+        for dictblob in listeBlobs :
+            self.DB.MAJimage(table=dictblob["table"], key=dictblob["champCle"], IDkey=dictblob["newID"], blobImage=dictblob["valeur"], nomChampBlob=dictblob["nomChamp"])
+
+        return newID
+
+    def ImporterTable_methodelente(self, nomTable="", listeLignes=[], chainesListes=[]):
+        if len(listeLignes) == 0 : return
+
+        # Récupère les types de champs
+        dictTypesChamps, champCle = self.GetTypesChamps(nomTable)
+
+        # Duplique les lignes
+        index_ligne = 0
+        for ligne in listeLignes :
+
+            # Récupération des valeurs
+            listeDonnees = []
+            dictBlobs = {}
+            ancienID = None
+            for nomChamp, valeur in ligne.iteritems() :
+
+                if dictTypesChamps.has_key(nomChamp) :
+
+                    if nomChamp == champCle :
+                        ancienID = valeur
+
+                    # Blob
+                    if "BLOB" in dictTypesChamps[nomChamp] and valeur != None :
+                        dictBlobs[nomChamp] = valeur
+                        valeur = None
+
                     # Remplacement des ID avec le dict des correspondances
                     if self.dictID.has_key(nomChamp) :
                         if self.dictID[nomChamp].has_key(valeur) :
@@ -302,25 +403,27 @@ class Importer():
                                             donnee = self.dictID[champRemplacement][donnee]
                                     listeTemp.append(str(donnee))
                                 valeur = separateur.join(listeTemp)
-                            
+
                     # Mémorisation des valeurs
                     if nomChamp != champCle :
                         listeDonnees.append((nomChamp, valeur))
-                
+
             # Enregistrement
             newID = self.DB.ReqInsert(nomTable, listeDonnees)
-                
+
             # Enregistrement des blobs à part
             for nomChampBlob, blob in dictBlobs.iteritems() :
                 self.DB.MAJimage(table=nomTable, key=champCle, IDkey=newID, blobImage=blob, nomChampBlob=nomChampBlob)
-            
+
             # Mémorisation de L'ID dans la table des correspondances
             if self.dictID.has_key(champCle) == False :
                 self.dictID[champCle] = {}
             self.dictID[champCle][ancienID] = newID
-            
+
+            index_ligne += 1
+
         return newID
-    
+
     def GetNewID(self, champCle="", ancienID=None):
         try :
             return self.dictID[champCle][ancienID]
