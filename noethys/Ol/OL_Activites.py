@@ -78,6 +78,9 @@ class Exporter(UTILS_Export_tables.Exporter):
         self.ExporterTable("combi_tarifs_unites", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
         self.ExporterTable("tarifs_lignes", "IDactivite=%d" % ID)
         self.ExporterTable("questionnaire_filtres", self.FormateCondition("IDtarif", self.dictID["tarifs"]))
+        # Portail
+        self.ExporterTable("portail_periodes", "IDactivite=%d" % ID)
+        self.ExporterTable("portail_unites", "IDactivite=%d" % ID)
 
         # Correspondances spéciales
         self.correspondances_speciales.append({"table" : "etiquettes", "champ" : "parent", "champ_reference" : "IDetiquette"})
