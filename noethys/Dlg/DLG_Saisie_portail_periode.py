@@ -199,10 +199,16 @@ class Dialog(wx.Dialog):
             self.radio_oui.SetValue(True)
         elif affichage == 1 and affichage_date_debut != None :
             self.radio_dates.SetValue(True)
-            self.ctrl_affichage_date_debut.SetDate(datetime.datetime.strftime(affichage_date_debut,"%Y-%m-%d"))
-            self.ctrl_affichage_date_fin.SetDate(datetime.datetime.strftime(affichage_date_fin,"%Y-%m-%d"))
-            self.ctrl_affichage_heure_debut.SetHeure(datetime.datetime.strftime(affichage_date_debut,"%H:%M"))
-            self.ctrl_affichage_heure_fin.SetHeure(datetime.datetime.strftime(affichage_date_fin,"%H:%M"))
+            if isinstance(affichage_date_debut, datetime.datetime) and isinstance(affichage_date_fin, datetime.datetime) :
+                self.ctrl_affichage_date_debut.SetDate(affichage_date_debut.strftime("%Y-%m-%d"))
+                self.ctrl_affichage_date_fin.SetDate(affichage_date_fin.strftime("%Y-%m-%d"))
+                self.ctrl_affichage_heure_debut.SetHeure(affichage_date_debut.strftime("%H:%M"))
+                self.ctrl_affichage_heure_fin.SetHeure(affichage_date_fin.strftime("%H:%M"))
+            elif (isinstance(affichage_date_debut, unicode) or isinstance(affichage_date_debut, str)) and (isinstance(affichage_date_fin, unicode) or isinstance(affichage_date_fin, str)):
+                self.ctrl_affichage_date_debut.SetDate(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d"))
+                self.ctrl_affichage_date_fin.SetDate(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d"))
+                self.ctrl_affichage_heure_debut.SetHeure(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S"),"%H:%M"))
+                self.ctrl_affichage_heure_fin.SetHeure(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S"),"%H:%M"))
         else :
             self.radio_non.SetValue(True)
 

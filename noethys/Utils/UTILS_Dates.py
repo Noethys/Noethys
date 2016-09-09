@@ -38,6 +38,10 @@ def DateEngEnDateDD(dateEng):
     if type(dateEng) == datetime.date : return dateEng
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
 
+def DateEngEnDateDDT(dateEng):
+    if dateEng in (None, "", "None") : return None
+    if type(dateEng) == datetime.datetime : return dateEng
+    return datetime.datetime.strptime(dateEng, "%Y-%m-%d %H:%M:%S.%f")
 
 def PeriodeComplete(mois, annee):
     listeMois = (_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre"))

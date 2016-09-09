@@ -152,7 +152,7 @@ class ListView(GroupListView):
 
         def FormateHorodatage(horodatage):
             if isinstance(horodatage, str) or isinstance(horodatage, unicode) :
-                return datetime.datetime.strptime(horodatage, "%Y-%m-%d %H:%M:%S.%f").strftime("%d/%m/%Y  %H:%M:%S")
+                return datetime.datetime.strptime(horodatage, "%Y-%m-%d %H:%M:%S").strftime("%d/%m/%Y  %H:%M:%S")
             else :
                 return horodatage.strftime("%d/%m/%Y  %H:%M:%S")
 

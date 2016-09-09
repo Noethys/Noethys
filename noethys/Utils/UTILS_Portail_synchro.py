@@ -516,8 +516,10 @@ class Synchro():
         listeActivites = DB.ResultatReq()
         dict_activites = {}
         for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples, portail_reservations_limite, portail_reservations_absenti in listeActivites :
-            #inscriptions_date_debut = UTILS_Dates.DateEngEnDateDD(inscriptions_date_debut)
-            #inscriptions_date_fin = UTILS_Dates.DateEngEnDateDD(inscriptions_date_fin)
+            if isinstance(inscriptions_date_debut, str) or isinstance(inscriptions_date_debut, unicode) :
+                 inscriptions_date_debut = datetime.datetime.strptime(inscriptions_date_debut, "%Y-%m-%d %H:%M:%S")
+            if isinstance(inscriptions_date_fin, str) or isinstance(inscriptions_date_fin, unicode) :
+                inscriptions_date_fin = datetime.datetime.strptime(inscriptions_date_fin, "%Y-%m-%d %H:%M:%S")
 
             m = models.Activite(IDactivite=IDactivite, nom=nom, inscriptions_affichage=inscriptions_affichage, \
                          inscriptions_date_debut=inscriptions_date_debut, inscriptions_date_fin=inscriptions_date_fin, \
@@ -599,12 +601,15 @@ class Synchro():
         for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin in listePeriodes :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
-            #affichage_date_debut = UTILS_Dates.DateEngEnDateDD(affichage_date_debut)
-            #affichage_date_fin = UTILS_Dates.DateEngEnDateDD(affichage_date_fin)
+
             if affichage_date_debut != None and not isinstance(affichage_date_debut, datetime.datetime) :
                 affichage_date_debut = datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S")
+            elif isinstance(affichage_date_debut, datetime.datetime) :
+                affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
             if affichage_date_fin != None and not isinstance(affichage_date_fin, datetime.datetime) :
                 affichage_date_fin = datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S")
+            elif isinstance(affichage_date_fin, datetime.datetime) :
+                affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
                         affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
@@ -744,6 +749,7 @@ class Synchro():
                 url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncup/%d" % secret
             print "URL syncup =", url
+            self.log.EcritLog(_(u"URL syncup = %s") % url)
 
             req = urllib2.Request(url)
             reponse = urllib2.urlopen(req)
@@ -904,7 +910,7 @@ class Synchro():
             # Création de l'url de syncdown
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
-            if self.dict_parametres["hebergement_type"] == 1 :
+            if self.dict_parametres["serveur_type"] == 1 :
                 url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "upgrade/%d" % int(secret)
             print "URL upgrade =", url

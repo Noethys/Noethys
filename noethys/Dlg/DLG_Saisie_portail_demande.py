@@ -324,7 +324,7 @@ class Dialog(wx.Dialog):
         # Horodatage
         #self.label_horodatage.SetLabel(datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S.%f").strftime("%d/%m/%Y  %H:%M:%S"))
         if isinstance(self.track.horodatage, str) or isinstance(self.track.horodatage, unicode) :
-            dt = datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S.%f")
+            dt = datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S")
         else :
             dt = self.track.horodatage
         self.label_horodatage.SetLabel(dt.strftime("%d/%m/%Y  %H:%M:%S"))
