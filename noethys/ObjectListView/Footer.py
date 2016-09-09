@@ -82,7 +82,7 @@ class Footer(wx.PyControl):
             font = wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL)
             couleur = wx.Colour(140, 140, 140)
             largeur = col.width
-            largeur = self.listview.GetColumnWidth(indexColonne)
+            #largeur = self.listview.GetColumnWidth(indexColonne)
             converter = col.stringConverter
             nom = col.valueGetter
             if col.align == "left" : alignement = wx.ALIGN_LEFT
