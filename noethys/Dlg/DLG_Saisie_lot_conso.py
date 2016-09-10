@@ -685,8 +685,10 @@ class Dialog(wx.Dialog):
         self.box_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités"))
         self.label_activite = wx.StaticText(self, -1, _(u"Activité :"))
         self.ctrl_activite = CTRL_Activite(self)
+        self.bouton_activite = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Loupe.png"), wx.BITMAP_TYPE_ANY))
         if self.mode_parametres == True :
             self.ctrl_activite.Enable(False)
+            self.bouton_activite.Enable(False)
         self.label_unites = wx.StaticText(self, -1, _(u"Unités :"))
         self.ctrl_unites = CTRL_Unites(self)
         self.ctrl_unites.SetMinSize((310, 50))
@@ -709,6 +711,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAction, self.radio_suppression)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAction, self.radio_etat)
         self.Bind(wx.EVT_CHOICE, self.OnChoixActivite, self.ctrl_activite)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonActivite, self.bouton_activite)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -732,6 +735,7 @@ class Dialog(wx.Dialog):
         self.OnChoixActivite(None)
 
     def __set_properties(self):
+        self.bouton_activite.SetToolTipString(_(u"Cliquez ici pour rechercher une activité"))
         self.radio_saisie.SetToolTipString(_(u"Cochez ici pour saisir un lot de consommations"))
         self.radio_modification.SetToolTipString(_(u"Cochez ici pour modifier un lot de consommations"))
         self.radio_suppression.SetToolTipString(_(u"Cochez ici pour supprimer un lot de consommations"))
@@ -819,7 +823,13 @@ class Dialog(wx.Dialog):
         box_unites = wx.StaticBoxSizer(self.box_unites_staticbox, wx.VERTICAL)
         grid_sizer_unites = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         grid_sizer_unites.Add(self.label_activite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_unites.Add(self.ctrl_activite, 0, wx.EXPAND, 0)
+
+        grid_sizer_activite = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_activite.Add(self.ctrl_activite, 0, wx.EXPAND, 0)
+        grid_sizer_activite.Add(self.bouton_activite, 0, wx.EXPAND, 0)
+        grid_sizer_activite.AddGrowableCol(0)
+        grid_sizer_unites.Add(grid_sizer_activite, 0, wx.EXPAND, 0)
+
         grid_sizer_unites.Add(self.label_unites, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_unites.Add(self.ctrl_unites, 1, wx.EXPAND, 0)
         grid_sizer_unites.Add(self.label_etiquettes, 0, wx.ALIGN_RIGHT, 0)
@@ -865,7 +875,7 @@ class Dialog(wx.Dialog):
         self.ctrl_unites.MAJ() 
         self.ctrl_etat.MAJ() 
         
-    def OnChoixActivite(self, event): 
+    def OnChoixActivite(self, event=None):
         self.ctrl_unites.SetActivite(self.ctrl_activite.GetActivite())
         self.ctrl_etiquettes.SetActivites([self.ctrl_activite.GetActivite(),])
         
@@ -1152,6 +1162,20 @@ class Dialog(wx.Dialog):
         listeDonnees = db.ResultatReq()
         db.Close()
         return listeDonnees
+
+    def OnBoutonActivite(self, event):
+        from Dlg import DLG_Inscription_activite
+        dlg = DLG_Inscription_activite.Dialog(self)
+        dlg.SetIDactivite(self.ctrl_activite.GetActivite())
+        if dlg.ShowModal() == wx.ID_OK:
+            IDactivite = dlg.GetIDactivite()
+            self.ctrl_activite.SetActivite(IDactivite)
+            self.OnChoixActivite()
+        dlg.Destroy()
+
+
+
+
 
 if __name__ == u"__main__":
     app = wx.App(0)
