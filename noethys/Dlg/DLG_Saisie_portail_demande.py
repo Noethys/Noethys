@@ -76,7 +76,9 @@ class Dialog(wx.Dialog):
         self.bouton_dernier = wx.BitmapButton(self.panel_bandeau, 40, wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Dernier.png"), wx.BITMAP_TYPE_ANY))
         self.ligne2 = wx.StaticLine(self.panel_bandeau, -1)
 
-        # Contenu
+        # Demande
+        self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Demande"))
+
         self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
         self.bouton_famille = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
@@ -87,10 +89,16 @@ class Dialog(wx.Dialog):
         self.label_commentaire = wx.StaticText(self, -1, _(u"Commentaire :"))
         self.ctrl_commentaire = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY | wx.TE_MULTILINE)
 
-        self.label_etat = wx.StaticText(self, -1, _(u"Etat :"))
+        # Traitement
+        self.box_traitement_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Traitement"))
+
+        self.label_etat = wx.StaticText(self, -1, _(u"Etat :"), style=wx.ALIGN_RIGHT)
         self.radio_attente = wx.RadioButton(self, -1, _(u"En attente"), style=wx.RB_GROUP)
         self.radio_validation = wx.RadioButton(self, -1, _(u"Traité le"))
         self.ctrl_date_validation = DatePickerCtrl(self)
+
+        self.label_reponse = wx.StaticText(self, -1, _(u"Réponse :"))
+        self.ctrl_reponse = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
 
         # CTRL Grille des conso
         self.ctrl_grille = DLG_Badgeage_grille.CTRL(self)
@@ -137,7 +145,7 @@ class Dialog(wx.Dialog):
         self.bouton_automatique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer le traitement automatique de cette demande")))
         self.bouton_manuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer le traitement manuel de cette demande")))
         self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer la fenêtre")))
-        self.SetMinSize((600, 400))
+        self.SetMinSize((800, 670))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -172,37 +180,65 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(self.panel_bandeau, 1, wx.EXPAND, 0)
 
         # Contenu
-        grid_sizer_contenu = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
+
+        # Demande
+        box_demande = wx.StaticBoxSizer(self.box_demande_staticbox, wx.VERTICAL)
+        grid_sizer_demande = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
 
         # Famille
-        grid_sizer_contenu.Add(self.label_famille, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        grid_sizer_demande.Add(self.label_famille, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
 
         grid_sizer_famille = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_famille.Add(self.ctrl_famille, 1, wx.EXPAND, 0)
         grid_sizer_famille.Add(self.bouton_famille, 0, 0, 0)
         grid_sizer_famille.AddGrowableCol(0)
-        grid_sizer_contenu.Add(grid_sizer_famille, 1, wx.EXPAND, 0)
+        grid_sizer_demande.Add(grid_sizer_famille, 1, wx.EXPAND, 0)
 
         # Description
-        grid_sizer_contenu.Add(self.label_description, 0, wx.ALIGN_RIGHT, 0)
-        grid_sizer_contenu.Add(self.ctrl_description, 0, wx.EXPAND, 0)
+        grid_sizer_demande.Add(self.label_description, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_demande.Add(self.ctrl_description, 0, wx.EXPAND, 0)
 
         # commentaire
-        grid_sizer_contenu.Add(self.label_commentaire, 0, wx.ALIGN_RIGHT, 0)
-        grid_sizer_contenu.Add(self.ctrl_commentaire, 0, wx.EXPAND, 0)
+        grid_sizer_demande.Add(self.label_commentaire, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_demande.Add(self.ctrl_commentaire, 0, wx.EXPAND, 0)
+
+        grid_sizer_demande.AddGrowableRow(1)
+        grid_sizer_demande.AddGrowableRow(2)
+        grid_sizer_demande.AddGrowableCol(1)
+
+        box_demande.Add(grid_sizer_demande, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_contenu.Add(box_demande, 0, wx.EXPAND, 0)
+
+        # Traitement
+        box_traitement = wx.StaticBoxSizer(self.box_traitement_staticbox, wx.VERTICAL)
+        grid_sizer_traitement = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
 
         # Etat
-        grid_sizer_contenu.Add(self.label_etat, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        grid_sizer_traitement.Add(self.label_etat, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        self.label_etat.SetMinSize((self.label_commentaire.GetSize()[0], -1))
 
         grid_sizer_etat = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_etat.Add(self.radio_attente, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_etat.Add(self.radio_validation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_etat.Add(self.ctrl_date_validation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_contenu.Add(grid_sizer_etat, 1, 0, 0)
+        grid_sizer_traitement.Add(grid_sizer_etat, 1, 0, 0)
+
+        # Réponse
+        grid_sizer_traitement.Add(self.label_reponse, 0, wx.ALIGN_RIGHT, 0)
+        grid_sizer_traitement.Add(self.ctrl_reponse, 0, wx.EXPAND, 0)
+
+        grid_sizer_traitement.AddGrowableRow(1)
+        grid_sizer_traitement.AddGrowableCol(1)
+
+        box_traitement.Add(grid_sizer_traitement, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_contenu.Add(box_traitement, 0, wx.EXPAND, 0)
+
+
+        grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableRow(1)
-        grid_sizer_contenu.AddGrowableRow(2)
-        grid_sizer_contenu.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_contenu.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
 
         grid_sizer_base.Add(self.ctrl_grille, 1, wx.ALL | wx.EXPAND, 10)
 
@@ -226,7 +262,7 @@ class Dialog(wx.Dialog):
     def Importation(self):
         DB = GestionDB.DB()
 
-        # RÃ©cupÃ©ration des unitÃ©s de rÃ©servations
+        # Récupération des unités de réservations
         req = """SELECT IDunite, IDactivite, nom, unites_principales, unites_secondaires, ordre
         FROM portail_unites;"""
         DB.ExecuterReq(req)
@@ -240,7 +276,7 @@ class Dialog(wx.Dialog):
                 "unites_secondaires" : unites_secondaires, "ordre" : ordre,
                 }
 
-        # RÃ©cupÃ©ration des activitÃ©s
+        # Récupération des activités
         req = """SELECT IDactivite, nom, portail_reservations_limite, portail_reservations_absenti
         FROM activites;"""
         DB.ExecuterReq(req)
@@ -255,7 +291,7 @@ class Dialog(wx.Dialog):
         DB.Close()
 
     def OnClose(self, event):
-        #self.Sauvegarde()
+        self.Sauvegarde()
         event.Skip()
 
     def OnBoutonAide(self, event):
@@ -263,29 +299,35 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonFermer(self, event):
-        #self.Sauvegarde()
+        self.Sauvegarde()
         self.EndModal(wx.ID_CANCEL)
 
     def OnRadioEtat(self, event=None):
         self.ctrl_date_validation.Enable(self.radio_validation.GetValue())
+        self.ctrl_reponse.Enable(self.radio_validation.GetValue())
         self.bouton_automatique.Enable(not self.radio_validation.GetValue())
         self.bouton_manuel.Enable(not self.radio_validation.GetValue())
-        self.Sauvegarde()
 
     def Sauvegarde(self):
         if self.radio_validation.GetValue() == True :
             etat = "validation"
+            if self.ctrl_reponse.GetValue() == "" :
+                reponse = None
+            else :
+                reponse = self.ctrl_reponse.GetValue()
             traitement_date = self.ctrl_date_validation.GetDate()
             self.ctrl_date_validation.Enable(True)
             self.panel_bandeau.SetBackgroundColour(wx.Colour(220, 255, 220))
         else :
             etat = "attente"
             traitement_date = None
+            reponse = None
             self.ctrl_date_validation.SetDate(datetime.date.today())
             self.ctrl_date_validation.Enable(False)
             self.panel_bandeau.SetBackgroundColour(wx.Colour(255, 255, 255))
 
         # MAJ du track
+        self.track.reponse = reponse
         self.track.etat = etat
         self.track.traitement_date = traitement_date
         self.panel_bandeau.Refresh()
@@ -293,7 +335,7 @@ class Dialog(wx.Dialog):
 
         # Sauvegarde dans la base
         DB = GestionDB.DB()
-        DB.ReqMAJ("portail_actions", [("etat", etat), ("traitement_date", traitement_date)], "IDaction", self.track.IDaction)
+        DB.ReqMAJ("portail_actions", [("etat", etat), ("reponse", reponse), ("traitement_date", traitement_date)], "IDaction", self.track.IDaction)
         DB.Close()
 
     def SetEtat(self, etat="attente", traitement_date=None):
@@ -333,7 +375,30 @@ class Dialog(wx.Dialog):
         self.ctrl_famille.SetValue(self.track.famille)
 
         # Description
-        self.ctrl_description.SetValue(self.track.description)
+        description = self.track.description
+
+        if self.track.categorie == "reservations" :
+
+            DB = GestionDB.DB()
+            req = """SELECT IDreservation, date, IDinscription, portail_reservations.IDunite, etat, portail_unites.nom
+            FROM portail_reservations
+            LEFT JOIN portail_unites ON portail_unites.IDunite = portail_reservations.IDunite
+            WHERE IDaction=%d ORDER BY date, IDunite;""" % self.track.IDaction
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            DB.Close()
+            liste_lignes = []
+            for IDreservation, date, IDinscription, IDunite, etat, nom_unite in listeDonnees :
+                date = UTILS_Dates.DateEngEnDateDD(date)
+                if etat == 1 :
+                    ligne = u"- Ajout"
+                else :
+                    ligne = u"- Suppression"
+                ligne += u" du %s (%s)\n" % (UTILS_Dates.DateComplete(date), nom_unite)
+                liste_lignes.append(ligne)
+            description += u" :\n\n" + "".join(liste_lignes)
+
+        self.ctrl_description.SetValue(description)
 
         # Commentaire
         if self.track.commentaire != None :
@@ -341,6 +406,13 @@ class Dialog(wx.Dialog):
 
         # Etat
         self.SetEtat(self.track.etat, self.track.traitement_date)
+
+        # Réponse
+        if self.track.reponse != None :
+            reponse = self.track.reponse
+        else :
+            reponse = ""
+        self.ctrl_reponse.SetValue(reponse)
 
         # Navigation
         index = self.tracks.index(self.track)
@@ -374,7 +446,6 @@ class Dialog(wx.Dialog):
             self.track = self.tracks[len(self.tracks)-1]
 
         self.MAJ()
-        self.Sauvegarde()
 
     def OnBoutonFamille(self, event):
         from Dlg import DLG_Famille
@@ -651,24 +722,22 @@ class Traitement():
         """ Sauvegarde de la grille des conso """
         ctrl_grille.Sauvegarde()
 
-    def Appliquer_reservations(self, ctrl_grille=None, log_jumeau=None):
+    def Appliquer_reservations_archive(self, ctrl_grille=None, log_jumeau=None):
         """ Appliquer la saisie ou suppression des réservations """
         # Récupération des paramètres
         IDactivite = int(self.dict_parametres["IDactivite"])
         date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
         date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
 
-        # Init de la grille des conso
-        # ctrl_grille.InitGrille(IDindividu=IDindividu, IDfamille=self.track.IDfamille, IDactivite=IDactivite, periode=(date_debut_periode, date_fin_periode))
-
         self.EcritLog(_(u"Traitement des réservations de %s sur la période du %s au %s") % (ctrl_grille.ctrl_titre.GetNom(), UTILS_Dates.DateDDEnFr(date_debut_periode), UTILS_Dates.DateDDEnFr(date_fin_periode)), log_jumeau)
 
-        # Lecture des consommations à réserver (uniquement dans le futur TODO: ou le jour même avant 9h00)
+        # Lecture des consommations à réserver
         current_time = datetime.datetime.now()
         current_date = current_time.date()
+
         DB = GestionDB.DB()
 
-        req = """SELECT IDreservation, date, IDinscription, IDunite
+        req = """SELECT IDreservation, date, IDinscription, IDunite, etat
         FROM portail_reservations WHERE IDaction=%d AND date >= "%s";""" % (self.track.IDaction, current_date.isoformat())
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -738,7 +807,7 @@ class Traitement():
                     self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
                     absenti = False
                     try:
-                        # VÃ©rifie s'il faut appliquer l'Ã©tat Absence InjustifiÃ©e
+                        # Vérifie s'il faut appliquer l'état Absence Injustifiée
                         portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
                         if portail_reservations_absenti != None :
                             nbre_jours, heure = portail_reservations_absenti.split("#")
@@ -783,6 +852,141 @@ class Traitement():
                             self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
 
         return True
+
+
+
+
+    def Appliquer_reservations(self, ctrl_grille=None, log_jumeau=None):
+        """ Appliquer la saisie ou suppression des réservations """
+        # Récupération des paramètres
+        IDactivite = int(self.dict_parametres["IDactivite"])
+        date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
+        date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
+
+        self.EcritLog(_(u"Traitement des réservations de %s sur la période du %s au %s") % (ctrl_grille.ctrl_titre.GetNom(), UTILS_Dates.DateDDEnFr(date_debut_periode), UTILS_Dates.DateDDEnFr(date_fin_periode)), log_jumeau)
+
+        # Lecture des réservations
+        DB = GestionDB.DB()
+        req = """SELECT IDreservation, date, IDinscription, IDunite, etat
+        FROM portail_reservations WHERE IDaction=%d
+        ORDER BY date, etat;""" % self.track.IDaction
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        listeReservations = []
+        dictUnitesResaParDate = {}
+        for IDreservation, date, IDinscription, IDunite, etat in listeDonnees :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            listeReservations.append({"IDreservation" : IDreservation, "date" : date, "IDinscription" : IDinscription, "IDunite" : IDunite, "etat" : etat})
+
+            # dict_unite_resa = self.parent.dictUnites[IDunite]
+            # liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
+            #
+            # if dictUnitesResaParDate.has_key(date) == False :
+            #     dictUnitesResaParDate[date] = []
+            #
+            # for IDunite_conso in liste_unites_conso :
+            #     if IDunite_conso not in dictUnitesResaParDate[date] :
+            #         dictUnitesResaParDate[date].append(IDunite_conso)
+
+
+        # Récupération de la liste des unités de conso par date
+        # dictUnitesConsoParDate = {}
+        # for numLigne, ligne in ctrl_grille.grille.dictLignes.iteritems() :
+        #     for numColonne, case in ligne.dictCases.iteritems() :
+        #         if case.typeCase == "consommation" :
+        #             if case.etat != None :
+        #                 if dictUnitesConsoParDate.has_key(ligne.date) == False :
+        #                     dictUnitesConsoParDate[ligne.date] = []
+        #                 dictUnitesConsoParDate[ligne.date].append(case.IDunite)
+
+
+        # Suppression des conso non souhaitées
+        # for date, liste_unites in dictUnitesConsoParDate.iteritems() :
+        #     for IDunite in liste_unites :
+        #         if not dictUnitesResaParDate.has_key(date) or IDunite not in dictUnitesResaParDate[date] :
+        #
+        #             # Ecrit suppression dans log
+        #             nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
+        #             self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
+        #
+        #             # Vérifie s'il faut appliquer l'état Absence Injustifiée
+        #             portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
+        #             absenti = False
+        #             if portail_reservations_absenti != None :
+        #                 nbre_jours, heure = portail_reservations_absenti.split("#")
+        #                 dt_limite = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:])) - datetime.timedelta(days=int(nbre_jours))
+        #                 if self.track.horodatage > dt_limite :
+        #                     absenti = True
+        #
+        #             if absenti == True :
+        #                 ctrl_grille.ModifieEtat(IDunite=IDunite, etat="absenti", date=date)
+        #             else :
+        #                 ctrl_grille.SupprimeConso(IDunite=IDunite, date=date)
+
+
+        for reservation in listeReservations :
+            date = reservation["date"]
+            IDunite_resa = reservation["IDunite"]
+            dict_unite_resa = self.parent.dictUnites[IDunite_resa]
+            liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
+
+            if reservation["etat"] == 0 :
+
+                for IDunite in liste_unites_conso :
+
+                    # Ecrit suppression dans log
+                    nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
+                    self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
+
+                    # Vérifie s'il faut appliquer l'état Absence Injustifiée
+                    portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
+                    absenti = False
+                    if portail_reservations_absenti != None :
+                        nbre_jours, heure = portail_reservations_absenti.split("#")
+                        dt_limite = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:])) - datetime.timedelta(days=int(nbre_jours))
+                        if self.track.horodatage > dt_limite :
+                            absenti = True
+
+                    if absenti == True :
+                        ctrl_grille.ModifieEtat(IDunite=IDunite, etat="absenti", date=date)
+                    else :
+                        ctrl_grille.SupprimeConso(IDunite=IDunite, date=date)
+
+
+            # Ajout de la réservation
+            if reservation["etat"] == 1 :
+
+                # Vérifie s'il y a de la place sur chaque unité de conso associée à l'unité de réservation
+                hasPlaces = True
+                for IDunite in liste_unites_conso :
+                    if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
+                        if ctrl_grille.GetCase(IDunite, date) == None and ctrl_grille.HasPlacesDisponibles(IDunite=IDunite, date=date) == False :
+                            hasPlaces = False
+
+                # Si plus de places, met les unités de conso en mode "attente"
+                if hasPlaces == True :
+                    mode = "reservation"
+                else :
+                    mode = "attente"
+
+                # Saisie les conso
+                for IDunite in liste_unites_conso :
+                    if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
+
+                        nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
+                        self.EcritLog(_(u"Saisie de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
+
+                        resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
+                        if resultat != True :
+                            self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
+
+        return True
+
+
+
+
+
 
 
 class Edition_facture():

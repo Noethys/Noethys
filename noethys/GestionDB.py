@@ -838,7 +838,7 @@ class DB:
                 connexionDefaut.set_character_set('utf8')
                 
             if INTERFACE_MYSQL == "mysql.connector" :
-                connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool4%s" % suffixe, pool_size=3)
+                connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool4%s" % self.suffixe, pool_size=3)
                 
             cursor = connexionDefaut.cursor()
             
@@ -1889,6 +1889,19 @@ class DB:
                 self.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+        versionFiltre = (1, 1, 7, 5)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("portail_actions", "reponse", "VARCHAR(450)")
+                self.AjoutChamp("portail_reservations", "etat", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
 
 
         return True

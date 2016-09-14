@@ -1,3 +1,7 @@
+Version 1.1.7.5 (12/09/2016) :
+
+- Ajout de Connecthys (Version Beta)
+
 Version 1.1.7.4 (02/09/2016) :
 
 - Correction de divers bugs

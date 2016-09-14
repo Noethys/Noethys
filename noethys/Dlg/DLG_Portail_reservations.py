@@ -42,6 +42,11 @@ class Dialog(wx.Dialog):
         self.ctrl_facturation = CTRL_Grille_facturation.CTRL(self)
         self.ctrl_facturation.SetMinSize((275, 100))
 
+        # Détail demande
+        self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail de la demande"))
+        self.ctrl_demande = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self.ctrl_demande.SetMinSize((275, 100))
+
         # Grille
         self.box_grille_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Grille des consommations"))
         self.ctrl_grille = DLG_Badgeage_grille.CTRL(self, panel_facturation=self.ctrl_facturation)
@@ -73,7 +78,7 @@ class Dialog(wx.Dialog):
         # Init
         if self.parent != None :
             self.parent.Init_grille(ctrl_grille=self.ctrl_grille)
-
+            self.ctrl_demande.SetValue(self.parent.parent.ctrl_description.GetValue())
 
     def __set_properties(self):
         self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour appliquer la demande"))
@@ -98,14 +103,26 @@ class Dialog(wx.Dialog):
 
         grid_sizer_haut.Add(box_grille, 1, wx.EXPAND, 10)
 
+        grid_sizer_droit = wx.FlexGridSizer(2, 1, 10, 10)
+
         # Facturation
         box_facturation = wx.StaticBoxSizer(self.box_facturation_staticbox, wx.VERTICAL)
         box_facturation.Add(self.ctrl_facturation, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_droit.Add(box_facturation, 1, wx.EXPAND, 10)
 
-        grid_sizer_haut.Add(box_facturation, 1, wx.EXPAND, 10)
+        # Demande
+        box_demande = wx.StaticBoxSizer(self.box_demande_staticbox, wx.VERTICAL)
+        box_demande.Add(self.ctrl_demande, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_droit.Add(box_demande, 1, wx.EXPAND, 10)
 
+        grid_sizer_droit.AddGrowableRow(0)
+        grid_sizer_droit.AddGrowableRow(1)
+        grid_sizer_droit.AddGrowableCol(0)
+
+        grid_sizer_haut.Add(grid_sizer_droit, 1, wx.EXPAND, 10)
         grid_sizer_haut.AddGrowableRow(0)
         grid_sizer_haut.AddGrowableCol(0)
+
         grid_sizer_contenu.Add(grid_sizer_haut, 1, wx.EXPAND, 10)
 
         # Journal

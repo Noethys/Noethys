@@ -662,16 +662,16 @@ class Synchro():
         # CrÃ©ation des actions
         self.Pulse_gauge()
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse
         FROM portail_actions
         WHERE horodatage>='%s';""" % (datetime.datetime.now() - datetime.timedelta(days=(self.dict_parametres["historique_delai"]+1)*30))
         DB.ExecuterReq(req)
         listeActions = DB.ResultatReq()
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique in listeActions :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse in listeActions :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             if isinstance(horodatage, str) or isinstance(horodatage, unicode) :
                 horodatage = datetime.datetime.strptime(horodatage, '%Y-%m-%d %H:%M:%S.%f')
-            m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique)
+            m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
             session.add(m)
 
         # Fermeture de la base de données Noethys
@@ -749,7 +749,6 @@ class Synchro():
                 url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncup/%d" % secret
             print "URL syncup =", url
-            self.log.EcritLog(_(u"URL syncup = %s") % url)
 
             req = urllib2.Request(url)
             reponse = urllib2.urlopen(req)
@@ -839,12 +838,12 @@ class Synchro():
         # Sauvegarde des actions
         if liste_actions != None and len(liste_actions) > 0 :
 
-            # Recherche la rÃ©servation la plus rÃ©cente pour chaque pÃ©riode
-            dict_dernieres_reservations = {}
-            for action in liste_actions :
-                if action["categorie"] == "reservations" :
-                    if not dict_dernieres_reservations.has_key(action["IDperiode"]) or (action["horodatage"] > dict_dernieres_reservations[action["IDperiode"]]["horodatage"] and action["etat"] != "suppression") :
-                        dict_dernieres_reservations[action["IDperiode"]] = action
+            # Recherche la réservation la plus récente pour chaque période
+            # dict_dernieres_reservations = {}
+            # for action in liste_actions :
+            #     if action["categorie"] == "reservations" :
+            #         if not dict_dernieres_reservations.has_key(action["IDperiode"]) or (action["horodatage"] > dict_dernieres_reservations[action["IDperiode"]]["horodatage"] and action["etat"] != "suppression") :
+            #             dict_dernieres_reservations[action["IDperiode"]] = action
 
             # Recherche le prochain IDaction
             DB = GestionDB.DB()
@@ -855,18 +854,12 @@ class Synchro():
 
             for action in liste_actions :
 
-                # Ecrase les rÃ©servations les plus anciennes pour chaque pÃ©riode
-                etat = action["etat"]
-                #if action["categorie"] == "reservations" :
-                #    if dict_dernieres_reservations[action["IDperiode"]] != action :
-                #        etat = "suppression"
-
                 # Mémorisation des actions
                 listeActions.append([
                         prochainIDaction, action["horodatage"], action["IDfamille"], action["IDindividu"],
                         action["categorie"], action["action"], action["description"],
-                        action["commentaire"], action["parametres"], etat,
-                        action["traitement_date"], action["IDperiode"], action["ref_unique"]
+                        action["commentaire"], action["parametres"], action["etat"],
+                        action["traitement_date"], action["IDperiode"], action["ref_unique"], action["reponse"]
                         ])
 
                 # Mémorisation des réservations
@@ -875,16 +868,16 @@ class Synchro():
                     for reservation in action["reservations"] :
                         listeReservations.append([
                                 reservation["date"], reservation["IDinscription"],
-                                reservation["IDunite"], prochainIDaction,
+                                reservation["IDunite"], prochainIDaction, reservation["etat"],
                                 ])
 
                 prochainIDaction += 1
 
             # Enregistrement des actions
             if len(listeActions) > 0 :
-                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
+                DB.Executermany("INSERT INTO portail_actions (IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", listeActions, commit=False)
             if len(listeReservations) > 0 :
-                DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction) VALUES (?, ?, ?, ?)", listeReservations, commit=False)
+                DB.Executermany("INSERT INTO portail_reservations (date, IDinscription, IDunite, IDaction, etat) VALUES (?, ?, ?, ?, ?)", listeReservations, commit=False)
             DB.Commit()
             DB.Close()
 

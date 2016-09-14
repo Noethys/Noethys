@@ -222,15 +222,15 @@ class Panel(wx.Panel):
                 if nbre_actions_attente == 0 :
                     texte = _(u"Aucune\ndemande")
                     self.bouton_traiter.SetBackgroundColour(self.couleur_defaut)
-                    self.bouton_traiter.Enable(False)
+                    #self.bouton_traiter.Enable(False)
                 elif nbre_actions_attente == 1 :
                     texte = _(u"1 demande\nà traiter")
                     self.bouton_traiter.SetBackgroundColour((150, 255, 150))
-                    self.bouton_traiter.Enable(True)
+                    #self.bouton_traiter.Enable(True)
                 else :
                     texte = _(u"%d demandes\nà traiter") % nbre_actions_attente
                     self.bouton_traiter.SetBackgroundColour((150, 255, 150))
-                    self.bouton_traiter.Enable(True)
+                    #self.bouton_traiter.Enable(True)
 
                 self.bouton_traiter.SetLabel(texte)
             except Exception as e:

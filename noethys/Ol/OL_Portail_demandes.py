@@ -42,6 +42,7 @@ class Track(object):
 
         self.traitement_date = donnees["traitement_date"]
         self.IDperiode = donnees["IDperiode"]
+        self.reponse = donnees["reponse"]
 
         if dictTitulaires.has_key(self.IDfamille) :
             self.famille = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
@@ -110,17 +111,17 @@ class ListView(GroupListView):
         else :
             conditions = ""
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse
         FROM portail_actions %s;""" % conditions
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeActions = []
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             listeActions.append({
                 "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "categorie" : categorie,
                 "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
-                "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode,
+                "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse,
             })
 
         DB.Close() 
@@ -170,17 +171,18 @@ class ListView(GroupListView):
             "traitement_date" : ColumnDefn(_(u"Traitée le"), "left", 80, "traitement_date", typeDonnee="date", stringConverter=FormateDate),
             "categorie" : ColumnDefn(_(u"Catégorie"), "left", 120, "categorie_label", typeDonnee="texte", imageGetter=GetImageCategorie),
             "famille" : ColumnDefn(_(u"Famille"), "left", 180, "famille", typeDonnee="texte"),
-            "description" : ColumnDefn(_(u"Description"), "left", 400, "description", typeDonnee="texte"),
-            "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 400, "commentaire", typeDonnee="texte"),
+            "description" : ColumnDefn(_(u"Description"), "left", 300, "description", typeDonnee="texte"),
+            "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 300, "commentaire", typeDonnee="texte"),
+            "reponse" : ColumnDefn(_(u"Réponse"), "left", 300, "reponse", typeDonnee="texte"),
             }
 
         # Regroupement
         if self.regroupement != None :
-            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "commentaire"]
+            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "commentaire", "reponse"]
             self.SetAlwaysGroupByColumn(liste_colonnes.index(self.regroupement))
             self.SetShowGroups(True)
         else :
-            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "commentaire"]
+            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "commentaire", "reponse"]
             self.SetShowGroups(False)
         self.useExpansionColumn = False
         self.showItemCounts = False
