@@ -2229,7 +2229,7 @@ class ObjectListView(wx.ListCtrl):
         
         # Item Configurer la liste
         item = wx.MenuItem(menu, 8601, u"Configurer la liste")
-        item.SetBitmap(wx.Bitmap("Images/16x16/Mecanisme.png", wx.BITMAP_TYPE_PNG))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.MenuConfigurerListe, id=8601)
 

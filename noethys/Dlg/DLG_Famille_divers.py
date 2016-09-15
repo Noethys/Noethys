@@ -264,12 +264,11 @@ class Panel(wx.Panel):
         if reponse != wx.ID_YES :
             return
         from Utils import UTILS_Internet
-        self.ctrl_mdp.SetValue(UTILS_Internet.CreationMDP(nbreCaract=8))
+        self.ctrl_mdp.SetValue(UTILS_Internet.CreationMDP(nbreCaract=5))
         self.MAJaffichage()
 
     def OnBoutonEnvoiEmail(self, event):
         # Envoyer un email à la famille
-        #self.parent.parent.MenuEnvoyerMail(200)
         from Utils import UTILS_Envoi_email
         listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.IDfamille)
         if len(listeAdresses) == 0 :
