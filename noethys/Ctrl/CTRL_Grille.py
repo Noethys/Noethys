@@ -3616,29 +3616,22 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # Recherche du montant du tarif : EN FONCTION DU NBRE D'INDIVIDUS
         if "nbre_ind" in methode_calcul :
             montant_tarif = 0.0
+            montant_enfants = []
             lignes_calcul = dictTarif["lignes_calcul"]
-            
-            if "montant_unique" in methode_calcul  :
+
+            if "montant_unique" in methode_calcul:
                 # Montant unique
-                montant_enfant_1 = lignes_calcul[0]["montant_enfant_1"]
-                montant_enfant_2 = lignes_calcul[0]["montant_enfant_2"]
-                montant_enfant_3 = lignes_calcul[0]["montant_enfant_3"]
-                montant_enfant_4 = lignes_calcul[0]["montant_enfant_4"]
-                montant_enfant_5 = lignes_calcul[0]["montant_enfant_5"]
-                montant_enfant_6 = lignes_calcul[0]["montant_enfant_6"]
-                
+                montant_enfants = [lignes_calcul[0]["montant_enfant_%d" % i]
+                                   for i in range(1, 7)]
+
             if "qf" in methode_calcul  :
                 # Selon QF
                 tarifFound = False
                 for ligneCalcul in lignes_calcul :
                     qf_min = ligneCalcul["qf_min"]
                     qf_max = ligneCalcul["qf_max"]
-                    montant_enfant_1 = ligneCalcul["montant_enfant_1"]
-                    montant_enfant_2 = ligneCalcul["montant_enfant_2"]
-                    montant_enfant_3 = ligneCalcul["montant_enfant_3"]
-                    montant_enfant_4 = ligneCalcul["montant_enfant_4"]
-                    montant_enfant_5 = ligneCalcul["montant_enfant_5"]
-                    montant_enfant_6 = ligneCalcul["montant_enfant_6"]
+                    montant_enfants = [ligneCalcul["montant_enfant_%d" % i]
+                                       for i in range(1, 7)]
 
                     QFfamille = self.RechercheQF(dictTarif, IDfamille, date)
                     if QFfamille != None :
@@ -3713,36 +3706,37 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         break
 
 
-            # Recherche combien d'individus de la famille sont déjà présents ce jour-là
-            listeIndividusPresents = []
+            # Recherche combien d'individus de la famille sont déjà présents
+            # ce jour-là ou au début du forfait
+            listeIndividusPresents = set()
             listePrestationsConcernees = []
             for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
-                if dictValeurs["date"] == date and dictValeurs["IDtarif"] == IDtarif and dictValeurs["IDfamille"] == IDfamille and dictValeurs["IDindividu"] != IDindividu :
-                    if dictValeurs["IDindividu"] not in listeIndividusPresents :
-                        listeIndividusPresents.append(dictValeurs["IDindividu"])
+                if ((dictValeurs["date"] == date or
+                            dictValeurs["forfait_date_debut"]) and
+                        dictValeurs["IDtarif"] == IDtarif and
+                        dictValeurs["IDfamille"] == IDfamille and
+                        dictValeurs["IDindividu"] != IDindividu):
+                    listeIndividusPresents.add(dictValeurs["IDindividu"])
             nbreIndividus = len(listeIndividusPresents) + 1
-            
+
             # Recherche le tarif à appliquer à chaque individu
             if "degr" in methode_calcul :
                 # Si tarif dégressif différent pour chaque individu
-                tarifsDegr = []
-                if montant_enfant_1 != None and montant_enfant_1 != 0.0 : tarifsDegr.append(montant_enfant_1)
-                if montant_enfant_2 != None and montant_enfant_2 != 0.0 : tarifsDegr.append(montant_enfant_2)
-                if montant_enfant_3 != None and montant_enfant_3 != 0.0 : tarifsDegr.append(montant_enfant_3)
-                if montant_enfant_4 != None and montant_enfant_4 != 0.0 : tarifsDegr.append(montant_enfant_4)
-                if montant_enfant_5 != None and montant_enfant_5 != 0.0 : tarifsDegr.append(montant_enfant_5)
-                if montant_enfant_6 != None and montant_enfant_6 != 0.0 : tarifsDegr.append(montant_enfant_6)
-                for x in range(0, 20) : tarifsDegr.append(0.0)
-                montant_tarif = tarifsDegr[nbreIndividus-1]
+                if nbreIndividus > len(montant_enfants):
+                    index = len(montant_enfants) - 1
+                else:
+                    index = nbreIndividus - 1
+                # Recherche le montant non nul le plus proche
+                while index >= 0 and not montant_enfants[index]:
+                    index -= 1
+                montant_tarif = montant_enfants[index] or 0.0
             else:
                 # Si tarif unique pour chacun des individus
-                if nbreIndividus == 1 and montant_enfant_1 != None and montant_enfant_1 != 0.0 : montant_tarif = montant_enfant_1
-                if nbreIndividus == 2 and montant_enfant_2 != None and montant_enfant_2 != 0.0 : montant_tarif = montant_enfant_2
-                if nbreIndividus == 3 and montant_enfant_3 != None and montant_enfant_3 != 0.0 : montant_tarif = montant_enfant_3
-                if nbreIndividus == 4 and montant_enfant_4 != None and montant_enfant_4 != 0.0 : montant_tarif = montant_enfant_4
-                if nbreIndividus == 5 and montant_enfant_5 != None and montant_enfant_5 != 0.0 : montant_tarif = montant_enfant_5
-                if nbreIndividus >= 6 and montant_enfant_6 != None and montant_enfant_6 != 0.0 : montant_tarif = montant_enfant_6
-            
+                try:
+                    montant_tarif = montant_enfants[nbreIndividus-1] or 0.0
+                except IndexError:
+                    montant_tarif = montant_enfants[-1] or 0.0
+
             # Modifie le tarif des autres individus de la famille
             index = 0
             for IDprestation, dictValeurs in self.dictPrestations.iteritems() :
