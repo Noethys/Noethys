@@ -18,7 +18,7 @@ from Ol import OL_Portail_periodes
 from Ol import OL_Portail_unites
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_heure
-
+from Utils import UTILS_Dates
 import GestionDB
 
 
@@ -378,18 +378,10 @@ class Panel(wx.Panel):
         if portail_inscriptions_affichage == 1 :
             if portail_inscriptions_date_debut != None :
                 self.radio_inscriptions_dates.SetValue(True)
-                if isinstance(portail_inscriptions_date_debut, datetime.datetime) :
-                    self.ctrl_inscriptions_date_debut.SetDate(portail_inscriptions_date_debut.strftime("%Y-%m-%d"))
-                    self.ctrl_inscriptions_heure_debut.SetHeure(portail_inscriptions_date_debut.strftime("%H:%M"))
-                elif isinstance(portail_inscriptions_date_debut, unicode) or isinstance(portail_inscriptions_date_debut, str) :
-                    self.ctrl_inscriptions_date_debut.SetDate(datetime.datetime.strftime(datetime.datetime.strptime(portail_inscriptions_date_debut, "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d"))
-                    self.ctrl_inscriptions_heure_debut.SetHeure(datetime.datetime.strftime(datetime.datetime.strptime(portail_inscriptions_date_debut, "%Y-%m-%d %H:%M:%S"),"%H:%M"))
-                if isinstance(portail_inscriptions_date_fin, datetime.datetime) :
-                    self.ctrl_inscriptions_date_fin.SetDate(portail_inscriptions_date_fin.strftime("%Y-%m-%d"))
-                    self.ctrl_inscriptions_heure_fin.SetHeure(portail_inscriptions_date_fin.strftime("%H:%M"))
-                elif isinstance(portail_inscriptions_date_fin, unicode) or isinstance(portail_inscriptions_date_fin, str) :
-                    self.ctrl_inscriptions_date_fin.SetDate(datetime.datetime.strftime(datetime.datetime.strptime(portail_inscriptions_date_fin, "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d"))
-                    self.ctrl_inscriptions_heure_fin.SetHeure(datetime.datetime.strftime(datetime.datetime.strptime(portail_inscriptions_date_fin, "%Y-%m-%d %H:%M:%S"),"%H:%M"))
+                self.ctrl_inscriptions_date_debut.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(portail_inscriptions_date_debut),"%Y-%m-%d"))
+                self.ctrl_inscriptions_heure_debut.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(portail_inscriptions_date_debut),"%H:%M"))
+                self.ctrl_inscriptions_date_fin.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(portail_inscriptions_date_fin),"%Y-%m-%d"))
+                self.ctrl_inscriptions_heure_fin.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(portail_inscriptions_date_fin),"%H:%M"))
             else :
                 self.radio_inscriptions_oui.SetValue(True)
         else :

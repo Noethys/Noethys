@@ -17,6 +17,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_heure
+from Utils import UTILS_Dates
 import GestionDB
 
 
@@ -184,11 +185,8 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin = listeDonnees[0]
-
-        if isinstance(affichage_date_debut, str) or isinstance(affichage_date_debut, unicode) :
-            affichage_date_debut = datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S")
-        if isinstance(affichage_date_fin, str) or isinstance(affichage_date_fin, unicode) :
-            affichage_date_fin = datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S")
+        affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
+        affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
         self.IDactivite = IDactivite
         self.ctrl_nom.SetValue(nom)
@@ -199,16 +197,10 @@ class Dialog(wx.Dialog):
             self.radio_oui.SetValue(True)
         elif affichage == 1 and affichage_date_debut != None :
             self.radio_dates.SetValue(True)
-            if isinstance(affichage_date_debut, datetime.datetime) and isinstance(affichage_date_fin, datetime.datetime) :
-                self.ctrl_affichage_date_debut.SetDate(affichage_date_debut.strftime("%Y-%m-%d"))
-                self.ctrl_affichage_date_fin.SetDate(affichage_date_fin.strftime("%Y-%m-%d"))
-                self.ctrl_affichage_heure_debut.SetHeure(affichage_date_debut.strftime("%H:%M"))
-                self.ctrl_affichage_heure_fin.SetHeure(affichage_date_fin.strftime("%H:%M"))
-            elif (isinstance(affichage_date_debut, unicode) or isinstance(affichage_date_debut, str)) and (isinstance(affichage_date_fin, unicode) or isinstance(affichage_date_fin, str)):
-                self.ctrl_affichage_date_debut.SetDate(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d"))
-                self.ctrl_affichage_date_fin.SetDate(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S"),"%Y-%m-%d"))
-                self.ctrl_affichage_heure_debut.SetHeure(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S"),"%H:%M"))
-                self.ctrl_affichage_heure_fin.SetHeure(datetime.datetime.strftime(datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S"),"%H:%M"))
+            self.ctrl_affichage_date_debut.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(affichage_date_debut),"%Y-%m-%d"))
+            self.ctrl_affichage_date_fin.SetDate(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(affichage_date_fin),"%Y-%m-%d"))
+            self.ctrl_affichage_heure_debut.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(affichage_date_debut),"%H:%M"))
+            self.ctrl_affichage_heure_fin.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(affichage_date_fin),"%H:%M"))
         else :
             self.radio_non.SetValue(True)
 

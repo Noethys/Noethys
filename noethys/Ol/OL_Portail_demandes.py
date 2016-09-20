@@ -118,6 +118,7 @@ class ListView(GroupListView):
         listeActions = []
         for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
+            horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
             listeActions.append({
                 "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "categorie" : categorie,
                 "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
@@ -152,10 +153,7 @@ class ListView(GroupListView):
             return track.categorie
 
         def FormateHorodatage(horodatage):
-            if isinstance(horodatage, str) or isinstance(horodatage, unicode) :
-                return datetime.datetime.strptime(horodatage, "%Y-%m-%d %H:%M:%S").strftime("%d/%m/%Y  %H:%M:%S")
-            else :
-                return horodatage.strftime("%d/%m/%Y  %H:%M:%S")
+            return UTILS_Dates.DateEngEnDateDDT(horodatage).strftime("%d/%m/%Y  %H:%M:%S")
 
         def FormateDate(dateDD):
             if dateDD == None :

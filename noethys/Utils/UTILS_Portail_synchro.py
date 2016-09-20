@@ -516,10 +516,8 @@ class Synchro():
         listeActivites = DB.ResultatReq()
         dict_activites = {}
         for IDactivite, nom, inscriptions_affichage, inscriptions_date_debut, inscriptions_date_fin, reservations_affichage, unites_multiples, portail_reservations_limite, portail_reservations_absenti in listeActivites :
-            if isinstance(inscriptions_date_debut, str) or isinstance(inscriptions_date_debut, unicode) :
-                 inscriptions_date_debut = datetime.datetime.strptime(inscriptions_date_debut, "%Y-%m-%d %H:%M:%S")
-            if isinstance(inscriptions_date_fin, str) or isinstance(inscriptions_date_fin, unicode) :
-                inscriptions_date_fin = datetime.datetime.strptime(inscriptions_date_fin, "%Y-%m-%d %H:%M:%S")
+            inscriptions_date_debut = UTILS_Dates.DateEngEnDateDDT(inscriptions_date_debut)
+            inscriptions_date_fin = UTILS_Dates.DateEngEnDateDDT(inscriptions_date_fin)
 
             m = models.Activite(IDactivite=IDactivite, nom=nom, inscriptions_affichage=inscriptions_affichage, \
                          inscriptions_date_debut=inscriptions_date_debut, inscriptions_date_fin=inscriptions_date_fin, \
@@ -601,15 +599,8 @@ class Synchro():
         for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin in listePeriodes :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
-
-            if affichage_date_debut != None and not isinstance(affichage_date_debut, datetime.datetime) :
-                affichage_date_debut = datetime.datetime.strptime(affichage_date_debut, "%Y-%m-%d %H:%M:%S")
-            elif isinstance(affichage_date_debut, datetime.datetime) :
-                affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
-            if affichage_date_fin != None and not isinstance(affichage_date_fin, datetime.datetime) :
-                affichage_date_fin = datetime.datetime.strptime(affichage_date_fin, "%Y-%m-%d %H:%M:%S")
-            elif isinstance(affichage_date_fin, datetime.datetime) :
-                affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
+            affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
+            affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
                         affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
@@ -669,8 +660,7 @@ class Synchro():
         listeActions = DB.ResultatReq()
         for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse in listeActions :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
-            if isinstance(horodatage, str) or isinstance(horodatage, unicode) :
-                horodatage = datetime.datetime.strptime(horodatage, '%Y-%m-%d %H:%M:%S.%f')
+            horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
             m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
             session.add(m)
 

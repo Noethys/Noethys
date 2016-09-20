@@ -364,11 +364,7 @@ class Dialog(wx.Dialog):
         self.ctrl_image.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/32x32/%s" % dict_images[self.track.categorie]), wx.BITMAP_TYPE_PNG))
 
         # Horodatage
-        #self.label_horodatage.SetLabel(datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S.%f").strftime("%d/%m/%Y  %H:%M:%S"))
-        if isinstance(self.track.horodatage, str) or isinstance(self.track.horodatage, unicode) :
-            dt = datetime.datetime.strptime(self.track.horodatage, "%Y-%m-%d %H:%M:%S")
-        else :
-            dt = self.track.horodatage
+        dt = UTILS_Dates.DateEngEnDateDDT(self.track.horodatage)
         self.label_horodatage.SetLabel(dt.strftime("%d/%m/%Y  %H:%M:%S"))
 
         # Famille
@@ -383,7 +379,7 @@ class Dialog(wx.Dialog):
             req = """SELECT IDreservation, date, IDinscription, portail_reservations.IDunite, etat, portail_unites.nom
             FROM portail_reservations
             LEFT JOIN portail_unites ON portail_unites.IDunite = portail_reservations.IDunite
-            WHERE IDaction=%d ORDER BY date, IDunite;""" % self.track.IDaction
+            WHERE IDaction=%d ORDER BY date, portail_reservations.IDunite;""" % self.track.IDaction
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close()
