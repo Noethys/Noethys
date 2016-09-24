@@ -35,9 +35,10 @@ def GetSecretKey():
     return code
 
 LISTE_THEMES = [("blue", u"Bleu"), ("black", u"Noir"), ("green", u"Vert"), ("purple", u"Violet"), ("red", u"Rouge"), ("yellow", u"Jaune")]
-
 LISTE_DELAIS_SYNCHRO = [(15, u"Toutes les 15 minutes"), (30, u"Toutes les 30 minutes"), (60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures")]
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
+LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
+LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 
 VALEURS_DEFAUT = {
     "portail_activation" : False,
@@ -59,6 +60,7 @@ VALEURS_DEFAUT = {
     "db_utilisateur" : "",
     "db_mdp" : "",
     "db_nom" : "",
+    "prefixe_tables" : "",
     "secret_key" : GetSecretKey(),
     "mode_debug" : False,
     "crypter_transferts" : True,
@@ -74,8 +76,10 @@ VALEURS_DEFAUT = {
     "activites_autoriser_inscription" : True,
     "reservations_afficher" : True,
     "factures_afficher" : True,
+    "factures_selection" : 0,
     "factures_demande_facture" : True,
     "reglements_afficher" : True,
+    "reglements_selection" : 0,
     "reglements_demande_recu" : True,
     "pieces_afficher" : True,
     "pieces_autoriser_telechargement" : True,
@@ -333,6 +337,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
+        # Préfixe des tables
+        nom = "prefixe_tables"
+        propriete = wxpg.StringProperty(label=_(u"Préfixe des tables (optionnel)"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un préfixe pour les tables (optionnel)"))
+        propriete.SetAttribute("obligatoire", False)
+        self.Append(propriete)
+
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Sécurité")) )
 
@@ -464,6 +475,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Sélection des factures à afficher
+        nom = "factures_selection"
+        propriete = wxpg.EnumProperty(label=_(u"Sélection des factures à afficher"), labels=[y for x, y in LISTE_SELECTION_FACTURES], values=[x for x, y in LISTE_SELECTION_FACTURES], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les factures à afficher"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
         # Demande d'une facture
         nom = "factures_demande_facture"
         propriete = wxpg.BoolProperty(label=_(u"Autoriser la demande de factures"), name=nom, value=VALEURS_DEFAUT[nom])
@@ -480,6 +498,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Sélection des règlements à afficher
+        nom = "reglements_selection"
+        propriete = wxpg.EnumProperty(label=_(u"Sélection des règlements à afficher"), labels=[y for x, y in LISTE_SELECTION_REGLEMENTS], values=[x for x, y in LISTE_SELECTION_REGLEMENTS], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez un critère d'ancienneté pour les règlements à afficher"))
+        propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
         # Demande d'un reçu
@@ -529,10 +554,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
-        # DÃ©lai d'affichage de l'historique
+        # Délai d'affichage de l'historique
         nom = "historique_delai"
         propriete = wxpg.EnumProperty(label=_(u"Temps d'affichage de l'historique"), labels=[y for x, y in LISTE_AFFICHAGE_HISTORIQUE], values=range(0, len(LISTE_AFFICHAGE_HISTORIQUE)), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"SÃ©lectionnez un dÃ©lai pour l'affichage de l'historique : Au-delÃ  l'historique sera cachÃ©."))
+        propriete.SetHelpString(_(u"Sélectionnez un délai pour l'affichage de l'historique : Au-delà  l'historique sera caché."))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -694,6 +719,9 @@ class Dialog(wx.Dialog):
 
         # Inits
         self.SetActivation(self.ctrl_parametres.GetPropertyByName("portail_activation").GetValue())
+
+        # Affichage avertissement
+        wx.CallAfter(self.Afficher_avertissement)
 
     def __set_properties(self):
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
@@ -1001,6 +1029,36 @@ class Dialog(wx.Dialog):
         dlg = DLG_Portail_demandes.Dialog(self)
         dlg.ShowModal()
         dlg.Destroy()
+
+    def Afficher_avertissement(self):
+        if UTILS_Parametres.Parametres(mode="get", categorie="ne_plus_afficher", nom="portail", valeur=False) == True :
+            return
+
+        texte = u"""
+<CENTER><IMG SRC="%s">
+<BR><BR>
+<FONT SIZE=3>
+Connecthys est le portail internet de Noethys. Il permet par exemple à vos usagers de
+consulter l'état de leur dossier ou de demander des réservations à des activités.
+Si vous souhaitez en apprendre davantage sur son utilisation et son installation, consultez
+la rubrique dédiée dans le forum de Noethys.
+<BR><BR>
+<B>Attention, Connecthys est actuellement en version Beta. Il n'est distribué qu'à des fins de tests
+et reste fortement déconseillé pour une utilisation en production. Merci de signaler tout bug rencontré
+sur le forum.</B>
+</FONT>
+</CENTER>
+""" % Chemins.GetStaticPath("Images/Special/Connecthys.png")
+
+        from Dlg import DLG_Message_html
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), size=(510, 670), nePlusAfficher=True)
+        dlg.CenterOnScreen()
+        dlg.ShowModal()
+        nePlusAfficher = dlg.GetEtatNePlusAfficher()
+        dlg.Destroy()
+        if nePlusAfficher == True :
+            UTILS_Parametres.Parametres(mode="set", categorie="ne_plus_afficher", nom="portail", valeur=nePlusAfficher)
+        return True
 
 
 class Synchro():

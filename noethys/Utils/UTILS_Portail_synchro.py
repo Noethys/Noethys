@@ -24,7 +24,7 @@ import urllib2
 import sys
 import importlib
 import time
-
+from dateutil import relativedelta
 
 import UTILS_Dates
 import UTILS_Parametres
@@ -118,12 +118,13 @@ class Synchro():
             db_utilisateur = self.dict_parametres["db_utilisateur"]
             db_mdp = self.dict_parametres["db_mdp"]
             db_nom = self.dict_parametres["db_nom"]
-            liste_lignes.append(Ecrit_ligne("SQLALCHEMY_DATABASE_URI", "mysql://%s:%s@%s/%s" % (db_utilisateur, db_mdp, db_serveur, db_nom), type_valeur=str))
+            liste_lignes.append(Ecrit_ligne("SQLALCHEMY_DATABASE_URI", "mysql://%s:%s@%s/%s?charset=utf8" % (db_utilisateur, db_mdp, db_serveur, db_nom), type_valeur=str))
 
         liste_lignes.append(Ecrit_ligne("SQLALCHEMY_TRACK_MODIFICATIONS", True, type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("SQLALCHEMY_ECHO", False, type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("SECRET_KEY", self.dict_parametres["secret_key"], type_valeur=str))
         liste_lignes.append(Ecrit_ligne("WTF_CSRF_ENABLED", True, type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("PREFIXE_TABLES", self.dict_parametres["prefixe_tables"], type_valeur=str))
         liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
 
         # Valeurs Utilisateur
@@ -336,14 +337,22 @@ class Synchro():
         # Création des factures
         self.Pulse_gauge()
 
+        if self.dict_parametres["factures_selection"] == 0 :
+            conditions_factures = ""
+        else :
+            nbre_mois = self.dict_parametres["factures_selection"]
+            date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
+            conditions_factures = "WHERE factures.date_edition >= '%s'" % date_limite
+
         # Récupération des totaux des prestations pour chaque facture
         req = """
         SELECT
         prestations.IDfacture, SUM(prestations.montant)
         FROM prestations
         LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        %s
         GROUP BY prestations.IDfacture
-        ;"""
+        ;""" % conditions_factures
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         dictPrestations = {}
@@ -360,8 +369,9 @@ class Synchro():
         FROM factures
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
         LEFT JOIN factures_prefixes ON factures_prefixes.IDprefixe = factures.IDprefixe
+        %s
         ORDER BY factures.date_edition
-        ;"""
+        ;""" % conditions_factures
         DB.ExecuterReq(req)
         listeFactures = DB.ResultatReq()
 
@@ -372,8 +382,9 @@ class Synchro():
         LEFT JOIN prestations ON prestations.IDprestation = ventilation.IDprestation
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = prestations.IDcompte_payeur
         LEFT JOIN factures ON factures.IDfacture = prestations.IDfacture
+        %s
         GROUP BY prestations.IDfacture
-        ;"""
+        ;""" % conditions_factures
         DB.ExecuterReq(req)
         listeVentilation = DB.ResultatReq()
         dictVentilation = {}
@@ -411,6 +422,13 @@ class Synchro():
         # Création des règlements
         self.Pulse_gauge()
 
+        if self.dict_parametres["reglements_selection"] == 0 :
+            conditions_reglements = ""
+        else :
+            nbre_mois = self.dict_parametres["reglements_selection"]
+            date_limite = datetime.date.today() + relativedelta.relativedelta(months=-nbre_mois)
+            conditions_reglements = "WHERE reglements.date >= '%s'" % date_limite
+
         req = """SELECT
         reglements.IDreglement, comptes_payeurs.IDfamille, reglements.date, modes_reglements.label,
         reglements.numero_piece, reglements.montant, depots.date
@@ -419,8 +437,9 @@ class Synchro():
         LEFT JOIN modes_reglements ON reglements.IDmode=modes_reglements.IDmode
         LEFT JOIN emetteurs ON reglements.IDemetteur=emetteurs.IDemetteur
         LEFT JOIN depots ON reglements.IDdepot=depots.IDdepot
+        %s
         GROUP BY reglements.IDreglement
-        ;"""
+        ;""" % conditions_reglements
         DB.ExecuterReq(req)
         listeReglements = DB.ResultatReq()
 
