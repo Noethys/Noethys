@@ -144,10 +144,34 @@ class Synchro():
 
         # Image de fond identification
         if self.dict_parametres["image_identification"] != "" :
-            image = os.path.basename(self.dict_parametres["image_identification"])
+            chemin_image = self.dict_parametres["image_identification"]
+            nom_fichier = os.path.basename(chemin_image)
+
+            # Envoi local
+            if self.dict_parametres["hebergement_type"] == 0 :
+                if self.dict_parametres["hebergement_local_repertoire"] != None:
+                    try :
+                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
+                        shutil.copy2(chemin_image, destfilepath)
+                    except Exception, err :
+                        print str(err)
+                        return False
+
+            # Envoi du logo par FTP
+            if self.dict_parametres["hebergement_type"] == 1 :
+                if ftp != None :
+                    try :
+                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/fonds")
+                        fichier = open(chemin_image, "rb")
+                        ftp.storbinary('STOR ' + nom_fichier, fichier)
+                    except Exception, err :
+                        print str(err)
+                        return False
+
         else :
-            image = ""
-        liste_lignes.append(Ecrit_ligne("IMAGE_FOND", image, type_valeur=unicode))
+            nom_fichier = ""
+
+        liste_lignes.append(Ecrit_ligne("IMAGE_FOND", nom_fichier, type_valeur=unicode))
 
 
         # Cadre logo organisateur

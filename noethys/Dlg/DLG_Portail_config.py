@@ -101,7 +101,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropGridChange)
 
     def OnPropGridChange(self, event):
-        if event.GetPropertyName() == "hebergement_type" :
+        if event.GetPropertyName() == "portail_activation" :
+            value = event.GetPropertyValue()
+            self.parent.SetActivation(value)
+        elif event.GetPropertyName() == "hebergement_type" :
             value = event.GetPropertyValue()
             if value == 0 :
                 self.SwitchHostingToLocal()
@@ -118,9 +121,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             else :
                 raise
         elif event.GetPropertyName() == "serveur_type" :
-            property  = event.GetPropertyValue()
+            value = event.GetPropertyValue()
             if property is not None :
-                value = property.GetValue()
                 if value == 1 :
                     self.SwitchServerToCgi()
                 elif value == 0 :
@@ -944,7 +946,7 @@ class Dialog(wx.Dialog):
             return False
 
         # Procédure d'installation
-        import UTILS_Portail_installation
+        from Utils import UTILS_Portail_installation
         install = UTILS_Portail_installation.Installer(dict_parametres)
         resultat = install.Installer()
 

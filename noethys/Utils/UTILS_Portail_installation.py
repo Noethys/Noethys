@@ -143,6 +143,9 @@ class Installer():
         liste_fichiers = zfile.namelist()
         nbre_fichiers = len(liste_fichiers)
 
+        del self.dlgprogress
+        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+
         index = 0
         for i in liste_fichiers:
             pourcentage = GetPourcentage(index, nbre_fichiers)
@@ -167,14 +170,13 @@ class Installer():
             if IsException(name) == False :
                 localpath = os.path.join(path, name)
                 if os.path.isfile(localpath):
-
                     self.index += 1
 
                     # Barre de progression
                     pourcentage = GetPourcentage(self.index, nbre_total)
                     try :
                         keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Installation : Transfert du fichier %s...") % name)
-                    except :
+                    except Exception, err :
                         keepGoing = True
 
                     # Stoppe la procédure
@@ -312,6 +314,8 @@ class Installer():
         keepGoing, skip = self.dlgprogress.Update(98, _(u"Installation du fichier de configuration en cours..."))
         synchro.Upload_config(ftp=ftp)
 
+        time.sleep(4)
+
         # Demande un upgrade de l'application
         keepGoing, skip = self.dlgprogress.Update(99, _(u"Demande la mise à jour de l'application..."))
         synchro.Upgrade_application()
@@ -352,9 +356,9 @@ class Installer():
 
             # Dézippage du fichier
             self.Dezipper(self.nom_fichier_dest, UTILS_Fichiers.GetRepTemp())
-            source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
 
             # Envoi des fichiers par FTP
+            source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
             self.Upload(source_repertoire)
 
             # Fermeture dlgprogress
@@ -362,14 +366,14 @@ class Installer():
 
             return True
 
-        except Abort as err:
+        except Abort :
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
 
             self.dlgprogress = None
 
             time.sleep(3)
-            dlg = wx.MessageDialog(None, _(u"L'erreur suivante a été rencontrée : %s") % unicode(err), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg = wx.MessageDialog(None, _(u"Procédure d'installation interrompue."), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
