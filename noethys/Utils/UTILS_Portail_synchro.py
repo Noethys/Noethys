@@ -219,6 +219,7 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("HISTORIQUE_AFFICHER", self.dict_parametres["historique_afficher"], type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("HISTORIQUE_DELAI", self.dict_parametres["historique_delai"], type_valeur=int))
         liste_lignes.append(Ecrit_ligne("CONTACT_AFFICHER", self.dict_parametres["contact_afficher"], type_valeur=bool))
+        liste_lignes.append(Ecrit_ligne("CONTACT_CARTE_AFFICHER", self.dict_parametres["contact_carte_afficher"], type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("MENTIONS_AFFICHER", self.dict_parametres["mentions_afficher"], type_valeur=bool))
         liste_lignes.append(Ecrit_ligne("AIDE_AFFICHER", self.dict_parametres["aide_afficher"], type_valeur=bool))
 

@@ -87,6 +87,7 @@ VALEURS_DEFAUT = {
     "historique_afficher" : True,
     "historique_delai" : 0,
     "contact_afficher" : True,
+    "contact_carte_afficher" : True,
     "mentions_afficher" : True,
     "aide_afficher" : True,
     }
@@ -441,7 +442,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "activites_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -459,7 +460,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "reservations_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -470,7 +471,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "factures_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -495,7 +496,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "reglements_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -520,7 +521,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "pieces_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -538,7 +539,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "cotisations_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -549,7 +550,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "historique_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -566,8 +567,15 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "contact_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Afficher la carte
+        nom = "contact_carte_afficher"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la carte Google Maps"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher la carte Google Maps"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -577,7 +585,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "mentions_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -588,7 +596,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Afficher
         nom = "aide_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
