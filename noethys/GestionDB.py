@@ -2070,8 +2070,7 @@ def TestConnexionMySQL(typeTest="fichier", nomFichier=""):
                 cursor.execute("SHOW TABLES;")
                 listeTables = cursor.fetchall()
                 if not listeTables:
-                    dictResultats["fichier"] = (
-                        False, _(u"La base de données est vide."))
+                    dictResultats["fichier"] = (False, _(u"La base de données est vide."))
                 else:
                     dictResultats["fichier"] =  (True, None)
             else:

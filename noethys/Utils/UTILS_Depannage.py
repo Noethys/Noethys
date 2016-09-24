@@ -224,9 +224,9 @@ class Depannage():
             if len(listeDonnees) > 0 :
                 for anomalie in listeDonnees :
                     texteCorrection = _(u"<A HREF='http://www.noethys.com'>Correction proposée : %s</A>") % labelCorrection
-                    texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Images/16x16/Interdit2.png'>&nbsp;%s. %s<BR>" % (anomalie.label, texteCorrection)
+                    texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Static/Images/16x16/Interdit2.png'>&nbsp;%s. %s<BR>" % (anomalie.label, texteCorrection)
             else :
-                    texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Images/16x16/Ok4.png'>&nbsp;Aucune anomalie détectée...<BR>"
+                    texte += u"&nbsp;&nbsp;&nbsp;<IMG SRC='Static/Images/16x16/Ok4.png'>&nbsp;Aucune anomalie détectée...<BR>"
             texte += u"</FONT></P>"
         return texte
     

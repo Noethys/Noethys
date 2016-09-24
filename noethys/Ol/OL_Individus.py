@@ -563,20 +563,27 @@ class ListView(FastObjectListView):
                 dlg.OuvrirFicheIndividu(IDindividu)
             if dlg.ShowModal() == wx.ID_OK:
                 self.MAJ(IDindividu)
-            dlg.Destroy()
+            try :
+                dlg.Destroy()
+            except :
+                pass
             # MAJ du remplissage
             try :
                 if self.GetGrandParent().GetName() == "general" :
                     self.GetGrandParent().MAJ() 
                 else:
                     self.MAJ() 
-            except : pass
+            except :
+                pass
             # Mémorisation pour l'historique de la barre de recherche rapide
-            if IDindividu not in self.historique :
-                self.historique.append(IDindividu)
-                if len(self.historique) > 30 :
-                    self.historique.pop(0)
-                
+            try :
+                if IDindividu not in self.historique :
+                    self.historique.append(IDindividu)
+                    if len(self.historique) > 30 :
+                        self.historique.pop(0)
+            except :
+                pass
+
     def Supprimer(self, event):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_fiche", "consulter") == False : return
         if len(self.Selection()) == 0 :

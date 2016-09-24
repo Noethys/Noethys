@@ -9,6 +9,7 @@
 #------------------------------------------------------------------------
 
 from PIL import Image
+import Chemins
 import wx
 from Ctrl import CTRL_Bouton_image
 import os
@@ -38,7 +39,7 @@ def ConvertirImagePNG(fichier="") :
 
 def ConvertirToutesImagesPNG():
     """ Convertit toutes les images PNG du répertoire Noethys """
-    racine = "Images"
+    racine = Chemins.GetStaticPath("Images")
     # Recherche les PNG présents
     tree = os.walk(racine)
     listeFichiersPNG = []
