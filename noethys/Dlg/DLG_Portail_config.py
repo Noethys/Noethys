@@ -13,6 +13,7 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import os
+import shutil
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Propertygrid
@@ -947,15 +948,8 @@ class Dialog(wx.Dialog):
 
         # Procédure d'installation
         from Utils import UTILS_Portail_installation
-        install = UTILS_Portail_installation.Installer(dict_parametres)
+        install = UTILS_Portail_installation.Installer(self, dict_parametres)
         resultat = install.Installer()
-
-        # Message de confirmation
-        time.sleep(2)
-        if resultat == True :
-            dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
 
     def GetListeProcess(self):
         """ Recherche les process ouverts du portail """
@@ -1079,7 +1073,7 @@ class Synchro():
         self.texte_etape = ""
 
     def Start(self):
-        import UTILS_Portail_synchro
+        from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
 
         # Ouverture de la dlg de progress

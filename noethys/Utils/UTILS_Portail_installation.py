@@ -20,8 +20,8 @@ import urllib
 import urllib2
 import zipfile
 import shutil
-import UTILS_Fichiers
-import UTILS_Portail_synchro
+from Utils import UTILS_Fichiers
+from Utils import UTILS_Portail_synchro
 import traceback
 import sys
 import importlib
@@ -117,11 +117,11 @@ class Abort(Exception):
 
 
 class Installer():
-    def __init__(self, dict_parametres={}):
+    def __init__(self, parent, dict_parametres={}):
+        self.parent = parent
         self.dict_parametres = dict_parametres
 
         self.url_telechargement = "https://github.com/Noethys/Connecthys/archive/master.zip"
-        #self.url_telechargement = "https://github.com/CugeDe/Connecthys/archive/master.zip"
         self.nom_fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="connecthys.zip")
         self.index = 0
 
@@ -139,15 +139,18 @@ class Installer():
 
     def Dezipper(self, fichier_zip, chemin_dest=""):
         """ Dézippe un fichier ZIP dans un répertoire donné """
+        self.dlgprogress.Destroy()
+        del self.dlgprogress
+        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        self.dlgprogress.Raise()
+
         zfile = zipfile.ZipFile(fichier_zip, 'r')
         liste_fichiers = zfile.namelist()
         nbre_fichiers = len(liste_fichiers)
 
-        del self.dlgprogress
-        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
-
         index = 0
         for i in liste_fichiers:
+            wx.Yield()
             pourcentage = GetPourcentage(index, nbre_fichiers)
             keepGoing, skip = self.dlgprogress.Update(pourcentage, _(u"Décompression de Connecthys en cours... %s %%") % pourcentage)
             if os.path.isdir(os.path.join(chemin_dest, i)) or "2.5" in i or "." not in i :
@@ -165,6 +168,7 @@ class Installer():
 
     def TransfertRepertoire(self, path="", ftp=None, destpath="", nbre_total=0, liste_exclusions=[]):
         for name in os.listdir(path):
+            wx.Yield()
 
             # Envoi des fichiers
             if IsException(name) == False :
@@ -186,7 +190,8 @@ class Installer():
                     # Transfert local
                     if self.dict_parametres["hebergement_type"] == 0 :
                         fulldestpath = os.path.join(destpath, name)
-                        os.renames(localpath, fulldestpath)
+                        #os.renames(localpath, fulldestpath)
+                        shutil.move(localpath, fulldestpath)
 
                     # Transfert FTP
                     if self.dict_parametres["hebergement_type"] == 1 :
@@ -334,7 +339,7 @@ class Installer():
             return False
 
         # Init de la dlgprogress
-        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=None, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
 
         try :
 
@@ -361,37 +366,45 @@ class Installer():
             source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
             self.Upload(source_repertoire)
 
-            # Fermeture dlgprogress
-            self.dlgprogress.Destroy()
-
-            return True
-
         except Abort :
+            wx.Yield()
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
+                del self.dlgprogress
 
-            self.dlgprogress = None
-
-            time.sleep(3)
+            time.sleep(2)
             dlg = wx.MessageDialog(None, _(u"Procédure d'installation interrompue."), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
         except Exception, err :
+            wx.Yield()
             if self.dlgprogress != None :
                 self.dlgprogress.Destroy()
+                del self.dlgprogress
 
             traceback.print_exc()
             print "Erreur dans l'installation de l'application : "
             print err
 
-            time.sleep(3)
+            time.sleep(2)
             dlg = wx.MessageDialog(None, _(u"Une erreur a été rencontrée !"), "Erreur", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
 
+        try :
+            wx.CallAfter(self.dlgprogress.Destroy)
+            del self.dlgprogress
+        except :
+            pass
+
+        # Message de confirmation
+        dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
+        return True
 
 
 
