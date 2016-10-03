@@ -957,7 +957,7 @@ class Dialog(wx.Dialog):
         for p in psutil.process_iter():
             if "python" in p.name() :
                 cmdline = p.cmdline()
-                if len(cmdline) > 0 and "run.py" in cmdline[1] :
+                if len(cmdline) > 0 and "run.py" in cmdline :
                     listeProcess.append(p)
         return listeProcess
 
