@@ -977,20 +977,28 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
-        args = ["python", chemin_executable]
-        for arg in options.split(" ") :
-            if arg != "" :
-                args.append(arg)
+        for chemin_python in ["python", "C:\Python27\python.exe"] :
+            args = [chemin_python, chemin_executable]
+            for arg in options.split(" ") :
+                if arg != "" :
+                    args.append(arg)
 
-        # Créé un nouveau process
-        self.EcritLog(_(u"Lancement du serveur Connecthys..."))
-        self.EcritLog(_(u"Chemin : ") + " ".join(args))
+            # Créé un nouveau process
+            self.EcritLog(_(u"Lancement du serveur Connecthys..."))
+            self.EcritLog(_(u"Chemin : ") + " ".join(args))
 
-        p = subprocess.Popen(args, shell=False, cwd=rep)
+            try :
+                p = subprocess.Popen(args, shell=False, cwd=rep)
+                process_ok = True
+                break
+            except Exception, err :
+                print "Erreur lancement Connecthys :", err
+                self.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys"))
+                process_ok = False
 
         # Vérifie si le process est bien lancé
         time.sleep(0.5)
-        if len(self.GetListeProcess()) > 0 :
+        if process_ok == True and len(self.GetListeProcess()) > 0 :
             self.EcritLog(_(u"Serveur démarré"))
             dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys a bien été démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
