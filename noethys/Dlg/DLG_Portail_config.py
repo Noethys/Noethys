@@ -956,9 +956,9 @@ class Dialog(wx.Dialog):
         listeProcess = []
         for p in psutil.process_iter():
             if "python" in p.name() :
-                cmdline = p.cmdline()
-                if "run.py" in cmdline or (len(cmdline) > 0 and "run.py" in cmdline[1]) :
-                    listeProcess.append(p)
+                for nom in p.cmdline() :
+                    if "run.py" in nom and p not in listeProcess :
+                        listeProcess.append(p)
         return listeProcess
 
     def Demarrer_serveur(self, event):
