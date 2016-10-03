@@ -7,7 +7,7 @@
 # Copyright:       (c) 2010-13 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
-
+import shelve
 
 import Chemins
 from Utils.UTILS_Traduction import _
@@ -74,6 +74,9 @@ class MyDialog(wx.Dialog):
         self.label_motdepasse = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_motdepasse = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
         self.bouton_valider_codes = wx.Button(self, -1, _(u"Valider"), style=wx.BU_EXACTFIT)
+        self.bouton_importer_codes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Document_import.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_exporter_codes = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Document_export.png"), wx.BITMAP_TYPE_ANY))
+
         
         # Liste fichiers
         self.box_fichiers_staticbox = wx.StaticBox(self, -1, _(u"Liste des fichiers"))
@@ -95,6 +98,8 @@ class MyDialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnChoixMode, self.radio_local)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnChoixMode, self.radio_reseau)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonValiderCodes, self.bouton_valider_codes)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonImporterCodes, self.bouton_importer_codes)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonExporterCodes, self.bouton_exporter_codes)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifierFichier, self.bouton_modifier_fichier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimerFichier, self.bouton_supprimer_fichier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
@@ -117,6 +122,8 @@ class MyDialog(wx.Dialog):
         self.ctrl_utilisateur.SetToolTipString(_(u"Indiquez ici le nom de l'utilisateur"))
         self.ctrl_motdepasse.SetToolTipString(_(u"Indiquez ici le mot de passe nécessaire à la connexion à MySQL"))
         self.bouton_valider_codes.SetToolTipString(_(u"Cliquez ici pour valider les codes réseau et afficher la liste des fichiers disponibles"))
+        self.bouton_importer_codes.SetToolTipString(_(u"Importer une configuration de fichier réseau"))
+        self.bouton_exporter_codes.SetToolTipString(_(u"Exporter une configuration de fichier réseau"))
         self.bouton_modifier_fichier.SetToolTipString(_(u"Cliquez ici pour modifier le nom du fichier sélectionné dans la liste"))
         self.bouton_supprimer_fichier.SetToolTipString(_(u"Cliquez ici pour supprimer le fichier sélectionné dans la liste"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
@@ -131,7 +138,7 @@ class MyDialog(wx.Dialog):
         grid_sizer_boutons_fichiers = wx.FlexGridSizer(5, 1, 5, 5)
         grid_sizer_parametres = wx.FlexGridSizer(1, 2, 10, 10)
         box_codes = wx.StaticBoxSizer(self.box_codes_staticbox, wx.VERTICAL)
-        grid_sizer_codes = wx.FlexGridSizer(1, 10, 5, 5)
+        grid_sizer_codes = wx.FlexGridSizer(1, 12, 5, 5)
         box_mode = wx.StaticBoxSizer(self.box_mode_staticbox, wx.VERTICAL)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         box_mode.Add(self.radio_local, 0, wx.ALL, 5)
@@ -146,6 +153,8 @@ class MyDialog(wx.Dialog):
         grid_sizer_codes.Add(self.label_motdepasse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_codes.Add(self.ctrl_motdepasse, 0, wx.EXPAND, 0)
         grid_sizer_codes.Add(self.bouton_valider_codes, 0, 0, 0)
+        grid_sizer_codes.Add(self.bouton_importer_codes, 0, 0, 0)
+        grid_sizer_codes.Add(self.bouton_exporter_codes, 0, 0, 0)
         grid_sizer_codes.AddGrowableCol(7)
         box_codes.Add(grid_sizer_codes, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_parametres.Add(box_codes, 1, wx.EXPAND, 0)
@@ -186,7 +195,9 @@ class MyDialog(wx.Dialog):
         self.ctrl_utilisateur.Enable(modeReseau)
         self.ctrl_motdepasse.Enable(modeReseau)
         self.bouton_valider_codes.Enable(modeReseau)
-        self.MAJliste() 
+        self.bouton_importer_codes.Enable(modeReseau)
+        self.bouton_exporter_codes.Enable(modeReseau)
+        self.MAJliste()
     
     def MAJliste(self):
         """ Met à jour la liste des fichiers """
@@ -210,8 +221,65 @@ class MyDialog(wx.Dialog):
         motdepasse = self.ctrl_motdepasse.GetValue()
         return {"port":port, "hote":hote, "utilisateur":utilisateur, "motdepasse":motdepasse}
     
-    def OnBoutonValiderCodes(self, event): 
-        dictCodes = self.GetCodesReseau() 
+    def OnBoutonImporterCodes(self, event):
+        wildcard = _(u"Parametrage fichier reseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
+        sp = wx.StandardPaths.Get()
+        dlg = wx.FileDialog(
+            self, message=_(u"Choisissez un fichier à importer"),
+            defaultDir=sp.GetDocumentsDir(),
+            defaultFile="",
+            wildcard=wildcard,
+            style=wx.OPEN
+        )
+        if dlg.ShowModal() == wx.ID_OK:
+            nomFichierCourt = dlg.GetFilename()
+            nomFichierLong = dlg.GetPath()
+            dlg.Destroy()
+            dictInfos = {}
+            fichier = shelve.open(nomFichierLong, "r")
+            for key, valeur in fichier.iteritems():
+                dictInfos[key] = valeur
+            fichier.close()
+            self.ctrl_hote.SetValue(dictInfos["host"])
+            self.ctrl_utilisateur.SetValue(dictInfos["user"])
+            self.ctrl_motdepasse.SetValue(dictInfos["pwd"])
+            self.ctrl_port.SetValue(dictInfos["port"])
+            self.OnBoutonValiderCodes(event)
+        else:
+            dlg.Destroy()
+            return
+
+        return
+
+    def OnBoutonExporterCodes(self, event):
+        wildcard = _(u"Parametrage fichier reseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
+        sp = wx.StandardPaths.Get()
+        dlg = wx.FileDialog(
+            self, message=_(u"Choisissez un fichier à importer"),
+            defaultDir=sp.GetDocumentsDir(),
+            defaultFile="",
+            wildcard=wildcard,
+            style=wx.FD_SAVE
+        )
+        if dlg.ShowModal() == wx.ID_OK:
+            nomFichierCourt = dlg.GetFilename()
+            nomFichierLong = dlg.GetPath()
+            dlg.Destroy()
+            dictInfos = {}
+            fichier = shelve.open(nomFichierLong, "n")
+            fichier["host"]=self.ctrl_hote.GetValue()
+            fichier["user"] =self.ctrl_utilisateur.GetValue()
+            fichier["pwd"] =self.ctrl_motdepasse.GetValue()
+            fichier["port"] =self.ctrl_port.GetValue()
+            fichier.close()
+        else:
+            dlg.Destroy()
+            return
+
+        return
+
+    def OnBoutonValiderCodes(self, event):
+        dictCodes = self.GetCodesReseau()
         
         if dictCodes["port"] == "" :
             dlg = wx.MessageDialog(self, _(u"Le numéro de port n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
