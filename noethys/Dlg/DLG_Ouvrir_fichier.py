@@ -152,9 +152,11 @@ class MyDialog(wx.Dialog):
         grid_sizer_codes.Add(self.ctrl_utilisateur, 0, wx.EXPAND, 0)
         grid_sizer_codes.Add(self.label_motdepasse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_codes.Add(self.ctrl_motdepasse, 0, wx.EXPAND, 0)
-        grid_sizer_codes.Add(self.bouton_valider_codes, 0, 0, 0)
-        grid_sizer_codes.Add(self.bouton_importer_codes, 0, 0, 0)
-        grid_sizer_codes.Add(self.bouton_exporter_codes, 0, 0, 0)
+        grid_sizer_codes.Add(self.bouton_valider_codes, 0, wx.RIGHT, 5)
+        grid_sizer_codes.Add(self.bouton_importer_codes, 0, wx.EXPAND, 0)
+        grid_sizer_codes.Add(self.bouton_exporter_codes, 0, wx.EXPAND, 0)
+        grid_sizer_codes.AddGrowableCol(3)
+        grid_sizer_codes.AddGrowableCol(5)
         grid_sizer_codes.AddGrowableCol(7)
         box_codes.Add(grid_sizer_codes, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_parametres.Add(box_codes, 1, wx.EXPAND, 0)
@@ -222,7 +224,7 @@ class MyDialog(wx.Dialog):
         return {"port":port, "hote":hote, "utilisateur":utilisateur, "motdepasse":motdepasse}
     
     def OnBoutonImporterCodes(self, event):
-        wildcard = _(u"Parametrage fichier reseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
+        wildcard = _(u"Paramétrage fichier réseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez un fichier à importer"),
@@ -252,7 +254,7 @@ class MyDialog(wx.Dialog):
         return
 
     def OnBoutonExporterCodes(self, event):
-        wildcard = _(u"Parametrage fichier reseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
+        wildcard = _(u"Paramétrage fichier réseau Noethys (*.nnc)|*.nnc|Tous les fichiers (*.*)|*.*")
         sp = wx.StandardPaths.Get()
         dlg = wx.FileDialog(
             self, message=_(u"Choisissez un fichier à importer"),
