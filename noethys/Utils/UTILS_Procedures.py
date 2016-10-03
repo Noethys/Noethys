@@ -50,6 +50,7 @@ DICT_PROCEDURES = {
     "A8967" : _(u"Transfert des numéros des numéros des factures vers le champ str"),
     "A8971" : _(u"Attribution du type de quotient CAF à tous les quotients existants"),
     "A9001" : _(u"Modification de la structure de la table Documents"),
+    "A9023" : _(u"Correction des ouvertures avec IDgroupe=0"),
     }
 
 
@@ -803,6 +804,40 @@ def A9001():
     except :
         pass
 
+def A9023():
+    """ Correction des ouvertures avec IDgroupe=0 """
+    DB = GestionDB.DB()
+
+    # Récupération des groupes
+    req = """SELECT IDgroupe, IDactivite FROM groupes;"""
+    DB.ExecuterReq(req)
+    liste_groupes = DB.ResultatReq()
+    dict_groupes = {}
+    for IDgroupe, IDactivite in liste_groupes :
+        if not dict_groupes.has_key(IDactivite) :
+            dict_groupes[IDactivite] = []
+        dict_groupes[IDactivite].append(IDgroupe)
+
+    # Récupération des ouvertures
+    req = """SELECT IDouverture, IDactivite, IDgroupe FROM ouvertures;"""
+    DB.ExecuterReq(req)
+    liste_ouvertures = DB.ResultatReq()
+    liste_modifications = []
+    for IDouverture, IDactivite, IDgroupe in liste_ouvertures :
+        if IDgroupe == 0 :
+            # Recherche un groupe pour cette activité
+            if dict_groupes.has_key(IDactivite) :
+                if len(dict_groupes[IDactivite]) == 1 :
+                    IDgroupe = dict_groupes[IDactivite][0]
+                    liste_modifications.append((IDgroupe, IDouverture))
+
+    print "Procedure A9023 : Nbre ouvertures a corriger =", len(liste_modifications)
+
+    # Enoi des modifications à la DB
+    DB.Executermany("UPDATE ouvertures SET IDgroupe=? WHERE IDouverture=?", liste_modifications, commit=True)
+    DB.Close()
+
+
 
 
 
@@ -890,5 +925,5 @@ def A9001():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9001()
+    A9023()
     app.MainLoop()
