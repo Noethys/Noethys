@@ -214,13 +214,13 @@ class Installer():
 
                         # Création d'un répertoire local
                         if self.dict_parametres["hebergement_type"] == 0 :
+                            # Remplissage du répertoire local
+                            fulldestpath = os.path.join(destpath, name)
                             try:
                                 os.makedirs(fulldestpath)
                             except Exception, err :
                                 pass
 
-                            # Remplissage du répertoire local
-                            fulldestpath = os.path.join(destpath, name)
                             self.TransfertRepertoire(path=localpath, destpath=fulldestpath, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
 
                         # Création et remplissage d'un répertoire FTP
