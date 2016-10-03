@@ -654,6 +654,7 @@ class Dialog(wx.Dialog):
         DB.ReqDEL("familles", "IDfamille", self.IDfamille)
         DB.ReqDEL("factures", "IDcompte_payeur", IDcompte_payeur)
         DB.ReqDEL("prestations", "IDcompte_payeur", IDcompte_payeur)
+        DB.ReqDEL("mandats", "IDfamille", self.IDfamille)
         DB.Commit() 
         DB.Close()
     
