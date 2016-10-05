@@ -255,7 +255,7 @@ class Panel(wx.Panel):
             else:
                 return False
             self.serveur.Start()
-            return self.EcritLog(_(u"Serveur prêt"))
+            return self.EcritLog(_(u"Client de synchronisation prêt"))
 
     def PauseServeur(self):
         if hasattr(self, "serveur") :
@@ -376,7 +376,6 @@ class Panel(wx.Panel):
             else:
                 return False
         elif CUSTOMIZE.GetValeur("connecthys_log", "type", "panel") == "file" :
-            #filefullpath = UTILS_Fichiers.GetRepUtilisateur(CUSTOMIZE.GetValeur("connecthys_log", "file_name", "connecthys_synchro.log"))
             file_log = open(UTILS_Fichiers.GetRepUtilisateur(CUSTOMIZE.GetValeur("connecthys_log", "file_name", "connecthys_synchro.log")), "a")
             texte = u"\n"
             if self.lock.acquire(block) == True:

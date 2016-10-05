@@ -25,6 +25,7 @@ import sys
 import importlib
 import time
 from dateutil import relativedelta
+import paramiko
 
 import UTILS_Dates
 import UTILS_Parametres
@@ -58,6 +59,11 @@ class Synchro():
         self.num_etape = 0
         self.nbre_etapes = 25
 
+        if self.dict_parametres["accept_all_cert"] == True :
+            import ssl
+            ssl._create_default_https_context = ssl._create_unverified_context
+
+
     def Pulse_gauge(self, num=None):
         if num == None :
             self.num_etape += 1
@@ -78,7 +84,7 @@ class Synchro():
             self.log.EcritLog(_(u"Synchronisation arrêtée."))
         else :
             self.log.EcritLog(_(u"Synchronisation terminée."))
-        self.log.EcritLog(_(u"Serveur prêt"))
+        self.log.EcritLog(_(u"Client de synchronisation prêt"))
         try :
             self.log.SetGauge(0)
         except :
@@ -207,6 +213,7 @@ class Synchro():
                         destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
                         shutil.copy2(cheminLogo, destfilepath)
                     except Exception, err :
+                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
                         print str(err)
                         return False
 
@@ -218,7 +225,19 @@ class Synchro():
                         fichier = open(cheminLogo, "rb")
                         ftp.storbinary('STOR ' + nomFichier, fichier)
                     except Exception, err :
+                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
                         print str(err)
+                        return False
+
+            # Envoi du logo par SSH/SFTP
+            if self.dict_parametres["hebergement_type"] == 2 :
+                if ftp != None :
+                    try :
+                        destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
+                        ftp.put(cheminLogo, destfilepath)
+                    except Exception, err :
+                        print str(err)
+                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
                         return False
 
         else :
@@ -262,14 +281,35 @@ class Synchro():
                 try:
                     shutil.move(nomFichierComplet, destfile)
                 except:
+                    print "Envoi du fichier de configuration par copie locale impossible", str(err)
+                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par copie locale impossible."))
                     return False
+            else :
+                return False
 
         # Envoi du fichier par FTP
         if self.dict_parametres["hebergement_type"] == 1 :
             if ftp != None :
                 ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == '/' else "/") + "application/data")
                 fichier = open(nomFichierComplet, "rb")#codecs.open(nomFichierComplet, 'rb', encoding='utf8')
-                ftp.storbinary('STOR ' + nomFichier, fichier)
+                try :
+                    ftp.storbinary('STOR ' + nomFichier, fichier)
+                except Exception, err :
+                    print "Envoi du fichier de configuration par FTP impossible", str(err)
+                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par FTP impossible."))
+            else :
+                return False
+
+        # Envoi du fichier par SSH/SFTP
+        if self.dict_parametres["hebergement_type"] == 2 :
+            if ftp != None :
+                destfile = os.path.join(self.dict_parametres["ssh_repertoire"] + ("" if self.dict_parametres["ssh_repertoire"][-1] == '/' else "/"), "application/data/config.py")
+                try :
+                    ftp.put(nomFichierComplet, destfile)
+                except Exception, err :
+                    print "Envoi du fichier de configuration par SSH/SFTP impossible", str(err)
+                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par SSH/SFTP impossible."))
+                    return False
             else :
                 return False
 
@@ -296,20 +336,50 @@ class Synchro():
                 self.log.EcritLog(_(u"[ERREUR] Connexion FTP impossible."))
                 return False
 
-        # Envoi du fichier de config par FTP
+        # Connexion SSH/SFTP
+        if self.dict_parametres["hebergement_type"] == 2 :
+            self.log.EcritLog(_(u"Connexion SSH/SFTP..."))
+            self.Pulse_gauge()
+
+            try :
+                ssh = paramiko.SSHClient()
+                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                ssh.connect(self.dict_parametres["ssh_serveur"], username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
+                ftp = ssh.open_sftp()
+            except Exception, err :
+                print "Connexion SSH/SFTP au serveur", str(err)
+                self.log.EcritLog(_(u"[ERREUR] Connexion SSH/SFTP impossible."))
+                self.log.EcritLog(_(u"[ERREUR] err:%s") % err)
+                return False
+
+
+        # Envoi du fichier de config
         self.log.EcritLog(_(u"Synchro du fichier de configuration..."))
         self.Pulse_gauge()
         resultat = self.Upload_config(ftp=ftp)
         if resultat == False :
-            self.log.EcritLog(_(u"[ERREUR] Synchro impossible."))
+            self.log.EcritLog(_(u"[ERREUR] Synchro du fichier de configuration impossible."))
+            if self.dict_parametres["hebergement_type"] == 1 :
+                self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
+                ftp.quit()
+            if self.dict_parametres["hebergement_type"] == 2 :
+                self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
+                ftp.close()
+
             return False
 
-        # Récupération du fichier models par FTP
+        # Récupération du fichier models
         self.log.EcritLog(_(u"Récupération des modèles de données..."))
         resultat = self.TelechargeModels(ftp)
         if resultat == False :
-            self.log.EcritLog(_(u"[ERREUR] Récupération impossible."))
-            ftp.quit()
+            self.log.EcritLog(_(u"[ERREUR] Récupération des modèles de données impossible."))
+            if self.dict_parametres["hebergement_type"] == 1 :
+                self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
+                ftp.quit()
+            if self.dict_parametres["hebergement_type"] == 2 :
+                self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
+                ftp.close()
+
             return False
 
         chemin, nomFichier = resultat
@@ -749,7 +819,7 @@ class Synchro():
         fichier3.write(content)
         fichier3.close()
 
-        # Envoi du fichier de données par FTP
+        # Envoi du fichier de données
         self.log.EcritLog(_(u"Envoi du fichier de données..."))
         self.Pulse_gauge()
         time.sleep(0.5)
@@ -769,6 +839,15 @@ class Synchro():
 
             self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
             ftp.quit()
+
+        # Envoi par SSH/SFTP
+        if self.dict_parametres["hebergement_type"] == 2 :
+            destpath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/data")
+            destfile = os.path.join(destpath, os.path.basename(nomFichierCRYPT))
+            ftp.put(nomFichierCRYPT, destfile)
+
+            self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
+            ftp.close()
 
         # Envoi de la requête de traitement du fichier d'import
         self.log.EcritLog(_(u"Envoi de la requête de traitement du fichier d'export..."))
@@ -951,6 +1030,8 @@ class Synchro():
             print "Resultat :", data
 
         except Exception, err :
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d upgrade "))
+            self.log.EcritLog(_(u"err: %s") % err)
             print "Erreur dans la demande d'upgrade :", str(err)
             return False
 
@@ -975,6 +1056,19 @@ class Synchro():
                 ftp.retrbinary('RETR ' + nomFichier, fichier.write)
                 fichier.close()
             except Exception, err :
+                self.log.EcritLog(_(u"Téchargement FTP des modeles de données impossible"))
+                self.log.EcritLog(_(u"err: %s") % err)
+                print str(err)
+                return False
+
+        elif self.dict_parametres["hebergement_type"] == 2 :
+            try :
+                infilepath = os.path.join(self.dict_parametres["ssh_repertoire"] + ("" if self.dict_parametres["ssh_repertoire"][-1] == "/" else "/"), "application")
+                infile = os.path.join(infilepath, nomFichier)
+                ftp.get(infile, os.path.join(rep, nomFichier))
+            except Exception, err :
+                self.log.EcritLog(_(u"Téchargement SSH/SFTP des modeles de données impossible"))
+                self.log.EcritLog(_(u"err: %s") % err)
                 print str(err)
                 return False
 
@@ -984,6 +1078,8 @@ class Synchro():
             try :
                 shutil.copy2(infile,rep)
             except Exception, err :
+                self.log.EcritLog(_(u"Récupération locale des modeles de données impossible"))
+                self.log.EcritLog(_(u"err: %s") % err)
                 print str(err)
                 return False
         else:

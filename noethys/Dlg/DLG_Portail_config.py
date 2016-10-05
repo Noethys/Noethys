@@ -27,6 +27,7 @@ import subprocess
 import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
+from Utils import UTILS_Portail_controle
 
 
 def GetSecretKey():
@@ -55,7 +56,13 @@ VALEURS_DEFAUT = {
     "ftp_mdp" : "",
     "ftp_repertoire" : "/www/connecthys",
     "url_connecthys" : "http://127.0.0.1:5000",
+    "accept_all_cert" : False,
     "hebergement_local_repertoire" : "/tmp/connecthys",
+    "ssh_serveur" : "127.0.0.1",
+    "ssh_key_file" : "",
+    "ssh_utilisateur" : "",
+    "ssh_mdp" : "",
+    "ssh_repertoire" : "/tmp/connecthys",
     "db_type" : 1,
     "db_serveur" : "",
     "db_utilisateur" : "",
@@ -111,6 +118,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                 self.SwitchHostingToLocal()
             elif value == 1 :
                 self.SwitchHostingToFTP()
+            elif value == 2 :
+                self.SwitchHostingToSSH()
             else :
                 raise
         elif event.GetPropertyName() == "db_type" :
@@ -146,6 +155,21 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("ftp_repertoire")
         property.SetAttribute("obligatoire", False)
         property.Hide(True)
+        property = self.GetProperty("ssh_serveur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_utilisateur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_mdp")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_key_file")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_repertoire")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
         property = self.GetProperty("hebergement_local_repertoire")
         property.SetAttribute("obligatoire", True)
         property.Hide(False)
@@ -163,6 +187,53 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("ftp_repertoire")
         property.SetAttribute("obligatoire", True)
         property.Hide(False)
+        property = self.GetProperty("hebergement_local_repertoire")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_serveur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_utilisateur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_mdp")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_key_file")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ssh_repertoire")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+
+    def SwitchHostingToSSH(self):
+        property = self.GetProperty("ssh_serveur")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ssh_utilisateur")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ssh_mdp")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ssh_key_file")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(False)
+        property = self.GetProperty("ssh_repertoire")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ftp_serveur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ftp_utilisateur")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ftp_mdp")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
+        property = self.GetProperty("ftp_repertoire")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
         property = self.GetProperty("hebergement_local_repertoire")
         property.SetAttribute("obligatoire", False);
         property.Hide(True);
@@ -204,7 +275,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Activation")) )
 
-        # Activation du serveur de synchronisation
+        # Activation de la gestion du serveur Connecthys
         nom = "portail_activation"
         propriete = wxpg.BoolProperty(label=_(u"Activer Connecthys"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour activer Connecthys pour ce fichier"))
@@ -260,8 +331,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Type d'hébergement
         nom = "hebergement_type"
-        propriete = wxpg.EnumProperty(label=_(u"Type d'hébergement"), labels=[_(u"Local"), _(u"FTP")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
-	propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser : Local (Connecthys est installé sur l'ordinateur) ou FTP (Connecthys est envoyé sur un répertoire FTP)"))
+        propriete = wxpg.EnumProperty(label=_(u"Type d'hébergement"), labels=[_(u"Local"), _(u"FTP"), _(u"SSH/SFTP")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+	propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser :\nLocal (Connecthys est installé sur l'ordinateur)\nFTP (Connecthys est envoyé sur un répertoire via FTP)\nSSH/SFTP (Connecthys est envoyé sur un répertoire via SSH/SFTP)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -289,6 +360,35 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le répertoire FTP (ex : www/connecthys)"))
         self.Append(propriete)
 
+        # Serveur SSH
+        nom = "ssh_serveur"
+        propriete = wxpg.StringProperty(label=_(u"Adresse du serveur SSH"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'adresse IP du serveur SSH ou son hostname complet (Ex : 192.168.1.15 ou machine.domaine.tld)"))
+        self.Append(propriete)
+
+        # SSH key file
+        nom = "ssh_key_file"
+        propriete = wxpg.ImageFileProperty(label=_(u"Fichier de clé"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le chemin de la clé (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la cl<E9>."))
+        self.Append(propriete)
+
+        # Utilisateur SSH
+        nom = "ssh_utilisateur"
+        propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez l'utilisateur SSH\nUtiliser root est tr<E8>s fortement déconseillé, risqué et dangereux"))
+        self.Append(propriete)
+
+        # Mot de passe SSH
+        nom = "ssh_mdp"
+        propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le mot de passe de l utilisateur SSH"))
+        self.Append(propriete)
+
+        # R<E9>pertoire SSH
+        nom = "ssh_repertoire"
+        propriete = wxpg.StringProperty(label=_(u"Répertoire"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le répertoire SSH (ex : /tmp/connecthys)"))
+        self.Append(propriete)
 
         # Repertoire Hebergement Local
         nom = "hebergement_local_repertoire"
@@ -300,6 +400,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "url_connecthys"
         propriete = wxpg.StringProperty(label=_(u"URL d'accès à Connecthys "), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez l'url d'accès à Connecthys (ex : http://127.0.0.1:5000 ou http://www.monsite.com/connecthys)"))
+        self.Append(propriete)
+
+        # Accepter tous les certificat en cas d acces par https
+        nom = "accept_all_cert"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser tous les certificats"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Autoriser les certificats SSL auto-signés ou les certificats posant problème.\nA utiliser uniquement si vous accédez à Connecthys en https://\nSans effet sinon."))
+        propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
 
@@ -643,7 +750,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("hebergement_type")
         if property is not None :
             value = property.GetValue()
-            if value == 1 :
+            if value == 2 :
+                self.SwitchHostingToSSH()
+            elif value == 1 :
                 self.SwitchHostingToFTP()
             elif value == 0 :
                 self.SwitchHostingToLocal()
@@ -730,6 +839,7 @@ class Dialog(wx.Dialog):
 
         # Inits
         self.SetActivation(self.ctrl_parametres.GetPropertyByName("portail_activation").GetValue())
+        self.server_ctrl = None
 
         # Affichage avertissement
         wx.CallAfter(self.Afficher_avertissement)
@@ -826,6 +936,10 @@ class Dialog(wx.Dialog):
 
         menu = wx.Menu()
 
+        if self.server_ctrl == None :
+            self.server_ctrl = UTILS_Portail_controle.ServeurConnecthys(self)
+        server_is_running = self.server_ctrl.GetServerStatus()
+
         # Installer / Mettre à jour
         id = wx.NewId()
         item = wx.MenuItem(menu, id, _(u"Installer / Mettre à jour"))
@@ -840,9 +954,12 @@ class Dialog(wx.Dialog):
         item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Play.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Demarrer_serveur, id=id)
+        self.Bind(wx.EVT_MENU, self.server_ctrl.Demarrer_serveur, id=id)
         if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
-            if len(self.GetListeProcess()) > 0 :
+            if server_is_running == True :
+                item.Enable(False)
+        elif dict_parametres["hebergement_type"] == 2 and dict_parametres["serveur_type"] == 0 :
+            if server_is_running == True :
                 item.Enable(False)
         else :
             item.Enable(False)
@@ -852,9 +969,12 @@ class Dialog(wx.Dialog):
         item = wx.MenuItem(menu, id, _(u"Arrêter le serveur"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Stop.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Arreter_serveur, id=id)
+        self.Bind(wx.EVT_MENU, self.server_ctrl.Arreter_serveur, id=id)
         if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
-            if len(self.GetListeProcess()) == 0 :
+            if server_is_running == False :
+                item.Enable(False)
+        elif dict_parametres["hebergement_type"] == 2 and dict_parametres["serveur_type"] == 0 :
+            if server_is_running == False :
                 item.Enable(False)
         else :
             item.Enable(False)
@@ -894,6 +1014,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_parametres.Validation() == False :
             return False
         dict_parametres = self.ctrl_parametres.GetValeurs()
+        server_ctrl = self.server_ctrl
 
         if dict_parametres["hebergement_type"] == 1 :
 
@@ -904,7 +1025,7 @@ class Dialog(wx.Dialog):
                 return False
 
             if dict_parametres["ftp_utilisateur"] == "" :
-                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nomde de l'utilisateur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom de de l'utilisateur FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -917,6 +1038,32 @@ class Dialog(wx.Dialog):
 
             if dict_parametres["ftp_repertoire"] == "" :
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire FTP !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        elif dict_parametres["hebergement_type"] == 2 :
+
+            if dict_parametres["ssh_serveur"] == "" :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'adresse du serveur SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if dict_parametres["ssh_utilisateur"] == "" :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le nom de de l'utilisateur SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if dict_parametres["ssh_mdp"] == "" and dict_parametres["ssh_key_file"] == "" :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le mot de passe de l utilisateur SSH ou utiliser une connection par clé !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if dict_parametres["ssh_repertoire"] == "" :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le répertoire SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -948,73 +1095,8 @@ class Dialog(wx.Dialog):
 
         # Procédure d'installation
         from Utils import UTILS_Portail_installation
-        install = UTILS_Portail_installation.Installer(self, dict_parametres)
+        install = UTILS_Portail_installation.Installer(self, dict_parametres, server_ctrl)
         resultat = install.Installer()
-
-    def GetListeProcess(self):
-        """ Recherche les process ouverts du portail """
-        listeProcess = []
-        for p in psutil.process_iter():
-            if "python" in p.name() :
-                for nom in p.cmdline() :
-                    if "run.py" in nom and p not in listeProcess :
-                        listeProcess.append(p)
-        return listeProcess
-
-    def Demarrer_serveur(self, event):
-        if self.ctrl_parametres.Validation() == False :
-            return False
-        dict_parametres = self.ctrl_parametres.GetValeurs()
-
-        # Récupération des paramètres
-        rep = dict_parametres["hebergement_local_repertoire"]
-        options = dict_parametres["serveur_options"]
-        chemin_executable = os.path.join(rep, "run.py")
-
-        if rep == "" or os.path.isfile(chemin_executable) == False :
-            dlg = wx.MessageDialog(None, _(u"Le chemin du répertoire d'installation de Connecthys n'est pas valide !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-
-        for chemin_python in ["python", "C:\Python27\python.exe"] :
-            args = [chemin_python, chemin_executable]
-            for arg in options.split(" ") :
-                if arg != "" :
-                    args.append(arg)
-
-            # Créé un nouveau process
-            self.EcritLog(_(u"Lancement du serveur Connecthys..."))
-            self.EcritLog(_(u"Chemin : ") + " ".join(args))
-
-            try :
-                p = subprocess.Popen(args, shell=False, cwd=rep)
-                process_ok = True
-                break
-            except Exception, err :
-                print "Erreur lancement Connecthys :", err
-                self.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys"))
-                process_ok = False
-
-        # Vérifie si le process est bien lancé
-        time.sleep(0.5)
-        if process_ok == True and len(self.GetListeProcess()) > 0 :
-            self.EcritLog(_(u"Serveur démarré"))
-            dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys a bien été démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_INFORMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-        else :
-            self.EcritLog(_(u"[ERREUR] Le serveur n'a pas pu être démarré"))
-            dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys n'a pas pu être démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-
-
-    def Arreter_serveur(self, event):
-        """ Kill les process déjà ouverts """
-        self.EcritLog(_(u"Arrêt du serveur"))
-        for p in self.GetListeProcess() :
-            p.kill()
 
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_parametres.GetValeurs()
