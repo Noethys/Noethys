@@ -26,6 +26,7 @@ import traceback
 import sys
 import importlib
 import json
+import paramiko
 
 
 LISTE_EXCEPTIONS = ["*.pyc", "*.db", "*.db3", "*.exe"]
@@ -117,9 +118,10 @@ class Abort(Exception):
 
 
 class Installer():
-    def __init__(self, parent, dict_parametres={}):
+    def __init__(self, parent, dict_parametres={}, server_ctrl=None):
         self.parent = parent
         self.dict_parametres = dict_parametres
+        self.server_ctrl = server_ctrl
 
         self.url_telechargement = "https://github.com/Noethys/Connecthys/archive/master.zip"
         self.nom_fichier_dest = UTILS_Fichiers.GetRepTemp(fichier="connecthys.zip")
@@ -207,6 +209,19 @@ class Installer():
                                 print "CHMOD 755 sur connecthys.cgi impossible :"
                                 print err
 
+                    # Transfert SSH/SFTP
+                    if self.dict_parametres["hebergement_type"] == 2 :
+                        ftp.put(localpath, os.path.join(destpath, name))
+
+                        # Permission spéciale
+                        if name == "connecthys.cgi" :
+                            try :
+                                ftp.chmod(os.path.join(destpath, connecthys.cgi), mode=755)
+                            except Exception, err :
+                                print "CHMOD 755 sur connecthys.cgi impossible :"
+                                print err
+
+
                 # Envoi des répertoires
                 elif os.path.isdir(localpath):
 
@@ -236,6 +251,20 @@ class Installer():
                             ftp.cwd(name)
                             self.TransfertRepertoire(path=localpath, ftp=ftp, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
                             ftp.cwd("..")
+
+                        # Création et remplissage d'un répertoire SSH/SFTP
+                        if self.dict_parametres["hebergement_type"] == 2 :
+                            try :
+                                ftp.mkdir(name)
+                            except Exception, e:
+                                # ignore "directory already exists"
+                                if not e.args[0].startswith('550'):
+                                    raise
+
+                            # Remplissage du répertoire SSH/SFTP
+                            ftp.chdir(name)
+                            self.TransfertRepertoire(path=localpath, ftp=ftp, nbre_total=nbre_total, liste_exclusions=liste_exclusions)
+                            ftp.chdir("..")
 
     def Upload(self, source_repertoire=""):
         # Récupération du nombre de fichiers à transférer
@@ -271,12 +300,31 @@ class Installer():
             ftp.cwd(self.dict_parametres["ftp_repertoire"])
             keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion FTP effectuée..."))
 
+        # Initialisation pour un transfert SSH
+        if self.dict_parametres["hebergement_type"] == 2 :
+            keepGoing, skip = self.dlgprogress.Update(1, _(u"Connexion SSH/SFTP en cours..."))
+
+            try :
+                ftp = self.server_ctrl.ssh.open_sftp()
+            except Exception, e :
+                self.parent.EcritLog(_(u"[ERREUR] %") % Exception)
+
+            # Création du répertoire s'il n'existe pas
+            try:
+                ftp.mkdir(self.dict_parametres["ssh_repertoire"])
+            except Exception, e:
+                # ignore "directory already exists"
+                if not e.args[0].startswith('550'):
+                    raise
+
+            ftp.chdir(self.dict_parametres["ssh_repertoire"])
+            keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion SSH/SFTP effectuée..."))
 
         # Recherche le numéro de version de l'application déjà installée
         try :
-        # ATTENTION: ne peut fonctionner que si Connecthys est lance
-            if self.dict_parametres["hebergement_type"] == 0 : url = self.dict_parametres["url_connecthys"]
-            if self.dict_parametres["hebergement_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+        # ATTENTION: ne peut fonctionner que si Connecthys est lancé
+            if self.dict_parametres["server_type"] == 0 : url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["server_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
             url += "/get_version"
 
             # Récupération des données au format json
@@ -311,7 +359,9 @@ class Installer():
         if self.dict_parametres["hebergement_type"] == 1 :
             self.TransfertRepertoire(path=source_repertoire, ftp=ftp, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
 
-        #TODO: Démarrage du serveur ici si serveur autonome
+        # Transfert SSH
+        if self.dict_parametres["hebergement_type"] == 2 :
+            self.TransfertRepertoire(path=source_repertoire, ftp=ftp, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
 
         synchro = UTILS_Portail_synchro.Synchro(self.dict_parametres)
 
@@ -321,6 +371,11 @@ class Installer():
 
         time.sleep(4)
 
+        # Démarrage du serveur ici si serveur autonome
+        if self.server_ctrl != None and self.dict_parametres["serveur_type"] == 0 and self.server_ctrl.GetServerStatus() == False:
+            keepGoing, skip = self.dlgprogress.Update(97, _(u"Tentative de lancement du serveur Connecthys..."))
+            self.server_ctrl.Demarrer_serveur(event=None)
+
         # Demande un upgrade de l'application
         keepGoing, skip = self.dlgprogress.Update(99, _(u"Demande la mise à jour de l'application..."))
         synchro.Upgrade_application()
@@ -328,6 +383,10 @@ class Installer():
         # Fermeture du FTP
         if self.dict_parametres["hebergement_type"] == 1 :
             ftp.quit()
+
+        # Fermeture du SFTP
+        if self.dict_parametres["hebergement_type"] == 2 :
+            ftp.close()
 
 
     def Installer(self):
@@ -357,12 +416,15 @@ class Installer():
                 raise Abort(u"Impossible de trouver le source de Connecthys sur internet ! ")
 
             # Téléchargement de la source sur Github
+            self.parent.EcritLog(_(u"Telechargement des fichiers source Connecthys"))
             self.Telecharger()
 
             # Dézippage du fichier
+            self.parent.EcritLog(_(u"Decompression des fichiers source Connecthys"))
             self.Dezipper(self.nom_fichier_dest, UTILS_Fichiers.GetRepTemp())
 
-            # Envoi des fichiers par FTP
+            # Envoi des fichiers dans le répertoire d installation
+            self.parent.EcritLog(_(u"Upload des fichiers Connecthys"))
             source_repertoire = UTILS_Fichiers.GetRepTemp("Connecthys-master/connecthys")
             self.Upload(source_repertoire)
 
@@ -401,7 +463,7 @@ class Installer():
             pass
 
         # Message de confirmation
-        dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès.\nVous devriez pouvoir maintenant lancer une synchronisation des données."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
