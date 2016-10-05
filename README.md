@@ -37,6 +37,7 @@ rechercher et installer les bibliothèques suivantes.
 - Pyttsx (http://pypi.python.org/pypi/pyttsx)
 - Appdirs (https://pypi.python.org/pypi/appdirs)
 - Psutil (https://pypi.python.org/pypi/psutil)
+- Paramiko (https://pypi.python.org/pypi/paramiko)
 
 
 Dépendances pour Linux
@@ -59,13 +60,14 @@ Dépendances pour Linux
 - python-pip (qui permet d'installer pyttsx et icalendar)
 - python-appdirs (pour rechercher les répertoires de stockage des données)
 - python-psutil (infos système)
+- python-paramiko (Prise en charge SSH)
 
 Ils s'installent depuis le terminal tout simplement avec la commande (**à exécuter si besoin avec sudo**):
 
 ```
 apt-get install python-mysqldb python-dateutil python-numpy python-imaging python-reportlab python-matplotlib 
 python-xlrd python-excelerator python-pip python-pyscard python-opencv python-crypto python-appdirs
-python-wxgtk3.0 python-sqlalchemy libcanberra-gtk-module python-psutil
+python-wxgtk3.0 python-sqlalchemy libcanberra-gtk-module python-psutil python-paramiko
 ```
 
 Et pour pyttsx et icalendar il faut avoir installé python-pip (ce qui a ét fait dans l'étape précédente) et les installer par:

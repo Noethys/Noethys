@@ -332,7 +332,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Type d'hébergement
         nom = "hebergement_type"
         propriete = wxpg.EnumProperty(label=_(u"Type d'hébergement"), labels=[_(u"Local"), _(u"FTP"), _(u"SSH/SFTP")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
-	propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser :\nLocal (Connecthys est installé sur l'ordinateur)\nFTP (Connecthys est envoyé sur un répertoire via FTP)\nSSH/SFTP (Connecthys est envoyé sur un répertoire via SSH/SFTP)"))
+        propriete.SetHelpString(_(u"Sélectionnez le type d'hébergement à utiliser :\nLocal (Connecthys est installé sur l'ordinateur)\nFTP (Connecthys est envoyé sur un répertoire via FTP)\nSSH/SFTP (Connecthys est envoyé sur un répertoire via SSH/SFTP)"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -368,14 +368,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # SSH key file
         nom = "ssh_key_file"
-        propriete = wxpg.ImageFileProperty(label=_(u"Fichier de clé"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le chemin de la clé (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la cl<E9>."))
+        propriete = wxpg.StringProperty(label=_(u"Fichier de clé"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le chemin de la clé (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la clé."))
         self.Append(propriete)
 
         # Utilisateur SSH
         nom = "ssh_utilisateur"
         propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez l'utilisateur SSH\nUtiliser root est tr<E8>s fortement déconseillé, risqué et dangereux"))
+        propriete.SetHelpString(_(u"Saisissez l'utilisateur SSH\nUtiliser root est très fortement déconseillé, risqué et dangereux"))
         self.Append(propriete)
 
         # Mot de passe SSH
