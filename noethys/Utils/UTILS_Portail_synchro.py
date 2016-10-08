@@ -160,7 +160,7 @@ class Synchro():
                         destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
                         shutil.copy2(chemin_image, destfilepath)
                     except Exception, err :
-                        print str(err)
+                        print "Erreur envoi image de fond :", str(err)
                         return False
 
             # Envoi du logo par FTP
@@ -171,7 +171,19 @@ class Synchro():
                         fichier = open(chemin_image, "rb")
                         ftp.storbinary('STOR ' + nom_fichier, fichier)
                     except Exception, err :
-                        print str(err)
+                        print "Erreur envoi image de fond :", str(err)
+                        return False
+
+            # Envoi du logo par SSH/SFTP
+            if self.dict_parametres["hebergement_type"] == 2 :
+                if ftp != None :
+                    try :
+                        ftp.chdir("application/static/fonds")
+                        ftp.put(chemin_image, nom_fichier)
+                        ftp.chdir("../../../")
+                    except Exception, err :
+                        print "Erreur envoi image de fond :", str(err)
+                        self.log.EcritLog(_(u"[ERREUR] Envoi de l'image de fond par SSH/SFTP impossible."))
                         return False
 
         else :
@@ -214,7 +226,7 @@ class Synchro():
                         shutil.copy2(cheminLogo, destfilepath)
                     except Exception, err :
                         self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
-                        print str(err)
+                        print "Erreur envoi logo organisateur :", str(err)
                         return False
 
             # Envoi du logo par FTP
@@ -226,7 +238,7 @@ class Synchro():
                         ftp.storbinary('STOR ' + nomFichier, fichier)
                     except Exception, err :
                         self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
-                        print str(err)
+                        print "Erreur envoi logo organisateur :", str(err)
                         return False
 
             # Envoi du logo par SSH/SFTP
@@ -234,9 +246,11 @@ class Synchro():
                 if ftp != None :
                     try :
                         destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
-                        ftp.put(cheminLogo, destfilepath)
+                        ftp.chdir("application/static")
+                        ftp.put(cheminLogo, "logo.png")
+                        ftp.chdir("../../")
                     except Exception, err :
-                        print str(err)
+                        print "Erreur envoi logo organisateur :", str(err)
                         self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
                         return False
 
@@ -281,7 +295,7 @@ class Synchro():
                 try:
                     shutil.move(nomFichierComplet, destfile)
                 except:
-                    print "Envoi du fichier de configuration par copie locale impossible", str(err)
+                    print "Envoi du fichier de configuration par copie locale impossible :", str(err)
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par copie locale impossible."))
                     return False
             else :
@@ -295,7 +309,7 @@ class Synchro():
                 try :
                     ftp.storbinary('STOR ' + nomFichier, fichier)
                 except Exception, err :
-                    print "Envoi du fichier de configuration par FTP impossible", str(err)
+                    print "Envoi du fichier de configuration par FTP impossible :", str(err)
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par FTP impossible."))
             else :
                 return False
@@ -305,9 +319,11 @@ class Synchro():
             if ftp != None :
                 destfile = os.path.join(self.dict_parametres["ssh_repertoire"] + ("" if self.dict_parametres["ssh_repertoire"][-1] == '/' else "/"), "application/data/config.py")
                 try :
-                    ftp.put(nomFichierComplet, destfile)
+                    ftp.chdir("application/data")
+                    ftp.put(nomFichierComplet, "config.py")
+                    ftp.chdir("../../")
                 except Exception, err :
-                    print "Envoi du fichier de configuration par SSH/SFTP impossible", str(err)
+                    print "Envoi du fichier de configuration par SSH/SFTP impossible :", str(err)
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par SSH/SFTP impossible."))
                     return False
             else :
@@ -346,8 +362,9 @@ class Synchro():
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
                 ssh.connect(self.dict_parametres["ssh_serveur"], username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
                 ftp = ssh.open_sftp()
+                ftp.chdir(self.dict_parametres["ssh_repertoire"])
             except Exception, err :
-                print "Connexion SSH/SFTP au serveur", str(err)
+                print "Erreur connexion SSH/SFTP au serveur : ", str(err)
                 self.log.EcritLog(_(u"[ERREUR] Connexion SSH/SFTP impossible."))
                 self.log.EcritLog(_(u"[ERREUR] err:%s") % err)
                 return False
@@ -844,7 +861,10 @@ class Synchro():
         if self.dict_parametres["hebergement_type"] == 2 :
             destpath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/data")
             destfile = os.path.join(destpath, os.path.basename(nomFichierCRYPT))
-            ftp.put(nomFichierCRYPT, destfile)
+            ftp.chdir("application/data")
+            ftp.put(nomFichierCRYPT, os.path.basename(nomFichierCRYPT))
+            ftp.chdir("../../")
+            #ftp.put(nomFichierCRYPT, destfile)
 
             self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
             ftp.close()
@@ -1030,7 +1050,7 @@ class Synchro():
             print "Resultat :", data
 
         except Exception, err :
-            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d upgrade "))
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'upgrade "))
             self.log.EcritLog(_(u"err: %s") % err)
             print "Erreur dans la demande d'upgrade :", str(err)
             return False
@@ -1058,18 +1078,21 @@ class Synchro():
             except Exception, err :
                 self.log.EcritLog(_(u"Téchargement FTP des modeles de données impossible"))
                 self.log.EcritLog(_(u"err: %s") % err)
-                print str(err)
+                print "Erreur dans telechargement des modeles de donnees :", str(err)
                 return False
 
         elif self.dict_parametres["hebergement_type"] == 2 :
             try :
                 infilepath = os.path.join(self.dict_parametres["ssh_repertoire"] + ("" if self.dict_parametres["ssh_repertoire"][-1] == "/" else "/"), "application")
                 infile = os.path.join(infilepath, nomFichier)
-                ftp.get(infile, os.path.join(rep, nomFichier))
+                ftp.chdir("application")
+                ftp.get(nomFichier, os.path.join(rep, nomFichier))
+                ftp.chdir("..")
+                #ftp.get(infile, os.path.join(rep, nomFichier))
             except Exception, err :
                 self.log.EcritLog(_(u"Téchargement SSH/SFTP des modeles de données impossible"))
                 self.log.EcritLog(_(u"err: %s") % err)
-                print str(err)
+                print "Erreur dans telechargement des modeles de donnees :", str(err)
                 return False
 
         elif self.dict_parametres["hebergement_type"] == 0 :
@@ -1080,7 +1103,7 @@ class Synchro():
             except Exception, err :
                 self.log.EcritLog(_(u"Récupération locale des modeles de données impossible"))
                 self.log.EcritLog(_(u"err: %s") % err)
-                print str(err)
+                print "Erreur dans telechargement des modeles de donnees :", str(err)
                 return False
         else:
             raise()

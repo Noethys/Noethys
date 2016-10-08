@@ -129,6 +129,8 @@ class Installer():
 
     def Telecharger(self):
         """ Téléchargement de la source depuis Github """
+        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+
         def _hook(nb_blocs, taille_bloc, taille_fichier):
             if nb_blocs % 5 == 0 :
                 pourcentage = GetPourcentage(nb_blocs*taille_bloc, taille_fichier)
@@ -137,13 +139,12 @@ class Installer():
                     raise Abort(u"Téléchargement interrompu")
 
         urllib.urlretrieve(self.url_telechargement, self.nom_fichier_dest, _hook)
+
         return True
 
     def Dezipper(self, fichier_zip, chemin_dest=""):
         """ Dézippe un fichier ZIP dans un répertoire donné """
-        self.dlgprogress.Destroy()
-        del self.dlgprogress
-        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
+        #self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
         self.dlgprogress.Raise()
 
         zfile = zipfile.ZipFile(fichier_zip, 'r')
@@ -167,6 +168,7 @@ class Installer():
                 fp.close()
             index += 1
         zfile.close()
+
 
     def TransfertRepertoire(self, path="", ftp=None, destpath="", nbre_total=0, liste_exclusions=[]):
         for name in os.listdir(path):
@@ -216,7 +218,7 @@ class Installer():
                         # Permission spéciale
                         if name == "connecthys.cgi" :
                             try :
-                                ftp.chmod(os.path.join(destpath, connecthys.cgi), mode=755)
+                                ftp.chmod(os.path.join(destpath, name), mode=755)
                             except Exception, err :
                                 print "CHMOD 755 sur connecthys.cgi impossible :"
                                 print err
@@ -257,9 +259,10 @@ class Installer():
                             try :
                                 ftp.mkdir(name)
                             except Exception, e:
+                                pass
                                 # ignore "directory already exists"
-                                if not e.args[0].startswith('550'):
-                                    raise
+                                #if not e.args[0].startswith('550'):
+                                #    raise
 
                             # Remplissage du répertoire SSH/SFTP
                             ftp.chdir(name)
@@ -306,16 +309,19 @@ class Installer():
 
             try :
                 ftp = self.server_ctrl.ssh.open_sftp()
-            except Exception, e :
-                self.parent.EcritLog(_(u"[ERREUR] %") % Exception)
+            except Exception, err:
+                print err
+                self.parent.EcritLog(_(u"[ERREUR] %s") % err)
+                raise
 
             # Création du répertoire s'il n'existe pas
             try:
                 ftp.mkdir(self.dict_parametres["ssh_repertoire"])
             except Exception, e:
+                pass
                 # ignore "directory already exists"
-                if not e.args[0].startswith('550'):
-                    raise
+                #if not e.args[0].startswith('550'):
+                #    raise
 
             ftp.chdir(self.dict_parametres["ssh_repertoire"])
             keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion SSH/SFTP effectuée..."))
@@ -363,17 +369,17 @@ class Installer():
         if self.dict_parametres["hebergement_type"] == 2 :
             self.TransfertRepertoire(path=source_repertoire, ftp=ftp, nbre_total=nbreFichiers+5, liste_exclusions=liste_exclusions)
 
-        synchro = UTILS_Portail_synchro.Synchro(self.dict_parametres)
+        synchro = UTILS_Portail_synchro.Synchro(self.dict_parametres, log=self.parent)
 
         # Envoi du fichier de config
-        keepGoing, skip = self.dlgprogress.Update(98, _(u"Installation du fichier de configuration en cours..."))
+        keepGoing, skip = self.dlgprogress.Update(97, _(u"Installation du fichier de configuration en cours..."))
         synchro.Upload_config(ftp=ftp)
 
         time.sleep(4)
 
         # Démarrage du serveur ici si serveur autonome
         if self.server_ctrl != None and self.dict_parametres["serveur_type"] == 0 and self.server_ctrl.GetServerStatus() == False:
-            keepGoing, skip = self.dlgprogress.Update(97, _(u"Tentative de lancement du serveur Connecthys..."))
+            keepGoing, skip = self.dlgprogress.Update(98, _(u"Tentative de lancement du serveur Connecthys..."))
             self.server_ctrl.Demarrer_serveur(event=None)
 
         # Demande un upgrade de l'application
@@ -397,9 +403,6 @@ class Installer():
         if reponse != wx.ID_YES :
             return False
 
-        # Init de la dlgprogress
-        self.dlgprogress = wx.ProgressDialog(_(u"Veuillez patienter"), _(u"Lancement de l'installation..."), maximum=100, parent=self.parent, style= wx.PD_SMOOTH | wx.PD_ESTIMATED_TIME | wx.PD_REMAINING_TIME | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
-
         try :
 
             # Recherche la taille du fichier à télécharger sur Github
@@ -416,11 +419,11 @@ class Installer():
                 raise Abort(u"Impossible de trouver le source de Connecthys sur internet ! ")
 
             # Téléchargement de la source sur Github
-            self.parent.EcritLog(_(u"Telechargement des fichiers source Connecthys"))
+            self.parent.EcritLog(_(u"Téléchargement des fichiers source Connecthys"))
             self.Telecharger()
 
             # Dézippage du fichier
-            self.parent.EcritLog(_(u"Decompression des fichiers source Connecthys"))
+            self.parent.EcritLog(_(u"Décompression des fichiers source Connecthys"))
             self.Dezipper(self.nom_fichier_dest, UTILS_Fichiers.GetRepTemp())
 
             # Envoi des fichiers dans le répertoire d installation
@@ -463,7 +466,7 @@ class Installer():
             pass
 
         # Message de confirmation
-        dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès.\nVous devriez pouvoir maintenant lancer une synchronisation des données."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès.\n\nVous devriez pouvoir maintenant lancer une synchronisation des données."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()
         dlg.Destroy()
         return True
