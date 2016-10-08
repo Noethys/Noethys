@@ -680,7 +680,11 @@ class Dialog(wx.Dialog):
             # Récupère la liste des fichiers de synchronisation présents sur le répertoire FTP
             for nomFichier in ftp.nlst() :
                 if nomFichier.startswith("actions_%s" % IDfichier) and (nomFichier.endswith(UTILS_Export_nomade.EXTENSION_CRYPTE) or nomFichier.endswith(UTILS_Export_nomade.EXTENSION_DECRYPTE)) :
-                    tailleFichier = ftp.size(nomFichier) 
+                    try :
+                        tailleFichier = ftp.size(nomFichier)
+                    except :
+                        ftp.voidcmd('TYPE I')
+                        tailleFichier = ftp.size(nomFichier)
                     ftp.retrbinary("RETR %s" % nomFichier, open(UTILS_Fichiers.GetRepSync(nomFichier), "wb").write)
                     listeFichiersRecus.append((nomFichier, tailleFichier))
             ftp.quit()
