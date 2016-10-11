@@ -26,6 +26,7 @@ import traceback
 import sys
 import importlib
 import json
+import stat
 import paramiko
 
 
@@ -204,25 +205,29 @@ class Installer():
                         # Permission spéciale
                         # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
                         # TODO: boite de dialogue pour indiquer de modifier les droits autrement
-                        if name == "connecthys.cgi" :
+                        if name == self.dict_parametres["serveur_cgi_file"] :
                             try :
-                                ftp.sendcmd("chmod 0755 connecthys.cgi")
+                                ftp.sendcmd("chmod 0755 %s" % self.dict_parametres["serveur_cgi_file"])
                             except Exception, err :
-                                print "CHMOD 755 sur connecthys.cgi impossible :"
-                                print err
+                                print "CHMOD 755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
 
                     # Transfert SSH/SFTP
                     if self.dict_parametres["hebergement_type"] == 2 :
                         ftp.put(localpath, os.path.join(destpath, name))
 
                         # Permission spéciale
-                        if name == "connecthys.cgi" :
+                        if name == self.dict_parametres["serveur_cgi_file"] :
                             try :
-                                ftp.chmod(os.path.join(destpath, name), mode=755)
+                                ftp.chmod(os.path.join(destpath, name), mode=0755)
                             except Exception, err :
-                                print "CHMOD 755 sur connecthys.cgi impossible :"
-                                print err
+                                print "CHMOD 755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
 
+                            # Vérifie les droits du fichier cgi (connecthys.cgi par défaut)
+                            mode = int(oct(stat.S_IMODE(ftp.stat(os.path.join(destpath, name)).st_mode)))
+                            if mode != 755 :
+                                message = u"Attention, le fichier %s n'a pas les bonnes permissions : %d au lieu de 0755." % (self.dict_parametres["serveur_cgi_file"], mode)
+                                self.parent.EcritLog(message)
+                                print message
 
                 # Envoi des répertoires
                 elif os.path.isdir(localpath):
@@ -330,7 +335,7 @@ class Installer():
         try :
         # ATTENTION: ne peut fonctionner que si Connecthys est lancé
             if self.dict_parametres["server_type"] == 0 : url = self.dict_parametres["url_connecthys"]
-            if self.dict_parametres["server_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/connecthys.cgi"
+            if self.dict_parametres["server_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += "/get_version"
 
             # Récupération des données au format json
@@ -394,7 +399,6 @@ class Installer():
         if self.dict_parametres["hebergement_type"] == 2 :
             ftp.close()
 
-
     def Installer(self):
         """ Installation de Connecthys """
         dlg = wx.MessageDialog(None, _(u"Confirmez-vous l'installation du portail internet Connecthys ?\n\nRemarque : Ce processus peut nécessiter plusieurs dizaines de minutes (selon votre connexion internet)"), _(u"Installation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
@@ -439,6 +443,7 @@ class Installer():
 
             time.sleep(2)
             dlg = wx.MessageDialog(None, _(u"Procédure d'installation interrompue."), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.Raise()
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -455,6 +460,7 @@ class Installer():
 
             time.sleep(2)
             dlg = wx.MessageDialog(None, _(u"Une erreur a été rencontrée !"), "Erreur", wx.OK | wx.ICON_ERROR)
+            dlg.Raise()
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -467,6 +473,7 @@ class Installer():
 
         # Message de confirmation
         dlg = wx.MessageDialog(None, _(u"L'installation s'est terminée avec succès.\n\nVous devriez pouvoir maintenant lancer une synchronisation des données."), "Fin de l'installation", wx.OK | wx.ICON_INFORMATION)
+        dlg.Raise()
         dlg.ShowModal()
         dlg.Destroy()
         return True
