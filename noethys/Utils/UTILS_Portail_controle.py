@@ -63,9 +63,9 @@ class ServeurConnecthys():
         if self.dict_parametres["hebergement_type"] == 0 :
             for p in psutil.process_iter():
                 if "python" in p.name() :
-                    cmdline = p.cmdline()
-                    if len(cmdline) > 0 and "run.py" in cmdline[1] :
-                        server_is_running = True
+                    for nom in p.cmdline() :
+                        if "run.py" in nom :
+                            server_is_running = True
         elif self.dict_parametres["hebergement_type"] == 1 :
             return False
         elif self.dict_parametres["hebergement_type"] == 2 and self.ssh != None:
