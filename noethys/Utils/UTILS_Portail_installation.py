@@ -205,22 +205,28 @@ class Installer():
                         # Permission spéciale
                         # ATTENTION: beaucoup d'hebergements n autorisent pas le chmod/ftp et ftplib ne permet pas de lister les commandes acceptees par le serveur ftp
                         # TODO: boite de dialogue pour indiquer de modifier les droits autrement
-                        if name == self.dict_parametres["serveur_cgi_file"] :
+                        if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
                             try :
                                 ftp.sendcmd("chmod 0755 %s" % self.dict_parametres["serveur_cgi_file"])
                             except Exception, err :
                                 print "CHMOD 755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
+
+                            if "mode=0755" not in ftp.sendcmd("MLST %s" % self.dict_parametres["serveur_cgi_file"]) :
+                                message = u"Attention, le fichier %s n'a pas les bonnes permissions." % self.dict_parametres["serveur_cgi_file"]
+                                self.parent.EcritLog(message)
+                                print message
+
 
                     # Transfert SSH/SFTP
                     if self.dict_parametres["hebergement_type"] == 2 :
                         ftp.put(localpath, os.path.join(destpath, name))
 
                         # Permission spéciale
-                        if name == self.dict_parametres["serveur_cgi_file"] :
+                        if self.dict_parametres["serveur_type"] == 1 and name == self.dict_parametres["serveur_cgi_file"] :
                             try :
                                 ftp.chmod(os.path.join(destpath, name), mode=0755)
                             except Exception, err :
-                                print "CHMOD 755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
+                                print "CHMOD 0755 sur %s impossible :" % self.dict_parametres["serveur_cgi_file"], err
 
                             # Vérifie les droits du fichier cgi (connecthys.cgi par défaut)
                             mode = int(oct(stat.S_IMODE(ftp.stat(os.path.join(destpath, name)).st_mode)))
