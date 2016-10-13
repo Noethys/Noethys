@@ -1107,6 +1107,9 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
+        if dict_parametres["serveur_type"] == 1 :
+            url += "/" + dict_parametres["serveur_cgi_file"] + "/"
+
         self.EcritLog(_(u"Ouverture dans le navigateur de l'url %s") % url)
         import webbrowser
         webbrowser.open(url)
