@@ -299,6 +299,7 @@ class Panel(wx.Panel):
         for adresse in listeAdresses :
             listeDonnees.append({"adresse" : adresse, "pieces" : [], "champs" : champs})
         dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
+        dlg.ChargerModeleDefaut()
         dlg.ShowModal()
         dlg.Destroy()
 
