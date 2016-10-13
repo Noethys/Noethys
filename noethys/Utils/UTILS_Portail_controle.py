@@ -61,11 +61,14 @@ class ServeurConnecthys():
         """ Retourne le status du serveur Connecthys"""
         server_is_running = False
         if self.dict_parametres["hebergement_type"] == 0 :
-            for p in psutil.process_iter():
-                if "python" in p.name() :
-                    for nom in p.cmdline() :
-                        if "run.py" in nom :
-                            server_is_running = True
+            try :
+                for p in psutil.process_iter():
+                    if "python" in p.name() :
+                        for nom in p.cmdline() :
+                            if "run.py" in nom :
+                                server_is_running = True
+            except Exception, err :
+                print "Erreur dans detection processus serveur Connecthys :", err
         elif self.dict_parametres["hebergement_type"] == 1 :
             return False
         elif self.dict_parametres["hebergement_type"] == 2 and self.ssh != None:
@@ -123,6 +126,7 @@ class ServeurConnecthys():
 
         # Créé un nouveau process
         p = subprocess.Popen(args, shell=False, cwd=rep)
+
 
     def Demarrer_serveurBySSH(self) :
         # Récupération des paramètres
