@@ -516,7 +516,7 @@ class CTRL(HTL.HyperTreeList):
             self.Collapse(item)
             item = self.GetNext(item)
         
-    def Imprimer(self):
+    def Imprimer(self, Event=None):
         # Création du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
@@ -609,7 +609,7 @@ class CTRL(HTL.HyperTreeList):
         # Affichage du PDF
         FonctionsPerso.LanceFichierExterne(nomDoc)
     
-    def ExportExcel(self):
+    def ExportExcel(self, event=None):
         """ Export Excel """
         titre = _(u"Synthèse des impayés")
         
@@ -859,6 +859,18 @@ class CTRL(HTL.HyperTreeList):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirFicheFamille, id=10)
+
+        menuPop.AppendSeparator()
+
+        item = wx.MenuItem(menuPop, 20, _(u"Imprimer (PDF)"), _(u"Imprimer (PDF)"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Imprimer, id=20)
+
+        item = wx.MenuItem(menuPop, 30, _(u"Exporter au format Excel"), _(u"Exporter au format Excel"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ExportExcel, id=30)
 
         # Finalisation du menu
         self.PopupMenu(menuPop)

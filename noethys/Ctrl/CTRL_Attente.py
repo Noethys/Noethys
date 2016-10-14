@@ -17,6 +17,7 @@ import wx.lib.agw.hypertreelist as HTL
 import datetime
 import copy
 import sys
+import os
 
 import GestionDB
 import CTRL_Saisie_euros
@@ -344,11 +345,23 @@ class CTRL(HTL.HyperTreeList):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirFicheFamille, id=10)
 
+        menuPop.AppendSeparator()
+
+        item = wx.MenuItem(menuPop, 20, _(u"Imprimer (PDF)"), _(u"Imprimer (PDF)"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Imprimer, id=20)
+
+        item = wx.MenuItem(menuPop, 30, _(u"Exporter au format Excel"), _(u"Exporter au format Excel"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ExportExcel, id=30)
+
         # Finalisation du menu
         self.PopupMenu(menuPop)
         menuPop.Destroy()
             
-    def OuvrirFicheFamille(self, event):
+    def OuvrirFicheFamille(self, event=None):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_fiche", "consulter") == False : return
         dictItem = self.GetMainWindow().GetItemPyData(self.GetSelection())
         if dictItem == None :
@@ -383,7 +396,7 @@ class CTRL(HTL.HyperTreeList):
         
         
     
-    def Imprimer(self, event):
+    def Imprimer(self, event=None):
         # Création du PDF
         from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
         from reportlab.platypus.flowables import ParagraphAndImage, Image
@@ -488,6 +501,116 @@ class CTRL(HTL.HyperTreeList):
         
         # Affichage du PDF
         FonctionsPerso.LanceFichierExterne(nomDoc)
+
+
+    def ExportExcel(self, event=None):
+        """ Export Excel """
+        titre = _(u"Liste d'attente")
+
+        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        nomFichier = "ExportExcel_%s.xls" % datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        wildcard = "Fichier Excel (*.xls)|*.xls|" \
+                        "All files (*.*)|*.*"
+        sp = wx.StandardPaths.Get()
+        cheminDefaut = sp.GetDocumentsDir()
+        dlg = wx.FileDialog(
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            defaultFile = nomFichier,
+            wildcard = wildcard,
+            style = wx.SAVE
+            )
+        dlg.SetFilterIndex(0)
+        if dlg.ShowModal() == wx.ID_OK:
+            cheminFichier = dlg.GetPath()
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            return
+
+        # Le fichier de destination existe déjà :
+        if os.path.isfile(cheminFichier) == True :
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            if dlg.ShowModal() == wx.ID_NO :
+                return False
+                dlg.Destroy()
+            else:
+                dlg.Destroy()
+
+        # Export
+        import pyExcelerator
+        # Création d'un classeur
+        wb = pyExcelerator.Workbook()
+        # Création d'une feuille
+        ws1 = wb.add_sheet(titre)
+
+        # Largeur des colonnes
+        ws1.col(0).width = 1500
+        ws1.col(1).width = 1500
+        ws1.col(2).width = 10000
+        ws1.col(3).width = 10000
+        ws1.col(4).width = 10000
+
+        fntLabel = pyExcelerator.Font()
+        fntLabel.name = 'Verdana'
+        fntLabel.bold = True
+
+        al = pyExcelerator.Alignment()
+        al.horz = pyExcelerator.Alignment.HORZ_LEFT
+        al.vert = pyExcelerator.Alignment.VERT_CENTER
+
+        ar = pyExcelerator.Alignment()
+        ar.horz = pyExcelerator.Alignment.HORZ_RIGHT
+        ar.vert = pyExcelerator.Alignment.VERT_CENTER
+
+        pat = pyExcelerator.Pattern()
+        pat.pattern = pyExcelerator.Pattern.SOLID_PATTERN
+        pat.pattern_fore_colour = 0x01F
+
+        styleDate = pyExcelerator.XFStyle()
+        styleDate.alignment = al
+        styleDate.font.bold = True
+
+        # Contenu
+        x = 0
+        for date, listeGroupes in self.listeImpression :
+
+            # Date
+            ws1.write(x, 0, date, styleDate)
+            x += 1
+
+            # Groupe
+            for nomGroupe, listeIndividus in listeGroupes :
+                ws1.write(x, 1, nomGroupe)
+                x += 1
+
+                # Individu
+                for dictIndividu in listeIndividus :
+                    placeDispo = dictIndividu["placeDispo"]
+                    texteIndividu = dictIndividu["texteIndividu"]
+                    texteUnites = dictIndividu["texteUnites"]
+                    texteDateSaisie = _(u"Saisie le %s") % dictIndividu["texteDateSaisie"]
+
+                    ws1.write(x, 2, texteIndividu)
+                    ws1.write(x, 3, texteUnites)
+                    ws1.write(x, 4, texteDateSaisie)
+
+                    x += 1
+
+            # Saute une ligne
+            x += 1
+
+        # Finalisation du fichier xls
+        wb.save(cheminFichier)
+
+        # Confirmation de création du fichier et demande d'ouverture directe dans Excel
+        txtMessage = _(u"Le fichier Excel a été créé avec succès. Souhaitez-vous l'ouvrir dès maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
+        reponse = dlgConfirm.ShowModal()
+        dlgConfirm.Destroy()
+        if reponse == wx.ID_NO:
+            return
+        else:
+            FonctionsPerso.LanceFichierExterne(cheminFichier)
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

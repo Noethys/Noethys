@@ -39,7 +39,8 @@ class Dialog(wx.Dialog):
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
@@ -48,12 +49,14 @@ class Dialog(wx.Dialog):
         
         self.Bind(wx.EVT_BUTTON, self.OuvrirFiche, self.bouton_ouvrir_fiche)
         self.Bind(wx.EVT_BUTTON, self.Imprimer, self.bouton_imprimer)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste d'attente"))
         self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sélectionné dans la liste"))
         self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer cette liste (PDF)"))
+        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter les résultats au format MS Excel"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((780, 600))
@@ -70,8 +73,9 @@ class Dialog(wx.Dialog):
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.bouton_ouvrir_fiche, 0, 0, 0)
-        grid_sizer_droit.Add(self.bouton_imprimer, 0, 0, 0)
         grid_sizer_droit.Add( (10, 10), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_imprimer, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_excel, 0, wx.EXPAND, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(0)
@@ -93,6 +97,9 @@ class Dialog(wx.Dialog):
 
     def Imprimer(self, event):
         self.ctrl_attente.Imprimer(None)
+
+    def OnBoutonExcel(self, event):
+        self.ctrl_attente.ExportExcel()
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
