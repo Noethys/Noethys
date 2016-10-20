@@ -340,8 +340,8 @@ class Installer():
         # Recherche le numéro de version de l'application déjà installée
         try :
         # ATTENTION: ne peut fonctionner que si Connecthys est lancé
-            if self.dict_parametres["server_type"] == 0 : url = self.dict_parametres["url_connecthys"]
-            if self.dict_parametres["server_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 0 : url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["serveur_type"] == 1 : url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
             url += "/get_version"
 
             # Récupération des données au format json
