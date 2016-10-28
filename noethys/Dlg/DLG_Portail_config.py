@@ -80,21 +80,32 @@ VALEURS_DEFAUT = {
     "recevoir_document_site" : True,
     "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
     "paiement_ligne_actif" : False,
+    "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
+    "accueil_etat_dossier_afficher" : True,
     "activites_afficher" : True,
+    "activites_intro" : _(u"Vous pouvez consulter ici la liste des inscriptions et demander des inscriptions à d'autres activités."),
     "activites_autoriser_inscription" : True,
     "reservations_afficher" : True,
+    "reservations_intro" : _(u"Sélectionnez une activité puis cliquez sur une des périodes disponibles pour accéder au calendrier des réservations correspondant."),
+    "planning_intro" : _(u"Cliquez dans les cases pour ajouter ou supprimer des consommations avant de valider l'envoi des données."),
     "factures_afficher" : True,
+    "factures_intro" : _(u"Vous pouvez consulter ici la liste des factures et demander des duplicatas."),
     "factures_selection" : 0,
     "factures_demande_facture" : True,
     "reglements_afficher" : True,
+    "reglements_intro" : _(u"Vous pouvez consulter ici la liste des règlements et demander des reçus."),
     "reglements_selection" : 0,
     "reglements_demande_recu" : True,
     "pieces_afficher" : True,
+    "pieces_intro" : _(u"Vous pouvez consulter ici la liste des pièces à fournir."),
     "pieces_autoriser_telechargement" : True,
     "cotisations_afficher" : True,
+    "cotisations_intro" : _(u"Vous pouvez consulter ici la liste des cotisations à fournir."),
     "historique_afficher" : True,
+    "historique_intro" : _(u"Vous pouvez consulter ici l'historique de vos demandes."),
     "historique_delai" : 0,
     "contact_afficher" : True,
+    "contact_intro" : _(u""),
     "contact_carte_afficher" : True,
     "mentions_afficher" : True,
     "aide_afficher" : True,
@@ -137,6 +148,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                     self.SwitchServerToCgi()
                 elif value == 0 :
                     self.SwitchServerToStandalone()
+                elif value == 2 :
+                    self.SwitchServerToWsgi()
                 else :
                     raise
         self.RefreshGrid()
@@ -185,7 +198,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property.SetAttribute("obligatoire", True)
         property.Hide(False)
         property = self.GetProperty("ftp_repertoire")
-        property.SetAttribute("obligatoire", True)
+        property.SetAttribute("obligatoire", False)
         property.Hide(False)
         property = self.GetProperty("hebergement_local_repertoire")
         property.SetAttribute("obligatoire", False)
@@ -270,6 +283,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("serveur_options")
         property.Hide(True)
 
+    def SwitchServerToWsgi(self):
+        property = self.GetProperty("serveur_cgi_file")
+        property.Hide(True)
+        property = self.GetProperty("serveur_options")
+        property.Hide(True)
+
     def Remplissage(self):
 
         # Catégorie
@@ -284,8 +303,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Type de serveur
         nom = "serveur_type"
-        propriete = wxpg.EnumProperty(label=_(u"Type de serveur"), labels=[_(u"Autonome"), _(u"CGI")], values=[0, 1], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Sélectionnez le type de serveur utilisé : Autonome ou CGI"))
+        propriete = wxpg.EnumProperty(label=_(u"Type de serveur"), labels=[_(u"Autonome"), _(u"CGI"), _(u"WSGI")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Sélectionnez le type de serveur utilisé : Autonome, CGI ou WSGI"))
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
@@ -546,6 +565,20 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Page 'Accueil'")) )
+
+        # Texte de bienvenue
+        nom = "accueil_bienvenue"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte de bienvenue"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte de bienvenue"))
+        self.Append(propriete)
+
+        nom = "accueil_etat_dossier_afficher"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher l'état du dossier sur la page d'accueil"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher l'état du dossier sur la page d'accueil"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Activités'")) )
@@ -555,6 +588,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intro de la page activités
+        nom = "activites_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
         # Incription à une activité
@@ -575,6 +614,17 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Intro de la page réservations
+        nom = "reservations_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
+        self.Append(propriete)
+
+        # Intro de la page planning
+        nom = "planning_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction du calendrier"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction pour le calendrier"))
+        self.Append(propriete)
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Factures'")) )
@@ -584,6 +634,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intro de la page factures
+        nom = "factures_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
         # Sélection des factures à afficher
@@ -611,6 +667,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Intro de la page règlements
+        nom = "reglements_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
+        self.Append(propriete)
+
         # Sélection des règlements à afficher
         nom = "reglements_selection"
         propriete = wxpg.EnumProperty(label=_(u"Sélection des règlements à afficher"), labels=[y for x, y in LISTE_SELECTION_REGLEMENTS], values=[x for x, y in LISTE_SELECTION_REGLEMENTS], name=nom, value=VALEURS_DEFAUT[nom])
@@ -636,6 +698,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Intro de la page pièces
+        nom = "pieces_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
+        self.Append(propriete)
+
         # Téléchargements de pièces
         nom = "pieces_autoriser_telechargement"
         propriete = wxpg.BoolProperty(label=_(u"Autoriser le téléchargement de pièces"), name=nom, value=VALEURS_DEFAUT[nom])
@@ -654,6 +722,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
+        # Intro de la page cotisations
+        nom = "cotisations_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
+        self.Append(propriete)
+
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Page 'Historique'")) )
@@ -663,6 +737,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intro de la page historique
+        nom = "historique_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
         # Délai d'affichage de l'historique
@@ -680,6 +760,12 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete = wxpg.BoolProperty(label=_(u"Afficher la page"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher cette page"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Intro de la page contact
+        nom = "contact_intro"
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'introduction"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez un texte d'introduction"))
         self.Append(propriete)
 
         # Afficher la carte
@@ -776,6 +862,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             self.SwitchServerToCgi()
         elif value == 0 :
             self.SwitchServerToStandalone()
+        elif value == 2 :
+            self.SwitchServerToWsgi()
         else :
             raise
 

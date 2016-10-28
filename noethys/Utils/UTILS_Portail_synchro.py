@@ -134,151 +134,151 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
 
         # Valeurs Utilisateur
-        liste_lignes.append("\nclass Config_utilisateur(object):\n")
-
-        # IDfichier
-        IDfichier = FonctionsPerso.GetIDfichier()
-        liste_lignes.append(Ecrit_ligne("IDfichier", IDfichier, type_valeur=str))
-
-        # Thème
-        index = 0
-        for code, label in LISTE_THEMES :
-            if index == self.dict_parametres["theme"] :
-                theme = "skin-%s" % code
-            index += 1
-        liste_lignes.append(Ecrit_ligne("SKIN", theme, type_valeur=str))
-
-        # Image de fond identification
-        if self.dict_parametres["image_identification"] != "" :
-            chemin_image = self.dict_parametres["image_identification"]
-            nom_fichier = os.path.basename(chemin_image)
-
-            # Envoi local
-            if self.dict_parametres["hebergement_type"] == 0 :
-                if self.dict_parametres["hebergement_local_repertoire"] != None:
-                    try :
-                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
-                        shutil.copy2(chemin_image, destfilepath)
-                    except Exception, err :
-                        print "Erreur envoi image de fond :", str(err)
-                        return False
-
-            # Envoi du logo par FTP
-            if self.dict_parametres["hebergement_type"] == 1 :
-                if ftp != None :
-                    try :
-                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/fonds")
-                        fichier = open(chemin_image, "rb")
-                        ftp.storbinary('STOR ' + nom_fichier, fichier)
-                    except Exception, err :
-                        print "Erreur envoi image de fond :", str(err)
-                        return False
-
-            # Envoi du logo par SSH/SFTP
-            if self.dict_parametres["hebergement_type"] == 2 :
-                if ftp != None :
-                    try :
-                        ftp.chdir("application/static/fonds")
-                        ftp.put(chemin_image, nom_fichier)
-                        ftp.chdir("../../../")
-                    except Exception, err :
-                        print "Erreur envoi image de fond :", str(err)
-                        self.log.EcritLog(_(u"[ERREUR] Envoi de l'image de fond par SSH/SFTP impossible."))
-                        return False
-
-        else :
-            nom_fichier = ""
-
-        liste_lignes.append(Ecrit_ligne("IMAGE_FOND", nom_fichier, type_valeur=unicode))
-
-
-        # Cadre logo organisateur
-        if self.dict_parametres["cadre_logo"] == 0 :
-            rond = False
-        else :
-            rond = True
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE_ROND", rond, type_valeur=bool))
-
-        # Données organisateur
-        dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
-
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_NOM", dict_organisateur["nom"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_RUE", dict_organisateur["rue"].replace("\n", ""), type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_CP", dict_organisateur["cp"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_VILLE", dict_organisateur["ville"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_TEL", dict_organisateur["tel"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_FAX", dict_organisateur["fax"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("ORGANISATEUR_EMAIL", dict_organisateur["mail"], type_valeur=unicode))
-
-        # Logo organisateur
-        logo = dict_organisateur["logo"]
-        if logo != None :
-            nomFichier = "logo.png"
-            cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
-            logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
-            liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", nomFichier, type_valeur=unicode))
-
-            # Envoi local
-            if self.dict_parametres["hebergement_type"] == 0 :
-                if self.dict_parametres["hebergement_local_repertoire"] != None:
-                    try :
-                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
-                        shutil.copy2(cheminLogo, destfilepath)
-                    except Exception, err :
-                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
-                        print "Erreur envoi logo organisateur :", str(err)
-                        return False
-
-            # Envoi du logo par FTP
-            if self.dict_parametres["hebergement_type"] == 1 :
-                if ftp != None :
-                    try :
-                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
-                        fichier = open(cheminLogo, "rb")
-                        ftp.storbinary('STOR ' + nomFichier, fichier)
-                    except Exception, err :
-                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
-                        print "Erreur envoi logo organisateur :", str(err)
-                        return False
-
-            # Envoi du logo par SSH/SFTP
-            if self.dict_parametres["hebergement_type"] == 2 :
-                if ftp != None :
-                    try :
-                        destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
-                        ftp.chdir("application/static")
-                        ftp.put(cheminLogo, "logo.png")
-                        ftp.chdir("../../")
-                    except Exception, err :
-                        print "Erreur envoi logo organisateur :", str(err)
-                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
-                        return False
-
-        else :
-            liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
-
-        # Autres
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_EMAIL", self.dict_parametres["recevoir_document_email"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_POSTE", self.dict_parametres["recevoir_document_courrier"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER", self.dict_parametres["recevoir_document_site"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER_LIEU", self.dict_parametres["recevoir_document_site_lieu"], type_valeur=unicode))
-        liste_lignes.append(Ecrit_ligne("PAIEMENT_EN_LIGNE_ACTIF", self.dict_parametres["paiement_ligne_actif"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("ACTIVITES_AFFICHER", self.dict_parametres["activites_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("ACTIVITES_AUTORISER_INSCRIPTION", self.dict_parametres["activites_autoriser_inscription"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("RESERVATIONS_AFFICHER", self.dict_parametres["reservations_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("FACTURES_AFFICHER", self.dict_parametres["factures_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("FACTURES_DEMANDE_FACTURE", self.dict_parametres["factures_demande_facture"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("REGLEMENTS_AFFICHER", self.dict_parametres["reglements_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("REGLEMENTS_DEMANDE_RECU", self.dict_parametres["reglements_demande_recu"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("PIECES_AFFICHER", self.dict_parametres["pieces_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("PIECES_AUTORISER_TELECHARGEMENT", self.dict_parametres["pieces_autoriser_telechargement"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("COTISATIONS_AFFICHER", self.dict_parametres["cotisations_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("HISTORIQUE_AFFICHER", self.dict_parametres["historique_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("HISTORIQUE_DELAI", self.dict_parametres["historique_delai"], type_valeur=int))
-        liste_lignes.append(Ecrit_ligne("CONTACT_AFFICHER", self.dict_parametres["contact_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("CONTACT_CARTE_AFFICHER", self.dict_parametres["contact_carte_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("MENTIONS_AFFICHER", self.dict_parametres["mentions_afficher"], type_valeur=bool))
-        liste_lignes.append(Ecrit_ligne("AIDE_AFFICHER", self.dict_parametres["aide_afficher"], type_valeur=bool))
+        # liste_lignes.append("\nclass Config_utilisateur(object):\n")
+        #
+        # # IDfichier
+        # IDfichier = FonctionsPerso.GetIDfichier()
+        # liste_lignes.append(Ecrit_ligne("IDfichier", IDfichier, type_valeur=str))
+        #
+        # # Thème
+        # index = 0
+        # for code, label in LISTE_THEMES :
+        #     if index == self.dict_parametres["theme"] :
+        #         theme = "skin-%s" % code
+        #     index += 1
+        # liste_lignes.append(Ecrit_ligne("SKIN", theme, type_valeur=str))
+        #
+        # # Image de fond identification
+        # if self.dict_parametres["image_identification"] != "" :
+        #     chemin_image = self.dict_parametres["image_identification"]
+        #     nom_fichier = os.path.basename(chemin_image)
+        #
+        #     # Envoi local
+        #     if self.dict_parametres["hebergement_type"] == 0 :
+        #         if self.dict_parametres["hebergement_local_repertoire"] != None:
+        #             try :
+        #                 destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
+        #                 shutil.copy2(chemin_image, destfilepath)
+        #             except Exception, err :
+        #                 print "Erreur envoi image de fond :", str(err)
+        #                 return False
+        #
+        #     # Envoi du logo par FTP
+        #     if self.dict_parametres["hebergement_type"] == 1 :
+        #         if ftp != None :
+        #             try :
+        #                 ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/fonds")
+        #                 fichier = open(chemin_image, "rb")
+        #                 ftp.storbinary('STOR ' + nom_fichier, fichier)
+        #             except Exception, err :
+        #                 print "Erreur envoi image de fond :", str(err)
+        #                 return False
+        #
+        #     # Envoi du logo par SSH/SFTP
+        #     if self.dict_parametres["hebergement_type"] == 2 :
+        #         if ftp != None :
+        #             try :
+        #                 ftp.chdir("application/static/fonds")
+        #                 ftp.put(chemin_image, nom_fichier)
+        #                 ftp.chdir("../../../")
+        #             except Exception, err :
+        #                 print "Erreur envoi image de fond :", str(err)
+        #                 self.log.EcritLog(_(u"[ERREUR] Envoi de l'image de fond par SSH/SFTP impossible."))
+        #                 return False
+        #
+        # else :
+        #     nom_fichier = ""
+        #
+        # liste_lignes.append(Ecrit_ligne("IMAGE_FOND", nom_fichier, type_valeur=unicode))
+        #
+        #
+        # # Cadre logo organisateur
+        # if self.dict_parametres["cadre_logo"] == 0 :
+        #     rond = False
+        # else :
+        #     rond = True
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE_ROND", rond, type_valeur=bool))
+        #
+        # # Données organisateur
+        # dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
+        #
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_NOM", dict_organisateur["nom"], type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_RUE", dict_organisateur["rue"].replace("\n", ""), type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_CP", dict_organisateur["cp"], type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_VILLE", dict_organisateur["ville"], type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_TEL", dict_organisateur["tel"], type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_FAX", dict_organisateur["fax"], type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_EMAIL", dict_organisateur["mail"], type_valeur=unicode))
+        #
+        # # Logo organisateur
+        # logo = dict_organisateur["logo"]
+        # if logo != None :
+        #     nomFichier = "logo.png"
+        #     cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+        #     logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
+        #     liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", nomFichier, type_valeur=unicode))
+        #
+        #     # Envoi local
+        #     if self.dict_parametres["hebergement_type"] == 0 :
+        #         if self.dict_parametres["hebergement_local_repertoire"] != None:
+        #             try :
+        #                 destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
+        #                 shutil.copy2(cheminLogo, destfilepath)
+        #             except Exception, err :
+        #                 self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
+        #                 print "Erreur envoi logo organisateur :", str(err)
+        #                 return False
+        #
+        #     # Envoi du logo par FTP
+        #     if self.dict_parametres["hebergement_type"] == 1 :
+        #         if ftp != None :
+        #             try :
+        #                 ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
+        #                 fichier = open(cheminLogo, "rb")
+        #                 ftp.storbinary('STOR ' + nomFichier, fichier)
+        #             except Exception, err :
+        #                 self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
+        #                 print "Erreur envoi logo organisateur :", str(err)
+        #                 return False
+        #
+        #     # Envoi du logo par SSH/SFTP
+        #     if self.dict_parametres["hebergement_type"] == 2 :
+        #         if ftp != None :
+        #             try :
+        #                 destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
+        #                 ftp.chdir("application/static")
+        #                 ftp.put(cheminLogo, "logo.png")
+        #                 ftp.chdir("../../")
+        #             except Exception, err :
+        #                 print "Erreur envoi logo organisateur :", str(err)
+        #                 self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
+        #                 return False
+        #
+        # else :
+        #     liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
+        #
+        # # Autres
+        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_EMAIL", self.dict_parametres["recevoir_document_email"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_POSTE", self.dict_parametres["recevoir_document_courrier"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER", self.dict_parametres["recevoir_document_site"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER_LIEU", self.dict_parametres["recevoir_document_site_lieu"], type_valeur=unicode))
+        # liste_lignes.append(Ecrit_ligne("PAIEMENT_EN_LIGNE_ACTIF", self.dict_parametres["paiement_ligne_actif"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("ACTIVITES_AFFICHER", self.dict_parametres["activites_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("ACTIVITES_AUTORISER_INSCRIPTION", self.dict_parametres["activites_autoriser_inscription"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("RESERVATIONS_AFFICHER", self.dict_parametres["reservations_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("FACTURES_AFFICHER", self.dict_parametres["factures_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("FACTURES_DEMANDE_FACTURE", self.dict_parametres["factures_demande_facture"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("REGLEMENTS_AFFICHER", self.dict_parametres["reglements_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("REGLEMENTS_DEMANDE_RECU", self.dict_parametres["reglements_demande_recu"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("PIECES_AFFICHER", self.dict_parametres["pieces_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("PIECES_AUTORISER_TELECHARGEMENT", self.dict_parametres["pieces_autoriser_telechargement"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("COTISATIONS_AFFICHER", self.dict_parametres["cotisations_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("HISTORIQUE_AFFICHER", self.dict_parametres["historique_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("HISTORIQUE_DELAI", self.dict_parametres["historique_delai"], type_valeur=int))
+        # liste_lignes.append(Ecrit_ligne("CONTACT_AFFICHER", self.dict_parametres["contact_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("CONTACT_CARTE_AFFICHER", self.dict_parametres["contact_carte_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("MENTIONS_AFFICHER", self.dict_parametres["mentions_afficher"], type_valeur=bool))
+        # liste_lignes.append(Ecrit_ligne("AIDE_AFFICHER", self.dict_parametres["aide_afficher"], type_valeur=bool))
 
         # Génération du fichier
         nomFichier = "config.py"
@@ -428,6 +428,163 @@ class Synchro():
 
         self.log.EcritLog(_(u"Récupération des données à exporter..."))
         self.Pulse_gauge()
+
+        # Création des paramètres
+
+        # IDfichier
+        IDfichier = FonctionsPerso.GetIDfichier()
+        session.add(models.Parametre(nom="IDfichier", parametre=IDfichier))
+
+        # Thème
+        index = 0
+        for code, label in LISTE_THEMES :
+            if index == self.dict_parametres["theme"] :
+                theme = "skin-%s" % code
+            index += 1
+        session.add(models.Parametre(nom="SKIN", parametre=theme))
+
+        # Image de fond identification
+        if self.dict_parametres["image_identification"] != "" :
+            chemin_image = self.dict_parametres["image_identification"]
+            nom_fichier = os.path.basename(chemin_image)
+
+            # Envoi local
+            if self.dict_parametres["hebergement_type"] == 0 :
+                if self.dict_parametres["hebergement_local_repertoire"] != None:
+                    try :
+                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
+                        shutil.copy2(chemin_image, destfilepath)
+                    except Exception, err :
+                        print "Erreur envoi image de fond :", str(err)
+                        return False
+
+            # Envoi du logo par FTP
+            if self.dict_parametres["hebergement_type"] == 1 :
+                if ftp != None :
+                    try :
+                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/fonds")
+                        fichier = open(chemin_image, "rb")
+                        ftp.storbinary('STOR ' + nom_fichier, fichier)
+                    except Exception, err :
+                        print "Erreur envoi image de fond :", str(err)
+                        return False
+
+            # Envoi du logo par SSH/SFTP
+            if self.dict_parametres["hebergement_type"] == 2 :
+                if ftp != None :
+                    try :
+                        ftp.chdir("application/static/fonds")
+                        ftp.put(chemin_image, nom_fichier)
+                        ftp.chdir("../../../")
+                    except Exception, err :
+                        print "Erreur envoi image de fond :", str(err)
+                        self.log.EcritLog(_(u"[ERREUR] Envoi de l'image de fond par SSH/SFTP impossible."))
+                        return False
+
+        else :
+            nom_fichier = ""
+
+        session.add(models.Parametre(nom="IMAGE_FOND", parametre=nom_fichier))
+
+        # Cadre logo organisateur
+        if self.dict_parametres["cadre_logo"] == 0 :
+            rond = False
+        else :
+            rond = True
+        session.add(models.Parametre(nom="ORGANISATEUR_IMAGE_ROND", parametre=str(rond)))
+
+        # Données organisateur
+        dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
+
+        session.add(models.Parametre(nom="ORGANISATEUR_NOM", parametre=dict_organisateur["nom"]))
+        session.add(models.Parametre(nom="ORGANISATEUR_RUE", parametre=dict_organisateur["rue"].replace("\n", "")))
+        session.add(models.Parametre(nom="ORGANISATEUR_CP", parametre=dict_organisateur["cp"]))
+        session.add(models.Parametre(nom="ORGANISATEUR_VILLE", parametre=dict_organisateur["ville"]))
+        session.add(models.Parametre(nom="ORGANISATEUR_TEL", parametre=dict_organisateur["tel"]))
+        session.add(models.Parametre(nom="ORGANISATEUR_FAX", parametre=dict_organisateur["fax"]))
+        session.add(models.Parametre(nom="ORGANISATEUR_EMAIL", parametre=dict_organisateur["mail"]))
+
+        # Logo organisateur
+        logo = dict_organisateur["logo"]
+        if logo != None :
+            nomFichier = "logo.png"
+            cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+            logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
+            session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=nomFichier))
+
+            # Envoi local
+            if self.dict_parametres["hebergement_type"] == 0 :
+                if self.dict_parametres["hebergement_local_repertoire"] != None:
+                    try :
+                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
+                        shutil.copy2(cheminLogo, destfilepath)
+                    except Exception, err :
+                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
+                        print "Erreur envoi logo organisateur :", str(err)
+                        return False
+
+            # Envoi du logo par FTP
+            if self.dict_parametres["hebergement_type"] == 1 :
+                if ftp != None :
+                    try :
+                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
+                        fichier = open(cheminLogo, "rb")
+                        ftp.storbinary('STOR ' + nomFichier, fichier)
+                    except Exception, err :
+                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
+                        print "Erreur envoi logo organisateur :", str(err)
+                        return False
+
+            # Envoi du logo par SSH/SFTP
+            if self.dict_parametres["hebergement_type"] == 2 :
+                if ftp != None :
+                    try :
+                        destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
+                        ftp.chdir("application/static")
+                        ftp.put(cheminLogo, "logo.png")
+                        ftp.chdir("../../")
+                    except Exception, err :
+                        print "Erreur envoi logo organisateur :", str(err)
+                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
+                        return False
+
+        else :
+            session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=""))
+
+        # Autres
+        session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_EMAIL", parametre=str(self.dict_parametres["recevoir_document_email"])))
+        session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_POSTE", parametre=str(self.dict_parametres["recevoir_document_courrier"])))
+        session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER", parametre=str(self.dict_parametres["recevoir_document_site"])))
+        session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER_LIEU", parametre=self.dict_parametres["recevoir_document_site_lieu"]))
+        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_ACTIF", parametre=str(self.dict_parametres["paiement_ligne_actif"])))
+        session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
+        session.add(models.Parametre(nom="ACCUEIL_ETAT_DOSSIER_AFFICHER", parametre=str(self.dict_parametres["accueil_etat_dossier_afficher"])))
+        session.add(models.Parametre(nom="ACTIVITES_AFFICHER", parametre=str(self.dict_parametres["activites_afficher"])))
+        session.add(models.Parametre(nom="ACTIVITES_INTRO", parametre=self.dict_parametres["activites_intro"]))
+        session.add(models.Parametre(nom="ACTIVITES_AUTORISER_INSCRIPTION", parametre=str(self.dict_parametres["activites_autoriser_inscription"])))
+        session.add(models.Parametre(nom="RESERVATIONS_AFFICHER", parametre=str(self.dict_parametres["reservations_afficher"])))
+        session.add(models.Parametre(nom="RESERVATIONS_INTRO", parametre=self.dict_parametres["reservations_intro"]))
+        session.add(models.Parametre(nom="PLANNING_INTRO", parametre=self.dict_parametres["planning_intro"]))
+        session.add(models.Parametre(nom="FACTURES_AFFICHER", parametre=str(self.dict_parametres["factures_afficher"])))
+        session.add(models.Parametre(nom="FACTURES_INTRO", parametre=self.dict_parametres["factures_intro"]))
+        session.add(models.Parametre(nom="FACTURES_DEMANDE_FACTURE", parametre=str(self.dict_parametres["factures_demande_facture"])))
+        session.add(models.Parametre(nom="REGLEMENTS_AFFICHER", parametre=str(self.dict_parametres["reglements_afficher"])))
+        session.add(models.Parametre(nom="REGLEMENTS_INTRO", parametre=self.dict_parametres["reglements_intro"]))
+        session.add(models.Parametre(nom="REGLEMENTS_DEMANDE_RECU", parametre=str(self.dict_parametres["reglements_demande_recu"])))
+        session.add(models.Parametre(nom="PIECES_AFFICHER", parametre=str(self.dict_parametres["pieces_afficher"])))
+        session.add(models.Parametre(nom="PIECES_INTRO", parametre=self.dict_parametres["pieces_intro"]))
+        session.add(models.Parametre(nom="PIECES_AUTORISER_TELECHARGEMENT", parametre=str(self.dict_parametres["pieces_autoriser_telechargement"])))
+        session.add(models.Parametre(nom="COTISATIONS_AFFICHER", parametre=str(self.dict_parametres["cotisations_afficher"])))
+        session.add(models.Parametre(nom="COTISATIONS_INTRO", parametre=self.dict_parametres["cotisations_intro"]))
+        session.add(models.Parametre(nom="HISTORIQUE_AFFICHER", parametre=str(self.dict_parametres["historique_afficher"])))
+        session.add(models.Parametre(nom="HISTORIQUE_INTRO", parametre=self.dict_parametres["historique_intro"]))
+        session.add(models.Parametre(nom="HISTORIQUE_DELAI", parametre=str(self.dict_parametres["historique_delai"])))
+        session.add(models.Parametre(nom="CONTACT_AFFICHER", parametre=str(self.dict_parametres["contact_afficher"])))
+        session.add(models.Parametre(nom="CONTACT_INTRO", parametre=self.dict_parametres["contact_intro"]))
+        session.add(models.Parametre(nom="CONTACT_CARTE_AFFICHER", parametre=str(self.dict_parametres["contact_carte_afficher"])))
+        session.add(models.Parametre(nom="MENTIONS_AFFICHER", parametre=str(self.dict_parametres["mentions_afficher"])))
+        session.add(models.Parametre(nom="AIDE_AFFICHER", parametre=str(self.dict_parametres["aide_afficher"])))
+
 
         # Création des users
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
@@ -880,6 +1037,8 @@ class Synchro():
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
                 url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 2 :
+                url = self.dict_parametres["url_connecthys"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncup/%d" % secret
             print "URL syncup =", url
 
@@ -945,6 +1104,8 @@ class Synchro():
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
                 url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 2 :
+                url = self.dict_parametres["url_connecthys"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
             print "URL syncdown =", url
 
@@ -1038,6 +1199,8 @@ class Synchro():
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
                 url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 2 :
+                url = self.dict_parametres["url_connecthys"]
             url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "upgrade/%d" % int(secret)
             print "URL upgrade =", url
 
@@ -1050,8 +1213,9 @@ class Synchro():
             print "Resultat :", data
 
         except Exception, err :
-            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'upgrade "))
-            self.log.EcritLog(_(u"err: %s") % err)
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'upgrade"))
+            print "Erreur dans la demande d'upgrade :", err
+            self.log.EcritLog(err)
             print "Erreur dans la demande d'upgrade :", str(err)
             return False
 
