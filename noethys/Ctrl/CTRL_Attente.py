@@ -298,7 +298,7 @@ class CTRL(HTL.HyperTreeList):
                         self.SetItemImage(niveauIndividu, img, which=wx.TreeItemIcon_Normal)
                         
                         # Mémorisation pour impression
-                        listeImpressionIndividus.append({"placeDispo" : placeDispo, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
+                        listeImpressionIndividus.append({"placeDispo" : placeDispo, "nomIndividu" : nomIndividu, "num" : num, "texteIndividu" : texteIndividu, "texteUnites" : texteUnites, "texteDateSaisie" : texteDateSaisie} )
                         
                         num += 1
                     
@@ -459,7 +459,7 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Individus
                 for dictIndividu in listeIndividus :
-                    placeDispo = dictIndividu["placeDispo"] 
+                    placeDispo = dictIndividu["placeDispo"]
                     texteIndividu = dictIndividu["texteIndividu"]
                     texteUnites = dictIndividu["texteUnites"]
                     texteDateSaisie = _(u"Saisie le %s") % dictIndividu["texteDateSaisie"]
@@ -543,13 +543,6 @@ class CTRL(HTL.HyperTreeList):
         # Création d'une feuille
         ws1 = wb.add_sheet(titre)
 
-        # Largeur des colonnes
-        ws1.col(0).width = 1500
-        ws1.col(1).width = 1500
-        ws1.col(2).width = 10000
-        ws1.col(3).width = 10000
-        ws1.col(4).width = 10000
-
         fntLabel = pyExcelerator.Font()
         fntLabel.name = 'Verdana'
         fntLabel.bold = True
@@ -570,34 +563,37 @@ class CTRL(HTL.HyperTreeList):
         styleDate.alignment = al
         styleDate.font.bold = True
 
+        # Entetes et largeurs des colonnes
+        colonnes = [
+            (_(u"Date"), 8000), (_(u"Groupe"), 8000), (_(u"Dispo"), 2000), (_(u"N°"), 2000),
+            (_(u"Individu"), 10000), (_(u"Unités"), 10000), (_(u"Date de saisie"), 10000),
+            ]
+        index = 0
+        for label, largeur in colonnes :
+            ws1.col(index).width = largeur
+            ws1.write(0, index, label)
+            index += 1
+
         # Contenu
-        x = 0
+        x = 1
         for date, listeGroupes in self.listeImpression :
-
-            # Date
-            ws1.write(x, 0, date, styleDate)
-            x += 1
-
-            # Groupe
             for nomGroupe, listeIndividus in listeGroupes :
-                ws1.write(x, 1, nomGroupe)
-                x += 1
-
-                # Individu
                 for dictIndividu in listeIndividus :
                     placeDispo = dictIndividu["placeDispo"]
-                    texteIndividu = dictIndividu["texteIndividu"]
-                    texteUnites = dictIndividu["texteUnites"]
-                    texteDateSaisie = _(u"Saisie le %s") % dictIndividu["texteDateSaisie"]
+                    if placeDispo == True :
+                        placeDispoTxt = _(u"Oui")
+                    else :
+                        placeDispo = ""
 
-                    ws1.write(x, 2, texteIndividu)
-                    ws1.write(x, 3, texteUnites)
-                    ws1.write(x, 4, texteDateSaisie)
+                    ws1.write(x, 0, date, styleDate)
+                    ws1.write(x, 1, nomGroupe)
+                    ws1.write(x, 2, placeDispo)
+                    ws1.write(x, 3, dictIndividu["num"])
+                    ws1.write(x, 4, dictIndividu["nomIndividu"])
+                    ws1.write(x, 5, dictIndividu["texteUnites"])
+                    ws1.write(x, 6, dictIndividu["texteDateSaisie"])
 
                     x += 1
-
-            # Saute une ligne
-            x += 1
 
         # Finalisation du fichier xls
         wb.save(cheminFichier)

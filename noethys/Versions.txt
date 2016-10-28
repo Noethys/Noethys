@@ -1,10 +1,11 @@
-Version 1.1.7.6 (24/09/2016) :
+Version 1.1.7.6 (23/10/2016) :
 
 - Ajout de Connecthys (Version Beta)
 - Correction sauvegarde différentielle réservations Connecthys
 - Ajout démarrage serveur Connecthys local
 - Ajout recherche activité dans traitement lot conso
 - Ajout de la liste des comptes internet dans le menu Individus
+- Ajout de l'export Excel de la liste d'attente
 - Amélioration paramètres codes internet famille
 - Optimisation de l'importation des paramétrages d'activités
 - Correction divers bugs
