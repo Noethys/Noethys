@@ -138,6 +138,7 @@ options = {
 
         "packages": [
                 "pytz", "reportlab", "twisted", "twisted.web.resource", "sqlalchemy",
+                "cffi", "cryptography",
                 ],
 
         "typelibs": [

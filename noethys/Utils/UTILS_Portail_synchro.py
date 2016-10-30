@@ -45,6 +45,25 @@ from Dlg.DLG_Portail_config import LISTE_THEMES
 from Crypto.Hash import SHA256
 
 
+def patch_crypto_be_discovery():
+    """ Patch pour Paramiko contre bug backends missing lors de la compilation sur Windows """
+    from cryptography.hazmat import backends
+
+    try:
+        from cryptography.hazmat.backends.commoncrypto.backend import backend as be_cc
+    except ImportError:
+        be_cc = None
+
+    try:
+        from cryptography.hazmat.backends.openssl.backend import backend as be_ossl
+    except ImportError:
+        be_ossl = None
+
+    backends._available_backends_list = [
+        be for be in (be_cc, be_ossl) if be is not None
+    ]
+
+patch_crypto_be_discovery()
 
 
 class Synchro():
@@ -76,6 +95,7 @@ class Synchro():
             pass
 
     def Synchro_totale(self):
+        t1 = time.time()
         self.nbre_etapes = 25
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
         self.Download_data()
@@ -83,7 +103,8 @@ class Synchro():
         if resultat == False :
             self.log.EcritLog(_(u"Synchronisation arrêtée."))
         else :
-            self.log.EcritLog(_(u"Synchronisation terminée."))
+            secondes = time.time() - t1
+            self.log.EcritLog(_(u"Synchronisation effectuée en %d secondes.") % secondes)
         self.log.EcritLog(_(u"Client de synchronisation prêt"))
         try :
             self.log.SetGauge(0)
@@ -373,7 +394,7 @@ class Synchro():
         session.add(models.Parametre(nom="HISTORIQUE_DELAI", parametre=str(self.dict_parametres["historique_delai"])))
         session.add(models.Parametre(nom="CONTACT_AFFICHER", parametre=str(self.dict_parametres["contact_afficher"])))
         session.add(models.Parametre(nom="CONTACT_INTRO", parametre=self.dict_parametres["contact_intro"]))
-        session.add(models.Parametre(nom="CONTACT_CARTE_AFFICHER", parametre=str(self.dict_parametres["contact_carte_afficher"])))
+        session.add(models.Parametre(nom="CONTACT_CARTE_AFFICHER", parametre=str(False))) #self.dict_parametres["contact_carte_afficher"])))
         session.add(models.Parametre(nom="MENTIONS_AFFICHER", parametre=str(self.dict_parametres["mentions_afficher"])))
         session.add(models.Parametre(nom="AIDE_AFFICHER", parametre=str(self.dict_parametres["aide_afficher"])))
 
