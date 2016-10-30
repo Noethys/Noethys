@@ -12,8 +12,6 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-import os
-import shutil
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Propertygrid
@@ -21,10 +19,9 @@ import wx.propgrid as wxpg
 import copy
 import random
 import time
-import psutil
-import subprocess
+import codecs
+import os.path
 
-import GestionDB
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
 from Utils import UTILS_Portail_controle
@@ -683,11 +680,11 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
         # Afficher la carte
-        nom = "contact_carte_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher la carte Google Maps"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour afficher la carte Google Maps"))
-        propriete.SetAttribute("UseCheckbox", True)
-        self.Append(propriete)
+        # nom = "contact_carte_afficher"
+        # propriete = wxpg.BoolProperty(label=_(u"Afficher la carte Google Maps"), name=nom, value=VALEURS_DEFAUT[nom])
+        # propriete.SetHelpString(_(u"Cochez cette case pour afficher la carte Google Maps"))
+        # propriete.SetAttribute("UseCheckbox", True)
+        # self.Append(propriete)
 
 
         # Catégorie
@@ -744,9 +741,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
-            ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
 
+        # MAJ affichage grille
         self.Switch()
 
     def Sauvegarde(self):
@@ -768,8 +765,87 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             if prop.GetName() == "portail_activation" :
                 self.parent.SetActivation(prop.GetValue())
 
+    def Importation_config(self, event=None):
+        # Demande l'emplacement du fichier
+        wildcard = u"Fichier de configuration (*.cfg)|*.cfg|Tous les fichiers (*.*)|*.*"
+        standardPath = wx.StandardPaths.Get()
+        rep = standardPath.GetDocumentsDir()
+        dlg = wx.FileDialog(None, message=_(u"Veuillez sélectionner le fichier de configuration à restaurer"), defaultDir=rep, defaultFile="", wildcard=wildcard, style=wx.OPEN)
+        if dlg.ShowModal() == wx.ID_OK:
+            cheminFichier = dlg.GetPath()
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            return
+
+        # Lecture du fichier
+        fichier = codecs.open(cheminFichier, encoding='utf-8', mode='r')
+        liste_lignes = fichier.readlines()
+        fichier.close()
+
+        for ligne in liste_lignes :
+            if len(ligne) > 0 :
+                ligne = ligne.replace("\n", "")
+                ligne = ligne.replace("#!#", "\n")
+                if len(ligne.split(" = ")) == 2 :
+                    cle, valeur = ligne.split(" = ")
+                    propriete = self.GetPropertyByName(cle)
+                    if propriete != None :
+                        type_propriete = type(VALEURS_DEFAUT[cle])
+                        if type_propriete in (str, unicode) :
+                            valeur = unicode(valeur)
+                        if type_propriete == bool :
+                            valeur = bool(valeur)
+                        if type_propriete == int :
+                            valeur = int(valeur)
+                        propriete.SetValue(valeur)
+
+        # MAJ affichage grille
+        self.Switch()
+
+        dlg = wx.MessageDialog(None, _(u"Importation de la configuration effectuée."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
 
 
+    def Exportation_config(self, event=None):
+        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        nomFichier = "Config_connecthys.cfg"
+        wildcard = u"Fichier de configuration (*.cfg)|*.cfg|Tous les fichiers (*.*)|*.*"
+        sp = wx.StandardPaths.Get()
+        cheminDefaut = sp.GetDocumentsDir()
+        dlg = wx.FileDialog(
+            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut,
+            defaultFile = nomFichier,
+            wildcard = wildcard,
+            style = wx.SAVE
+            )
+        dlg.SetFilterIndex(0)
+        if dlg.ShowModal() == wx.ID_OK:
+            cheminFichier = dlg.GetPath()
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            return
+
+        # Le fichier de destination existe déjà :
+        if os.path.isfile(cheminFichier) == True :
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            if dlg.ShowModal() == wx.ID_NO :
+                dlg.Destroy()
+                return False
+            else:
+                dlg.Destroy()
+
+        # Création du fichier
+        fichier = codecs.open(cheminFichier, encoding='utf-8', mode='w')
+        dictValeurs = copy.deepcopy(self.GetPropertyValues())
+        for cle, valeur in dictValeurs.iteritems() :
+            if type(valeur) in (str, unicode) :
+                valeur = valeur.replace("\n", "#!#")
+            ligne = u"%s = %s\n" % (cle, valeur)
+            fichier.write(ligne)
+        fichier.close()
 
 
 class Dialog(wx.Dialog):
@@ -919,6 +995,22 @@ class Dialog(wx.Dialog):
 
         menu.AppendSeparator()
 
+        # Importer config
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Importer la configuration"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_import.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_parametres.Importation_config, id=id)
+
+        # Exporter config
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Exporter la configuration"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Document_export.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_parametres.Exportation_config, id=id)
+
+        menu.AppendSeparator()
+
         # Démarrer
         id = wx.NewId()
         item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
@@ -951,15 +1043,6 @@ class Dialog(wx.Dialog):
 
         menu.AppendSeparator()
 
-        # Ouvrir
-        id = wx.NewId()
-        item = wx.MenuItem(menu, id, _(u"Ouvrir Connecthys dans le navigateur"))
-        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Planete.png"), wx.BITMAP_TYPE_PNG))
-        menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.OuvrirNavigateur, id=id)
-
-        menu.AppendSeparator()
-
         # Synchroniser
         id = wx.NewId()
         item = wx.MenuItem(menu, id, _(u"Synchroniser les données"))
@@ -974,7 +1057,14 @@ class Dialog(wx.Dialog):
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Traiter, id=id)
 
+        menu.AppendSeparator()
 
+        # Ouvrir
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Ouvrir Connecthys dans le navigateur"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Planete.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OuvrirNavigateur, id=id)
 
         self.PopupMenu(menu)
         menu.Destroy()
