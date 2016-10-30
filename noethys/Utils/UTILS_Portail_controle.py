@@ -43,7 +43,7 @@ class ServeurConnecthys():
         try :
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            ssh.connect(self.dict_parametres["ssh_serveur"], username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
+            ssh.connect(self.dict_parametres["ssh_serveur"], port=int(self.dict_parametres["ssh_port"]), username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
             return ssh
         except Exception, err:
             self.parent.EcritLog(_(u"PROBLEME...%s") % err)

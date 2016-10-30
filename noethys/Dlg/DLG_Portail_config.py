@@ -59,6 +59,7 @@ VALEURS_DEFAUT = {
     "accept_all_cert" : False,
     "hebergement_local_repertoire" : "/tmp/connecthys",
     "ssh_serveur" : "127.0.0.1",
+    "ssh_port" : "22",
     "ssh_key_file" : "",
     "ssh_utilisateur" : "",
     "ssh_mdp" : "",
@@ -171,6 +172,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("ssh_serveur")
         property.SetAttribute("obligatoire", False)
         property.Hide(True)
+        property = self.GetProperty("ssh_port")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
         property = self.GetProperty("ssh_utilisateur")
         property.SetAttribute("obligatoire", False)
         property.Hide(True)
@@ -206,6 +210,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         property = self.GetProperty("ssh_serveur")
         property.SetAttribute("obligatoire", False)
         property.Hide(True)
+        property = self.GetProperty("ssh_port")
+        property.SetAttribute("obligatoire", False)
+        property.Hide(True)
         property = self.GetProperty("ssh_utilisateur")
         property.SetAttribute("obligatoire", False)
         property.Hide(True)
@@ -221,6 +228,9 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def SwitchHostingToSSH(self):
         property = self.GetProperty("ssh_serveur")
+        property.SetAttribute("obligatoire", True)
+        property.Hide(False)
+        property = self.GetProperty("ssh_port")
         property.SetAttribute("obligatoire", True)
         property.Hide(False)
         property = self.GetProperty("ssh_utilisateur")
@@ -385,10 +395,16 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez l'adresse IP du serveur SSH ou son hostname complet (Ex : 192.168.1.15 ou machine.domaine.tld)"))
         self.Append(propriete)
 
+        # Port SSH
+        nom = "ssh_port"
+        propriete = wxpg.StringProperty(label=_(u"Port du serveur SSH"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le numéro de port SSH (22 par défaut)"))
+        self.Append(propriete)
+
         # SSH key file
         nom = "ssh_key_file"
         propriete = wxpg.StringProperty(label=_(u"Fichier de clé"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le chemin de la clé (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la clé."))
+        propriete.SetHelpString(_(u"[Optionnel] Saisissez le chemin de la clé (ex : ~/.ssh/id_dsa).\nLe serveur SSH doit connaitre la partie publique de la clé."))
         self.Append(propriete)
 
         # Utilisateur SSH
@@ -1134,6 +1150,12 @@ class Dialog(wx.Dialog):
 
             if dict_parametres["ssh_serveur"] == "" :
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'adresse du serveur SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+            if dict_parametres["ssh_port"] == "" :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir le numéro de port du serveur SSH !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
