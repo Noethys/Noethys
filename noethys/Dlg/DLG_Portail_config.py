@@ -124,180 +124,78 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         if event.GetPropertyName() == "portail_activation" :
             value = event.GetPropertyValue()
             self.parent.SetActivation(value)
-        elif event.GetPropertyName() == "hebergement_type" :
-            value = event.GetPropertyValue()
-            if value == 0 :
-                self.SwitchHostingToLocal()
-            elif value == 1 :
-                self.SwitchHostingToFTP()
-            elif value == 2 :
-                self.SwitchHostingToSSH()
-            else :
-                raise
-        elif event.GetPropertyName() == "db_type" :
-            value = event.GetPropertyValue()
-            if value == 0 :
-                self.SwitchDatabaseToLocal()
-            elif value == 1 :
-                self.SwitchDatabaseToNetwork()
-            else :
-                raise
-        elif event.GetPropertyName() == "serveur_type" :
-            value = event.GetPropertyValue()
-            if property is not None :
-                if value == 1 :
-                    self.SwitchServerToCgi()
-                elif value == 0 :
-                    self.SwitchServerToStandalone()
-                elif value == 2 :
-                    self.SwitchServerToWsgi()
-                else :
-                    raise
-        self.RefreshGrid()
+        else :
+            self.Switch()
         event.Skip()
 
-    def SwitchHostingToLocal(self):
-        property = self.GetProperty("ftp_serveur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ftp_utilisateur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ftp_mdp")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ftp_repertoire")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_serveur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_port")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_utilisateur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_mdp")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_key_file")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_repertoire")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("hebergement_local_repertoire")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
+    def Switch(self):
+        dict_switch = {
+            "hebergement_type" : {
+                # Local
+                0 : [
+                    {"propriete" : "hebergement_local_repertoire", "obligatoire" : True},
+                    ],
+                # FTP
+                1 : [
+                    {"propriete" : "ftp_serveur", "obligatoire" : True},
+                    {"propriete" : "ftp_utilisateur", "obligatoire" : True},
+                    {"propriete" : "ftp_mdp", "obligatoire" : True},
+                    {"propriete" : "ftp_repertoire", "obligatoire" : False},
+                    ],
+                #SFTP/SSH
+                2 : [
+                    {"propriete" : "ssh_serveur", "obligatoire" : True},
+                    {"propriete" : "ssh_port", "obligatoire" : True},
+                    {"propriete" : "ssh_utilisateur", "obligatoire" : True},
+                    {"propriete" : "ssh_mdp", "obligatoire" : True},
+                    {"propriete" : "ssh_key_file", "obligatoire" : False},
+                    {"propriete" : "ssh_repertoire", "obligatoire" : False},
+                    ]
+                 },
 
-    def SwitchHostingToFTP(self):
-        property = self.GetProperty("ftp_serveur")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ftp_utilisateur")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ftp_mdp")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ftp_repertoire")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(False)
-        property = self.GetProperty("hebergement_local_repertoire")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_serveur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_port")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_utilisateur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_mdp")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_key_file")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ssh_repertoire")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
+            "db_type" : {
+                # SQLITE
+                0 : [
+                    ],
+                # MYSQL
+                1 : [
+                    {"propriete" : "db_serveur", "obligatoire" : True},
+                    {"propriete" : "db_utilisateur", "obligatoire" : True},
+                    {"propriete" : "db_mdp", "obligatoire" : True},
+                    {"propriete" : "db_nom", "obligatoire" : True},
+                    ],
+                 },
 
-    def SwitchHostingToSSH(self):
-        property = self.GetProperty("ssh_serveur")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ssh_port")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ssh_utilisateur")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ssh_mdp")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ssh_key_file")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(False)
-        property = self.GetProperty("ssh_repertoire")
-        property.SetAttribute("obligatoire", True)
-        property.Hide(False)
-        property = self.GetProperty("ftp_serveur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ftp_utilisateur")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ftp_mdp")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("ftp_repertoire")
-        property.SetAttribute("obligatoire", False)
-        property.Hide(True)
-        property = self.GetProperty("hebergement_local_repertoire")
-        property.SetAttribute("obligatoire", False);
-        property.Hide(True);
+            "serveur_type" : {
+                # Serveur autonome
+                0 : [
+                    {"propriete" : "serveur_options", "obligatoire" : False},
+                    ],
+                # CGI
+                1 : [
+                    {"propriete" : "serveur_cgi_file", "obligatoire" : True},
+                    ],
+                # WSGI
+                2 : [
+                    ]
+                 },
 
-    def SwitchDatabaseToLocal(self):
-        property = self.GetProperty("db_serveur")
-        property.Hide(True)
-        property = self.GetProperty("db_utilisateur")
-        property.Hide(True)
-        property = self.GetProperty("db_mdp")
-        property.Hide(True)
-        property = self.GetProperty("db_nom")
-        property.Hide(True)
+            }
 
-    def SwitchDatabaseToNetwork(self):
-        property = self.GetProperty("db_serveur")
-        property.Hide(False)
-        property = self.GetProperty("db_utilisateur")
-        property.Hide(False)
-        property = self.GetProperty("db_mdp")
-        property.Hide(False)
-        property = self.GetProperty("db_nom")
-        property.Hide(False)
+        for nom_property, dict_conditions in dict_switch.iteritems() :
+            propriete = self.GetProperty(nom_property)
+            valeur = propriete.GetValue()
+            for condition, liste_proprietes in dict_conditions.iteritems() :
+                for dict_propriete in liste_proprietes :
+                    propriete = self.GetPropertyByName(dict_propriete["propriete"])
+                    if valeur == condition :
+                        propriete.Hide(False)
+                        propriete.SetAttribute("obligatoire", dict_propriete["obligatoire"])
+                    else :
+                        propriete.Hide(True)
+                        propriete.SetAttribute("obligatoire", False)
 
-    def SwitchServerToStandalone(self):
-        property = self.GetProperty("serveur_options")
-        property.Hide(False)
-        property = self.GetProperty("serveur_cgi_file")
-        property.Hide(True)
-
-    def SwitchServerToCgi(self):
-        property = self.GetProperty("serveur_cgi_file")
-        property.Hide(False)
-        property = self.GetProperty("serveur_options")
-        property.Hide(True)
-
-    def SwitchServerToWsgi(self):
-        property = self.GetProperty("serveur_cgi_file")
-        property.Hide(True)
-        property = self.GetProperty("serveur_options")
-        property.Hide(True)
+        self.RefreshGrid()
 
     def Remplissage(self):
 
@@ -485,8 +383,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Préfixe des tables
         nom = "prefixe_tables"
-        propriete = wxpg.StringProperty(label=_(u"Préfixe des tables (optionnel)"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez un préfixe pour les tables (optionnel)"))
+        propriete = wxpg.StringProperty(label=_(u"Préfixe des tables"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"[Optionnel] Saisissez un préfixe pour les tables"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
 
@@ -849,39 +747,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             ancienneValeur = propriete.GetValue()
             propriete.SetValue(valeur)
 
-        property = self.GetProperty("hebergement_type")
-        if property is not None :
-            value = property.GetValue()
-            if value == 2 :
-                self.SwitchHostingToSSH()
-            elif value == 1 :
-                self.SwitchHostingToFTP()
-            elif value == 0 :
-                self.SwitchHostingToLocal()
-            else :
-                raise
-
-        property = self.GetProperty("db_type")
-        if property is not None :
-            value = property.GetValue()
-            if value == 1 :
-                self.SwitchDatabaseToNetwork()
-            elif value == 0 :
-                self.SwitchDatabaseToLocal()
-            else :
-                raise
-
-        property = self.GetProperty("serveur_type")
-        if property is not None :
-            value = property.GetValue()
-        if value == 1 :
-            self.SwitchServerToCgi()
-        elif value == 0 :
-            self.SwitchServerToStandalone()
-        elif value == 2 :
-            self.SwitchServerToWsgi()
-        else :
-            raise
+        self.Switch()
 
     def Sauvegarde(self):
         """ Mémorisation des valeurs du contrôle """
