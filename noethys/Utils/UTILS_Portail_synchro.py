@@ -133,153 +133,6 @@ class Synchro():
         liste_lignes.append(Ecrit_ligne("PREFIXE_TABLES", self.dict_parametres["prefixe_tables"], type_valeur=str))
         liste_lignes.append(Ecrit_ligne("DEBUG", self.dict_parametres["mode_debug"], type_valeur=bool))
 
-        # Valeurs Utilisateur
-        # liste_lignes.append("\nclass Config_utilisateur(object):\n")
-        #
-        # # IDfichier
-        # IDfichier = FonctionsPerso.GetIDfichier()
-        # liste_lignes.append(Ecrit_ligne("IDfichier", IDfichier, type_valeur=str))
-        #
-        # # Thème
-        # index = 0
-        # for code, label in LISTE_THEMES :
-        #     if index == self.dict_parametres["theme"] :
-        #         theme = "skin-%s" % code
-        #     index += 1
-        # liste_lignes.append(Ecrit_ligne("SKIN", theme, type_valeur=str))
-        #
-        # # Image de fond identification
-        # if self.dict_parametres["image_identification"] != "" :
-        #     chemin_image = self.dict_parametres["image_identification"]
-        #     nom_fichier = os.path.basename(chemin_image)
-        #
-        #     # Envoi local
-        #     if self.dict_parametres["hebergement_type"] == 0 :
-        #         if self.dict_parametres["hebergement_local_repertoire"] != None:
-        #             try :
-        #                 destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
-        #                 shutil.copy2(chemin_image, destfilepath)
-        #             except Exception, err :
-        #                 print "Erreur envoi image de fond :", str(err)
-        #                 return False
-        #
-        #     # Envoi du logo par FTP
-        #     if self.dict_parametres["hebergement_type"] == 1 :
-        #         if ftp != None :
-        #             try :
-        #                 ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/fonds")
-        #                 fichier = open(chemin_image, "rb")
-        #                 ftp.storbinary('STOR ' + nom_fichier, fichier)
-        #             except Exception, err :
-        #                 print "Erreur envoi image de fond :", str(err)
-        #                 return False
-        #
-        #     # Envoi du logo par SSH/SFTP
-        #     if self.dict_parametres["hebergement_type"] == 2 :
-        #         if ftp != None :
-        #             try :
-        #                 ftp.chdir("application/static/fonds")
-        #                 ftp.put(chemin_image, nom_fichier)
-        #                 ftp.chdir("../../../")
-        #             except Exception, err :
-        #                 print "Erreur envoi image de fond :", str(err)
-        #                 self.log.EcritLog(_(u"[ERREUR] Envoi de l'image de fond par SSH/SFTP impossible."))
-        #                 return False
-        #
-        # else :
-        #     nom_fichier = ""
-        #
-        # liste_lignes.append(Ecrit_ligne("IMAGE_FOND", nom_fichier, type_valeur=unicode))
-        #
-        #
-        # # Cadre logo organisateur
-        # if self.dict_parametres["cadre_logo"] == 0 :
-        #     rond = False
-        # else :
-        #     rond = True
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE_ROND", rond, type_valeur=bool))
-        #
-        # # Données organisateur
-        # dict_organisateur = UTILS_Organisateur.GetDonnees(tailleLogo=(200, 200))
-        #
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_NOM", dict_organisateur["nom"], type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_RUE", dict_organisateur["rue"].replace("\n", ""), type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_CP", dict_organisateur["cp"], type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_VILLE", dict_organisateur["ville"], type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_TEL", dict_organisateur["tel"], type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_FAX", dict_organisateur["fax"], type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("ORGANISATEUR_EMAIL", dict_organisateur["mail"], type_valeur=unicode))
-        #
-        # # Logo organisateur
-        # logo = dict_organisateur["logo"]
-        # if logo != None :
-        #     nomFichier = "logo.png"
-        #     cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
-        #     logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
-        #     liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", nomFichier, type_valeur=unicode))
-        #
-        #     # Envoi local
-        #     if self.dict_parametres["hebergement_type"] == 0 :
-        #         if self.dict_parametres["hebergement_local_repertoire"] != None:
-        #             try :
-        #                 destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
-        #                 shutil.copy2(cheminLogo, destfilepath)
-        #             except Exception, err :
-        #                 self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
-        #                 print "Erreur envoi logo organisateur :", str(err)
-        #                 return False
-        #
-        #     # Envoi du logo par FTP
-        #     if self.dict_parametres["hebergement_type"] == 1 :
-        #         if ftp != None :
-        #             try :
-        #                 ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
-        #                 fichier = open(cheminLogo, "rb")
-        #                 ftp.storbinary('STOR ' + nomFichier, fichier)
-        #             except Exception, err :
-        #                 self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
-        #                 print "Erreur envoi logo organisateur :", str(err)
-        #                 return False
-        #
-        #     # Envoi du logo par SSH/SFTP
-        #     if self.dict_parametres["hebergement_type"] == 2 :
-        #         if ftp != None :
-        #             try :
-        #                 destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
-        #                 ftp.chdir("application/static")
-        #                 ftp.put(cheminLogo, "logo.png")
-        #                 ftp.chdir("../../")
-        #             except Exception, err :
-        #                 print "Erreur envoi logo organisateur :", str(err)
-        #                 self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
-        #                 return False
-        #
-        # else :
-        #     liste_lignes.append(Ecrit_ligne("ORGANISATEUR_IMAGE", None, type_valeur=None))
-        #
-        # # Autres
-        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_EMAIL", self.dict_parametres["recevoir_document_email"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_POSTE", self.dict_parametres["recevoir_document_courrier"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER", self.dict_parametres["recevoir_document_site"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("RECEVOIR_DOCUMENT_RETIRER_LIEU", self.dict_parametres["recevoir_document_site_lieu"], type_valeur=unicode))
-        # liste_lignes.append(Ecrit_ligne("PAIEMENT_EN_LIGNE_ACTIF", self.dict_parametres["paiement_ligne_actif"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("ACTIVITES_AFFICHER", self.dict_parametres["activites_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("ACTIVITES_AUTORISER_INSCRIPTION", self.dict_parametres["activites_autoriser_inscription"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("RESERVATIONS_AFFICHER", self.dict_parametres["reservations_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("FACTURES_AFFICHER", self.dict_parametres["factures_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("FACTURES_DEMANDE_FACTURE", self.dict_parametres["factures_demande_facture"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("REGLEMENTS_AFFICHER", self.dict_parametres["reglements_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("REGLEMENTS_DEMANDE_RECU", self.dict_parametres["reglements_demande_recu"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("PIECES_AFFICHER", self.dict_parametres["pieces_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("PIECES_AUTORISER_TELECHARGEMENT", self.dict_parametres["pieces_autoriser_telechargement"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("COTISATIONS_AFFICHER", self.dict_parametres["cotisations_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("HISTORIQUE_AFFICHER", self.dict_parametres["historique_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("HISTORIQUE_DELAI", self.dict_parametres["historique_delai"], type_valeur=int))
-        # liste_lignes.append(Ecrit_ligne("CONTACT_AFFICHER", self.dict_parametres["contact_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("CONTACT_CARTE_AFFICHER", self.dict_parametres["contact_carte_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("MENTIONS_AFFICHER", self.dict_parametres["mentions_afficher"], type_valeur=bool))
-        # liste_lignes.append(Ecrit_ligne("AIDE_AFFICHER", self.dict_parametres["aide_afficher"], type_valeur=bool))
-
         # Génération du fichier
         nomFichier = "config.py"
         nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
@@ -288,49 +141,51 @@ class Synchro():
             fichier.write(ligne)
         fichier.close()
 
-        # Envoi local
-        if self.dict_parametres["hebergement_type"] == 0 :
-            if self.dict_parametres["hebergement_local_repertoire"] != None :
-                destfile = os.path.join(self.dict_parametres["hebergement_local_repertoire"] + ("" if self.dict_parametres["hebergement_local_repertoire"][-1] == '/' else "/"), "application/data/config.py")
-                try:
-                    shutil.move(nomFichierComplet, destfile)
-                except:
-                    print "Envoi du fichier de configuration par copie locale impossible :", str(err)
-                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par copie locale impossible."))
-                    return False
-            else :
-                return False
+        # Mode WSGI : Comparaison des 2 fichiers de config
+        dirty_config = True
+        #if self.dict_parametres["serveur_type"] == 2 :
+        self.log.EcritLog(_(u"Téléchargement du fichier de config"))
+        resultat = self.TelechargeFichier(ftp=ftp, nomFichier="config.py", repFichier="application/data")
+        if resultat != False :
+            fichier_online = open(os.path.join(resultat[0], resultat[1]), "r")
+            liste_lignes_online = fichier_online.readlines()
+            fichier_online.close()
 
-        # Envoi du fichier par FTP
-        if self.dict_parametres["hebergement_type"] == 1 :
-            if ftp != None :
-                ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == '/' else "/") + "application/data")
-                fichier = open(nomFichierComplet, "rb")#codecs.open(nomFichierComplet, 'rb', encoding='utf8')
-                try :
-                    ftp.storbinary('STOR ' + nomFichier, fichier)
-                except Exception, err :
-                    print "Envoi du fichier de configuration par FTP impossible :", str(err)
-                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par FTP impossible."))
-            else :
-                return False
+            # Comparaison du fichier en ligne et du fichier généré
+            if liste_lignes_online == liste_lignes :
+                dirty_config = False
 
-        # Envoi du fichier par SSH/SFTP
-        if self.dict_parametres["hebergement_type"] == 2 :
-            if ftp != None :
-                destfile = os.path.join(self.dict_parametres["ssh_repertoire"] + ("" if self.dict_parametres["ssh_repertoire"][-1] == '/' else "/"), "application/data/config.py")
-                try :
-                    ftp.chdir("application/data")
-                    ftp.put(nomFichierComplet, "config.py")
-                    ftp.chdir("../../")
-                except Exception, err :
-                    print "Envoi du fichier de configuration par SSH/SFTP impossible :", str(err)
-                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier de configuration par SSH/SFTP impossible."))
-                    return False
-            else :
-                return False
+        if dirty_config == True :
+            # Upload du fichier de config
+            self.UploadFichier(ftp=ftp, nomFichierComplet=nomFichierComplet, repDest="application/data")
+
+            # Auto reload WSGI
+            if self.dict_parametres["serveur_type"] == 2 :
+                self.AutoReloadWSGI(ftp)
 
         return True
 
+    def AutoReloadWSGI(self, ftp=None):
+        if ftp != None :
+            self.log.EcritLog(_(u"Envoi du fichier WSGI pour auto reload"))
+
+            # Téléchargement du fichier wsgi
+            resultat = self.TelechargeFichier(ftp=ftp, nomFichier="connecthys.wsgi", repFichier=None)
+            fichier_wsgi = open(os.path.join(resultat[0], resultat[1]), "r")
+            liste_lignes_wsgi = fichier_wsgi.readlines()
+            fichier_wsgi.close()
+
+            # Création du nouveau fichier wsgi
+            nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier="connecthys.wsgi")
+            fichier_wsgi = codecs.open(nomFichierComplet, 'w')
+            for ligne in liste_lignes_wsgi :
+                if "lastupdate" in ligne :
+                    ligne = "# lastupdate = %s" % datetime.datetime.now()
+                fichier_wsgi.write(ligne)
+            fichier_wsgi.close()
+
+            # Envoi du nouveau fichier wsgi
+            self.UploadFichier(ftp=ftp, nomFichierComplet=nomFichierComplet, repDest="")
 
     def Upload_data(self) :
         self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
@@ -360,9 +215,9 @@ class Synchro():
             try :
                 ssh = paramiko.SSHClient()
                 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                ssh.connect(self.dict_parametres["ssh_serveur"], username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
+                ssh.connect(self.dict_parametres["ssh_serveur"], port=int(self.dict_parametres["ssh_port"]), username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
                 ftp = ssh.open_sftp()
-                ftp.chdir(self.dict_parametres["ssh_repertoire"])
+                ftp.chdir("/" + self.dict_parametres["ssh_repertoire"])
             except Exception, err :
                 print "Erreur connexion SSH/SFTP au serveur : ", str(err)
                 self.log.EcritLog(_(u"[ERREUR] Connexion SSH/SFTP impossible."))
@@ -387,7 +242,7 @@ class Synchro():
 
         # Récupération du fichier models
         self.log.EcritLog(_(u"Récupération des modèles de données..."))
-        resultat = self.TelechargeModels(ftp)
+        resultat = self.TelechargeFichier(ftp=ftp, nomFichier="models.py", repFichier="application")
         if resultat == False :
             self.log.EcritLog(_(u"[ERREUR] Récupération des modèles de données impossible."))
             if self.dict_parametres["hebergement_type"] == 1 :
@@ -448,38 +303,8 @@ class Synchro():
             chemin_image = self.dict_parametres["image_identification"]
             nom_fichier = os.path.basename(chemin_image)
 
-            # Envoi local
-            if self.dict_parametres["hebergement_type"] == 0 :
-                if self.dict_parametres["hebergement_local_repertoire"] != None:
-                    try :
-                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/fonds")
-                        shutil.copy2(chemin_image, destfilepath)
-                    except Exception, err :
-                        print "Erreur envoi image de fond :", str(err)
-                        return False
-
-            # Envoi du logo par FTP
-            if self.dict_parametres["hebergement_type"] == 1 :
-                if ftp != None :
-                    try :
-                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static/fonds")
-                        fichier = open(chemin_image, "rb")
-                        ftp.storbinary('STOR ' + nom_fichier, fichier)
-                    except Exception, err :
-                        print "Erreur envoi image de fond :", str(err)
-                        return False
-
-            # Envoi du logo par SSH/SFTP
-            if self.dict_parametres["hebergement_type"] == 2 :
-                if ftp != None :
-                    try :
-                        ftp.chdir("application/static/fonds")
-                        ftp.put(chemin_image, nom_fichier)
-                        ftp.chdir("../../../")
-                    except Exception, err :
-                        print "Erreur envoi image de fond :", str(err)
-                        self.log.EcritLog(_(u"[ERREUR] Envoi de l'image de fond par SSH/SFTP impossible."))
-                        return False
+            # Upload du fichier image de fond
+            self.UploadFichier(ftp=ftp, nomFichierComplet=chemin_image, repDest="application/static/fonds")
 
         else :
             nom_fichier = ""
@@ -512,41 +337,8 @@ class Synchro():
             logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
             session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=nomFichier))
 
-            # Envoi local
-            if self.dict_parametres["hebergement_type"] == 0 :
-                if self.dict_parametres["hebergement_local_repertoire"] != None:
-                    try :
-                        destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static")
-                        shutil.copy2(cheminLogo, destfilepath)
-                    except Exception, err :
-                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par copie locale impossible."))
-                        print "Erreur envoi logo organisateur :", str(err)
-                        return False
-
-            # Envoi du logo par FTP
-            if self.dict_parametres["hebergement_type"] == 1 :
-                if ftp != None :
-                    try :
-                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + "/application/static")
-                        fichier = open(cheminLogo, "rb")
-                        ftp.storbinary('STOR ' + nomFichier, fichier)
-                    except Exception, err :
-                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par FTP impossible."))
-                        print "Erreur envoi logo organisateur :", str(err)
-                        return False
-
-            # Envoi du logo par SSH/SFTP
-            if self.dict_parametres["hebergement_type"] == 2 :
-                if ftp != None :
-                    try :
-                        destfilepath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/static/logo.png")
-                        ftp.chdir("application/static")
-                        ftp.put(cheminLogo, "logo.png")
-                        ftp.chdir("../../")
-                    except Exception, err :
-                        print "Erreur envoi logo organisateur :", str(err)
-                        self.log.EcritLog(_(u"[ERREUR] Envoi du logo organisateur par SSH/SFTP impossible."))
-                        return False
+            # Upload du logo
+            self.UploadFichier(ftp=ftp, nomFichierComplet=cheminLogo, repDest="application/static")
 
         else :
             session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=""))
@@ -764,18 +556,8 @@ class Synchro():
                     fichier.write(buffer)
                     fichier.close()
 
-                    # Envoi en local
-                    if self.dict_parametres["hebergement_type"] == 0 :
-                        destpath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/static/pieces")
-                        destfile = os.path.join(destpath, "nomFichier")
-                        shutil.move(cheminFichier, destfile)
-
-                    # Envoi du fichier par FTP
-                    if self.dict_parametres["hebergement_type"] == 1 :
-                        ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == '/' else "/") + "application/static/pieces")
-                        fichier = open(cheminFichier, "rb")
-                        ftp.storbinary('STOR ' + nomFichier, fichier)
-                        fichier.close()
+                    # Upload de la pièce
+                    self.UploadFichier(ftp=ftp, nomFichierComplet=cheminFichier, repDest="application/static/pieces")
 
                     fichiers.append(u"%s;%s" % (dict_document["label"], nomFichier))
 
@@ -998,32 +780,12 @@ class Synchro():
         self.Pulse_gauge()
         time.sleep(0.5)
 
-        # Envoi local
-        if self.dict_parametres["hebergement_type"] == 0 :
-            destpath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], "application/data")
-            destfile = os.path.join(destpath, os.path.basename(nomFichierCRYPT))
-            shutil.move(nomFichierCRYPT, destfile)
+        self.UploadFichier(ftp=ftp, nomFichierComplet=nomFichierCRYPT, repDest="application/data")
 
-        # Envoi par FTP
+        # Fermeture connexion FTP ou SFTP
         if self.dict_parametres["hebergement_type"] == 1 :
-            ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == "/" else "/") + "application/data")
-            fichier = open(nomFichierCRYPT, "rb")
-            ftp.storbinary("STOR %s" % os.path.basename(nomFichierCRYPT), fichier)
-            fichier.close()
-
-            self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
             ftp.quit()
-
-        # Envoi par SSH/SFTP
         if self.dict_parametres["hebergement_type"] == 2 :
-            destpath = os.path.join(self.dict_parametres["ssh_repertoire"], "application/data")
-            destfile = os.path.join(destpath, os.path.basename(nomFichierCRYPT))
-            ftp.chdir("application/data")
-            ftp.put(nomFichierCRYPT, os.path.basename(nomFichierCRYPT))
-            ftp.chdir("../../")
-            #ftp.put(nomFichierCRYPT, destfile)
-
-            self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
             ftp.close()
 
         # Envoi de la requête de traitement du fichier d'import
@@ -1060,7 +822,6 @@ class Synchro():
             print "Erreur dans le traitement du fichier :", page
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue : %s") % page)
 
-        self.log.EcritLog(_(u"Synchronisation des données terminée"))
         self.Pulse_gauge(0)
         time.sleep(0.5)
 
@@ -1221,57 +982,130 @@ class Synchro():
 
         return True
 
-    def TelechargeModels(self, ftp=None):
-        """ Télécharge le module des models sur internet """
-        nomFichier = "models.py"
+    def TelechargeFichier(self, ftp=None, nomFichier="models.py", repFichier=None):
+        """ Télécharge un fichier sur internet """
 
         # Création d'un répertoire temporaire
-        rep = UTILS_Fichiers.GetRepTemp("portail_models")
+        repDestination = UTILS_Fichiers.GetRepTemp("portail_temp")
         try :
-            os.mkdir(rep)
+            os.mkdir(repDestination)
         except :
             pass
 
         # Téléchargement du fichier vers le répertoire temporaire
         if self.dict_parametres["hebergement_type"] == 1 :
             try :
-                ftp.cwd("/" + self.dict_parametres["ftp_repertoire"] + ("" if self.dict_parametres["ftp_repertoire"][-1] == "/" else "/") + "application")
-                fichier = open(os.path.join(rep, nomFichier), 'wb')
+                rep = "/" + self.dict_parametres["ftp_repertoire"]
+                if repFichier != None :
+                    if self.dict_parametres["ftp_repertoire"][-1] == "/" :
+                        rep += repFichier
+                    else :
+                        rep += "/" + repFichier
+                ftp.cwd(rep)
+                fichier = open(os.path.join(repDestination, nomFichier), 'wb')
                 ftp.retrbinary('RETR ' + nomFichier, fichier.write)
                 fichier.close()
             except Exception, err :
-                self.log.EcritLog(_(u"Téchargement FTP des modeles de données impossible"))
+                self.log.EcritLog(_(u"Téléchargement FTP impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
-                print "Erreur dans telechargement des modeles de donnees :", str(err)
+                print u"Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
                 return False
 
         elif self.dict_parametres["hebergement_type"] == 2 :
             try :
-                infilepath = os.path.join(self.dict_parametres["ssh_repertoire"] + ("" if self.dict_parametres["ssh_repertoire"][-1] == "/" else "/"), "application")
+                infilepath = "/" + self.dict_parametres["ssh_repertoire"]
+                if repFichier != None :
+                    if self.dict_parametres["ssh_repertoire"][-1] == "/" :
+                        infilepath += repFichier
+                    else :
+                        infilepath += "/" + repFichier
                 infile = os.path.join(infilepath, nomFichier)
-                ftp.chdir("application")
-                ftp.get(nomFichier, os.path.join(rep, nomFichier))
-                ftp.chdir("..")
-                #ftp.get(infile, os.path.join(rep, nomFichier))
+                ftp.chdir(repFichier)
+                ftp.get(nomFichier, os.path.join(repDestination, nomFichier))
+                if "/" in repFichier :
+                    ftp.chdir("../" * len(repFichier.split("/")))
             except Exception, err :
-                self.log.EcritLog(_(u"Téchargement SSH/SFTP des modeles de données impossible"))
+                self.log.EcritLog(_(u"Téchargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
-                print "Erreur dans telechargement des modeles de donnees :", str(err)
+                print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
                 return False
 
         elif self.dict_parametres["hebergement_type"] == 0 :
-            infilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"] + ("" if self.dict_parametres["hebergement_local_repertoire"][-1] == "/" else "/"), "application")
+            infilepath = self.dict_parametres["hebergement_local_repertoire"]
+            if repFichier != None :
+                if self.dict_parametres["hebergement_local_repertoire"][-1] == "/" :
+                    infilepath += repFichier
+                else :
+                    infilepath += "/" + repFichier
             infile = os.path.join(infilepath, nomFichier)
             try :
-                shutil.copy2(infile,rep)
+                shutil.copy2(infile, repDestination)
             except Exception, err :
-                self.log.EcritLog(_(u"Récupération locale des modeles de données impossible"))
+                self.log.EcritLog(_(u"Récupération locale impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
-                print "Erreur dans telechargement des modeles de donnees :", str(err)
+                print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
                 return False
         else:
             raise()
-        return rep, nomFichier
+        return repDestination, nomFichier
+
+
+    def UploadFichier(self, ftp=None, nomFichierComplet="", repDest=""):
+        nomFichier = os.path.basename(nomFichierComplet)
+        repFichier = os.path.dirname(nomFichierComplet)
+
+        # Envoi local
+        if self.dict_parametres["hebergement_type"] == 0 :
+            if self.dict_parametres["hebergement_local_repertoire"] != None:
+                try :
+                    destfilepath = os.path.join(self.dict_parametres["hebergement_local_repertoire"], repDest)
+                    shutil.copy2(os.path.join(repFichier, nomFichier), destfilepath)
+                except Exception, err :
+                    print "Erreur upload fichier '%s' en local : %s" % (nomFichier, str(err))
+                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par copie locale impossible.") % nomFichier)
+                    return False
+
+        # Envoi par FTP
+        if self.dict_parametres["hebergement_type"] == 1 :
+            if ftp != None :
+                try :
+                    rep = "/" + self.dict_parametres["ftp_repertoire"]
+                    if repDest not in ("", None):
+                        if self.dict_parametres["ftp_repertoire"][-1] == '/' :
+                            rep += repDest
+                        else :
+                            rep += "/" + repDest
+                    ftp.cwd(rep)
+                    fichier = open(os.path.join(repFichier, nomFichier), "rb")
+                    ftp.storbinary('STOR ' + nomFichier, fichier)
+                    fichier.close()
+                except Exception, err :
+                    print "Erreur upload fichier '%s' par FTP : %s" % (nomFichier, str(err))
+                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par FTP impossible.") % nomFichier)
+                    return False
+
+        # Envoi par SSH/SFTP
+        if self.dict_parametres["hebergement_type"] == 2 :
+            if ftp != None :
+                try :
+                    rep = "/" + self.dict_parametres["ssh_repertoire"]
+                    if repDest not in ("", None):
+                        if self.dict_parametres["ssh_repertoire"][-1] == '/' :
+                            rep += repDest
+                        else :
+                            rep += "/" + repDest
+                    ftp.chdir(rep)
+                    ftp.put(os.path.join(repFichier, nomFichier), nomFichier)
+                    if "/" in repDest :
+                        ftp.chdir("../" * len(repDest.split("/")))
+                except Exception, err :
+                    print "Erreur upload fichier '%s' par SSH/SFTP : %s" % (nomFichier, str(err))
+                    self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par SSH/SFTP impossible.") % nomFichier)
+                    return False
+
+        return True
+
+
 
 
 if __name__ == '__main__':
