@@ -35,6 +35,7 @@ import UTILS_Pieces_manquantes
 import UTILS_Cotisations_manquantes
 import UTILS_Organisateur
 import UTILS_Cryptage_fichier
+import UTILS_Config
 import FonctionsPerso
 import GestionDB
 
@@ -98,7 +99,23 @@ class Synchro():
         t1 = time.time()
         self.nbre_etapes = 25
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
+
+        # Téléchargement des données en ligne
         self.Download_data()
+
+        # Recherche de mises à jours logicielles Connecthys
+        if self.dict_parametres["client_rechercher_updates"] == True :
+
+            # Vérifie si une update n'a pas été faite aujourd'hui avec la même version de Noethys
+            last_update = UTILS_Config.GetParametre("connecthys_last_update", None)
+            version_noethys = FonctionsPerso.GetVersionLogiciel()
+            data = "%s#%s" % (str(datetime.date.today()), version_noethys)
+            if data != last_update :
+                self.Update_application()
+                # Mémorise la demande d'update
+                UTILS_Config.SetParametre("connecthys_last_update", data)
+
+        # Upload des données locales
         resultat = self.Upload_data()
         if resultat == False :
             self.log.EcritLog(_(u"Synchronisation arrêtée."))
@@ -187,29 +204,41 @@ class Synchro():
         return True
 
     def AutoReloadWSGI(self, ftp=None):
-        if ftp != None :
-            self.log.EcritLog(_(u"Envoi du fichier WSGI pour auto reload"))
+        if ftp == None :
+            ftp, ssh = self.Connexion()
+            connexion_provisoire = True
+        else :
+            connexion_provisoire = False
 
-            # Téléchargement du fichier wsgi
-            resultat = self.TelechargeFichier(ftp=ftp, nomFichier="connecthys.wsgi", repFichier=None)
-            fichier_wsgi = open(os.path.join(resultat[0], resultat[1]), "r")
-            liste_lignes_wsgi = fichier_wsgi.readlines()
-            fichier_wsgi.close()
+        self.log.EcritLog(_(u"Mise à jour du fichier WSGI pour auto reload"))
 
-            # Création du nouveau fichier wsgi
-            nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier="connecthys.wsgi")
-            fichier_wsgi = codecs.open(nomFichierComplet, 'w')
-            for ligne in liste_lignes_wsgi :
-                if "lastupdate" in ligne :
-                    ligne = "# lastupdate = %s" % datetime.datetime.now()
-                fichier_wsgi.write(ligne)
-            fichier_wsgi.close()
+        # Téléchargement du fichier wsgi
+        resultat = self.TelechargeFichier(ftp=ftp, nomFichier="connecthys.wsgi", repFichier=None)
+        if resultat == False :
+            return False
+        fichier_wsgi = open(os.path.join(resultat[0], resultat[1]), "r")
+        liste_lignes_wsgi = fichier_wsgi.readlines()
+        fichier_wsgi.close()
 
-            # Envoi du nouveau fichier wsgi
-            self.UploadFichier(ftp=ftp, nomFichierComplet=nomFichierComplet, repDest="")
+        # Création du nouveau fichier wsgi
+        nomFichierComplet = UTILS_Fichiers.GetRepTemp(fichier="connecthys.wsgi")
+        fichier_wsgi = codecs.open(nomFichierComplet, 'w')
+        for ligne in liste_lignes_wsgi :
+            if "lastupdate" in ligne :
+                ligne = "# lastupdate = %s" % datetime.datetime.now()
+            fichier_wsgi.write(ligne)
+        fichier_wsgi.close()
 
-    def Upload_data(self) :
-        self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
+        # Envoi du nouveau fichier wsgi
+        self.UploadFichier(ftp=ftp, nomFichierComplet=nomFichierComplet, repDest="")
+
+        # Si connexion provisoire
+        if connexion_provisoire == True :
+            self.Deconnexion(ftp)
+
+    def Connexion(self):
+        ftp = None
+        ssh = None
 
         # Avance gauge si local
         if self.dict_parametres["hebergement_type"] == 0 :
@@ -242,9 +271,28 @@ class Synchro():
             except Exception, err :
                 print "Erreur connexion SSH/SFTP au serveur : ", str(err)
                 self.log.EcritLog(_(u"[ERREUR] Connexion SSH/SFTP impossible."))
-                self.log.EcritLog(_(u"[ERREUR] err:%s") % err)
+                self.log.EcritLog(_(u"[ERREUR] err: %s") % err)
                 return False
 
+        return ftp, ssh
+
+
+    def Deconnexion(self, ftp=None):
+        if self.dict_parametres["hebergement_type"] == 1 :
+            self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
+            ftp.quit()
+        elif self.dict_parametres["hebergement_type"] == 2 :
+            self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
+            ftp.close()
+        else :
+            pass
+
+    def Upload_data(self) :
+        self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
+
+        ftp, ssh = self.Connexion()
+        if ftp == False :
+            return False
 
         # Envoi du fichier de config
         self.log.EcritLog(_(u"Synchro du fichier de configuration..."))
@@ -252,13 +300,7 @@ class Synchro():
         resultat = self.Upload_config(ftp=ftp)
         if resultat == False :
             self.log.EcritLog(_(u"[ERREUR] Synchro du fichier de configuration impossible."))
-            if self.dict_parametres["hebergement_type"] == 1 :
-                self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
-                ftp.quit()
-            if self.dict_parametres["hebergement_type"] == 2 :
-                self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
-                ftp.close()
-
+            self.Deconnexion(ftp)
             return False
 
         # Récupération du fichier models
@@ -266,13 +308,7 @@ class Synchro():
         resultat = self.TelechargeFichier(ftp=ftp, nomFichier="models.py", repFichier="application")
         if resultat == False :
             self.log.EcritLog(_(u"[ERREUR] Récupération des modèles de données impossible."))
-            if self.dict_parametres["hebergement_type"] == 1 :
-                self.log.EcritLog(_(u"Fermeture de la connexion FTP..."))
-                ftp.quit()
-            if self.dict_parametres["hebergement_type"] == 2 :
-                self.log.EcritLog(_(u"Fermeture de la connexion SSH/SFTP..."))
-                ftp.close()
-
+            self.Deconnexion(ftp)
             return False
 
         chemin, nomFichier = resultat
@@ -804,10 +840,7 @@ class Synchro():
         self.UploadFichier(ftp=ftp, nomFichierComplet=nomFichierCRYPT, repDest="application/data")
 
         # Fermeture connexion FTP ou SFTP
-        if self.dict_parametres["hebergement_type"] == 1 :
-            ftp.quit()
-        if self.dict_parametres["hebergement_type"] == 2 :
-            ftp.close()
+        self.Deconnexion(ftp)
 
         # Envoi de la requête de traitement du fichier d'import
         self.log.EcritLog(_(u"Envoi de la requête de traitement du fichier d'export..."))
@@ -968,6 +1001,47 @@ class Synchro():
     def Traitement_demandes(self):
         pass
 
+    def Update_application(self):
+        """ Demande une update de l'application """
+        self.log.EcritLog(_(u"Recherche d'une mise à jour..."))
+
+        # Codage de la clé de sécurité
+        secret = self.GetSecretInteger()
+
+        liste_actions = []
+        try :
+
+            # Création de l'url de syncdown
+            if self.dict_parametres["serveur_type"] == 0 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["serveur_type"] == 1 :
+                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+            if self.dict_parametres["serveur_type"] == 2 :
+                url = self.dict_parametres["url_connecthys"]
+            if self.dict_parametres["url_connecthys"][-1] != "/" :
+                url += "/"
+            version_noethys = FonctionsPerso.GetVersionLogiciel().replace(".", "")
+            mode = self.dict_parametres["serveur_type"]
+            url += "update/%d/%d/%d" % (int(secret), int(version_noethys), mode)
+            print "URL update =", url
+
+            # Récupération des données au format json
+            req = urllib2.Request(url)
+            reponse = urllib2.urlopen(req)
+            page = reponse.read()
+            data = json.loads(page)
+
+            if data["resultat"] != False :
+                self.log.EcritLog(data["resultat"])
+
+        except Exception, err :
+            self.log.EcritLog(_(u"[Erreur] Erreur dans la demande d'update"))
+            self.log.EcritLog(str(err))
+            print "Erreur dans la demande d'update :", str(err)
+            return False
+
+        return True
+
     def Upgrade_application(self):
         """ Demande un upgrade de l'application """
         # Codage de la clé de sécurité
@@ -1014,7 +1088,23 @@ class Synchro():
             pass
 
         # Téléchargement du fichier vers le répertoire temporaire
-        if self.dict_parametres["hebergement_type"] == 1 :
+        if self.dict_parametres["hebergement_type"] == 0 :
+            infilepath = self.dict_parametres["hebergement_local_repertoire"]
+            if repFichier != None :
+                if self.dict_parametres["hebergement_local_repertoire"][-1] == "/" :
+                    infilepath += repFichier
+                else :
+                    infilepath += "/" + repFichier
+            infile = os.path.join(infilepath, nomFichier)
+            try :
+                shutil.copy2(infile, repDestination)
+            except Exception, err :
+                self.log.EcritLog(_(u"Récupération locale impossible du fichier '%s'") % nomFichier)
+                self.log.EcritLog(_(u"err: %s") % err)
+                print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
+                return False
+
+        elif self.dict_parametres["hebergement_type"] == 1 :
             try :
                 rep = "/" + self.dict_parametres["ftp_repertoire"]
                 if repFichier != None :
@@ -1034,35 +1124,20 @@ class Synchro():
 
         elif self.dict_parametres["hebergement_type"] == 2 :
             try :
-                infilepath = "/" + self.dict_parametres["ssh_repertoire"]
+                # infilepath = "/" + self.dict_parametres["ssh_repertoire"]
+                # if repFichier != None :
+                #     if self.dict_parametres["ssh_repertoire"][-1] == "/" :
+                #         infilepath += repFichier
+                #     else :
+                #         infilepath += "/" + repFichier
+                # ftp.chdir(repFichier)
                 if repFichier != None :
-                    if self.dict_parametres["ssh_repertoire"][-1] == "/" :
-                        infilepath += repFichier
-                    else :
-                        infilepath += "/" + repFichier
-                infile = os.path.join(infilepath, nomFichier)
-                ftp.chdir(repFichier)
+                    ftp.chdir(repFichier)
                 ftp.get(nomFichier, os.path.join(repDestination, nomFichier))
-                if "/" in repFichier :
+                if repFichier != None and "/" in repFichier :
                     ftp.chdir("../" * len(repFichier.split("/")))
             except Exception, err :
                 self.log.EcritLog(_(u"Téchargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
-                self.log.EcritLog(_(u"err: %s") % err)
-                print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
-                return False
-
-        elif self.dict_parametres["hebergement_type"] == 0 :
-            infilepath = self.dict_parametres["hebergement_local_repertoire"]
-            if repFichier != None :
-                if self.dict_parametres["hebergement_local_repertoire"][-1] == "/" :
-                    infilepath += repFichier
-                else :
-                    infilepath += "/" + repFichier
-            infile = os.path.join(infilepath, nomFichier)
-            try :
-                shutil.copy2(infile, repDestination)
-            except Exception, err :
-                self.log.EcritLog(_(u"Récupération locale impossible du fichier '%s'") % nomFichier)
                 self.log.EcritLog(_(u"err: %s") % err)
                 print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
                 return False

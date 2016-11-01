@@ -93,7 +93,8 @@ def GetExclusions(liste_versions=[], version_ancienne=""):
             if nbre_versions != None :
 
                 if dictVersion.has_key("exclusions") :
-                    for exclusion in dictVersion["exclusions"] :
+                    liste_exclusions = dictVersion["exclusions"].split(",")
+                    for exclusion in liste_exclusions :
                         if not dict_exclusions.has_key(exclusion) :
                             dict_exclusions[exclusion] = 0
                         dict_exclusions[exclusion] += 1
@@ -107,6 +108,21 @@ def GetExclusions(liste_versions=[], version_ancienne=""):
 
     return liste_exclusions
 
+def LectureFichierVersion(liste_lignes=[]):
+    """ Lit un fichier de versions """
+    liste_versions = []
+    for ligne in liste_lignes :
+        if ligne.startswith("version") :
+            ligne = ligne.replace("\n", "")
+            dict_elements = {}
+            liste_elements = ligne.split(" # ")
+            for element in liste_elements :
+                cle, valeur = element.split("=")
+                if cle == "exclusions" :
+                    valeur = valeur.split(",")
+                dict_elements[cle] = valeur
+            liste_versions.append(dict_elements)
+    return liste_versions
 
 
 class Abort(Exception):
@@ -327,14 +343,14 @@ class Installer():
 
             # Création du répertoire s'il n'existe pas
             try:
-                ftp.mkdir(self.dict_parametres["ssh_repertoire"])
+                ftp.mkdir("/" + self.dict_parametres["ssh_repertoire"])
             except Exception, e:
                 pass
                 # ignore "directory already exists"
                 #if not e.args[0].startswith('550'):
                 #    raise
 
-            ftp.chdir(self.dict_parametres["ssh_repertoire"])
+            ftp.chdir("/" + self.dict_parametres["ssh_repertoire"])
             keepGoing, skip = self.dlgprogress.Update(2, _(u"Connexion SSH/SFTP effectuée..."))
 
         # Recherche le numéro de version de l'application déjà installée
@@ -355,6 +371,7 @@ class Installer():
             data = json.loads(page)
             version_ancienne = data["version_str"]
         except Exception, err :
+            print "ERREUR dans recuperation du numero de version :", err
             version_ancienne = None
 
         # Recherche des exclusions
@@ -362,11 +379,18 @@ class Installer():
             liste_exclusions = []
         else :
             # Importation de la liste des exclusions dans le répertoire source
-            nomFichier = "versions.py"
-            chemin = os.path.join(source_repertoire, "application")
-            sys.path.append(chemin)
-            versions = importlib.import_module(nomFichier.replace(".py", ""))
-            liste_exclusions = GetExclusions(liste_versions=versions.VERSIONS, version_ancienne=version_ancienne)
+            fichier = open(os.path.join(source_repertoire, "versions.txt"), "r")
+            lignes = fichier.readlines()
+            fichier.close()
+            liste_versions = LectureFichierVersion(lignes)
+            liste_exclusions = GetExclusions(liste_versions=liste_versions, version_ancienne=version_ancienne)
+            print "liste_exclusions=", liste_exclusions
+
+            # nomFichier = "versions.py"
+            # chemin = os.path.join(source_repertoire, "application")
+            # sys.path.append(chemin)
+            # versions = importlib.import_module(nomFichier.replace(".py", ""))
+            # liste_exclusions = GetExclusions(liste_versions=versions.VERSIONS, version_ancienne=version_ancienne)
 
         # Envoi des données
         self.index = 0

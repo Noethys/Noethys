@@ -76,7 +76,7 @@ class Serveur(Thread):
                         # Lance une synchro quelques secondes après le démarrage
                         if self.parent.synchro_ouverture == True :
                             self.parent.last_synchro = datetime.datetime.now()
-                            time.sleep(3)
+                            time.sleep(5)
                             self.start_synchro = True
                         else :
                             self.parent.last_synchro = datetime.datetime.now()

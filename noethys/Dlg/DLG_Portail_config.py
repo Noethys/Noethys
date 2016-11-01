@@ -44,6 +44,7 @@ VALEURS_DEFAUT = {
     "client_synchro_portail_activation" : False,
     "client_synchro_portail_delai" : 2,
     "client_synchro_portail_ouverture" : False,
+    "client_rechercher_updates" : True,
     "serveur_type": 0,
     "serveur_options": "",
     "serveur_cgi_file": "connecthys.cgi",
@@ -246,6 +247,13 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         nom = "client_synchro_portail_ouverture"
         propriete = wxpg.BoolProperty(label=_(u"Synchroniser à l'ouverture"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour synchroniser automatiquement à l'ouverture de Noethys sur cet ordinateur"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Rechercher des mises à jour
+        nom = "client_rechercher_updates"
+        propriete = wxpg.BoolProperty(label=_(u"Mises à jour automatiques"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour laisser Connecthys rechercher et appliquer ses propres mises à jour logicielles automatiquement"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -735,6 +743,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         dictParametres["client_synchro_portail_activation"] = UTILS_Config.GetParametre("client_synchro_portail_activation", False)
         dictParametres["client_synchro_portail_delai"] = UTILS_Config.GetParametre("client_synchro_portail_delai", 2)
         dictParametres["client_synchro_portail_ouverture"] = UTILS_Config.GetParametre("client_synchro_portail_ouverture", True)
+        dictParametres["client_rechercher_updates"] = UTILS_Config.GetParametre("client_rechercher_updates", True)
         dictParametres["hebergement_type"] = UTILS_Config.GetParametre("hebergement_type", 0)
         dictParametres["serveur_type"] = UTILS_Config.GetParametre("serveur_type", 0)
 
@@ -753,7 +762,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="portail", dictParametres=dictValeurs)
 
         # Mémorisation de la config sur cet ordi
-        for key in ("client_synchro_portail_activation", "client_synchro_portail_delai", "client_synchro_portail_ouverture", "hebergement_type", "serveur_type") :
+        for key in ("client_synchro_portail_activation", "client_synchro_portail_delai", "client_synchro_portail_ouverture", "client_rechercher_updates", "hebergement_type", "serveur_type") :
             UTILS_Config.SetParametre(key, self.GetPropertyByName(key).GetValue())
 
     def GetValeurs(self) :
@@ -795,7 +804,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                         if type_propriete in (str, unicode) :
                             valeur = unicode(valeur)
                         if type_propriete == bool :
-                            valeur = bool(valeur)
+                            if valeur == "True" :
+                                valeur = True
+                            else :
+                                valeur = False
                         if type_propriete == int :
                             valeur = int(valeur)
                         propriete.SetValue(valeur)
@@ -986,14 +998,31 @@ class Dialog(wx.Dialog):
             self.server_ctrl = UTILS_Portail_controle.ServeurConnecthys(self)
         server_is_running = self.server_ctrl.GetServerStatus()
 
-        # Installer / Mettre à jour
+        # Installer
         id = wx.NewId()
-        item = wx.MenuItem(menu, id, _(u"Installer / Mettre à jour"))
+        item = wx.MenuItem(menu, id, _(u"Installer"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Installer, id=id)
 
+        # Mettre à jour
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Mettre à jour"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Update, id=id)
+
         menu.AppendSeparator()
+
+        # AutoReload WSGI
+        if dict_parametres["serveur_type"] == 2 :
+            id = wx.NewId()
+            item = wx.MenuItem(menu, id, _(u"AutoReload WSGI"))
+            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser.png"), wx.BITMAP_TYPE_PNG))
+            menu.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.AutoReloadWSGI, id=id)
+
+            menu.AppendSeparator()
 
         # Importer config
         id = wx.NewId()
@@ -1164,6 +1193,20 @@ class Dialog(wx.Dialog):
         install = UTILS_Portail_installation.Installer(self, dict_parametres, server_ctrl)
         resultat = install.Installer()
 
+    def Update(self, event):
+        if self.ctrl_parametres.Validation() == False :
+            return False
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        synchro = Synchro(self, dict_parametres)
+        synchro.Update()
+
+    def AutoReloadWSGI(self, event):
+        if self.ctrl_parametres.Validation() == False :
+            return False
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        synchro = Synchro(self, dict_parametres)
+        synchro.AutoReloadWSGI()
+
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_parametres.GetValeurs()
         url = dict_parametres["url_connecthys"]
@@ -1231,6 +1274,16 @@ class Synchro():
         self.num_etape = 0
         self.texte_etape = ""
 
+    def Update(self):
+        from Utils import UTILS_Portail_synchro
+        synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
+        synchro.Update_application()
+
+    def AutoReloadWSGI(self):
+        from Utils import UTILS_Portail_synchro
+        synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
+        synchro.AutoReloadWSGI()
+
     def Start(self):
         from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
@@ -1253,8 +1306,10 @@ class Synchro():
         self.Update_gauge()
 
     def Update_gauge(self):
-        keepGoing, skip = self.dlgprogress.Update(self.num_etape, self.texte_etape)
-
+        try :
+            keepGoing, skip = self.dlgprogress.Update(self.num_etape, self.texte_etape)
+        except :
+            pass
 
 
 if __name__ == u"__main__":
