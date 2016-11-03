@@ -131,6 +131,7 @@ class Facture():
             (_(u"Total déjà réglé pour la période"), u"6.00 ¤", "{TOTAL_REGLE}"),
             (_(u"Solde dû pour la période"), u"4.00 ¤", "{SOLDE_DU}"),
             (_(u"Total des reports des périodes précédentes"), u"134.50 ¤", "{TOTAL_REPORTS}"),
+            (_(u"Solde avec reports"), u"138.50 ¤", "{SOLDE_AVEC_REPORTS}"),
             (_(u"Total des déductions"), u"20.50 ¤", "{TOTAL_DEDUCTIONS}"),
             ]
         
