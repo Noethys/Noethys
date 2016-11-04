@@ -644,7 +644,6 @@ class Traitement():
 
     def Traitement_inscriptions(self):
         # Récupération des paramètres
-        IDindividu = int(self.dict_parametres["IDindividu"])
         IDactivite = int(self.dict_parametres["IDactivite"])
         IDgroupe = int(self.dict_parametres["IDgroupe"])
 
@@ -653,7 +652,7 @@ class Traitement():
 
             # Création du texte d'intro
             DB = GestionDB.DB()
-            req = """SELECT nom, prenom, date_naiss FROM individus WHERE IDindividu=%d;""" % IDindividu
+            req = """SELECT nom, prenom, date_naiss FROM individus WHERE IDindividu=%d;""" % self.track.IDindividu
             DB.ExecuterReq(req)
             listeDonnees = DB.ResultatReq()
             DB.Close()
@@ -668,7 +667,7 @@ class Traitement():
             intro = _(u"Confirmez l'inscription de %s (%s) à l'activité sélectionnée et sur le groupe demandé par la famille." % (prenom, age))
 
             from Dlg import DLG_Inscription
-            dlg = DLG_Inscription.Dialog(self.parent, mode="saisie", IDindividu=IDindividu, IDfamille=self.track.IDfamille, intro=intro)
+            dlg = DLG_Inscription.Dialog(self.parent, mode="saisie", IDindividu=self.track.IDindividu, IDfamille=self.track.IDfamille, intro=intro)
             dlg.bouton_activites.Show(False)
             dlg.ctrl_parti.Show(False)
             dlg.ctrl_famille.Enable(False)
