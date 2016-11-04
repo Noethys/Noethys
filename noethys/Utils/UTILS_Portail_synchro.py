@@ -23,6 +23,7 @@ import json
 import urllib2
 import sys
 import importlib
+import platform
 import time
 from dateutil import relativedelta
 import paramiko
@@ -64,7 +65,8 @@ def patch_crypto_be_discovery():
         be for be in (be_cc, be_ossl) if be is not None
     ]
 
-patch_crypto_be_discovery()
+if platform.system() != 'Linux' :
+    patch_crypto_be_discovery()
 
 
 class Synchro():
@@ -205,7 +207,11 @@ class Synchro():
 
     def AutoReloadWSGI(self, ftp=None):
         if ftp == None :
-            ftp, ssh = self.Connexion()
+            resultats = self.Connexion()
+            if resultats == False :
+                return False
+            else :
+                ftp, ssh = resultats
             connexion_provisoire = True
         else :
             connexion_provisoire = False
@@ -290,9 +296,11 @@ class Synchro():
     def Upload_data(self) :
         self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
 
-        ftp, ssh = self.Connexion()
-        if ftp == False :
+        resultats = self.Connexion()
+        if resultats == False :
             return False
+        else :
+            ftp, ssh = resultats
 
         # Envoi du fichier de config
         self.log.EcritLog(_(u"Synchro du fichier de configuration..."))
@@ -874,7 +882,8 @@ class Synchro():
 
         if page != None and page != "True" :
             print "Erreur dans le traitement du fichier :", page
-            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue : %s") % page)
+            self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue :"))
+            self.log.EcritLog(page)
 
         self.Pulse_gauge(0)
         time.sleep(0.5)
