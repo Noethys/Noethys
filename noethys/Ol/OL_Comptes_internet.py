@@ -18,6 +18,8 @@ import datetime
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
+from Utils import UTILS_Internet
+from Utils import UTILS_Parametres
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
 
@@ -69,7 +71,10 @@ class ListView(FastObjectListView):
                 self.selectionTrack = track
         return listeListeView
       
-    def InitObjectListView(self):            
+    def InitObjectListView(self):
+        # Images
+        self.imgActif = self.AddNamedImages("actif", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
+        self.imgInactif = self.AddNamedImages("inactif", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
         # Couleur en alternance des lignes
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
@@ -81,12 +86,18 @@ class ListView(FastObjectListView):
             else :
                 return _(u"Non")
 
+        def GetImageActivation(track):
+            if track.internet_actif == 1 :
+                return "actif"
+            else :
+                return "inactif"
+
         liste_Colonnes = [
             ColumnDefn(_(u"ID"), "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(_(u"Famille"), 'left', 280, "nomTitulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Activation"), "left", 100, "internet_actif", typeDonnee="texte", stringConverter=FormateActivation),
-            ColumnDefn(_(u"Identifiant"), "left", 100, "internet_identifiant", typeDonnee="texte"),
-            ColumnDefn(_(u"Mot de passe"), "left", 100, "internet_mdp", typeDonnee="texte"),
+            ColumnDefn(_(u"Famille"), 'left', 350, "nomTitulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Activation"), "left", 120, "internet_actif", typeDonnee="texte", stringConverter=FormateActivation, imageGetter=GetImageActivation),
+            ColumnDefn(_(u"Identifiant"), "left", 120, "internet_identifiant", typeDonnee="texte"),
+            ColumnDefn(_(u"Mot de passe"), "left", 120, "internet_mdp", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -223,8 +234,87 @@ class ListView(FastObjectListView):
             self.MAJ(track.IDfamille)
         dlg.Destroy()
 
+    def Activer(self, event=None):
+        self.SetActivation(1)
 
+    def Desactiver(self, event=None):
+        self.SetActivation(0)
 
+    def SetActivation(self, actif=1):
+        """ Activation ou désactivation des comptes cochés """
+        listeCoches = self.GetTracksCoches()
+        if len(listeCoches) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucun compte internet à modifier !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        if actif == True :
+            texte = _(u"activer")
+        else :
+            texte = _(u"désactiver")
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment %s les %d comptes sélectionnés ?") % (texte, len(listeCoches)), _(u"Modification"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        listeModifications = []
+        for track in listeCoches :
+            listeModifications.append((actif, track.IDfamille))
+        DB = GestionDB.DB()
+        DB.Executermany("UPDATE familles SET internet_actif=? WHERE IDfamille=?", listeModifications, commit=False)
+        DB.Commit()
+        DB.Close()
+        self.MAJ()
+
+    def ReinitPasswords(self, event=None):
+        """ Régénération des mots de passe """
+        listeCoches = self.GetTracksCoches()
+        if len(listeCoches) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucun compte internet à réinitialiser !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Demandes de confirmation
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser les mots de passe des %d comptes sélectionnés ?") % len(listeCoches), _(u"Modification"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        dlg = wx.MessageDialog(self, _(u"ATTENTION, TOUS LES MOTS DE PASSE SERONT REINITIALISES !\n\nSouhaitez-vous vraiment regénérer les mots de passe des %d comptes sélectionnés ?") % len(listeCoches), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        # Récupère la taille des mots de passe
+        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+        dlg = wx.MessageDialog(self, _(u"Les mots de passe comporteront %d caractères.\n\nSi cela vous convient, cliquez sur Oui, sinon annulez et allez dans Menu Paramétrage > Préférences pour modifier la taille des mots de passe des comptes internet.") % taille, _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        dlg = wx.MessageDialog(self, _(u"DERNIER AVERTISSEMENT !\n\nConfirmez-vous la réinitialisation des mots de passe ? Vous ne pourrez pas revenir en arrière..."), _(u"Avertissement"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return
+
+        # Regénération des mots de passe
+        listeModifications = []
+        for track in listeCoches :
+            mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
+            listeModifications.append((mdp, track.IDfamille))
+
+        DB = GestionDB.DB()
+        DB.Executermany("UPDATE familles SET internet_mdp=? WHERE IDfamille=?", listeModifications, commit=False)
+        DB.Commit()
+        DB.Close()
+        self.MAJ()
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class MyFrame(wx.Frame):

@@ -22,7 +22,7 @@ from Utils import UTILS_Config
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Interface
 from Utils import UTILS_Fichiers
-
+from Utils import UTILS_Parametres
 
 
 
@@ -617,7 +617,47 @@ class Autodeconnect(wx.Panel):
         except :
             pass
 
+# ---------------------------------------------------------------------------------------------------------------------------
 
+class Comptes_internet(wx.Panel):
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+
+        self.staticbox_staticbox = wx.StaticBox(self, -1, _(u"Comptes internet"))
+        self.label_taille = wx.StaticText(self, -1, _(u"Nombre de caractères des mots de passe :"))
+        self.ctrl_taille = wx.SpinCtrl(self, -1)
+        self.ctrl_taille.SetRange(5, 20)
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Importation()
+
+    def __set_properties(self):
+        self.ctrl_taille.SetToolTipString(_(u"Saisissez ici la taille des mots de passe des comptes internet. Ce paramètre ne sera valable que pour les prochains comptes créés."))
+
+    def __do_layout(self):
+        staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=5, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_taille, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_taille, 0, wx.EXPAND, 0)
+        staticbox.Add(grid_sizer_base, 1, wx.ALL|wx.EXPAND, 5)
+        self.SetSizer(staticbox)
+        staticbox.Fit(self)
+
+    def Importation(self):
+        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+        self.ctrl_taille.SetValue(taille)
+
+    def Validation(self):
+        return True
+
+    def Sauvegarde(self):
+        taille = self.ctrl_taille.GetValue()
+        UTILS_Parametres.Parametres(mode="set", categorie="comptes_internet", nom="taille_passwords", valeur=taille)
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -640,7 +680,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
         self.parent = parent
         
-        intro = _(u"Vous pouvez modifier ici les paramètres de base du logiciel. Ces paramètres seront mémorisés uniquement sur cet ordinateur. Les fonctionnalités marquées d'un astérisque (*) nécessitent un redémarrage du logiciel.")
+        intro = _(u"Vous pouvez modifier ici les paramètres de base du logiciel. Les fonctionnalités marquées d'un astérisque (*) nécessitent un redémarrage du logiciel.")
         titre = _(u"Préférences")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Configuration2.png")
         
@@ -655,7 +695,8 @@ class Dialog(wx.Dialog):
         self.ctrl_derniers_fichiers = DerniersFichiers(self)
         self.ctrl_autodeconnect = Autodeconnect(self) 
         self.ctrl_interface_mysql = Interface_mysql(self) 
-        
+        self.ctrl_comptes_internet = Comptes_internet(self)
+
         # Redémarrage
         self.label_redemarrage = wx.StaticText(self, -1, _(u"* Le changement sera effectif au redémarrage du logiciel"))
         self.label_redemarrage.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -709,6 +750,7 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add(self.ctrl_derniers_fichiers, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_monnaie, 1, wx.EXPAND, 0)
         grid_sizer_droit.Add(self.ctrl_autodeconnect, 1, wx.EXPAND, 0)
+        grid_sizer_droit.Add(self.ctrl_comptes_internet, 1, wx.EXPAND, 0)
 
         grid_sizer_contenu = wx.FlexGridSizer(rows=10, cols=2, vgap=10, hgap=10)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
@@ -756,7 +798,8 @@ class Dialog(wx.Dialog):
         if self.ctrl_derniers_fichiers.Validation() == False : return
         if self.ctrl_autodeconnect.Validation() == False : return
         if self.ctrl_interface_mysql.Validation() == False : return
-        
+        if self.ctrl_comptes_internet.Validation() == False : return
+
         # Sauvegarde
         self.ctrl_interface.Sauvegarde()
         self.ctrl_monnaie.Sauvegarde()
@@ -768,6 +811,7 @@ class Dialog(wx.Dialog):
         self.ctrl_derniers_fichiers.Sauvegarde()
         self.ctrl_autodeconnect.Sauvegarde()
         self.ctrl_interface_mysql.Sauvegarde()
+        self.ctrl_comptes_internet.Sauvegarde()
         
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)

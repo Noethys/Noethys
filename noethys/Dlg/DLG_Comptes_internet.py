@@ -28,7 +28,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet.")
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet. Vos pouvez utiliser les fonctions Activer et Désactiver disponibles à droite de la liste pour modifier l'activation des comptes cochés.")
         titre = _(u"Liste des comptes internet")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
         
@@ -41,9 +41,12 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_texte = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Texte2.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
-        
+        self.bouton_actif = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_inactif = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_email = CTRL_Bouton_image.CTRL(self, texte=_(u"Envoyer les codes internet par Email"), cheminImage="Images/32x32/Emails_exp.png")
+        self.bouton_reinit_passwords = CTRL_Bouton_image.CTRL(self, texte=_(u"Réinitialiser les mots de passe"), cheminImage="Images/32x32/Actualiser.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
@@ -54,7 +57,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Imprimer, self.bouton_imprimer)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportTexte, self.bouton_texte)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ExportExcel, self.bouton_excel)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Activer, self.bouton_actif)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Desactiver, self.bouton_inactif)
         self.Bind(wx.EVT_BUTTON, self.EnvoyerEmail, self.bouton_email)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ReinitPasswords, self.bouton_reinit_passwords)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
         self.ctrl_listview.MAJ()
@@ -68,10 +74,13 @@ class Dialog(wx.Dialog):
         self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
         self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
         self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_actif.SetToolTipString(_(u"Cliquez ici activer les comptes cochés dans la liste"))
+        self.bouton_inactif.SetToolTipString(_(u"Cliquez ici désactiver les comptes cochés dans la liste"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer un email contenant des codes internet aux familles cochées"))
+        self.bouton_reinit_passwords.SetToolTipString(_(u"Cliquez ici pour réinitialiser les mots de passe des familles cochées"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.SetMinSize((700, 700))
+        self.SetMinSize((850, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -88,7 +97,7 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
         
         # Commandes
-        grid_sizer_droit = wx.FlexGridSizer(rows=7, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)
         grid_sizer_droit.Add(self.bouton_ouvrir_fiche, 0, 0, 0)
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_apercu, 0, 0, 0)
@@ -96,6 +105,9 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add( (5, 5), 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_texte, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_excel, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_actif, 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_inactif, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         
         grid_sizer_contenu.AddGrowableRow(0)
@@ -103,10 +115,11 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_email, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_reinit_passwords, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
         grid_sizer_boutons.AddGrowableCol(1)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)

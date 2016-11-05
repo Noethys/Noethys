@@ -14,6 +14,7 @@ from UTILS_Traduction import _
 import GestionDB
 
 import UTILS_CryptageMD5
+from Utils import UTILS_Parametres
 import random
 import urllib
 import datetime
@@ -68,11 +69,13 @@ def InitIdentifiantsFiches():
     DB.executerReq(req)
     listeDonnees = DB.resultatReq()
     DB.close()
-    
+
+    taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+
     DB = GestionDB.DB()
     for IDfamille, nom, prenom in listeDonnees :
         identifiant = CreationIdentifiant(IDfamille)
-        mdp = CreationMDP()      
+        mdp = CreationMDP(nbreCaract=taille)
     
         listeDonnees = [ ("internet_identifiant",   identifiant),  
                                     ("internet_mdp",    mdp),

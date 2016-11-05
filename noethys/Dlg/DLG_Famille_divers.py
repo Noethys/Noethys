@@ -16,6 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Parametres
 import wx.propgrid as wxpg
 import wx.lib.platebtn as platebtn
 
@@ -264,7 +265,8 @@ class Panel(wx.Panel):
         if reponse != wx.ID_YES :
             return
         from Utils import UTILS_Internet
-        self.ctrl_mdp.SetValue(UTILS_Internet.CreationMDP(nbreCaract=5))
+        taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+        self.ctrl_mdp.SetValue(UTILS_Internet.CreationMDP(nbreCaract=taille))
         self.MAJaffichage()
 
     def OnBoutonEnvoiEmail(self, event):

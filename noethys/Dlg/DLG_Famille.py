@@ -18,6 +18,7 @@ import datetime
 from Utils import UTILS_Config
 from Utils import UTILS_Historique
 from Utils import UTILS_Utilisateurs
+from Utils import UTILS_Parametres
 import GestionDB
 import FonctionsPerso
 
@@ -45,7 +46,8 @@ def CreateIDfamille(DB):
     IDcompte_payeur = DB.ReqInsert("comptes_payeurs", [("IDfamille", IDfamille),])
     # Création des codes internet
     internet_identifiant= UTILS_Internet.CreationIdentifiant(IDfamille=IDfamille)
-    internet_mdp = UTILS_Internet.CreationMDP()
+    taille = UTILS_Parametres.Parametres(mode="get", categorie="comptes_internet", nom="taille_passwords", valeur=7)
+    internet_mdp = UTILS_Internet.CreationMDP(nbreCaract=taille)
     # Sauvegarde des données
     listeDonnees = [
         ("IDcompte_payeur", IDcompte_payeur),
