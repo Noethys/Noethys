@@ -1,4 +1,4 @@
-Version 1.1.7.6 (23/10/2016) :
+Version 1.1.7.6 (01/11/2016) :
 
 - Ajout de Connecthys (Version Beta)
 - Correction sauvegarde différentielle réservations Connecthys

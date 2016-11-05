@@ -41,7 +41,7 @@ DICT_TYPES_LIENS = {
     
     18 : { "M" : u"tuteur", "F" : u"tutrice", "public" : "A", "lien" : 19, "type" : None, "texte" : { "M" : u"est son tuteur", "F" : u"est sa tutrice"} },
     19 : { "M" : u"sous sa tutelle", "F" : u"sous sa tutelle", "public" : "E", "lien" : 18, "type" : None, "texte" : { "M" : u"est sous sa tutelle", "F" : u"est sous sa tutelle"} },
-    
+
     }
 
 

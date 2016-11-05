@@ -598,7 +598,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
-        self.SetMinSize((850, 740))
+        self.SetMinSize((870, 740))
         self.CenterOnScreen()
     
     def CreateIDactivite(self):

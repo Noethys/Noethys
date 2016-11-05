@@ -21,8 +21,10 @@ import GestionDB
 import FonctionsPerso
 import sys
 
-try: import psyco; psyco.full()
-except: pass
+try :
+    from wx.adv import PseudoDC
+except :
+    from wx import PseudoDC
 
 
 SelectDatesEvent, EVT_SELECT_DATES = wx.lib.newevent.NewEvent()
@@ -95,7 +97,7 @@ class Calendrier(wx.ScrolledWindow):
     
     def CreatePseudoDC(self):
         # create a PseudoDC to record our drawing
-        self.pdc = wx.PseudoDC()
+        self.pdc = PseudoDC()
         self.DoDrawing(self.pdc)
 
     def ConvertEventCoords(self, event):

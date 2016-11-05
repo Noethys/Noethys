@@ -126,8 +126,8 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
     if os.path.isfile(cheminFichier) == True :
         dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
         if dlg.ShowModal() == wx.ID_NO :
-            return False
             dlg.Destroy()
+            return False
         else:
             dlg.Destroy()
 

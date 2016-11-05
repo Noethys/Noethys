@@ -22,7 +22,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, mode="gestion"):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_banque", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_banque", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.mode = mode
         
