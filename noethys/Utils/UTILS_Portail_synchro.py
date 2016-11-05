@@ -451,6 +451,7 @@ class Synchro():
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
 
+        listeIDfamille = []
         for IDfamille, internet_actif, internet_identifiant, internet_mdp in listeDonnees :
             if internet_actif == 1 :
                 nomsTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
@@ -459,6 +460,8 @@ class Synchro():
 
                 m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, role="famille", IDfamille=IDfamille)
                 session.add(m)
+
+                listeIDfamille.append(IDfamille)
 
         # Création des factures
         self.Pulse_gauge()
@@ -519,30 +522,31 @@ class Synchro():
                 dictVentilation[IDfacture] = montantVentilation
 
         for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDfamille, etat in listeFactures :
-            if numero == None : numero = 0
-            if IDprefixe != None :
-                numero = u"%s-%06d" % (prefixe, numero)
-            else :
-                numero = u"%06d" % numero
+            if IDfamille in listeIDfamille :
+                if numero == None : numero = 0
+                if IDprefixe != None :
+                    numero = u"%s-%06d" % (prefixe, numero)
+                else :
+                    numero = u"%06d" % numero
 
-            date_edition = UTILS_Dates.DateEngEnDateDD(date_edition)
-            date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
-            date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
-            date_echeance = UTILS_Dates.DateEngEnDateDD(date_echeance)
-            total = FloatToDecimal(total)
-            if dictVentilation.has_key(IDfacture) :
-                totalVentilation = FloatToDecimal(dictVentilation[IDfacture])
-            else :
-                totalVentilation = FloatToDecimal(0.0)
-            if dictPrestations.has_key(IDfacture) :
-                totalPrestations = FloatToDecimal(dictPrestations[IDfacture])
-            else :
-                totalPrestations = FloatToDecimal(0.0)
-            solde_actuel = totalPrestations - totalVentilation
+                date_edition = UTILS_Dates.DateEngEnDateDD(date_edition)
+                date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
+                date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+                date_echeance = UTILS_Dates.DateEngEnDateDD(date_echeance)
+                total = FloatToDecimal(total)
+                if dictVentilation.has_key(IDfacture) :
+                    totalVentilation = FloatToDecimal(dictVentilation[IDfacture])
+                else :
+                    totalVentilation = FloatToDecimal(0.0)
+                if dictPrestations.has_key(IDfacture) :
+                    totalPrestations = FloatToDecimal(dictPrestations[IDfacture])
+                else :
+                    totalPrestations = FloatToDecimal(0.0)
+                solde_actuel = totalPrestations - totalVentilation
 
-            m = models.Facture(IDfacture=IDfacture, IDfamille=IDfamille, numero=numero, date_edition=date_edition, date_debut=date_debut,\
-                        date_fin=date_fin, montant=float(totalPrestations), montant_regle=float(totalVentilation), montant_solde=float(solde_actuel))
-            session.add(m)
+                m = models.Facture(IDfacture=IDfacture, IDfamille=IDfamille, numero=numero, date_edition=date_edition, date_debut=date_debut,\
+                            date_fin=date_fin, montant=float(totalPrestations), montant_regle=float(totalVentilation), montant_solde=float(solde_actuel))
+                session.add(m)
 
 
         # Création des règlements
@@ -570,13 +574,14 @@ class Synchro():
         listeReglements = DB.ResultatReq()
 
         for IDreglement, IDfamille, date, mode, numero, montant, date_encaissement in listeReglements :
-            date = UTILS_Dates.DateEngEnDateDD(date)
-            date_encaissement = UTILS_Dates.DateEngEnDateDD(date_encaissement)
-            if numero not in ("", None) :
-                numero = "****%s" % numero[3:]
-            m = models.Reglement(IDreglement=IDreglement, IDfamille=IDfamille, date=date, mode=mode,
-                            numero=numero, montant=montant, date_encaissement=date_encaissement)
-            session.add(m)
+            if IDfamille in listeIDfamille :
+                date = UTILS_Dates.DateEngEnDateDD(date)
+                date_encaissement = UTILS_Dates.DateEngEnDateDD(date_encaissement)
+                if numero not in ("", None) :
+                    numero = "****%s" % numero[3:]
+                m = models.Reglement(IDreglement=IDreglement, IDfamille=IDfamille, date=date, mode=mode,
+                                numero=numero, montant=montant, date_encaissement=date_encaissement)
+                session.add(m)
 
         # Création des pièces manquantes
         self.Pulse_gauge()
@@ -693,9 +698,10 @@ class Synchro():
         DB.ExecuterReq(req)
         listeRattachements = DB.ResultatReq()
         for IDrattachement, IDindividu, IDfamille, IDcivilite, nom, prenom, date_naiss in listeRattachements :
-            date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
-            m = models.Individu(IDindividu=IDindividu, IDfamille=IDfamille, prenom=prenom, date_naiss=date_naiss, IDcivilite=IDcivilite)
-            session.add(m)
+            if IDfamille in listeIDfamille :
+                date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
+                m = models.Individu(IDindividu=IDindividu, IDfamille=IDfamille, prenom=prenom, date_naiss=date_naiss, IDcivilite=IDcivilite)
+                session.add(m)
 
 
         # Création des inscriptions
@@ -706,8 +712,9 @@ class Synchro():
         DB.ExecuterReq(req)
         listeInscriptions = DB.ResultatReq()
         for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe in listeInscriptions :
-            m = models.Inscription(IDinscription=IDinscription, IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, IDgroupe=IDgroupe)
-            session.add(m)
+            if IDfamille in listeIDfamille :
+                m = models.Inscription(IDinscription=IDinscription, IDindividu=IDindividu, IDfamille=IDfamille, IDactivite=IDactivite, IDgroupe=IDgroupe)
+                session.add(m)
 
         # Création des unités
         self.Pulse_gauge()
@@ -785,7 +792,7 @@ class Synchro():
                 m = models.Consommation(date=date, IDunite=IDunite, IDinscription=IDinscription, etat=etat)
                 session.add(m)
 
-        # CrÃ©ation des actions
+        # Création des actions
         self.Pulse_gauge()
 
         req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse
@@ -794,10 +801,11 @@ class Synchro():
         DB.ExecuterReq(req)
         listeActions = DB.ResultatReq()
         for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, ref_unique, reponse in listeActions :
-            traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
-            horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
-            m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
-            session.add(m)
+            if IDfamille in listeIDfamille :
+                traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
+                horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
+                m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
+                session.add(m)
 
         # Fermeture de la base de données Noethys
         DB.Close()
@@ -829,7 +837,7 @@ class Synchro():
         # Pour contrer le bug de Pickle dans le cryptage
         fichier2 = open(nomFichierCRYPT, "rb")
         content = fichier2.read()
-        # TODO: comprendre pourquoi quand appele via synchro arrriÃ¨re plan ou vian synchro du bouton outils du panel c'est Utils.UTILS_Cryptage
+        # TODO: comprendre pourquoi quand appele via synchro arrrière plan ou vian synchro du bouton outils du panel c'est Utils.UTILS_Cryptage
         #       et via le DLG et le bouton Synchroniser maintenant c'est UTILS_Cryptage
         #       WTF !!!!!
         content = content.replace(b"Utils.UTILS_Cryptage_fichier", b"cryptage")
