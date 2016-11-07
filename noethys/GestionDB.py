@@ -1892,11 +1892,12 @@ class DB:
 
         # =============================================================
 
-        versionFiltre = (1, 1, 7, 5)
+        versionFiltre = (1, 1, 7, 7)
         if versionFichier < versionFiltre :
             try :
                 self.AjoutChamp("portail_actions", "reponse", "VARCHAR(450)")
                 self.AjoutChamp("portail_reservations", "etat", "INTEGER")
+                if self.IsTableExists("portail_messages") == False : self.CreationTable("portail_messages", Tables.DB_DATA)
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
@@ -2154,7 +2155,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("portail_periodes", "portail_reservations")
+    # listeTables = ("portail_messages",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()
@@ -2189,9 +2190,9 @@ if __name__ == "__main__":
 ##    db.Close()
         
     # Ajouter un champ
-    db = DB(suffixe="DATA")
-    db.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
-    db.Close()
+    # db = DB(suffixe="DATA")
+    # db.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
+    # db.Close()
 
     # Exportation d'une table dans la base DEFAUT
     # db = DB(suffixe="DATA")

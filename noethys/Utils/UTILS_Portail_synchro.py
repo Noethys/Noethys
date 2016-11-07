@@ -415,6 +415,7 @@ class Synchro():
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER_LIEU", parametre=self.dict_parametres["recevoir_document_site_lieu"]))
         session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_ACTIF", parametre=str(self.dict_parametres["paiement_ligne_actif"])))
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
+        session.add(models.Parametre(nom="ACCUEIL_MESSAGES_AFFICHER", parametre=str(self.dict_parametres["accueil_messages_afficher"])))
         session.add(models.Parametre(nom="ACCUEIL_ETAT_DOSSIER_AFFICHER", parametre=str(self.dict_parametres["accueil_etat_dossier_afficher"])))
         session.add(models.Parametre(nom="ACTIVITES_AFFICHER", parametre=str(self.dict_parametres["activites_afficher"])))
         session.add(models.Parametre(nom="ACTIVITES_INTRO", parametre=self.dict_parametres["activites_intro"]))
@@ -806,6 +807,16 @@ class Synchro():
                 horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
                 m = models.Action(horodatage=horodatage, IDfamille=IDfamille, IDindividu=IDindividu, categorie=categorie, action=action, description=description, commentaire=commentaire, parametres=parametres, etat=etat, traitement_date=traitement_date, IDperiode=IDperiode, ref_unique=ref_unique, reponse=reponse)
                 session.add(m)
+
+        # Création des messages
+        req = """SELECT IDmessage, titre, texte
+        FROM portail_messages
+        ORDER BY titre;"""
+        DB.ExecuterReq(req)
+        listeMessages = DB.ResultatReq()
+        for IDmessage, titre, texte in listeMessages :
+            m = models.Message(IDmessage=IDmessage, titre=titre, texte=texte)
+            session.add(m)
 
         # Fermeture de la base de données Noethys
         DB.Close()

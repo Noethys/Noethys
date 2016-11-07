@@ -12,15 +12,17 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-from Ctrl import CTRL_Bandeau
-from Ctrl import CTRL_Propertygrid
 import wx.propgrid as wxpg
 import copy
 import random
 import time
 import codecs
 import os.path
+
+from Ctrl import CTRL_Bouton_image
+from Ctrl import CTRL_Bandeau
+from Ctrl import CTRL_Propertygrid
+from Ctrl import CTRL_Portail_messages
 
 from Utils import UTILS_Parametres
 from Utils import UTILS_Config
@@ -80,6 +82,7 @@ VALEURS_DEFAUT = {
     "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
     "paiement_ligne_actif" : False,
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
+    "accueil_messages_afficher" : True,
     "accueil_etat_dossier_afficher" : True,
     "activites_afficher" : True,
     "activites_intro" : _(u"Vous pouvez consulter ici la liste des inscriptions et demander des inscriptions à d'autres activités."),
@@ -493,8 +496,14 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez un texte de bienvenue"))
         self.Append(propriete)
 
+        nom = "accueil_messages_afficher"
+        propriete = wxpg.BoolProperty(label=_(u"Afficher les messages"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour afficher les messages sur la page d'accueil"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
         nom = "accueil_etat_dossier_afficher"
-        propriete = wxpg.BoolProperty(label=_(u"Afficher l'état du dossier sur la page d'accueil"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.BoolProperty(label=_(u"Afficher l'état du dossier"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Cochez cette case pour afficher l'état du dossier sur la page d'accueil"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
@@ -883,6 +892,11 @@ class Dialog(wx.Dialog):
         self.gauge = wx.Gauge(self, -1, range=100, size=(-1, 8))
         self.gauge.Show(False)
 
+        # Messages
+        self.box_messages = wx.StaticBox(self, -1, _(u"Messages"))
+        self.ctrl_messages = CTRL_Portail_messages.CTRL(self)
+        self.ctrl_messages.SetMinSize((230, -1))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
@@ -905,7 +919,7 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.SetMinSize((750, 700))
+        self.SetMinSize((800, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -916,13 +930,23 @@ class Dialog(wx.Dialog):
         box_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(box_parametres, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
+        grid_sizer_bas = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
+
         # Log
         staticbox_actions = wx.StaticBoxSizer(self.box_log, wx.VERTICAL)
         grid_sizer_actions = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_actions.Add(self.log, 1, wx.EXPAND, 0)
         grid_sizer_actions.Add(self.gauge, 0, wx.EXPAND, 0)
         staticbox_actions.Add(grid_sizer_actions, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(staticbox_actions, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_bas.Add(staticbox_actions, 1, wx.EXPAND, 0)
+
+        # Messages
+        staticbox_messages = wx.StaticBoxSizer(self.box_messages, wx.VERTICAL)
+        staticbox_messages.Add(self.ctrl_messages, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_bas.Add(staticbox_messages, 1, wx.EXPAND, 0)
+
+        grid_sizer_bas.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_bas, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)

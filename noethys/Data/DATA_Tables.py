@@ -1536,6 +1536,10 @@ DB_DATA = {
                                     ("etat", "INTEGER", u"Ajout ou suppression de la réservation (1/0)"),
                                     ], # Réservations enregistrées sur le portail
 
+    "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
+                                    ("titre", "VARCHAR(255)", u"Titre du message"),
+                                    ("texte", "VARCHAR(1000)", u"Contenu du message"),
+                                    ], # Messages pour la page d'accueil du portail
 
 
     }
