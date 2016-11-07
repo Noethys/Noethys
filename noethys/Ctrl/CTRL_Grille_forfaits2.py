@@ -282,7 +282,6 @@ class CTRL_Forfait(HTL.HyperTreeList):
         
 
 
-        
     def Modifier(self, event=None):
         item = self.GetSelection()
         dataItem = self.GetItemPyData(item)
@@ -294,7 +293,14 @@ class CTRL_Forfait(HTL.HyperTreeList):
         
         donnees = dataItem["donnees"]
         IDprestation = donnees["IDprestation"] 
-        
+
+        # Vérifie si le forfait est déjà facturé
+        if donnees["IDfacture"] != None :
+            dlg = wx.MessageDialog(self, _(u"Ce forfait apparaît déjà sur une facture. Il n'est pas possible de le modifier !"), _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         from Dlg import DLG_Saisie_forfait_credit
         dlg = DLG_Saisie_forfait_credit.Dialog(self, grille=self.grille, listeFamilles=self.grille.GetFamillesAffichees())
         dlg.SetFamille(donnees["IDfamille"]) 
@@ -379,7 +385,14 @@ class CTRL_Forfait(HTL.HyperTreeList):
         
         donnees = dataItem["donnees"]
         IDprestation = donnees["IDprestation"] 
-        
+
+        # Vérifie si le forfait est déjà facturé
+        if donnees["IDfacture"] != None :
+            dlg = wx.MessageDialog(self, _(u"Ce forfait apparaît déjà sur une facture. Il n'est pas possible de le supprimer !"), _(u"Attention"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         # Vérifie si des consommations du forfait existent déjà sur d'autres périodes non affichées
         listeConso = []
         for IDindividu, dictIndividu in self.grille.dictConsoIndividus.iteritems() :
