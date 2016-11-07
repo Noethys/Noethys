@@ -282,7 +282,6 @@ class CTRL_Forfait(HTL.HyperTreeList):
         
 
 
-        
     def Modifier(self, event=None):
         item = self.GetSelection()
         dataItem = self.GetItemPyData(item)
