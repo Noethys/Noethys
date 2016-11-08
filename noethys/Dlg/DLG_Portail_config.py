@@ -1278,7 +1278,7 @@ et reste fortement déconseillé pour une utilisation en production. Merci de sign
 sur le forum.</B>
 </FONT>
 </CENTER>
-""" % Chemins.GetStaticPath("Images/Special/Connecthys.png")
+""" % Chemins.GetStaticPath("Images/Special/Connecthys_pub.png")
 
         from Dlg import DLG_Message_html
         dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), size=(510, 670), nePlusAfficher=True)
