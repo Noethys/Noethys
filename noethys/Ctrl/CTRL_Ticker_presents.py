@@ -87,7 +87,7 @@ class CTRL(wx.Panel):
         
     def JoinListe(self, listeTemp=[]):
         if len(listeTemp) > 2 :
-            return _(u"%s et %s") % (u", ".join(listeTemp[:-1], listeTemp[-1]))
+            return _(u"%s et %s") % (u", ".join(listeTemp[:-1]), listeTemp[-1])
         else :
             return _(u" et ").join(listeTemp)
         
