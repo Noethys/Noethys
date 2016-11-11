@@ -109,14 +109,12 @@ class Synchro():
         if self.dict_parametres["client_rechercher_updates"] == True :
 
             # Vérifie si une update n'a pas été faite aujourd'hui avec la même version de Noethys
-            #last_update = UTILS_Config.GetParametre("connecthys_last_update", None)
             last_update = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_update", valeur=None)
             version_noethys = FonctionsPerso.GetVersionLogiciel()
             data = "%s#%s" % (str(datetime.date.today()), version_noethys)
             if data != last_update :
                 resultat = self.Update_application()
                 # Mémorise la demande d'update
-                #UTILS_Config.SetParametre("connecthys_last_update", data)
                 if resultat == True :
                     UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_update", valeur=data)
 

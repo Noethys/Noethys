@@ -41,6 +41,7 @@ LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"),
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 
+
 VALEURS_DEFAUT = {
     "portail_activation" : False,
     "client_synchro_portail_activation" : False,
@@ -57,7 +58,7 @@ VALEURS_DEFAUT = {
     "ftp_repertoire" : "/www/connecthys",
     "url_connecthys" : "http://127.0.0.1:5000",
     "accept_all_cert" : False,
-    "hebergement_local_repertoire" : "/tmp/connecthys",
+    "hebergement_local_repertoire" : "",
     "ssh_serveur" : "127.0.0.1",
     "ssh_port" : "22",
     "ssh_key_file" : "",
@@ -333,8 +334,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Repertoire Hebergement Local
         nom = "hebergement_local_repertoire"
-        propriete = wxpg.StringProperty(label=_(u"Répertoire local"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Saisissez le répertoire local (Ex : /home/bogucool/connecthys)"))
+        standardPath = wx.StandardPaths.Get()
+        defaut = os.path.join(standardPath.GetDocumentsDir(), "connecthys")
+        propriete = wxpg.StringProperty(label=_(u"Répertoire local"), name=nom, value=defaut)
+        propriete.SetHelpString(_(u"Saisissez le répertoire local (Ex : /home/bogucool/connecthys ou C:/Users/Ivan/Documents/Connecthys)"))
         self.Append(propriete)
 
         # Url Connecthys

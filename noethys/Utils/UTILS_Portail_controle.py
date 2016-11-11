@@ -125,7 +125,7 @@ class ServeurConnecthys():
         #self.parent.EcritLog(_(u"[DEBUG] args: %s") % args)
 
         # Créé un nouveau process
-        p = subprocess.Popen(args, shell=False, cwd=rep)
+        p = subprocess.Popen(args, shell=True, cwd=rep)
 
 
     def Demarrer_serveurBySSH(self) :
