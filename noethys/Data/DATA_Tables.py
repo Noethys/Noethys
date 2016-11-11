@@ -17,6 +17,7 @@ TABLES_IMPORTATION_OPTIONNELLES = [
         [u"Modes et émetteurs de règlements", ("modes_reglements", "emetteurs"), True],
         [u"Régimes d'appartenance", ("regimes",), True],
         [u"Modèles de documents", ("documents_modeles", "documents_objets"), True],
+        [u"Modèles d'Emails", ("modeles_emails",), True],
         [u"Niveaux scolaires", ("niveaux_scolaires",), True],
         [u"Comptes comptables", ("compta_comptes_comptables",), True],
         [u"Types de quotients", ("types_quotients",), True],

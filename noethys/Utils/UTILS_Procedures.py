@@ -51,6 +51,7 @@ DICT_PROCEDURES = {
     "A8971" : _(u"Attribution du type de quotient CAF à tous les quotients existants"),
     "A9001" : _(u"Modification de la structure de la table Documents"),
     "A9023" : _(u"Correction des ouvertures avec IDgroupe=0"),
+    "A9054" : _(u"Importation des modèles d'Emails depuis la base défaut"),
     }
 
 
@@ -838,8 +839,41 @@ def A9023():
     DB.Close()
 
 
+def A9054():
+    """ Importation des modèles d'Emails depuis la base défaut """
 
+    # Récupération des modèles d'Emails dans la base Défaut
+    DB = GestionDB.DB(nomFichier=Chemins.GetStaticPath("Databases/Defaut.dat"), suffixe=None)
+    req = """SELECT IDmodele, categorie, nom, description, objet, texte_xml, IDadresse, defaut
+    FROM modeles_emails;"""
+    DB.ExecuterReq(req)
+    liste_modeles_defaut = DB.ResultatReq()
+    DB.Close()
 
+    # Récupération des modèles d'Emails de la base actuelle
+    DB = GestionDB.DB()
+    req = """SELECT IDmodele, categorie
+    FROM modeles_emails;"""
+    DB.ExecuterReq(req)
+    liste_modeles = DB.ResultatReq()
+
+    # Recensement des catégories pour lesquelles des modèles existant déjà
+    liste_categories_presentes = []
+    for IDmodele, categorie in liste_modeles :
+        if categorie not in liste_categories_presentes :
+            liste_categories_presentes.append(categorie)
+
+    # Ajout des modèles dans les catégories qui n'ont aucun modèle existant
+    nbre_ajouts = 0
+    for IDmodele, categorie, nom, description, objet, texte_xml, IDadresse, defaut in liste_modeles_defaut :
+        if categorie not in liste_categories_presentes :
+            liste_donnees = [("categorie", categorie), ("nom", nom), ("description", description), ("objet", objet),
+                             ("texte_xml", texte_xml), ("IDadresse", IDadresse), ("defaut", defaut)]
+            IDmodele = DB.ReqInsert("modeles_emails", liste_donnees)
+            nbre_ajouts += 1
+
+    print "%d modeles d'Emails ajoutes" % nbre_ajouts
+    DB.Close()
 
 
 ##def A8360():
@@ -925,5 +959,5 @@ def A9023():
 if __name__ == u"__main__":
     app = wx.App(0)
     # TEST D'UNE PROCEDURE :
-    A9023()
+    A9054()
     app.MainLoop()
