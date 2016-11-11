@@ -40,8 +40,12 @@ class Track(object):
         self.etat = donnees["etat"]
         self.FormateEtat()
 
-        self.traitement_date = donnees["traitement_date"]
         self.IDperiode = donnees["IDperiode"]
+        self.periode_nom = donnees["periode_nom"]
+        self.periode_date_debut = donnees["periode_date_debut"]
+        self.periode_date_fin = donnees["periode_date_fin"]
+
+        self.traitement_date = donnees["traitement_date"]
         self.reponse = donnees["reponse"]
 
         if dictTitulaires.has_key(self.IDfamille) :
@@ -111,18 +115,24 @@ class ListView(GroupListView):
         else :
             conditions = ""
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse
-        FROM portail_actions %s;""" % conditions
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse,
+        portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin
+        FROM portail_actions
+        LEFT JOIN portail_periodes ON portail_periodes.IDperiode = portail_actions.IDperiode
+        %s;""" % conditions
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeActions = []
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, periode_nom, periode_date_debut, periode_date_fin in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
+            periode_date_debut = UTILS_Dates.DateEngEnDateDD(periode_date_debut)
+            periode_date_fin = UTILS_Dates.DateEngEnDateDD(periode_date_fin)
             listeActions.append({
                 "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "categorie" : categorie,
                 "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
                 "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse,
+                "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
             })
 
         DB.Close() 
@@ -141,10 +151,15 @@ class ListView(GroupListView):
         self.image_inscription = self.AddNamedImages("inscriptions", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Activite.png"), wx.BITMAP_TYPE_PNG))
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
 
-        # Couleur en alternance des lignes
-        self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
-        self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
+        self.oddRowsBackColor = wx.Colour(255, 255, 255)
+        self.evenRowsBackColor = wx.Colour(255, 255, 255)
+
+        couleur_verte = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
+
+        def rowFormatter(listItem, track):
+            if track.etat == "validation" :
+                listItem.SetBackgroundColour(couleur_verte)
 
         def GetImageEtat(track):
             return track.etat
@@ -170,20 +185,22 @@ class ListView(GroupListView):
             "categorie" : ColumnDefn(_(u"Catégorie"), "left", 120, "categorie_label", typeDonnee="texte", imageGetter=GetImageCategorie),
             "famille" : ColumnDefn(_(u"Famille"), "left", 180, "famille", typeDonnee="texte"),
             "description" : ColumnDefn(_(u"Description"), "left", 300, "description", typeDonnee="texte"),
-            "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 300, "commentaire", typeDonnee="texte"),
+            "periode" : ColumnDefn(_(u"Période"), "left", 200, "periode_nom", typeDonnee="texte"),
+            "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 250, "commentaire", typeDonnee="texte"),
             "reponse" : ColumnDefn(_(u"Réponse"), "left", 300, "reponse", typeDonnee="texte"),
             }
 
         # Regroupement
         if self.regroupement != None :
-            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "commentaire", "reponse"]
+            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "reponse"]
             self.SetAlwaysGroupByColumn(liste_colonnes.index(self.regroupement))
             self.SetShowGroups(True)
         else :
-            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "commentaire", "reponse"]
+            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "reponse"]
             self.SetShowGroups(False)
         self.useExpansionColumn = False
         self.showItemCounts = False
+        self.rowFormatter = rowFormatter
 
         listeTemp = []
         for code in liste_colonnes:

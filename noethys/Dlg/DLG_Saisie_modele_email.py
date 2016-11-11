@@ -83,7 +83,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle"))
-        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour ce modèle"))
+        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour ce modèle [Optionnel]"))
         self.ctrl_objet.SetToolTipString(_(u"Saisissez l'objet du message"))
         self.ctrl_motscles.SetToolTipString(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades)."))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
@@ -171,12 +171,6 @@ class Dialog(wx.Dialog):
         
         # Description
         description = self.ctrl_description.GetValue()
-        if description == "" :
-            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de description pour ce modèle ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
-            if dlg.ShowModal() != wx.ID_YES :
-                dlg.Destroy()
-                return
-            dlg.Destroy()
 
         # Adresse Exp
         IDadresse = self.ctrl_exp.GetID()

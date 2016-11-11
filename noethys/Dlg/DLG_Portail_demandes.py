@@ -17,9 +17,8 @@ import GestionDB
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Utils import UTILS_Fichiers
-
+from Utils import UTILS_Dialogs
 from Ol import OL_Portail_demandes
-
 
 
 class CTRL_Regroupement(wx.Choice):
@@ -100,6 +99,8 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
 
+        attente = wx.BusyInfo(_(u"Veuillez patienter..."), self)
+
         # Bandeau
         intro = _(u"Double-cliquez sur une ligne pour traiter la demande correspondante ou cliquez sur le bouton 'Commencer' pour traiter la première demande de la liste.")
         titre = _(u"Traitement des demandes")
@@ -153,6 +154,8 @@ class Dialog(wx.Dialog):
         
         # Init
         self.ctrl_demandes.MAJ()
+
+        attente.Destroy()
         
     def __set_properties(self):
         self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour traiter la demande sélectionnée dans la liste"))
@@ -232,6 +235,7 @@ class Dialog(wx.Dialog):
         #grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        UTILS_Dialogs.AjusteSizePerso(self, __file__)
         self.CenterOnScreen()
     
     def OnCheckCacherTraitees(self, event=None):
@@ -243,6 +247,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonFermer(self, event):
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
         self.EndModal(wx.ID_CANCEL)
 
     def OnChoixRegroupement(self, event):

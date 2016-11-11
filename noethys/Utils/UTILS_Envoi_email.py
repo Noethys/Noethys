@@ -30,7 +30,12 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
     dictChamps = temp(nomDoc=nomDoc, afficherDoc=False)
     if dictChamps == False :
         return False
-    
+
+    if nomDoc != False :
+        liste_pieces = [nomDoc,]
+    else :
+        liste_pieces = []
+
     # Recherche adresse famille
     if len(listeAdresses) == 0 :
         listeAdresses = GetAdresseFamille(IDfamille)
@@ -42,7 +47,7 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
     for adresse in listeAdresses :
         listeDonnees.append({
             "adresse" : adresse, 
-            "pieces" : [nomDoc,], 
+            "pieces" : liste_pieces,
             "champs" : dictChamps,
             })
     from Dlg import DLG_Mailer
@@ -63,15 +68,16 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
         if log : log.EcritLog(_(u"L'Email a été envoyé avec succès."))
     else :
         resultat = False
-        if log : log.EcritLog(_(u"[ERREUR] L'envoi de l'Email a rencontré une erreur."))
+        if log : log.EcritLog(_(u"L'email n'a pas été envoyé."))
 
     dlg.Destroy()
 
     # Suppression du PDF temporaire
-    try :
-        os.remove(nomDoc)
-    except :
-        pass
+    if nomDoc != False :
+        try :
+            os.remove(nomDoc)
+        except :
+            pass
 
     return resultat
 
@@ -138,7 +144,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         for label, adresse in listeAdresses :
             listeLabels.append(label)
         if choixMultiple == True :
-            dlg = wx.MultiChoiceDialog(None, _(u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celles que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :") % (len(listeAdresses), nomTitulaires), _(u"Choix d''adresses Emails"), listeLabels)
+            dlg = wx.MultiChoiceDialog(None, _(u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celles que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :") % (len(listeAdresses), nomTitulaires), _(u"Choix d'adresses Emails"), listeLabels)
         else :
             dlg = wx.SingleChoiceDialog(None, _(u"%d adresses internet sont disponibles pour la famille de %s.\nSélectionnez celle que vous souhaitez utiliser puis cliquez sur le bouton 'Ok' :") % (len(listeAdresses), nomTitulaires), _(u"Choix d'une adresse Email"), listeLabels)
         dlg.SetSize((450, -1))

@@ -40,7 +40,11 @@ CATEGORIES = [
     ("reservations", _(u"Liste des réservations")), 
     ("cotisation", _(u"Cotisation")),
     ("rappel_pieces_manquantes", _(u"Rappel pièces manquantes")),
-    ("portail", _(u"Rappel des données du compte internet"))
+    ("portail", _(u"Rappel des données du compte internet")),
+    ("portail_demande_inscription", _(u"Portail - Demande d'une inscription")),
+    ("portail_demande_reservation", _(u"Portail - Demande d'une réservation")),
+    ("portail_demande_facture", _(u"Portail - Demande d'une facture")),
+    ("portail_demande_recu_reglement", _(u"Portail - Demande d'un reçu de règlement")),
     ]
 
 
@@ -174,6 +178,42 @@ MOTSCLES = {
                 ( "{NOM_FAMILLE}", _(u"Nom de la famille")),
                 ( "{IDENTIFIANT_INTERNET}", _(u"Identifiant du compte internet") ),
                 ( "{MOTDEPASSE_INTERNET}", _(u"Mot de passe du compte internet") ),
+                ],
+
+    "portail_demande_inscription" : [
+                ( "{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande") ),
+                ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
+                ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
+                ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
+                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
+                ],
+
+    "portail_demande_reservation" : [
+                ( "{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande") ),
+                ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
+                ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
+                ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
+                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
+                ( "{PERIODE_NOM}", _(u"Nom de la période") ),
+                ( "{PERIODE_DATE_DEBUT}", _(u"Date de début de la période") ),
+                ( "{PERIODE_DATE_FIN}", _(u"Date de fin de la période") ),
+                ( "{SOLDE}", _(u"Solde du document") ),
+                ],
+
+    "portail_demande_facture" : [
+                ( "{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande") ),
+                ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
+                ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
+                ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
+                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
+                ],
+
+    "portail_demande_recu_reglement" : [
+                ( "{DEMANDE_HORODATAGE}", _(u"Date et heure de la demande") ),
+                ( "{DEMANDE_DESCRIPTION}", _(u"Description de la demande") ),
+                ( "{DEMANDE_COMMENTAIRE}", _(u"Commentaire de la demande") ),
+                ( "{DEMANDE_TRAITEMENT_DATE}", _(u"Date de traitement") ),
+                ( "{DEMANDE_REPONSE}", _(u"Réponse à la demande") ),
                 ],
 
     }

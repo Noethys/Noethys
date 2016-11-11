@@ -74,7 +74,14 @@ def Impression(dictDonnees={}, nomDoc=FonctionsPerso.GenerationNomDoc("RESERVATI
         story.append(Spacer(0,20))       
     
     # Insère un header
-    Header() 
+    Header()
+
+    # Texte si aucune réservation
+    if len(dictDonnees) == 0 :
+        paraStyle = ParagraphStyle(name="defaut", fontName="Helvetica", fontSize=11)
+        story.append(Paragraph("&nbsp;", paraStyle))
+        story.append(Paragraph("&nbsp;", paraStyle))
+        story.append(Paragraph(_(u"<para align='centre'><b>Aucune réservation</b></para>"), paraStyle))
     
     # Tableau NOM INDIVIDU
     totalFacturationFamille = 0.0

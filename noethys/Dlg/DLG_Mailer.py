@@ -248,11 +248,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         for IDmodele, nom, description in listeDonnees :
             id = 20000 + IDmodele
-            maxCaract = 80
-            if len(description) > maxCaract :
-                description = u"%s..." % description[:maxCaract]
-            texte = u"%s (%s)" % (nom, description)
-            item = wx.MenuItem(menuPop, id, texte)
+            item = wx.MenuItem(menuPop, id, nom)
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_modele.png"), wx.BITMAP_TYPE_PNG))
             sousMenuModeles.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.ChargerModele, id=id)

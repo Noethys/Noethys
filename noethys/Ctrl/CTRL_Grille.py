@@ -4181,11 +4181,11 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                         }
                                     dictDonnees[IDindividu]["activites"][IDactivite]["dates"][date][IDunite] = dictTemp
         
-        if len(dictDonnees) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        # if len(dictDonnees) == 0 :
+        #     dlg = wx.MessageDialog(self, _(u"Il n'y a aucune consommation à imprimer !"), _(u"Erreur"), wx.OK | wx.ICON_INFORMATION)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     return False
         
         # Lancement de la création du PDF
         from Utils import UTILS_Impression_reservations

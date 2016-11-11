@@ -202,8 +202,11 @@ class CTRL(wx.Panel):
         if heure_fin == "defaut" : heure_fin = heure_fin_defaut
 
         # Vérifie qu'il reste des places disponibles
+        hasPlaces = True
         if case.HasPlaceDisponible(heure_debut, heure_fin) == False :
-            return _(u"Il n'y a plus de place à cette date.")
+            hasPlaces = False
+            if mode == "reservation" :
+                return _(u"Il n'y a plus de place le %s.") % UTILS_Dates.DateDDEnFr(date)
         
         # Vérifie la compatibilité avec les autres unités
         incompatibilite = case.VerifieCompatibilitesUnites()
@@ -224,10 +227,12 @@ class CTRL(wx.Panel):
                 quantiteTmp = quantite
             if typeUnite == "Multihoraires" :
                 barre = case.SaisieBarre(UTILS_Dates.HeureStrEnTime(heure_debut), UTILS_Dates.HeureStrEnTime(heure_fin))
-                case.ModifieEtat(barre.conso, etat)
+                if mode == "reservation" :
+                    case.ModifieEtat(barre.conso, etat)
             else :
                 case.OnClick(saisieHeureDebut=heure_debut, saisieHeureFin=heure_fin, saisieQuantite=quantiteTmp, modeSilencieux=True)
-                case.ModifieEtat(None, etat)
+                if mode == "reservation" :
+                    case.ModifieEtat(None, etat)
 
 
         # Si la conso existe déjà :
@@ -255,7 +260,11 @@ class CTRL(wx.Panel):
             
             if typeUnite == "Unitaire" :
                 case.ModifieEtat(None, etat)
-            
+
+        # Si mode = attente
+        if hasPlaces == False :
+            return _(u"Il n'y a plus de place le %s. Réservation en attente saisie.") % UTILS_Dates.DateDDEnFr(date)
+
         return True
     
     def SupprimeConso(self, IDunite=None, date=None):

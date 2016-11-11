@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
 import datetime
+from Utils import UTILS_Dialogs
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Grille_facturation
@@ -30,6 +31,7 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, dlgparent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         self.track = track
+        self.reponse = ""
 
         # Bandeau
         intro = _(u"Vous pouvez gérer ici la demande de façon manuelle. Commencez par cliquer sur le bouton 'Appliquer la demande' pour voir apparaître les modifications demandées dans la grille des conso. Vous pouvez alors effectuer manuellement d'éventuelles modifications avant de valider.")
@@ -159,6 +161,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        UTILS_Dialogs.AjusteSizePerso(self, __file__)
         self.CenterOnScreen()
 
     def OnBoutonAide(self, event): 
@@ -166,6 +169,7 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("")
 
     def OnBoutonFermer(self, event):
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
         self.EndModal(wx.ID_CANCEL)
 
     def OnBoutonOutils(self, event):
@@ -193,14 +197,17 @@ class Dialog(wx.Dialog):
         menuPop.Destroy()
 
     def OnBoutonTraiter(self, event):
-        self.parent.Appliquer_reservations(ctrl_grille=self.ctrl_grille, log_jumeau=self.ctrl_log)
+        self.reponse = self.parent.Appliquer_reservations(ctrl_grille=self.ctrl_grille, log_jumeau=self.ctrl_log)
 
     def OnBoutonReinit(self, event):
         self.parent.Init_grille(ctrl_grille=self.ctrl_grille)
 
     def OnBoutonOk(self, event):
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
         self.EndModal(wx.ID_OK)
 
+    def GetReponse(self):
+        return self.reponse
 
 
 

@@ -583,8 +583,7 @@ class Dialog(wx.Dialog):
                 },])
                 
     def OnBoutonOk(self, event): 
-        self.GetPrestations() 
-        self.CreationPDF() 
+        self.CreationPDF()
 
     def OnBoutonEmail(self, event): 
         """ Envoi par mail """
