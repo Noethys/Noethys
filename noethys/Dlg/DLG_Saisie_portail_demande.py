@@ -416,6 +416,12 @@ class Dialog(wx.Dialog):
         self.bouton_automatique.Enable(not self.radio_validation.GetValue())
         self.bouton_manuel.Enable(not self.radio_validation.GetValue())
 
+        if self.radio_validation.GetValue() == True :
+            self.panel_bandeau.SetBackgroundColour(wx.Colour(220, 255, 220))
+        else :
+            self.panel_bandeau.SetBackgroundColour(wx.Colour(255, 255, 255))
+        self.panel_bandeau.Refresh()
+
     def OnBoutonModeles(self, event):
         import DLG_Modeles_emails
         dlg = DLG_Modeles_emails.Dialog(self, categorie=self.categorie_email)

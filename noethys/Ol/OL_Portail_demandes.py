@@ -144,8 +144,8 @@ class ListView(GroupListView):
       
     def InitObjectListView(self):          
         # Images
-        self.image_attente = self.AddNamedImages("attente", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attente.png"), wx.BITMAP_TYPE_PNG))
-        self.image_validation = self.AddNamedImages("validation", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
+        #self.image_attente = self.AddNamedImages("attente", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attente.png"), wx.BITMAP_TYPE_PNG))
+        self.image_validation = self.AddNamedImages("validation", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok4.png"), wx.BITMAP_TYPE_PNG))
         self.image_reglement = self.AddNamedImages("reglements", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Reglement.png"), wx.BITMAP_TYPE_PNG))
         self.image_facture = self.AddNamedImages("factures", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Facture.png"), wx.BITMAP_TYPE_PNG))
         self.image_inscription = self.AddNamedImages("inscriptions", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Activite.png"), wx.BITMAP_TYPE_PNG))

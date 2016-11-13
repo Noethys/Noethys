@@ -99,8 +99,6 @@ class Dialog(wx.Dialog):
         self.parent = parent
         self.IDfamille = IDfamille
 
-        attente = wx.BusyInfo(_(u"Veuillez patienter..."), self)
-
         # Bandeau
         intro = _(u"Double-cliquez sur une ligne pour traiter la demande correspondante ou cliquez sur le bouton 'Commencer' pour traiter la première demande de la liste.")
         titre = _(u"Traitement des demandes")
@@ -155,8 +153,7 @@ class Dialog(wx.Dialog):
         # Init
         self.ctrl_demandes.MAJ()
 
-        attente.Destroy()
-        
+
     def __set_properties(self):
         self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour traiter la demande sélectionnée dans la liste"))
         self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
