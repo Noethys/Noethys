@@ -118,14 +118,28 @@ class ServeurConnecthys():
             dlg.Destroy()
             return
 
-        args = ["python", chemin_executable]
-        for arg in options.split(" ") :
-            if arg != "" :
-                args.append(arg)
-        #self.parent.EcritLog(_(u"[DEBUG] args: %s") % args)
+        process_ok = False
+        for chemin_python in ["python", "C:\Python27\python.exe"] :
+            args = [chemin_python, chemin_executable]
+            for arg in options.split(" ") :
+                if arg != "" :
+                    args.append(arg)
 
-        # Créé un nouveau process
-        p = subprocess.Popen(args, shell=True, cwd=rep)
+            try :
+                p = subprocess.Popen(args, shell=False, cwd=rep)
+                process_ok = True
+                break
+            except Exception, err :
+                print "Erreur lancement Connecthys :", err
+                self.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys :"))
+                self.EcritLog(err)
+                process_ok = False
+
+        if process_ok == False :
+            self.EcritLog(_(u"[ERREUR] Le serveur n'a pas pu être démarré"))
+            dlg = wx.MessageDialog(None, _(u"Le serveur Connecthys n'a pas pu être démarré !"), _(u"Serveur Connecthys"), wx.OK | wx.ICON_ERROR)
+            dlg.ShowModal()
+            dlg.Destroy()
 
 
     def Demarrer_serveurBySSH(self) :
