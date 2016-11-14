@@ -21,6 +21,66 @@ from Utils import UTILS_Dates
 import GestionDB
 
 
+
+
+
+
+class CTRL_Choix_modele(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.defaut = None
+        self.MAJ()
+
+    def MAJ(self):
+        selectionActuelle = self.GetID()
+        listeItems = self.GetListeDonnees()
+        #if len(listeItems) == 0 :
+        #    self.Enable(False)
+        #else:
+        #    self.Enable(True)
+        self.SetItems(listeItems)
+        # Re-sélection après MAJ
+        if selectionActuelle != None :
+            self.SetID(selectionActuelle)
+        else:
+            # Sélection par défaut
+            self.SetID(self.defaut)
+
+    def GetListeDonnees(self):
+        listeItems = []
+        self.dictDonnees = {}
+
+        DB = GestionDB.DB()
+        req = """SELECT IDmodele, nom, description, defaut
+        FROM modeles_emails
+        WHERE categorie='portail_demande_reservation'
+        ORDER BY nom;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        index = 0
+        for IDmodele, nom, description, defaut in listeDonnees :
+            listeItems.append(nom)
+            self.dictDonnees[index] = {"ID" : IDmodele}
+            if defaut == 1 :
+                self.defaut = IDmodele
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=None):
+        for index, values in self.dictDonnees.iteritems():
+            if values != None and values["ID"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 : return None
+        return self.dictDonnees[index]["ID"]
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDperiode=None, IDactivite=None):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE)
@@ -59,7 +119,14 @@ class Dialog(wx.Dialog):
         self.ctrl_affichage_date_fin = CTRL_Saisie_date.Date2(self)
         self.ctrl_affichage_heure_fin = CTRL_Saisie_heure.Heure(self)
         self.radio_non = wx.RadioButton(self, -1, _(u"Ne pas afficher"))
-        
+
+        # Modèle d'Email de réponse associé
+        self.box_modele_staticbox = wx.StaticBox(self, -1, _(u"Modèle d'Email de réponse"))
+        self.radio_modele_defaut = wx.RadioButton(self, -1, _(u"Utiliser le modèle par défaut"), style=wx.RB_GROUP)
+        self.radio_modele_choix = wx.RadioButton(self, -1, _(u"Utiliser le modèle suivant :"))
+        self.ctrl_modele_email = CTRL_Choix_modele(self)
+        self.bouton_gestion_modeles = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
+
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -72,6 +139,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAffichage, self.radio_oui)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAffichage, self.radio_dates)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAffichage, self.radio_non)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioModele, self.radio_modele_defaut)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioModele, self.radio_modele_choix)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonModeles, self.bouton_gestion_modeles)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
@@ -79,6 +149,7 @@ class Dialog(wx.Dialog):
         # Init contrôles
         self.Importation()
         self.OnRadioAffichage(None)
+        self.OnRadioModele(None)
 
 
     def __set_properties(self):
@@ -86,6 +157,10 @@ class Dialog(wx.Dialog):
         self.radio_oui.SetToolTipString(_(u"Sélectionnez cette option pour afficher cette période sur le portail"))
         self.radio_dates.SetToolTipString(_(u"Sélectionnez cette option pour afficher cette période sur le portail uniquement entre les dates souhaitées"))
         self.radio_non.SetToolTipString(_(u"Sélectionnez cette option pour ne pas afficher cette période sur le portail"))
+        self.radio_modele_defaut.SetToolTipString(_(u"Sélectionnez cette option pour utiliser le modèle d'Email par défaut pour l'envoi des réponses aux demandes"))
+        self.radio_modele_choix.SetToolTipString(_(u"Sélectionnez cette option pour utiliser un modèle d'Email spécifique pour les réponses aux demandes"))
+        self.ctrl_modele_email.SetToolTipString(_(u"Sélectionnez le modèle d'Email à associer à la période"))
+        self.bouton_gestion_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles d'Emails"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
@@ -94,7 +169,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        grid_sizer_contenu = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
 
         # Nom
         box_nom = wx.StaticBoxSizer(self.box_nom_staticbox, wx.VERTICAL)
@@ -137,6 +212,25 @@ class Dialog(wx.Dialog):
         box_affichage.Add(grid_sizer_affichage, 1, wx.ALL | wx.EXPAND, 10)
         grid_sizer_contenu.Add(box_affichage, 1,wx.EXPAND, 0)
 
+        # Modèle d'Email
+        box_modele = wx.StaticBoxSizer(self.box_modele_staticbox, wx.VERTICAL)
+
+        grid_sizer_modele = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+        grid_sizer_modele.Add(self.radio_modele_defaut, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_modele.Add(self.radio_modele_choix, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        grid_sizer_modele_choix = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
+        grid_sizer_modele_choix.Add(self.ctrl_modele_email, 0, wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_modele_choix.Add(self.bouton_gestion_modeles, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_modele_choix.AddGrowableCol(0)
+        grid_sizer_modele.Add(grid_sizer_modele_choix, 0, wx.EXPAND | wx.LEFT, 16)
+
+        grid_sizer_modele.AddGrowableCol(0)
+
+        box_modele.Add(grid_sizer_modele, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_contenu.Add(box_modele, 1,wx.EXPAND, 0)
+
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -164,6 +258,20 @@ class Dialog(wx.Dialog):
         self.ctrl_affichage_heure_debut.Enable(etat)
         self.ctrl_affichage_heure_fin.Enable(etat)
 
+    def OnRadioModele(self, event):
+        etat = self.radio_modele_choix.GetValue()
+        self.ctrl_modele_email.Enable(etat)
+        self.bouton_gestion_modeles.Enable(etat)
+
+    def OnBoutonModeles(self, event):
+        import DLG_Modeles_emails
+        dlg = DLG_Modeles_emails.Dialog(self, categorie="portail_demande_reservation")
+        dlg.ShowModal()
+        dlg.Destroy()
+        ID = self.ctrl_modele_email.GetID()
+        self.ctrl_modele_email.MAJ()
+        self.ctrl_modele_email.SetID(ID)
+
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
@@ -177,14 +285,14 @@ class Dialog(wx.Dialog):
             return
 
         DB = GestionDB.DB()
-        req = """SELECT IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin
+        req = """SELECT IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele
         FROM portail_periodes
         WHERE IDperiode=%d;""" % self.IDperiode
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin = listeDonnees[0]
+        IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele = listeDonnees[0]
         affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
         affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
@@ -203,6 +311,10 @@ class Dialog(wx.Dialog):
             self.ctrl_affichage_heure_fin.SetHeure(datetime.datetime.strftime(UTILS_Dates.DateEngEnDateDDT(affichage_date_fin),"%H:%M"))
         else :
             self.radio_non.SetValue(True)
+
+        if IDmodele not in (None, ""):
+            self.radio_modele_choix.SetValue(True)
+            self.ctrl_modele_email.SetID(IDmodele)
 
 
     def OnBoutonOk(self, event):
@@ -291,6 +403,16 @@ class Dialog(wx.Dialog):
             affichage_date_debut = None
             affichage_date_fin = None
 
+        if self.radio_modele_choix.GetValue() == True :
+            IDmodele = self.ctrl_modele_email.GetID()
+            if IDmodele == None :
+                dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun modèle d'Email dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+        else :
+            IDmodele = None
+
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [
@@ -301,6 +423,7 @@ class Dialog(wx.Dialog):
             ("affichage", int(affichage)),
             ("affichage_date_debut", affichage_date_debut),
             ("affichage_date_fin", affichage_date_fin),
+            ("IDmodele", IDmodele),
             ]
         if self.IDperiode == None :
             self.IDperiode = DB.ReqInsert("portail_periodes", listeDonnees)

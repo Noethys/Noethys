@@ -1913,7 +1913,14 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 7, 9)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("portail_periodes", "IDmodele", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
         return True

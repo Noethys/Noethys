@@ -44,6 +44,7 @@ class Track(object):
         self.periode_nom = donnees["periode_nom"]
         self.periode_date_debut = donnees["periode_date_debut"]
         self.periode_date_fin = donnees["periode_date_fin"]
+        self.periode_IDmodele = donnees["periode_IDmodele"]
 
         self.traitement_date = donnees["traitement_date"]
         self.reponse = donnees["reponse"]
@@ -116,14 +117,14 @@ class ListView(GroupListView):
             conditions = ""
 
         req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse,
-        portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin
+        portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin, portail_periodes.IDmodele
         FROM portail_actions
         LEFT JOIN portail_periodes ON portail_periodes.IDperiode = portail_actions.IDperiode
         %s;""" % conditions
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         listeActions = []
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, periode_nom, periode_date_debut, periode_date_fin in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
             horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
             periode_date_debut = UTILS_Dates.DateEngEnDateDD(periode_date_debut)
@@ -133,6 +134,7 @@ class ListView(GroupListView):
                 "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
                 "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse,
                 "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
+                "periode_IDmodele" : periode_IDmodele,
             })
 
         DB.Close() 

@@ -251,7 +251,7 @@ class Dialog(wx.Dialog):
             item = wx.MenuItem(menuPop, id, nom)
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_modele.png"), wx.BITMAP_TYPE_PNG))
             sousMenuModeles.AppendItem(item)
-            self.Bind(wx.EVT_MENU, self.ChargerModele, id=id)
+            self.Bind(wx.EVT_MENU, self.ChargerModeleMenu, id=id)
                         
         item = menuPop.AppendMenu(20, _(u"Charger un modèle d'Email"), sousMenuModeles)
         if len(listeDonnees) == 0 :
@@ -309,9 +309,12 @@ class Dialog(wx.Dialog):
         self.ctrl_editeur.ctrl_editeur.Clear()
         self.ctrl_editeur.SetFocus()
         
-    def ChargerModele(self, event):
+    def ChargerModeleMenu(self, event):
         """ Charger un modèle d'Email """
         IDmodele = event.GetId() - 20000
+        self.ChargerModele(IDmodele)
+
+    def ChargerModele(self, IDmodele=None):
         DB = GestionDB.DB()
         req = """SELECT objet, texte_xml, IDadresse
         FROM modeles_emails

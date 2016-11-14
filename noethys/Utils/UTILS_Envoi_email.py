@@ -21,7 +21,7 @@ import re
 import UTILS_Titulaires
 
 
-def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", listeAdresses=[], visible=True, log=None, CreationPDF=None):
+def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", listeAdresses=[], visible=True, log=None, CreationPDF=None, IDmodele=None):
     # Création du PDF
     if CreationPDF != None :
         temp = CreationPDF
@@ -53,7 +53,10 @@ def EnvoiEmailFamille(parent=None, IDfamille=None, nomDoc="", categorie="", list
     from Dlg import DLG_Mailer
     dlg = DLG_Mailer.Dialog(parent, categorie=categorie, afficher_confirmation_envoi=visible)
     dlg.SetDonnees(listeDonnees, modificationAutorisee=False)
-    dlg.ChargerModeleDefaut()
+    if IDmodele == None :
+        dlg.ChargerModeleDefaut()
+    else :
+        dlg.ChargerModele(IDmodele)
 
     if visible == True :
         # Fenêtre visible

@@ -540,6 +540,10 @@ class Dialog(wx.Dialog):
         if self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
+        # Sélection du modèle attribué à la période
+        if self.track.categorie == "reservations" and self.track.periode_IDmodele != None :
+            self.ctrl_modele_email.SetID(self.track.periode_IDmodele)
+
         # Navigation
         index = self.tracks.index(self.track)
         self.bouton_premier.Enable(index > 0)
@@ -618,7 +622,8 @@ class Dialog(wx.Dialog):
             if reponse != wx.ID_YES :
                 return False
 
-        if self.ctrl_modele_email.GetID() == None :
+        IDmodele = self.ctrl_modele_email.GetID()
+        if IDmodele == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner un modèle d'Email dans la liste proposée !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -630,7 +635,7 @@ class Dialog(wx.Dialog):
         else :
             nomDoc = False
 
-        resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=self.categorie_email, listeAdresses=[], visible=visible, log=self.track, CreationPDF=self.CreationPDF)
+        resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=self.categorie_email, listeAdresses=[], visible=visible, log=self.track, CreationPDF=self.CreationPDF, IDmodele=IDmodele)
 
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
