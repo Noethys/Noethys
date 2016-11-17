@@ -119,18 +119,19 @@ class ServeurConnecthys():
             return
 
         process_ok = False
-        for chemin_python in ["python", "C:\Python27\python.exe"] :
+        for chemin_python in ["python", "C:/Python27/python.exe"] :
             args = [chemin_python, chemin_executable]
             for arg in options.split(" ") :
                 if arg != "" :
                     args.append(arg)
 
             try :
-                p = subprocess.Popen(args, shell=False, cwd=rep)
+                p = subprocess.Popen(args, shell=True, cwd=rep)
                 process_ok = True
                 break
             except Exception, err :
                 print "Erreur lancement Connecthys :", err
+                print "args =", args
                 self.EcritLog(_(u"Erreur dans le lancement du serveur Connecthys :"))
                 self.EcritLog(err)
                 process_ok = False
