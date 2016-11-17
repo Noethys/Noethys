@@ -118,7 +118,7 @@ class Saisie_Message(wx.Dialog):
         self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
         self.ctrl_titre = wx.TextCtrl(self, -1, titre)
         self.label_texte = wx.StaticText(self, -1, _(u"Texte :"))
-        self.ctrl_texte = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.ctrl_texte = wx.TextCtrl(self, -1, texte, style=wx.TE_MULTILINE)
 
         self.ctrl_titre.SetToolTipString(_(u"Saisissez ici un titre interne pour ce message. Ce titre n'apparaît pas sur le portail."))
         self.ctrl_texte.SetToolTipString(_(u"Saisissez ici le texte qui apparaîtra sur la page d'accueil du portail"))
@@ -250,7 +250,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl = CTRL_Messages(panel)
+        self.ctrl = CTRL(panel)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
