@@ -463,19 +463,25 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
                                      
             # Dessin des graduations
             gc.SetPen(wx.Pen((230, 230, 230), 1, wx.SOLID))
-            graduationStep = 25
-            listeGraduations = range(UTILS_Dates.HeuresEnDecimal(self.case.heure_min), UTILS_Dates.HeuresEnDecimal(self.case.heure_max)+graduationStep, graduationStep)
-##            if listeGraduations == [0] :
-##                listeGraduations = [0, 1]
-            nbreGraduations = len(listeGraduations)
-            if nbreGraduations <= 1 :
-                nbreGraduations = 2
-            step = 1.0 * (rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2) / (nbreGraduations - 1)
-            if step > 3.0 :
-                x = PADDING_MULTIHORAIRES["horizontal"]
-                for temp in listeGraduations :
+            # graduationStep = 25
+            # listeGraduations = range(UTILS_Dates.HeuresEnDecimal(self.case.heure_min), UTILS_Dates.HeuresEnDecimal(self.case.heure_max)+graduationStep, graduationStep)
+            # nbreGraduations = len(listeGraduations)
+            # if nbreGraduations <= 1 :
+            #     nbreGraduations = 2
+            # step = 1.0 * (rect.width - PADDING_MULTIHORAIRES["horizontal"] * 2) / (nbreGraduations - 1)
+            # if step > 3.0 :
+            #     x = PADDING_MULTIHORAIRES["horizontal"]
+            #     for temp in listeGraduations :
+            #         gc.StrokeLine(x, 1, x, rect.height-2)
+            #         x += step
+
+            h = datetime.timedelta(minutes=0)
+            for x in range(0, 96) :
+                htime = UTILS_Dates.DeltaEnTime(h)
+                if htime >= self.case.heure_min and htime <= self.case.heure_max :
+                    x = self.case.HeureEnPos(h) + PADDING_MULTIHORAIRES["horizontal"]
                     gc.StrokeLine(x, 1, x, rect.height-2)
-                    x += step
+                h += datetime.timedelta(minutes=15)
 
 
         # Dessin des barres
@@ -485,7 +491,7 @@ class CaseMultihoraires(gridlib.PyGridCellRenderer):
             # Calcul des coordonnées de la barre
             barre.UpdateRect()
             rectBarre = barre.GetRect("case")
-            
+
             # get Couleur barre
             couleurBarre = self.GetCouleurBarre(conso)
             
@@ -759,7 +765,14 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         self.heure_max = heure_max
         self.couleurFond = couleurFond
         self.font = None
-        
+
+    def HeureEnPos(self, heure, rect):
+        tempsAffichable = UTILS_Dates.SoustractionHeures(self.heure_max, self.heure_min)
+        return 1.0 * UTILS_Dates.SoustractionHeures(heure, self.heure_min).seconds / tempsAffichable.seconds * self.GetLargeurMax(rect)
+
+    def GetLargeurMax(self, rect=None):
+        return rect.GetWidth() - PADDING_MULTIHORAIRES["horizontal"] * 2
+
     def Draw(self, grid, dc, rect, col):
         # Couleur de fond
         if self.couleurFond != None :
@@ -768,9 +781,6 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
             dc.DrawRectangleRect(rect)
         
         # Label
-##        if self.font == None :
-##            self.font = dc.GetFont()
-##            dc.SetFont(self.font)
         dc.SetFont(wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))
         hAlign, vAlign = grid.GetColLabelAlignment()
         texte = grid.GetColLabelValue(col)
@@ -781,50 +791,33 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         dc.DrawText(texte, x, 2)
         
         # Graduations
-        padding = PADDING_MULTIHORAIRES["horizontal"]
-
-        graduationMin = UTILS_Dates.HeuresEnDecimal(self.heure_min)
-        graduationMax = UTILS_Dates.HeuresEnDecimal(self.heure_max)
-        graduationStep = 25
-        hautTraitHeures = 4
-        hautTraitDHeures = 2.5
-        hautTraitQHeures = 1
-
-        if graduationMax == 0 : graduationMax = 2400
-
-        # Initialisation pour la graduation
-        listeGraduations = range(graduationMin, graduationMax+graduationStep, graduationStep)
-        nbreGraduations = len(listeGraduations)
-        largeurDc = rect.width - padding * 2
-        step = largeurDc / round(nbreGraduations-1, 1)
-        
-        # Création de la graduation
-        j = k = 0
-        i = rect.x
-        
-        posY = rect.height - 17
-
         dc.SetPen(wx.Pen("black"))
         dc.SetTextForeground("black")
         dc.SetFont(wx.Font(7, wx.SWISS, wx.NORMAL, wx.NORMAL))
-        
-        for etape in range(nbreGraduations):
-            
-            if k== 4 : k = 0
-            if k == 1 or k == 3: hauteurTrait = hautTraitQHeures    # 1/4 d'heures
-            if k == 2 : hauteurTrait = hautTraitDHeures    # Demi-Heures
-            if k == 0 :
-                hauteurTrait = hautTraitHeures
-                texte = str(listeGraduations[j]/100)+"h"
-                largTexte, hautTexte = dc.GetTextExtent(texte)
-                # Dessin du texte
-                if step >= 4.0 :
-                    dc.DrawText(texte, i-(largTexte/2) + padding, posY+2)
-            # Dessin du trait
-            dc.DrawLine(i + padding, posY+hautTexte+hautTraitHeures-hauteurTrait, i + padding, posY+hautTexte+hautTraitHeures)
-            i = i + step
-            j = j + 1
-            k = k + 1
+
+        h = datetime.timedelta(minutes=0)
+        for x in range(0, 96) :
+            htime = UTILS_Dates.DeltaEnTime(h)
+            if htime >= self.heure_min and htime <= self.heure_max :
+                x = self.HeureEnPos(h, rect) + PADDING_MULTIHORAIRES["horizontal"]
+                posY = rect.height - 17
+                hautTraitHeures = 4
+                if htime.minute == 0 :
+                    hauteurTrait = hautTraitHeures
+                    texte = "%dh" % htime.hour
+                    largTexte, hautTexte = dc.GetTextExtent(texte)
+                    dc.DrawText(texte, x-(largTexte/2) , posY+2)
+                elif htime.minute in (15, 45) :
+                    hauteurTrait = 1
+                elif htime.minute == 30 :
+                    hauteurTrait = 2.5
+                dc.DrawLine(x, posY+hautTexte+hautTraitHeures-hauteurTrait, x, posY+hautTexte+hautTraitHeures)
+
+            h += datetime.timedelta(minutes=15)
+
+
+
+
 
 
 
@@ -834,7 +827,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     #wx.InitAllImageHandlers()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949,])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[2,])
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()
