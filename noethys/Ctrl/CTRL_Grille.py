@@ -3806,6 +3806,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 duree_plafond = HeureStrEnDelta(ligneCalcul["duree_plafond"])
                 unite_horaire = HeureStrEnDelta(ligneCalcul["unite_horaire"])
                 montant_tarif_ligne = ligneCalcul["montant_unique"]
+                montant_min = ligneCalcul["montant_min"]
+                montant_max = ligneCalcul["montant_max"]
 
                 montant_questionnaire = self.GetQuestionnaire(ligneCalcul["montant_questionnaire"], IDfamille, IDindividu)
                 if montant_questionnaire not in (None, 0.0) :
@@ -3840,7 +3842,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     nbre = int(math.ceil(1.0 * duree_temp.seconds / unite_horaire.seconds)) # Arrondi à l'entier supérieur
                     montant_tarif = nbre * montant_tarif_ligne
                     montant_tarif = float(decimal.Decimal(str(montant_tarif)))
-                    
+
+                    # Montants seuil et plafond
+                    if montant_min != None :
+                        if montant_tarif < montant_min :
+                            montant_tarif = montant_min
+                    if montant_max != None :
+                        if montant_tarif > montant_max :
+                            montant_tarif = montant_max
+
                     # Application de l'ajustement (majoration ou déduction)
                     if ajustement != None :
                         montant_tarif = montant_tarif + ajustement
