@@ -5790,7 +5790,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=203, selectionIndividus=[1437])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=1, selectionIndividus=[2])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
