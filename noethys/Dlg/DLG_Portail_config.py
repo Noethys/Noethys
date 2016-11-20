@@ -1115,12 +1115,19 @@ class Dialog(wx.Dialog):
 
         menu.AppendSeparator()
 
-        # Ouvrir
+        # Ouvrir Connecthys
         id = wx.NewId()
-        item = wx.MenuItem(menu, id, _(u"Ouvrir Connecthys dans le navigateur"))
+        item = wx.MenuItem(menu, id, _(u"Afficher Connecthys dans le navigateur"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Planete.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirNavigateur, id=id)
+
+        # Ouvrir les stats de Connecthys Easy
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Afficher les statistiques dans le navigateur"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/barres.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.OuvrirStats, id=id)
 
         self.PopupMenu(menu)
         menu.Destroy()
@@ -1245,6 +1252,26 @@ class Dialog(wx.Dialog):
 
         if dict_parametres["serveur_type"] == 1 :
             url += "/" + dict_parametres["serveur_cgi_file"] + "/"
+
+        self.EcritLog(_(u"Ouverture dans le navigateur de l'url %s") % url)
+        import webbrowser
+        webbrowser.open(url)
+
+    def OuvrirStats(self, event):
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        url = dict_parametres["url_connecthys"]
+        if url == "" :
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner l'URL d'accès à Connecthys !"), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        url += "/stats/"
+
+        # Avertissement
+        dlg = wx.MessageDialog(None, _(u"Attention, cette fonctionnalité n'est disponible qu'avec l'offre Connecthys Easy.\n\nSi vous êtes abonné à cette offre, munissez-vous de vos codes d'accès personnels pour les saisir maintenant dans votre navigateur internet."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        dlg.ShowModal()
+        dlg.Destroy()
 
         self.EcritLog(_(u"Ouverture dans le navigateur de l'url %s") % url)
         import webbrowser
