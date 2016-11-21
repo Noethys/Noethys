@@ -326,10 +326,8 @@ class ListView(FastObjectListView):
         
         # MAJ
         self.forceActualisation = forceActualisation
-        donnees = self.GetTracks()
-        self.forceActualisation = False
-        if donnees != None :
-            self.donnees = donnees
+        if not self.donnees or forceActualisation:
+            self.donnees = self.GetTracks()
             self.GetParent().Freeze() 
             self.InitObjectListView()
             self.GetParent().Thaw() 
