@@ -534,14 +534,14 @@ class Dialog(wx.Dialog):
                     self.EcritStatusBar(u"")
                     return
                 dlgErreur.Destroy()
-            
-            time.sleep(2) # 1 seconde d'attente entre chaque envoi...
+
+            if len(listeDestinataires) > 1 :
+                time.sleep(2) # Attente entre chaque envoi...
             index += 1
         
         # Fin de la gauge
         dlg.Update(index, _(u"Fin de l'envoi."))
-##        time.sleep(2)
-        dlg.Destroy() 
+        dlg.Destroy()
         
         # Suppression des images temporaires incluses dans le message
         handler.DeleteTemporaryImages()
