@@ -40,7 +40,8 @@ class Track(object):
             self.titulaires = _(u"Aucun titulaire")
         self.listeTitulaires = parent.dictTitulaires[self.IDfamille]["listeTitulaires"]
         self.montant = donnees["montant"]
-        self.quantite = donnees["quantite"]
+        self.nbre_conso = donnees["nbre_conso"]
+        self.nbre_prestations = donnees["nbre_prestations"]
         self.listePrestations = donnees["prestations"]
         
         self.prenomIndividu = donnees["prenomIndividu"]
@@ -84,21 +85,45 @@ class ListView(FastObjectListView):
         GROUP BY IDprestation
         ;""" % (self.date_debut, self.date_fin, self.IDactivite)
         DB.ExecuterReq(req)
-        listePrestations = DB.ResultatReq() 
+        listePrestations = DB.ResultatReq()
+
+        # Recherche également les consommations
+        req = """
+        SELECT IDconso, consommations.IDindividu, IDfamille, consommations.IDcompte_payeur, date,
+        individus.nom, individus.prenom
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
+        WHERE date>='%s' AND date<='%s' AND IDactivite=%d
+        ;""" % (self.date_debut, self.date_fin, self.IDactivite)
+        DB.ExecuterReq(req)
+        listeConsommations = DB.ResultatReq()
+
         DB.Close() 
         
         dictResultats = {}
+
+        # Traitement des prestations
         for IDprestation, IDindividu, IDfamille, IDcompte_payeur, date, montant, nomIndividu, prenomIndividu in listePrestations :
             date = UTILS_Dates.DateEngEnDateDD(date)  
             montant = FloatToDecimal(montant)
             
             key = (IDindividu, IDfamille)
             if dictResultats.has_key(key) == False :
-                dictResultats[key] = {"IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "prestations" : [], "quantite" : 0, "montant" : FloatToDecimal(0.0)}            
+                dictResultats[key] = {"IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "nbre_conso" : 0, "prestations" : [], "nbre_prestations" : 0, "montant" : FloatToDecimal(0.0)}
             dictResultats[key]["prestations"].append({"IDprestation" : IDprestation, "montant" : montant})
             dictResultats[key]["montant"] += montant
-            dictResultats[key]["quantite"] += 1
-    
+            dictResultats[key]["nbre_prestations"] += 1
+
+        # Traitement des consommations
+        for IDconso, IDindividu, IDfamille, IDcompte_payeur, date, nomIndividu, prenomIndividu in listeConsommations :
+            date = UTILS_Dates.DateEngEnDateDD(date)
+
+            key = (IDindividu, IDfamille)
+            if dictResultats.has_key(key) == False :
+                dictResultats[key] = {"IDindividu" : IDindividu, "nomIndividu" : nomIndividu, "prenomIndividu" : prenomIndividu, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur, "nbre_conso" : 0, "prestations" : [], "nbre_prestations" : 0, "montant" : FloatToDecimal(0.0)}
+            dictResultats[key]["nbre_conso"] += 1
+
         listeListeView = []
         for key, dictTemp in dictResultats.iteritems() :
             track = Track(self, dictTemp)
@@ -119,9 +144,15 @@ class ListView(FastObjectListView):
             return None
 
         def FormateMontant(montant):
-            if montant == None or montant == "" : return ""
+            if montant == None or montant == "" :
+                montant = 0.0
             return u"%.2f %s" % (montant, SYMBOLE)
-                   
+
+        def Formate_nbre(nbre):
+            if nbre == 0 :
+                return "0"
+            return nbre
+
         def rowFormatter(listItem, track):
             if track.valide == False :
                 listItem.SetTextColour(wx.Colour(150, 150, 150))
@@ -136,8 +167,9 @@ class ListView(FastObjectListView):
             ColumnDefn(u"", "left", 0, "IDindividu", typeDonnee="entier"),
             ColumnDefn(_(u""), "left", 20, "statut", typeDonnee="texte", imageGetter=GetImageStatut),
             ColumnDefn(_(u"Individu"), "left", 170, "nomCompletIndividu", typeDonnee="texte"),
-            ColumnDefn(_(u"Famille"), "left", 250, "titulaires", typeDonnee="texte"),
-            ColumnDefn(_(u"Nbre Prest."), "center", 80, "quantite", typeDonnee="entier"),
+            ColumnDefn(_(u"Famille"), "left", 260, "titulaires", typeDonnee="texte"),
+            ColumnDefn(_(u"Nbre Conso."), "center", 80, "nbre_conso", typeDonnee="entier", stringConverter=Formate_nbre),
+            ColumnDefn(_(u"Nbre Prest."), "center", 80, "nbre_prestations", typeDonnee="entier", stringConverter=Formate_nbre),
             ColumnDefn(_(u"Montant"), "right", 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
         ])
         self.CreateCheckStateColumn(1)

@@ -213,7 +213,7 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((720, 800))
+        self.SetMinSize((820, 800))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
