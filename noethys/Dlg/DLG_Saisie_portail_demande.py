@@ -1009,7 +1009,10 @@ class Traitement():
             if reponse_modal == wx.ID_OK :
                 self.Save_grille(dlg.ctrl_grille)
                 self.EcritLog(_(u"Enregistrement des consommations"))
-                return {"etat" : True, "reponse" : reponse}
+                if reponse == "" :
+                    return {"etat" : False, "reponse" : reponse}
+                else :
+                    return {"etat" : True, "reponse" : reponse}
             else :
                 self.EcritLog(_(u"Traitement annulé par l'utilisateur"))
                 return {"etat" : False}
@@ -1020,8 +1023,10 @@ class Traitement():
             reponse = self.Appliquer_reservations(ctrl_grille=ctrl_grille)
             self.Save_grille(ctrl_grille)
             self.EcritLog(_(u"Enregistrement des consommations"))
-            return {"etat" : True, "reponse" : reponse}
-
+            if reponse == "":
+                return {"etat" : False, "reponse" : reponse}
+            else :
+                return {"etat" : True, "reponse" : reponse}
 
     def Init_grille(self, ctrl_grille=None):
         # Récupération des paramètres
@@ -1035,140 +1040,6 @@ class Traitement():
     def Save_grille(self, ctrl_grille=None):
         """ Sauvegarde de la grille des conso """
         ctrl_grille.Sauvegarde()
-
-    # def Appliquer_reservations_archive(self, ctrl_grille=None, log_jumeau=None):
-    #     """ Appliquer la saisie ou suppression des réservations """
-    #     # Récupération des paramètres
-    #     IDactivite = int(self.dict_parametres["IDactivite"])
-    #     date_debut_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_debut_periode"])
-    #     date_fin_periode = UTILS_Dates.DateEngEnDateDD(self.dict_parametres["date_fin_periode"])
-    #
-    #     self.EcritLog(_(u"Traitement des réservations de %s sur la période du %s au %s") % (ctrl_grille.ctrl_titre.GetNom(), UTILS_Dates.DateDDEnFr(date_debut_periode), UTILS_Dates.DateDDEnFr(date_fin_periode)), log_jumeau)
-    #
-    #     # Lecture des consommations à réserver
-    #     current_time = datetime.datetime.now()
-    #     current_date = current_time.date()
-    #
-    #     DB = GestionDB.DB()
-    #
-    #     req = """SELECT IDreservation, date, IDinscription, IDunite, etat
-    #     FROM portail_reservations WHERE IDaction=%d AND date >= "%s";""" % (self.track.IDaction, current_date.isoformat())
-    #     DB.ExecuterReq(req)
-    #     listeDonnees = DB.ResultatReq()
-    #
-    #     # lecture des IDunite et unites_principales
-    #     req = """SELECT IDunite, unites_principales
-    #              FROM portail_unites;"""
-    #     DB.ExecuterReq(req)
-    #     reqUnites = DB.ResultatReq()
-    #
-    #     # Lectures de consommations modifiables (Aujourd'hui ou futur)
-    #     req = """SELECT IDconso, date, IDunite
-    #              FROM consommations
-    #              WHERE date >= "%s" AND IDindividu=%d;""" % (current_date.isoformat(), self.track.IDindividu)
-    #     DB.ExecuterReq(req)
-    #     listeConsommations = DB.ResultatReq()
-    #
-    #     DB.Close()
-    #
-    #     # Création d'un tableau d'unites pour faciliter la verification
-    #     listeUnites = []
-    #     for IDunite, unites_principales in reqUnites:
-    #         listeUnites.append({"IDunite": IDunite, "unites_principales": unites_principales.split(';')})
-    #
-    #     # Création d'un dictionnaire de consommation pour faciliter la verification
-    #     dictConsommations = {}
-    #     for IDconso, date, IDunite in listeConsommations:
-    #         dictConsommations[date] = {"IDconso": IDconso, "IDunite": IDunite}
-    #
-    #     listeReservations = []
-    #     dictUnitesResaParDate = {}
-    #     for IDreservation, date, IDinscription, IDunite in listeDonnees :
-    #         date = UTILS_Dates.DateEngEnDateDD(date)
-    #         listeReservations.append({"IDreservation" : IDreservation, "date" : date, "IDinscription" : IDinscription, "IDunite" : IDunite})
-    #
-    #         dict_unite_resa = self.parent.dictUnites[IDunite]
-    #         liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
-    #
-    #         if dictUnitesResaParDate.has_key(date) == False :
-    #             dictUnitesResaParDate[date] = []
-    #
-    #         for IDunite_conso in liste_unites_conso :
-    #             if  IDunite_conso not in dictUnitesResaParDate[date] :
-    #                 dictUnitesResaParDate[date].append(IDunite_conso)
-    #
-    #     # Récupération de la liste des unités de conso par date
-    #     dictUnitesConsoParDate = {}
-    #     for numLigne, ligne in ctrl_grille.grille.dictLignes.iteritems() :
-    #         for numColonne, case in ligne.dictCases.iteritems() :
-    #             if case.typeCase == "consommation" :
-    #                 if case.etat != None :
-    #                     if dictUnitesConsoParDate.has_key(ligne.date) == False :
-    #                         dictUnitesConsoParDate[ligne.date] = []
-    #                     dictUnitesConsoParDate[ligne.date].append(case.IDunite)
-    #
-    #     for reservation in listeReservations :
-    #         date = reservation["date"]
-    #         isoDate = date.isoformat()
-    #         IDunite = None
-    #         for row in listeUnites:
-    #             if reservation["IDunite"] == row["IDunite"]:
-    #                 IDunite = row["unites_principales"]
-    #                 break
-    #         if dictConsommations.has_key(isoDate) and unicode(dictConsommations[isoDate]["IDunite"]) in IDunite:
-    #             nomUnite = ctrl_grille.grille.dictUnites[dictConsommations[isoDate]["IDunite"]]["nom"]
-    #             if date >= current_date :
-    #                 self.EcritLog(_(u"Suppression de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
-    #                 absenti = False
-    #                 try:
-    #                     # Vérifie s'il faut appliquer l'état Absence Injustifiée
-    #                     portail_reservations_absenti = self.parent.dictActivites[IDactivite]["portail_reservations_absenti"]
-    #                     if portail_reservations_absenti != None :
-    #                         nbre_jours, heure = portail_reservations_absenti.split("#")
-    #                         dt_limite = datetime.datetime(year=date.year, month=date.month, day=date.day, hour=int(heure[:2]), minute=int(heure[3:])) - datetime.timedelta(days=int(nbre_jours))
-    #                         if self.track.horodatage > dt_limite :
-    #                             absenti = True
-    #                 except Exception as e:
-    #                     self.EcritLog(_(u"Erreur: %s") % e)
-    #                 if absenti == True :
-    #                     ctrl_grille.ModifieEtat(IDunite=IDunite, etat="absenti", date=date)
-    #                 else :
-    #                     ctrl_grille.SupprimeConso(IDunite=dictConsommations[isoDate]["IDunite"], date=date)
-    #             else :
-    #                 self.EcritLog(_(u"Suppression impossible de l'unité %s du %s. Date dans le passé") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
-    #         else:
-    #             IDunite_resa = reservation["IDunite"]
-    #             dict_unite_resa = self.parent.dictUnites[IDunite_resa]
-    #             liste_unites_conso = dict_unite_resa["unites_principales"] + dict_unite_resa["unites_secondaires"]
-    #
-    #             # Vérifie s'il y a de la place sur chaque unité de conso associée à l'unité de réservation
-    #             hasPlaces = True
-    #             for IDunite in liste_unites_conso :
-    #                 if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
-    #                     if ctrl_grille.GetCase(IDunite, date) == None and ctrl_grille.HasPlacesDisponibles(IDunite=IDunite, date=date) == False :
-    #                         hasPlaces = False
-    #
-    #             # Si plus de places, met les unités de conso en mode "attente"
-    #             if hasPlaces == True :
-    #                 mode = "reservation"
-    #             else :
-    #                 mode = "attente"
-    #
-    #             # Saisie les conso
-    #             for IDunite in liste_unites_conso :
-    #                 if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
-    #
-    #                     nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
-    #                     self.EcritLog(_(u"Saisie de l'unité %s du %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date)), log_jumeau)
-    #
-    #                     resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
-    #                     if resultat != True :
-    #                         self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
-    #
-    #     return True
-
-
-
 
     def Appliquer_reservations(self, ctrl_grille=None, log_jumeau=None):
         """ Appliquer la saisie ou suppression des réservations """
@@ -1199,6 +1070,7 @@ class Traitement():
         liste_resultats = []
         dict_reponses = {"suppression" : 0, "reservation" : 0, "attente" : 0}
 
+        liste_erreurs = []
         for reservation in listeReservations :
             date = reservation["date"]
             IDunite_resa = reservation["IDunite"]
@@ -1256,11 +1128,13 @@ class Traitement():
                     if ctrl_grille.IsOuvert(IDunite=IDunite, date=date) :
 
                         nomUnite = ctrl_grille.grille.dictUnites[IDunite]["nom"]
-                        self.EcritLog(_(u"Saisie de l'unité %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label), log_jumeau)
+                        texte = _(u"Saisie de l'unité %s du %s en mode %s") % (nomUnite, UTILS_Dates.DateDDEnFr(date), mode_label)
+                        self.EcritLog(texte, log_jumeau)
 
                         resultat = ctrl_grille.SaisieConso(IDunite=IDunite, date=date, mode=mode)
                         if resultat != True :
                             self.EcritLog(_(u"[ERREUR] %s") % resultat, log_jumeau)
+                            liste_erreurs.append(u"> %s :\n    %s" % (texte, resultat))
 
                 liste_resultats.append(("saisie", date, nom_unite_reservation, mode))
                 if mode == "reservation" :
@@ -1268,39 +1142,57 @@ class Traitement():
                 if mode == "attente" :
                     dict_reponses["attente"] += 1
 
+
         # Création de la réponse
-        reponse_temp = []
+        if len(liste_erreurs) > 0 :
 
-        nbre_suppressions = dict_reponses["suppression"]
-        if nbre_suppressions == 1 :
-            reponse_temp.append(_(u"1 suppression effectuée"))
-        if nbre_suppressions > 1 :
-            reponse_temp.append(_(u"%d suppressions effectuées") % nbre_suppressions)
-
-        nbre_reservations = dict_reponses["reservation"]
-        if nbre_reservations == 1 :
-            reponse_temp.append(_(u"1 réservation validée"))
-        if nbre_reservations > 1 :
-            reponse_temp.append(_(u"%d réservations validées") % nbre_reservations)
-
-        nbre_attentes = dict_reponses["attente"]
-        if nbre_attentes == 1 :
-            reponse_temp.append(_(u"1 réservation en attente"))
-        if nbre_attentes > 1 :
-            reponse_temp.append(_(u"%d réservations en attente") % nbre_attentes)
-
-        # Formatage de la réponse
-        if len(reponse_temp) == 0 :
-            reponse = _(u"Aucune modification.")
-        elif len(reponse_temp) == 1 :
-            reponse = reponse_temp[0] + "."
-        elif len(reponse_temp) == 2 :
-            reponse = _(u" et ").join(reponse_temp) + "."
+            # Si erreurs
+            from Dlg import DLG_Messagebox
+            if len(liste_erreurs) == 1 :
+                introduction = _(u"Une erreur a été détectée durant l'application de la demande :")
+            else :
+                introduction = _(u"%s erreurs ont été détectées durant l'application de la demande :") % len(liste_erreurs)
+            detail = "\n".join(liste_erreurs)
+            conclusion = _(u"Veuillez vérifier la cohérence de la demande.")
+            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Erreur"), introduction=introduction, detail=detail, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=[_(u"Ok"), ])
+            dlg.ShowModal()
+            dlg.Destroy()
+            return ""
         else :
-            reponse = _(u"%s et %s.") % (u", ".join(reponse_temp[:-1]), reponse_temp[-1])
 
-        self.EcritLog(_(u"Réponse : %s") % reponse, log_jumeau)
-        return reponse
+            # Si aucune erreur
+            reponse_temp = []
+
+            nbre_suppressions = dict_reponses["suppression"]
+            if nbre_suppressions == 1 :
+                reponse_temp.append(_(u"1 suppression effectuée"))
+            if nbre_suppressions > 1 :
+                reponse_temp.append(_(u"%d suppressions effectuées") % nbre_suppressions)
+
+            nbre_reservations = dict_reponses["reservation"]
+            if nbre_reservations == 1 :
+                reponse_temp.append(_(u"1 réservation validée"))
+            if nbre_reservations > 1 :
+                reponse_temp.append(_(u"%d réservations validées") % nbre_reservations)
+
+            nbre_attentes = dict_reponses["attente"]
+            if nbre_attentes == 1 :
+                reponse_temp.append(_(u"1 réservation en attente"))
+            if nbre_attentes > 1 :
+                reponse_temp.append(_(u"%d réservations en attente") % nbre_attentes)
+
+            # Formatage de la réponse
+            if len(reponse_temp) == 0 :
+                reponse = _(u"Aucune modification.")
+            elif len(reponse_temp) == 1 :
+                reponse = reponse_temp[0] + "."
+            elif len(reponse_temp) == 2 :
+                reponse = _(u" et ").join(reponse_temp) + "."
+            else :
+                reponse = _(u"%s et %s.") % (u", ".join(reponse_temp[:-1]), reponse_temp[-1])
+
+            self.EcritLog(_(u"Réponse : %s") % reponse, log_jumeau)
+            return reponse
 
 
 

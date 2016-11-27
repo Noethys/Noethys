@@ -212,7 +212,7 @@ class CTRL(wx.Panel):
         incompatibilite = case.VerifieCompatibilitesUnites()
         if incompatibilite != None :
             nomUniteIncompatible = self.grille.dictUnites[incompatibilite]["nom"]
-            return _(u"Action impossible car il existe déjà à cette date une réservation sur l'unité '%s'.") %  nomUniteIncompatible
+            return _(u"Action impossible car il existe déjà le %s une réservation sur l'unité '%s'.") %  (UTILS_Dates.DateDDEnFr(date), nomUniteIncompatible)
             
         # Définit le mode
         self.mode = mode
