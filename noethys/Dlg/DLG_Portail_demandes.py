@@ -149,7 +149,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnBoutonFermer)
-        
+
+        self.VerifierVentilation()
+
         # Init
         self.ctrl_demandes.MAJ()
 
@@ -234,7 +236,22 @@ class Dialog(wx.Dialog):
         self.Layout()
         UTILS_Dialogs.AjusteSizePerso(self, __file__)
         self.CenterOnScreen()
-    
+
+    def VerifierVentilation(self):
+        from Dlg import DLG_Verification_ventilation
+        tracks = DLG_Verification_ventilation.Verification()
+        if len(tracks) > 0 :
+            dlg = wx.MessageDialog(self, _(u"Un ou plusieurs règlements peuvent être ventilés.\n\nSouhaitez-vous le faire maintenant (conseillé) ?"), _(u"Ventilation"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse == wx.ID_YES :
+                dlg = DLG_Verification_ventilation.Dialog(self) #, tracks=tracks)
+                dlg.ShowModal()
+                dlg.Destroy()
+            if reponse == wx.ID_CANCEL :
+                return False
+        return True
+
     def OnCheckCacherTraitees(self, event=None):
         self.ctrl_demandes.cacher_traitees = self.check_cacher_traitees.GetValue()
         self.ctrl_demandes.MAJ()

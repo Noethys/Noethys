@@ -22,7 +22,9 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Dialogs
 from Dlg import DLG_Badgeage_grille
-
+from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils import UTILS_Config
+SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 class DatePickerCtrl(wx.DatePickerCtrl):
     def __init__(self, parent):
@@ -115,6 +117,70 @@ class CTRL_Choix_modele(wx.Choice):
         if index == -1 : return None
         return self.dictDonnees[index]["ID"]
 
+# -------------------------------------------------------------------------------------------------------------------------------------------
+
+class CTRL_Solde(wx.TextCtrl):
+    def __init__(self, parent):
+        wx.TextCtrl.__init__(self, parent, id=-1, size=(90, -1), name="panel_solde", style=wx.ALIGN_RIGHT|wx.TE_READONLY)
+        self.parent = parent
+        font = self.GetFont()
+        font.SetWeight(wx.BOLD)
+        self.SetFont(font)
+        self.SetToolTipString(_(u"Solde du compte de la famille"))
+
+    def MAJ(self, IDfamille=None):
+        DB = GestionDB.DB()
+        req = """SELECT IDfamille, SUM(montant)
+        FROM ventilation
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = ventilation.IDcompte_payeur
+        WHERE IDfamille=%d
+        GROUP BY IDfamille
+        ;""" % IDfamille
+        DB.ExecuterReq(req)
+        listeVentilations = DB.ResultatReq()
+        dictVentilations = {}
+        for IDfamille, montant in listeVentilations :
+            if dictVentilations.has_key(IDfamille) == False :
+                dictVentilations[IDfamille] = FloatToDecimal(0.0)
+            dictVentilations[IDfamille] += FloatToDecimal(montant)
+
+        # Récupération des prestations
+        req = """SELECT IDfamille, SUM(montant)
+        FROM prestations
+        WHERE IDfamille=%d
+        GROUP BY IDfamille
+        ;""" % IDfamille
+        DB.ExecuterReq(req)
+        listePrestations = DB.ResultatReq()
+        dict_soldes = {}
+        for IDfamille, montant in listePrestations :
+            montant = FloatToDecimal(montant)
+            if dictVentilations.has_key(IDfamille) == True :
+                ventilation = dictVentilations[IDfamille]
+            else :
+                ventilation = FloatToDecimal(0.0)
+            dict_soldes[IDfamille] = ventilation - montant
+
+        DB.Close()
+
+        solde = dict_soldes[IDfamille]
+        self.SetSolde(solde)
+
+
+    def SetSolde(self, montant=FloatToDecimal(0.0)):
+        """ MAJ integrale du controle avec MAJ des donnees """
+        if montant > FloatToDecimal(0.0):
+            label = u"+ %.2f %s" % (montant, SYMBOLE)
+            self.SetBackgroundColour("#C4BCFC")  # Bleu
+        elif montant == FloatToDecimal(0.0):
+            label = u"0.00 %s" % SYMBOLE
+            self.SetBackgroundColour("#5DF020")  # Vert
+        else:
+            label = u"- %.2f %s" % (-montant, SYMBOLE)
+            self.SetBackgroundColour("#F81515")  # Rouge
+        self.SetValue(label)
+        self.Layout()
+        self.Refresh()
 
 
 
@@ -152,6 +218,9 @@ class Dialog(wx.Dialog):
         self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
         self.bouton_famille = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
+
+        self.label_solde = wx.StaticText(self, -1, _(u"Solde :"))
+        self.ctrl_solde = CTRL_Solde(self)
 
         self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY | wx.TE_MULTILINE)
@@ -277,9 +346,12 @@ class Dialog(wx.Dialog):
         # Famille
         grid_sizer_demande.Add(self.label_famille, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
 
-        grid_sizer_famille = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_famille = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
         grid_sizer_famille.Add(self.ctrl_famille, 1, wx.EXPAND, 0)
         grid_sizer_famille.Add(self.bouton_famille, 0, 0, 0)
+        grid_sizer_famille.Add( (20, 5), 0, 0, 0)
+        grid_sizer_famille.Add(self.label_solde, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
+        grid_sizer_famille.Add(self.ctrl_solde, 0, 0, 0)
         grid_sizer_famille.AddGrowableCol(0)
         grid_sizer_demande.Add(grid_sizer_famille, 1, wx.EXPAND, 0)
 
@@ -492,6 +564,7 @@ class Dialog(wx.Dialog):
 
         # Famille
         self.ctrl_famille.SetValue(self.track.famille)
+        self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
 
         # Description
         description = self.track.description
@@ -582,6 +655,7 @@ class Dialog(wx.Dialog):
         dlg = DLG_Famille.Dialog(self, self.track.IDfamille)
         dlg.ShowModal()
         dlg.Destroy()
+        self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
 
     def OnBoutonAutomatique(self, event):
         self.Traitement(mode="automatique")
@@ -606,6 +680,9 @@ class Dialog(wx.Dialog):
 
                 # Enregistrement de la demande
                 self.Sauvegarde()
+
+        # Réactualise le solde
+        self.ctrl_solde.MAJ(IDfamille=self.track.IDfamille)
 
     def OnBoutonEnvoyer(self, event=None):
         self.Envoyer(visible=False)

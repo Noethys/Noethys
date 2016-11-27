@@ -18,6 +18,7 @@ from Dlg import DLG_Saisie_portail_demande
 from Utils import UTILS_Interface
 from Utils import UTILS_Titulaires
 from Utils import UTILS_Dates
+
 from ObjectListView import GroupListView, ColumnDefn, Filter, CTRL_Outils
 
 
@@ -49,6 +50,7 @@ class Track(object):
         self.traitement_date = donnees["traitement_date"]
         self.reponse = donnees["reponse"]
 
+        # Nom titulaires
         if dictTitulaires.has_key(self.IDfamille) :
             self.famille = dictTitulaires[self.IDfamille]["titulairesAvecCivilite"]
         else :
@@ -123,6 +125,7 @@ class ListView(GroupListView):
         %s;""" % conditions
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
+        DB.Close()
         listeActions = []
         for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
@@ -136,8 +139,6 @@ class ListView(GroupListView):
                 "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
                 "periode_IDmodele" : periode_IDmodele,
             })
-
-        DB.Close() 
 
         listeListeView = []
         for action in listeActions :
@@ -177,7 +178,6 @@ class ListView(GroupListView):
                 return ""
             else:
                 return UTILS_Dates.DateDDEnFr(dateDD)
-
 
         dictColonnes = {
             "IDaction" : ColumnDefn(_(u""), "left", 0, "", typeDonnee="texte"),
