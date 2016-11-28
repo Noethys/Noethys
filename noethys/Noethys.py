@@ -3764,7 +3764,7 @@ Merci pour votre participation !
                     if dateDernierRappel != None :
                         UTILS_Config.SetParametre("enregistrement_dernier_rappel", None)
 
-        if random.randrange(1, 100) <= 20 :
+        if random.randrange(1, 100) <= 10 :
             from Dlg import DLG_Financement
             dlg = DLG_Financement.Dialog(None)
             dlg.ShowModal() 

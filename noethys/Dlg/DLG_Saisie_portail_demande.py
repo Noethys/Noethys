@@ -22,7 +22,7 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Texte
 from Utils import UTILS_Dialogs
 from Dlg import DLG_Badgeage_grille
-from UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -163,7 +163,11 @@ class CTRL_Solde(wx.TextCtrl):
 
         DB.Close()
 
-        solde = dict_soldes[IDfamille]
+        # Affichage du solde
+        if dict_soldes.has_key(IDfamille) :
+            solde = dict_soldes[IDfamille]
+        else :
+            solde = FloatToDecimal(0.0)
         self.SetSolde(solde)
 
 
