@@ -14,7 +14,7 @@ from UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import UTILS_Config
-import UTILS_Financement
+from Dlg import DLG_Financement
 import webbrowser
 
 
@@ -36,7 +36,7 @@ def Aide(page=None):
     
     # Redirection si aucune licence
     if identifiant == None and code == None :
-        dlg = UTILS_Financement.DLG_Financement(None)
+        dlg = DLG_Financement.Dialog(None, code="documentation")
         dlg.ShowModal() 
         dlg.Destroy()
         return

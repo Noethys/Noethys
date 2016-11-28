@@ -104,8 +104,8 @@ class MyHtml(html.HtmlWindow):
         self.SetBackgroundColour(wx.Colour(240, 251, 237))
     
     def OnLinkClicked(self, link):
-        from Utils import UTILS_Financement
-        dlg = UTILS_Financement.DLG_Financement(None)
+        from Dlg import DLG_Financement
+        dlg = DLG_Financement.Dialog(None, code="documentation")
         dlg.ShowModal() 
         dlg.Destroy()
 

@@ -3169,8 +3169,8 @@ class MainFrame(wx.Frame):
 
     def On_propos_soutenir(self, event):
         """ A propos : Soutenir Noethys """
-        from Utils import UTILS_Financement
-        dlg = UTILS_Financement.DLG_Financement(self)
+        from Dlg import DLG_Financement
+        dlg = DLG_Financement.Dialog(None, code="documentation")
         dlg.ShowModal()
         dlg.Destroy()
 
@@ -3756,20 +3756,17 @@ Merci pour votre participation !
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
                         if reponse == wx.ID_YES :
-                            FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande.pdf"))
+                            FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande_documentation.pdf"))
                         return True
-                    return False
-                
+
                 else :
                     # Licence valide
                     if dateDernierRappel != None :
                         UTILS_Config.SetParametre("enregistrement_dernier_rappel", None)
-                    return False
-                
-        # Pub se déclenche uniquement dans 20% des cas
+
         if random.randrange(1, 100) <= 20 :
-            from Utils import UTILS_Financement
-            dlg = UTILS_Financement.DLG_Financement(self)
+            from Dlg import DLG_Financement
+            dlg = DLG_Financement.Dialog(None)
             dlg.ShowModal() 
             dlg.Destroy()
             return True

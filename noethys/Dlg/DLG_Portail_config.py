@@ -18,6 +18,7 @@ import random
 import time
 import codecs
 import os.path
+import webbrowser
 
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
@@ -902,6 +903,8 @@ class Dialog(wx.Dialog):
 
         # Boutons
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
+        self.bouton_easy = CTRL_Bouton_image.CTRL(self, texte=_(u"Souscrire à Connecthys Easy"), cheminImage="Images/32x32/Connecthys.png")
+        self.bouton_site = CTRL_Bouton_image.CTRL(self, texte=_(u"www.connecthys.com"), cheminImage="Images/32x32/Connecthys.png")
         self.bouton_outils = CTRL_Bouton_image.CTRL(self, texte=_(u"Outils"), cheminImage="Images/32x32/Configuration.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
@@ -909,6 +912,8 @@ class Dialog(wx.Dialog):
         self.__do_layout()
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonEasy, self.bouton_easy)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonSite, self.bouton_site)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
@@ -920,9 +925,11 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.Afficher_avertissement)
 
     def __set_properties(self):
+        self.bouton_easy.SetToolTipString(_(u"Cliquez ici pour souscrire à l'offre Connecthys Easy"))
+        self.bouton_site.SetToolTipString(_(u"Cliquez ici pour accéder au site internet www.connecthys.com"))
         self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.SetMinSize((800, 700))
+        self.SetMinSize((850, 700))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -952,12 +959,14 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_bas, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         # Boutons
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=6, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_easy, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_site, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_outils, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_fermer, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
+        grid_sizer_boutons.AddGrowableCol(3)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
 
         self.SetSizer(grid_sizer_base)
@@ -1014,6 +1023,15 @@ class Dialog(wx.Dialog):
             self.gauge.SetValue(valeur)
         except Exception as e:
             pass
+
+    def OnBoutonEasy(self, event):
+        from Dlg import DLG_Financement
+        dlg = DLG_Financement.Dialog(None, code="connecthys")
+        dlg.ShowModal()
+        dlg.Destroy()
+
+    def OnBoutonSite(self, event):
+        webbrowser.open("https://www.connecthys.com")
 
     def OnBoutonOutils(self, event):
         # Création du menu contextuel
