@@ -131,18 +131,18 @@ class CTRL_Solde(wx.TextCtrl):
     def MAJ(self, IDfamille=None):
         DB = GestionDB.DB()
         req = """SELECT IDfamille, SUM(montant)
-        FROM ventilation
-        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = ventilation.IDcompte_payeur
+        FROM reglements
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = reglements.IDcompte_payeur
         WHERE IDfamille=%d
         GROUP BY IDfamille
         ;""" % IDfamille
         DB.ExecuterReq(req)
-        listeVentilations = DB.ResultatReq()
-        dictVentilations = {}
-        for IDfamille, montant in listeVentilations :
-            if dictVentilations.has_key(IDfamille) == False :
-                dictVentilations[IDfamille] = FloatToDecimal(0.0)
-            dictVentilations[IDfamille] += FloatToDecimal(montant)
+        listeReglements = DB.ResultatReq()
+        dictReglements = {}
+        for IDfamille, montant in listeReglements :
+            if dictReglements.has_key(IDfamille) == False :
+                dictReglements[IDfamille] = FloatToDecimal(0.0)
+                dictReglements[IDfamille] += FloatToDecimal(montant)
 
         # Récupération des prestations
         req = """SELECT IDfamille, SUM(montant)
@@ -155,11 +155,11 @@ class CTRL_Solde(wx.TextCtrl):
         dict_soldes = {}
         for IDfamille, montant in listePrestations :
             montant = FloatToDecimal(montant)
-            if dictVentilations.has_key(IDfamille) == True :
-                ventilation = dictVentilations[IDfamille]
+            if dictReglements.has_key(IDfamille) == True :
+                regle = dictReglements[IDfamille]
             else :
-                ventilation = FloatToDecimal(0.0)
-            dict_soldes[IDfamille] = ventilation - montant
+                regle = FloatToDecimal(0.0)
+            dict_soldes[IDfamille] = regle - montant
 
         DB.Close()
 
