@@ -200,7 +200,7 @@ class Panel(wx.Panel):
         self.Layout()
         
     def MAJ(self):
-        self.ctrl_listview.MAJ()
+        self.ctrl_listview.MAJ(forceActualisation=True)
         
     def Aide(self):
         from Utils import UTILS_Aide
