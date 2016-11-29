@@ -20,7 +20,7 @@ from Utils import UTILS_Titulaires
 from Utils import UTILS_Interface
 from Utils import UTILS_Internet
 from Utils import UTILS_Parametres
-from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
+from ObjectListView import FastObjectListView, ColumnDefn, Filter,  CTRL_Outils, PanelAvecFooter
 
 
 
@@ -45,6 +45,7 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
+        self.filtre_familles = None
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -65,10 +66,26 @@ class ListView(FastObjectListView):
 
         listeListeView = []
         for item in listeFamilles :
-            track = Track(self, item)
-            listeListeView.append(track)
-            if self.selectionID == item[0] :
-                self.selectionTrack = track
+
+            # Filtre
+            valide = True
+            IDfamille = item[0]
+            if self.filtre_familles != None :
+
+                # Filtre sans activité
+                if self.filtre_familles["type_filtre"] == "sans" and IDfamille in self.filtre_familles["liste_familles"] :
+                    valide = False
+
+                # Filtre avec activité
+                if self.filtre_familles["type_filtre"] == "avec" and IDfamille not in self.filtre_familles["liste_familles"] :
+                    valide = False
+
+            if valide == True :
+                track = Track(self, item)
+                listeListeView.append(track)
+                if self.selectionID == item[0] :
+                    self.selectionTrack = track
+
         return listeListeView
       
     def InitObjectListView(self):
@@ -315,6 +332,81 @@ class ListView(FastObjectListView):
         DB.Commit()
         DB.Close()
         self.MAJ()
+
+    def SetFiltre(self, filtre=None):
+        if filtre == None :
+            self.filtre_familles = None
+            self.MAJ()
+            return
+
+        type_filtre, date_limite = filtre
+
+        liste_familles = []
+
+        DB = GestionDB.DB()
+
+        # Recherche les prestations
+        req = """SELECT IDfamille, COUNT(IDprestation)
+        FROM prestations
+        WHERE date>='%s'
+        GROUP BY IDfamille
+        ;""" % date_limite
+        DB.ExecuterReq(req)
+        listePrestations = DB.ResultatReq()
+        for IDfamille, nbre_prestations in listePrestations :
+            if nbre_prestations > 0 and IDfamille not in liste_familles :
+                liste_familles.append(IDfamille)
+
+        # Recherche les consommations
+        req = """SELECT comptes_payeurs.IDfamille, COUNT(IDconso)
+        FROM consommations
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
+        WHERE date>='%s'
+        GROUP BY comptes_payeurs.IDfamille
+        ;""" % date_limite
+        DB.ExecuterReq(req)
+        listeConsommations = DB.ResultatReq()
+        for IDfamille, nbre_conso in listeConsommations :
+            if nbre_conso > 0 and IDfamille not in liste_familles :
+                liste_familles.append(IDfamille)
+
+        # Recherche les inscriptions
+        req = """SELECT IDfamille, date_inscription
+        FROM inscriptions
+        WHERE date_inscription>='%s'
+        GROUP BY IDfamille
+        ;""" % date_limite
+        DB.ExecuterReq(req)
+        listeInscriptions = DB.ResultatReq()
+        for IDfamille, date_inscription in listeInscriptions :
+            if IDfamille not in liste_familles :
+                liste_familles.append(IDfamille)
+
+        # Recherche les familles
+        req = """SELECT IDfamille, date_creation
+        FROM familles
+        WHERE date_creation>='%s'
+        ;""" % date_limite
+        DB.ExecuterReq(req)
+        listeFamilles = DB.ResultatReq()
+        for IDfamille, date_creation in listeFamilles :
+            if IDfamille not in liste_familles :
+                liste_familles.append(IDfamille)
+
+        DB.Close()
+
+        self.filtre_familles = {"type_filtre" : type_filtre, "liste_familles" : liste_familles}
+        self.MAJ()
+
+
+# -------------------------------------------------------------------------------------------------------------------------------------------
+class ListviewAvecFooter(PanelAvecFooter):
+    def __init__(self, parent, kwargs={}):
+        dictColonnes = {
+            "nomTitulaires": {"mode": "nombre", "singulier": _(u"famille"), "pluriel": _(u"familles"), "alignement": wx.ALIGN_CENTER},
+        }
+        PanelAvecFooter.__init__(self, parent, ListView, kwargs, dictColonnes)
+
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
 class MyFrame(wx.Frame):

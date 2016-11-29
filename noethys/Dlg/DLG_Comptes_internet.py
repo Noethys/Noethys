@@ -18,9 +18,20 @@ import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Comptes_internet
 from Utils import UTILS_Envoi_email
+from dateutil import relativedelta
 
-
-
+CHOIX_DELAIS = [
+    ("mois", 1, _(u"1 mois")),
+    ("mois", 2, _(u"2 mois")),
+    ("mois", 3, _(u"3 mois")),
+    ("mois", 6, _(u"6 mois")),
+    ("annees", 1, _(u"1 an")),
+    ("annees", 2, _(u"2 ans")),
+    ("annees", 3, _(u"3 ans")),
+    ("annees", 4, _(u"4 ans")),
+    ("annees", 5, _(u"5 ans")),
+    ("annees", 6, _(u"6 ans")),
+    ]
 
 
 class Dialog(wx.Dialog):
@@ -28,12 +39,20 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
         
-        intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet. Vos pouvez utiliser les fonctions Activer et Désactiver disponibles à droite de la liste pour modifier l'activation des comptes cochés.")
+        intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet. Vous pouvez utiliser les fonctions Activer et Désactiver disponibles à droite de la liste pour modifier l'activation des comptes cochés.")
         titre = _(u"Liste des comptes internet")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Connecthys.png")
-        
-        self.ctrl_listview = OL_Comptes_internet.ListView(self, id=-1, style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_listview.SetMinSize((100, 100))
+
+        self.radio_tous = wx.RadioButton(self, -1, _(u"Toutes les familles"), style=wx.RB_GROUP)
+        self.radio_sans_activite = wx.RadioButton(self, -1, _(u"Les familles inactives depuis plus de"))
+        self.ctrl_date_sans_activite = wx.Choice(self, -1, choices=[x[2] for x in CHOIX_DELAIS])
+        self.ctrl_date_sans_activite.Select(0)
+        self.radio_avec_activite = wx.RadioButton(self, -1, _(u"Les familles actives depuis"))
+        self.ctrl_date_avec_activite = wx.Choice(self, -1, choices=[x[2] for x in CHOIX_DELAIS])
+        self.ctrl_date_avec_activite.Select(0)
+
+        self.listviewAvecFooter = OL_Comptes_internet.ListviewAvecFooter(self, kwargs={})
+        self.ctrl_listview = self.listviewAvecFooter.GetListview()
         self.ctrl_recherche = OL_Comptes_internet.CTRL_Outils(self, listview=self.ctrl_listview, afficherCocher=True)
         
         self.bouton_ouvrir_fiche = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
@@ -51,7 +70,13 @@ class Dialog(wx.Dialog):
 
         self.__set_properties()
         self.__do_layout()
-        
+
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioSelection, self.radio_tous)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioSelection, self.radio_sans_activite)
+        self.Bind(wx.EVT_CHOICE, self.OnRadioSelection, self.ctrl_date_sans_activite)
+        self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioSelection, self.radio_avec_activite)
+        self.Bind(wx.EVT_CHOICE, self.OnRadioSelection, self.ctrl_date_avec_activite)
+
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.OuvrirFicheFamille, self.bouton_ouvrir_fiche)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Apercu, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Imprimer, self.bouton_imprimer)
@@ -63,6 +88,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.ctrl_listview.ReinitPasswords, self.bouton_reinit_passwords)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
+        self.OnRadioSelection()
         self.ctrl_listview.MAJ()
 
     def __set_properties(self):
@@ -84,18 +110,30 @@ class Dialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        
-        grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
+
+        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+
+        grid_sizer_haut = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+        grid_sizer_haut.Add(self.radio_tous, 0, wx.EXPAND, 0)
+        grid_sizer_haut.Add(self.radio_sans_activite, 0, wx.EXPAND, 0)
+        grid_sizer_haut.Add(self.ctrl_date_sans_activite, 0, wx.EXPAND, 0)
+        grid_sizer_haut.Add((5, 5), 0, wx.EXPAND, 0)
+        grid_sizer_haut.Add(self.radio_avec_activite, 0, wx.EXPAND, 0)
+        grid_sizer_haut.Add(self.ctrl_date_avec_activite, 0, wx.EXPAND, 0)
+        grid_sizer_contenu.Add(grid_sizer_haut, 0, wx.EXPAND, 0)
+
+        grid_sizer_contenu.Add( (10, 10), 1, wx.EXPAND, 0)
 
         # Liste + Barre de recherche
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
-        grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
+
+        grid_sizer_gauche.Add(self.listviewAvecFooter, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_recherche, 0, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(0)
         grid_sizer_gauche.AddGrowableCol(0)
         grid_sizer_contenu.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
-        
+
         # Commandes
         grid_sizer_droit = wx.FlexGridSizer(rows=10, cols=1, vgap=5, hgap=5)
         grid_sizer_droit.Add(self.bouton_ouvrir_fiche, 0, 0, 0)
@@ -110,7 +148,7 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add(self.bouton_inactif, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         
-        grid_sizer_contenu.AddGrowableRow(0)
+        grid_sizer_contenu.AddGrowableRow(1)
         grid_sizer_contenu.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_contenu, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -133,6 +171,31 @@ class Dialog(wx.Dialog):
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
+
+    def OnRadioSelection(self, event=None):
+        date_jour = datetime.date.today()
+        self.ctrl_date_sans_activite.Enable(self.radio_sans_activite.GetValue())
+        self.ctrl_date_avec_activite.Enable(self.radio_avec_activite.GetValue())
+
+        if self.radio_tous.GetValue() == True :
+            filtre = None
+        else :
+            if self.radio_sans_activite.GetValue() == True :
+                index = self.ctrl_date_sans_activite.GetSelection()
+                type_filtre = "sans"
+
+            if self.radio_avec_activite.GetValue() == True :
+                index = self.ctrl_date_avec_activite.GetSelection()
+                type_filtre = "avec"
+
+            type_valeur, valeur, label = CHOIX_DELAIS[index]
+            if type_valeur == "mois" :
+                date_limite = date_jour - relativedelta.relativedelta(months=+valeur)
+            if type_valeur == "annees":
+                date_limite = date_jour - relativedelta.relativedelta(years=+valeur)
+            filtre = (type_filtre, date_limite)
+
+        self.ctrl_listview.SetFiltre(filtre)
 
     def EnvoyerEmail(self, event):
         """ Envoi par Email des codes internet """
