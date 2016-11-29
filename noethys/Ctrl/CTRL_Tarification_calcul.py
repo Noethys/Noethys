@@ -13,6 +13,7 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import cPickle
+import copy
 import CTRL_Bouton_image
 import wx.grid as gridlib
 import datetime
@@ -365,6 +366,7 @@ class Tableau(gridlib.Grid):
         self.listeColonnes = []
         self.dictDonnees = {}
         self.listeInitialeID = []
+        self.nbre_lignes_max = None
 
         # Pour avoir les montants avec un point au lieu d'une virgule
         li = wx.Locale.FindLanguageInfo('en_US')
@@ -377,6 +379,8 @@ class Tableau(gridlib.Grid):
 
         # Binds
         self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
+        self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
+        #self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
         
     def MAJ(self, code=None, entete=None, champs=[], champs_obligatoires=[]):
@@ -428,7 +432,7 @@ class Tableau(gridlib.Grid):
             # Création des lignes
             dictLignes = self.dictDonnees[self.code]
             for numLigne in dictLignes.keys() :
-                self.CreationLigne()
+                self.AjouterLigne()
                 # Remplissage des lignes
                 dictColonnes = self.dictDonnees[self.code][numLigne]
                 for numColonne in dictColonnes.keys() :
@@ -438,9 +442,9 @@ class Tableau(gridlib.Grid):
                         self.SetCellValue(numLigne, numColonne, valeur)
 
         else:
-            self.CreationLigne()
+            self.AjouterLigne()
         
-    def CreationLigne(self):
+    def AjouterLigne(self):
         """ Création d'une ligne """
         numLigne = self.GetNumberRows()-1
 
@@ -497,24 +501,191 @@ class Tableau(gridlib.Grid):
             
             numColonne += 1
     
-    def SuppressionLigne(self):
-        numLigne = self.GetNumberRows() -1
-        # Confirmation de suppression si données existantes
-        if self.dictDonnees.has_key(self.code)  : 
-            if self.dictDonnees[self.code].has_key(numLigne) : 
-                if len(self.dictDonnees[self.code][numLigne])> 0 :
-                    dlg = wx.MessageDialog(self, _(u"Cette ligne comporte des valeurs. Souhaitez-vous vraiment la supprimer ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-                    if dlg.ShowModal() != wx.ID_YES :
-                        dlg.Destroy()
-                        return
-                    else:
-                        dlg.Destroy()
-        self.DeleteRows(numLigne, numLigne)
-        # Suppression de la ligne du dictionnaire de données
-        if self.dictDonnees.has_key(self.code)  : 
-            if self.dictDonnees[self.code].has_key(numLigne) : 
-                del self.dictDonnees[self.code][numLigne]
-                    
+    # def SuppressionLigne(self):
+    #     numLigne = self.GetNumberRows() -1
+    #     # Confirmation de suppression si données existantes
+    #     if self.dictDonnees.has_key(self.code)  :
+    #         if self.dictDonnees[self.code].has_key(numLigne) :
+    #             if len(self.dictDonnees[self.code][numLigne])> 0 :
+    #                 dlg = wx.MessageDialog(self, _(u"Cette ligne comporte des valeurs. Souhaitez-vous vraiment la supprimer ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+    #                 if dlg.ShowModal() != wx.ID_YES :
+    #                     dlg.Destroy()
+    #                     return
+    #                 else:
+    #                     dlg.Destroy()
+    #     # Modification grid
+    #     self.DeleteRows(numLigne, numLigne)
+    #     # Suppression de la ligne du dictionnaire de données
+    #     if self.dictDonnees.has_key(self.code)  :
+    #         if self.dictDonnees[self.code].has_key(numLigne) :
+    #             del self.dictDonnees[self.code][numLigne]
+
+    def Inserer(self, event=None):
+        """ Demande le nombre de lignes à insérer """
+        if self.nbre_lignes_max != None :
+            if self.nbre_lignes_max <= self.ctrl_parametres.GetNumberRows() :
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir d'autres lignes !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+
+        from Dlg import DLG_Insert_ligne
+        dlg = DLG_Insert_ligne.Dialog(self)
+        reponse = dlg.ShowModal()
+        nbre_lignes = dlg.GetNbreLignes()
+        option = dlg.GetOption()
+        dlg.Destroy()
+        if reponse != wx.ID_OK :
+            return False
+
+        # Recherche l'option
+        if option == "debut" :
+            num_ligne_debut = 0
+        elif option == "avant" :
+            num_ligne_debut = self.GetGridCursorRow()
+        elif option == "apres" :
+            num_ligne_debut = self.GetGridCursorRow() + 1
+        elif option == "fin" :
+            num_ligne_debut = self.GetNumberRows()
+        else :
+            num_ligne_debut = 0
+
+        # Insertion des lignes
+        self.InsererLignes(num_ligne_debut=num_ligne_debut, nbre_lignes=nbre_lignes)
+
+    def InsererLignes(self, num_ligne_debut=0, nbre_lignes=1):
+        """ Insérer des lignes à partir de num_ligne_debut """
+        # Modification grid
+        self.InsertRows(pos=num_ligne_debut, numRows=nbre_lignes)
+
+        # Décalage des lignes en mémoire
+        dict_temp = {}
+        liste_num_lignes = self.dictDonnees[self.code].keys()
+        liste_num_lignes.sort()
+
+        for numLigne in liste_num_lignes :
+            if numLigne >= num_ligne_debut :
+                nouveau_num_ligne = numLigne + nbre_lignes
+            else :
+                nouveau_num_ligne = numLigne
+            dict_temp[nouveau_num_ligne] = self.dictDonnees[self.code][numLigne]
+
+        self.dictDonnees[self.code] = dict_temp
+
+        # Génération des lignes
+        for numLigne in range(num_ligne_debut, num_ligne_debut+nbre_lignes) :
+            self.SetRowLabelValue(numLigne, str(numLigne + 1))
+            self.SetRowSize(numLigne, 20)
+
+            # Mémorisation de la ligne
+            if self.dictDonnees.has_key(self.code) == False:
+                self.dictDonnees[self.code] = {}
+            if self.dictDonnees[self.code].has_key(numLigne) == False:
+                self.dictDonnees[self.code][numLigne] = {}
+
+            # Configuration des cases
+            numColonne = 0
+            for indexColonne in self.listeColonnes:
+                codeEditeur = LISTE_COLONNES[indexColonne]["editeur"]
+                if codeEditeur == "decimal":
+                    renderer = gridlib.GridCellFloatRenderer(6, 2)
+                    editor = gridlib.GridCellFloatEditor(6, 2)
+                elif codeEditeur == "decimal3":
+                    renderer = gridlib.GridCellFloatRenderer(6, 3)
+                    editor = gridlib.GridCellFloatEditor(6, 3)
+                elif codeEditeur == "decimal4":
+                    renderer = gridlib.GridCellFloatRenderer(6, 4)
+                    editor = gridlib.GridCellFloatEditor(6, 4)
+                elif codeEditeur == "decimal6":
+                    renderer = gridlib.GridCellFloatRenderer(6, 6)
+                    editor = gridlib.GridCellFloatEditor(6, 6)
+                elif codeEditeur == "entier":
+                    renderer = gridlib.GridCellNumberRenderer()
+                    editor = gridlib.GridCellNumberEditor(0, 100)
+                elif codeEditeur == "heure":
+                    renderer = None
+                    editor = EditeurHeure()
+                elif codeEditeur == "date":
+                    renderer = None
+                    editor = EditeurDate()
+                elif codeEditeur == "questionnaire":
+                    listeChoix = [(0, ""), ]
+                    for dictQuestion in self.listeQuestions:
+                        if dictQuestion["controle"] in ("montant", "decimal"):
+                            label = dictQuestion["label"] + " (%s)" % dictQuestion["type"].capitalize()
+                            listeChoix.append((dictQuestion["IDquestion"], label))
+                    renderer = RendererChoix(listeChoix)
+                    editor = EditeurChoix(listeChoix)
+                else:
+                    renderer = None
+                    editor = None
+                if renderer != None: self.SetCellRenderer(numLigne, numColonne, renderer)
+                if editor != None: self.SetCellEditor(numLigne, numColonne, editor)
+
+                self.SetCellBackgroundColour(numLigne, numColonne, COULEUR_FOND_CASE)
+
+                numColonne += 1
+
+    def Supprimer(self, event=None):
+        """ Supprimer les lignes sélectionnées """
+        mode, selections = self.GetSelectionUtilisateur()
+        if mode == None or self.dictDonnees.has_key(self.code) == False:
+            dlg = wx.MessageDialog(self, _(u"Aucune ligne à supprimer."), u"Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        if mode == "case" :
+            num_ligne_debut = selections
+            num_ligne_fin = selections
+        elif mode == "cases" :
+            num_ligne_debut = selections[0][0]
+            num_ligne_fin = selections[-1][0]
+        elif mode == "lignes" :
+            num_ligne_debut = min(selections)
+            num_ligne_fin = max(selections)
+        else :
+            return False
+
+        # Calcule le nombre de lignes
+        nbre_lignes = num_ligne_fin - num_ligne_debut + 1
+
+        # Vérifie qu'il reste au moins une ligne
+        if (self.GetNumberRows() - nbre_lignes) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous devez conserver au moins une ligne !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        # Demande confirmation suppression
+        if nbre_lignes == 1 :
+            texte = _(u"Souhaitez-vous vraiment supprimer la ligne n°%d ?") % (num_ligne_debut+1)
+        else :
+            texte = _(u"Souhaitez-vous vraiment supprimer %d lignes (n°%d à n°%d) ?") % (nbre_lignes, num_ligne_debut+1, num_ligne_fin+1)
+        dlg = wx.MessageDialog(self, texte, _(u"Supprimer"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES:
+            return False
+
+        self.SupprimerLignes(num_ligne_debut, nbre_lignes)
+
+
+    def SupprimerLignes(self, num_ligne_debut=0, nbre_lignes=1):
+        """ Supprimer des lignes de la ligne num_ligne_debut à num_ligne_fin """
+        dict_temp = {}
+        liste_num_lignes = self.dictDonnees[self.code].keys()
+        liste_num_lignes.sort()
+
+        nouveau_num_ligne = 0
+        for numLigne in liste_num_lignes :
+            if numLigne < num_ligne_debut or numLigne > (num_ligne_debut + nbre_lignes - 1) :
+                dict_temp[nouveau_num_ligne] = self.dictDonnees[self.code][numLigne]
+                nouveau_num_ligne += 1
+
+        self.dictDonnees[self.code] = dict_temp
+        self.DeleteRows(num_ligne_debut, nbre_lignes)
+
     def OnCellChange(self, event):
         numLigne = event.GetRow()
         numColonne = event.GetCol()
@@ -578,7 +749,7 @@ class Tableau(gridlib.Grid):
             index += 1
         # Création des lignes du tableau
         for index in range(1, len(listeDonnees)) :
-            self.CreationLigne()
+            self.AjouterLigne()
         # Remplissage du tableau
         numLigne = 0
         self.listeInitialeID = []
@@ -621,7 +792,7 @@ class Tableau(gridlib.Grid):
                 if codeChamp in self.champs_obligatoires :
                     # Vérifie la valeur
                     if dictColonnes.has_key(numColonne) == False :
-                        dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la colonne '%s' de la ligne %d !") % (label, numLigne+1), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                        dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner la colonne '%s' de la ligne n°%d !") % (label, numLigne+1), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
                         dlg.ShowModal()
                         dlg.Destroy()
                         return False
@@ -723,6 +894,8 @@ class Tableau(gridlib.Grid):
                 for c in range(cols) :
                     liste_cases.append((self.GetSelectionBlockTopLeft()[0][0] + r, self.GetSelectionBlockTopLeft()[0][1] + c))
             return "cases", liste_cases
+        if self.GetGridCursorRow() not in (-1, None) :
+            return "case", self.GetGridCursorRow()
         return None, None
 
     def Copier(self, event=None):
@@ -774,9 +947,9 @@ class Tableau(gridlib.Grid):
                 wx.TheClipboard.Close()
 
                 # Confirmation
-                dlg = wx.MessageDialog(self, _(u"La sélection de %s a été copiée dans le presse-papiers.") % mode, u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
+                # dlg = wx.MessageDialog(self, _(u"La sélection de %s a été copiée dans le presse-papiers.") % mode, u"Presse-papiers", wx.OK | wx.ICON_INFORMATION)
+                # dlg.ShowModal()
+                # dlg.Destroy()
 
     def Coller(self, event=None):
         """ Colle les valeurs des cases contenues dans le presse-papiers """
@@ -797,36 +970,38 @@ class Tableau(gridlib.Grid):
             num_ligne_debut = self.GetSelectedRows()[0] + 1
         else :
             num_ligne_debut = self.GetGridCursorRow() + 1
-        dlg = wx.TextEntryDialog(self, _(u"A partir de quelle ligne voulez-vous coller le contenu du presse-papiers ?"), _(u"Coller"), str(num_ligne_debut))
-        reponse = dlg.ShowModal()
-        num_ligne_debut = dlg.GetValue()
-        dlg.Destroy()
-        if reponse != wx.ID_OK :
-            return False
 
-        try :
-            num_ligne_debut = int(num_ligne_debut)
-        except :
-            # Confirmation
-            dlg = wx.MessageDialog(self, _(u"Le numéro de ligne est erroné."), _(u"Presse-papiers"), wx.OK | wx.ICON_ERROR)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        # dlg = wx.TextEntryDialog(self, _(u"A partir de quelle ligne voulez-vous coller le contenu du presse-papiers ?"), _(u"Coller"), str(num_ligne_debut))
+        # reponse = dlg.ShowModal()
+        # num_ligne_debut = dlg.GetValue()
+        # dlg.Destroy()
+        # if reponse != wx.ID_OK :
+        #     return False
+        #
+        # try :
+        #     num_ligne_debut = int(num_ligne_debut)
+        # except :
+        #     # Confirmation
+        #     dlg = wx.MessageDialog(self, _(u"Le numéro de ligne est erroné."), _(u"Presse-papiers"), wx.OK | wx.ICON_ERROR)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     return False
 
         # Remplissage avec les lignes à copier
         numLigne = num_ligne_debut - 1
 
         # Création de lignes supplémentaires si besoin
         if len(data_lignes) + numLigne > self.GetNumberRows() :
-            nbre = len(data_lignes) + numLigne - self.GetNumberRows()
-            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous rajouter %d lignes supplémentaires ?") % nbre, _(u"Coller"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
-            reponse = dlg.ShowModal()
-            dlg.Destroy()
-            if reponse == wx.ID_CANCEL :
-                return False
-            if reponse == wx.ID_YES:
-                for x in range(0, nbre) :
-                    self.CreationLigne()
+            if self.nbre_lignes_max == None or len(data_lignes) + numLigne <= self.nbre_lignes_max :
+                nbre = len(data_lignes) + numLigne - self.GetNumberRows()
+                dlg = wx.MessageDialog(self, _(u"Souhaitez-vous rajouter %d lignes supplémentaires ?") % nbre, _(u"Coller"), wx.YES_NO | wx.YES_DEFAULT | wx.CANCEL | wx.ICON_QUESTION)
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse == wx.ID_CANCEL :
+                    return False
+                if reponse == wx.ID_YES:
+                    for x in range(0, nbre) :
+                        self.AjouterLigne()
 
         # Remplissage des cases
         for dict_ligne in data_lignes :
@@ -880,6 +1055,63 @@ class Tableau(gridlib.Grid):
             self.caseSurvolee = None
             self.GetGridWindow().SetToolTip(wx.ToolTip(""))
         event.Skip()
+
+    def OnLabelRightClick(self, event):
+        numLigne = event.GetRow()
+        self.SelectRow(numLigne)
+        self.ContextMenu()
+
+    def OnCellRightClick(self, event):
+        numLigne = event.GetRow()
+        numColonne = event.GetCol()
+        self.SetFocus()
+        self.SetGridCursor(row=numLigne, col=numColonne)
+        self.ContextMenu()
+
+    def ContextMenu(self):
+        mode, selection = self.GetSelectionUtilisateur()
+
+        #if mode == None :
+        #    self.SelectBlock(topRow=numLigne, leftCol=numColonne, bottomRow=numLigne, rightCol=numColonne)
+
+        # Création du menu contextuel
+        menuPop = wx.Menu()
+
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Insérer des lignes"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter_ligne.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Inserer, id=id)
+
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Supprimer des lignes"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer_ligne.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Supprimer, id=id)
+
+        menuPop.AppendSeparator()
+
+        # Item Copier
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Copier les cases"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Copier.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Copier, id=id)
+
+        # Item Coller
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Coller les cases"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Coller.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Coller, id=id)
+
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
 
 
 # -----------------------------------------------------------------------------------------------------------------------------
@@ -978,8 +1210,8 @@ class Panel(wx.Panel):
 
     def __set_properties(self):
         self.ctrl_methode.SetToolTipString(_(u"Sélectionnez une méthode de calcul dans la liste"))
-        self.bouton_ajouter_ligne.SetToolTipString(_(u"Cliquez ici pour ajouter une ligne dans le tableau"))
-        self.bouton_supprimer_ligne.SetToolTipString(_(u"Cliquez ici pour supprimer la dernière ligne du tableau"))
+        self.bouton_ajouter_ligne.SetToolTipString(_(u"Cliquez ici pour insérer des lignes"))
+        self.bouton_supprimer_ligne.SetToolTipString(_(u"Cliquez ici pour supprimer les lignes sélectionnées"))
         self.bouton_copier.SetToolTipString(_(u"Cliquez ici pour copier les cases sélectionnées du tableau dans le presse-papiers"))
         self.bouton_coller.SetToolTipString(_(u"Cliquez ici pour coller les cases mémorisées dans le presse-papiers dans le tableau"))
         self.ctrl_type_quotient.SetToolTipString(_(u"[OPTIONNEL] Sélectionnez ici le type de QF que vous souhaitez utiliser dans ce tarif. Indifférent par défaut."))
@@ -1033,7 +1265,7 @@ class Panel(wx.Panel):
         entete = LISTE_METHODES[indexSelection]["entete"]
         champs = LISTE_METHODES[indexSelection]["champs"]
         champs_obligatoires = LISTE_METHODES[indexSelection]["champs_obligatoires"]
-        self.nbre_lignes_max = LISTE_METHODES[indexSelection]["nbre_lignes_max"]
+        self.ctrl_parametres.nbre_lignes_max = LISTE_METHODES[indexSelection]["nbre_lignes_max"]
         self.ctrl_parametres.MAJ(code, entete, champs, champs_obligatoires)
     
     def GetCodeMethode(self):
@@ -1060,13 +1292,7 @@ class Panel(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        if self.nbre_lignes_max != None :
-            if self.nbre_lignes_max <= self.ctrl_parametres.GetNumberRows() :
-                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir d'autres lignes !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return
-        self.ctrl_parametres.CreationLigne() 
+        self.ctrl_parametres.Inserer()
 
 
     def OnBoutonSupprimer(self, event): 
@@ -1075,7 +1301,7 @@ class Panel(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        self.ctrl_parametres.SuppressionLigne()
+        self.ctrl_parametres.Supprimer()
 
 
 
@@ -1088,7 +1314,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.ctrl= Panel(panel, IDactivite=9, IDtarif=29)
+        self.ctrl= Panel(panel, IDactivite=1, IDtarif=13)
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
