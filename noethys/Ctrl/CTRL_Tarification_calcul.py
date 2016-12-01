@@ -523,7 +523,7 @@ class Tableau(gridlib.Grid):
     def Inserer(self, event=None):
         """ Demande le nombre de lignes à insérer """
         if self.nbre_lignes_max != None :
-            if self.nbre_lignes_max <= self.ctrl_parametres.GetNumberRows() :
+            if self.nbre_lignes_max <= self.GetNumberRows() :
                 dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas saisir d'autres lignes !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
