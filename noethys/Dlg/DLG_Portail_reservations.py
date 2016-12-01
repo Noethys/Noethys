@@ -12,6 +12,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
+import wx.html as html
 import GestionDB
 import datetime
 from Utils import UTILS_Dialogs
@@ -20,6 +21,24 @@ from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Grille_facturation
 from Dlg import DLG_Badgeage_grille
 from Dlg.DLG_Portail_demandes import CTRL_Log
+
+
+class CTRL_Html(html.HtmlWindow):
+    def __init__(self, parent, texte="", couleurFond=(255, 255, 255), style=wx.SIMPLE_BORDER):
+        html.HtmlWindow.__init__(self, parent, -1, style=style)  # , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.NO_FULL_REPAINT_ON_RESIZE)
+        self.parent = parent
+        if "gtk2" in wx.PlatformInfo:
+            self.SetStandardFonts()
+        self.SetBorders(3)
+        self.couleurFond = couleurFond
+        font = self.parent.GetFont()
+        self.SetFont(font)
+        self.SetTexte(texte)
+
+    def SetTexte(self, texte=""):
+        self.SetPage(u"""<BODY><FONT SIZE=3 COLOR='#000000'>%s</FONT></BODY>""" % texte)
+        self.SetBackgroundColour(self.couleurFond)
+
 
 
 class Dialog(wx.Dialog):
@@ -46,7 +65,7 @@ class Dialog(wx.Dialog):
 
         # Détail demande
         self.box_demande_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Détail de la demande"))
-        self.ctrl_demande = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self.ctrl_demande = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
         self.ctrl_demande.SetMinSize((275, 100))
 
         # Grille
@@ -80,7 +99,7 @@ class Dialog(wx.Dialog):
         # Init
         if self.parent != None :
             self.parent.Init_grille(ctrl_grille=self.ctrl_grille)
-            self.ctrl_demande.SetValue(self.parent.parent.ctrl_description.GetValue())
+            self.ctrl_demande.SetTexte(self.parent.parent.ctrl_description.GetTexte())
 
     def __set_properties(self):
         self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour appliquer la demande"))

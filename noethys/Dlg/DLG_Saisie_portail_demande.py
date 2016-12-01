@@ -12,6 +12,7 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
+import wx.html as html
 import datetime
 import GestionDB
 import FonctionsPerso
@@ -25,6 +26,31 @@ from Dlg import DLG_Badgeage_grille
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
+
+
+
+class CTRL_Html(html.HtmlWindow):
+    def __init__(self, parent, texte="", couleurFond=(255, 255, 255), style=wx.SIMPLE_BORDER):
+        html.HtmlWindow.__init__(self, parent, -1, style=style)  # , style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.NO_FULL_REPAINT_ON_RESIZE)
+        self.parent = parent
+        self.texte = ""
+        if "gtk2" in wx.PlatformInfo:
+            self.SetStandardFonts()
+        self.SetBorders(3)
+        self.couleurFond = couleurFond
+        font = self.parent.GetFont()
+        self.SetFont(font)
+        self.SetTexte(texte)
+
+    def SetTexte(self, texte=""):
+        self.texte = texte
+        self.SetPage(u"""<BODY><FONT SIZE=3 COLOR='#000000'>%s</FONT></BODY>""" % texte)
+        self.SetBackgroundColour(self.couleurFond)
+
+    def GetTexte(self):
+        return self.texte
+
+
 
 class DatePickerCtrl(wx.DatePickerCtrl):
     def __init__(self, parent):
@@ -221,17 +247,22 @@ class Dialog(wx.Dialog):
 
         self.label_famille = wx.StaticText(self, -1, _(u"Famille :"))
         self.ctrl_famille = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY)
+        font = self.ctrl_famille.GetFont()
+        font.SetWeight(wx.BOLD)
+        self.ctrl_famille.SetFont(font)
+
         self.bouton_famille = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_ANY))
 
         self.label_solde = wx.StaticText(self, -1, _(u"Solde :"))
         self.ctrl_solde = CTRL_Solde(self)
 
         self.label_description = wx.StaticText(self, -1, _(u"Description :"))
-        self.ctrl_description = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self.ctrl_description = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
         self.ctrl_description.SetMinSize((-1, 130))
 
         self.label_commentaire = wx.StaticText(self, -1, _(u"Commentaire :"))
-        self.ctrl_commentaire = wx.TextCtrl(self, -1, "", style=wx.TE_READONLY | wx.TE_MULTILINE)
+        self.ctrl_commentaire = CTRL_Html(self, couleurFond=self.GetBackgroundColour())
+        self.ctrl_commentaire.SetMinSize((-1, 30))
 
         # Traitement
         self.box_traitement_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Traitement"))
@@ -243,6 +274,7 @@ class Dialog(wx.Dialog):
 
         self.label_reponse = wx.StaticText(self, -1, _(u"Réponse :"))
         self.ctrl_reponse = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.ctrl_reponse.SetMinSize((-1, 50))
 
         # Email
         self.label_email = wx.StaticText(self, -1, _(u"Email :"))
@@ -575,6 +607,36 @@ class Dialog(wx.Dialog):
 
         if self.track.categorie == "reservations" :
 
+            # Recherche si d'autres réservations existent pour le même individu et la même période
+            liste_demandes_avant = []
+            liste_demandes_apres = []
+            for track in self.tracks :
+                if track.IDfamille == self.track.IDfamille and track.IDindividu == self.track.IDindividu and track.IDperiode == self.track.IDperiode :
+                    if track.horodatage < self.track.horodatage :
+                        liste_demandes_avant.append(track)
+                    if track.horodatage > self.track.horodatage :
+                        liste_demandes_apres.append(track)
+
+
+            if len(liste_demandes_avant) > 1 :
+                affiche_s_avant = "s"
+            else :
+                affiche_s_avant = ""
+            if len(liste_demandes_apres) > 1:
+                affiche_s_apres = "s"
+            else :
+                affiche_s_apres = ""
+
+            if len(liste_demandes_avant) > 0 and len(liste_demandes_apres) == 0 :
+                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la même période %d réservation%s plus ancienne%s)") % (len(liste_demandes_avant), affiche_s_avant, affiche_s_avant)
+            elif len(liste_demandes_avant) == 0 and len(liste_demandes_apres) > 0 :
+                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la même période %d réservation%s plus récente%s)") % (len(liste_demandes_apres), affiche_s_apres, affiche_s_apres)
+            elif len(liste_demandes_avant) > 0 and len(liste_demandes_apres) > 0 :
+                texte_autres_demandes = _(u"\n(Remarque : Il existe pour la même période %d réservation%s plus ancienne%s et %d plus récente%s)") % (len(liste_demandes_avant), affiche_s_avant, affiche_s_avant, len(liste_demandes_apres), affiche_s_apres)
+            else :
+                texte_autres_demandes = ""
+
+            # Recherche le détail des réservations associées
             DB = GestionDB.DB()
             req = """SELECT IDreservation, date, IDinscription, portail_reservations.IDunite, etat, portail_unites.nom
             FROM portail_reservations
@@ -587,18 +649,27 @@ class Dialog(wx.Dialog):
             for IDreservation, date, IDinscription, IDunite, etat, nom_unite in listeDonnees :
                 date = UTILS_Dates.DateEngEnDateDD(date)
                 if etat == 1 :
-                    ligne = u"- Ajout"
+                    action = _(u"Ajout")
                 else :
-                    ligne = u"- Suppression"
-                ligne += u" du %s (%s)\n" % (UTILS_Dates.DateComplete(date), nom_unite)
+                    action = _(u"Suppression")
+                ligne = _(u"<li>%s du %s (%s)</li>") % (action, UTILS_Dates.DateComplete(date), nom_unite)
                 liste_lignes.append(ligne)
-            description += u" :\n\n" + "".join(liste_lignes)
 
-        self.ctrl_description.SetValue(description)
+            description += u" :"
+
+            # Rajout du texte autres demandes
+            if len(texte_autres_demandes) > 0 :
+                description += u"<br><FONT SIZE=2 COLOR='red'>%s</FONT>" % texte_autres_demandes
+
+            # Rajout du détail des réservations
+            description += u"<p><ul>%s</ul></p>" % "".join(liste_lignes)
+
+
+        self.ctrl_description.SetTexte(description)
 
         # Commentaire
         if self.track.commentaire != None :
-            self.ctrl_commentaire.SetValue(self.track.commentaire)
+            self.ctrl_commentaire.SetTexte(self.track.commentaire)
 
         # Etat
         self.SetEtat(self.track.etat, self.track.traitement_date)

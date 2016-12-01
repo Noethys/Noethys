@@ -74,7 +74,6 @@ class CTRL_Log(wx.TextCtrl):
 
         # Surlignage des erreurs
         if "[ERREUR]" in texte :
-            print (texte, self.GetInsertionPoint()-len(texte), self.GetInsertionPoint())
             self.SetStyle(self.GetInsertionPoint()-len(texte), self.GetInsertionPoint()-1, wx.TextAttr("RED", "YELLOW"))
 
     def Enregistrer(self, event):
