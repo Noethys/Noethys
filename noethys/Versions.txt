@@ -1,4 +1,4 @@
-Version 1.1.7.9 (11/11/2016) :
+Version 1.1.8.0 (05/12/2016) :
 
 - Ajout de Connecthys
 - Correction sauvegarde différentielle réservations Connecthys
@@ -7,6 +7,7 @@ Version 1.1.7.9 (11/11/2016) :
 - Ajout de la liste des comptes internet dans le menu Individus
 - Ajout de l'export Excel de la liste d'attente
 - Ajout de l'import des modèles d'Emails par défaut
+- Ajout copier-coller dans lignes de calcul des tarifs
 - Amélioration paramètres codes internet famille
 - Optimisation de l'importation des paramétrages d'activités
 - Correction divers bugs
