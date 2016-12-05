@@ -1039,9 +1039,15 @@ class Dialog(wx.Dialog):
 
         menu = wx.Menu()
 
-        if self.server_ctrl == None :
-            self.server_ctrl = UTILS_Portail_controle.ServeurConnecthys(self)
-        server_is_running = self.server_ctrl.GetServerStatus()
+        server_is_running = False
+        if dict_parametres["serveur_type"] == 0:
+            if self.server_ctrl != None :
+                server_is_running = self.server_ctrl.GetServerStatus()
+            else :
+                if self.ctrl_parametres.Validation() == True :
+                    self.server_ctrl = UTILS_Portail_controle.ServeurConnecthys(self)
+                    server_is_running = self.server_ctrl.GetServerStatus()
+
 
         # Installer
         id = wx.NewId()
@@ -1085,37 +1091,39 @@ class Dialog(wx.Dialog):
 
         menu.AppendSeparator()
 
-        # Démarrer
-        id = wx.NewId()
-        item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
-        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Play.png"), wx.BITMAP_TYPE_PNG))
-        menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.server_ctrl.Demarrer_serveur, id=id)
-        if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
-            if server_is_running == True :
-                item.Enable(False)
-        elif dict_parametres["hebergement_type"] == 2 and dict_parametres["serveur_type"] == 0 :
-            if server_is_running == True :
-                item.Enable(False)
-        else :
-            item.Enable(False)
+        if dict_parametres["serveur_type"] == 0:
 
-        # Arrêter
-        id = wx.NewId()
-        item = wx.MenuItem(menu, id, _(u"Arrêter le serveur"))
-        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Stop.png"), wx.BITMAP_TYPE_PNG))
-        menu.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.server_ctrl.Arreter_serveur, id=id)
-        if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
-            if server_is_running == False :
+            # Démarrer
+            id = wx.NewId()
+            item = wx.MenuItem(menu, id, _(u"Démarrer le serveur"))
+            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Play.png"), wx.BITMAP_TYPE_PNG))
+            menu.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.server_ctrl.Demarrer_serveur, id=id)
+            if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
+                if server_is_running == True :
+                    item.Enable(False)
+            elif dict_parametres["hebergement_type"] == 2 and dict_parametres["serveur_type"] == 0 :
+                if server_is_running == True :
+                    item.Enable(False)
+            else :
                 item.Enable(False)
-        elif dict_parametres["hebergement_type"] == 2 and dict_parametres["serveur_type"] == 0 :
-            if server_is_running == False :
-                item.Enable(False)
-        else :
-            item.Enable(False)
 
-        menu.AppendSeparator()
+            # Arrêter
+            id = wx.NewId()
+            item = wx.MenuItem(menu, id, _(u"Arrêter le serveur"))
+            item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Stop.png"), wx.BITMAP_TYPE_PNG))
+            menu.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.server_ctrl.Arreter_serveur, id=id)
+            if dict_parametres["hebergement_type"] == 0 and dict_parametres["serveur_type"] == 0 :
+                if server_is_running == False :
+                    item.Enable(False)
+            elif dict_parametres["hebergement_type"] == 2 and dict_parametres["serveur_type"] == 0 :
+                if server_is_running == False :
+                    item.Enable(False)
+            else :
+                item.Enable(False)
+
+            menu.AppendSeparator()
 
         # Synchroniser
         id = wx.NewId()
@@ -1318,18 +1326,17 @@ class Dialog(wx.Dialog):
 <FONT SIZE=3>
 Connecthys est le portail internet de Noethys. Il permet par exemple à vos usagers de
 consulter l'état de leur dossier ou de demander des réservations à des activités.
-Si vous souhaitez en apprendre davantage sur son utilisation et son installation, consultez
-la rubrique dédiée dans le forum de Noethys.
+Il facilite également la gestion administrative par les utilisateurs grâce à son
+traitement semi-automatisé des demandes.
 <BR><BR>
-<B>Attention, Connecthys est actuellement en version Beta. Il n'est distribué qu'à des fins de tests
-et reste fortement déconseillé pour une utilisation en production. Merci de signaler tout bug rencontré
-sur le forum.</B>
+Si vous souhaitez en savoir davantage, vous pouvez consulter le site dédié
+<FONT SIZE=5><A HREF="http://www.connecthys.com">www.connecthys.com</A></FONT>.
 </FONT>
 </CENTER>
 """ % Chemins.GetStaticPath("Images/Special/Connecthys_pub.png")
 
         from Dlg import DLG_Message_html
-        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), size=(510, 670), nePlusAfficher=True)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Information"), size=(510, 650), nePlusAfficher=True)
         dlg.CenterOnScreen()
         dlg.ShowModal()
         nePlusAfficher = dlg.GetEtatNePlusAfficher()
