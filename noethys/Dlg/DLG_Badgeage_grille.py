@@ -262,8 +262,8 @@ class CTRL(wx.Panel):
                 case.ModifieEtat(None, etat)
 
         # Si mode = attente
-        if hasPlaces == False :
-            return _(u"Il n'y a plus de place le %s. Réservation en attente saisie.") % UTILS_Dates.DateDDEnFr(date)
+        #if hasPlaces == False :
+        #    return _(u"Il n'y a plus de place le %s. Réservation en attente saisie.") % UTILS_Dates.DateDDEnFr(date)
 
         return True
     
