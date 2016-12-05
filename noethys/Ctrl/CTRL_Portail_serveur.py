@@ -276,7 +276,10 @@ class Panel(wx.Panel):
         dlg.ShowModal()
         dlg.Destroy()
         self.MAJ()
-        pass
+        try :
+            self.parent.ctrl_remplissage.MAJ()
+        except :
+            pass
 
     def OnBoutonOutils(self, event=None):
         """ Création du menu Outils """
@@ -332,6 +335,7 @@ class Panel(wx.Panel):
         self.MAJ()
         try:
             self.parent.AfficherServeurConnecthys()
+            self.parent.ctrl_remplissage.MAJ()
         except AttributeError:
             pass
 

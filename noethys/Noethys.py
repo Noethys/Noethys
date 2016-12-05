@@ -2339,6 +2339,7 @@ class MainFrame(wx.Frame):
         dlg.ShowModal()
         dlg.Destroy()
         self.AfficherServeurConnecthys()
+        self.ctrl_remplissage.MAJ()
 
     def On_outils_villes(self, event):
         from Dlg import DLG_Villes
