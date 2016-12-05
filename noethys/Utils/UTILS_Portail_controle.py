@@ -27,8 +27,6 @@ class ServeurConnecthys():
         self.parent = parent
         self.pid = ""
         self.isrunning = False
-        if self.parent.ctrl_parametres.Validation() == False :
-            return False
         self.dict_parametres = self.parent.ctrl_parametres.GetValeurs()
         if self.dict_parametres["hebergement_type"] == 2 :
             if self.dict_parametres["ssh_utilisateur"] == "root" :
@@ -46,15 +44,17 @@ class ServeurConnecthys():
             ssh.connect(self.dict_parametres["ssh_serveur"], port=int(self.dict_parametres["ssh_port"]), username=self.dict_parametres["ssh_utilisateur"], password=self.dict_parametres["ssh_mdp"])
             return ssh
         except Exception, err:
-            self.parent.EcritLog(_(u"PROBLEME...%s") % err)
-            print "Connection SSH/SFTP impossible", str(err)
+            self.parent.EcritLog(_(u"PROBLEME..."))
+            self.parent.EcritLog(err)
+            print ("Connection SSH/SFTP impossible :", err)
 
     def CloseSSHConnect(self, ssh=None) :
         try :
             ssh.close()
         except Exception, err:
-            self.parent.EcritLog(_(u"PROBLEME...%s") % err)
-            print "Deconnection SSH/SFTP impossible", str(err)
+            self.parent.EcritLog(_(u"PROBLEME..."))
+            self.parent.EcritLog(err)
+            print ("Deconnection SSH/SFTP impossible :", err)
 
 
     def GetServerStatus(self):
