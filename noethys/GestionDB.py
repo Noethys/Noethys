@@ -1922,6 +1922,15 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 8, 0)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("portail_actions", "email_date", "DATE")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
         return True
 

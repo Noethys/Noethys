@@ -1528,6 +1528,7 @@ DB_DATA = {
                                     ("IDperiode", "INTEGER", u"ID de la période"),
                                     ("ref_unique", "VARCHAR(50)", u"Référence unique de l'action"),
                                     ("reponse", "VARCHAR(450)", u"Réponse à l'action"),
+                                    ("email_date", "DATE", u"Date de l'envoi de l'email de réponse"),
                                     ], # Actions enregistrées sur le portail
 
     "portail_reservations":         [("IDreservation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID réservation"),

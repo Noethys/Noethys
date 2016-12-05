@@ -272,6 +272,9 @@ class Dialog(wx.Dialog):
         self.radio_validation = wx.RadioButton(self, -1, _(u"Traité le"))
         self.ctrl_date_validation = DatePickerCtrl(self)
 
+        self.image_email_reponse = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
+        self.label_email_reponse = wx.StaticText(self, -1, "")
+
         self.label_reponse = wx.StaticText(self, -1, _(u"Réponse :"))
         self.ctrl_reponse = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
         self.ctrl_reponse.SetMinSize((-1, 50))
@@ -414,11 +417,15 @@ class Dialog(wx.Dialog):
         grid_sizer_traitement.Add(self.label_etat, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_RIGHT, 0)
         self.label_etat.SetMinSize((self.label_commentaire.GetSize()[0], -1))
 
-        grid_sizer_etat = wx.FlexGridSizer(rows=1, cols=5, vgap=5, hgap=5)
-        grid_sizer_etat.Add(self.radio_attente, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_etat.Add(self.radio_validation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_etat.Add(self.ctrl_date_validation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_traitement.Add(grid_sizer_etat, 1, 0, 0)
+        self.grid_sizer_etat = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
+        self.grid_sizer_etat.Add(self.radio_attente, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        self.grid_sizer_etat.Add(self.radio_validation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        self.grid_sizer_etat.Add(self.ctrl_date_validation, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        self.grid_sizer_etat.Add( (5, 5), 0, wx.EXPAND, 0)
+        self.grid_sizer_etat.Add(self.image_email_reponse, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        self.grid_sizer_etat.Add(self.label_email_reponse, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        self.grid_sizer_etat.AddGrowableCol(3)
+        grid_sizer_traitement.Add(self.grid_sizer_etat, 1, wx.EXPAND, 0)
 
         # Réponse
         grid_sizer_traitement.Add(self.label_reponse, 0, wx.ALIGN_RIGHT, 0)
@@ -566,7 +573,7 @@ class Dialog(wx.Dialog):
 
         # Sauvegarde dans la base
         DB = GestionDB.DB()
-        DB.ReqMAJ("portail_actions", [("etat", etat), ("reponse", reponse), ("traitement_date", traitement_date)], "IDaction", self.track.IDaction)
+        DB.ReqMAJ("portail_actions", [("etat", etat), ("reponse", reponse), ("traitement_date", traitement_date), ("email_date", self.track.email_date)], "IDaction", self.track.IDaction)
         DB.Close()
 
     def SetEtat(self, etat="attente", traitement_date=None):
@@ -688,6 +695,8 @@ class Dialog(wx.Dialog):
         if self.track.categorie == "inscriptions" : self.categorie_email = "portail_demande_inscription"
         self.ctrl_modele_email.SetCategorie(self.categorie_email)
 
+        self.MAJ_email_date()
+
         # Sélection du modèle attribué à la période
         if self.track.categorie == "reservations" and self.track.periode_IDmodele != None :
             self.ctrl_modele_email.SetID(self.track.periode_IDmodele)
@@ -704,6 +713,16 @@ class Dialog(wx.Dialog):
 
         # Sélection du track dans le listview
         self.track.Select()
+
+    def MAJ_email_date(self):
+        if self.track.email_date != None :
+            self.image_email_reponse.Show(True)
+            self.label_email_reponse.Show(True)
+            self.label_email_reponse.SetLabel(_(u"Email de réponse envoyé le %s") % UTILS_Dates.DateDDEnFr(self.track.email_date))
+        else :
+            self.image_email_reponse.Show(False)
+            self.label_email_reponse.Show(False)
+        self.grid_sizer_etat.Layout()
 
     def OnNavigation(self, event):
         self.Sauvegarde()
@@ -789,6 +808,10 @@ class Dialog(wx.Dialog):
 
         resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=self, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=self.categorie_email, listeAdresses=[], visible=visible, log=self.track, CreationPDF=self.CreationPDF, IDmodele=IDmodele)
 
+        # Mémorise la date de l'envoi de l'email
+        if resultat == True :
+            self.track.email_date = datetime.date.today()
+            self.MAJ_email_date()
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):
         """ Création du PDF pour Email """
@@ -807,11 +830,11 @@ class Dialog(wx.Dialog):
             dict_champs["{PERIODE_DATE_DEBUT}"] = UTILS_Dates.DateDDEnFr(self.track.periode_date_debut)
             dict_champs["{PERIODE_DATE_FIN}"] = UTILS_Dates.DateDDEnFr(self.track.periode_date_fin)
 
-        # Génération du PDF des réservations
-        traitement = Traitement(parent=self, track=self.track)
-        traitement.Init_grille(ctrl_grille=self.ctrl_grille)
-        dict_champs_reservations = self.ctrl_grille.grille.CreationPDF(nomDoc=nomDoc, afficherDoc=afficherDoc)
-        dict_champs.update(dict_champs_reservations)
+            # Génération du PDF des réservations
+            traitement = Traitement(parent=self, track=self.track)
+            traitement.Init_grille(ctrl_grille=self.ctrl_grille)
+            dict_champs_reservations = self.ctrl_grille.grille.CreationPDF(nomDoc=nomDoc, afficherDoc=afficherDoc)
+            dict_champs.update(dict_champs_reservations)
 
         # Génération du PDF de la facture
         #facturation = UTILS_Facturation.Facturation()
@@ -879,21 +902,15 @@ class Traitement():
     def Traitement_recus(self):
         # Récupération des paramètres
         IDreglement = int(self.dict_parametres["IDreglement"])
-        listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.track.IDfamille)
 
         # Ouverture de la fenêtre d'édition d'un reçu
         from Dlg import DLG_Impression_recu
         dlg_impression = DLG_Impression_recu.Dialog(self.parent, IDreglement=IDreglement)
-        dlg_impression.listeAdresses = listeAdresses
 
         # Traitement manuel
         if self.mode == "manuel" :
             self.EcritLog(_(u"Ouverture de la fenêtre d'édition d'un reçu."))
             if self.dict_parametres["methode_envoi"] == "email" :
-                if len(listeAdresses) == 0 :
-                    dlg_impression.Destroy()
-                    self.EcritLog(_(u"Aucune adresse Email n'a été sélectionnée."))
-                    return False
                 self.EcritLog(_(u"Veuillez envoyer ce reçu de règlement par Email."))
                 reponse = _(u"Reçu de règlement envoyé par Email.")
             elif self.dict_parametres["methode_envoi"] == "courrier" :
@@ -942,11 +959,7 @@ class Traitement():
 
             # Envoi par Email
             if self.dict_parametres["methode_envoi"] == "email" :
-                if len(listeAdresses) == 0 :
-                    dlg_impression.Destroy()
-                    self.EcritLog(_(u"Aucune adresse Email n'a été sélectionnée."))
-                    return False
-                resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=dlg_impression, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=categorie, listeAdresses=listeAdresses, visible=False, log=self.track)
+                resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=dlg_impression, IDfamille=self.track.IDfamille, nomDoc=nomDoc, categorie=categorie, visible=False, log=self.track)
                 reponse = _(u"Reçu de règlement envoyé par Email.")
 
             # Mémorisation de l'édition du reçu
@@ -960,16 +973,11 @@ class Traitement():
     def Traitement_factures(self):
         # Récupération des paramètres
         IDfacture = int(self.dict_parametres["IDfacture"])
-        listeAdresses = UTILS_Envoi_email.GetAdresseFamille(self.track.IDfamille)
-        edition = Edition_facture(parent=self.parent, IDfacture=IDfacture, IDfamille=self.track.IDfamille, listeAdresses=listeAdresses)
+        edition = Edition_facture(parent=self.parent, IDfacture=IDfacture, IDfamille=self.track.IDfamille)
 
         # Traitement manuel
         if self.mode == "manuel" :
             if self.dict_parametres["methode_envoi"] == "email" :
-                if len(listeAdresses) == 0 :
-                    self.EcritLog(_(u"Aucune adresse Email n'a été sélectionnée."))
-                    return False
-
                 self.EcritLog(_(u"Veuillez envoyer cette facture par Email."))
 
                 resultat = edition.EnvoyerEmail(visible=True)
@@ -1224,12 +1232,11 @@ class Traitement():
             # Si erreurs
             from Dlg import DLG_Messagebox
             if len(liste_erreurs) == 1 :
-                introduction = _(u"Une erreur a été détectée durant l'application de la demande :")
+                introduction = _(u"Une anomalie a été détectée durant l'application de la demande :")
             else :
-                introduction = _(u"%s erreurs ont été détectées durant l'application de la demande :") % len(liste_erreurs)
+                introduction = _(u"%s anomalies ont été détectées durant l'application de la demande :") % len(liste_erreurs)
             detail = "\n".join(liste_erreurs)
-            conclusion = _(u"Veuillez vérifier la cohérence de la demande.")
-            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Erreur"), introduction=introduction, detail=detail, conclusion=conclusion, icone=wx.ICON_ERROR, boutons=[_(u"Ok"), ])
+            dlg = DLG_Messagebox.Dialog(None, titre=_(u"Avertissement"), introduction=introduction, detail=detail, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"), ])
             dlg.ShowModal()
             dlg.Destroy()
             return ""
@@ -1277,11 +1284,10 @@ class Traitement():
 
 class Edition_facture():
     """ Classe spéciale pour l'édition des factures """
-    def __init__(self, parent=None, IDfacture=None, IDfamille=None, listeAdresses=[]):
+    def __init__(self, parent=None, IDfacture=None, IDfamille=None):
         self.parent = parent
         self.IDfacture = IDfacture
         self.IDfamille = IDfamille
-        self.listeAdresses = listeAdresses
 
     def Reedition(self, afficherOptions=True):
         self.afficherOptions = afficherOptions
@@ -1290,7 +1296,7 @@ class Edition_facture():
 
     def EnvoyerEmail(self, visible=True):
         self.afficherOptions = visible
-        resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=self.parent, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("FACTURE", "pdf"), categorie="facture", visible=visible, listeAdresses=self.listeAdresses, CreationPDF=self.CreationPDF)
+        resultat = UTILS_Envoi_email.EnvoiEmailFamille(parent=self.parent, IDfamille=self.IDfamille, nomDoc=FonctionsPerso.GenerationNomDoc("FACTURE", "pdf"), categorie="facture", visible=visible, CreationPDF=self.CreationPDF)
         return resultat
 
     def CreationPDF(self, nomDoc="", afficherDoc=True):

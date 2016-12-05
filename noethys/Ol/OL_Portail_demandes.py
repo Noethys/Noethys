@@ -49,6 +49,7 @@ class Track(object):
 
         self.traitement_date = donnees["traitement_date"]
         self.reponse = donnees["reponse"]
+        self.email_date = donnees["email_date"]
 
         # Nom titulaires
         if dictTitulaires.has_key(self.IDfamille) :
@@ -118,7 +119,7 @@ class ListView(GroupListView):
         else :
             conditions = ""
 
-        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse,
+        req = """SELECT IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, portail_actions.IDperiode, reponse, email_date,
         portail_periodes.nom, portail_periodes.date_debut, portail_periodes.date_fin, portail_periodes.IDmodele
         FROM portail_actions
         LEFT JOIN portail_periodes ON portail_periodes.IDperiode = portail_actions.IDperiode
@@ -127,15 +128,16 @@ class ListView(GroupListView):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         listeActions = []
-        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
+        for IDaction, horodatage, IDfamille, IDindividu, categorie, action, description, commentaire, parametres, etat, traitement_date, IDperiode, reponse, email_date, periode_nom, periode_date_debut, periode_date_fin, periode_IDmodele in listeDonnees :
             traitement_date = UTILS_Dates.DateEngEnDateDD(traitement_date)
+            email_date = UTILS_Dates.DateEngEnDateDD(email_date)
             horodatage = UTILS_Dates.DateEngEnDateDDT(horodatage)
             periode_date_debut = UTILS_Dates.DateEngEnDateDD(periode_date_debut)
             periode_date_fin = UTILS_Dates.DateEngEnDateDD(periode_date_fin)
             listeActions.append({
                 "IDaction" : IDaction, "horodatage" : horodatage, "IDfamille" : IDfamille, "IDindividu" : IDindividu, "categorie" : categorie,
                 "action" : action, "description" : description, "commentaire" : commentaire, "parametres" : parametres,
-                "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse,
+                "etat" : etat, "traitement_date" : traitement_date, "IDperiode" : IDperiode, "reponse" : reponse, "email_date" : email_date,
                 "periode_nom" : periode_nom, "periode_date_debut" : periode_date_debut, "periode_date_fin" : periode_date_fin,
                 "periode_IDmodele" : periode_IDmodele,
             })
@@ -153,6 +155,7 @@ class ListView(GroupListView):
         self.image_facture = self.AddNamedImages("factures", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Facture.png"), wx.BITMAP_TYPE_PNG))
         self.image_inscription = self.AddNamedImages("inscriptions", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Activite.png"), wx.BITMAP_TYPE_PNG))
         self.image_reservation = self.AddNamedImages("reservations", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_modification.png"), wx.BITMAP_TYPE_PNG))
+        self.image_email = self.AddNamedImages("email", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG))
 
         self.useExpansionColumn = True
         self.oddRowsBackColor = wx.Colour(255, 255, 255)
@@ -179,6 +182,12 @@ class ListView(GroupListView):
             else:
                 return UTILS_Dates.DateDDEnFr(dateDD)
 
+        def GetImageEmail(track):
+            if track.email_date != None :
+                return self.image_email
+            else :
+                return None
+
         dictColonnes = {
             "IDaction" : ColumnDefn(_(u""), "left", 0, "", typeDonnee="texte"),
             "horodatage" : ColumnDefn(_(u"Horodatage"), "left", 140, "horodatage", typeDonnee="texte", stringConverter=FormateHorodatage),
@@ -188,17 +197,18 @@ class ListView(GroupListView):
             "famille" : ColumnDefn(_(u"Famille"), "left", 180, "famille", typeDonnee="texte"),
             "description" : ColumnDefn(_(u"Description"), "left", 300, "description", typeDonnee="texte"),
             "periode" : ColumnDefn(_(u"Période"), "left", 200, "periode_nom", typeDonnee="texte"),
-            "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 250, "commentaire", typeDonnee="texte"),
-            "reponse" : ColumnDefn(_(u"Réponse"), "left", 300, "reponse", typeDonnee="texte"),
+            "commentaire" : ColumnDefn(_(u"Commentaire"), "left", 200, "commentaire", typeDonnee="texte"),
+            "email_date": ColumnDefn(_(u"Email"), "left", 95, "email_date", typeDonnee="date", stringConverter=FormateDate, imageGetter=GetImageEmail),
+            "reponse" : ColumnDefn(_(u"Réponse"), "left", 200, "reponse", typeDonnee="texte"),
             }
 
         # Regroupement
         if self.regroupement != None :
-            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "reponse"]
+            liste_colonnes = ["horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "email_date", "reponse"]
             self.SetAlwaysGroupByColumn(liste_colonnes.index(self.regroupement))
             self.SetShowGroups(True)
         else :
-            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "reponse"]
+            liste_colonnes = ["IDaction", "horodatage", "etat", "traitement_date", "categorie", "famille", "description", "periode", "commentaire", "email_date", "reponse"]
             self.SetShowGroups(False)
         self.useExpansionColumn = False
         self.showItemCounts = False
@@ -215,9 +225,11 @@ class ListView(GroupListView):
         self.SetObjects(self.donnees)
        
     def MAJ(self):
+        self.Freeze()
         self.InitModel()
         self.InitObjectListView()
-        self.CocheListeTout()
+        self.Thaw()
+        #self.CocheListeTout()
     
     def Selection(self):
         return self.GetSelectedObjects()
