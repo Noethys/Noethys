@@ -1029,9 +1029,9 @@ class Traitement():
 
             # Envoi par Email
             if self.dict_parametres["methode_envoi"] == "email" :
-                if len(listeAdresses) == 0 :
-                    self.EcritLog(_(u"Aucune adresse Email n'a été sélectionnée."))
-                    return False
+                # if len(listeAdresses) == 0 :
+                #     self.EcritLog(_(u"Aucune adresse Email n'a été sélectionnée."))
+                #     return False
 
                 resultat = edition.EnvoyerEmail(visible=False)
                 if resultat == False :
