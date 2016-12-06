@@ -172,13 +172,8 @@ class Page_connecthys(wx.Panel):
         webbrowser.open(url)
 
     def OnBoutonImprimer(self, event):
-        dlg = wx.MessageDialog(None, u"Il faut encore patienter...", u"Désolé", wx.OK | wx.ICON_INFORMATION)
-        dlg.ShowModal()
-        dlg.Destroy()
-        return
-
         try:
-            FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande_documentation.pdf"))
+            FonctionsPerso.LanceFichierExterne(Chemins.GetStaticPath("Images/Special/Bon_commande_connecthys.pdf"))
         except:
             dlg = wx.MessageDialog(None, _(u"Noethys ne peut pas ouvrir le PDF !\n\nVeuillez vérifier qu'un autre PDF n'est pas déjà ouvert en arrière-plan..."),_(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
