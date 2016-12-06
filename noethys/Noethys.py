@@ -3364,7 +3364,7 @@ class MainFrame(wx.Frame):
             else :
                 # Chargement du serveur
                 self.ctrl_serveur_portail = CTRL_Portail_serveur.Panel(self)
-                self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Serveur Connecthys")).
+                self._mgr.AddPane(self.ctrl_serveur_portail, aui.AuiPaneInfo().Name("serveur_portail").Caption(_(u"Connecthys")).
                                   Top().Layer(0).Row(3).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 90)).BestSize((-1, 90)) )
 
             # Lancement du serveur

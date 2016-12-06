@@ -712,7 +712,9 @@ class Dialog(wx.Dialog):
         self.SetTitle(_(u"Traitement des demandes [%d/%d]") % (index+1, len(self.tracks)))
 
         # Sélection du track dans le listview
+        self.Freeze()
         self.track.Select()
+        self.Thaw()
 
     def MAJ_email_date(self):
         if self.track.email_date != None :

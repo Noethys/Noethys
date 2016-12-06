@@ -31,6 +31,7 @@ class CTRL_Regroupement(wx.Choice):
             (_(u"Etat"), "etat"),
             (_(u"Catégorie"), "categorie"),
             (_(u"Famille"), "famille"),
+            (_(u"Période"), "periode"),
             ]
 
         self.listeLabels = []
