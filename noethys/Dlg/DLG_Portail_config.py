@@ -20,6 +20,8 @@ import codecs
 import os.path
 import webbrowser
 
+from Dlg import DLG_Message_html
+
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Propertygrid
@@ -37,7 +39,7 @@ def GetSecretKey():
     return code
 
 LISTE_THEMES = [("blue", u"Bleu"), ("black", u"Noir"), ("green", u"Vert"), ("purple", u"Violet"), ("red", u"Rouge"), ("yellow", u"Jaune")]
-LISTE_DELAIS_SYNCHRO = [(15, u"Toutes les 15 minutes"), (30, u"Toutes les 30 minutes"), (60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures")]
+LISTE_DELAIS_SYNCHRO = [(30, u"Toutes les 30 minutes"), (60, u"Toutes les heures"), (120, u"Toutes les 2 heures"), (180, u"Toutes les 3 heures"), (240, u"Toutes les 4 heures"), (300, u"Toutes les 5 heures")]
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
@@ -46,7 +48,7 @@ LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins
 VALEURS_DEFAUT = {
     "portail_activation" : False,
     "client_synchro_portail_activation" : False,
-    "client_synchro_portail_delai" : 2,
+    "client_synchro_portail_delai" : 1,
     "client_synchro_portail_ouverture" : False,
     "client_rechercher_updates" : True,
     "serveur_type": 0,
@@ -72,6 +74,8 @@ VALEURS_DEFAUT = {
     "db_mdp" : "",
     "db_nom" : "",
     "prefixe_tables" : "",
+    "stats_utilisateur": "",
+    "stats_mdp": "",
     "secret_key" : GetSecretKey(),
     "mode_debug" : False,
     "crypter_transferts" : True,
@@ -124,11 +128,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Bind(wxpg.EVT_PG_CHANGED, self.OnPropGridChange)
 
     def OnPropGridChange(self, event):
-        if event.GetPropertyName() == "portail_activation" :
-            value = event.GetPropertyValue()
-            self.parent.SetActivation(value)
-        else :
-            self.Switch()
+        self.Switch()
         event.Skip()
 
     def Switch(self):
@@ -399,6 +399,24 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"[Optionnel] Saisissez un préfixe pour les tables"))
         propriete.SetAttribute("obligatoire", False)
         self.Append(propriete)
+
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Statistiques")) )
+
+        # Utilisateur
+        nom = "stats_utilisateur"
+        propriete = wxpg.StringProperty(label=_(u"Utilisateur"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le nom d'utilisateur pour accéder aux statistiques [Uniquement pour les abonnés à Connecthys Easy]"))
+        propriete.SetAttribute("obligatoire", False)
+        self.Append(propriete)
+
+        # Mot de passe
+        nom = "stats_mdp"
+        propriete = wxpg.StringProperty(label=_(u"Mot de passe"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Saisissez le mot de passe pour accéder aux statistiques [Uniquement pour les abonnés à Connecthys Easy]"))
+        propriete.SetAttribute("obligatoire", False)
+        self.Append(propriete)
+
 
         # Catégorie
         self.Append( wxpg.PropertyCategory(_(u"Sécurité")) )
@@ -738,7 +756,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
             propriete = self.GetPropertyByName(nom)
             if self.GetPropertyAttribute(propriete, "obligatoire") == True :
                 if valeur == "" or valeur == None :
-                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % nom, _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                    dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement renseigner le paramètre '%s' !") % self.GetPropertyLabel(nom), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                     dlg.ShowModal()
                     dlg.Destroy()
                     return False
@@ -783,9 +801,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
     def OnPropChange(self, event):
         prop = event.GetProperty()
-        if prop :
-            if prop.GetName() == "portail_activation" :
-                self.parent.SetActivation(prop.GetValue())
+        pass
 
     def Importation_config(self, event=None):
         # Demande l'emplacement du fichier
@@ -918,7 +934,6 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CLOSE, self.OnClose)
 
         # Inits
-        self.SetActivation(self.ctrl_parametres.GetPropertyByName("portail_activation").GetValue())
         self.server_ctrl = None
 
         # Affichage avertissement
@@ -995,9 +1010,6 @@ class Dialog(wx.Dialog):
 
     def MemoriseParametres(self):
         self.ctrl_parametres.Sauvegarde()
-
-    def SetActivation(self, activation=False):
-        self.bouton_outils.Enable(activation)
 
     def EcritLog(self, message=""):
         horodatage = time.strftime("%d/%m/%y %H:%M:%S", time.localtime())
@@ -1292,10 +1304,52 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
+        stats_utilisateur = dict_parametres["stats_utilisateur"]
+        if stats_utilisateur == "" :
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner le nom d'utilisateur de la rubrique Statistiques !\n\nAttention, cette fonctionnalité n'est disponible que pour les abonnés Connecthys Easy."), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        stats_mdp = dict_parametres["stats_mdp"]
+        if stats_mdp == "" :
+            dlg = wx.MessageDialog(None, _(u"Vous devez renseigner le mot de passe de la rubrique Statistiques !\n\nAttention, cette fonctionnalité n'est disponible que pour les abonnés Connecthys Easy."), _(u"Accès impossible"), wx.OK | wx.ICON_INFORMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
         url += "/stats/"
 
-        # Avertissement
-        dlg = wx.MessageDialog(None, _(u"Attention, cette fonctionnalité n'est disponible qu'avec l'offre Connecthys Easy.\n\nSi vous êtes abonné à cette offre, munissez-vous de vos codes d'accès personnels pour les saisir maintenant dans votre navigateur internet."), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+        # Mémorisation du mot de passe stats dans le presse-papiers
+        clipdata = wx.TextDataObject()
+        clipdata.SetText(stats_mdp)
+        wx.TheClipboard.Open()
+        wx.TheClipboard.SetData(clipdata)
+        wx.TheClipboard.Close()
+
+        # Affiche une fenêtre avec les codes
+        texte = u"""
+        <CENTER><IMG SRC="%s">
+        <FONT SIZE=3>
+        <BR>
+        <B>Accès aux statistiques Connecthys Easy</B>
+        <BR><BR>
+        Noethys va ouvrir votre navigateur internet pour vous permettre d'accéder aux statistiques Connecthys Easy.
+        <BR><BR>
+        Les codes d'accès suivants vont vous être demandés :
+        <BR><BR>
+        <B>
+        <UL>
+            <LI>Nom d'utilisateur : %s</LI>
+            <LI>Mot de passe : %s</LI>
+        </UL>
+        </B>
+        <BR><BR>
+        Remarque : Le mot de passe a été copié dans le presse-papiers. Vous pouvez donc utiliser <B>CTRL+V</B> pour le coller dans le champ de saisie.
+        </FONT>
+        </CENTER>
+        """ % (Chemins.GetStaticPath("Images/32x32/Connecthys.png"), stats_utilisateur, stats_mdp)
+        dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Statistiques"), nePlusAfficher=False, size=(200, 380))
         dlg.ShowModal()
         dlg.Destroy()
 
