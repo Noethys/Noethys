@@ -282,13 +282,14 @@ class Dialog(wx.Dialog):
             return
         
         # Vérifie que l'individu n'existe pas déjà dans la liste
-        for individu in self.ctrl_propositions.donnees :
-            if Formate(individu.nom) == Formate(nom) and Formate(individu.prenom) == Formate(prenom) :
-                dlg = wx.MessageDialog(self, _(u"Un individu portant ce nom existe déjà dans la liste ! \n\nSi vous souhaitez quand même créer un nouvel individu avec ce nom, cliquez sur OUI."), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-                reponse = dlg.ShowModal()
-                dlg.Destroy()
-                if reponse !=  wx.ID_YES :
-                    return
+        if self.ctrl_propositions.donnees != None :
+            for individu in self.ctrl_propositions.donnees :
+                if Formate(individu.nom) == Formate(nom) and Formate(individu.prenom) == Formate(prenom) :
+                    dlg = wx.MessageDialog(self, _(u"Un individu portant ce nom existe déjà dans la liste ! \n\nSi vous souhaitez quand même créer un nouvel individu avec ce nom, cliquez sur OUI."), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+                    reponse = dlg.ShowModal()
+                    dlg.Destroy()
+                    if reponse !=  wx.ID_YES :
+                        return
         
         self.mode = "creation"
         self.EndModal(wx.ID_OK) 
