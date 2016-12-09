@@ -970,7 +970,7 @@ class Synchro():
 
         except Exception, err :
             print err
-            self.log.EcritLog(_(u"[ERREUR] Téléchargement des demandes impossible"))
+            self.log.EcritLog(_(u"Téléchargement des demandes impossible"))
             liste_actions = []
 
         # Sauvegarde des actions
@@ -1166,9 +1166,12 @@ class Synchro():
                 if repFichier != None and "/" in repFichier :
                     ftp.chdir("../" * len(repFichier.split("/")))
             except Exception, err :
-                self.log.EcritLog(_(u"Téchargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
-                self.log.EcritLog(_(u"err: %s") % err)
-                print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
+                if nomFichier == "config.py" :
+                    self.log.EcritLog(_(u"Aucun fichier de configuration à télécharger"))
+                else :
+                    self.log.EcritLog(_(u"Téléchargement SSH/SFTP impossible du fichier '%s'") % nomFichier)
+                    self.log.EcritLog(_(u"err: %s") % err)
+                    print "Erreur dans telechargement du fichier '%s' : %s" % (nomFichier, str(err))
                 return False
         else:
             raise()
