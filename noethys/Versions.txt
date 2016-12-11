@@ -1,15 +1,22 @@
-Version 1.1.8.0 (05/12/2016) :
+Version 1.1.8.1 (10/12/2016) :
 
-- Ajout de Connecthys
-- Correction sauvegarde différentielle réservations Connecthys
+- Ajout de Connecthys, le portail famille de Noethys
+- Ajout du bon de commande Connecthys Easy
+- Ajout sauvegarde différentielle réservations Connecthys
 - Ajout démarrage serveur Connecthys local
 - Ajout recherche activité dans traitement lot conso
 - Ajout de la liste des comptes internet dans le menu Individus
 - Ajout de l'export Excel de la liste d'attente
+- Ajout des modèles d'emails spécifiques à Connecthys
 - Ajout de l'import des modèles d'Emails par défaut
+- Ajout de la gestion complète des lignes de calcul des tarifs
 - Ajout copier-coller dans lignes de calcul des tarifs
+- Ajout montants max dans calcul de type prorata d'une durée
+- Ajout de l'impression de la liste d'attente au format PDF
 - Amélioration paramètres codes internet famille
 - Optimisation de l'importation des paramétrages d'activités
+- Correction affichage graduations dans conso multihoraires
+- Correction bug dans recalcul des prestations
 - Correction divers bugs
 
 Version 1.1.7.4 (02/09/2016) :
