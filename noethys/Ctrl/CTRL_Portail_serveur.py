@@ -191,7 +191,7 @@ class Panel(wx.Panel):
 
         if self.lock.acquire(block) == True:
             try:
-                index = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="client_synchro_portail_delai", valeur=2)
+                index = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="client_synchro_portail_delai", valeur=1)
                 self.delai = LISTE_DELAIS_SYNCHRO[index][0]
                 self.synchro_ouverture = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="client_synchro_portail_ouverture", valeur=True)
             except Exception as e:
