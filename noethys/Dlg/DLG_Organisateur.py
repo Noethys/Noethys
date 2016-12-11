@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import cStringIO
+import datetime
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_adresse
 from Ctrl import CTRL_Saisie_tel
@@ -213,7 +214,7 @@ class Dialog(wx.Dialog):
         num_siret = self.ctrl_siret.GetValue()
         code_ape = self.ctrl_ape.GetValue()
         gps = self.GetGPSOrganisateur(cp, ville)
-        
+
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [    
@@ -230,6 +231,11 @@ class Dialog(wx.Dialog):
                 ("code_ape", code_ape),
                 ("gps", gps),
             ]
+
+        if self.ctrl_logo.estModifie == True :
+            logo_update = datetime.datetime.now()
+            listeDonnees.append(("logo_update", logo_update))
+
         req = """SELECT nom FROM organisateur WHERE IDorganisateur=1;"""
         DB.ExecuterReq(req)
         test = DB.ResultatReq()

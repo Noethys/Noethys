@@ -17,6 +17,7 @@ from PIL import Image
 import os
 import cStringIO
 import FonctionsPerso
+import datetime
 from Utils import UTILS_Fichiers
 
 from Outils import thumbnailctrl as TC
@@ -317,11 +318,11 @@ Tous les fichiers (*.*)|*.*"
             if track.IDdocument == 0 :
                 # Crée un document
                 if self.type_donnee == "piece" :
-                    listeDonnees = [("IDpiece", ID), ("type", track.type), ("label", track.label)]
+                    listeDonnees = [("IDpiece", ID), ("type", track.type), ("label", track.label), ("last_update", datetime.datetime.now())]
                 elif self.type_donnee == "reponse" :
-                    listeDonnees = [("IDreponse", ID), ("type", track.type), ("label", track.label)]
+                    listeDonnees = [("IDreponse", ID), ("type", track.type), ("label", track.label), ("last_update", datetime.datetime.now())]
                 elif self.type_donnee == "type_piece" :
-                    listeDonnees = [("IDtype_piece", ID), ("type", track.type), ("label", track.label)]
+                    listeDonnees = [("IDtype_piece", ID), ("type", track.type), ("label", track.label), ("last_update", datetime.datetime.now())]
                 IDdocument = DB.ReqInsert("documents", listeDonnees)
                 DB.MAJimage(table="documents", key="IDdocument", IDkey=IDdocument, blobImage=track.buffer, nomChampBlob="document")
         

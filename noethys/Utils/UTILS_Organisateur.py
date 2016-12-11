@@ -45,12 +45,12 @@ def RecadreImg(img=None, tailleImage=(40, 40)):
 
 def GetDonnees(tailleLogo=(40, 40)) :
     DB = GestionDB.DB()
-    req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape, logo
+    req = """SELECT nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape, logo, logo_update
     FROM organisateur WHERE IDorganisateur=1;"""
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
-    nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape, logo = listeDonnees[0]
+    nom, rue, cp, ville, tel, fax, mail, site, num_agrement, num_siret, code_ape, logo, logo_update = listeDonnees[0]
     if nom == None : nom = u""
     if rue == None : rue = u""
     if cp == None : cp = u""
@@ -69,7 +69,7 @@ def GetDonnees(tailleLogo=(40, 40)) :
         logo = img.ConvertToBitmap()
     dictDonnees = {
         "nom":nom, "rue":rue, "cp":cp, "ville":ville, "tel":tel, "fax":fax, "mail":mail, "site":site, 
-        "num_agrement":num_agrement, "num_siret":num_siret, "code_ape":code_ape, "logo":logo, 
+        "num_agrement":num_agrement, "num_siret":num_siret, "code_ape":code_ape, "logo":logo, "logo_update":logo_update,
         }
     return dictDonnees
 

@@ -16,7 +16,7 @@ import sqlite3
 import wx
 import os
 import traceback
-import time
+import datetime
 import random
 from Data import DATA_Tables as Tables
 from Utils import UTILS_Fichiers
@@ -1930,6 +1930,31 @@ class DB:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
         # =============================================================
+
+        versionFiltre = (1, 1, 8, 1)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("organisateur", "logo_update", "VARCHAR(50)")
+                self.ReqMAJ("organisateur", [("logo_update", datetime.datetime.now()), ], "IDorganisateur", 1)
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9061()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         return True

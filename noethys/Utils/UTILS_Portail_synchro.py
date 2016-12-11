@@ -297,6 +297,8 @@ class Synchro():
     def Upload_data(self) :
         self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
 
+        last_synchro = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_synchro", valeur="")
+
         resultats = self.Connexion()
         if resultats == False :
             return False
@@ -365,15 +367,20 @@ class Synchro():
         session.add(models.Parametre(nom="SKIN", parametre=theme))
 
         # Image de fond identification
+        last_fond = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_fond", valeur="")
         if self.dict_parametres["image_identification"] != "" :
             chemin_image = self.dict_parametres["image_identification"]
             nom_fichier = os.path.basename(chemin_image)
 
             # Upload du fichier image de fond
-            self.UploadFichier(ftp=ftp, nomFichierComplet=chemin_image, repDest="application/static/fonds")
+            if nom_fichier != last_fond :
+                self.UploadFichier(ftp=ftp, nomFichierComplet=chemin_image, repDest="application/static/fonds")
 
         else :
             nom_fichier = ""
+
+        if last_fond != nom_fichier :
+            UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_fond", valeur=nom_fichier)
 
         session.add(models.Parametre(nom="IMAGE_FOND", parametre=nom_fichier))
 
@@ -399,12 +406,14 @@ class Synchro():
         logo = dict_organisateur["logo"]
         if logo != None :
             nomFichier = "logo.png"
-            cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
-            logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
             session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=nomFichier))
 
             # Upload du logo
-            self.UploadFichier(ftp=ftp, nomFichierComplet=cheminLogo, repDest="application/static")
+            if dict_organisateur["logo_update"] > last_synchro :
+                cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+                logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
+                print "Upload du logo"
+                self.UploadFichier(ftp=ftp, nomFichierComplet=cheminLogo, repDest="application/static")
 
         else :
             session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=""))
@@ -599,15 +608,15 @@ class Synchro():
 
         # Recherche des documents associées aux types de pièces
         DB2 = GestionDB.DB(suffixe="DOCUMENTS")
-        req = "SELECT IDdocument, IDtype_piece, document, type, label FROM documents WHERE IDtype_piece IS NOT NULL AND document IS NOT NULL;"
+        req = "SELECT IDdocument, IDtype_piece, document, type, label, last_update FROM documents WHERE IDtype_piece IS NOT NULL AND document IS NOT NULL;"
         DB2.ExecuterReq(req)
         listeDocuments = DB2.ResultatReq()
         DB2.Close()
         dictDocuments = {}
-        for IDdocument, IDtype_piece, document, extension, label in listeDocuments :
+        for IDdocument, IDtype_piece, document, extension, label, last_update in listeDocuments :
             if not dictDocuments.has_key(IDtype_piece) :
                 dictDocuments[IDtype_piece] = []
-            dictDocuments[IDtype_piece].append({"IDdocument" : IDdocument, "document" : document, "extension" : extension, "label" : label})
+            dictDocuments[IDtype_piece].append({"IDdocument" : IDdocument, "document" : document, "extension" : extension, "label" : label, "last_update" : last_update})
 
         # Recherche des types de pièces
         req = """
@@ -621,17 +630,20 @@ class Synchro():
             fichiers = []
             if dictDocuments.has_key(IDtype_piece) :
                 for dict_document in dictDocuments[IDtype_piece] :
+
                     nomFichier = "document%d.%s" % (dict_document["IDdocument"], dict_document["extension"])
-                    cheminFichier = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
-                    buffer = dict_document["document"]
-                    fichier = open(cheminFichier, "wb")
-                    fichier.write(buffer)
-                    fichier.close()
-
-                    # Upload de la pièce
-                    self.UploadFichier(ftp=ftp, nomFichierComplet=cheminFichier, repDest="application/static/pieces")
-
                     fichiers.append(u"%s;%s" % (dict_document["label"], nomFichier))
+
+                    if dict_document["last_update"] > last_synchro :
+                        cheminFichier = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
+                        buffer = dict_document["document"]
+                        fichier = open(cheminFichier, "wb")
+                        fichier.write(buffer)
+                        fichier.close()
+
+                        # Upload de la pièce
+                        print "Upload du fichier", nomFichier
+                        self.UploadFichier(ftp=ftp, nomFichierComplet=cheminFichier, repDest="application/static/pieces")
 
             m = models.Type_piece(IDtype_piece=IDtype_piece, nom=nom, public=public, fichiers=u"##".join(fichiers))
             session.add(m)
@@ -901,9 +913,14 @@ class Synchro():
         #ftp.quit()
 
         if page != None and page != "True" :
+            # Affichage erreur
             print "Erreur dans le traitement du fichier :", page
             self.log.EcritLog(_(u"[ERREUR] Erreur dans le traitement du fichier. Réponse reçue :"))
             self.log.EcritLog(page)
+
+        else :
+            # Mémorisation horodatage synchro
+            UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_synchro", valeur=str(datetime.datetime.now()))
 
         self.Pulse_gauge(0)
         time.sleep(0.5)

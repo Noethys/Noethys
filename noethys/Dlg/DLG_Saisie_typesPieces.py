@@ -347,11 +347,5 @@ if __name__ == "__main__":
     #wx.InitAllImageHandlers()
     dlg = Dialog(None)
     app.SetTopWindow(dlg)
-    
-    dlg.SetNom("Test")
-    dlg.SetPublic("famille")
-    #dlg.SetValidite("j1-m2-a10")
-    dlg.SetValidite("d2003-05-06")
-    
     dlg.ShowModal()
     app.MainLoop()

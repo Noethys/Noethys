@@ -223,6 +223,7 @@ DB_DATA = {
                                     ("code_ape", "VARCHAR(100)", u"Code APE"),
                                     ("logo", "LONGBLOB", u"Logo de l'organisateur en binaire"),
                                     ("gps", "VARCHAR(200)", u"Coordonnées GPS au format 'lat;long' "),
+                                    ("logo_update", "VARCHAR(50)", u"Horodatage de la dernière modification du logo"),
                                     ], # Organisateur
 
     "responsables_activite":[("IDresponsable", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Responsable"),
@@ -1568,6 +1569,7 @@ DB_DOCUMENTS = {
                                     ("document", "LONGBLOB", u"Document converti en binaire"),
                                     ("type", "VARCHAR(50)", u"Type de document : jpeg, pdf..."),
                                     ("label", "VARCHAR(400)", u"Label du document"),
+                                    ("last_update", "VARCHAR(50)", u"Horodatage de la dernière modification du document"),
                                     ], # BLOB documents
                                     
     }

@@ -12,10 +12,7 @@
 import Chemins
 from UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
-import os
-import sys
-
+import datetime
 import GestionDB
 
 
@@ -52,7 +49,8 @@ DICT_PROCEDURES = {
     "A9001" : _(u"Modification de la structure de la table Documents"),
     "A9023" : _(u"Correction des ouvertures avec IDgroupe=0"),
     "A9054" : _(u"Importation des modèles d'Emails depuis la base défaut"),
-    }
+    "A9061" : _(u"Modification de la structure de la table Documents"),
+}
 
 
 
@@ -874,6 +872,26 @@ def A9054():
 
     print "%d modeles d'Emails ajoutes" % nbre_ajouts
     DB.Close()
+
+def A9061():
+    """ Modification de la table DOCUMENTS """
+    try :
+        DB = GestionDB.DB(suffixe="DOCUMENTS")
+        DB.AjoutChamp("documents", "last_update", "VARCHAR(50)")
+        DB.Close()
+    except :
+        pass
+
+    # Ajoute l'horodatage dans chaque document
+    DB = GestionDB.DB(suffixe="DOCUMENTS")
+    req = "UPDATE documents SET last_update='%s';" % datetime.datetime.now()
+    DB.ExecuterReq(req)
+    DB.Commit()
+    DB.Close()
+
+
+
+
 
 
 ##def A8360():
