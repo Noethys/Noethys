@@ -14,7 +14,12 @@ from Utils.UTILS_Traduction import _
 import wx
 import os
 import time
-import psutil
+try :
+    import psutil
+    IMPORT_PSUTIL_OK = True
+except :
+    IMPORT_PSUTIL_OK = False
+
 import subprocess
 import paramiko
 
@@ -61,14 +66,15 @@ class ServeurConnecthys():
         """ Retourne le status du serveur Connecthys"""
         server_is_running = False
         if self.dict_parametres["hebergement_type"] == 0 :
-            try :
-                for p in psutil.process_iter():
-                    if "python" in p.name() :
-                        for nom in p.cmdline() :
-                            if "run.py" in nom :
-                                server_is_running = True
-            except Exception, err :
-                print "Erreur dans detection processus serveur Connecthys :", err
+            if IMPORT_PSUTIL_OK :
+                try :
+                    for p in psutil.process_iter():
+                        if "python" in p.name() :
+                            for nom in p.cmdline() :
+                                if "run.py" in nom :
+                                    server_is_running = True
+                except Exception, err :
+                    print "Erreur dans detection processus serveur Connecthys :", err
         elif self.dict_parametres["hebergement_type"] == 1 :
             return False
         elif self.dict_parametres["hebergement_type"] == 2 and self.ssh != None:
@@ -199,11 +205,12 @@ class ServeurConnecthys():
     def GetListeProcessLocal(self):
         """ Recherche les process ouverts du portail """
         listeProcess = []
-        for p in psutil.process_iter():
-            if "python" in p.name() :
-                for nom in p.cmdline() :
-                    if "run.py" in nom and p not in listeProcess :
-                        listeProcess.append(p)
+        if IMPORT_PSUTIL_OK :
+            for p in psutil.process_iter():
+                if "python" in p.name() :
+                    for nom in p.cmdline() :
+                        if "run.py" in nom and p not in listeProcess :
+                            listeProcess.append(p)
         return listeProcess
 
     def GetListeProcessBySSH(self):
