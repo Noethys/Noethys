@@ -624,7 +624,9 @@ class Dialog(wx.Dialog):
     def OnBoutonEnvoyer(self, event):
         self.MemoriseParametres() 
         export = UTILS_Export_nomade.Export()
-        nomFichier = export.Run(afficherDlgAttente=True) 
+        nomFichier = export.Run(afficherDlgAttente=True)
+        if nomFichier == None :
+            return False
         if self.ctrl_mode.GetMode() == "ftp" :
             export.EnvoyerVersFTP(nomFichier)
         if self.ctrl_mode.GetMode() == "fichier" :

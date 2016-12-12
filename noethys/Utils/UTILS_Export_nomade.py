@@ -17,7 +17,8 @@ import GestionDB
 import sqlite3
 import datetime
 import time
-
+import traceback
+import sys
 import os
 import base64
 import zipfile
@@ -87,11 +88,16 @@ class Export():
         
         # Création de la table
         dbdest.CreationTable(nomTable=nomTable, dicoDB=TABLES.DB_DATA)
-        
+
         # Préparation des champs
         listeChamps = []
-        for nom, type, info in TABLES.DB_DATA[nomTable] :
+        liste_champs_blob = []
+        index = 0
+        for nom, type_champ, info in TABLES.DB_DATA[nomTable] :
+            if "BLOB" in type_champ :
+                liste_champs_blob.append(index)
             listeChamps.append(nom)
+            index += 1
         
         # Lecture des données
         req = """SELECT %s FROM %s;""" % (", ".join(listeChamps), nomTable)
@@ -100,8 +106,15 @@ class Export():
         DB.Close()
         listeDonnees = []
         for listeValeurs in listeTemp :
-            listeDonnees.append(listeValeurs)
-        
+            liste_temp = []
+            index = 0
+            for valeur in listeValeurs :
+                if valeur != None and index in liste_champs_blob :
+                    valeur = sqlite3.Binary(valeur)
+                liste_temp.append(valeur)
+                index += 1
+            listeDonnees.append(liste_temp)
+
         self.Enregistrer(dbdest, nomTable=nomTable, listeChamps=listeChamps, listeDonnees=listeDonnees)
     
     def CopieTables(self, dbdest, listeTables=[]):
@@ -142,7 +155,7 @@ class Export():
             # Création des tables
             dbdest = GestionDB.DB(suffixe=None, nomFichier=nomFichierTemp, modeCreation=True)
             dbdest.CreationTables(dicoDB=self.dictTables)
-        
+
             # Enregistrement des paramètres
             listeParametres = [
                 ("IDfichier", dictParametres["IDfichier"]),
@@ -239,16 +252,18 @@ class Export():
                 nomFichierFinal = self.nomFichier + EXTENSION_DECRYPTE
         
         except Exception, err :
+            print "Erreur dans UTILS_Export_nomade.Run :", err
+            traceback.print_exc(file=sys.stdout)
             if afficherDlgAttente == True :
-                dlgAttente.Destroy() 
+                dlgAttente.Destroy()
                 del dlgAttente
             dlg = wx.MessageDialog(None, _(u"Désolé, l'erreur suivante a été rencontrée : ") + str(err), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return None
-            
+
         if afficherDlgAttente == True :
-            dlgAttente.Destroy() 
+            dlgAttente.Destroy()
             del dlgAttente
         return nomFichierFinal
         
@@ -299,7 +314,8 @@ class Export():
 if __name__ == '__main__':
     app = wx.App(0)
     export = Export()
-    nomFichier = export.Run() 
+    nomFichier = export.Run(afficherDlgAttente=False)
+    print "nomFichier =", nomFichier
     print "fini"
     # Envoi vers un répertoire
 ##    export.EnvoyerVersRepertoire(nomFichier) 
