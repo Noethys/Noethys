@@ -3767,7 +3767,7 @@ Merci pour votre participation !
 
         if random.randrange(1, 100) <= 10 :
             from Dlg import DLG_Financement
-            dlg = DLG_Financement.Dialog(None)
+            dlg = DLG_Financement.Dialog(self)
             dlg.ShowModal() 
             dlg.Destroy()
             return True
