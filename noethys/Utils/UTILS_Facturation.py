@@ -418,7 +418,6 @@ class Facturation():
                     "{TOTAL_REPORTS}" : u"0.00 %s" % SYMBOLE,
                     "solde_avec_reports" : FloatToDecimal(0.0),
                     "{SOLDE_AVEC_REPORTS}" : u"0.00 %s" % SYMBOLE,
-                    "num_facture" : None,
                     "select" : True,
                     "messages_familiaux" : [],
                     "{NOM_LOT}" : "",
@@ -709,17 +708,21 @@ class Facturation():
                 "statut" : statut, "IDcompte_payeur" : IDcompte_payeur, "datePrelevement" : datePrelevement, 
                 "iban" : iban, "rum" : rum, "code_ics" : code_ics,
                 }
-        
-        DB.Close() 
+
         if len(listeDonnees) == 0 : 
             del dlgAttente
+            DB.Close()
             return False
         
         listeFactures = []
+        listeComptesPayeurs = []
         index = 0
         for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
             
             self.EcritStatusbar(_(u"Recherche de la facture %d sur %d") % (index+1, len(listeDonnees)))
+
+            if IDcompte_payeur not in listeComptesPayeurs :
+                listeComptesPayeurs.append(IDcompte_payeur)
             
             if numero == None : numero = 0
             date_edition = UTILS_Dates.DateEngEnDateDD(date_edition) 
@@ -747,7 +750,48 @@ class Facturation():
                 }
             listeFactures.append(dictFacture) 
             index +=1
-        
+
+        # Recherche du solde du compte
+        if len(listeComptesPayeurs) == 0 : conditions_comptes_payeurs = "()"
+        elif len(listeComptesPayeurs) == 1 : conditions_comptes_payeurs = "(%d)" % listeComptesPayeurs[0]
+        else : conditions_comptes_payeurs = str(tuple(listeComptesPayeurs))
+
+        req = """SELECT IDcompte_payeur, SUM(montant)
+        FROM prestations
+        WHERE IDcompte_payeur IN %s
+        GROUP BY IDcompte_payeur
+        ;""" % conditions_comptes_payeurs
+        DB.ExecuterReq(req)
+        liste_prestations = DB.ResultatReq()
+        dict_prestations = {}
+        for IDcompte_payeur, total_prestations in liste_prestations:
+            dict_prestations[IDcompte_payeur] = total_prestations
+
+        req = """SELECT IDcompte_payeur, SUM(montant)
+        FROM reglements
+        WHERE IDcompte_payeur IN %s
+        GROUP BY IDcompte_payeur
+        ;""" % conditions_comptes_payeurs
+        DB.ExecuterReq(req)
+        liste_reglements = DB.ResultatReq()
+        dict_reglements = {}
+        for IDcompte_payeur, total_reglements in liste_reglements:
+            dict_reglements[IDcompte_payeur] = total_reglements
+
+        DB.Close()
+
+        dict_soldes_comptes = {}
+        for IDcompte_payeur in listeComptesPayeurs:
+            if dict_prestations.has_key(IDcompte_payeur):
+                total_prestations = FloatToDecimal(dict_prestations[IDcompte_payeur])
+            else :
+                total_prestations = FloatToDecimal(0.0)
+            if dict_reglements.has_key(IDcompte_payeur):
+                total_reglements = FloatToDecimal(dict_reglements[IDcompte_payeur])
+            else :
+                total_reglements = FloatToDecimal(0.0)
+            dict_soldes_comptes[IDcompte_payeur] = total_reglements - total_prestations
+
         # Récupération des données de facturation
         typeLabel = 0
         if dictOptions != None and dictOptions.has_key("intitules") :
@@ -761,7 +805,12 @@ class Facturation():
         for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
             total = FloatToDecimal(total) 
             regle = FloatToDecimal(regle)
-            solde = FloatToDecimal(solde) 
+            solde = FloatToDecimal(solde)
+
+            if dict_soldes_comptes.has_key(IDcompte_payeur) :
+                solde_compte = dict_soldes_comptes[IDcompte_payeur]
+            else :
+                solde_compte = FloatToDecimal(0.0)
             
             if dictComptes.has_key(IDfacture) :
                 
@@ -793,7 +842,12 @@ class Facturation():
                 dictCompte["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
                 dictCompte["{SOLDE_LETTRES}"] = UTILS_Conversion.trad(solde, MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize() 
                 dictCompte["{SOLDE_AVEC_REPORTS}"] = u"%.2f %s" % (dictCompte["solde_avec_reports"], SYMBOLE)
-                dictCompte["{SOLDE_AVEC_REPORTS_LETTRES}"] = UTILS_Conversion.trad(solde+dictCompte["total_reports"], MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize() 
+                dictCompte["{SOLDE_AVEC_REPORTS_LETTRES}"] = UTILS_Conversion.trad(solde+dictCompte["total_reports"], MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize()
+
+                if solde_compte > FloatToDecimal(0.0) :
+                    dictCompte["{SOLDE_COMPTE}"] = u"+%.2f %s" % (solde_compte, SYMBOLE)
+                else :
+                    dictCompte["{SOLDE_COMPTE}"] = u"%.2f %s" % (solde_compte, SYMBOLE)
                 
                 if nomLot == None :
                     nomLot = ""
@@ -831,8 +885,8 @@ class Facturation():
                 dictChampsFusion[IDfacture]["{DATE_ECHEANCE}"] = UTILS_Dates.DateEngFr(str(date_echeance))
                 dictChampsFusion[IDfacture]["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
                 dictChampsFusion[IDfacture]["{SOLDE_AVEC_REPORTS}"] = dictCompte["{SOLDE_AVEC_REPORTS}"]
-                
-                
+                dictChampsFusion[IDfacture]["{SOLDE_COMPTE}"] = dictCompte["{SOLDE_COMPTE}"]
+
                 # Fusion pour textes personnalisés
                 dictCompte["texte_titre"] = self.RemplaceMotsCles(dictOptions["texte_titre"], dictCompte)
                 dictCompte["texte_introduction"] = self.RemplaceMotsCles(dictOptions["texte_introduction"], dictCompte)
