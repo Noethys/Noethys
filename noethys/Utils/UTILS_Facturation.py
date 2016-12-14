@@ -700,16 +700,29 @@ class Facturation():
         ;""" % conditions
         DB.ExecuterReq(req)
         listePrelevements = DB.ResultatReq()
+        # Pièces PES ORMC
+        req = """SELECT
+        pes_pieces.IDpiece, pes_pieces.numero, pes_pieces.prelevement_iban, pes_pieces.IDfacture,
+        pes_pieces.montant, pes_pieces.prelevement_statut, comptes_payeurs.IDcompte_payeur,
+        pes_lots.date_prelevement, pes_pieces.prelevement_IDmandat, comptes_bancaires.code_ics
+        FROM pes_pieces
+        LEFT JOIN pes_lots ON pes_lots.IDlot = pes_pieces.IDlot
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = pes_pieces.IDfamille
+        LEFT JOIN comptes_bancaires ON comptes_bancaires.IDcompte = pes_lots.IDcompte
+        WHERE pes_pieces.prelevement_IDmandat IS NOT NULL AND pes_pieces.prelevement=1 AND pes_pieces.IDfacture IN %s
+        ;""" % conditions
+        DB.ExecuterReq(req)
+        listePieces = DB.ResultatReq()
         dictPrelevements = {}
-        for IDprelevement, numero_compte, iban, IDfacture, montant, statut, IDcompte_payeur, datePrelevement, rum, code_ics in listePrelevements :
-            datePrelevement = UTILS_Dates.DateEngEnDateDD(datePrelevement)
-            dictPrelevements[IDfacture] = {
-                "IDprelevement" : IDprelevement, "numero_compte" : numero_compte, "montant" : montant, 
-                "statut" : statut, "IDcompte_payeur" : IDcompte_payeur, "datePrelevement" : datePrelevement, 
-                "iban" : iban, "rum" : rum, "code_ics" : code_ics,
+        for listeDonneesPrel in (listePrelevements, listePieces):
+            for IDprelevement, numero_compte, iban, IDfacture, montant, statut, IDcompte_payeur, datePrelevement, rum, code_ics in (listeDonneesPrel):
+                datePrelevement = UTILS_Dates.DateEngEnDateDD(datePrelevement)
+                dictPrelevements[IDfacture] = {
+                    "IDprelevement": IDprelevement, "numero_compte": numero_compte, "montant": montant,
+                    "statut": statut, "IDcompte_payeur": IDcompte_payeur, "datePrelevement": datePrelevement,
+                    "iban": iban, "rum": rum, "code_ics": code_ics,
                 }
-
-        if len(listeDonnees) == 0 : 
+        if len(listeDonnees) == 0 :
             del dlgAttente
             DB.Close()
             return False
