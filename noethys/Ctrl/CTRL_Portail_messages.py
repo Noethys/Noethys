@@ -21,6 +21,7 @@ class ListBox_Messages(wx.ListBox):
         wx.ListBox.__init__(self, parent, -1)
         self.parent = parent
         self.MAJ()
+        self.Bind(wx.EVT_LISTBOX_DCLICK, self.Modifier)
 
     def MAJ(self):
         self.dictDonnees = {}
@@ -52,22 +53,14 @@ class ListBox_Messages(wx.ListBox):
         else:
             return None
 
-    def Ajouter(self):
-        dlg = Saisie_Message(self)
+    def Ajouter(self, event=None):
+        from Dlg import DLG_Saisie_portail_message
+        dlg = DLG_Saisie_portail_message.Dialog(self, IDmessage=None)
         if dlg.ShowModal() == wx.ID_OK:
-            titre = dlg.GetTitre()
-            texte = dlg.GetTexte()
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("titre", titre ),
-                ("texte", texte),
-                ]
-            IDmessage = DB.ReqInsert("portail_messages", listeDonnees)
-            DB.Close()
             self.MAJ()
         dlg.Destroy()
 
-    def Modifier(self):
+    def Modifier(self, event=None):
         message = self.GetSelectionMessage()
         if message == None :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à modifier dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -75,23 +68,13 @@ class ListBox_Messages(wx.ListBox):
             dlg.Destroy()
             return
         IDmessage = message["IDmessage"]
-        titre = message["titre"]
-        texte = message["texte"]
-        dlg = Saisie_Message(self, IDmessage, titre, texte)
+        from Dlg import DLG_Saisie_portail_message
+        dlg = DLG_Saisie_portail_message.Dialog(self, IDmessage=IDmessage)
         if dlg.ShowModal() == wx.ID_OK:
-            titre = dlg.GetTitre()
-            texte = dlg.GetTexte()
-            DB = GestionDB.DB()
-            listeDonnees = [
-                ("titre", titre ),
-                ("texte", texte),
-                ]
-            DB.ReqMAJ("portail_messages", listeDonnees, "IDmessage", IDmessage)
-            DB.Close()
             self.MAJ()
         dlg.Destroy()
 
-    def Supprimer(self):
+    def Supprimer(self, event=None):
         message = self.GetSelectionMessage()
         if message == None :
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun message à supprimer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
@@ -109,82 +92,6 @@ class ListBox_Messages(wx.ListBox):
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-class Saisie_Message(wx.Dialog):
-    def __init__(self, parent, IDmessage=None, titre=u"", texte=u""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
-        self.parent = parent
-
-        self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
-        self.ctrl_titre = wx.TextCtrl(self, -1, titre)
-        self.label_texte = wx.StaticText(self, -1, _(u"Texte :"))
-        self.ctrl_texte = wx.TextCtrl(self, -1, texte, style=wx.TE_MULTILINE)
-
-        self.ctrl_titre.SetToolTipString(_(u"Saisissez ici un titre interne pour ce message. Ce titre n'apparaît pas sur le portail."))
-        self.ctrl_texte.SetToolTipString(_(u"Saisissez ici le texte qui apparaîtra sur la page d'accueil du portail"))
-
-        self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
-        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
-        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
-
-        if IDmessage == None :
-            self.SetTitle(_(u"Saisie d'un message"))
-        else:
-            self.SetTitle(_(u"Modification d'un message"))
-        self.SetMinSize((500, 260))
-
-        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
-        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
-        grid_sizer_contenu.Add(self.label_titre, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_contenu.Add(self.ctrl_titre, 0, wx.EXPAND, 0)
-        grid_sizer_contenu.Add(self.label_texte, 0, wx.ALIGN_RIGHT, 0)
-        grid_sizer_contenu.Add(self.ctrl_texte, 0, wx.EXPAND, 0)
-        grid_sizer_contenu.AddGrowableCol(1)
-        grid_sizer_contenu.AddGrowableRow(1)
-        grid_sizer_base.Add(grid_sizer_contenu, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
-        grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
-        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
-        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
-        grid_sizer_boutons.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableCol(0)
-        grid_sizer_base.AddGrowableRow(0)
-        self.Layout()
-        self.CenterOnScreen()
-
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-
-    def GetTitre(self):
-        return self.ctrl_titre.GetValue()
-
-    def GetTexte(self):
-        return self.ctrl_texte.GetValue()
-
-
-    def OnBoutonOk(self, event):
-        if self.GetTitre() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un titre !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_titre.SetFocus()
-            return
-
-        if self.GetTexte() == "" :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            self.ctrl_texte.SetFocus()
-            return
-
-        self.EndModal(wx.ID_OK)
-
-
-
-
 
 class CTRL(wx.Panel):
     def __init__(self, parent):

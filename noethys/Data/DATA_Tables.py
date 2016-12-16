@@ -1505,6 +1505,7 @@ DB_DATA = {
                                     ("affichage_date_debut", "DATETIME", u"Date et heure de début d'affichage"),
                                     ("affichage_date_fin", "DATETIME", u"Date et heure de fin d'affichage"),
                                     ("IDmodele", "INTEGER", u"IDmodele d'email rattaché à la période"),
+                                    ("introduction", "VARCHAR(1000)", u"Texte d'introduction"),
                                     ], # Périodes de réservations pour le portail
 
     "portail_unites":               [("IDunite", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID unité"),
@@ -1543,7 +1544,9 @@ DB_DATA = {
     "portail_messages":             [("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),
                                     ("titre", "VARCHAR(255)", u"Titre du message"),
                                     ("texte", "VARCHAR(1000)", u"Contenu du message"),
-                                    ], # Messages pour la page d'accueil du portail
+                                    ("affichage_date_debut", "DATETIME", u"Date et heure de début d'affichage"),
+                                    ("affichage_date_fin", "DATETIME", u"Date et heure de fin d'affichage"),
+                                     ], # Messages pour la page d'accueil du portail
 
 
     }

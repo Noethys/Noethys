@@ -101,6 +101,11 @@ class Dialog(wx.Dialog):
         self.box_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de la période"))
         self.ctrl_nom = wx.TextCtrl(self, -1, "")
 
+        # Introduction
+        self.box_intro_staticbox = wx.StaticBox(self, -1, _(u"Texte d'introduction"))
+        self.ctrl_intro = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE)
+        self.ctrl_intro.SetMinSize((10, 50))
+
         # Période
         self.box_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de réservations"))
         self.label_date_debut = wx.StaticText(self, -1, u"Du")
@@ -154,6 +159,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom pour cette période (Ex : 'Juillet 2016', 'Année 2016', etc...)"))
+        self.ctrl_intro.SetToolTipString(_(u"Saisissez ici un texte d'introduction qui apparaîtra au-dessus du planning des réservations [Optionnel]"))
         self.radio_oui.SetToolTipString(_(u"Sélectionnez cette option pour afficher cette période sur le portail"))
         self.radio_dates.SetToolTipString(_(u"Sélectionnez cette option pour afficher cette période sur le portail uniquement entre les dates souhaitées"))
         self.radio_non.SetToolTipString(_(u"Sélectionnez cette option pour ne pas afficher cette période sur le portail"))
@@ -169,13 +175,17 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
 
-        grid_sizer_contenu = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
 
         # Nom
         box_nom = wx.StaticBoxSizer(self.box_nom_staticbox, wx.VERTICAL)
         box_nom.Add(self.ctrl_nom, 0, wx.ALL | wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 10)
-
         grid_sizer_contenu.Add(box_nom, 1, wx.EXPAND, 0)
+
+        # Introduction
+        box_intro = wx.StaticBoxSizer(self.box_intro_staticbox, wx.VERTICAL)
+        box_intro.Add(self.ctrl_intro, 0, wx.ALL | wx.EXPAND | wx.ALIGN_CENTER_VERTICAL, 10)
+        grid_sizer_contenu.Add(box_intro, 1, wx.EXPAND, 0)
 
         # Période
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
@@ -285,19 +295,21 @@ class Dialog(wx.Dialog):
             return
 
         DB = GestionDB.DB()
-        req = """SELECT IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele
+        req = """SELECT IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele, introduction
         FROM portail_periodes
         WHERE IDperiode=%d;""" % self.IDperiode
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele = listeDonnees[0]
+        IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, IDmodele, introduction = listeDonnees[0]
         affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
         affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
         self.IDactivite = IDactivite
         self.ctrl_nom.SetValue(nom)
+        if introduction != None :
+            self.ctrl_intro.SetValue(introduction)
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)
 
@@ -424,6 +436,7 @@ class Dialog(wx.Dialog):
             ("affichage_date_debut", affichage_date_debut),
             ("affichage_date_fin", affichage_date_fin),
             ("IDmodele", IDmodele),
+            ("introduction", self.ctrl_intro.GetValue()),
             ]
         if self.IDperiode == None :
             self.IDperiode = DB.ReqInsert("portail_periodes", listeDonnees)

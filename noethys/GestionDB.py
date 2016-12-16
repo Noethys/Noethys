@@ -1943,6 +1943,16 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 8, 2)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("portail_periodes", "introduction", "VARCHAR(1000)")
+                self.AjoutChamp("portail_messages", "affichage_date_debut", "DATETIME")
+                self.AjoutChamp("portail_messages", "affichage_date_fin", "DATETIME")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
 
 
 
@@ -2243,7 +2253,7 @@ if __name__ == "__main__":
         
     # Ajouter un champ
     # db = DB(suffixe="DATA")
-    # db.AjoutChamp("activites", "portail_reservations_absenti", "VARCHAR(20)")
+    # db.AjoutChamp("portail_messages", "affichage_date_debut", "DATETIME")
     # db.Close()
 
     # Exportation d'une table dans la base DEFAUT

@@ -822,13 +822,17 @@ class Synchro():
                 session.add(m)
 
         # Création des messages
-        req = """SELECT IDmessage, titre, texte
+        req = """SELECT IDmessage, titre, texte, affichage_date_debut, affichage_date_fin
         FROM portail_messages
         ORDER BY titre;"""
         DB.ExecuterReq(req)
         listeMessages = DB.ResultatReq()
-        for IDmessage, titre, texte in listeMessages :
-            m = models.Message(IDmessage=IDmessage, titre=titre, texte=texte)
+        for IDmessage, titre, texte, affichage_date_debut, affichage_date_fin in listeMessages :
+            affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
+            affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
+
+            m = models.Message(IDmessage=IDmessage, titre=titre, texte=texte, \
+                               affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
             session.add(m)
 
         # Fermeture de la base de données Noethys
