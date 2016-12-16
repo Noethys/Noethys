@@ -746,20 +746,20 @@ class Synchro():
         # Création des périodes
         self.Pulse_gauge()
 
-        req = """SELECT IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin
+        req = """SELECT IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction
         FROM portail_periodes
         WHERE affichage=1;"""
         DB.ExecuterReq(req)
         listePeriodes = DB.ResultatReq()
         dict_dates_activites = {}
-        for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin in listePeriodes :
+        for IDperiode, IDactivite, nom, date_debut, date_fin, affichage, affichage_date_debut, affichage_date_fin, introduction in listePeriodes :
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
             date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
             affichage_date_debut = UTILS_Dates.DateEngEnDateDDT(affichage_date_debut)
             affichage_date_fin = UTILS_Dates.DateEngEnDateDDT(affichage_date_fin)
 
             m = models.Periode(IDperiode=IDperiode, IDactivite=IDactivite, nom=nom, date_debut=date_debut, date_fin=date_fin, \
-                        affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
+                        affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin, introduction=introduction)
             session.add(m)
 
             # Mémorise les activités pour lesquelles il y a des périodes...
