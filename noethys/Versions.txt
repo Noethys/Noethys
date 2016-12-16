@@ -1,3 +1,12 @@
+Version 1.1.8.2 (16/12/2016) :
+
+- Ajout des introductions de périodes de réservations
+- Ajout de la période d'affichage dans messages portail
+- Ajout des adresses multiples dans l'abonnement à l'envoi de factures par Email
+- Ajout de l'affichage du solde du compte sur les factures
+- Correction affichage prélèvements sur factures
+- Correction bug export logo vers Nomadhys
+
 Version 1.1.8.1 (10/12/2016) :
 
 - Ajout de Connecthys, le portail famille de Noethys
