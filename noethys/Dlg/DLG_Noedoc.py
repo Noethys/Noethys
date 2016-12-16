@@ -126,6 +126,7 @@ class Facture():
             (_(u"Texte échéance de paiement"), _(u"Date d'échéance : 10/01/2011"), "{TEXTE_ECHEANCE}"),
             (_(u"Date d'édition de la facture (long)"), _(u"Lundi 9 septembre 2011"), "{DATE_EDITION_LONG}"),
             (_(u"Date d'édition de la facture (court)"), u"19/09/2011", "{DATE_EDITION_COURT}"),
+            (_(u"Date du prélèvement si facture prélevée"), u"15/10/2011", "{DATE_PRELEVEMENT}"),
             
             (_(u"Total des prestations de la période"), u"10.00 ¤", "{TOTAL_PERIODE}"),
             (_(u"Total déjà réglé pour la période"), u"6.00 ¤", "{TOTAL_REGLE}"),
@@ -134,6 +135,12 @@ class Facture():
             (_(u"Solde avec reports"), u"138.50 ¤", "{SOLDE_AVEC_REPORTS}"),
             (_(u"Solde du compte"), u"-35.80 ¤", "{SOLDE_COMPTE}"),
             (_(u"Total des déductions"), u"20.50 ¤", "{TOTAL_DEDUCTIONS}"),
+
+            (_(u"PES ORMC Nom du lot"), u"Cantine janv 2016", "{PES_NOM_LOT}"),
+            (_(u"PES ORMC Exercice"), u"2016", "{PES_LOT_EXERCICE}"),
+            (_(u"PES ORMC Objet du lot"), u"Accueil périscolaire", "{PES_LOT_OBJET}"),
+            (_(u"PES ORMC ID Bordereau"), u"17", "{PES_LOT_ID_BORDEREAU}"),
+            (_(u"PES ORMC Code produit"), u"87", "{PES_LOT_CODE_PRODUIT}"),
             ]
         
         self.champs.extend(UTILS_Infos_individus.GetNomsChampsPossibles(mode="famille"))

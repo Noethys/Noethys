@@ -780,6 +780,21 @@ class Facturation():
                     "statut": statut, "IDcompte_payeur": IDcompte_payeur, "datePrelevement": datePrelevement,
                     "iban": iban, "rum": rum, "code_ics": code_ics,
                 }
+        # Infos PES ORMC
+        req = """SELECT
+        pes_pieces.IDlot, pes_pieces.IDfacture, pes_lots.nom, pes_lots.exercice, pes_lots.mois, pes_lots.objet_dette, pes_lots.id_bordereau, pes_lots.code_prodloc
+        FROM pes_pieces
+        LEFT JOIN pes_lots ON pes_lots.IDlot = pes_pieces.IDlot
+        WHERE pes_pieces.IDfacture IN %s
+        ;""" % conditions
+        DB.ExecuterReq(req)
+        listeInfosPes = DB.ResultatReq()
+        dictPes = {}
+        for IDlot_pes, IDfacture, nom_lot_pes, exercice, mois, objet, id_bordereau, code_produit in (listeInfosPes):
+            dictPes[IDfacture] = {
+                "pes_IDlot": IDlot_pes, "pes_nom_lot": nom_lot_pes, "pes_lot_exercice": exercice, "pes_lot_mois": mois,
+                "pes_lot_objet": objet, "pes_lot_id_bordereau": id_bordereau, "pes_lot_code_produit": code_produit,
+            }
         if len(listeDonnees) == 0 :
             del dlgAttente
             DB.Close()
@@ -872,7 +887,7 @@ class Facturation():
                 
                 for IDindividu, dictIndividu in dictCompte["individus"].iteritems() :
                     dictIndividu["select"] = True
-                
+
                 # Recherche de prélèvements
                 if dictPrelevements.has_key(IDfacture) :
                     if datePrelevement < dictCompte["date_edition"] :
@@ -884,6 +899,7 @@ class Facturation():
                     iban = dictPrelevements[IDfacture]["iban"]
                     rum = dictPrelevements[IDfacture]["rum"]
                     code_ics = dictPrelevements[IDfacture]["code_ics"]
+                    dictCompte["{DATE_PRELEVEMENT}"] = UTILS_Dates.DateEngFr(str(datePrelevement))
                     if iban != None :
                         dictCompte["prelevement"] = _(u"La somme de %.2f %s %s prélevée le %s sur le compte ***%s") % (montant, SYMBOLE, verbe, UTILS_Dates.DateEngFr(str(datePrelevement)), iban[-7:])
                     else :
@@ -892,6 +908,25 @@ class Facturation():
                         dictCompte["prelevement"] += _(u"<br/>Réf. mandat unique : %s / Code ICS : %s") % (rum, code_ics)
                 else :
                     dictCompte["prelevement"] = None
+                    dictCompte["{DATE_PRELEVEMENT}"] = ""
+
+                # Infos PES ORMC
+                if dictPes.has_key(IDfacture) :
+                    dictCompte["{PES_IDLOT}"] = dictPes[IDfacture]["pes_IDlot"]
+                    dictCompte["{PES_NOM_LOT}"] = dictPes[IDfacture]["pes_nom_lot"]
+                    dictCompte["{PES_LOT_EXERCICE}"] = dictPes[IDfacture]["pes_lot_exercice"]
+                    dictCompte["{PES_LOT_MOIS}"] = dictPes[IDfacture]["pes_lot_mois"]
+                    dictCompte["{PES_LOT_OBJET}"] = dictPes[IDfacture]["pes_lot_objet"]
+                    dictCompte["{PES_LOT_ID_BORDEREAU}"] = dictPes[IDfacture]["pes_lot_id_bordereau"]
+                    dictCompte["{PES_LOT_CODE_PRODUIT}"] = dictPes[IDfacture]["pes_lot_code_produit"]
+                else:
+                    dictCompte["{PES_IDLOT}"] = ""
+                    dictCompte["{PES_NOM_LOT}"] = ""
+                    dictCompte["{PES_LOT_EXERCICE}"] = ""
+                    dictCompte["{PES_LOT_MOIS}"] = ""
+                    dictCompte["{PES_LOT_OBJET}"] = ""
+                    dictCompte["{PES_LOT_ID_BORDEREAU}"] = ""
+                    dictCompte["{PES_LOT_CODE_PRODUIT}"] = ""
 
                 # Champs de fusion pour Email
                 dictChampsFusion[IDfacture] = {}
@@ -903,6 +938,7 @@ class Facturation():
                 dictChampsFusion[IDfacture]["{SOLDE}"] = u"%.2f %s" % (dictCompte["solde"], SYMBOLE)
                 dictChampsFusion[IDfacture]["{SOLDE_AVEC_REPORTS}"] = dictCompte["{SOLDE_AVEC_REPORTS}"]
                 dictChampsFusion[IDfacture]["{SOLDE_COMPTE}"] = dictCompte["{SOLDE_COMPTE}"]
+                dictChampsFusion[IDfacture]["{DATE_PRELEVEMENT}"] = dictCompte["{DATE_PRELEVEMENT}"]
 
                 # Fusion pour textes personnalisés
                 dictCompte["texte_titre"] = self.RemplaceMotsCles(dictOptions["texte_titre"], dictCompte)
