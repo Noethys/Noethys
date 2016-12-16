@@ -178,29 +178,36 @@ class Dialog(wx.Dialog):
         listeAnomalies = []
         listeEnvoiNonDemande = []
         for track in tracks :
-            adresse = None
-            
-            # Si Famille inscrite à l'envoi par Email :
-            if track.email == True : 
-                IDindividu, categorie, adresse = track.email_factures.split(";")
-                if IDindividu != "" :
-                    if dictAdressesIndividus.has_key(int(IDindividu)) :
-                        adresse = dictAdressesIndividus[int(IDindividu)][categorie]
-            
-            # Si famille non inscrite à l'envoi par Email
+            liste_adresses = []
+
+            if track.email == True :
+                # Si Famille inscrite à l'envoi par Email :
+                for valeur in track.email_factures.split("##"):
+                    IDindividu, categorie, adresse = valeur.split(";")
+                    if IDindividu != "" :
+                        if dictAdressesIndividus.has_key(int(IDindividu)) :
+                            adresse = dictAdressesIndividus[int(IDindividu)][categorie]
+                            liste_adresses.append(adresse)
+                    else :
+                        liste_adresses.append(adresse)
+
             else :
+                # Si famille non inscrite à l'envoi par Email
                 adresse = UTILS_Envoi_email.GetAdresseFamille(track.IDfamille, choixMultiple=False, muet=True, nomTitulaires=track.nomsTitulaires)
-            
+                liste_adresses.append(adresse)
+
             # Mémorisation des données
-            if adresse not in (None, "", []) : 
-                if dictPieces.has_key(track.IDfacture) :
-                    fichier = dictPieces[track.IDfacture]
-                    champs = dictChampsFusion[track.IDfacture]
-                    listeDonnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})
-                    if track.email == False :
-                        listeEnvoiNonDemande.append(track.nomsTitulaires) 
-            else :
-                listeAnomalies.append(track.nomsTitulaires)
+            for adresse in liste_adresses :
+                if adresse not in (None, "", []) :
+                    if dictPieces.has_key(track.IDfacture) :
+                        fichier = dictPieces[track.IDfacture]
+                        champs = dictChampsFusion[track.IDfacture]
+                        listeDonnees.append({"adresse" : adresse, "pieces" : [fichier,], "champs" : champs})
+                        if track.email == False :
+                            if track.nomsTitulaires not in listeEnvoiNonDemande :
+                                listeEnvoiNonDemande.append(track.nomsTitulaires)
+                else :
+                    listeAnomalies.append(track.nomsTitulaires)
 
         
         # Annonce les anomalies trouvées

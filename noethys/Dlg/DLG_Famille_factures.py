@@ -68,7 +68,7 @@ class CTRL_Email(wx.Panel):
         import DLG_Selection_email
         intro = _(u"Sélectionnez ici l'adresse Email à laquelle envoyer les factures.")
         titre = _(u"Activation de l'envoi des factures par Email")
-        dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_factures", intro=intro, titre=titre)
+        dlg = DLG_Selection_email.Dialog(self, IDfamille=self.IDfamille, champ="email_factures", intro=intro, titre=titre, adresses_multiples=True)
         dlg.ShowModal() 
         dlg.Destroy()
         self.MAJ() 
