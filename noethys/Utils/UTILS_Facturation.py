@@ -350,9 +350,60 @@ class Facturation():
             if dictConsommations.has_key(IDprestation) == False :
                 dictConsommations[IDprestation] = []
             dictConsommations[IDprestation].append({"date" : UTILS_Dates.DateEngEnDateDD(date), "etat" : etat})
-            
-        DB.Close() 
-        
+
+        # Recherche du solde du compte
+        listeComptesPayeurs = []
+        for temp in listePrestations :
+            IDcompte_payeur = temp[1]
+            if IDcompte_payeur not in listeComptesPayeurs :
+                listeComptesPayeurs.append(IDcompte_payeur)
+        if len(listeComptesPayeurs) == 0 : conditions_comptes_payeurs = "()"
+        elif len(listeComptesPayeurs) == 1 : conditions_comptes_payeurs = "(%d)" % listeComptesPayeurs[0]
+        else : conditions_comptes_payeurs = str(tuple(listeComptesPayeurs))
+
+        req = """SELECT IDcompte_payeur, SUM(montant)
+        FROM prestations
+        WHERE IDcompte_payeur IN %s
+        GROUP BY IDcompte_payeur
+        ;""" % conditions_comptes_payeurs
+        DB.ExecuterReq(req)
+        liste_prestations = DB.ResultatReq()
+        dict_prestations = {}
+        for IDcompte_payeur, total_prestations in liste_prestations:
+            dict_prestations[IDcompte_payeur] = total_prestations
+
+        req = """SELECT IDcompte_payeur, SUM(montant)
+        FROM reglements
+        WHERE IDcompte_payeur IN %s
+        GROUP BY IDcompte_payeur
+        ;""" % conditions_comptes_payeurs
+        DB.ExecuterReq(req)
+        liste_reglements = DB.ResultatReq()
+        dict_reglements = {}
+        for IDcompte_payeur, total_reglements in liste_reglements:
+            dict_reglements[IDcompte_payeur] = total_reglements
+
+        dict_soldes_comptes = {}
+        for IDcompte_payeur in listeComptesPayeurs:
+            if dict_prestations.has_key(IDcompte_payeur):
+                total_prestations = FloatToDecimal(dict_prestations[IDcompte_payeur])
+            else :
+                total_prestations = FloatToDecimal(0.0)
+            if dict_reglements.has_key(IDcompte_payeur):
+                total_reglements = FloatToDecimal(dict_reglements[IDcompte_payeur])
+            else :
+                total_reglements = FloatToDecimal(0.0)
+            solde_compte = total_reglements - total_prestations
+
+            if solde_compte > FloatToDecimal(0.0):
+                solde_compte = u"+%.2f %s" % (solde_compte, SYMBOLE)
+            else:
+                solde_compte = u"%.2f %s" % (solde_compte, SYMBOLE)
+
+            dict_soldes_comptes[IDcompte_payeur] = solde_compte
+
+        DB.Close()
+
         # Analyse et regroupement des données
         num_facture = 0
         dictComptes = {}
@@ -390,7 +441,13 @@ class Facturation():
                     dictReglementsCompte = dictReglements[IDcompte_payeur]
                 else :
                     dictReglementsCompte = {}
-                
+
+                # Recherche du solde du compte
+                if dict_soldes_comptes.has_key(IDcompte_payeur) :
+                    solde_compte = dict_soldes_comptes[IDcompte_payeur]
+                else :
+                    solde_compte = u"0.00 %s" % SYMBOLE
+
                 # Mémorisation des infos
                 dictComptes[ID] = {
                     
@@ -418,6 +475,7 @@ class Facturation():
                     "{TOTAL_REPORTS}" : u"0.00 %s" % SYMBOLE,
                     "solde_avec_reports" : FloatToDecimal(0.0),
                     "{SOLDE_AVEC_REPORTS}" : u"0.00 %s" % SYMBOLE,
+                    "{SOLDE_COMPTE}" : solde_compte,
                     "select" : True,
                     "messages_familiaux" : [],
                     "{NOM_LOT}" : "",
@@ -647,7 +705,7 @@ class Facturation():
         for ID, dictValeurs in dictComptes.iteritems() :
             dictComptes[ID]["solde_avec_reports"] = dictComptes[ID]["solde"] + dictComptes[ID]["total_reports"]
             dictComptes[ID]["{SOLDE_AVEC_REPORTS}"] = u"%.02f %s" % (dictComptes[ID]["solde_avec_reports"], SYMBOLE)
-            
+
         return dictComptes
 
 
@@ -715,15 +773,11 @@ class Facturation():
             return False
         
         listeFactures = []
-        listeComptesPayeurs = []
         index = 0
         for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
             
             self.EcritStatusbar(_(u"Recherche de la facture %d sur %d") % (index+1, len(listeDonnees)))
 
-            if IDcompte_payeur not in listeComptesPayeurs :
-                listeComptesPayeurs.append(IDcompte_payeur)
-            
             if numero == None : numero = 0
             date_edition = UTILS_Dates.DateEngEnDateDD(date_edition) 
             date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
@@ -751,46 +805,7 @@ class Facturation():
             listeFactures.append(dictFacture) 
             index +=1
 
-        # Recherche du solde du compte
-        if len(listeComptesPayeurs) == 0 : conditions_comptes_payeurs = "()"
-        elif len(listeComptesPayeurs) == 1 : conditions_comptes_payeurs = "(%d)" % listeComptesPayeurs[0]
-        else : conditions_comptes_payeurs = str(tuple(listeComptesPayeurs))
-
-        req = """SELECT IDcompte_payeur, SUM(montant)
-        FROM prestations
-        WHERE IDcompte_payeur IN %s
-        GROUP BY IDcompte_payeur
-        ;""" % conditions_comptes_payeurs
-        DB.ExecuterReq(req)
-        liste_prestations = DB.ResultatReq()
-        dict_prestations = {}
-        for IDcompte_payeur, total_prestations in liste_prestations:
-            dict_prestations[IDcompte_payeur] = total_prestations
-
-        req = """SELECT IDcompte_payeur, SUM(montant)
-        FROM reglements
-        WHERE IDcompte_payeur IN %s
-        GROUP BY IDcompte_payeur
-        ;""" % conditions_comptes_payeurs
-        DB.ExecuterReq(req)
-        liste_reglements = DB.ResultatReq()
-        dict_reglements = {}
-        for IDcompte_payeur, total_reglements in liste_reglements:
-            dict_reglements[IDcompte_payeur] = total_reglements
-
         DB.Close()
-
-        dict_soldes_comptes = {}
-        for IDcompte_payeur in listeComptesPayeurs:
-            if dict_prestations.has_key(IDcompte_payeur):
-                total_prestations = FloatToDecimal(dict_prestations[IDcompte_payeur])
-            else :
-                total_prestations = FloatToDecimal(0.0)
-            if dict_reglements.has_key(IDcompte_payeur):
-                total_reglements = FloatToDecimal(dict_reglements[IDcompte_payeur])
-            else :
-                total_reglements = FloatToDecimal(0.0)
-            dict_soldes_comptes[IDcompte_payeur] = total_reglements - total_prestations
 
         # Récupération des données de facturation
         typeLabel = 0
@@ -801,17 +816,11 @@ class Facturation():
         
         dictFactures = {}
         dictChampsFusion = {}
-        
         for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, activites, individus, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, typesPrestations, nomLot in listeDonnees :
             total = FloatToDecimal(total) 
             regle = FloatToDecimal(regle)
             solde = FloatToDecimal(solde)
 
-            if dict_soldes_comptes.has_key(IDcompte_payeur) :
-                solde_compte = dict_soldes_comptes[IDcompte_payeur]
-            else :
-                solde_compte = FloatToDecimal(0.0)
-            
             if dictComptes.has_key(IDfacture) :
                 
                 dictCompte = dictComptes[IDfacture]
@@ -844,11 +853,6 @@ class Facturation():
                 dictCompte["{SOLDE_AVEC_REPORTS}"] = u"%.2f %s" % (dictCompte["solde_avec_reports"], SYMBOLE)
                 dictCompte["{SOLDE_AVEC_REPORTS_LETTRES}"] = UTILS_Conversion.trad(solde+dictCompte["total_reports"], MONNAIE_SINGULIER, MONNAIE_DIVISION).strip().capitalize()
 
-                if solde_compte > FloatToDecimal(0.0) :
-                    dictCompte["{SOLDE_COMPTE}"] = u"+%.2f %s" % (solde_compte, SYMBOLE)
-                else :
-                    dictCompte["{SOLDE_COMPTE}"] = u"%.2f %s" % (solde_compte, SYMBOLE)
-                
                 if nomLot == None :
                     nomLot = ""
                 dictCompte["{NOM_LOT}"] = nomLot
