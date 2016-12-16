@@ -368,7 +368,37 @@ class Dialog(wx.Dialog):
         ORDER BY prestations.date
         ;""" % conditionFactures
         DB.ExecuterReq(req)
-        listePrestations = DB.ResultatReq() 
+        listePrestations = DB.ResultatReq()
+
+        # Récupération des prélèvements
+        req = """SELECT
+            prelevements.IDprelevement, prelevements.prelevement_iban,
+            prelevements.IDfacture, lots_prelevements.date,
+            prelevement_reference_mandat, titulaire
+            FROM prelevements
+            LEFT JOIN lots_prelevements ON lots_prelevements.IDlot = prelevements.IDlot
+            WHERE prelevements.IDfacture IN %s
+            ;""" % conditionFactures
+        DB.ExecuterReq(req)
+        listePrelevements = DB.ResultatReq()
+        # Pièces PES ORMC
+        req = """SELECT
+            pes_pieces.IDpiece, pes_pieces.prelevement_iban, pes_pieces.IDfacture,
+            pes_lots.date_prelevement, pes_pieces.prelevement_IDmandat, pes_pieces.prelevement_titulaire
+            FROM pes_pieces
+            LEFT JOIN pes_lots ON pes_lots.IDlot = pes_pieces.IDlot
+            WHERE pes_pieces.prelevement_IDmandat IS NOT NULL AND pes_pieces.prelevement=1 AND pes_pieces.IDfacture IN %s
+            ;""" % conditionFactures
+        DB.ExecuterReq(req)
+        listePieces = DB.ResultatReq()
+        dictPrelevements = {}
+        for listeDonneesPrel in (listePrelevements, listePieces):
+            for IDprelevement, iban, IDfacture, datePrelevement, rum, titulaire in (listeDonneesPrel):
+                datePrelevement = UTILS_Dates.DateEngFr(datePrelevement)
+                dictPrelevements[IDfacture] = {
+                    "IDprelevement": IDprelevement, "datePrelevement": datePrelevement,
+                    "iban": iban, "rum": rum, "titulaire": titulaire
+                }
         DB.Close() 
         dictPrestations = {}
         dictIndividus = {}
@@ -488,10 +518,13 @@ class Dialog(wx.Dialog):
                     ]
                 tableau.setStyle(TableStyle(listeStyles))
                 story.append(tableau)
-                
+
                 # Famille
                 if track.prelevement == True :
-                    textePrelevement = _(u"N° Compte : %s | Etab : %s | Guichet : %s | Clé : %s | Titulaire : %s") % (track.prelevement_numero, track.prelevement_etab, track.prelevement_guichet, track.prelevement_cle, track.prelevement_payeur)
+                    if dictPrelevements.has_key(track.IDfacture) :
+                        textePrelevement = _(u"IBAN : %s | RUM : %s | Titulaire : %s | Le : %s ") % (dictPrelevements[track.IDfacture]["iban"], dictPrelevements[track.IDfacture]["rum"], dictPrelevements[track.IDfacture]["titulaire"], dictPrelevements[track.IDfacture]["datePrelevement"])
+                    else :
+                        textePrelevement = _(u"N° Compte : %s | Etab : %s | Guichet : %s | Clé : %s | Titulaire : %s") % (track.prelevement_numero, track.prelevement_etab, track.prelevement_guichet, track.prelevement_cle, track.prelevement_payeur)
                 else :
                     textePrelevement = u""
                 
