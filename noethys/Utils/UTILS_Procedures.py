@@ -883,12 +883,14 @@ def A9061():
         pass
 
     # Ajoute l'horodatage dans chaque document
-    DB = GestionDB.DB(suffixe="DOCUMENTS")
-    req = "UPDATE documents SET last_update='%s';" % datetime.datetime.now()
-    DB.ExecuterReq(req)
-    DB.Commit()
-    DB.Close()
-
+    try :
+        DB = GestionDB.DB(suffixe="DOCUMENTS")
+        req = "UPDATE documents SET last_update='%s';" % datetime.datetime.now()
+        DB.ExecuterReq(req)
+        DB.Commit()
+        DB.Close()
+    except :
+        pass
 
 
 
