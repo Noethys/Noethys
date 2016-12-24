@@ -236,7 +236,7 @@ def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
     formule = formule.rstrip("]]")
     formule = formule.lstrip("[[")
     # Recherche les infos dans la formule
-    regex = re.compile(r"[^SI]({.+})(<>|>=|<=|>|<|=)(.*)->(.*)") 
+    regex = re.compile(r"[^SI]({.+})(<>|>=|<=|>|<|=)(.*)->(.*)",re.S)
     resultat = regex.search(formule)
     if resultat == None or len(resultat.groups()) != 4 : 
         # Si aucune formule conditionnelle trouvée, regarde si c'est un calcul à effectuer
@@ -287,7 +287,7 @@ def ResolveurFormule(formule=u"", listeChamps=[], dictValeurs={}):
     return u""
 
 def DetecteFormule(texte):
-    regex = re.compile(r"\[\[.*?\]\]") 
+    regex = re.compile(r"\[\[.*?\]\]",re.S)
     resultat = regex.findall(texte)
     return resultat
 
