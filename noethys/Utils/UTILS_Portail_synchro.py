@@ -1248,7 +1248,8 @@ class Synchro():
                     if "/" in repDest :
                         ftp.chdir("../" * len(repDest.split("/")))
                 except Exception, err :
-                    print "Erreur upload fichier '%s' par SSH/SFTP : %s" % (nomFichier, str(err))
+                    print u"Erreur upload fichier '%s' par SSH/SFTP :" % nomFichier
+                    print err
                     self.log.EcritLog(_(u"[ERREUR] Envoi du fichier '%s' par SSH/SFTP impossible.") % nomFichier)
                     return False
 
