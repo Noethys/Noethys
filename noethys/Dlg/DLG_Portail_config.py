@@ -1144,6 +1144,15 @@ class Dialog(wx.Dialog):
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Synchroniser, id=id)
 
+        # Synchronisation complète
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Forcer la synchronisation complète"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Synchroniser_full, id=id)
+
+        menu.AppendSeparator()
+
         # Traiter les données
         id = wx.NewId()
         item = wx.MenuItem(menu, id, _(u"Traiter les données"))
@@ -1364,6 +1373,13 @@ class Dialog(wx.Dialog):
         synchro = Synchro(self, dict_parametres)
         synchro.Start()
 
+    def Synchroniser_full(self, event):
+        if self.ctrl_parametres.Validation() == False :
+            return False
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        synchro = Synchro(self, dict_parametres)
+        synchro.Start(full_synchro=True)
+
     def Traiter(self, event):
         from Dlg import DLG_Portail_demandes
         dlg = DLG_Portail_demandes.Dialog(self)
@@ -1417,7 +1433,7 @@ class Synchro():
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
         synchro.AutoReloadWSGI()
 
-    def Start(self):
+    def Start(self, full_synchro=False):
         from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
 
@@ -1425,7 +1441,7 @@ class Synchro():
         self.dlgprogress = wx.ProgressDialog(_(u"Synchronisation en cours - Veuillez patienter..."), _(u"Lancement de la synchronisation..."), maximum=100, parent=None, style= wx.PD_SMOOTH | wx.PD_CAN_ABORT | wx.PD_AUTO_HIDE | wx.PD_APP_MODAL)
 
         # Lancement de la synchro
-        synchro.Synchro_totale()
+        synchro.Synchro_totale(full_synchro=full_synchro)
 
         self.dlgprogress.Destroy()
 

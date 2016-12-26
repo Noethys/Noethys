@@ -97,7 +97,7 @@ class Synchro():
         except :
             pass
 
-    def Synchro_totale(self):
+    def Synchro_totale(self, full_synchro=False):
         t1 = time.time()
         self.nbre_etapes = 25
         self.log.EcritLog(_(u"Lancement de la synchronisation..."))
@@ -119,7 +119,7 @@ class Synchro():
                     UTILS_Parametres.Parametres(mode="set", categorie="portail", nom="last_update", valeur=data)
 
         # Upload des données locales
-        resultat = self.Upload_data()
+        resultat = self.Upload_data(full_synchro=full_synchro)
         if resultat == False :
             self.log.EcritLog(_(u"Synchronisation arrêtée."))
         else :
@@ -294,7 +294,7 @@ class Synchro():
         else :
             pass
 
-    def Upload_data(self) :
+    def Upload_data(self, full_synchro=False) :
         self.log.EcritLog(_(u"Lancement de la synchronisation des données..."))
 
         last_synchro = UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="last_synchro", valeur="")
@@ -373,7 +373,7 @@ class Synchro():
             nom_fichier = os.path.basename(chemin_image)
 
             # Upload du fichier image de fond
-            if nom_fichier != last_fond :
+            if nom_fichier != last_fond or full_synchro == True :
                 self.UploadFichier(ftp=ftp, nomFichierComplet=chemin_image, repDest="application/static/fonds")
 
         else :
@@ -409,7 +409,7 @@ class Synchro():
             session.add(models.Parametre(nom="ORGANISATEUR_IMAGE", parametre=nomFichier))
 
             # Upload du logo
-            if dict_organisateur["logo_update"] > last_synchro :
+            if dict_organisateur["logo_update"] > last_synchro or full_synchro == True :
                 cheminLogo = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
                 logo.SaveFile(cheminLogo, type=wx.BITMAP_TYPE_PNG)
                 print "Upload du logo"
@@ -634,7 +634,7 @@ class Synchro():
                     nomFichier = "document%d.%s" % (dict_document["IDdocument"], dict_document["extension"])
                     fichiers.append(u"%s;%s" % (dict_document["label"], nomFichier))
 
-                    if dict_document["last_update"] > last_synchro :
+                    if dict_document["last_update"] > last_synchro or full_synchro == True :
                         cheminFichier = UTILS_Fichiers.GetRepTemp(fichier=nomFichier)
                         buffer = dict_document["document"]
                         fichier = open(cheminFichier, "wb")
