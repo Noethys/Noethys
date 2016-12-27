@@ -464,14 +464,14 @@ class Synchro():
 
         listeIDfamille = []
         for IDfamille, internet_actif, internet_identifiant, internet_mdp in listeDonnees :
+            nomsTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
+            # Cryptage du mot de passe
+            internet_mdp = SHA256.new(internet_mdp).hexdigest()
+
+            m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, role="famille", IDfamille=IDfamille, actif=internet_actif)
+            session.add(m)
+
             if internet_actif == 1 :
-                nomsTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
-                # Cryptage du mot de passe
-                internet_mdp = SHA256.new(internet_mdp).hexdigest()
-
-                m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, role="famille", IDfamille=IDfamille)
-                session.add(m)
-
                 listeIDfamille.append(IDfamille)
 
         # Création des factures
