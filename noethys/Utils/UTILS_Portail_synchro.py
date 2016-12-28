@@ -468,7 +468,11 @@ class Synchro():
             # Cryptage du mot de passe
             internet_mdp = SHA256.new(internet_mdp).hexdigest()
 
-            m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, role="famille", IDfamille=IDfamille, actif=internet_actif)
+            # Génération du session_token
+            session_token = "famille-%d-%s-%s-%d" % (IDfamille, internet_identifiant, internet_mdp[:20], internet_actif)
+
+            # Création du user
+            m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, role="famille", IDfamille=IDfamille, actif=internet_actif, session_token=session_token)
             session.add(m)
 
             if internet_actif == 1 :
