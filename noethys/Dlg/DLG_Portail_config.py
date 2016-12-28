@@ -1075,6 +1075,13 @@ class Dialog(wx.Dialog):
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Update, id=id)
 
+        # Upgrade DB
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Forcer l'upgrade de la base de données"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Database.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.DemandeUpgradeDB, id=id)
+
         menu.AppendSeparator()
 
         # AutoReload WSGI
@@ -1310,8 +1317,14 @@ class Dialog(wx.Dialog):
         dlg.ShowModal()
         dlg.Destroy()
 
-
-
+    def DemandeUpgradeDB(self, event):
+        if self.ctrl_parametres.Validation() == False:
+            return False
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        self.EcritLog(_(u"Demande d'upgrade de la base de données..."))
+        synchro = Synchro(self, dict_parametres)
+        if synchro.Upgrade_application() == True :
+            self.EcritLog(_(u"Upgrade effectué."))
 
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_parametres.GetValeurs()
@@ -1457,6 +1470,11 @@ class Synchro():
         from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
         synchro.AutoReloadWSGI()
+
+    def Upgrade_application(self):
+        from Utils import UTILS_Portail_synchro
+        synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
+        synchro.Upgrade_application()
 
     def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
         from Utils import UTILS_Portail_synchro
