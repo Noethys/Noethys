@@ -1256,6 +1256,25 @@ class Synchro():
         return True
 
 
+    def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
+        resultats = self.Connexion()
+        if resultats == False :
+            return False
+        else :
+            ftp, ssh = resultats
+
+        # Téléchargement du fichier
+        resultat = self.TelechargeFichier(ftp=ftp, nomFichier=nomFichier, repFichier=repFichier)
+        if resultat == False :
+            return False
+        cheminFichier = os.path.join(resultat[0], resultat[1])
+        fichier = codecs.open(cheminFichier, encoding='utf-8', mode='r')
+        contenu_fichier = fichier.read()
+        fichier.close()
+
+        self.Deconnexion(ftp)
+
+        return contenu_fichier
 
 
 if __name__ == '__main__':

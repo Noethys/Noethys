@@ -1085,7 +1085,13 @@ class Dialog(wx.Dialog):
             menu.AppendItem(item)
             self.Bind(wx.EVT_MENU, self.AutoReloadWSGI, id=id)
 
-            menu.AppendSeparator()
+        id = wx.NewId()
+        item = wx.MenuItem(menu, id, _(u"Consulter le log du portail"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Log.png"), wx.BITMAP_TYPE_PNG))
+        menu.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.LireJournal, id=id)
+
+        menu.AppendSeparator()
 
         # Importer config
         id = wx.NewId()
@@ -1155,7 +1161,7 @@ class Dialog(wx.Dialog):
 
         # Traiter les données
         id = wx.NewId()
-        item = wx.MenuItem(menu, id, _(u"Traiter les données"))
+        item = wx.MenuItem(menu, id, _(u"Traiter les demandes"))
         item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Traiter, id=id)
@@ -1287,6 +1293,25 @@ class Dialog(wx.Dialog):
         dict_parametres = self.ctrl_parametres.GetValeurs()
         synchro = Synchro(self, dict_parametres)
         synchro.AutoReloadWSGI()
+
+    def LireJournal(self, event):
+        if self.ctrl_parametres.Validation() == False :
+            return False
+        dict_parametres = self.ctrl_parametres.GetValeurs()
+        self.EcritLog(_(u"Téléchargement du log..."))
+        synchro = Synchro(self, dict_parametres)
+        contenu_fichier = synchro.ConnectEtTelechargeFichier("debug.log")
+        if contenu_fichier == False :
+            self.EcritLog(_(u"Le log n'a pas pu être téléchargé."))
+            return False
+
+        from Dlg import DLG_Editeur_texte
+        dlg = DLG_Editeur_texte.Dialog(self, texte=contenu_fichier)
+        dlg.ShowModal()
+        dlg.Destroy()
+
+
+
 
     def OuvrirNavigateur(self, event):
         dict_parametres = self.ctrl_parametres.GetValeurs()
@@ -1432,6 +1457,11 @@ class Synchro():
         from Utils import UTILS_Portail_synchro
         synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
         synchro.AutoReloadWSGI()
+
+    def ConnectEtTelechargeFichier(self, nomFichier="", repFichier=None):
+        from Utils import UTILS_Portail_synchro
+        synchro = UTILS_Portail_synchro.Synchro(dict_parametres=self.dict_parametres, log=self)
+        return synchro.ConnectEtTelechargeFichier(nomFichier=nomFichier, repFichier=repFichier)
 
     def Start(self, full_synchro=False):
         from Utils import UTILS_Portail_synchro
