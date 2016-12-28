@@ -1,3 +1,10 @@
+Version 1.1.8.4 (28/12/2016) :
+
+- [Connecthys] Ajout de la consultation du log du portail
+- [Connecthys] Ajout de la demande d'upgrade de la base
+- [Connecthys] Ajout de la demande de synchro complète
+- [Connecthys] Correction d'un bug sur session
+
 Version 1.1.8.3 (25/12/2016) :
 
 - Connecthys : Ajout de l'application d'une semaine-type
