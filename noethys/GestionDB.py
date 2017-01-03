@@ -1954,18 +1954,15 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 9, 0)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("prestations", "date_valeur", "date DEFAULT CURRENT_DATE")
+                self.ExecuterReq('UPDATE prestations SET date_valeur = date;')
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
-
-
-
-
-
-
-
-
-
-
-
+        # =============================================================
 
         return True
 

@@ -1,3 +1,7 @@
+Version 1.1.9.0 (unknown):
+
+- ajout du champ date_valeur dans la table prestations
+
 Version 1.1.8.2 (16/12/2016) :
 
 - Ajout des introductions de périodes de réservations
