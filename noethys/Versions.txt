@@ -2,8 +2,17 @@ Version 1.1.9.0 (unknown):
 
 - ajout du champ date_valeur dans la table prestations
 
-Version 1.1.8.2 (16/12/2016) :
+Version 1.1.8.4 (28/12/2016) :
 
+- [Connecthys] Ajout de la consultation du log du portail
+- [Connecthys] Ajout de la demande d'upgrade de la base
+- [Connecthys] Ajout de la demande de synchro complète
+- [Connecthys] Correction d'un bug sur session
+
+Version 1.1.8.3 (25/12/2016) :
+
+- Connecthys : Ajout de l'application d'une semaine-type
+- Connecthys : Mise à jour AdminLTE 2.3.8
 - Ajout des introductions de périodes de réservations
 - Ajout de la période d'affichage dans messages portail
 - Ajout des adresses multiples dans l'abonnement à l'envoi de factures par Email
