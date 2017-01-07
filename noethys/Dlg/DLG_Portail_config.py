@@ -68,7 +68,7 @@ VALEURS_DEFAUT = {
     "ssh_utilisateur" : "",
     "ssh_mdp" : "",
     "ssh_repertoire" : "/tmp/connecthys",
-    "db_type" : 1,
+    "db_type" : 0,
     "db_serveur" : "",
     "db_utilisateur" : "",
     "db_mdp" : "",
@@ -775,8 +775,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         dictParametres["client_synchro_portail_delai"] = UTILS_Config.GetParametre("client_synchro_portail_delai", 2)
         dictParametres["client_synchro_portail_ouverture"] = UTILS_Config.GetParametre("client_synchro_portail_ouverture", True)
         dictParametres["client_rechercher_updates"] = UTILS_Config.GetParametre("client_rechercher_updates", True)
-        dictParametres["hebergement_type"] = UTILS_Config.GetParametre("hebergement_type", 0)
-        dictParametres["serveur_type"] = UTILS_Config.GetParametre("serveur_type", 0)
+        #dictParametres["hebergement_type"] = UTILS_Config.GetParametre("hebergement_type", 0)
+        #dictParametres["serveur_type"] = UTILS_Config.GetParametre("serveur_type", 0)
 
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
@@ -793,7 +793,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         UTILS_Parametres.ParametresCategorie(mode="set", categorie="portail", dictParametres=dictValeurs)
 
         # Mémorisation de la config sur cet ordi
-        for key in ("client_synchro_portail_activation", "client_synchro_portail_delai", "client_synchro_portail_ouverture", "client_rechercher_updates", "hebergement_type", "serveur_type") :
+        for key in ("client_synchro_portail_activation", "client_synchro_portail_delai", "client_synchro_portail_ouverture", "client_rechercher_updates") :#, "hebergement_type", "serveur_type") :
             UTILS_Config.SetParametre(key, self.GetPropertyByName(key).GetValue())
 
     def GetValeurs(self) :
@@ -1116,7 +1116,7 @@ class Dialog(wx.Dialog):
 
         menu.AppendSeparator()
 
-        if dict_parametres["serveur_type"] == 0:
+        if dict_parametres["serveur_type"] == 0 and self.server_ctrl != None :
 
             # Démarrer
             id = wx.NewId()
@@ -1365,7 +1365,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
-        url += "/stats/"
+        url += "/stats/index.html"
 
         # Mémorisation du mot de passe stats dans le presse-papiers
         clipdata = wx.TextDataObject()
@@ -1435,9 +1435,9 @@ class Dialog(wx.Dialog):
 Connecthys est le portail internet de Noethys. Il permet par exemple à vos usagers de
 consulter l'état de leur dossier ou de demander des réservations à des activités.
 Il facilite également la gestion administrative par les utilisateurs grâce à son
-traitement semi-automatisé des demandes.
+traitement automatisé des demandes.
 <BR><BR>
-Si vous souhaitez en savoir davantage, vous pouvez consulter le site dédié
+Si vous souhaitez en savoir davantage, allez dans le menu Outils ou visitez le site dédié
 <FONT SIZE=5><A HREF="http://www.connecthys.com">www.connecthys.com</A></FONT>.
 </FONT>
 </CENTER>
