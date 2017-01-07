@@ -3509,18 +3509,41 @@ class MainFrame(wx.Frame):
                 dlg.CenterOnScreen()
                 dlg.ShowModal()
                 dlg.Destroy()
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                
-                
+
+            if versionFichier < (1, 1, 8, 5):
+                texte = u"""
+                <CENTER><IMG SRC="%s">
+                <BR><BR>
+                <FONT SIZE=3>
+                Connecthys est le portail internet de Noethys. Il permet par exemple à vos usagers de
+                consulter l'état de leur dossier ou de demander des réservations à des activités.
+                Il facilite également la gestion administrative par les utilisateurs grâce à son
+                traitement automatisé des demandes.
+                <BR><BR>
+                Si vous souhaitez en savoir davantage, allez dans le menu Outils ou visitez le site dédié
+                <FONT SIZE=5><A HREF="http://www.connecthys.com">www.connecthys.com</A></FONT>.
+                </FONT>
+                </CENTER>
+                """ % Chemins.GetStaticPath("Images/Special/Connecthys_pub.png")
+                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Nouveauté !"), size=(510, 650))
+                dlg.CenterOnScreen()
+                dlg.ShowModal()
+                dlg.Destroy()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return True
     
