@@ -1,3 +1,7 @@
+Version 1.1.8.5 (07/01/2017) :
+
+- [Connecthys] Correction d'un bug sur l'accès aux statistiques de fréquentation
+
 Version 1.1.8.4 (28/12/2016) :
 
 - [Connecthys] Ajout de la consultation du log du portail
@@ -7,8 +11,8 @@ Version 1.1.8.4 (28/12/2016) :
 
 Version 1.1.8.3 (25/12/2016) :
 
-- Connecthys : Ajout de l'application d'une semaine-type
-- Connecthys : Mise à jour AdminLTE 2.3.8
+- [Connecthys] Ajout de l'application d'une semaine-type
+- [Connecthys] Mise à jour AdminLTE 2.3.8
 - Ajout des introductions de périodes de réservations
 - Ajout de la période d'affichage dans messages portail
 - Ajout des adresses multiples dans l'abonnement à l'envoi de factures par Email
