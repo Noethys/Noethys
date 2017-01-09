@@ -438,7 +438,7 @@ class MainFrame(wx.Frame):
         if UTILS_Config.GetParametre("synchro_serveur_activer", defaut=False) == True :
             from Ctrl import CTRL_Serveur_nomade
             self.ctrl_serveur_nomade = CTRL_Serveur_nomade.Panel(self)
-            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Serveur Nomadhys")).
+            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Nomadhys")).
                               Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
         # # Panneau Serveur Connecthys
