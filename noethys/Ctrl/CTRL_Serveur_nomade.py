@@ -197,7 +197,12 @@ def StartServer(log=None):
         reactor.registerWxApp(wx.GetApp())
         port = int(UTILS_Config.GetParametre("synchro_serveur_port", defaut=PORT_DEFAUT))
         reactor.listenTCP(port, factory)
-        
+    except Exception, err:
+        print ("Erreur lancement serveur Nomadhys :", err)
+        log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [factory] :") )
+        log.EcritLog(err)
+
+    try :
         # IP locale
         #ip_local = socket.gethostbyname(socket.gethostname())
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -205,21 +210,32 @@ def StartServer(log=None):
         ip_local = s.getsockname()[0]
         s.close()
         log.EcritLog(_(u"IP locale : %s") % ip_local)
-        
+    except Exception, err:
+        print ("Erreur lancement serveur Nomadhys :", err)
+        log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP locale] :"))
+        log.EcritLog(err)
+
+    try :
         # IP internet
-        ip_internet = json.loads(urlopen("http://jsonip.com").read())["ip"]
+        ip_internet = json.loads(urlopen("https://jsonip.com").read())["ip"]
         log.EcritLog(_(u"IP internet : %s") % ip_internet)
-        
-        # Port
-        log.EcritLog(_(u"Serveur prêt sur le port %d") % port)
-        
-        log.SetImage("on")
+    except Exception, err:
+        print ("Erreur lancement serveur Nomadhys :", err)
+        log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [IP internet] :"))
+        log.EcritLog(err)
+
+    log.EcritLog(_(u"Serveur prêt sur le port %d") % port)
+    log.SetImage("on")
+
+    # Démarrage serveur
+    try :
         reactor.run()
     except Exception, err :
-        print ("Erreur lancement serveur nomade :", err)
-        log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys :") )
-        log.EcritLog(err) 
-        
+        print ("Erreur lancement serveur Nomadhys :", err)
+        log.EcritLog(_(u"Erreur dans le lancement du serveur Nomadhys [reactor] :") )
+        log.EcritLog(err)
+
+
 def StopServer():
     try :
         reactor.stop()
