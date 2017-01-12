@@ -145,13 +145,10 @@ class Track(object):
         if self.date_saisie != None :
             self.date_saisie = DateEngEnDateDD(self.date_saisie)
         self.IDutilisateur = donnees[22]
-        self.montant_ventilation = donnees[23]
-        if self.montant_ventilation == None :
-            self.montant_ventilation = 0.0
-        self.nom_compte = donnees[24]
-        self.IDfamille = donnees[25]
-        self.email_depots = donnees[26]
-        self.avis_depot = donnees[27]
+        self.nom_compte = donnees[23]
+        self.IDfamille = donnees[24]
+        self.email_depots = donnees[25]
+        self.avis_depot = donnees[26]
 
         # Etat
         if self.IDdepot == None or self.IDdepot == 0 :
@@ -322,12 +319,10 @@ class Dialog(wx.Dialog):
         encaissement_attente, 
         reglements.IDdepot, depots.date, depots.nom, depots.verrouillage, 
         date_saisie, IDutilisateur, 
-        SUM(ventilation.montant) AS total_ventilation,
         comptes_bancaires.nom,
         familles.IDfamille, familles.email_depots,
         reglements.avis_depot
         FROM reglements
-        LEFT JOIN ventilation ON reglements.IDreglement = ventilation.IDreglement
         LEFT JOIN modes_reglements ON reglements.IDmode=modes_reglements.IDmode
         LEFT JOIN emetteurs ON reglements.IDemetteur=emetteurs.IDemetteur
         LEFT JOIN payeurs ON reglements.IDpayeur=payeurs.IDpayeur
@@ -494,15 +489,20 @@ class Dialog(wx.Dialog):
         return True
         
     def Sauvegarde_reglements(self):
-        DB = GestionDB.DB()
+        liste_modifications = []
         for track in self.tracks :
             # Ajout
             if track.IDdepot == None and track.inclus == True :
-                DB.ReqMAJ("reglements", [("IDdepot", self.IDdepot),], "IDreglement", track.IDreglement)
+                liste_modifications.append((self.IDdepot, track.IDreglement))
             # Retrait
             if track.IDdepot != None and track.inclus == False :
-                DB.ReqMAJ("reglements", [("IDdepot", None),], "IDreglement", track.IDreglement)
-        DB.Close() 
+                liste_modifications.append((None, track.IDreglement))
+
+        if len(liste_modifications) > 0 :
+            DB = GestionDB.DB()
+            DB.Executermany("UPDATE reglements SET IDdepot=? WHERE IDreglement=?", liste_modifications, commit=False)
+            DB.Commit()
+            DB.Close()
 
     def GetIDdepot(self):
         return self.IDdepot

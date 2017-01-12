@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
+import time
 
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Depots
@@ -72,13 +73,10 @@ class Track(object):
         if self.date_saisie != None :
             self.date_saisie = DateEngEnDateDD(self.date_saisie)
         self.IDutilisateur = donnees[22]
-        self.montant_ventilation = donnees[23]
-        if self.montant_ventilation == None :
-            self.montant_ventilation = 0.0
-        self.nom_compte = donnees[24]
-        self.IDfamille = donnees[25]
-        self.email_depots = donnees[26]
-        self.avis_depot = donnees[27]
+        self.nom_compte = donnees[23]
+        self.IDfamille = donnees[24]
+        self.email_depots = donnees[25]
+        self.avis_depot = donnees[26]
 
         # Etat
         if self.IDdepot == None or self.IDdepot == 0 :
@@ -215,7 +213,7 @@ class Dialog(wx.Dialog):
         
     def MAJreglements(self):
         tracks = self.GetTracks()
-        self.ctrl_reglements.MAJ(tracks) 
+        self.ctrl_reglements.MAJ(tracks)
         # Label de staticbox
         self.staticbox_reglements.SetLabel(self.ctrl_reglements.GetLabelListe(_(u"règlements disponibles")))
 
@@ -232,12 +230,10 @@ class Dialog(wx.Dialog):
         encaissement_attente, 
         reglements.IDdepot, depots.date, depots.nom, depots.verrouillage, 
         date_saisie, IDutilisateur,
-        SUM(ventilation.montant) AS total_ventilation,
         comptes_bancaires.nom,
         familles.IDfamille, familles.email_depots,
         reglements.avis_depot
         FROM reglements
-        LEFT JOIN ventilation ON reglements.IDreglement = ventilation.IDreglement
         LEFT JOIN modes_reglements ON reglements.IDmode=modes_reglements.IDmode
         LEFT JOIN emetteurs ON reglements.IDemetteur=emetteurs.IDemetteur
         LEFT JOIN payeurs ON reglements.IDpayeur=payeurs.IDpayeur
@@ -303,7 +299,9 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
+    heure_debut = time.time()
     dialog_1 = Dialog(None)
+    print "Temps de chargement =", time.time() - heure_debut
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
