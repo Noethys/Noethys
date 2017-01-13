@@ -1,3 +1,8 @@
+Version 1.1.8.6 (13/01/2017) :
+
+- Optimisation affichage gestion des dépôts
+- Cryptage des mots de passe utilisateurs
+
 Version 1.1.8.5 (07/01/2017) :
 
 - [Connecthys] Correction d'un bug sur l'accès aux statistiques de fréquentation
