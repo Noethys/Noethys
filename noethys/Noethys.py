@@ -63,6 +63,8 @@ import random
 import urllib
 import urllib2
 
+from Crypto.Hash import SHA256
+
 import wx.lib.agw.aui as aui
 import wx.lib.agw.advancedsplash as AS
 import wx.lib.agw.toasterbox as Toaster
@@ -3465,7 +3467,7 @@ class MainFrame(wx.Frame):
 
             if resultat != True :
                 print resultat
-                dlg = wx.MessageDialog(self, _(u"Le logiciel n'arrive pas à convertir le fichier '") + nomFichier + u":\n\nErreur : " + resultat + _(u"\n\nVeuillez contacter le développeur du logiciel..."), _(u"Erreur de conversion de fichier"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Le logiciel n'arrive pas à convertir le fichier !\n\nErreur : ") + resultat + _(u"\n\nVeuillez contacter le développeur du logiciel..."), _(u"Erreur de conversion de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -3555,8 +3557,9 @@ class MainFrame(wx.Frame):
 
     def Identification(self, listeUtilisateurs=[], nomFichier=None):
         if CUSTOMIZE.GetValeur("utilisateur", "pass", "") != "" :
+            passmdp = SHA256.new(CUSTOMIZE.GetValeur("utilisateur", "pass", "").encode('utf-8')).hexdigest()
             for dictTemp in listeUtilisateurs :
-                if dictTemp["mdp"] == CUSTOMIZE.GetValeur("utilisateur", "pass", "") :
+                if dictTemp["mdp"] == passmdp :
                     self.ChargeUtilisateur(dictTemp)
                     return True
         # Permet de donner le focus à la fenetre de connection sur LXDE (Fonctionnait sans sur d'autres distributions)

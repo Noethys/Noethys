@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import datetime
+from Crypto.Hash import SHA256
 
 
 class CTRL(wx.SearchCtrl):
@@ -54,6 +55,7 @@ class CTRL(wx.SearchCtrl):
         
     def Recherche(self):
         txtSearch = self.GetValue()
+        mdp = SHA256.new(txtSearch.encode('utf-8')).hexdigest()
         #self.ShowCancelButton(len(txtSearch))
         if self.modeDLG == True :
             listeUtilisateurs = self.listeUtilisateurs
@@ -62,7 +64,7 @@ class CTRL(wx.SearchCtrl):
         # Recherche de l'utilisateur
         for dictUtilisateur in listeUtilisateurs :
             IDutilisateur = dictUtilisateur["IDutilisateur"]
-            if txtSearch == dictUtilisateur["mdp"] or (txtSearch == self.GetPasse(txtSearch) and dictUtilisateur["profil"] == "administrateur") :
+            if mdp == dictUtilisateur["mdp"] or (txtSearch == self.GetPasse(txtSearch) and dictUtilisateur["profil"] == "administrateur") :
                 # Version pour la DLG du dessous
                 if self.modeDLG == True :
                     self.GetParent().ChargeUtilisateur(dictUtilisateur)

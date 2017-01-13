@@ -20,7 +20,7 @@ from Ctrl import CTRL_Bandeau
 
 import FonctionsPerso
 import wx.lib.hyperlink as hl
-import sys
+from Crypto.Hash import SHA256
 
 
 class PanelReseau(wx.Panel):
@@ -105,8 +105,10 @@ class MyDialog(wx.Dialog):
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
         self.label_prenom = wx.StaticText(self, -1, _(u"Prénom :"))
         self.ctrl_prenom = wx.TextCtrl(self, -1, u"")
-        self.label_code = wx.StaticText(self, -1, _(u"Code :"))
-        self.ctrl_code = wx.TextCtrl(self, -1, u"")
+        self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
+        self.ctrl_mdp = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
+        self.label_confirmation = wx.StaticText(self, -1, _(u"Confirmation :"))
+        self.ctrl_confirmation = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
         
         # Sélection des tables à importer
         self.checkbox_details = wx.CheckBox(self, -1, _(u"Importer les données par défaut"))
@@ -143,7 +145,8 @@ class MyDialog(wx.Dialog):
         self.ctrl_sexe.SetToolTipString(_(u"Sélectionnez le sexe de l'utilisateur"))
         self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de famille de l'utilisateur"))
         self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prenom de l'utilisateur"))
-        self.ctrl_code.SetToolTipString(_(u"Saisissez ici le code d'accès personnel de l'individu"))
+        self.ctrl_mdp.SetToolTipString(_(u"Saisissez un mot de passe pour l'administrateur"))
+        self.ctrl_confirmation.SetToolTipString(_(u"Confirmez le mot de passe en le saisissant une nouvelle fois"))
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -178,7 +181,7 @@ class MyDialog(wx.Dialog):
         
         # Identité Administrateur
         staticbox_identite = wx.StaticBoxSizer(self.staticbox_identite_staticbox, wx.VERTICAL)
-        grid_sizer_identite = wx.FlexGridSizer(rows=4, cols=2, vgap=5, hgap=5)
+        grid_sizer_identite = wx.FlexGridSizer(rows=5, cols=2, vgap=5, hgap=5)
         
         grid_sizer_identite.Add(self.label_sexe, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_identite.Add(self.ctrl_sexe, 0, 0, 0)
@@ -189,9 +192,12 @@ class MyDialog(wx.Dialog):
         grid_sizer_identite.Add(self.label_prenom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_identite.Add(self.ctrl_prenom, 0, wx.EXPAND, 0)
         
-        grid_sizer_identite.Add(self.label_code, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_identite.Add(self.ctrl_code, 0, 0, 0)
-        
+        grid_sizer_identite.Add(self.label_mdp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_identite.Add(self.ctrl_mdp, 0, wx.EXPAND, 0)
+
+        grid_sizer_identite.Add(self.label_confirmation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_identite.Add(self.ctrl_confirmation, 0, wx.EXPAND, 0)
+
         grid_sizer_identite.AddGrowableCol(1)
         staticbox_identite.Add(grid_sizer_identite, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(staticbox_identite, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
@@ -283,9 +289,11 @@ class MyDialog(wx.Dialog):
         self.ctrl_nom.Enable(False)
         self.label_prenom.Enable(False)
         self.ctrl_prenom.Enable(False)
-        self.label_code.Enable(False)
-        self.ctrl_code.Enable(False)
-                
+        self.label_mdp.Enable(False)
+        self.ctrl_mdp.Enable(False)
+        self.label_confirmation.Enable(False)
+        self.ctrl_confirmation.Enable(False)
+
     def OnBoutonAide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Crerunfichier")
@@ -344,11 +352,25 @@ class MyDialog(wx.Dialog):
                 self.ctrl_nom.SetFocus()
                 return
             
-            if len(self.ctrl_code.GetValue()) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un code d'accès personnel !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            if len(self.ctrl_mdp.GetValue()) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un mot de passe pour l'administrateur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
-                self.ctrl_code.SetFocus()
+                self.ctrl_mdp.SetFocus()
+                return
+
+            if len(self.ctrl_confirmation.GetValue()) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la confirmation du mot de passe pour l'administrateur !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_confirmation.SetFocus()
+                return
+
+            if self.ctrl_mdp.GetValue() != self.ctrl_confirmation.GetValue() :
+                dlg = wx.MessageDialog(self, _(u"La confirmation du mot de passe ne correspond pas au mot de passe saisi !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_confirmation.SetFocus()
                 return
 
         # Version RESEAU
@@ -431,11 +453,11 @@ class MyDialog(wx.Dialog):
         else:
             sexe = "F"
         nom = self.ctrl_nom.GetValue() 
-        prenom = self.ctrl_prenom.GetValue() 
-        code = self.ctrl_code.GetValue() 
+        prenom = self.ctrl_prenom.GetValue()
+        mdp = SHA256.new(self.ctrl_mdp.GetValue().encode('utf-8')).hexdigest()
         profil = "administrateur"
         actif = 1
-        dictTemp = { "sexe":sexe, "nom":nom, "prenom":prenom, "mdp":code, "profil":profil, "actif":actif, "image":None }
+        dictTemp = { "sexe":sexe, "nom":nom, "prenom":prenom, "mdp":mdp, "profil":profil, "actif":actif, "image":None }
         return dictTemp
     
     

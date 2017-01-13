@@ -1954,6 +1954,15 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 8, 6)
+        if versionFichier < versionFiltre :
+            try :
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9073()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
 
 
 

@@ -12,7 +12,7 @@
 import Chemins
 from UTILS_Traduction import _
 import wx
-from Ctrl import CTRL_Bouton_image
+from Crypto.Hash import SHA256
 import GestionDB
 
 
@@ -75,7 +75,11 @@ def GetListeUtilisateurs(nomFichier=""):
             image = dictAvatars[IDutilisateur]
         else :
             image = "Automatique"
-            
+
+        # mdp
+        if len(mdp) < 60 :
+            mdp = SHA256.new(mdp.encode('utf-8')).hexdigest()
+
         dictTemp = { "IDutilisateur":IDutilisateur, "nom":nom, "prenom":prenom, "sexe":sexe, "mdp":mdp, "profil":profil, "actif":actif, "image":image, "droits":droits }
         listeUtilisateurs.append(dictTemp)
     
