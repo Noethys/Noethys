@@ -55,6 +55,7 @@ from Dlg import DLG_Message_html
 from Dlg import DLG_Enregistrement
 from Ctrl import CTRL_Toaster
 from Ctrl import CTRL_Portail_serveur
+from Ctrl import CTRL_TaskBarIcon
 
 import shelve
 import dbhash
@@ -106,7 +107,10 @@ class MainFrame(wx.Frame):
         icon = wx.EmptyIcon()
         icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/Interface/%s/Icone.png" % theme), wx.BITMAP_TYPE_ANY))
         self.SetIcon(icon)
-        
+
+        # TaskBarIcon
+        self.taskBarIcon = CTRL_TaskBarIcon.CustomTaskBarIcon()
+
         # Ecrit la date et l'heure dans le journal.log
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         systeme = u"%s %s %s %s" % (sys.platform, platform.system(), platform.release(), platform.machine())
@@ -369,7 +373,11 @@ class MainFrame(wx.Frame):
         
         # Affiche les connexions restées ouvertes
         GestionDB.AfficheConnexionOuvertes()
-        
+
+        # Détruit le taskBarIcon
+        self.taskBarIcon.Cacher()
+        self.taskBarIcon.Detruire()
+
         self.Destroy()
 
         return True
