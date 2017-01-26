@@ -132,7 +132,7 @@ class Facturation():
     
     def RemplaceMotsCles(self, texte="", dictValeurs={}):
         for key, valeur, in dictValeurs.iteritems() :
-            if key in texte :
+            if key in texte and key.startswith("{"):
                 texte = texte.replace(key, valeur)
         return texte
 
