@@ -55,7 +55,7 @@ class CTRL(wx.SearchCtrl):
         
     def Recherche(self):
         txtSearch = self.GetValue()
-        mdp = SHA256.new(txtSearch.encode('utf-8')).hexdigest()
+        mdpcrypt = SHA256.new(txtSearch.encode('utf-8')).hexdigest()
         #self.ShowCancelButton(len(txtSearch))
         if self.modeDLG == True :
             listeUtilisateurs = self.listeUtilisateurs
@@ -64,7 +64,7 @@ class CTRL(wx.SearchCtrl):
         # Recherche de l'utilisateur
         for dictUtilisateur in listeUtilisateurs :
             IDutilisateur = dictUtilisateur["IDutilisateur"]
-            if mdp == dictUtilisateur["mdp"] or (txtSearch == self.GetPasse(txtSearch) and dictUtilisateur["profil"] == "administrateur") :
+            if txtSearch == dictUtilisateur["mdp"] or mdpcrypt == dictUtilisateur["mdpcrypt"] or (txtSearch == self.GetPasse(txtSearch) and dictUtilisateur["profil"] == "administrateur") : # txtSearch == dictUtilisateur["mdp"] or à retirer plus tard
                 # Version pour la DLG du dessous
                 if self.modeDLG == True :
                     self.GetParent().ChargeUtilisateur(dictUtilisateur)

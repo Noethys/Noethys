@@ -1423,7 +1423,7 @@ class MainFrame(wx.Frame):
                 ("sexe", dictAdministrateur["sexe"]),
                 ("nom", dictAdministrateur["nom"]),
                 ("prenom", dictAdministrateur["prenom"]),
-                ("mdp", dictAdministrateur["mdp"]),
+                ("mdpcrypt", dictAdministrateur["mdpcrypt"]),
                 ("profil", dictAdministrateur["profil"]),
                 ("actif", dictAdministrateur["actif"]),
                 ("image", dictAdministrateur["image"]),
@@ -3564,10 +3564,11 @@ class MainFrame(wx.Frame):
         self._mgr.GetPane("panel_recherche").Show(etat)
 
     def Identification(self, listeUtilisateurs=[], nomFichier=None):
-        if CUSTOMIZE.GetValeur("utilisateur", "pass", "") != "" :
-            passmdp = SHA256.new(CUSTOMIZE.GetValeur("utilisateur", "pass", "").encode('utf-8')).hexdigest()
+        passmdp = CUSTOMIZE.GetValeur("utilisateur", "pass", "")
+        if passmdp != "" :
+            passmdpcrypt = SHA256.new(passmdp.encode('utf-8')).hexdigest()
             for dictTemp in listeUtilisateurs :
-                if dictTemp["mdp"] == passmdp :
+                if dictTemp["mdpcrypt"] == passmdpcrypt or dictTemp["mdp"] == passmdp : # or dictTemp["mdp"] == passmdp à retirer plus tard
                     self.ChargeUtilisateur(dictTemp)
                     return True
         # Permet de donner le focus à la fenetre de connection sur LXDE (Fonctionnait sans sur d'autres distributions)

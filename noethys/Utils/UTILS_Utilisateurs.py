@@ -39,11 +39,27 @@ def GetListeUtilisateurs(nomFichier=""):
             dictDroitsModeles[IDmodele][key] = etat
 
     # Utilisateurs
-    req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, profil, actif
+    req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, mdpcrypt, profil, actif
     FROM utilisateurs
     WHERE actif=1;"""
-    DB.ExecuterReq(req)
-    listeDonnees = DB.ResultatReq()
+    resultat = DB.ExecuterReq(req)
+    if resultat == 1 :
+        listeDonnees = DB.ResultatReq()
+    else :
+        # Fonction provisoire pour pouvoir ouvrir Noethys avant la version 1.1.8.7.
+        req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, profil, actif
+        FROM utilisateurs
+        WHERE actif=1;"""
+        DB.ExecuterReq(req)
+        listeDonneesTemp = DB.ResultatReq()
+        listeDonnees = []
+        for IDutilisateur, sexe, nom, prenom, mdp, profil, actif in listeDonneesTemp :
+            if mdp < 60 :
+                mdpcrypt = SHA256.new(mdp.encode('utf-8')).hexdigest()
+            else :
+                mdpcrypt = mdp
+            listeDonnees.append((IDutilisateur, sexe, nom, prenom, mdp, mdpcrypt, profil, actif))
+
     listeUtilisateurs = []
     
     # chargement avatars
@@ -58,7 +74,7 @@ def GetListeUtilisateurs(nomFichier=""):
     for IDutilisateur, image in listeAvatars :
         dictAvatars[IDutilisateur] = image
 
-    for IDutilisateur, sexe, nom, prenom, mdp, profil, actif in listeDonnees :
+    for IDutilisateur, sexe, nom, prenom, mdp, mdpcrypt, profil, actif in listeDonnees :
         droits = None
         if profil.startswith("administrateur") : 
             droits = None
@@ -76,11 +92,7 @@ def GetListeUtilisateurs(nomFichier=""):
         else :
             image = "Automatique"
 
-        # mdp
-        if len(mdp) < 60 :
-            mdp = SHA256.new(mdp.encode('utf-8')).hexdigest()
-
-        dictTemp = { "IDutilisateur":IDutilisateur, "nom":nom, "prenom":prenom, "sexe":sexe, "mdp":mdp, "profil":profil, "actif":actif, "image":image, "droits":droits }
+        dictTemp = { "IDutilisateur":IDutilisateur, "nom":nom, "prenom":prenom, "sexe":sexe, "mdp":mdp, "mdpcrypt" : mdpcrypt, "profil":profil, "actif":actif, "image":image, "droits":droits }
         listeUtilisateurs.append(dictTemp)
     
     DB.Close()

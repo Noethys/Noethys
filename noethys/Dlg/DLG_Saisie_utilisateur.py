@@ -420,7 +420,7 @@ class Dialog(wx.Dialog):
             intro = _(u"Veuillez saisir un nouveau mot de passe :")
         dlg = DLG_Saisie_mdp(self, titre=titre, intro=intro)
         if dlg.ShowModal() == wx.ID_OK:
-            self.mdp = dlg.GetMdp()
+            self.mdp = dlg.GetMdpCrypt()
         dlg.Destroy()
         self.MAJboutonMdp()
         self.grid_sizer_acces.Layout()
@@ -446,9 +446,9 @@ class Dialog(wx.Dialog):
         else:
             IDutilisateurTmp = self.IDutilisateur
         DB = GestionDB.DB()
-        req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, profil, actif
+        req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, mdpcrypt, profil, actif
         FROM utilisateurs 
-        WHERE mdp='%s' AND IDutilisateur<>%d
+        WHERE mdpcrypt='%s' AND IDutilisateur<>%d
         ;""" % (self.mdp, IDutilisateurTmp)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -509,14 +509,14 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
-        req = """SELECT sexe, nom, prenom, mdp, profil, actif, image
+        req = """SELECT sexe, nom, prenom, mdpcrypt, profil, actif, image
         FROM utilisateurs 
         WHERE IDutilisateur=%d;""" % self.IDutilisateur
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        sexe, nom, prenom, mdp, profil, actif, image = listeDonnees[0]
+        sexe, nom, prenom, mdpcrypt, profil, actif, image = listeDonnees[0]
         # Identité
         if sexe == "M" :
             self.ctrl_sexe.Select(0)
@@ -525,7 +525,7 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.SetValue(nom)
         self.ctrl_prenom.SetValue(prenom)
         # Accès
-        self.mdp = mdp
+        self.mdp = mdpcrypt
         if actif == 1 :
             self.ctrl_actif.SetValue(True)
         else:
@@ -578,7 +578,7 @@ class Dialog(wx.Dialog):
                 ("sexe", sexe),
                 ("nom", nom),
                 ("prenom", prenom),
-                ("mdp", self.mdp),
+                ("mdpcrypt", self.mdp),
                 ("profil", profil),
                 ("actif", actif),
                 ("image", nomImage),
@@ -656,7 +656,7 @@ class DLG_Saisie_mdp(wx.Dialog):
         self.Layout()
         self.CentreOnScreen()
 
-    def GetMdp(self):
+    def GetMdpCrypt(self):
         return SHA256.new(self.ctrl_mdp.GetValue().encode('utf-8')).hexdigest()
 
     def OnBoutonOk(self, event):

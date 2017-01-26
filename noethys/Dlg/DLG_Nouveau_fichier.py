@@ -454,10 +454,10 @@ class MyDialog(wx.Dialog):
             sexe = "F"
         nom = self.ctrl_nom.GetValue() 
         prenom = self.ctrl_prenom.GetValue()
-        mdp = SHA256.new(self.ctrl_mdp.GetValue().encode('utf-8')).hexdigest()
+        mdpcrypt = SHA256.new(self.ctrl_mdp.GetValue().encode('utf-8')).hexdigest()
         profil = "administrateur"
         actif = 1
-        dictTemp = { "sexe":sexe, "nom":nom, "prenom":prenom, "mdp":mdp, "profil":profil, "actif":actif, "image":None }
+        dictTemp = { "sexe":sexe, "nom":nom, "prenom":prenom, "mdp":None, "mdpcrypt":mdpcrypt, "profil":profil, "actif":actif, "image":None }
         return dictTemp
     
     

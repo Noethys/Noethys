@@ -51,6 +51,7 @@ DICT_PROCEDURES = {
     "A9054" : _(u"Importation des modèles d'Emails depuis la base défaut"),
     "A9061" : _(u"Modification de la structure de la table Documents"),
     "A9073" : _(u"Cryptage des mots de passe utilisateurs"),
+    "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
 }
 
 
@@ -909,6 +910,34 @@ def A9073():
     # Enregistrement des mots de passe cryptés
     DB.Executermany("UPDATE utilisateurs SET mdp=? WHERE IDutilisateur=?", liste_modifications, commit=True)
     DB.Close()
+
+def A9074():
+    """ Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt """
+    from Crypto.Hash import SHA256
+
+    DB = GestionDB.DB()
+    req = """SELECT IDutilisateur, mdp FROM utilisateurs;"""
+    DB.ExecuterReq(req)
+    liste_utilisateurs = DB.ResultatReq()
+    liste_modifications = []
+    for IDutilisateur, mdp in liste_utilisateurs :
+        if mdp != None and len(mdp) < 40 :
+            mdp_crypte = SHA256.new(mdp.encode('utf-8')).hexdigest()
+        else :
+            mdp_crypte = mdp
+        liste_modifications.append((mdp_crypte, IDutilisateur))
+
+    # Enregistrement des mots de passe cryptés
+    DB.Executermany("UPDATE utilisateurs SET mdpcrypt=? WHERE IDutilisateur=?", liste_modifications, commit=True)
+    DB.Close()
+
+
+
+
+
+
+
+
 
 
 ##def A8360():
