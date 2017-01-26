@@ -1084,7 +1084,37 @@ def SuppressionFacture(listeFactures=[], mode="suppression"):
     DB.Close() 
     del dlgAttente
     return True
-        
+
+
+def ModificationFacture(listeFactures=[], dict_valeurs={}):
+    """ Modification des caractéristique d'une facture """
+    dlgAttente = PBI.PyBusyInfo(_(u"Modification des factures en cours..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+    wx.Yield()
+    DB = GestionDB.DB()
+
+    for IDfacture in listeFactures:
+
+        # Modification IDlot
+        if dict_valeurs.has_key("IDlot") :
+            DB.ReqMAJ("factures", [("IDlot", dict_valeurs["IDlot"]), ], "IDfacture", IDfacture)
+
+        # Modification Date émission
+        if dict_valeurs.has_key("date_emission") :
+            DB.ReqMAJ("factures", [("date_emission", dict_valeurs["date_emission"]), ], "IDfacture", IDfacture)
+
+        # Modification Date_échéance
+        if dict_valeurs.has_key("date_echeance") :
+            DB.ReqMAJ("factures", [("date_echeance", dict_valeurs["date_echeance"]), ], "IDfacture", IDfacture)
+
+    DB.Close()
+    del dlgAttente
+    return True
+
+
+
+
+
+
 
 
 
