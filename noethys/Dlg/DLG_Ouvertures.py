@@ -666,12 +666,6 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dateDD = infoCase["date"]
                 IDgroupe = infoCase["IDgroupe"]
                 IDunite = infoCase["IDunite"]
-                if nbreConso != "" : 
-                    # Interdit la modification si des conso existent
-                    dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent déjà...") % nbreConso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-                    dlg.ShowModal()
-                    dlg.Destroy()
-                    return
                 # Recherche la valeur actuelle
                 if etat == None :
                     etat = self.RechercheOuverture(dateDD, IDgroupe, IDunite)
@@ -679,6 +673,12 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                         etat = False
                     else:
                         etat = True
+                if etat == False and nbreConso != "" :
+                    # Interdit la modification si des conso existent
+                    dlg = wx.MessageDialog(self, _(u"Impossible de supprimer cette ouverture !\n\n%s consommation(s) existent déjà...") % nbreConso, "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
                 # Modification
                 self.ModifieOuverture(numLigne, numColonne, dateDD, IDgroupe, IDunite, etat)
                 self.ClearSelection()
@@ -1109,7 +1109,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDactivite=1)
+    dialog_1 = Dialog(None, IDactivite=27)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
