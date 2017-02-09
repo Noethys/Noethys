@@ -52,6 +52,7 @@ DICT_PROCEDURES = {
     "A9061" : _(u"Modification de la structure de la table Documents"),
     "A9073" : _(u"Cryptage des mots de passe utilisateurs"),
     "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
+    "A9075" : _(u"Suppression des mots de passe utilisateurs en clair"),
 }
 
 
@@ -931,7 +932,11 @@ def A9074():
     DB.Executermany("UPDATE utilisateurs SET mdpcrypt=? WHERE IDutilisateur=?", liste_modifications, commit=True)
     DB.Close()
 
-
+def A9075():
+    """ Suppression des mots de passe utilisateurs en clair """
+    DB = GestionDB.DB()
+    DB.Executermany("UPDATE utilisateurs SET mdp=NULL WHERE IDutilisateur<>?", [(9999999,),], commit=True)
+    DB.Close()
 
 
 

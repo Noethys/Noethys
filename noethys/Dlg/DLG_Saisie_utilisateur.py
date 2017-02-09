@@ -249,6 +249,7 @@ class Dialog(wx.Dialog):
         self.parent = parent      
         self.IDutilisateur = IDutilisateur
         self.mdp = None
+        self.mdpcrypt = None
         
         # Identité
         self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
@@ -392,7 +393,7 @@ class Dialog(wx.Dialog):
         self.CenterOnScreen()
 
     def MAJboutonMdp(self, event=None):
-        if self.mdp == None :
+        if self.mdpcrypt == None :
             texte = _(u"Saisir le mot de passe")
         else :
             texte = _(u"Modifier le mot de passe")
@@ -412,7 +413,7 @@ class Dialog(wx.Dialog):
                 self.ctrl_droits.SetModeDisable(True)
 
     def OnBoutonModifMdp(self, event):
-        if self.mdp == None :
+        if self.mdpcrypt == None :
             titre = _(u"Saisie du mot de passe")
             intro = _(u"Veuillez saisir un mot de passe :")
         else :
@@ -420,7 +421,8 @@ class Dialog(wx.Dialog):
             intro = _(u"Veuillez saisir un nouveau mot de passe :")
         dlg = DLG_Saisie_mdp(self, titre=titre, intro=intro)
         if dlg.ShowModal() == wx.ID_OK:
-            self.mdp = dlg.GetMdpCrypt()
+            self.mdp = dlg.GetMdp()
+            self.mdpcrypt = dlg.GetMdpCrypt()
         dlg.Destroy()
         self.MAJboutonMdp()
         self.grid_sizer_acces.Layout()
@@ -434,7 +436,7 @@ class Dialog(wx.Dialog):
             self.ctrl_nom.SetFocus()
             return
 
-        if self.mdp == None :
+        if self.mdpcrypt == None :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un mot de passe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -449,7 +451,7 @@ class Dialog(wx.Dialog):
         req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, mdpcrypt, profil, actif
         FROM utilisateurs 
         WHERE mdpcrypt='%s' AND IDutilisateur<>%d
-        ;""" % (self.mdp, IDutilisateurTmp)
+        ;""" % (self.mdpcrypt, IDutilisateurTmp)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -509,14 +511,14 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
-        req = """SELECT sexe, nom, prenom, mdpcrypt, profil, actif, image
+        req = """SELECT sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image
         FROM utilisateurs 
         WHERE IDutilisateur=%d;""" % self.IDutilisateur
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        sexe, nom, prenom, mdpcrypt, profil, actif, image = listeDonnees[0]
+        sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image = listeDonnees[0]
         # Identité
         if sexe == "M" :
             self.ctrl_sexe.Select(0)
@@ -525,7 +527,8 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.SetValue(nom)
         self.ctrl_prenom.SetValue(prenom)
         # Accès
-        self.mdp = mdpcrypt
+        self.mdp = mdp
+        self.mdpcrypt = mdpcrypt
         if actif == 1 :
             self.ctrl_actif.SetValue(True)
         else:
@@ -578,7 +581,8 @@ class Dialog(wx.Dialog):
                 ("sexe", sexe),
                 ("nom", nom),
                 ("prenom", prenom),
-                ("mdpcrypt", self.mdp),
+                ("mdp", self.mdp),
+                ("mdpcrypt", self.mdpcrypt),
                 ("profil", profil),
                 ("actif", actif),
                 ("image", nomImage),
@@ -658,6 +662,9 @@ class DLG_Saisie_mdp(wx.Dialog):
 
     def GetMdpCrypt(self):
         return SHA256.new(self.ctrl_mdp.GetValue().encode('utf-8')).hexdigest()
+
+    def GetMdp(self):
+        return self.ctrl_mdp.GetValue()
 
     def OnBoutonOk(self, event):
         """ Validation des données saisies """

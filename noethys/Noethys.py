@@ -1423,6 +1423,7 @@ class MainFrame(wx.Frame):
                 ("sexe", dictAdministrateur["sexe"]),
                 ("nom", dictAdministrateur["nom"]),
                 ("prenom", dictAdministrateur["prenom"]),
+                ("mdp", dictAdministrateur["mdp"]),
                 ("mdpcrypt", dictAdministrateur["mdpcrypt"]),
                 ("profil", dictAdministrateur["profil"]),
                 ("actif", dictAdministrateur["actif"]),
