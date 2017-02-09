@@ -99,10 +99,10 @@ class ListBoxCombinaisons(wx.ListBox):
             
     def Sauvegarde(self):
         DB = GestionDB.DB()
-        
+
         listeIDcombi = []
         listeIDunites = []
-        
+
         for IDcombi_tarif, listeUnites in self.listeDonnees :
             # Sauvegarde des nouvelles combinaisons
             if IDcombi_tarif == None :
@@ -110,27 +110,27 @@ class ListBoxCombinaisons(wx.ListBox):
                 IDcombi_tarif = DB.ReqInsert("combi_tarifs", listeDonnees)
             else:
                 listeIDcombi.append(IDcombi_tarif)
-            
+
             # Sauvegarde des unités de combi
             for IDcombi_tarif_unite, IDunite in listeUnites :
-                
+
                 # Nouvelles unités
                 if IDcombi_tarif_unite == None :
                     listeDonnees = [ ("IDcombi_tarif", IDcombi_tarif ), ("IDtarif", self.IDtarif ), ("IDunite", IDunite ), ]
                     IDcombi_tarif_unite = DB.ReqInsert("combi_tarifs_unites", listeDonnees)
                 else:
                     listeIDunites.append(IDcombi_tarif_unite)
-        
+
         # Suppression des combi supprimées
         for IDcombi_tarif in self.listeAnciennesCombi :
             if IDcombi_tarif not in listeIDcombi :
                 DB.ReqDEL("combi_tarifs", "IDcombi_tarif", IDcombi_tarif)
-            
+
         # Suppression des unités supprimées
         for IDcombi_tarif_unite in self.listeAnciennesUnites :
             if IDcombi_tarif_unite not in listeIDunites :
                 DB.ReqDEL("combi_tarifs_unites", "IDcombi_tarif_unite", IDcombi_tarif_unite)
-        
+
         DB.Close()
     
     def Ajouter(self):
@@ -429,6 +429,13 @@ class Panel(wx.Panel):
             self.ctrl_etats.SetIDcoches(etats)
         
     def Validation(self):
+        if len(self.ctrl_combinaisons.listeDonnees) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Aucune combinaison conditionnelle n'a été indiquée, confirmez-vous ?"), _(u"Information"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            if dlg.ShowModal() != wx.ID_YES:
+                dlg.Destroy()
+                return False
+            else:
+                dlg.Destroy()
         return True
         
     def Sauvegarde(self):
