@@ -900,10 +900,10 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
-                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+                url = self.dict_parametres["url_connecthys"] + ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + self.dict_parametres["serveur_cgi_file"]
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
-            url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncup/%d" % secret
+            url += ("" if url[-1] == "/" else "/") + "syncup/%d" % secret
             print "URL syncup =", url
 
             req = urllib2.Request(url)
@@ -972,10 +972,10 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
-                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+                url = self.dict_parametres["url_connecthys"] + ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + self.dict_parametres["serveur_cgi_file"]
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
-            url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
+            url += ("" if url[-1] == "/" else "/") + "syncdown/%d/%d" % (int(secret), last)
             print "URL syncdown =", url
 
             # Récupération des données au format json
@@ -1108,10 +1108,10 @@ class Synchro():
             if self.dict_parametres["serveur_type"] == 0 :
                 url = self.dict_parametres["url_connecthys"]
             if self.dict_parametres["serveur_type"] == 1 :
-                url = self.dict_parametres["url_connecthys"] + "/" + self.dict_parametres["serveur_cgi_file"]
+                url = self.dict_parametres["url_connecthys"] + ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + self.dict_parametres["serveur_cgi_file"]
             if self.dict_parametres["serveur_type"] == 2 :
                 url = self.dict_parametres["url_connecthys"]
-            url += ("" if self.dict_parametres["url_connecthys"][-1] == "/" else "/") + "upgrade/%d" % int(secret)
+            url += ("" if url[-1] == "/" else "/") + "upgrade/%d" % int(secret)
             print "URL upgrade =", url
 
             # Récupération des données au format json
