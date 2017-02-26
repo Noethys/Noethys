@@ -148,7 +148,17 @@ class ListView(FastObjectListView):
         if noSelection == True : item.Enable(False)
                 
         menuPop.AppendSeparator()
-    
+
+        # Item Vider
+        item = wx.MenuItem(menuPop, 31, _(u"Vider"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Vider, id=31)
+        if noSelection == True: item.Enable(False)
+
+        menuPop.AppendSeparator()
+
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
@@ -227,20 +237,55 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        if self.Selection()[0].nbreAbonnes > 0 :
-            dlg = wx.MessageDialog(self, _(u"Il est impossible de supprimer une liste de diffusion qui a déjà un ou plusieurs abonnés !"), _(u"Suppression impossible"), wx.OK | wx.ICON_INFORMATION)
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette liste de diffusion ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return False
+
+        nbreAbonnes = self.Selection()[0].nbreAbonnes
+        if nbreAbonnes > 0 :
+            dlg = wx.MessageDialog(self, _(u"Cette liste contient déjà %d abonnés. Si vous supprimez cette liste, les abonnements seront également supprimés.\n\nSouhaitez-vous quand même supprimer cette liste de diffusion ?") % nbreAbonnes, _(u"Suppression"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
+        # Suppression
+        IDliste = self.Selection()[0].IDliste
+        DB = GestionDB.DB()
+        DB.ReqDEL("listes_diffusion", "IDliste", IDliste)
+        DB.ReqDEL("abonnements", "IDliste", IDliste)
+        DB.Close()
+        self.MAJ()
+
+    def Vider(self, event):
+        if len(self.Selection()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune liste de diffusion à vider !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cette liste de diffusion ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
-        if dlg.ShowModal() == wx.ID_YES :
-            IDliste = self.Selection()[0].IDliste
-            DB = GestionDB.DB()
-            DB.ReqDEL("listes_diffusion", "IDliste", IDliste)
-            DB.Close() 
-            self.MAJ()
+
+        nbreAbonnes = self.Selection()[0].nbreAbonnes
+        if nbreAbonnes == 0:
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucun abonnement lié à cette liste de diffusion !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        dlg = wx.MessageDialog(self, _(u"Souhaitez-vous supprimer les %s abonnements de cette liste ?") % nbreAbonnes, _(u"Vidage"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
         dlg.Destroy()
-    
+        if reponse != wx.ID_YES:
+            return False
+
+        # Suppression
+        IDliste = self.Selection()[0].IDliste
+        DB = GestionDB.DB()
+        DB.ReqDEL("abonnements", "IDliste", IDliste)
+        DB.Close()
+        self.MAJ()
+
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 

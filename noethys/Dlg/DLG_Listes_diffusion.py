@@ -16,9 +16,6 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
 from Ol import OL_Listes_diffusion
 
-try: import psyco; psyco.full()
-except: pass
-
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
@@ -35,15 +32,18 @@ class Dialog(wx.Dialog):
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_vider = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_ANY))
+
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         self.__set_properties()
         self.__do_layout()
         
-        self.Bind(wx.EVT_BUTTON, self.Ajouter, self.bouton_ajouter)
-        self.Bind(wx.EVT_BUTTON, self.Modifier, self.bouton_modifier)
-        self.Bind(wx.EVT_BUTTON, self.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Ajouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_listview.Vider, self.bouton_vider)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
@@ -51,6 +51,7 @@ class Dialog(wx.Dialog):
         self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une liste de diffusion"))
         self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la liste de diffusion sélectionnée"))
         self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la liste de diffusion sélectionnée"))
+        self.bouton_vider.SetToolTipString(_(u"Cliquez ici pour vider la liste de diffusion : les abonnements seront supprimés."))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
         self.SetMinSize((500, 500))
@@ -59,7 +60,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_droit = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
+        grid_sizer_droit = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
         grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_base.Add(self.ctrl_bandeau, 0, wx.EXPAND, 0)
         grid_sizer_gauche.Add(self.ctrl_listview, 0, wx.EXPAND, 0)
@@ -70,6 +71,8 @@ class Dialog(wx.Dialog):
         grid_sizer_droit.Add(self.bouton_ajouter, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_modifier, 0, 0, 0)
         grid_sizer_droit.Add(self.bouton_supprimer, 0, 0, 0)
+        grid_sizer_droit.Add( (5, 5), 0, 0, 0)
+        grid_sizer_droit.Add(self.bouton_vider, 0, 0, 0)
         grid_sizer_contenu.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
         grid_sizer_contenu.AddGrowableRow(0)
         grid_sizer_contenu.AddGrowableCol(0)
@@ -85,15 +88,6 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
-
-    def Ajouter(self, event):
-        self.ctrl_listview.Ajouter(None)
-        
-    def Modifier(self, event):
-        self.ctrl_listview.Modifier(None)
-
-    def Supprimer(self, event):
-        self.ctrl_listview.Supprimer(None)
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
