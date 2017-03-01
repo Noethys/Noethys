@@ -807,6 +807,7 @@ DB_DATA = {
                                     ("profil", "VARCHAR(100)", u"Profil (Administrateur ou utilisateur)"),
                                     ("actif", "INTEGER", u"Utilisateur actif"),
                                     ("image", "VARCHAR(200)", u"Images"),
+                                    ("mdpcrypt", "VARCHAR(200)", u"Mot de passe crypté"),
                                     ], # Utilisateurs
 
     "messages":[            ("IDmessage", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDmessage"),

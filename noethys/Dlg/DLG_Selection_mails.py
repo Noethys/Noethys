@@ -400,7 +400,7 @@ class Page_Familles_individus(wx.Panel):
     
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0):
+def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0, taille_police=9):
     """ Ajoute un texte sur une image bitmap """
     # Création du bitmap
     largeurImage, hauteurImage = image.GetSize()
@@ -409,11 +409,11 @@ def AjouteTexteImage(image=None, texte="", alignement="droite-bas", padding=0):
     dc = wx.GCDC(mdc)
     mdc.SetBackgroundMode(wx.TRANSPARENT)
     mdc.Clear()
-    
+
     # Paramètres
     dc.SetBrush(wx.Brush(wx.RED))
     dc.SetPen(wx.TRANSPARENT_PEN)
-    dc.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
+    dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
     dc.SetTextForeground(wx.WHITE)
     
     # Calculs

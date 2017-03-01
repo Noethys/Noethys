@@ -149,7 +149,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Texte
         propriete = wxpg.StringProperty(label=_(u"Texte"), name="conclusion_texte", value=_(u"{NBRE_FACTURES} factures | Montant total : {TOTAL_FACTURES}"))
-        propriete.SetHelpString(_(u"Saisissez un texte. Vous pouvez utiliser les mots-clés suivants : {NBRE_FACTURES}, {TOTAL_FACTURES}"))
+        propriete.SetHelpString(_(u"Saisissez un texte. Vous pouvez utiliser les mots-clés suivants : {NBRE_FACTURES}, {TOTAL_FACTURES}, {NBRE_FACT_PRELEV}, {TOTAL_FACT_PRELEV}"))
         self.Append(propriete)
 
         # Taille police
@@ -346,7 +346,7 @@ class Dialog(wx.Dialog):
         
         # Récupération des paramètres
         listeIDfactures = []
-        montantTotal = 0.0 
+        montantTotal = 0.0
         for track in self.tracks :
             listeIDfactures.append(track.IDfacture)
             montantTotal += -track.solde
@@ -399,7 +399,15 @@ class Dialog(wx.Dialog):
                     "IDprelevement": IDprelevement, "datePrelevement": datePrelevement,
                     "iban": iban, "rum": rum, "titulaire": titulaire
                 }
-        DB.Close() 
+
+        DB.Close()
+        # Calcul totaux prélèvements
+        nbrFactPrelev = len(dictPrelevements)
+        montantTotalPrelev = 0.0
+        for track in self.tracks:
+            if dictPrelevements.has_key(track.IDfacture) :
+                montantTotalPrelev += -track.solde
+
         dictPrestations = {}
         dictIndividus = {}
         dictActivites = {}
@@ -664,6 +672,8 @@ class Dialog(wx.Dialog):
         conclusion_texte = dictOptions["conclusion_texte"]
         conclusion_texte = conclusion_texte.replace("{NBRE_FACTURES}", str(len(self.tracks)))
         conclusion_texte = conclusion_texte.replace("{TOTAL_FACTURES}", u"%.2f %s" % (montantTotal, SYMBOLE))
+        conclusion_texte = conclusion_texte.replace("{NBRE_FACT_PRELEV}", str(nbrFactPrelev))
+        conclusion_texte = conclusion_texte.replace("{TOTAL_FACT_PRELEV}", u"%.2f %s" % (montantTotalPrelev, SYMBOLE))
         story.append(Paragraph(conclusion_texte, styleConclusion))
 
         # Enregistrement et ouverture du PDF

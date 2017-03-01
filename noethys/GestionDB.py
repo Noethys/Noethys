@@ -1954,6 +1954,17 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 8, 7)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("utilisateurs", "mdpcrypt", "VARCHAR(200)")
+                from Utils import UTILS_Procedures
+                UTILS_Procedures.A9074()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
         versionFiltre = (1, 1, 9, 0)
         if versionFichier < versionFiltre :
             try :

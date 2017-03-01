@@ -55,6 +55,7 @@ from Dlg import DLG_Message_html
 from Dlg import DLG_Enregistrement
 from Ctrl import CTRL_Toaster
 from Ctrl import CTRL_Portail_serveur
+from Ctrl import CTRL_TaskBarIcon
 
 import shelve
 import dbhash
@@ -62,6 +63,8 @@ import anydbm
 import random
 import urllib
 import urllib2
+
+from Crypto.Hash import SHA256
 
 import wx.lib.agw.aui as aui
 import wx.lib.agw.advancedsplash as AS
@@ -104,7 +107,10 @@ class MainFrame(wx.Frame):
         icon = wx.EmptyIcon()
         icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/Interface/%s/Icone.png" % theme), wx.BITMAP_TYPE_ANY))
         self.SetIcon(icon)
-        
+
+        # TaskBarIcon
+        self.taskBarIcon = CTRL_TaskBarIcon.CustomTaskBarIcon()
+
         # Ecrit la date et l'heure dans le journal.log
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         systeme = u"%s %s %s %s" % (sys.platform, platform.system(), platform.release(), platform.machine())
@@ -367,7 +373,11 @@ class MainFrame(wx.Frame):
         
         # Affiche les connexions restées ouvertes
         GestionDB.AfficheConnexionOuvertes()
-        
+
+        # Détruit le taskBarIcon
+        self.taskBarIcon.Cacher()
+        self.taskBarIcon.Detruire()
+
         self.Destroy()
 
         return True
@@ -438,7 +448,7 @@ class MainFrame(wx.Frame):
         if UTILS_Config.GetParametre("synchro_serveur_activer", defaut=False) == True :
             from Ctrl import CTRL_Serveur_nomade
             self.ctrl_serveur_nomade = CTRL_Serveur_nomade.Panel(self)
-            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Serveur Nomadhys")).
+            self._mgr.AddPane(self.ctrl_serveur_nomade, aui.AuiPaneInfo().Name("serveur_nomade").Caption(_(u"Nomadhys")).
                               Top().Layer(0).Row(2).Position(0).CloseButton(False).MaximizeButton(False).MinimizeButton(False).MinSize((-1, 85)).BestSize((-1, 85)) )
 
         # # Panneau Serveur Connecthys
@@ -1414,6 +1424,7 @@ class MainFrame(wx.Frame):
                 ("nom", dictAdministrateur["nom"]),
                 ("prenom", dictAdministrateur["prenom"]),
                 ("mdp", dictAdministrateur["mdp"]),
+                ("mdpcrypt", dictAdministrateur["mdpcrypt"]),
                 ("profil", dictAdministrateur["profil"]),
                 ("actif", dictAdministrateur["actif"]),
                 ("image", dictAdministrateur["image"]),
@@ -3465,7 +3476,7 @@ class MainFrame(wx.Frame):
 
             if resultat != True :
                 print resultat
-                dlg = wx.MessageDialog(self, _(u"Le logiciel n'arrive pas à convertir le fichier '") + nomFichier + u":\n\nErreur : " + resultat + _(u"\n\nVeuillez contacter le développeur du logiciel..."), _(u"Erreur de conversion de fichier"), wx.OK | wx.ICON_ERROR)
+                dlg = wx.MessageDialog(self, _(u"Le logiciel n'arrive pas à convertir le fichier !\n\nErreur : ") + resultat + _(u"\n\nVeuillez contacter le développeur du logiciel..."), _(u"Erreur de conversion de fichier"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -3509,18 +3520,41 @@ class MainFrame(wx.Frame):
                 dlg.CenterOnScreen()
                 dlg.ShowModal()
                 dlg.Destroy()
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-                
-                
+
+            if versionFichier < (1, 1, 8, 5):
+                texte = u"""
+                <CENTER><IMG SRC="%s">
+                <BR><BR>
+                <FONT SIZE=3>
+                Connecthys est le portail internet de Noethys. Il permet par exemple à vos usagers de
+                consulter l'état de leur dossier ou de demander des réservations à des activités.
+                Il facilite également la gestion administrative par les utilisateurs grâce à son
+                traitement automatisé des demandes.
+                <BR><BR>
+                Si vous souhaitez en savoir davantage, allez dans le menu Outils ou visitez le site dédié
+                <FONT SIZE=5><A HREF="http://www.connecthys.com">www.connecthys.com</A></FONT>.
+                </FONT>
+                </CENTER>
+                """ % Chemins.GetStaticPath("Images/Special/Connecthys_pub.png")
+                dlg = DLG_Message_html.Dialog(self, texte=texte, titre=_(u"Nouveauté !"), size=(510, 650))
+                dlg.CenterOnScreen()
+                dlg.ShowModal()
+                dlg.Destroy()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         return True
     
@@ -3531,9 +3565,11 @@ class MainFrame(wx.Frame):
         self._mgr.GetPane("panel_recherche").Show(etat)
 
     def Identification(self, listeUtilisateurs=[], nomFichier=None):
-        if CUSTOMIZE.GetValeur("utilisateur", "pass", "") != "" :
+        passmdp = CUSTOMIZE.GetValeur("utilisateur", "pass", "")
+        if passmdp != "" :
+            passmdpcrypt = SHA256.new(passmdp.encode('utf-8')).hexdigest()
             for dictTemp in listeUtilisateurs :
-                if dictTemp["mdp"] == CUSTOMIZE.GetValeur("utilisateur", "pass", "") :
+                if dictTemp["mdpcrypt"] == passmdpcrypt or dictTemp["mdp"] == passmdp : # or dictTemp["mdp"] == passmdp à retirer plus tard
                     self.ChargeUtilisateur(dictTemp)
                     return True
         # Permet de donner le focus à la fenetre de connection sur LXDE (Fonctionnait sans sur d'autres distributions)

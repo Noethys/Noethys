@@ -315,7 +315,9 @@ class Traitement(Thread):
         self.stop = False 
         self.index = 0
 
-    def run(self): 
+    def run(self):
+        nbre_tracks = len(self.parent.listeTracks)
+
         try: 
             
             listeAnomalies = []
@@ -412,13 +414,13 @@ class Traitement(Thread):
         
         # Message de confirmation de fin de traitement
         if len(listeAnomalies) > 0 :
-            introduction = _(u"%d actions ont été importées avec succès et %d anomalies ont été trouvées :") % (len(self.parent.listeTracks) - len(listeAnomalies), len(listeAnomalies))
+            introduction = _(u"%d actions ont été importées avec succès et %d anomalies ont été trouvées :") % (nbre_tracks - len(listeAnomalies), len(listeAnomalies))
             conclusion = u""
             dlg = DLG_Messagebox.Dialog(None, titre=_(u"Information"), introduction=introduction, detail=u"\n".join(listeAnomalies), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Ok"),])
             reponse = dlg.ShowModal() 
             dlg.Destroy() 
         else :
-            dlg = wx.MessageDialog(None, _(u"Les %d actions ont été importées avec succès !") % len(self.parent.listeTracks), _(u"Information"), wx.OK | wx.ICON_INFORMATION)
+            dlg = wx.MessageDialog(None, _(u"Les %d actions ont été importées avec succès !") % nbre_tracks, _(u"Information"), wx.OK | wx.ICON_INFORMATION)
             dlg.ShowModal()
             dlg.Destroy()
 

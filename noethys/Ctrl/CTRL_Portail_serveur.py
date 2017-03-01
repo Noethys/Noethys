@@ -233,6 +233,10 @@ class Panel(wx.Panel):
                     #self.bouton_traiter.Enable(True)
 
                 self.bouton_traiter.SetLabel(texte)
+
+                # TaskBarIcon
+                self.parent.taskBarIcon.Connecthys(nbre=nbre_actions_attente, texte=texte)
+
             except Exception as e:
                 self.lock.release()
                 raise e

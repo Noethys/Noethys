@@ -50,6 +50,9 @@ DICT_PROCEDURES = {
     "A9023" : _(u"Correction des ouvertures avec IDgroupe=0"),
     "A9054" : _(u"Importation des modèles d'Emails depuis la base défaut"),
     "A9061" : _(u"Modification de la structure de la table Documents"),
+    "A9073" : _(u"Cryptage des mots de passe utilisateurs"),
+    "A9074" : _(u"Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt"),
+    "A9075" : _(u"Suppression des mots de passe utilisateurs en clair"),
 }
 
 
@@ -891,6 +894,52 @@ def A9061():
         DB.Close()
     except :
         pass
+
+def A9073():
+    """ Cryptage des mots de passe utilisateurs """
+    from Crypto.Hash import SHA256
+
+    DB = GestionDB.DB()
+    req = """SELECT IDutilisateur, mdp FROM utilisateurs;"""
+    DB.ExecuterReq(req)
+    liste_utilisateurs = DB.ResultatReq()
+    liste_modifications = []
+    for IDutilisateur, mdp in liste_utilisateurs :
+        mdp_crypte = SHA256.new(mdp.encode('utf-8')).hexdigest()
+        liste_modifications.append((mdp_crypte, IDutilisateur))
+
+    # Enregistrement des mots de passe cryptés
+    DB.Executermany("UPDATE utilisateurs SET mdp=? WHERE IDutilisateur=?", liste_modifications, commit=True)
+    DB.Close()
+
+def A9074():
+    """ Cryptage des mots de passe utilisateurs dans nouveau champ mdpcrypt """
+    from Crypto.Hash import SHA256
+
+    DB = GestionDB.DB()
+    req = """SELECT IDutilisateur, mdp FROM utilisateurs;"""
+    DB.ExecuterReq(req)
+    liste_utilisateurs = DB.ResultatReq()
+    liste_modifications = []
+    for IDutilisateur, mdp in liste_utilisateurs :
+        if mdp != None and len(mdp) < 40 :
+            mdp_crypte = SHA256.new(mdp.encode('utf-8')).hexdigest()
+        else :
+            mdp_crypte = mdp
+        liste_modifications.append((mdp_crypte, IDutilisateur))
+
+    # Enregistrement des mots de passe cryptés
+    DB.Executermany("UPDATE utilisateurs SET mdpcrypt=? WHERE IDutilisateur=?", liste_modifications, commit=True)
+    DB.Close()
+
+def A9075():
+    """ Suppression des mots de passe utilisateurs en clair """
+    DB = GestionDB.DB()
+    DB.Executermany("UPDATE utilisateurs SET mdp=NULL WHERE IDutilisateur<>?", [(9999999,),], commit=True)
+    DB.Close()
+
+
+
 
 
 

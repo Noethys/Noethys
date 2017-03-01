@@ -159,15 +159,22 @@ class CTRL(HTL.HyperTreeList):
         self.regroupement_groupe_activites = UTILS_Config.GetParametre("nbre_inscrits_parametre_regroup", 0)
 
         # Récupération des groupes
+        condition_partis = ""
+        if UTILS_Config.GetParametre("nbre_inscrits_parametre_partis", 1) == 1 :
+            if condition == "" :
+                condition_partis = "WHERE inscriptions.parti=0"
+            else :
+                condition_partis = "AND inscriptions.parti=0"
+
         req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.abrege, groupes.nbre_inscrits_max,
         COUNT(inscriptions.IDinscription) as nbre_inscriptions
         FROM groupes
         LEFT JOIN activites ON activites.IDactivite = groupes.IDactivite
         LEFT JOIN inscriptions ON inscriptions.IDgroupe = groupes.IDgroupe
-        %s
+        %s %s
         GROUP BY groupes.IDgroupe
         ORDER BY groupes.ordre
-        ;""" % condition
+        ;""" % (condition, condition_partis)
         DB.ExecuterReq(req)
         listeGroupes = DB.ResultatReq()
 

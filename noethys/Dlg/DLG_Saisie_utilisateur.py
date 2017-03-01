@@ -16,7 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Ctrl import CTRL_Droits
 import wx.lib.agw.hyperlink as Hyperlink
-
+from Crypto.Hash import SHA256
 
 
 LISTE_IMAGES = [
@@ -248,6 +248,8 @@ class Dialog(wx.Dialog):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent      
         self.IDutilisateur = IDutilisateur
+        self.mdp = None
+        self.mdpcrypt = None
         
         # Identité
         self.staticbox_identite_staticbox = wx.StaticBox(self, -1, _(u"Identité"))
@@ -265,11 +267,9 @@ class Dialog(wx.Dialog):
         
         # Accès
         self.staticbox_acces_staticbox = wx.StaticBox(self, -1, _(u"Accès"))
-        self.label_code = wx.StaticText(self, -1, _(u"Code :"))
-        self.ctrl_code = wx.TextCtrl(self, -1, u"")
-        self.label_actif = wx.StaticText(self, -1, _(u"Actif :"))
-        self.ctrl_actif = wx.CheckBox(self, -1, u"")
+        self.ctrl_actif = wx.CheckBox(self, -1, u"Utilisateur actif")
         self.ctrl_actif.SetValue(True)
+        self.bouton_modif_mdp = CTRL_Bouton_image.CTRL(self, texte="", cheminImage="Images/32x32/Cle.png")
         
         # Droits
         self.staticbox_droits_staticbox = wx.StaticBox(self, -1, _(u"Droits"))
@@ -288,6 +288,7 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonModifMdp, self.bouton_modif_mdp)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioDroits, self.radio_droits_admin)
@@ -301,6 +302,7 @@ class Dialog(wx.Dialog):
             self.Importation()
         
         self.OnRadioDroits(None)
+        self.MAJboutonMdp()
 
     def __set_properties(self):
         self.ctrl_sexe.SetToolTipString(_(u"Sélectionnez le sexe de l'utilisateur"))
@@ -310,8 +312,8 @@ class Dialog(wx.Dialog):
         self.radio_droits_admin.SetToolTipString(_(u"Sélectionnez l'option 'Administrateur' pour donner tous les droits à cet utilisateur"))
         self.radio_droits_modele.SetToolTipString(_(u"Sélectionnez cette option pour attribuer un modèle de droits à cet utilisateur"))
         self.radio_droits_perso.SetToolTipString(_(u"Sélectionnez cette option pour attribuer des droits personnalisés à cet utilisateur"))
-        self.ctrl_actif.SetToolTipString(_(u"Décochez cette case si l'utilisateur est inactif. L'utilisateur n'aura plus accès à ce fichier de données."))
-        self.ctrl_code.SetToolTipString(_(u"Saisissez ici le code d'accès personnel de l'individu"))
+        self.ctrl_actif.SetToolTipString(_(u"Décochez cette case pour désactiver l'utilisateur. L'utilisateur n'aura plus accès à ce fichier de données."))
+        self.bouton_modif_mdp.SetToolTipString(_(u"Cliquez ici pour saisir un nouveau mot de passe pour cet utilisateur"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
@@ -338,13 +340,13 @@ class Dialog(wx.Dialog):
         
         # Accès
         staticbox_acces = wx.StaticBoxSizer(self.staticbox_acces_staticbox, wx.VERTICAL)
-        grid_sizer_acces = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
-        grid_sizer_acces.Add(self.label_code, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_acces.Add(self.ctrl_code, 0, 0, 0)
-        grid_sizer_acces.Add(self.label_actif, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_acces.Add(self.ctrl_actif, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        
-        staticbox_acces.Add(grid_sizer_acces, 1, wx.ALL|wx.EXPAND, 10)
+        self.grid_sizer_acces = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
+        self.grid_sizer_acces.Add(self.ctrl_actif, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        self.grid_sizer_acces.Add( (5, 5), 0, wx.EXPAND, 0)
+        self.grid_sizer_acces.Add(self.bouton_modif_mdp, 0, 0, 0)
+        self.grid_sizer_acces.AddGrowableCol(1)
+
+        staticbox_acces.Add(self.grid_sizer_acces, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_haut_gauche.Add(staticbox_acces, 1, wx.EXPAND, 0)
         grid_sizer_haut_gauche.AddGrowableCol(0)
         
@@ -390,6 +392,13 @@ class Dialog(wx.Dialog):
         self.Layout()
         self.CenterOnScreen()
 
+    def MAJboutonMdp(self, event=None):
+        if self.mdpcrypt == None :
+            texte = _(u"Saisir le mot de passe")
+        else :
+            texte = _(u"Modifier le mot de passe")
+        self.bouton_modif_mdp.SetTexte(texte)
+
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Utilisateurs")
@@ -402,7 +411,22 @@ class Dialog(wx.Dialog):
         else :
             if self.ctrl_droits.modeDisable == False :
                 self.ctrl_droits.SetModeDisable(True)
-        
+
+    def OnBoutonModifMdp(self, event):
+        if self.mdpcrypt == None :
+            titre = _(u"Saisie du mot de passe")
+            intro = _(u"Veuillez saisir un mot de passe :")
+        else :
+            titre = _(u"Modification du mot de passe")
+            intro = _(u"Veuillez saisir un nouveau mot de passe :")
+        dlg = DLG_Saisie_mdp(self, titre=titre, intro=intro)
+        if dlg.ShowModal() == wx.ID_OK:
+            self.mdp = dlg.GetMdp()
+            self.mdpcrypt = dlg.GetMdpCrypt()
+        dlg.Destroy()
+        self.MAJboutonMdp()
+        self.grid_sizer_acces.Layout()
+
     def OnBoutonOk(self, event): 
         # Vérification des données
         if len(self.ctrl_nom.GetValue()) == 0 :
@@ -411,24 +435,23 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_nom.SetFocus()
             return
-        
-        if len(self.ctrl_code.GetValue()) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un code d'accès personnel !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+
+        if self.mdpcrypt == None :
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un mot de passe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_code.SetFocus()
             return
-        
+
         # Vérifie que le code d'accès n'est pas déjà utilisé
         if self.IDutilisateur == None :
             IDutilisateurTmp = 0
         else:
             IDutilisateurTmp = self.IDutilisateur
         DB = GestionDB.DB()
-        req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, profil, actif
+        req = """SELECT IDutilisateur, sexe, nom, prenom, mdp, mdpcrypt, profil, actif
         FROM utilisateurs 
-        WHERE mdp='%s' AND IDutilisateur<>%d
-        ;""" % (self.ctrl_code.GetValue(), IDutilisateurTmp)
+        WHERE mdpcrypt='%s' AND IDutilisateur<>%d
+        ;""" % (self.mdpcrypt, IDutilisateurTmp)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -436,7 +459,6 @@ class Dialog(wx.Dialog):
             dlg = wx.MessageDialog(self, _(u"Le code d'accès que vous avez saisi est déjà attribué !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
-            self.ctrl_code.SetFocus()
             return
         
         # Vérifie qu'il reste au moins un administrateur dans la base de données
@@ -489,14 +511,14 @@ class Dialog(wx.Dialog):
     def Importation(self):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
-        req = """SELECT sexe, nom, prenom, mdp, profil, actif, image
+        req = """SELECT sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image
         FROM utilisateurs 
         WHERE IDutilisateur=%d;""" % self.IDutilisateur
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        sexe, nom, prenom, mdp, profil, actif, image = listeDonnees[0]
+        sexe, nom, prenom, mdp, mdpcrypt, profil, actif, image = listeDonnees[0]
         # Identité
         if sexe == "M" :
             self.ctrl_sexe.Select(0)
@@ -505,7 +527,8 @@ class Dialog(wx.Dialog):
         self.ctrl_nom.SetValue(nom)
         self.ctrl_prenom.SetValue(prenom)
         # Accès
-        self.ctrl_code.SetValue(mdp)
+        self.mdp = mdp
+        self.mdpcrypt = mdpcrypt
         if actif == 1 :
             self.ctrl_actif.SetValue(True)
         else:
@@ -536,7 +559,6 @@ class Dialog(wx.Dialog):
         prenom = self.ctrl_prenom.GetValue() 
         
         # Accès
-        code = self.ctrl_code.GetValue() 
         if self.ctrl_actif.GetValue() == True :
             actif = 1
         else:
@@ -559,7 +581,8 @@ class Dialog(wx.Dialog):
                 ("sexe", sexe),
                 ("nom", nom),
                 ("prenom", prenom),
-                ("mdp", code),
+                ("mdp", self.mdp),
+                ("mdpcrypt", self.mdpcrypt),
                 ("profil", profil),
                 ("actif", actif),
                 ("image", nomImage),
@@ -572,7 +595,105 @@ class Dialog(wx.Dialog):
     
         # Droits
         self.ctrl_droits.Sauvegarde(IDutilisateur=self.IDutilisateur)
-        
+
+
+# --------------------------- DLG de saisie du nouveau mot de passe ----------------------------
+
+class DLG_Saisie_mdp(wx.Dialog):
+    def __init__(self, parent, titre="", intro=""):
+        wx.Dialog.__init__(self, parent, id=-1, name="DLG_nouveau_mdp_utilisateur")
+        self.parent = parent
+        self.SetTitle(titre)
+
+        self.staticbox = wx.StaticBox(self, -1, "")
+        self.label = wx.StaticText(self, -1, intro)
+        self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
+        self.ctrl_mdp = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
+        self.label_confirmation = wx.StaticText(self, -1, _(u"Confirmation :"))
+        self.ctrl_confirmation = wx.TextCtrl(self, -1, u"", style=wx.TE_PASSWORD)
+
+        self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
+        self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
+
+        self.__set_properties()
+        self.__do_layout()
+
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+
+        self.ctrl_mdp.SetFocus()
+
+    def __set_properties(self):
+        self.ctrl_mdp.SetToolTipString(_(u"Saisissez un mot de passe"))
+        self.ctrl_confirmation.SetToolTipString(_(u"Confirmez le mot de passe en le saisissant une nouvelle fois"))
+        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_mdp.SetMinSize((300, -1))
+
+    def __do_layout(self):
+        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)
+
+        # Intro
+        grid_sizer_base.Add(self.label, 0, wx.ALL, 10)
+
+        # Staticbox
+        staticbox = wx.StaticBoxSizer(self.staticbox, wx.HORIZONTAL)
+        grid_sizer_contenu = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
+        grid_sizer_contenu.Add(self.label_mdp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_contenu.Add(self.ctrl_mdp, 0, wx.EXPAND, 0)
+        grid_sizer_contenu.Add(self.label_confirmation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_contenu.Add(self.ctrl_confirmation, 0, wx.EXPAND, 0)
+        grid_sizer_contenu.AddGrowableCol(1)
+        staticbox.Add(grid_sizer_contenu, 1, wx.ALL | wx.EXPAND, 10)
+        grid_sizer_base.Add(staticbox, 1, wx.LEFT | wx.RIGHT | wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer_boutons.Add((20, 20), 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
+        grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
+        grid_sizer_boutons.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL | wx.EXPAND, 10)
+
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.Fit(self)
+        self.Layout()
+        self.CentreOnScreen()
+
+    def GetMdpCrypt(self):
+        return SHA256.new(self.ctrl_mdp.GetValue().encode('utf-8')).hexdigest()
+
+    def GetMdp(self):
+        return self.ctrl_mdp.GetValue()
+
+    def OnBoutonOk(self, event):
+        """ Validation des données saisies """
+        if len(self.ctrl_mdp.GetValue()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un mot de passe valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_mdp.SetFocus()
+            return False
+
+        if len(self.ctrl_confirmation.GetValue()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir la confirmation du mot de passe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_confirmation.SetFocus()
+            return False
+
+        if self.ctrl_mdp.GetValue() != self.ctrl_confirmation.GetValue():
+            dlg = wx.MessageDialog(self, _(u"La confirmation du mot de passe ne correspond pas au mot de passe saisi !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_confirmation.SetFocus()
+            return False
+
+        # Fermeture
+        self.EndModal(wx.ID_OK)
+
+
+
 
 
 if __name__ == u"__main__":

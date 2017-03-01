@@ -309,7 +309,6 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Quittancier"), 'left', 65, "numero_quittancier", typeDonnee="texte"),
             ColumnDefn(_(u"Payeur"), 'left', 160, "nom_payeur", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            #ColumnDefn(_(u"Ventilé"), 'right', 80, "montant_ventilation", stringConverter=FormateMontant, imageGetter=GetImageVentilation),
             ColumnDefn(_(u"Avis"), 'left', 35, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
             ColumnDefn(_(u"Compte"), 'left', 100, "nom_compte", typeDonnee="texte"),
             ColumnDefn(_(u"Différé"), 'left', 85, "date_differe", typeDonnee="date", stringConverter=FormateDateCourt), #, imageGetter=GetImageDiffere),
@@ -565,7 +564,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, id=-1, inclus=True, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, id=-1, inclus=False, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

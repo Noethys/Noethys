@@ -498,7 +498,7 @@ class ListView(FastObjectListView):
         self.SetEmptyListMsg(_(u"Aucune facture"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
-            
+
     def MAJ(self, ID=None):
         if ID != None :
             self.selectionID = ID
@@ -550,7 +550,15 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_MENU, self.EnvoyerEmail, id=90)
         
         menuPop.AppendSeparator()
-        
+
+        # Item Modifier
+        item = wx.MenuItem(menuPop, 29, _(u"Modifier les caractéristiques"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Modifier, id=29)
+        if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0 : item.Enable(False)
+
         # Item Supprimer
         item = wx.MenuItem(menuPop, 30, _(u"Supprimer ou annuler"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG)
@@ -704,7 +712,59 @@ class ListView(FastObjectListView):
     
     def GetTracksTous(self):
         return self.donnees
-        
+
+    def Modifier(self, event):
+        if self.IDcompte_payeur != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_factures", "modifier") == False: return
+        if self.IDcompte_payeur == None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "modifier") == False: return
+
+        # Avertissements
+        if len(self.Selection()) == 0 and len(self.GetTracksCoches()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Choix entre Suppression et Annulation
+        from Dlg import DLG_Factures_modifier
+        dlg = DLG_Factures_modifier.Dialog(self)
+        if dlg.ShowModal() == wx.ID_OK:
+            dict_valeurs = dlg.GetValeurs()
+            dlg.Destroy()
+        else :
+            dlg.Destroy()
+            return False
+
+        # Demande de confirmation
+        if len(self.GetTracksCoches()) > 0:
+            # Suppression multiple
+            listeSelections = self.GetTracksCoches()
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier les %d factures cochées ?") % (len(listeSelections)), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                return
+
+        else:
+            # Suppression unique
+            listeSelections = self.Selection()
+            dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment modifier la facture n°%s ?") % (listeSelections[0].numero), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_INFORMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                return
+
+        # Suppression de la facture
+        listeIDfactures = []
+        for track in listeSelections:
+            listeIDfactures.append(track.IDfacture)
+
+        from Utils import UTILS_Facturation
+        UTILS_Facturation.ModificationFacture(listeIDfactures, dict_valeurs=dict_valeurs)
+
+        # MAJ du listeView
+        self.MAJ()
+
+
     def Supprimer(self, event):
         if self.IDcompte_payeur != None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_factures", "supprimer") == False : return
         if self.IDcompte_payeur == None and UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "supprimer") == False : return
