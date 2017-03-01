@@ -193,7 +193,7 @@ class Donnees():
         LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
         LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
-        WHERE prestations.date>='%s' AND prestations.date<='%s'
+        WHERE prestations.date_valeur>='%s' AND prestations.date_valeur<='%s'
         GROUP BY prestations.IDprestation
         ORDER BY prestations.date
         ;""" % (self.date_debut, self.date_fin)
