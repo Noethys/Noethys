@@ -406,6 +406,7 @@ class Dialog(wx.Dialog):
             ("montant_initial", montant),
             ("montant", montant),
             ("IDfamille", IDfamille),
+            ("date_valeur", str(datetime.date.today())),
             ]
         IDprestation_positive = DB.ReqInsert("prestations", listeDonnees)
 
@@ -422,6 +423,7 @@ class Dialog(wx.Dialog):
             ("montant_initial", -montant),
             ("montant", -montant),
             ("IDfamille", IDfamille),
+            ("date_valeur", str(datetime.date.today())),
             ]
         IDprestation_negative = DB.ReqInsert("prestations", listeDonnees)
 

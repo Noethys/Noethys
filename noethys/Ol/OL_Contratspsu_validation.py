@@ -640,6 +640,7 @@ class ListView(FastObjectListView):
                 ("IDcontrat", track.clsbase.IDcontrat),
             )
             if track.IDprestation == None :
+                listeDonnees.append(("date_valeur", str(datetime.date.today())))
                 IDprestation = DB.ReqInsert("prestations", listeDonnees)
             else :
                 IDprestation = track.IDprestation

@@ -1621,7 +1621,7 @@ def CreerDonneesVirtuelles(nbreFamilles=0):
         
         # Prestations et consommations
         date = datetime.date(2015, 6, 3)
-        IDprestation = DB.ReqInsert("prestations", [("IDcompte_payeur", IDcompte_payeur), ("date", date), ("categorie", "consommation"), ("label", u"Journée avec repas"), ("montant_initial", 13.0), ("montant", 13.0), ("IDactivite", 1), ("IDtarif", 33), ("IDfamille", IDfamille), ("IDindividu", IDenfant), ("temps_facture", "11:00"), ("IDcategorie_tarif", 1)])
+        IDprestation = DB.ReqInsert("prestations", [("IDcompte_payeur", IDcompte_payeur), ("date", date), ("categorie", "consommation"), ("label", u"Journée avec repas"), ("montant_initial", 13.0), ("montant", 13.0), ("IDactivite", 1), ("IDtarif", 33), ("IDfamille", IDfamille), ("IDindividu", IDenfant), ("temps_facture", "11:00"), ("IDcategorie_tarif", 1), ("date_valeur", str(datetime.date.today()))])
         for IDunite in (1, 2) :
             IDconso = DB.ReqInsert("consommations", [("IDindividu", IDenfant), ("IDinscription", IDinscription), ("IDactivite", 1), ("date", date), ("IDunite", IDunite), ("IDgroupe", 1), ("etat", "reservation"), ("verrouillage", 0), ("date_saisie", datetime.date.today()), ("IDutilisateur", 1), ("IDcategorie_tarif", 1), ("IDcompte_payeur", IDcompte_payeur), ("IDprestation", IDprestation)])
         

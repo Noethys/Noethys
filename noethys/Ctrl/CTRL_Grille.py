@@ -5019,6 +5019,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     ("forfait_date_fin", dictValeurs["forfait_date_fin"]),
                     ("code_compta", dictValeurs["code_compta"]),
                     ("tva", dictValeurs["tva"]),
+                    ("date_valeur", str(datetime.date.today())),
                     ]
 
                 # Mémorisation de la prestation à ajouter

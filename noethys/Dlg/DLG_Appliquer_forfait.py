@@ -456,7 +456,8 @@ class Forfaits():
                                     ("IDfamille", self.IDfamille),
                                     ("IDindividu", IDindividu),
                                     ("forfait", type_forfait), 
-                                    ("IDcategorie_tarif", IDcategorie_tarif), 
+                                    ("IDcategorie_tarif", IDcategorie_tarif),
+                                    ("date_valeur", str(datetime.date.today())),
                                     ]
                                 IDprestation = DB.ReqInsert("prestations", listeDonnees)
                     

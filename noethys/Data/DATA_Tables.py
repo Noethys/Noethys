@@ -538,6 +538,7 @@ DB_DATA = {
                                     ("tva", "FLOAT", u"Taux TVA"),
                                     ("code_compta", "VARCHAR(200)", u"Code comptable pour export vers logiciels de compta"),
                                     ("IDcontrat", "INTEGER", u"ID du contrat associé"),
+                                    ("date_valeur", "DATE", u"Date de valeur comptable de la prestation"),
                                     ], # Prestations
 
     "comptes_payeurs":[  ("IDcompte_payeur", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID compte_payeur"),

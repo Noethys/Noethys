@@ -792,9 +792,9 @@ class DB:
         # Préparation des noms de champs pour le transfert
         listeChamps = []
         listeMarks = []
-        champsExistants = GetChampsTable(nomTable)
+        dictTypesChamps = GetChampsTable(nomTable)
         for nomChamp in listeNomsChamps[0:] :
-            if nomChamp in champsExistants :
+            if dictTypesChamps.has_key(nomChamp):
                 listeChamps.append(nomChamp)
                 if self.isNetwork == True :
                     # Version MySQL
@@ -807,7 +807,7 @@ class DB:
         req = "SELECT %s FROM %s" % (", ".join(listeChamps), nomTable)
         cursor.execute(req)
         listeDonnees = cursor.fetchall()
-        
+
         # Importation des données vers la nouvelle table
         req = "INSERT INTO %s (%s) VALUES (%s)" % (nomTable, ", ".join(listeChamps), ", ".join(listeMarks))
         try :
@@ -1965,10 +1965,16 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 9, 0)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("prestations", "date_valeur", "DATE")
+                self.ExecuterReq('UPDATE prestations SET date_valeur = date;')
+                self.Commit()
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
-
-
-
+        # =============================================================
 
 
 
@@ -1980,11 +1986,11 @@ class DB:
 def GetChampsTable(nomTable=""):
     for dictTables in (Tables.DB_DATA, Tables.DB_PHOTOS, Tables.DB_DOCUMENTS) :
         if dictTables.has_key(nomTable) :
-            listeChamps = []
+            dictChamps = {}
             for nom, typeTable, info in dictTables[nomTable] :
-                listeChamps.append(nom)
-            return listeChamps
-    return []
+                dictChamps[nom] = typeTable
+            return dictChamps
+    return {}
 
 def ConvertConditionChaine(liste=[]):
     """ Transforme une liste de valeurs en une condition chaine pour requête SQL """

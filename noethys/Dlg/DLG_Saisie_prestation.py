@@ -853,6 +853,7 @@ class Dialog(wx.Dialog):
                 ("tva", tva),
             ]
         if self.IDprestation == None :
+            listeDonnees.append(("date_valeur", str(datetime.date.today())))
             self.IDprestation = DB.ReqInsert("prestations", listeDonnees)
         else:
             DB.ReqMAJ("prestations", listeDonnees, "IDprestation", self.IDprestation)

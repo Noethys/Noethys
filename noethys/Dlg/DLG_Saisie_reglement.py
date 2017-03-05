@@ -1469,6 +1469,7 @@ class Dialog(wx.Dialog):
                     ("reglement_frais", self.IDreglement),
                 ]
             if IDprestationFrais == None :
+                listeDonnees.append(("date_valeur", str(datetime.date.today())))
                 IDprestationFrais = DB.ReqInsert("prestations", listeDonnees)
             else:
                 DB.ReqMAJ("prestations", listeDonnees, "IDprestation", IDprestationFrais)
