@@ -212,7 +212,7 @@ class CTRL(HTL.HyperTreeList):
                 dictResultats["activites"][IDactivite]["periodes"][periode] = {"total":0, "familles":{}}
             if dictResultats["activites"][IDactivite]["periodes"][periode]["familles"].has_key(IDfamille) == False :
                 dictResultats["activites"][IDactivite]["periodes"][periode]["familles"][IDfamille] = 0
-            
+
             dictResultats["activites"][IDactivite]["total"] += solde
             dictResultats["activites"][IDactivite]["periodes"][periode]["total"] += solde
             dictResultats["activites"][IDactivite]["periodes"][periode]["familles"][IDfamille] += solde

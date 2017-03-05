@@ -1,6 +1,15 @@
-Version 1.1.8.7 (26/01/2017) :
+Version 1.1.9.0 (05/03/2017) :
 
+- Ajout du TaskBarIcon pour Connecthys
+- Ajout Masquer partis dans nbre inscrits de la page d'accueil
+- Ajout bouton de modification des caractéristiques des factures
+- Ajout info dialogue pas de combinaison conditionnelle dans saisie tarifs [Claude]
+- Ajout infos totaux prélèvements pour récapitulatif factures [Claude]
+- Ajout vidage des listes de diffusion
+- Ajout du champ date_valeur dans la table prestations [Arthru]
 - Correction bug cryptage mots de passe utilisateurs
+- Correction bug réactivation ouverture d'unités de conso
+- Correction bug sur mots-clés dans l'édition de factures
 
 Version 1.1.8.6 (13/01/2017) :
 

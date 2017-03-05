@@ -366,10 +366,13 @@ class CTRL(ULC.UltimateListCtrl):
                     pass
 
                 if logo != None :
-                    io = cStringIO.StringIO(logo)
-                    img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
-                    img = RecadreImg(img)
-                    image = img.ConvertToBitmap()
+                    try :
+                        io = cStringIO.StringIO(logo)
+                        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
+                        img = RecadreImg(img)
+                        image = img.ConvertToBitmap()
+                    except :
+                        image = None
                 else :
                     image = None
 
