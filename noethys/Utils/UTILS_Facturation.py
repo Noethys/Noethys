@@ -39,7 +39,18 @@ from Dlg import DLG_Apercu_facture
 from UTILS_Decimal import FloatToDecimal as FloatToDecimal
 import UTILS_Infos_individus
 import UTILS_Fichiers
+import UTILS_Texte
 
+
+def FormateMaj(nom_titulaires):
+    """ Formate nom de fichier en majuscules et sans caractères spéciaux """
+    nom_titulaires = UTILS_Texte.Supprime_accent(nom_titulaires)
+    resultat = ""
+    for caract in nom_titulaires :
+        if caract in " abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ" :
+            resultat += caract.upper()
+    resultat = resultat.replace(" ", "_")
+    return resultat
 
 
 class Facturation():
@@ -961,14 +972,14 @@ class Facturation():
 
 
 
-    def Impression(self, listeFactures=[], nomDoc=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False, afficherOptions=True):
+    def Impression(self, listeFactures=[], nomDoc=None, nomFichierUnique=None, afficherDoc=True, dictOptions=None, repertoire=None, repertoireTemp=False, afficherOptions=True):
         """ Impression des factures """
         # Récupération des paramètres d'affichage
         if dictOptions == None :
             if afficherOptions == True :
 
                 if afficherDoc == False :
-                    dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture à envoyer par Email."))
+                    dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture puis cliquez sur le bouton OK."))
                     dlg.bouton_ok.SetImageEtTexte("Images/32x32/Valider.png", _("Ok"))
                 else :
                     dlg = DLG_Apercu_facture.Dialog(None)
@@ -980,7 +991,7 @@ class Facturation():
                     return False
 
             else :
-                dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture à envoyer par Email."))
+                dlg = DLG_Apercu_facture.Dialog(None, titre=_(u"Sélection des paramètres de la facture"), intro=_(u"Sélectionnez ici les paramètres d'affichage de la facture puis cliquez sur le bouton OK."))
                 dictOptions = dlg.GetParametres()
                 dlg.Destroy()
 
@@ -1004,7 +1015,13 @@ class Facturation():
                     if dictFacture["select"] == True :
                         num_facture = dictFacture["num_facture"]
                         nomTitulaires = self.Supprime_accent(dictFacture["nomSansCivilite"])
-                        nomFichier = _(u"Facture %s - %s") % (num_facture, nomTitulaires)
+                        if nomFichierUnique == None :
+                            nomFichier = _(u"Facture %s - %s") % (num_facture, nomTitulaires)
+                        else :
+                            nomFichier = nomFichierUnique
+                            nomFichier = nomFichier.replace("{NUM_FACTURE}", num_facture)
+                            nomFichier = nomFichier.replace("{NOM_TITULAIRES}", nomTitulaires)
+                            nomFichier = nomFichier.replace("{NOM_TITULAIRES_MAJ}", FormateMaj(nomTitulaires))
                         cheminFichier = u"%s/%s.pdf" % (repertoireCible, nomFichier)
                         dictComptesTemp = {IDfacture : dictFacture}
                         self.EcritStatusbar(_(u"Edition de la facture %d/%d : %s") % (index, len(dictFactures), nomFichier))

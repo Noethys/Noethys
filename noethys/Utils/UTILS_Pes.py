@@ -190,6 +190,11 @@ def GetXML(dictDonnees={}):
         NatPce.setAttribute("V", "01")
         BlocPiece.appendChild(NatPce)
 
+        if dictDonnees["pieces_jointes"] != False :
+            Edition = doc.createElement("Edition")
+            Edition.setAttribute("V", "03")
+            BlocPiece.appendChild(Edition)
+
         ObjPce = doc.createElement("ObjPce")
         ObjPce.setAttribute("V", dictPiece["objet_piece"][:160])
         BlocPiece.appendChild(ObjPce)
@@ -211,6 +216,45 @@ def GetXML(dictDonnees={}):
         cle2 = GetCle_modulo23((dictDonnees["exercice"][-2:], dictDonnees["mois"], "00", u"{:0>13}".format(dictPiece["num_dette"])))
         Cle2.setAttribute("V", cle2)
         BlocPiece.appendChild(Cle2)
+
+        if dictDonnees["pieces_jointes"] != False:
+
+            PJRef = doc.createElement("PJRef")
+            BlocPiece.appendChild(PJRef)
+
+            Support = doc.createElement("Support")
+            Support.setAttribute("V", "01")
+            PJRef.appendChild(Support)
+
+            IdUnique = doc.createElement("IdUnique")
+            IdUnique.setAttribute("V", dictDonnees["pieces_jointes"][dictPiece["IDfacture"]]["IdUnique"])
+            PJRef.appendChild(IdUnique)
+
+            NomPJ = doc.createElement("NomPJ")
+            NomPJ.setAttribute("V", dictDonnees["pieces_jointes"][dictPiece["IDfacture"]]["NomPJ"])
+            PJRef.appendChild(NomPJ)
+
+
+        NumeroFacture = doc.createElement("NumeroFacture")
+        NumeroFacture.setAttribute("V", dictPiece["num_dette"][:20])
+        BlocPiece.appendChild(NumeroFacture)
+
+        # NumeroMarche = doc.createElement("NumeroMarche")
+        # NumeroMarche.setAttribute("V", "")
+        # BlocPiece.appendChild(NumeroMarche)
+
+        # NumeroEngagement = doc.createElement("NumeroEngagement")
+        # NumeroEngagement.setAttribute("V", "")
+        # BlocPiece.appendChild(NumeroEngagement)
+
+        # CodeService = doc.createElement("CodeService")
+        # CodeService.setAttribute("V", "")
+        # BlocPiece.appendChild(CodeService)
+
+        # NomService = doc.createElement("NomService")
+        # NomService.setAttribute("V", "")
+        # BlocPiece.appendChild(NomService)
+
 
         # Ligne de pièce
         LigneDePiece = doc.createElement("LigneDePiece")
@@ -389,6 +433,53 @@ def GetXML(dictDonnees={}):
             TitCpte = doc.createElement("TitCpte")
             TitCpte.setAttribute("V", dictPiece["prelevement_titulaire"][:32])
             CpteBancaire.appendChild(TitCpte)
+
+    # ----------------------- PIECES JOINTES -------------------------------------------------------------------------------------------------------------------
+
+    if dictDonnees["pieces_jointes"] != False and len(dictDonnees["pieces_jointes"]) > 0 :
+
+        # PES_PJ
+        PES_PJ = doc.createElement("PES_PJ")
+        racine.appendChild(PES_PJ)
+
+        # EnTetePES_PJ
+        EnTetePES_PJ = doc.createElement("EnTetePES_PJ")
+        PES_PJ.appendChild(EnTetePES_PJ)
+
+        IdVer = doc.createElement("IdVer")
+        IdVer.setAttribute("V", "1")
+        EnTetePES_PJ.appendChild(IdVer)
+
+        for IDfacture, dictPieceJointe in dictDonnees["pieces_jointes"].iteritems() :
+
+            PJ = doc.createElement("PJ")
+            PES_PJ.appendChild(PJ)
+
+            Contenu = doc.createElement("Contenu")
+            PJ.appendChild(Contenu)
+
+            Fichier = doc.createElement("Fichier")
+            Fichier.setAttribute("MIMEType", "application/pdf")
+            Contenu.appendChild(Fichier)
+
+            binaire = doc.createTextNode(dictPieceJointe["contenu"])
+            Fichier.appendChild(binaire)
+
+            IdUnique = doc.createElement("IdUnique")
+            IdUnique.setAttribute("V", dictPieceJointe["IdUnique"])
+            PJ.appendChild(IdUnique)
+
+            NomPJ = doc.createElement("NomPJ")
+            NomPJ.setAttribute("V", dictPieceJointe["NomPJ"])
+            PJ.appendChild(NomPJ)
+
+            TypePJ = doc.createElement("TypePJ")
+            TypePJ.setAttribute("V", "007")
+            PJ.appendChild(TypePJ)
+
+            Description = doc.createElement("Description")
+            Description.setAttribute("V", dictPieceJointe["description"])
+            PJ.appendChild(Description)
 
     return doc
 

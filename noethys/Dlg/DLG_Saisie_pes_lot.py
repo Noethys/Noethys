@@ -18,11 +18,12 @@ import os
 import sys
 import GestionDB
 import datetime
-from PIL import Image
-import cStringIO
+import gzip
+import shutil
+import base64
+import os.path
 import wx.propgrid as wxpg
 
-from Ctrl import CTRL_Saisie_date
 from Utils import UTILS_Dates
 from Ol import OL_Modes_reglements
 from Ol import OL_PES_pieces
@@ -31,11 +32,12 @@ import FonctionsPerso
 import wx.lib.dialogs as dialogs
 import wx.lib.agw.hyperlink as Hyperlink
 
+from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
+from Utils import UTILS_Facturation
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
-from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 
 def Supprime_accent(texte):
@@ -95,22 +97,9 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
             # ensure we only do it once
             sys._PropGridEditorsRegistered = True
         
-        # Remplissage des valeurs               
-##        for nom, listeProprietes in self.listeDonnees :
-##            self.Append( wxpg.PropertyCategory(nom) )
-##        
-##            for dictTemp in listeProprietes :
-##                propriete = wxpg.IntProperty(label=dictTemp["label"], name=dictTemp["code"], value=dictTemp["valeur"])
-##                self.Append(propriete)
-##                self.SetPropertyAttribute(propriete, "Min", 0)
-##                self.SetPropertyAttribute(propriete, "Max", 800)
-##                self.SetPropertyEditor(propriete, "EditeurAvecBoutons")
-        
-##        self.SetVerticalSpacing(3) 
         self.SetExtraStyle(wxpg.PG_EX_HELP_AS_TOOLTIPS)
         couleurFond = "#dcf7d4"
         self.SetCaptionBackgroundColour(couleurFond)
-##        self.SetMarginColour(couleurFond)
         self.Bind( wxpg.EVT_PG_CHANGED, self.OnPropGridChange )
         
         # Bordereau
@@ -151,9 +140,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         propriete = wxpg.StringProperty(label=_(u"ID Bordereau"), name="id_bordereau", value=u"")
         propriete.SetHelpString(_(u"Saisissez l'ID du bordereau")) 
         self.Append(propriete)
-##        propriete.SetAttribute("Hint", _(u"Coucou !"))
-##        self.SetPropertyCell("id_bordereau", 0, bitmap = wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
-        
+
         propriete = wxpg.StringProperty(label=_(u"ID Poste"), name="id_poste", value=u"")
         propriete.SetHelpString(_(u"Saisissez l'ID du bordereau")) 
         self.Append(propriete)
@@ -183,6 +170,18 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
 
         propriete = wxpg.StringProperty(label=_(u"Libellé du prélèvement"), name="prelevement_libelle", value=u"{NOM_ORGANISATEUR} - {OBJET_PIECE}")
         propriete.SetHelpString(_(u"Saisissez le libellé du prélèvement qui apparaîtra sur le relevé de compte de la famille. Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NOM_ORGANISATEUR} {OBJET_PIECE} {NUM_FACTURE} {LIBELLE_FACTURE} {MOIS} {MOIS_LETTRES} {ANNEE}.")) 
+        self.Append(propriete)
+
+        # Pièces jointes
+        self.Append( wxpg.PropertyCategory(_(u"Pièces jointes")) )
+
+        propriete = wxpg.BoolProperty(label=_(u"Inclure les factures en pièces jointes"), name="inclure_pieces_jointes", value=True)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre les factures en temps que pièces jointes au bordereau"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        propriete = wxpg.StringProperty(label=_(u"Format des noms de fichiers"), name="format_nom_fichier", value=_(u"F{NUM_FACTURE}_{NOM_TITULAIRES_MAJ}"))
+        propriete.SetHelpString(_(u"Saisissez le format des noms de fichiers (en majuscules et sans espaces ni accents). Vous pouvez personnaliser ce libellé grâce aux mots-clés suivants : {NUM_FACTURE} {NOM_TITULAIRES} {NOM_TITULAIRES_MAJ}."))
         self.Append(propriete)
 
         # Règlement automatique
@@ -577,154 +576,7 @@ class Dialog(wx.Dialog):
 
     def OnBoutonAnnuler(self, event): 
         self.EndModal(wx.ID_CANCEL)
-    
-    def OnBoutonFichier(self, event): 
-        """ Génération d'un fichier normalisé """
-        # Validation des données
-        if self.ValidationDonnees() == False :
-            return
 
-        # Récupération des infos sur la remise
-        remise_nom = Supprime_accent(self.ctrl_nom.GetValue())
-        nom_fichier = remise_nom
-        
-        nomOrganisateur = UTILS_Organisateur.GetNom() 
-        
-        # Récupération des transactions à effectuer
-        montantTotal = FloatToDecimal(0.0)
-        nbreTotal = 0
-        listeAnomalies = []
-        listePieces = []
-        for track in self.ctrl_pieces.GetObjects() :
-            montant = FloatToDecimal(track.montant)
-            
-            if track.analysePiece == False :
-                listeAnomalies.append(u"%s : " % (track.libelle, track.analysePieceTexte))
-
-            # Objet de la pièce
-            objet_piece = self.ctrl_parametres.GetPropertyValue("objet_piece")
-            objet_piece = Supprime_accent(objet_piece).upper() 
-            objet_piece = objet_piece.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
-            objet_piece = objet_piece.replace("{NUM_FACTURE}", str(track.numero))
-            objet_piece = objet_piece.replace("{LIBELLE_FACTURE}", track.libelle)
-            objet_piece = objet_piece.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
-            objet_piece = objet_piece.replace("{MOIS_LETTRES}", GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
-            objet_piece = objet_piece.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
-
-            # Création du libellé du prélèvement
-            prelevement_libelle = self.ctrl_parametres.GetPropertyValue("prelevement_libelle")
-            prelevement_libelle = prelevement_libelle.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
-            prelevement_libelle = prelevement_libelle.replace("{OBJET_PIECE}", objet_piece)
-            prelevement_libelle = prelevement_libelle.replace("{LIBELLE_FACTURE}", track.libelle)
-            prelevement_libelle = prelevement_libelle.replace("{NUM_FACTURE}", str(track.numero))
-            prelevement_libelle = prelevement_libelle.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
-            prelevement_libelle = prelevement_libelle.replace("{MOIS_LETTRES}", GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
-            prelevement_libelle = prelevement_libelle.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
-            
-            dictPiece = {
-                "id_piece" : str(track.IDfacture),
-                "objet_piece" : objet_piece,
-                "num_dette" : str(track.numero),
-                "montant" : str(montant),
-                "sequence" : track.prelevement_sequence,
-                "prelevement" : track.prelevement,
-                "prelevement_date_mandat" : str(track.prelevement_date_mandat),
-                "prelevement_rum" : track.prelevement_rum,
-                "prelevement_bic" : track.prelevement_bic,
-                "prelevement_iban" : track.prelevement_iban,
-                "prelevement_titulaire" : track.prelevement_titulaire,
-                "prelevement_libelle" : prelevement_libelle,
-                "titulaire_civilite" : track.titulaireCivilite,
-                "titulaire_nom" : track.titulaireNom,
-                "titulaire_prenom" : track.titulairePrenom,
-                "titulaire_rue" : track.titulaireRue,
-                "titulaire_cp" : track.titulaireCP,
-                "titulaire_ville" : track.titulaireVille,
-                "idtiers_helios" : track.idtiers_helios,
-                "natidtiers_helios" : track.natidtiers_helios,
-                "reftiers_helios" : track.reftiers_helios,
-                "cattiers_helios" : track.cattiers_helios,
-                "natjur_helios" : track.natjur_helios,
-                }        
-            listePieces.append(dictPiece)
-            montantTotal += montant
-            nbreTotal += 1
-
-        # Mémorisation de tous les données
-        dictDonnees = {
-            "nom_fichier" : nom_fichier,
-            "date_emission" : self.ctrl_parametres.GetPropertyValue("date_emission").strftime("%Y-%m-%d"),
-            "date_envoi" : self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d"),
-            "date_prelevement" : self.ctrl_parametres.GetPropertyValue("date_prelevement").strftime("%Y-%m-%d"),
-            "id_poste" : self.ctrl_parametres.GetPropertyValue("id_poste"),
-            "id_collectivite" : self.ctrl_parametres.GetPropertyValue("id_collectivite"),
-            "code_collectivite" : self.ctrl_parametres.GetPropertyValue("code_collectivite"),
-            "code_budget" : self.ctrl_parametres.GetPropertyValue("code_budget"),
-            "exercice" : str(self.ctrl_parametres.GetPropertyValue("exercice")),
-            "mois" : str(self.ctrl_parametres.GetPropertyValue("mois")),
-            "id_bordereau" : self.ctrl_parametres.GetPropertyValue("id_bordereau"),
-            "montant_total" : str(montantTotal),
-            "objet_dette" : self.ctrl_parametres.GetPropertyValue("objet_dette"),
-            "code_prodloc" : self.ctrl_parametres.GetPropertyValue("code_prodloc"),
-            "pieces" : listePieces,
-            }
-    
-        if len(listeAnomalies) > 0 :
-            import wx.lib.dialogs as dialogs
-            message = "\n".join(listeAnomalies)
-            dlg = dialogs.MultiMessageDialog(self, _(u"Le fichier XML PES Recette ORMC ne peut être généré en raison des anomalies suivantes :"), caption = _(u"Génération impossible"), msg2=message, style = wx.ICON_ERROR | wx.OK, icon=None, btnLabels={wx.ID_OK : _(u"Fermer")})
-            dlg.ShowModal() 
-            dlg.Destroy() 
-            return
-
-        # Génération du fichier XML
-        doc = UTILS_Pes.GetXML(dictDonnees)
-        xml = doc.toprettyxml(encoding="utf-8")
-        
-        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
-        wildcard = "Fichier XML (*.xml)|*.xml| All files (*.*)|*.*"
-        sp = wx.StandardPaths.Get()
-        cheminDefaut = sp.GetDocumentsDir()
-        dlg = wx.FileDialog(
-            None, message = _(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"), defaultDir=cheminDefaut, 
-            defaultFile = nom_fichier, 
-            wildcard = wildcard, 
-            style = wx.SAVE
-            )
-        dlg.SetFilterIndex(0)
-        if dlg.ShowModal() == wx.ID_OK:
-            cheminFichier = dlg.GetPath()
-            dlg.Destroy()
-        else:
-            dlg.Destroy()
-            return
-        
-        # Le fichier de destination existe déjà :
-        if os.path.isfile(cheminFichier) == True :
-            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
-            if dlg.ShowModal() == wx.ID_NO :
-                return False
-                dlg.Destroy()
-            else:
-                dlg.Destroy()
-
-        # Création du fichier texte
-        f = open(cheminFichier, "w")
-        try:
-            f.write(doc.toxml(encoding="ISO-8859-1"))
-        finally:
-            f.close()
-
-        # Confirmation de création du fichier et demande d'ouverture directe
-        txtMessage = _(u"Le fichier xml PES Recette ORMC a été créé avec succès.\n\nSouhaitez-vous visualiser son contenu maintenant ?")
-        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.ICON_QUESTION)
-        reponse = dlgConfirm.ShowModal()
-        dlgConfirm.Destroy()
-        if reponse == wx.ID_NO:
-            return
-        else:
-            FonctionsPerso.LanceFichierExterne(cheminFichier)
-        
     def GetLabelParametres(self):
         """ Renvoie les paramètres pour impression """
         nom = self.ctrl_nom.GetValue()
@@ -1049,8 +901,210 @@ class Dialog(wx.Dialog):
         
         # Coche tous les prélèvements
         self.ctrl_pieces.CocheTout()
-        
-        
+
+    def OnBoutonFichier(self, event):
+        """ Génération d'un fichier normalisé """
+        # Validation des données
+        if self.ValidationDonnees() == False:
+            return
+
+        # Récupération des infos sur la remise
+        remise_nom = Supprime_accent(self.ctrl_nom.GetValue())
+        nom_fichier = remise_nom
+
+        nomOrganisateur = UTILS_Organisateur.GetNom()
+
+        # Génération des pièces jointes
+        dict_pieces_jointes = False
+        if self.ctrl_parametres.GetPropertyValue("inclure_pieces_jointes") == True :
+            dict_pieces_jointes = self.GenerationPiecesJointes()
+
+        # Récupération des transactions à effectuer
+        montantTotal = FloatToDecimal(0.0)
+        nbreTotal = 0
+        listeAnomalies = []
+        listePieces = []
+        for track in self.ctrl_pieces.GetObjects():
+            montant = FloatToDecimal(track.montant)
+
+            if track.analysePiece == False:
+                listeAnomalies.append(u"%s : " % (track.libelle, track.analysePieceTexte))
+
+            # Objet de la pièce
+            objet_piece = self.ctrl_parametres.GetPropertyValue("objet_piece")
+            objet_piece = Supprime_accent(objet_piece).upper()
+            objet_piece = objet_piece.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
+            objet_piece = objet_piece.replace("{NUM_FACTURE}", str(track.numero))
+            objet_piece = objet_piece.replace("{LIBELLE_FACTURE}", track.libelle)
+            objet_piece = objet_piece.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
+            objet_piece = objet_piece.replace("{MOIS_LETTRES}", GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
+            objet_piece = objet_piece.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
+
+            # Création du libellé du prélèvement
+            prelevement_libelle = self.ctrl_parametres.GetPropertyValue("prelevement_libelle")
+            prelevement_libelle = prelevement_libelle.replace("{NOM_ORGANISATEUR}", nomOrganisateur)
+            prelevement_libelle = prelevement_libelle.replace("{OBJET_PIECE}", objet_piece)
+            prelevement_libelle = prelevement_libelle.replace("{LIBELLE_FACTURE}", track.libelle)
+            prelevement_libelle = prelevement_libelle.replace("{NUM_FACTURE}", str(track.numero))
+            prelevement_libelle = prelevement_libelle.replace("{MOIS}", str(self.ctrl_parametres.GetPropertyValue("mois")))
+            prelevement_libelle = prelevement_libelle.replace("{MOIS_LETTRES}", GetMoisStr(self.ctrl_parametres.GetPropertyValue("mois"), majuscules=True, sansAccents=True))
+            prelevement_libelle = prelevement_libelle.replace("{ANNEE}", str(self.ctrl_parametres.GetPropertyValue("exercice")))
+
+            dictPiece = {
+                "id_piece": str(track.IDfacture),
+                "objet_piece": objet_piece,
+                "num_dette": str(track.numero),
+                "montant": str(montant),
+                "sequence": track.prelevement_sequence,
+                "prelevement": track.prelevement,
+                "prelevement_date_mandat": str(track.prelevement_date_mandat),
+                "prelevement_rum": track.prelevement_rum,
+                "prelevement_bic": track.prelevement_bic,
+                "prelevement_iban": track.prelevement_iban,
+                "prelevement_titulaire": track.prelevement_titulaire,
+                "prelevement_libelle": prelevement_libelle,
+                "titulaire_civilite": track.titulaireCivilite,
+                "titulaire_nom": track.titulaireNom,
+                "titulaire_prenom": track.titulairePrenom,
+                "titulaire_rue": track.titulaireRue,
+                "titulaire_cp": track.titulaireCP,
+                "titulaire_ville": track.titulaireVille,
+                "idtiers_helios": track.idtiers_helios,
+                "natidtiers_helios": track.natidtiers_helios,
+                "reftiers_helios": track.reftiers_helios,
+                "cattiers_helios": track.cattiers_helios,
+                "natjur_helios": track.natjur_helios,
+                "IDfacture" : track.IDfacture,
+            }
+            listePieces.append(dictPiece)
+            montantTotal += montant
+            nbreTotal += 1
+
+        # Mémorisation de tous les données
+        dictDonnees = {
+            "nom_fichier": nom_fichier,
+            "date_emission": self.ctrl_parametres.GetPropertyValue("date_emission").strftime("%Y-%m-%d"),
+            "date_envoi": self.ctrl_parametres.GetPropertyValue("date_envoi").strftime("%Y-%m-%d"),
+            "date_prelevement": self.ctrl_parametres.GetPropertyValue("date_prelevement").strftime("%Y-%m-%d"),
+            "id_poste": self.ctrl_parametres.GetPropertyValue("id_poste"),
+            "id_collectivite": self.ctrl_parametres.GetPropertyValue("id_collectivite"),
+            "code_collectivite": self.ctrl_parametres.GetPropertyValue("code_collectivite"),
+            "code_budget": self.ctrl_parametres.GetPropertyValue("code_budget"),
+            "exercice": str(self.ctrl_parametres.GetPropertyValue("exercice")),
+            "mois": str(self.ctrl_parametres.GetPropertyValue("mois")),
+            "id_bordereau": self.ctrl_parametres.GetPropertyValue("id_bordereau"),
+            "montant_total": str(montantTotal),
+            "objet_dette": self.ctrl_parametres.GetPropertyValue("objet_dette"),
+            "code_prodloc": self.ctrl_parametres.GetPropertyValue("code_prodloc"),
+            "pieces": listePieces,
+            "pieces_jointes" : dict_pieces_jointes,
+        }
+
+        if len(listeAnomalies) > 0:
+            import wx.lib.dialogs as dialogs
+            message = "\n".join(listeAnomalies)
+            dlg = dialogs.MultiMessageDialog(self, _(u"Le fichier XML PES Recette ORMC ne peut être généré en raison des anomalies suivantes :"), caption=_(u"Génération impossible"), msg2=message, style=wx.ICON_ERROR | wx.OK, icon=None, btnLabels={wx.ID_OK: _(u"Fermer")})
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+
+        # Génération du fichier XML
+        doc = UTILS_Pes.GetXML(dictDonnees)
+        xml = doc.toprettyxml(encoding="utf-8")
+
+        # Demande à l'utilisateur le nom de fichier et le répertoire de destination
+        wildcard = "Fichier XML (*.xml)|*.xml| All files (*.*)|*.*"
+        sp = wx.StandardPaths.Get()
+        cheminDefaut = sp.GetDocumentsDir()
+        dlg = wx.FileDialog(
+            None, message=_(u"Veuillez sélectionner le répertoire de destination et le nom du fichier"),
+            defaultDir=cheminDefaut,
+            defaultFile=nom_fichier,
+            wildcard=wildcard,
+            style=wx.SAVE
+        )
+        dlg.SetFilterIndex(0)
+        if dlg.ShowModal() == wx.ID_OK:
+            cheminFichier = dlg.GetPath()
+            dlg.Destroy()
+        else:
+            dlg.Destroy()
+            return
+
+        # Le fichier de destination existe déjà :
+        if os.path.isfile(cheminFichier) == True:
+            dlg = wx.MessageDialog(None, _(u"Un fichier portant ce nom existe déjà. \n\nVoulez-vous le remplacer ?"), "Attention !", wx.YES_NO | wx.NO_DEFAULT | wx.ICON_EXCLAMATION)
+            if dlg.ShowModal() == wx.ID_NO:
+                return False
+                dlg.Destroy()
+            else:
+                dlg.Destroy()
+
+        # Création du fichier texte
+        f = open(cheminFichier, "w")
+        try:
+            f.write(doc.toxml(encoding="ISO-8859-1"))
+        finally:
+            f.close()
+
+        # Confirmation de création du fichier et demande d'ouverture directe
+        txtMessage = _(u"Le fichier xml PES Recette ORMC a été créé avec succès.\n\nSouhaitez-vous visualiser son contenu maintenant ?")
+        dlgConfirm = wx.MessageDialog(None, txtMessage, _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+        reponse = dlgConfirm.ShowModal()
+        dlgConfirm.Destroy()
+        if reponse == wx.ID_NO:
+            return
+        else:
+            FonctionsPerso.LanceFichierExterne(cheminFichier)
+
+    def GenerationPiecesJointes(self):
+        """ Génération des pièces jointes """
+        listeIDfacture = []
+        for track in self.ctrl_pieces.GetObjects():
+            listeIDfacture.append(track.IDfacture)
+
+        # Génération des factures au format PDF
+        nomFichierUnique = self.ctrl_parametres.GetPropertyValue("format_nom_fichier")
+
+        facturation = UTILS_Facturation.Facturation()
+        resultat = facturation.Impression(listeFactures=listeIDfacture, nomFichierUnique=nomFichierUnique, afficherDoc=False, repertoireTemp=True)
+        if resultat == False:
+            return
+        dictChampsFusion, dictPieces = resultat
+
+        # Conversion des fichiers en GZIP/base64
+        dict_pieces_jointes = {}
+        for IDfacture, cheminFichier in dictPieces.iteritems() :
+
+            # Compression GZIP
+            cheminFichierGzip = cheminFichier + ".zip"
+            with open(cheminFichier, 'rb') as f_in, gzip.open(cheminFichierGzip, 'wb') as f_out:
+                shutil.copyfileobj(f_in, f_out)
+
+            # Encodage en base64
+            with open(cheminFichierGzip, "rb") as fichier:
+                contenu = base64.b64encode(fichier.read())
+
+            # Suppression des fichiers temporaires
+            os.remove(cheminFichier)
+            os.remove(cheminFichierGzip)
+
+            # Mémorisation des pièces jointes
+            NomPJ = os.path.basename(cheminFichier)
+            IdUnique = str(IDfacture)
+            description = u"FACTURE %s" % str(IDfacture)
+
+            dict_pieces_jointes[IDfacture] = {"NomPJ" : NomPJ, "IdUnique" : IdUnique, "contenu" : contenu, "description" : description}
+
+        return dict_pieces_jointes
+
+
+
+
+
+
+
+
 
 if __name__ == u"__main__":
     app = wx.App(0)
