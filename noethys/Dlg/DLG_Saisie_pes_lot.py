@@ -176,7 +176,7 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         self.Append( wxpg.PropertyCategory(_(u"Pièces jointes")) )
 
         propriete = wxpg.BoolProperty(label=_(u"Inclure les factures en pièces jointes"), name="inclure_pieces_jointes", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre les factures en temps que pièces jointes au bordereau"))
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre les factures en tant que pièces jointes au bordereau"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -918,6 +918,8 @@ class Dialog(wx.Dialog):
         dict_pieces_jointes = False
         if self.ctrl_parametres.GetPropertyValue("inclure_pieces_jointes") == True :
             dict_pieces_jointes = self.GenerationPiecesJointes()
+            if dict_pieces_jointes == None :
+                return
 
         # Récupération des transactions à effectuer
         montantTotal = FloatToDecimal(0.0)
