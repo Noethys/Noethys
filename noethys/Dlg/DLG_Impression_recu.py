@@ -41,9 +41,9 @@ DICT_CIVILITES = Civilites.GetDictCivilites()
 
 LISTE_DONNEES = [
     { "nom" : _(u"Reçu"), "champs" : [ 
-        { "code" : "numero", "label" : "Numéro"}, 
-        { "code" : "date", "label" : "Date d'édition"}, 
-        { "code" : "lieu", "label" : "Lieu d'édition"},
+        { "code" : "numero", "label" : _(u"Numéro")},
+        { "code" : "date", "label" : _(u"Date d'édition")},
+        { "code" : "lieu", "label" : _(u"Lieu d'édition")},
         ] },
     { "nom" : _(u"Destinataire"), "champs" : [ 
         { "code" : "nom", "label" : "Nom"}, 
@@ -51,7 +51,7 @@ LISTE_DONNEES = [
         { "code" : "ville", "label" : "CP + Ville"},
         ] },
     { "nom" : _(u"Organisme"), "champs" : [ 
-        { "code" : "siret", "label" : "Numéro SIRET"}, 
+        { "code" : "siret", "label" : _(u"Numéro SIRET")},
         { "code" : "ape", "label" : "Code APE"}, 
         ] },
     ]
