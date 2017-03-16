@@ -478,7 +478,7 @@ def GetXML(dictDonnees={}):
             PJ.appendChild(TypePJ)
 
             Description = doc.createElement("Description")
-            Description.setAttribute("V", dictPieceJointe["description"])
+            Description.setAttribute("V", "FACTURE %s" % dictPieceJointe["numero_facture"])
             PJ.appendChild(Description)
 
     return doc
