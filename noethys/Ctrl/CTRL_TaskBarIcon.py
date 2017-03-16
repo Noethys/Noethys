@@ -13,10 +13,15 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 
+try :
+    from wx import TaskBarIcon as TaskBarIcon
+except :
+    from wx.adv import TaskBarIcon as TaskBarIcon
+
 
 class CustomTaskBarIcon():
     def __init__(self, parent=None):
-        self.tbicon = wx.TaskBarIcon()
+        self.tbicon = TaskBarIcon()
 
         # Binds
         # wx.EVT_TASKBAR_LEFT_DCLICK(self.tbicon, self.OnTaskBarLeftDClick)

@@ -104,7 +104,10 @@ class MainFrame(wx.Frame):
         theme = CUSTOMIZE.GetValeur("interface", "theme", "Vert")
 
         # Icône
-        icon = wx.EmptyIcon()
+        try :
+            icon = wx.Icon()
+        except :
+            icon = wx.EmptyIcon()
         icon.CopyFromBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/Interface/%s/Icone.png" % theme), wx.BITMAP_TYPE_ANY))
         self.SetIcon(icon)
 
@@ -115,11 +118,11 @@ class MainFrame(wx.Frame):
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         systeme = u"%s %s %s %s" % (sys.platform, platform.system(), platform.release(), platform.machine())
         print "------------ %s | %s | %s ------------" % (dateDuJour, VERSION_APPLICATION, systeme)
-        
+
         # Diminution de la taille de la police sous linux
         from Utils import UTILS_Linux
         UTILS_Linux.AdaptePolice(self)
-    
+
     def Initialisation(self):
         # Vérifie que le fichier de configuration existe bien
         if UTILS_Config.IsFichierExists() == False :
@@ -1037,7 +1040,10 @@ class MainFrame(wx.Frame):
             itemMenu = wx.MenuItem(menuParent, id, item["label"], item["infobulle"], genre)
             if item.has_key("image") :
                 itemMenu.SetBitmap(wx.Bitmap(Chemins.GetStaticPath(item["image"]), wx.BITMAP_TYPE_PNG))
-            menuParent.AppendItem(itemMenu)
+            try :
+                menuParent.Append(itemMenu)
+            except :
+                menuParent.AppendItem(itemMenu)
             if item.has_key("actif") :
                 itemMenu.Enable(item["actif"])
             self.Bind(wx.EVT_MENU, item["action"], id=id)
@@ -1054,7 +1060,10 @@ class MainFrame(wx.Frame):
                 else :
                     CreationItem(menu, sousitem)
             if sousmenu == True :
-                menuParent.AppendMenu(id, item["label"], menu)
+                try :
+                    menuParent.Append(id, item["label"], menu)
+                except :
+                    menuParent.AppendMenu(id, item["label"], menu)
             else :
                 menuParent.Append(menu, item["label"])
             self.dictInfosMenu[item["code"]] = {"id" : id, "ctrl" : menu}
@@ -1093,7 +1102,10 @@ class MainFrame(wx.Frame):
                 if "[RESEAU]" in nomFichier :
                     nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
                 item = wx.MenuItem(menu_fichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), _(u"Ouvrir le fichier : '%s'") % nomFichier)
-                menu_fichier.AppendItem(item)
+                try :
+                    menu_fichier.Append(item)
+                except :
+                    menu_fichier.AppendItem(item)
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
 
@@ -1128,7 +1140,10 @@ class MainFrame(wx.Frame):
             dictPanneau["IDmenu"] = ID
             label = dictPanneau["label"]
             item = wx.MenuItem(menu_affichage, dictPanneau["IDmenu"], label, _(u"Afficher l'élément '%s'") % label, wx.ITEM_CHECK)
-            menu_affichage.InsertItem(position, item)
+            try :
+                menu_affichage.Insert(position, item)
+            except :
+                menu_affichage.InsertItem(position, item)
             position += 1
             ID += 1
         self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_panneau_afficher, id=ID_AFFICHAGE_PANNEAUX, id2=ID_AFFICHAGE_PANNEAUX+len(self.listePanneaux) )

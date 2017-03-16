@@ -71,8 +71,10 @@ class FichierConfig():
         db = shelve.open(self.nomFichier.encode("iso-8859-15"), "r")
         dictDonnees = {}
         for key in db.keys():
-            dictDonnees[key] = db[key]
-            #print key, db[key]
+            try :
+                dictDonnees[key] = db[key]
+            except :
+                pass
         db.close()
         return dictDonnees
     

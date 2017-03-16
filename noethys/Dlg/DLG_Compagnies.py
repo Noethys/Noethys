@@ -35,7 +35,7 @@ DICT_CATEGORIES = {
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie="avion", mode="gestion"):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Compagnies", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Compagnies", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.mode = mode
         self.categorie = categorie

@@ -38,16 +38,35 @@ class ToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, *args, **kwds)
 
         # Boutons
-        self.AddLabelTool(ID_CREER_FAMILLE, _(u"Ajouter"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_ajouter.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Créer une nouvelle famille"), "")
-        self.AddSeparator()
-        self.AddLabelTool(ID_MODIFIER_FAMILLE, _(u"Modifier"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_modifier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Modifier la fiche famille de l'individu sélectionné"), "")
-        self.AddLabelTool(ID_SUPPRIMER_FAMILLE, _(u"Supprimer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_supprimer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Supprimer ou détacher l'individu sélectionné"), "")
-        self.AddSeparator()
-        self.AddLabelTool(ID_OUVRIR_GRILLE, _(u"Calendrier"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)"), "")
-        self.AddLabelTool(ID_OUVRIR_FICHE_IND, _(u"Fiche ind."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Personnes.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)"), "")
-        self.AddSeparator()
-##        self.AddLabelTool(ID_PARAMETRES, _(u"Paramètres"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration2.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Sélectionner les paramètres d'affichage"), "")
-        self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
+        liste_boutons = [
+            {"ID" : ID_CREER_FAMILLE, "label" : _(u"Ajouter"), "image" : "Images/32x32/Famille_ajouter.png", "tooltip" : _(u"Créer une nouvelle famille")},
+            None,
+            {"ID": ID_MODIFIER_FAMILLE, "label": _(u"Modifier"), "image": "Images/32x32/Famille_modifier.png", "tooltip": _(u"Modifier la fiche famille de l'individu sélectionné")},
+            {"ID": ID_SUPPRIMER_FAMILLE, "label": _(u"Supprimer"), "image": "Images/32x32/Famille_supprimer.png", "tooltip": _(u"Supprimer ou détacher l'individu sélectionné")},
+            None,
+            {"ID": ID_OUVRIR_GRILLE, "label": _(u"Calendrier"), "image": "Images/32x32/Calendrier.png", "tooltip": _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)")},
+            {"ID": ID_OUVRIR_FICHE_IND, "label": _(u"Fiche ind."), "image": "Images/32x32/Personnes.png", "tooltip": _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)")},
+            None,
+            {"ID": ID_OUTILS, "label": _(u"Outils"), "image": "Images/32x32/Configuration.png", "tooltip": _(u"Outils")},
+            ]
+        for bouton in liste_boutons :
+            if bouton == None :
+                self.AddSeparator()
+            else :
+                try :
+                    self.AddTool(bouton["ID"], bouton["label"], wx.Bitmap(Chemins.GetStaticPath(bouton["image"]), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, bouton["tooltip"], "")
+                except :
+                    self.AddLabelTool(bouton["ID"], bouton["label"], wx.Bitmap(Chemins.GetStaticPath(bouton["image"]), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, bouton["tooltip"], "")
+
+        # self.AddLabelTool(ID_CREER_FAMILLE, _(u"Ajouter"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_ajouter.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Créer une nouvelle famille"), "")
+        # self.AddSeparator()
+        # self.AddLabelTool(ID_MODIFIER_FAMILLE, _(u"Modifier"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_modifier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Modifier la fiche famille de l'individu sélectionné"), "")
+        # self.AddLabelTool(ID_SUPPRIMER_FAMILLE, _(u"Supprimer"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Famille_supprimer.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Supprimer ou détacher l'individu sélectionné"), "")
+        # self.AddSeparator()
+        # self.AddLabelTool(ID_OUVRIR_GRILLE, _(u"Calendrier"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Calendrier.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la grille des consommations de l'individu sélectionné\n(ou double-clic sur la ligne + touche CTRL enfoncée)"), "")
+        # self.AddLabelTool(ID_OUVRIR_FICHE_IND, _(u"Fiche ind."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Personnes.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Ouvrir la fiche individuelle de l'individu sélectionné\n(ou double-clic sur la ligne + touche SHIFT enfoncée)"), "")
+        # self.AddSeparator()
+        # self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
 
         # Binds
         self.Bind(wx.EVT_TOOL, self.Ajouter_famille, id=ID_CREER_FAMILLE)

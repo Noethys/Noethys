@@ -669,7 +669,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictLignes = {}
         self.SetModeAffichage("nbrePlacesPrises")
         self.moveTo = None
-        self.GetGridWindow().SetToolTipString("")
+        try :
+            self.GetGridWindow().SetToolTip("")
+        except :
+            self.GetGridWindow().SetToolTipString("")
         self.caseSurvolee = None
         
         global LARGEUR_COLONNE_UNITE

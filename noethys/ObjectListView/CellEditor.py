@@ -51,7 +51,10 @@ __version__ = "1.0"
 import datetime
 import wx
 
-from wx import DatePickerCtrl as DatePickerCtrl
+try :
+    from wx import DatePickerCtrl as DatePickerCtrl
+except :
+    from wx.adv import DatePickerCtrl as DatePickerCtrl
 
 
 #======================================================================

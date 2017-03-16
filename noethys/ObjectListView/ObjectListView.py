@@ -375,7 +375,10 @@ class ObjectListView(wx.ListCtrl):
         info.m_format = defn.GetAlignment()
         info.m_text = defn.title
         info.m_width = defn.width
-        self.InsertColumnInfo(len(self.columns)-1, info)
+        try :
+            self.InsertColumn(len(self.columns)-1, info)
+        except :
+            self.InsertColumnInfo(len(self.columns) - 1, info)
 
         # Under Linux, the width doesn't take effect without this call
         self.SetColumnWidth(len(self.columns)-1, defn.width)
@@ -577,8 +580,14 @@ class ObjectListView(wx.ListCtrl):
 
         # There must always be the same number of small and normal bitmaps,
         # so if we aren't given one, we have to make an empty one of the right size
-        smallImage = smallImage or wx.EmptyBitmap(*self.smallImageList.GetSize(0))
-        normalImage = normalImage or wx.EmptyBitmap(*self.normalImageList.GetSize(0))
+        try :
+            smallImage = smallImage or wx.Bitmap(*self.smallImageList.GetSize(0))
+        except :
+            smallImage = smallImage or wx.EmptyBitmap(*self.smallImageList.GetSize(0))
+        try :
+            normalImage = normalImage or wx.Bitmap(*self.normalImageList.GetSize(0))
+        except :
+            normalImage = normalImage or wx.EmptyBitmap(*self.normalImageList.GetSize(0))
 
         self.smallImageList.AddNamedImage(name, smallImage)
         return self.normalImageList.AddNamedImage(name, normalImage)
@@ -1740,7 +1749,10 @@ class ObjectListView(wx.ListCtrl):
             proportion = 3
         else :
             proportion = 2
-        self.stEmptyListMsg.SetDimensions(0, sz.GetHeight()/proportion, sz.GetWidth(), sz.GetHeight()) # J'ai mis 2 a la place de 3
+        try :
+            self.stEmptyListMsg.SetSize(0, sz.GetHeight()/proportion, sz.GetWidth(), sz.GetHeight()) # J'ai mis 2 a la place de 3
+        except :
+            self.stEmptyListMsg.SetDimensions(0, sz.GetHeight() / proportion, sz.GetWidth(), sz.GetHeight())  # J'ai mis 2 a la place de 3
         #self.stEmptyListMsg.Wrap(sz.GetWidth())
 
 
@@ -4697,7 +4709,11 @@ def _getSmallUpArrowData():
 
 def _getSmallUpArrowBitmap():
     stream = cStringIO.StringIO(_getSmallUpArrowData())
-    return wx.BitmapFromImage(wx.ImageFromStream(stream))
+    try :
+        bmp = wx.Bitmap(wx.Image(stream))
+    except :
+        bmp = wx.BitmapFromImage(wx.ImageFromStream(stream))
+    return bmp
 
 def _getSmallDownArrowData():
     return zlib.decompress(
@@ -4710,7 +4726,11 @@ def _getSmallDownArrowData():
 
 def _getSmallDownArrowBitmap():
     stream = cStringIO.StringIO(_getSmallDownArrowData())
-    return wx.BitmapFromImage(wx.ImageFromStream(stream))
+    try :
+        bmp = wx.Bitmap(wx.Image(stream))
+    except :
+        bmp = wx.BitmapFromImage(wx.ImageFromStream(stream))
+    return bmp
 
 
 #
