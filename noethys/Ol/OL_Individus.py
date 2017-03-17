@@ -138,7 +138,10 @@ class ListView(FastObjectListView):
         self.forceActualisation = False
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        try :
+            self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, faceName="Tekton"))
+        except :
+            self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetEmptyListMsg(_(u"Aucun individu"))
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)

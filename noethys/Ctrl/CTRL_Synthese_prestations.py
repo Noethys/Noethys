@@ -12,56 +12,24 @@
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
-import CTRL_Bouton_image
 import os
 import wx.lib.agw.hypertreelist as HTL
 import datetime
-import copy
 import sys
 import FonctionsPerso
-
+import GestionDB
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
-
 from Utils import UTILS_Organisateur
-import GestionDB
-
-try: import psyco; psyco.full()
-except: pass
-
+from Utils import UTILS_Dates
+from Utils import UTILS_Infos_individus
+from Utils import UTILS_Texte
 
 
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
-
-def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
-    return dateComplete
-
-def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
-        
 def PeriodeComplete(mois, annee):
     listeMois = (_(u"Jan"), _(u"Fév"), _(u"Mars"), _(u"Avr"), _(u"Mai"), _(u"Juin"), _(u"Juil"), _(u"Août"), _(u"Sept"), _(u"Oct"), _(u"Nov"), _(u"Déc"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
-
-def ConvertStrToListe(texte=None):
-    """ Convertit un texte "1;2;3;4" en [1, 2, 3, 4] """
-    if texte == None :
-        return None
-    listeResultats = []
-    temp = texte.split(";")
-    for ID in temp :
-        listeResultats.append(int(ID))
-    return listeResultats
-
-
-
 
             
 class CTRL(HTL.HyperTreeList):
@@ -72,6 +40,7 @@ class CTRL(HTL.HyperTreeList):
         
         # Paramètres
         self.mode_affichage = "facture" # "facture", "regle", "nbre", "impaye"
+        self.mode_regroupement = "mois" # "mois", "annee"
         self.date_debut = None
         self.date_fin = None
         self.afficher_consommations = True
@@ -94,7 +63,7 @@ class CTRL(HTL.HyperTreeList):
                 
         # wx.TR_COLUMN_LINES |  | wx.TR_HAS_BUTTONS
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | wx.TR_COLUMN_LINES | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
+        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | HTL.TR_COLUMN_LINES | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
         
     def Importation_categories(self):
         """ Récupération des noms des catégories de tarifs """
@@ -117,12 +86,14 @@ class CTRL(HTL.HyperTreeList):
 
     def Importation_prestations(self):
         """ Importation des données """
+
+        # Chargement des informations individuelles
+        self.infosIndividus = UTILS_Infos_individus.Informations(date_reference=self.date_debut, qf=True, inscriptions=True, messages=False, infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False, questionnaires=True, scolarite=True)
+        self.dictInfosIndividus = self.infosIndividus.GetDictValeurs(mode="individu", ID=None, formatChamp=False)
+        self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=False)
+
         DB = GestionDB.DB()
 
-##        self.filtreCotisations = False
-##        self.filtreCotisations_dateDebut = None
-##        self.filtreCotisations_dateFin = None
-        
         # Récupèration de la ventilation des prestations de la période
         conditionDepots = ""
         if self.filtreDepots == True and self.filtreDepots_dateDebut != None and self.filtreDepots_dateFin !=None :
@@ -174,59 +145,177 @@ class CTRL(HTL.HyperTreeList):
             conditionFacturee = " AND prestations.IDfacture IS NULL"
         
         # Récupération de toutes les prestations de la période
-        req = """SELECT IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif
-        FROM prestations 
+        req = """SELECT IDprestation, date, categorie, label, montant, prestations.IDactivite, prestations.IDcategorie_tarif, IDfamille, IDindividu, activites.nom, categories_tarifs.nom
+        FROM prestations
+        LEFT JOIN activites ON activites.IDactivite = prestations.IDactivite
+        LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = prestations.IDcategorie_tarif
         WHERE date>='%s' AND date <='%s'
         AND %s AND (%s OR prestations.IDactivite IS NULL)
         %s
         ORDER BY date; """ % (self.date_debut, self.date_fin, conditionAfficher, conditionActivites, conditionFacturee)
         DB.ExecuterReq(req)
         listePrestations = DB.ResultatReq()
+
+        # Récupération des tranches de tarifs paramétrées
+        if len(self.listeActivites) == 0 :
+            condition = ""
+        else :
+            condition = "AND %s" % conditionActivites.replace("prestations.", "")
+        req = """SELECT IDligne, qf_min, qf_max
+        FROM tarifs_lignes
+        WHERE qf_min IS NOT NULL AND qf_max IS NOT NULL
+        %s
+        ;""" % condition
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        liste_tranches = []
+        for IDligne, qf_min, qf_max in listeDonnees:
+            tranche = (int(qf_min), int(qf_max))
+            if tranche not in liste_tranches :
+                liste_tranches.append(tranche)
+        liste_tranches.sort()
+
         DB.Close()
         
         dictPrestations = {}
-        listePeriodes = []
-        for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif in listePrestations :
-            date = DateEngEnDateDD(date)
+        listeRegroupements = []
+        dictLabelsRegroupements = {}
+        for IDprestation, date, categorie, label, montant, IDactivite, IDcategorie_tarif, IDfamille, IDindividu, nom_activite, nom_categorie in listePrestations :
+            date = UTILS_Dates.DateEngEnDateDD(date)
             annee = date.year
             mois = date.month
-            periode = (annee, mois)
-            
-            if periode not in listePeriodes :
-                listePeriodes.append(periode)
+
+            regroupement = None
+
+            if self.mode_regroupement == "jour":
+                regroupement = date
+                labelRegroupement = UTILS_Dates.DateEngFr(date)
+
+            if self.mode_regroupement == "mois":
+                regroupement = (annee, mois)
+                labelRegroupement = PeriodeComplete(mois, annee)
+
+            if self.mode_regroupement == "annee":
+                regroupement = annee
+                labelRegroupement = str(annee)
+
+            if self.mode_regroupement == "activite":
+                regroupement = IDactivite
+                labelRegroupement = nom_activite
+
+            if self.mode_regroupement == "categorie_tarif":
+                regroupement = IDcategorie_tarif
+                labelRegroupement = nom_categorie
+
+            if self.mode_regroupement == "ville_residence" and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                labelRegroupement = regroupement
+
+            if self.mode_regroupement == "secteur" and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                labelRegroupement = regroupement
+
+            if self.mode_regroupement == "age" and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
+                labelRegroupement = str(regroupement)
+
+            if self.mode_regroupement == "nom_ecole" and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                labelRegroupement = regroupement
+
+            if self.mode_regroupement == "nom_classe" and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                labelRegroupement = regroupement
+
+            if self.mode_regroupement == "nom_niveau_scolaire" and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                labelRegroupement = regroupement
+
+            if self.mode_regroupement == "regime":
+                regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                labelRegroupement = regroupement
+
+            if self.mode_regroupement == "caisse":
+                regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                labelRegroupement = regroupement
+
+            # QF
+            if self.mode_regroupement.startswith("qf"):
+                regroupement = None
+                if self.dictInfosFamilles[IDfamille].has_key("FAMILLE_QF_ACTUEL_INT"):
+                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+
+                    # Tranches de 100
+                    if self.mode_regroupement == "qf_100" :
+                        for x in range(0, 10000, 100):
+                            min, max = x, x + 99
+                            if qf >= min and qf <= max:
+                                regroupement = (min, max)
+                                labelRegroupement = "%s - %s" % (min, max)
+
+                    # Tranches paramétrées
+                    if self.mode_regroupement == "qf_tarifs" :
+                        for min, max in liste_tranches :
+                            if qf >= min and qf <= max:
+                                regroupement = (min, max)
+                                labelRegroupement = "%s - %s" % (min, max)
+
+
+            # Questionnaires
+            if self.mode_regroupement.startswith("question_") and "famille" in self.mode_regroupement:
+                regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % self.mode_regroupement[17:]]
+                labelRegroupement = unicode(regroupement)
+
+            if self.mode_regroupement.startswith("question_") and "individu" in self.mode_regroupement and IDindividu not in (0, None) :
+                regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % self.mode_regroupement[18:]]
+                labelRegroupement = unicode(regroupement)
+
+            if regroupement in ("", None) :
+                regroupement = _(u"- Autre -")
+                labelRegroupement = regroupement
+
+
+
+
+            # Mémorisation du regroupement
+            if regroupement not in listeRegroupements :
+                listeRegroupements.append(regroupement)
+                dictLabelsRegroupements[regroupement] = labelRegroupement
                 
             # Total
             if dictPrestations.has_key(label) == False :
-                dictPrestations[label] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "periodes" : {} }
+                dictPrestations[label] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "regroupements" : {} }
             dictPrestations[label]["nbre"] += 1
             dictPrestations[label]["facture"] += montant
             
             # Détail par période
-            if dictPrestations[label]["periodes"].has_key(periode) == False :
-                dictPrestations[label]["periodes"][periode] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "categories" : {} }
-            dictPrestations[label]["periodes"][periode]["nbre"] += 1
-            dictPrestations[label]["periodes"][periode]["facture"] += montant
+            if dictPrestations[label]["regroupements"].has_key(regroupement) == False :
+                dictPrestations[label]["regroupements"][regroupement] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0, "categories" : {} }
+            dictPrestations[label]["regroupements"][regroupement]["nbre"] += 1
+            dictPrestations[label]["regroupements"][regroupement]["facture"] += montant
             
             # Détail par catégorie de tarifs
-            if dictPrestations[label]["periodes"][periode]["categories"].has_key(IDcategorie_tarif) == False :
-                dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0}
-            dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif]["nbre"] += 1
-            dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif]["facture"] += montant
+            if dictPrestations[label]["regroupements"][regroupement]["categories"].has_key(IDcategorie_tarif) == False :
+                dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif] = {"nbre" : 0, "facture" : 0.0, "regle" : 0.0, "impaye" : 0.0}
+            dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["nbre"] += 1
+            dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["facture"] += montant
             
             # Ajoute la ventilation
             if dictVentilation.has_key(IDprestation) :
                 dictPrestations[label]["regle"] += dictVentilation[IDprestation]
-                dictPrestations[label]["periodes"][periode]["regle"] += dictVentilation[IDprestation]
-                dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif]["regle"] += dictVentilation[IDprestation]
+                dictPrestations[label]["regroupements"][regroupement]["regle"] += dictVentilation[IDprestation]
+                dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["regle"] += dictVentilation[IDprestation]
             
             # Calcule les impayés
             dictPrestations[label]["impaye"] = dictPrestations[label]["regle"] - dictPrestations[label]["facture"]
-            dictPrestations[label]["periodes"][periode]["impaye"] = dictPrestations[label]["periodes"][periode]["regle"] - dictPrestations[label]["periodes"][periode]["facture"]
-            dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif]["impaye"] = dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif]["regle"] - dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif]["facture"]
-            
-        return dictPrestations, listePeriodes
+            dictPrestations[label]["regroupements"][regroupement]["impaye"] = dictPrestations[label]["regroupements"][regroupement]["regle"] - dictPrestations[label]["regroupements"][regroupement]["facture"]
+            dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["impaye"] = dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["regle"] - dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif]["facture"]
+
+        listeRegroupements.sort()
+
+        return dictPrestations, listeRegroupements, dictLabelsRegroupements
     
-    def CreationColonnes(self, listePeriodes=[]):
+    def CreationColonnes(self, listeRegroupements=[], dictLabelsRegroupements={}):
         """ Création des colonnes """
         # Création de la première colonne
         self.AddColumn(_(u"Prestations"))
@@ -235,21 +324,24 @@ class CTRL(HTL.HyperTreeList):
         
         # Création des colonnes périodes
         numColonne = 1
-        for annee, mois in listePeriodes :
-            self.AddColumn(PeriodeComplete(mois, annee))
-            self.SetColumnWidth(numColonne, 65)
+        for regroupement in listeRegroupements :
+            label_regroupement = dictLabelsRegroupements[regroupement]
+            self.AddColumn(label_regroupement)
+            self.SetColumnWidth(numColonne, 70)
             self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
             numColonne += 1
         
         # Création de la colonne Total
         self.AddColumn(_(u"Total"))
-        self.SetColumnWidth(numColonne, 65)
+        self.SetColumnWidth(numColonne, 70)
         self.SetColumnAlignment(numColonne, wx.ALIGN_CENTRE)
         
-    def MAJ(self):        
+    def MAJ(self):
+        dlgAttente = wx.BusyInfo(_(u"Recherche des données..."), self)
+
         # Importation des données
         dictCategoriesTarifs = self.Importation_categories() 
-        dictPrestations, listePeriodes = self.Importation_prestations() 
+        dictPrestations, listeRegroupements, dictLabelsRegroupements = self.Importation_prestations()
         self.dictImpression = { "entete" : [], "contenu" : [], "total" : [], "coloration" : [] }
         
         mode_affichage = self.mode_affichage.split("_")[0]
@@ -258,16 +350,17 @@ class CTRL(HTL.HyperTreeList):
         dictColonnes = {}
         index = 1
         self.dictImpression["entete"].append(_(u"Prestations"))
-        for periode in listePeriodes :
-            dictColonnes[periode] = index
-            self.dictImpression["entete"].append(PeriodeComplete(periode[1], periode[0]))
+        for regroupement in listeRegroupements :
+            dictColonnes[regroupement] = index
+            label = dictLabelsRegroupements[regroupement]
+            self.dictImpression["entete"].append(label)
             index += 1
         dictColonnes["total"] = index
         self.dictImpression["entete"].append(_(u"Total"))
         
         # Initialisation du CTRL
         self.RAZ() 
-        self.CreationColonnes(listePeriodes) 
+        self.CreationColonnes(listeRegroupements, dictLabelsRegroupements)
         self.root = self.AddRoot(_(u"Racine"))
         
         # Création des branches
@@ -281,22 +374,22 @@ class CTRL(HTL.HyperTreeList):
         for label in listeLabels :
             niveauPrestation = self.AppendItem(self.root, label)
             
-            periodes = dictPrestations[label]["periodes"].keys()
-            periodes.sort()
+            regroupements = dictPrestations[label]["regroupements"].keys()
+            regroupements.sort()
             
             impressionLigne = [label,] 
             if self.affichage_details == True :
                 self.dictImpression["coloration"].append(len(self.dictImpression["contenu"]))
             
             # Colonnes périodes
-            for periode in listePeriodes :
-                if dictPrestations[label]["periodes"].has_key(periode) :
-                    valeur = dictPrestations[label]["periodes"][periode][mode_affichage]
+            for regroupement in listeRegroupements :
+                if dictPrestations[label]["regroupements"].has_key(regroupement) :
+                    valeur = dictPrestations[label]["regroupements"][regroupement][mode_affichage]
                     if "nbre" in mode_affichage : 
                         texte = str(int(valeur))
                     else:
                         texte = u"%.2f %s" % (valeur, SYMBOLE)
-                    self.SetItemText(niveauPrestation, texte, dictColonnes[periode])
+                    self.SetItemText(niveauPrestation, texte, dictColonnes[regroupement])
                     impressionLigne.append(texte)
                 else:
                     impressionLigne.append("")
@@ -314,8 +407,8 @@ class CTRL(HTL.HyperTreeList):
             
             # ----------------- Branches catégories -------------
             listeCategories = []
-            for periode in periodes :
-                for IDcategorie_tarif in dictPrestations[label]["periodes"][periode]["categories"].keys() :
+            for regroupement in regroupements :
+                for IDcategorie_tarif in dictPrestations[label]["regroupements"][regroupement]["categories"].keys() :
                     if IDcategorie_tarif == None or dictCategoriesTarifs.has_key(IDcategorie_tarif) == False : 
                         nomCategorie = _(u"Sans catégorie")
                     else: 
@@ -333,18 +426,18 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Colonnes périodes
                 totalLigne = 0.0
-                for periode in listePeriodes :
+                for regroupement in listeRegroupements :
                     texte = None
-                    if dictPrestations[label]["periodes"].has_key(periode) :
-                        if dictPrestations[label]["periodes"][periode]["categories"].has_key(IDcategorie_tarif) :
-                            valeur = dictPrestations[label]["periodes"][periode]["categories"][IDcategorie_tarif][mode_affichage]
+                    if dictPrestations[label]["regroupements"].has_key(regroupement) :
+                        if dictPrestations[label]["regroupements"][regroupement]["categories"].has_key(IDcategorie_tarif) :
+                            valeur = dictPrestations[label]["regroupements"][regroupement]["categories"][IDcategorie_tarif][mode_affichage]
                             totalLigne += valeur
                             if "nbre" in mode_affichage : 
                                 texte = str(int(valeur))
                             else:
                                 texte = u"%.2f %s" % (valeur, SYMBOLE)
                             if self.affichage_details == True :
-                                self.SetItemText(niveauCategorie, texte, dictColonnes[periode])
+                                self.SetItemText(niveauCategorie, texte, dictColonnes[regroupement])
                                 impressionLigne.append(texte)
                     if texte == None and self.affichage_details == True : impressionLigne.append("")
                         
@@ -367,30 +460,30 @@ class CTRL(HTL.HyperTreeList):
         impressionLigne = [_(u"Total"),]
         
         dictTotal = {}
-        totalPeriodes = {}
+        totalRegroupements = {}
         for label in listeLabels :
-            for periode, dictPeriode in dictPrestations[label]["periodes"].iteritems() :
-                for IDcategorie_tarif, dictCategories in dictPeriode["categories"].iteritems() :
+            for regroupement, dictRegroupement in dictPrestations[label]["regroupements"].iteritems() :
+                for IDcategorie_tarif, dictCategories in dictRegroupement["categories"].iteritems() :
                     if dictTotal.has_key(IDcategorie_tarif) == False :
                         dictTotal[IDcategorie_tarif] = {}
-                    if dictTotal[IDcategorie_tarif].has_key(periode) == False :
-                        dictTotal[IDcategorie_tarif][periode] = 0.0
-                    dictTotal[IDcategorie_tarif][periode] += dictCategories[mode_affichage]
+                    if dictTotal[IDcategorie_tarif].has_key(regroupement) == False :
+                        dictTotal[IDcategorie_tarif][regroupement] = 0.0
+                    dictTotal[IDcategorie_tarif][regroupement] += dictCategories[mode_affichage]
                 
-                    if totalPeriodes.has_key(periode) == False :
-                        totalPeriodes[periode] = 0.0
-                    totalPeriodes[periode] += dictCategories[mode_affichage]
+                    if totalRegroupements.has_key(regroupement) == False :
+                        totalRegroupements[regroupement] = 0.0
+                    totalRegroupements[regroupement] += dictCategories[mode_affichage]
         
         totalLigne = 0.0
-        for periode in listePeriodes :
-##        for periode, valeur in totalPeriodes.iteritems() :
-            valeur = totalPeriodes[periode]
+        for regroupement in listeRegroupements :
+##        for regroupement, valeur in totalRegroupements.iteritems() :
+            valeur = totalRegroupements[regroupement]
             totalLigne += valeur
             if "nbre" in mode_affichage : 
                 texte = str(int(valeur))
             else:
                 texte = u"%.2f %s" % (valeur, SYMBOLE)
-            self.SetItemText(niveauTotal, texte, dictColonnes[periode])
+            self.SetItemText(niveauTotal, texte, dictColonnes[regroupement])
             impressionLigne.append(texte)
 
         if "nbre" in mode_affichage : 
@@ -423,17 +516,17 @@ class CTRL(HTL.HyperTreeList):
                 impressionLigne = [nomCategorie,]
                 
                 totalLigne = 0.0
-                for periode in listePeriodes :
+                for regroupement in listeRegroupements :
                     texte = None
                     if dictTotal.has_key(IDcategorie_tarif) :
-                        if dictTotal[IDcategorie_tarif].has_key(periode) :
-                            valeur = dictTotal[IDcategorie_tarif][periode]
+                        if dictTotal[IDcategorie_tarif].has_key(regroupement) :
+                            valeur = dictTotal[IDcategorie_tarif][regroupement]
                             totalLigne += valeur
                             if "nbre" in mode_affichage : 
                                 texte = str(int(valeur))
                             else:
                                 texte = u"%.2f %s" % (valeur, SYMBOLE)
-                            self.SetItemText(niveauCategorie, texte, dictColonnes[periode])
+                            self.SetItemText(niveauCategorie, texte, dictColonnes[regroupement])
                             impressionLigne.append(texte)
                     if texte == None : impressionLigne.append("")
                 
@@ -446,8 +539,10 @@ class CTRL(HTL.HyperTreeList):
                 
                 self.dictImpression["total"].append(impressionLigne)
         
-        self.ExpandAllChildren(self.root)   
-        
+        self.ExpandAllChildren(self.root)
+
+        dlgAttente.Destroy()
+
     def RAZ(self):
         self.DeleteAllItems()
         for indexColonne in range(self.GetColumnCount()-1, -1, -1) :
@@ -492,7 +587,7 @@ class CTRL(HTL.HyperTreeList):
         # Création du titre du document
         dataTableau = []
         largeursColonnes = ( (largeur_page-175, 100) )
-        dateDuJour = DateEngFr(str(datetime.date.today()))
+        dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
         dataTableau.append( (_(u"Synthèse des prestations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
@@ -807,33 +902,46 @@ class MyFrame(wx.Frame):
         
         self.ctrl_stats = CTRL(panel)
         
-        self.ctrl_stats.date_debut = datetime.date(2011, 3, 1)
-        self.ctrl_stats.date_fin = datetime.date(2011, 7, 31)
+        self.ctrl_stats.date_debut = datetime.date(2011, 7, 1)
+        self.ctrl_stats.date_fin = datetime.date(2011, 12, 31)
         self.ctrl_stats.afficher_consommations = True
         self.ctrl_stats.afficher_cotisations = True
         self.ctrl_stats.listeActivites = [1, 2]
-        self.ctrl_stats.mode_affichage = "facture"
-        self.ctrl_stats.MAJ() 
+        self.ctrl_stats.MAJ()
         
-        self.choix = wx.Choice(panel, -1, choices = ["facture", "regle", "impaye", "nbre"])
+        self.choix = wx.Choice(panel, -1, choices=["facture", "regle", "impaye", "nbre"])
         self.choix.Select(0)
         self.Bind(wx.EVT_CHOICE, self.OnChoix, self.choix)
-        
+
+        liste_regroupements = [
+            "jour", "mois", "annee", "activite", "categorie_tarif", "ville_residence", "secteur",
+            "age", "nom_ecole", "nom_classe", "nom_niveau_scolaire",
+            "regime", "caisse", "qf_100", "qf_tarifs",
+            ]
+
+        self.regroupement = wx.Choice(panel, -1, choices=liste_regroupements)
+        self.regroupement.Select(0)
+        self.Bind(wx.EVT_CHOICE, self.OnChoix, self.regroupement)
+
         self.bouton_imprimer = wx.BitmapButton(panel, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl_stats, 1, wx.ALL|wx.EXPAND, 4)
-        sizer_2.Add(self.choix, 0, wx.ALL, 4)
-        sizer_2.Add(self.bouton_imprimer, 0, wx.ALL, 4)
+
+        sizer_3 = wx.BoxSizer(wx.HORIZONTAL)
+        sizer_3.Add(self.choix, 0, wx.ALL, 4)
+        sizer_3.Add(self.regroupement, 0, wx.ALL, 4)
+        sizer_3.Add(self.bouton_imprimer, 0, wx.ALL, 4)
+        sizer_2.Add(sizer_3, 0, wx.ALL, 0)
         panel.SetSizer(sizer_2)
         self.SetSize((900, 500))
         self.Layout()
         self.CenterOnScreen()
     
     def OnChoix(self, event):
-        valeur = self.choix.GetStringSelection()
-        self.ctrl_stats.mode_affichage = valeur
+        self.ctrl_stats.mode_affichage = self.choix.GetStringSelection()
+        self.ctrl_stats.mode_regroupement = self.regroupement.GetStringSelection()
         self.ctrl_stats.MAJ() 
     
     def OnBoutonImprimer(self, event):

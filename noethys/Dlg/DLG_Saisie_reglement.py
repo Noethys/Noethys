@@ -1342,7 +1342,7 @@ class Dialog(wx.Dialog):
         numero_piece = self.ctrl_numero.GetValue()
         if self.ctrl_numero.IsEnabled() :
             if numero_piece == "" :
-                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas saisir de numéro de pièce ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
+                dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de ne pas vouloir saisir de numéro de pièce ?"), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse !=  wx.ID_YES :
@@ -1352,12 +1352,19 @@ class Dialog(wx.Dialog):
         
         # Montant
         montant = self.ctrl_montant.GetMontant()
-        if self.ctrl_montant.Validation() == False or montant == 0.0 :
+        if self.ctrl_montant.Validation() == False :
             dlg = wx.MessageDialog(self, _(u"Le montant que vous avez saisi n'est pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_montant.SetFocus()
             return False
+
+        if montant == 0.0 :
+            dlg = wx.MessageDialog(self, _(u"Etes-vous sûr de vouloir conserver un montant nul ?"), _(u"Confirmation"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES:
+                return False
 
         # Payeur
         IDpayeur = self.ctrl_payeur.GetID() 

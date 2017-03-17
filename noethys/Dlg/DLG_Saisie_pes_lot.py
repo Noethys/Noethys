@@ -175,8 +175,8 @@ class CTRL_Parametres(wxpg.PropertyGrid) :
         # Pièces jointes
         self.Append( wxpg.PropertyCategory(_(u"Pièces jointes")) )
 
-        propriete = wxpg.BoolProperty(label=_(u"Inclure les factures en pièces jointes"), name="inclure_pieces_jointes", value=True)
-        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre les factures en tant que pièces jointes au bordereau"))
+        propriete = wxpg.BoolProperty(label=_(u"Inclure les factures en pièces jointes"), name="inclure_pieces_jointes", value=False)
+        propriete.SetHelpString(_(u"Cochez cette case si vous souhaitez que Noethys intègre les factures en temps que pièces jointes au bordereau"))
         propriete.SetAttribute("UseCheckbox", True)
         self.Append(propriete)
 
@@ -906,7 +906,7 @@ class Dialog(wx.Dialog):
         """ Génération d'un fichier normalisé """
         # Validation des données
         if self.ValidationDonnees() == False:
-            return
+            return False
 
         # Récupération des infos sur la remise
         remise_nom = Supprime_accent(self.ctrl_nom.GetValue())
@@ -918,8 +918,8 @@ class Dialog(wx.Dialog):
         dict_pieces_jointes = False
         if self.ctrl_parametres.GetPropertyValue("inclure_pieces_jointes") == True :
             dict_pieces_jointes = self.GenerationPiecesJointes()
-            if dict_pieces_jointes == None :
-                return
+            if dict_pieces_jointes == False :
+                return False
 
         # Récupération des transactions à effectuer
         montantTotal = FloatToDecimal(0.0)
@@ -1061,9 +1061,13 @@ class Dialog(wx.Dialog):
 
     def GenerationPiecesJointes(self):
         """ Génération des pièces jointes """
+        IDfichier = FonctionsPerso.GetIDfichier()
+
         listeIDfacture = []
+        dictTracks = {}
         for track in self.ctrl_pieces.GetObjects():
             listeIDfacture.append(track.IDfacture)
+            dictTracks[track.IDfacture] = track
 
         # Génération des factures au format PDF
         nomFichierUnique = self.ctrl_parametres.GetPropertyValue("format_nom_fichier")
@@ -1071,7 +1075,7 @@ class Dialog(wx.Dialog):
         facturation = UTILS_Facturation.Facturation()
         resultat = facturation.Impression(listeFactures=listeIDfacture, nomFichierUnique=nomFichierUnique, afficherDoc=False, repertoireTemp=True)
         if resultat == False:
-            return
+            return False
         dictChampsFusion, dictPieces = resultat
 
         # Conversion des fichiers en GZIP/base64
@@ -1093,10 +1097,10 @@ class Dialog(wx.Dialog):
 
             # Mémorisation des pièces jointes
             NomPJ = os.path.basename(cheminFichier)
-            IdUnique = str(IDfacture)
-            description = u"FACTURE %s" % str(IDfacture)
+            numero_facture = dictTracks[IDfacture].numero
+            IdUnique = IDfichier + str(numero_facture)
 
-            dict_pieces_jointes[IDfacture] = {"NomPJ" : NomPJ, "IdUnique" : IdUnique, "contenu" : contenu, "description" : description}
+            dict_pieces_jointes[IDfacture] = {"NomPJ" : NomPJ, "IdUnique" : IdUnique, "contenu" : contenu, "numero_facture" : numero_facture}
 
         return dict_pieces_jointes
 

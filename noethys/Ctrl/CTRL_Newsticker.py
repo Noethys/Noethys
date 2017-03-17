@@ -31,7 +31,10 @@ class Newsticker(wx.PyControl):
             style=wx.NO_BORDER, 
             name="Newsticker"
         ):
-        wx.PyControl.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
+        try :
+            wx.Control.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
+        except :
+            wx.PyControl.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
         self.timer = wx.Timer(self, -1)
         self.timerPause = wx.Timer(self, -1)
         self.textSize = (-1, -1) 

@@ -43,15 +43,36 @@ class ToolBar(wx.ToolBar):
         wx.ToolBar.__init__(self, *args, **kwds)
         
         # Boutons
-        self.AddLabelTool(ID_MODE_PLACES_INITIALES, _(u"Places max."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_max.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places maximal initial"), "")
-        self.AddLabelTool(ID_MODE_PLACES_PRISES, _(u"Places prises"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_prises.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places prises"), "")
-        self.AddLabelTool(ID_MODE_PLACES_RESTANTES, _(u"Places dispo."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_dispo.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places restantes"), "")
-        self.AddLabelTool(ID_MODE_PLACES_ATTENTE, _(u"Places attente"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_attente.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places en attente"), "")
-        self.AddSeparator()
-        self.AddLabelTool(ID_LISTE_ATTENTE, _(u"Liste d'attente"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Liste_attente.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher la liste d'attente"), "")
-        self.AddSeparator()
-        self.AddLabelTool(ID_PARAMETRES, _(u"Paramètres"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration2.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Sélectionner les paramètres d'affichage"), "")
-        self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
+        liste_boutons = [
+            {"ID": ID_MODE_PLACES_INITIALES, "label": _(u"Places max."), "image": "Images/32x32/Places_max.png", "type" : wx.ITEM_RADIO, "tooltip": _(u"Afficher le nombre de places maximal initial")},
+            {"ID": ID_MODE_PLACES_PRISES, "label": _(u"Places prises"), "image": "Images/32x32/Places_prises.png", "type" : wx.ITEM_RADIO, "tooltip": _(u"Afficher le nombre de places prises")},
+            {"ID": ID_MODE_PLACES_RESTANTES, "label": _(u"Places dispo."), "image": "Images/32x32/Places_dispo.png", "type" : wx.ITEM_RADIO, "tooltip": _(u"Afficher le nombre de places restantes")},
+            {"ID": ID_MODE_PLACES_ATTENTE, "label": _(u"Places attente"), "image": "Images/32x32/Places_attente.png", "type" : wx.ITEM_RADIO, "tooltip": _(u"Afficher le nombre de places en attente")},
+            None,
+            {"ID": ID_LISTE_ATTENTE, "label": _(u"Liste d'attente"), "image": "Images/32x32/Liste_attente.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"Afficher la liste d'attente")},
+            None,
+            {"ID": ID_PARAMETRES, "label": _(u"Paramètres"), "image": "Images/32x32/Configuration2.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"Sélectionner les paramètres d'affichage")},
+            {"ID": ID_OUTILS, "label": _(u"Outils"), "image": "Images/32x32/Configuration.png", "type" : wx.ITEM_NORMAL, "tooltip": _(u"Outils")},
+        ]
+
+        for bouton in liste_boutons :
+            if bouton == None :
+                self.AddSeparator()
+            else :
+                try :
+                    self.AddTool(bouton["ID"], bouton["label"], wx.Bitmap(Chemins.GetStaticPath(bouton["image"]), wx.BITMAP_TYPE_ANY), wx.NullBitmap, bouton["type"], bouton["tooltip"], "")
+                except :
+                    self.AddLabelTool(bouton["ID"], bouton["label"], wx.Bitmap(Chemins.GetStaticPath(bouton["image"]), wx.BITMAP_TYPE_ANY), wx.NullBitmap, bouton["type"], bouton["tooltip"], "")
+
+        # self.AddLabelTool(ID_MODE_PLACES_INITIALES, _(u"Places max."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_max.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places maximal initial"), "")
+        # self.AddLabelTool(ID_MODE_PLACES_PRISES, _(u"Places prises"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_prises.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places prises"), "")
+        # self.AddLabelTool(ID_MODE_PLACES_RESTANTES, _(u"Places dispo."), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_dispo.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places restantes"), "")
+        # self.AddLabelTool(ID_MODE_PLACES_ATTENTE, _(u"Places attente"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Places_attente.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_RADIO, _(u"Afficher le nombre de places en attente"), "")
+        # self.AddSeparator()
+        # self.AddLabelTool(ID_LISTE_ATTENTE, _(u"Liste d'attente"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Liste_attente.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Afficher la liste d'attente"), "")
+        # self.AddSeparator()
+        # self.AddLabelTool(ID_PARAMETRES, _(u"Paramètres"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration2.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Sélectionner les paramètres d'affichage"), "")
+        # self.AddLabelTool(ID_OUTILS, _(u"Outils"), wx.Bitmap(Chemins.GetStaticPath("Images/32x32/Configuration.png"), wx.BITMAP_TYPE_ANY), wx.NullBitmap, wx.ITEM_NORMAL, _(u"Outils"), "")
         
         # Binds
         self.Bind(wx.EVT_TOOL, self.Mode_places_initiales, id=ID_MODE_PLACES_INITIALES)
