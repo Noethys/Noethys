@@ -456,11 +456,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
 
         # Envoi des mails
-        dlg = wx.ProgressDialog(_(u"Envoi des mails"),
-                               _(u"Veuillez patienter..."),
-                               maximum = len(listeDestinataires)+1,
-                               parent=self,
-                                )
+        dlg = wx.ProgressDialog(_(u"Envoi des mails"), _(u"Veuillez patienter..."), maximum = len(listeDestinataires)+1, parent=self)
         dlg.SetSize((370, 140))
         dlg.CenterOnScreen() 
         
@@ -524,16 +520,22 @@ class Dialog(wx.Dialog):
                 err = str(err).decode("iso-8859-15")
                 self.listeAnomalies.append((track, err))
                 print ("Erreur dans l'envoi d'un mail : %s...", err)
-                dlgErreur = wx.MessageDialog(self, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?") % (label, err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
                 traceback.print_exc(file=sys.stdout)
-                if dlgErreur.ShowModal() != wx.ID_YES :
+
+                if index == len(listeDestinataires) :
+                    dlgErreur = wx.MessageDialog(self, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.") % (label, err), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                    dlgErreur.ShowModal()
                     dlgErreur.Destroy()
-                    # Arrêt du processus
-                    dlg.Destroy() 
-                    handler.DeleteTemporaryImages()
-                    self.EcritStatusBar(u"")
-                    return
-                dlgErreur.Destroy()
+                else :
+                    dlgErreur = wx.MessageDialog(self, _(u"%s\n\nL'erreur suivante a été détectée :\n%s.\n\nSouhaitez-vous quand même continuer le processus ?") % (label, err), _(u"Erreur"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_ERROR)
+                    if dlgErreur.ShowModal() != wx.ID_YES :
+                        dlgErreur.Destroy()
+                        # Arrêt du processus
+                        dlg.Destroy()
+                        handler.DeleteTemporaryImages()
+                        self.EcritStatusBar(u"")
+                        return
+                    dlgErreur.Destroy()
 
             if len(listeDestinataires) > 1 :
                 time.sleep(2) # Attente entre chaque envoi...
@@ -560,7 +562,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
         
         # Si Anomalies
-        if len(self.listeAnomalies) > 0 :
+        if len(self.listeAnomalies) > 0 and len(listeDestinataires) > 1 :
             
             if len(self.listeSucces) > 0 :
                 message = _(u"%d Email(s) ont été envoyés avec succès mais les %d envois suivants ont échoué :\n\n") % (len(self.listeSucces), len(self.listeAnomalies))

@@ -35,6 +35,8 @@ from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
 from Ctrl import CTRL_Ventilation
 
+from Dlg import DLG_Messagebox
+
 ID_OPTION_BLOQUER_VENTILATION = wx.NewId() 
 
 
@@ -1139,10 +1141,12 @@ class Dialog(wx.Dialog):
         IDfamille, email_recus = listeDonnees[0]
         if email_recus != None and self.nouveauReglement == True :
 
-            dlg = wx.MessageDialog(None, _(u"Cette famille est abonnée au service d'envoi automatique des reçus de règlements par Email. \n\nConfirmez-vous l'envoi direct du reçu maintenant ?\n\nOUI = Envoi direct \nNON = Accéder aux paramètres d'envoi \nANNULER = Ne pas envoyer"), _(u"Envoi du reçu par Email"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+            icone = wx.Bitmap(Chemins.GetStaticPath(u"Images/32x32/Emails_exp.png"), wx.BITMAP_TYPE_ANY)
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Envoi du reçu par Email"), introduction=_(u"Cette famille est abonnée au service d'envoi automatique des reçus de règlements par Email."), conclusion=_(u"Confirmez-vous l'envoi du reçu maintenant ?"), icone=icone, boutons=[_(u"Envoyer"), _(u"Accéder aux paramètres d'envoi"), _(u"Ne pas envoyer")])
             reponse = dlg.ShowModal()
             dlg.Destroy()
-            if reponse != wx.ID_CANCEL :
+
+            if reponse != 2 :
                 
                 # Recherche de l'adresse d'envoi
                 DB = GestionDB.DB()
@@ -1169,8 +1173,8 @@ class Dialog(wx.Dialog):
                     dlg = wx.MessageDialog(self, _(u"L'adresse Email enregistrée ne semble pas valide. Renseignez une nouvelle adresse valide pour cette famille..."), _(u"Erreur d'adresse Email"), wx.OK | wx.ICON_ERROR)
                     dlg.ShowModal()
                     dlg.Destroy()
-                    return False
-                
+                    #return False
+
                 else :
                     
                     # Ouverture du Mailer
@@ -1178,32 +1182,35 @@ class Dialog(wx.Dialog):
                     dlg1 = DLG_Impression_recu.Dialog(self, IDreglement=self.IDreglement) 
                     dlg1.listeAdresses = [adresse,]
                     
-                    if reponse == wx.ID_NO :
+                    if reponse == 1 :
                         # Accès aux paramètres
                         dlg1.ShowModal() 
                         dlg1.Destroy() 
                     
-                    if reponse == wx.ID_YES :
+                    if reponse == 0 :
                         # Envoi direct
                         nomDoc=FonctionsPerso.GenerationNomDoc("RECU", "pdf")
                         categorie="recu_reglement"
                         dictChamps = dlg1.CreationPDF(nomDoc=nomDoc, afficherDoc=False)
                         if dictChamps == False :
                             dlg1.Destroy()
-                            return False
-                        
-                        listeDonnees = [{"adresse" : adresse, "pieces" : [nomDoc,], "champs" : dictChamps,}]
-                        import DLG_Mailer
-                        dlg2 = DLG_Mailer.Dialog(self, categorie=categorie, afficher_confirmation_envoi=False)
-                        dlg2.SetDonnees(listeDonnees, modificationAutorisee=False)
-                        dlg2.ChargerModeleDefaut()
-                        dlg2.OnBoutonEnvoyer(None) 
-                        if len(dlg2.listeAnomalies) == 0 :
-                            succes = True
-                        else :
-                            succes = False
-                        dlg2.Destroy()
-                        
+                            #return False
+
+                        try :
+                            listeDonnees = [{"adresse" : adresse, "pieces" : [nomDoc,], "champs" : dictChamps,}]
+                            import DLG_Mailer
+                            dlg2 = DLG_Mailer.Dialog(self, categorie=categorie, afficher_confirmation_envoi=False)
+                            dlg2.SetDonnees(listeDonnees, modificationAutorisee=False)
+                            dlg2.ChargerModeleDefaut()
+                            dlg2.OnBoutonEnvoyer(None)
+                            if len(dlg2.listeAnomalies) == 0 :
+                                succes = True
+                            else :
+                                succes = False
+                            dlg2.Destroy()
+                        except :
+                            pass
+
                         try :
                             os.remove(nomDoc)     
                         except :
@@ -1227,8 +1234,11 @@ class Dialog(wx.Dialog):
         # Fermeture
         self.EndModal(wx.ID_OK)
 
-    def OnBoutonAnnuler(self, event): 
-        self.EndModal(wx.ID_CANCEL)
+    def OnBoutonAnnuler(self, event):
+        try :
+            self.EndModal(wx.ID_CANCEL)
+        except :
+            pass
     
     def Importation(self):
         DB = GestionDB.DB()
