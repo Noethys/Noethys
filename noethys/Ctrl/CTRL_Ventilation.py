@@ -897,11 +897,11 @@ class CTRL(wx.Panel):
     
     def MAJinfos(self, erreur=None):
         """ Recherche l'état """
-        if self.montant_reglement == FloatToDecimal(0.0) :
-            self.validation = "erreur"
-            self.ctrl_image.SetBitmap(self.imgErreur)
-            self.ctrl_info.SetLabel(_(u"Vous devez déjà saisir un montant pour ce règlement !"))
-            return
+        # if self.montant_reglement == FloatToDecimal(0.0) :
+        #     self.validation = "erreur"
+        #     self.ctrl_image.SetBitmap(self.imgErreur)
+        #     self.ctrl_info.SetLabel(_(u"Vous devez déjà saisir un montant pour ce règlement !"))
+        #     return
 
 ##        if self.montant_reglement < FloatToDecimal(0.0) :
 ##            self.validation = "ok"
@@ -924,7 +924,7 @@ class CTRL(wx.Panel):
         # Recherche de l'état
         if creditAVentiler == FloatToDecimal(0.0) :
             self.validation = "ok"
-            label = _(u"Le règlement a été correctement ventilé !")
+            label = _(u"Le règlement est correctement ventilé.")
         elif creditAVentiler > FloatToDecimal(0.0) :
             self.validation = "addition"
             label = _(u"Vous devez encore ventiler %.2f %s !") % (creditAVentiler, SYMBOLE)
