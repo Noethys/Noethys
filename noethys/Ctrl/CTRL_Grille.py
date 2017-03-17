@@ -1567,13 +1567,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees,
         condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances,
-        code_compta, tva, date_facturation, etats, IDtype_quotient
+        code_compta, tva, date_facturation, etats, IDtype_quotient, description
         FROM tarifs
         LEFT JOIN noms_tarifs ON noms_tarifs.IDnom_tarif = tarifs.IDnom_tarif
         ORDER BY date_debut;"""
         self.DB.ExecuterReq(req)
         listeTarifs = self.DB.ResultatReq()      
-        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation, etats, IDtype_quotient in listeTarifs :
+        for IDtarif, IDactivite, IDnom_tarif, nom, date_debut, date_fin, condition_nbre_combi, condition_periode, condition_nbre_jours, condition_conso_facturees, condition_dates_continues, methode, categories_tarifs, groupes, etiquettes, type, forfait_duree, forfait_beneficiaire, cotisations, caisses, jours_scolaires, jours_vacances, code_compta, tva, date_facturation, etats, IDtype_quotient, description in listeTarifs :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
@@ -1597,7 +1597,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 "cotisations" : listeCotisations, "filtres" : [], "caisses" : listeCaisses, 
                 "jours_scolaires" : jours_scolaires, "jours_vacances" : jours_vacances,
                 "code_compta" : code_compta, "tva" : tva, "date_facturation" : date_facturation,
-                "quantitesMax" : [], "etats" : listeEtats, "IDtype_quotient" : IDtype_quotient,
+                "quantitesMax" : [], "etats" : listeEtats, "IDtype_quotient" : IDtype_quotient, "description_tarif" : description
                 }
                 
             # Recherche si ce tarif a des combinaisons d'unités
@@ -2936,8 +2936,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     # Calcul du montant du forfait
                                     resultat = self.CalculeTarif(dictTarif, date=date, IDfamille=IDfamille, IDindividu=IDindividu)
                                     if resultat != False :
-                                        montant_tarif, nom_tarif, temps_facture = resultat
-                                        dictTarif["resultat"] = {"IDindividu":IDindividu, "montant_tarif":montant_tarif, "nom_tarif":nom_tarif, "temps_facture":temps_facture, "IDcategorie_tarif":IDcategorie_tarif, "nomActivite":self.dictActivites[IDactivite]["abrege"]}
+                                        montant_tarif, nom_tarif, temps_facture, description_tarif = resultat
+                                        dictTarif["resultat"] = {"IDindividu":IDindividu, "montant_tarif":montant_tarif, "nom_tarif":nom_tarif, "temps_facture":temps_facture, "IDcategorie_tarif":IDcategorie_tarif, "nomActivite":self.dictActivites[IDactivite]["abrege"], "description_tarif":description_tarif}
                                         dictDonnees[IDfamille]["individus"][IDindividu]["forfaits"].append(dictTarif.copy())
         
         # Recherche des tarifs disponibles pour chaque famille
@@ -2951,8 +2951,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                                     # Calcul du montant du forfait
                                     resultat = self.CalculeTarif(dictTarif, date=date, IDfamille=IDfamille)
                                     if resultat != False :
-                                        montant_tarif, nom_tarif, temps_facture = resultat
-                                        dictTarif["resultat"] = {"IDindividu":None, "montant_tarif":montant_tarif, "nom_tarif":nom_tarif, "temps_facture":temps_facture, "IDcategorie_tarif":None, "nomActivite":self.dictActivites[IDactivite]["abrege"]}
+                                        montant_tarif, nom_tarif, temps_facture ,description_tarif = resultat
+                                        dictTarif["resultat"] = {"IDindividu":None, "montant_tarif":montant_tarif, "nom_tarif":nom_tarif, "temps_facture":temps_facture, "IDcategorie_tarif":None, "nomActivite":self.dictActivites[IDactivite]["abrege"], "description_tarif":description_tarif}
                                         if dictTarif not in dictDonnees[IDfamille]["forfaits"] :
                                             dictDonnees[IDfamille]["forfaits"].append(dictTarif.copy())
         
@@ -3198,6 +3198,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         IDtarif = dictTarif["IDtarif"]
         IDactivite = dictTarif["IDactivite"]
         nom_tarif = dictTarif["nom_tarif"]
+        description_tarif = dictTarif["description_tarif"]
         montant_tarif = 0.0
         methode_calcul = dictTarif["methode"]
         
@@ -4034,7 +4035,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         # if montant_tarif == 0.0 :
         #     return False
 
-        return montant_tarif, nom_tarif, temps_facture 
+        return montant_tarif, nom_tarif, temps_facture, description_tarif
                             
                         
     def TriTarifs(self, dictTarif1, dictTarif2, key="nbre_max_unites_combi") :

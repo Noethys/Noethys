@@ -106,7 +106,7 @@ class CTRL_Forfaits(HTL.HyperTreeList):
         self.ExpandAllChildren(self.root)
                 
     def CreationBrancheTarif(self, brancheParente, dictTarif):
-        label = dictTarif["resultat"]["nom_tarif"]
+        label = dictTarif["resultat"]["description_tarif"]
         branche = self.AppendItem(brancheParente, label)
         self.SetPyData(branche, {"type":"tarif", "donnees":dictTarif})
         nomActivite = dictTarif["resultat"]["nomActivite"]
