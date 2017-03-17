@@ -35,6 +35,7 @@ import wx.lib.agw.hyperlink as Hyperlink
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Facturation
 from Utils import UTILS_Organisateur
+from Utils import UTILS_Parametres
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
@@ -649,7 +650,10 @@ class Dialog(wx.Dialog):
             
         for code, valeur in listeValeurs :
             self.ctrl_parametres.SetPropertyValue(code, valeur)
-        
+
+        # Préférences
+        self.ctrl_parametres.SetPropertyValue("inclure_pieces_jointes", UTILS_Parametres.Parametres(mode="get", categorie="export_pes", nom="inclure_pieces_jointes", valeur=False))
+        self.ctrl_parametres.SetPropertyValue("format_nom_fichier", UTILS_Parametres.Parametres(mode="get", categorie="export_pes", nom="format_nom_fichier", valeur=_(u"F{NUM_FACTURE}_{NOM_TITULAIRES_MAJ}")))
     
     def ValidationDonnees(self):
         """ Vérifie que les données saisies sont exactes """
@@ -878,7 +882,14 @@ class Dialog(wx.Dialog):
         
         # Sauvegarde des prélèvements du lot
         self.ctrl_pieces.Sauvegarde(IDlot=self.IDlot, datePrelevement=date_prelevement, IDcompte=IDcompte, IDmode=IDmode) 
-        
+
+        # Mémorisation des préférences
+        inclure_pieces_jointes = self.ctrl_parametres.GetPropertyValue("inclure_pieces_jointes")
+        format_nom_fichier = self.ctrl_parametres.GetPropertyValue("format_nom_fichier")
+
+        UTILS_Parametres.Parametres(mode="set", categorie="export_pes", nom="inclure_pieces_jointes", valeur=inclure_pieces_jointes)
+        UTILS_Parametres.Parametres(mode="set", categorie="export_pes", nom="format_nom_fichier", valeur=format_nom_fichier)
+
         # Fermeture
         self.EndModal(wx.ID_OK)
 
