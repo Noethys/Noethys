@@ -24,9 +24,7 @@ from Ctrl import CTRL_Selection_activites
 from Ctrl import CTRL_Saisie_date
 import DLG_calendrier_simple
 from Ctrl import CTRL_Synthese_prestations
-
-try: import psyco; psyco.full()
-except: pass
+from Utils import UTILS_Questionnaires
 
 
 def DateEngEnDateDD(dateEng):
@@ -38,6 +36,53 @@ def DateEngFr(textDate):
     return text
 
 
+class CTRL_Regroupement(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.listeDonnees = [
+            {"label": _(u"Jour"), "code": "jour"},
+            {"label": _(u"Mois"), "code": "mois"},
+            {"label": _(u"Année"), "code": "annee"},
+            {"label": _(u"Activité"), "code": "activite"},
+            {"label": _(u"Catégorie de tarif"), "code": "categorie_tarif"},
+            {"label": _(u"Ville de résidence"), "code": "ville_residence"},
+            {"label": _(u"Secteur géographique"), "code": "secteur"},
+            {"label": _(u"Age"), "code": "age"},
+            {"label": _(u"Ville de naissance"), "code": "ville_naissance"},
+            {"label": _(u"Ecole"), "code": "nom_ecole"},
+            {"label": _(u"Classe"), "code": "nom_classe"},
+            {"label": _(u"Niveau scolaire"), "code": "nom_niveau_scolaire"},
+            {"label": _(u"Régime social"), "code": "regime"},
+            {"label": _(u"Caisse d'allocations"), "code": "caisse"},
+            {"label": _(u"Quotient familial - Tranches tarifs"), "code": "qf_tarifs"},
+            {"label": _(u"Quotient familial - Tranches de 100"), "code": "qf_100"},
+        ]
+
+        # Intégration des questionnaires
+        q = UTILS_Questionnaires.Questionnaires()
+        for public in ("famille", "individu"):
+            for dictTemp in q.GetQuestions(public):
+                label = _(u"Question %s. : %s") % (public[:3], dictTemp["label"])
+                code = "question_%s_%d" % (public, dictTemp["IDquestion"])
+                self.listeDonnees.append({"label": label, "code": code})
+
+        self.MAJ()
+
+    def MAJ(self):
+        listeLabels = []
+        for dictTemp in self.listeDonnees:
+            listeLabels.append(dictTemp["label"])
+        self.SetItems(listeLabels)
+        self.Select(0)
+
+    def GetValeur(self):
+        index = self.GetSelection()
+        return self.listeDonnees[index]["code"]
+
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
 
 class CTRL_Mode(wx.Choice):
     def __init__(self, parent):
@@ -48,12 +93,12 @@ class CTRL_Mode(wx.Choice):
             (_(u"Montant des prestations"), "facture"),
             (_(u"Montant des prestations réglées"), "regle"),
             (_(u"Montant des prestations impayées"), "impaye"),
-            (u"--------------------------------------------------------------------------------", None),
+            (u"---------------------------------------------", None),
             (_(u"Nombre de prestations facturées"), "nbre_facturees"),
             (_(u"Montant des prestations facturées"), "facture_facturees"),
             (_(u"Montant des prestations réglées et facturées"), "regle_facturees"),
             (_(u"Montant des prestations impayées et facturées"), "impaye_facturees"),
-            (u"--------------------------------------------------------------------------------", None),
+            (u"---------------------------------------------", None),
             (_(u"Nombre de prestations non facturées"), "nbre_nonfacturees"),
             (_(u"Montant des prestations non facturées"), "facture_nonfacturees"),
             (_(u"Montant des prestations réglées et non facturées"), "regle_nonfacturees"),
@@ -316,7 +361,7 @@ class Dialog(wx.Dialog):
         self.parent = parent
         
         # Bandeau
-        intro = _(u"Cette fonction vous permet de quantifier précisément les prestations facturées sur une période donnée. Commencez par saisir une période puis sélectionnez un groupe d'activités. Le résultat peut afficher types de prestations possibles : les cotisations et les consommations. Cochez 'Créances' pour afficher le récapitulatif des impayés de la période.")
+        intro = _(u"Cette fonction vous permet de quantifier précisément les prestations facturées sur une période donnée. Commencez par saisir une période puis sélectionnez un groupe d'activités.")
         titre = _(u"Synthèse des prestations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Diagramme.png")
         self.SetTitle(titre)
@@ -326,11 +371,18 @@ class Dialog(wx.Dialog):
         
         # CTRL résultats
         self.staticbox_stats_staticbox = wx.StaticBox(self, -1, _(u"Résultats"))
-        self.label_mode_affichage = wx.StaticText(self, -1, _(u"Mode d'affichage :"))
-        self.label_mode_affichage.Show(False)
+
+        self.label_mode_regroupement = wx.StaticText(self, -1, _(u"Regroupement :"))
+        self.ctrl_regroupement = CTRL_Regroupement(self)
+        self.ctrl_regroupement.SetMinSize((50, -1))
+
+        self.label_mode_affichage = wx.StaticText(self, -1, _(u"Données :"))
         self.ctrl_mode = CTRL_Mode(self)
+        self.ctrl_mode.SetMinSize((50, -1))
+
         self.ctrl_stats = CTRL_Synthese_prestations.CTRL(self)
-        
+        self.ctrl_stats.SetMinSize((100, 100))
+
         # Commandes de liste
         self.bouton_apercu = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_excel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_ANY))
@@ -350,7 +402,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonExcel, self.bouton_excel)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-        self.Bind(wx.EVT_CHOICE, self.OnMode, self.ctrl_mode)
+        self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_regroupement)
+        self.Bind(wx.EVT_CHOICE, self.MAJ, self.ctrl_mode)
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDetails, self.check_details)
 
         self.__set_properties()
@@ -360,10 +413,10 @@ class Dialog(wx.Dialog):
         anneeActuelle = datetime.date.today().year
         self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
-        
+
+        self.ctrl_regroupement.Select(1)
         self.ctrl_mode.SetID("facture")
-        self.OnMode(None) 
-        
+
         self.MAJ() 
 
     def __set_properties(self):
@@ -388,10 +441,16 @@ class Dialog(wx.Dialog):
         staticbox_stats= wx.StaticBoxSizer(self.staticbox_stats_staticbox, wx.VERTICAL)
         grid_sizer_contenu2 = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
 
-        grid_sizer_affichage = wx.FlexGridSizer(rows=1, cols=11, vgap=5, hgap=5)
+        grid_sizer_affichage = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
+        grid_sizer_affichage.Add(self.label_mode_regroupement, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_affichage.Add(self.ctrl_regroupement, 0, wx.EXPAND, 0)
+        grid_sizer_affichage.Add( (10, 10), 0, wx.EXPAND, 0)
         grid_sizer_affichage.Add(self.label_mode_affichage, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage.Add(self.ctrl_mode, 0, wx.EXPAND, 0) 
+        grid_sizer_affichage.Add(self.ctrl_mode, 0, wx.EXPAND, 0)
+
         grid_sizer_affichage.AddGrowableCol(1)
+        grid_sizer_affichage.AddGrowableCol(4)
+
         grid_sizer_contenu2.Add(grid_sizer_affichage, 1, wx.EXPAND, 0)
         grid_sizer_contenu2.Add( (5, 5), 1, wx.EXPAND, 0)
 
@@ -483,18 +542,19 @@ class Dialog(wx.Dialog):
         self.label_barre.Enable(-etat)
         self.hyper_reduire.Enable(-etat)
 
-    def OnMode(self, event):
-        self.mode_affichage = self.ctrl_mode.GetID() 
-        self.MAJ() 
-        
-    def MAJ(self):
+    def MAJ(self, event=None):
+        self.mode_regroupement = self.ctrl_regroupement.GetValeur()
+        self.mode_affichage = self.ctrl_mode.GetID()
+
         self.ctrl_stats.date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate()
         self.ctrl_stats.date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate()
         self.ctrl_stats.afficher_consommations = self.ctrl_parametres.radio_consommations.GetValue()
         self.ctrl_stats.afficher_cotisations = self.ctrl_parametres.radio_cotisations.GetValue()
         self.ctrl_stats.afficher_autres = self.ctrl_parametres.radio_autres.GetValue()
         self.ctrl_stats.listeActivites = self.ctrl_parametres.ctrl_activites.GetActivites() 
+        self.ctrl_stats.mode_regroupement = self.mode_regroupement
         self.ctrl_stats.mode_affichage = self.mode_affichage
+
         # Options
 ##        if self.ctrl_parametres.options_cotisations.GetEtat() == True :
 ##            self.ctrl_stats.filtreCotisations = True
