@@ -190,7 +190,7 @@ class Dialog(wx.Dialog):
         DB = GestionDB.DB()
         
         # Importation du tarif
-        req = """SELECT date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient FROM tarifs WHERE IDtarif=%d;""" % self.IDtarif
+        req = """SELECT date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation FROM tarifs WHERE IDtarif=%d;""" % self.IDtarif
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         
@@ -202,7 +202,7 @@ class Dialog(wx.Dialog):
         DB.Close()
         if len(listeDonnees) == 0 : return
         
-        date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient = listeDonnees[0]
+        date_debut, date_fin, type, categories_tarifs, groupes, etiquettes, cotisations, caisses, description, jours_scolaires, jours_vacances, observations, tva, code_compta, IDtype_quotient, label_prestation = listeDonnees[0]
 
         # Date début
         self.toolbook.GetPage("generalites").SetDateDebut(date_debut)
@@ -218,7 +218,10 @@ class Dialog(wx.Dialog):
 
         # Catégories de tarifs rattachées
         self.toolbook.GetPage("generalites").SetCategories(categories_tarifs)
-            
+
+        # Label de prestation
+        self.toolbook.GetPage("generalites").SetLabelPrestation(label_prestation)
+
         # TVA
         self.toolbook.GetPage("generalites").SetTVA(tva)
 
@@ -281,6 +284,7 @@ class Dialog(wx.Dialog):
         texteCategories = self.toolbook.GetPage("generalites").GetCategories()
         tva = self.toolbook.GetPage("generalites").GetTVA()
         code_compta = self.toolbook.GetPage("generalites").GetCodeComptable()
+        label_prestation = self.toolbook.GetPage("generalites").GetLabelPrestation()
         
         # Conditions
         texteGroupes = self.toolbook.GetPage("conditions").GetGroupes()
@@ -328,6 +332,7 @@ class Dialog(wx.Dialog):
             ("tva", tva),
             ("code_compta", code_compta),
             ("IDtype_quotient", IDtype_quotient),
+            ("label_prestation", label_prestation),
             ]
         DB.ReqMAJ("tarifs", listeDonnees, "IDtarif", self.IDtarif)
         

@@ -1,4 +1,4 @@
-Version 1.1.9.0 (05/03/2017) :
+Version 1.1.9.1 (18/03/2017) :
 
 - Ajout du TaskBarIcon pour Connecthys
 - Ajout Masquer partis dans nbre inscrits de la page d'accueil
@@ -7,6 +7,7 @@ Version 1.1.9.0 (05/03/2017) :
 - Ajout infos totaux prélèvements pour récapitulatif factures [Claude]
 - Ajout vidage des listes de diffusion
 - Ajout du champ date_valeur dans la table prestations [Arthru]
+- Ajout label de prestation personnalisé dans le paramétrage des tarifs
 - Correction bug cryptage mots de passe utilisateurs
 - Correction bug réactivation ouverture d'unités de conso
 - Correction bug sur mots-clés dans l'édition de factures

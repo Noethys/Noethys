@@ -91,7 +91,7 @@ class CTRL(HTL.HyperTreeList):
         # Creation des colonnes
         self.AddColumn(_(u"Prestations / Tarifs"))
         self.SetColumnWidth(0, 250)
-        self.AddColumn(_(u"Nom du tarif"))
+        self.AddColumn(_(u"Description du tarif"))
         self.SetColumnWidth(1, 230)
         self.AddColumn(_(u"Catégories de tarifs"))
         self.SetColumnWidth(2, 180)

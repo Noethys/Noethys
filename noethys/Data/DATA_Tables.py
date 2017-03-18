@@ -425,6 +425,7 @@ DB_DATA = {
                                     ("etiquettes", "VARCHAR(450)", u"Etiquettes rattachées à ce tarif"),
                                     ("etats", "VARCHAR(150)", u"Etats de consommations rattachés à ce tarif"),
                                     ("IDtype_quotient", "INTEGER", u"ID du type de quotient"),
+                                    ("label_prestation", "VARCHAR(300)", u"Label de la prestation"),
                                     ], # Tarifs
 
     "combi_tarifs":          [("IDcombi_tarif", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID combinaison de tarif"),

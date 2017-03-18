@@ -1976,7 +1976,14 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 9, 1)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("tarifs", "label_prestation", "VARCHAR(300)")
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
 
 

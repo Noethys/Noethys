@@ -86,6 +86,74 @@ class CTRL_Categories(wx.CheckListBox):
 
 # --------------------------------------------------------------------------------------------------------
 
+class CTRL_Label_prestation(wx.Panel):
+    def __init__(self, parent, listeChoix=[]):
+        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
+        self.parent = parent
+        self.listeChoix = listeChoix
+        self.listeChoix.append(("autre:", _(u"Le label suivant")))
+
+        choices = []
+        for code, label in self.listeChoix:
+            choices.append(label)
+        self.ctrl_choix = wx.Choice(self, -1, choices=choices)
+        self.ctrl_choix.SetToolTipString(_(u"Sélectionnez le label de la prestation"))
+        self.ctrl_autre = wx.TextCtrl(self, -1, "")
+
+        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_base.Add(self.ctrl_choix, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 0)
+        grid_sizer_base.Add(self.ctrl_autre, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALL | wx.EXPAND, 0)
+        grid_sizer_base.AddGrowableCol(0)
+        grid_sizer_base.AddGrowableCol(1)
+        self.SetSizer(grid_sizer_base)
+        grid_sizer_base.Fit(self)
+        self.Layout()
+
+        self.Bind(wx.EVT_CHOICE, self.OnChoix, self.ctrl_choix)
+
+        self.OnChoix()
+
+    def OnChoix(self, event=None):
+        code = self.GetCodeSelection()
+        if code != None and code.startswith("autre:"):
+            self.ctrl_autre.Enable(True)
+            if self.ctrl_autre.GetValue() == "":
+                self.ctrl_autre.SetFocus()
+        else:
+            self.ctrl_autre.Enable(False)
+
+    def GetCodeSelection(self):
+        index = self.ctrl_choix.GetSelection()
+        if index == -1: return None
+        code = self.listeChoix[index][0]
+        if code == "autre:":
+            texte = self.ctrl_autre.GetValue()
+            code = u"autre:%s" % texte
+        return code
+
+    def SetCodeSelection(self, code=""):
+        index = 0
+        for codeTemp, label in self.listeChoix:
+            if code != None :
+                if codeTemp == code or (codeTemp == "autre:" and code.startswith("autre:")):
+                    self.ctrl_choix.Select(index)
+                    if code.startswith("autre:"):
+                        self.ctrl_autre.SetValue(code[6:])
+            index += 1
+        self.OnChoix()
+
+    def Validation(self):
+        if self.GetCodeSelection() == "autre:":
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné un label de prestation personnalisé mais sans saisir le label souhaité !"),_(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_autre.SetFocus()
+            return False
+        return True
+
+
+# --------------------------------------------------------------------------------------------------------
+
 class Panel(wx.Panel):
     def __init__(self, parent, IDactivite=None, IDtarif=None):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
@@ -98,7 +166,7 @@ class Panel(wx.Panel):
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
         
         # Description
-        self.label_description = wx.StaticText(self, -1, _(u"Nom du tarif :"))
+        self.label_description = wx.StaticText(self, -1, _(u"Description :"))
         self.ctrl_description = wx.TextCtrl(self, -1, u"") 
 
         # Observations
@@ -108,8 +176,17 @@ class Panel(wx.Panel):
         # Catégories de tarifs
         self.label_categories = wx.StaticText(self, -1, _(u"Catégories :"))
         self.ctrl_categories = CTRL_Categories(self, IDactivite)
-        self.ctrl_categories.SetMinSize((150, 100))
-        
+        self.ctrl_categories.SetMinSize((150, 50))
+
+        # Label de la prestation
+        self.label_label_prestation = wx.StaticText(self, -1, _(u"Label prestation :"))
+        listeChoix = [
+            ("nom_tarif", _(u"Nom du tarif (Par défaut)")),
+            ("description_tarif", _(u"Description du tarif")),
+            ]
+        self.ctrl_label_prestation = CTRL_Label_prestation(self, listeChoix=listeChoix)
+        self.ctrl_label_prestation.SetCodeSelection("nom_tarif")
+
         # TVA
         self.label_tva = wx.StaticText(self, -1, _(u"Taux TVA :"))
         self.ctrl_tva = FS.FloatSpin(self, -1, min_val=0, max_val=100, increment=0.1, agwStyle=FS.FS_RIGHT)
@@ -141,6 +218,9 @@ class Panel(wx.Panel):
 
         grid_sizer_base.Add(self.label_categories, 0, wx.ALIGN_RIGHT, 0)
         grid_sizer_base.Add(self.ctrl_categories, 1, wx.EXPAND, 0)
+
+        grid_sizer_base.Add(self.label_label_prestation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_base.Add(self.ctrl_label_prestation, 1, wx.EXPAND, 0)
 
         grid_sizer_base.Add(self.label_tva, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_base.Add(self.ctrl_tva, 1, 0, 0)
@@ -190,6 +270,9 @@ class Panel(wx.Panel):
             listeCategories = UTILS_Texte.ConvertStrToListe(categories_tarifs)
             self.ctrl_categories.SetIDcoches(listeCategories)
 
+    def SetLabelPrestation(self, label_prestation=""):
+        self.ctrl_label_prestation.SetCodeSelection(label_prestation)
+
     def SetDescription(self, description=""):
         if description != None :
             self.ctrl_description.SetValue(description)        
@@ -221,6 +304,9 @@ class Panel(wx.Panel):
     
     def GetCategories(self):
         return self.ctrl_categories.GetTexteCoches()
+
+    def GetLabelPrestation(self):
+        return self.ctrl_label_prestation.GetCodeSelection()
 
     def GetDescription(self):
         return self.ctrl_description.GetValue() 
@@ -271,7 +357,18 @@ class Panel(wx.Panel):
             dlg.Destroy()
             if reponse != wx.ID_YES :
                 return False
-        
+
+        # Vérifie la valeur du label de prestation
+        if self.ctrl_label_prestation.Validation() == False :
+            return False
+
+        if self.GetLabelPrestation() == "description_tarif" and self.GetDescription() == "" :
+            dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné un label de prestation 'Description du tarif' mais sans saisir de description !"), "Erreur de saisie", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            self.ctrl_description.SetFocus()
+            return False
+
         return True
 
     def Sauvegarde(self):
