@@ -102,7 +102,7 @@ class Dialog(wx.Dialog):
         # Périodes
         self.staticbox_periodes_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_periodes = CTRL_Grille_periode.CTRL(self)
-        self.ctrl_periodes.SetMinSize((200, 230))
+        self.ctrl_periodes.SetMinSize((220, 230))
         
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
@@ -171,7 +171,7 @@ class Dialog(wx.Dialog):
         self.ctrl_masquer_activites.SetToolTipString(_(u"Cochez cette case pour masquer de cette liste les activités vieilles de plus de 2 ans"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((540, 420))
+        self.SetMinSize((640, 450))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -190,6 +190,8 @@ class Dialog(wx.Dialog):
         grid_sizer_activites = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         grid_sizer_activites.Add(self.ctrl_activites, 1, wx.EXPAND, 0)
         grid_sizer_activites.Add(self.ctrl_masquer_activites, 0, wx.EXPAND, 0)
+        grid_sizer_activites.AddGrowableRow(0)
+        grid_sizer_activites.AddGrowableCol(0)
         staticbox_activites.Add(grid_sizer_activites, 1, wx.EXPAND|wx.ALL, 10)
         grid_sizer_droit.Add(staticbox_activites, 1, wx.EXPAND, 0)
 
