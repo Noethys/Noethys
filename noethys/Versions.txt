@@ -1,13 +1,16 @@
-Version 1.1.9.1 (18/03/2017) :
+Version 1.1.9.2 (20/03/2017) :
 
 - Ajout du TaskBarIcon pour Connecthys
+- Ajout export PES ORMC Recette Aller version 2017
 - Ajout Masquer partis dans nbre inscrits de la page d'accueil
 - Ajout bouton de modification des caractéristiques des factures
 - Ajout info dialogue pas de combinaison conditionnelle dans saisie tarifs [Claude]
 - Ajout infos totaux prélèvements pour récapitulatif factures [Claude]
-- Ajout vidage des listes de diffusion
+- Ajout suppression des abonnements des listes de diffusion
 - Ajout du champ date_valeur dans la table prestations [Arthru]
 - Ajout label de prestation personnalisé dans le paramétrage des tarifs
+- Ajout autorisation saisie règlement avec montant nul
+- Ajout du regroupement dans la synthèse des prestations
 - Correction bug cryptage mots de passe utilisateurs
 - Correction bug réactivation ouverture d'unités de conso
 - Correction bug sur mots-clés dans l'édition de factures
