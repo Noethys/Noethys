@@ -38,7 +38,9 @@ class EditeurChoix(wxpg.PyChoiceEditor):
         return ctrl
 
     def UpdateControl(self, property, ctrl):
-        ctrl.SetValue(property.GetDisplayedString())
+        self.SetControlStringValue(property, ctrl, property.GetDisplayedString())
+
+
 
 class Propriete_choix(wxpg.PyProperty):
     """ Simple liste de choix """
@@ -67,10 +69,6 @@ class Propriete_choix(wxpg.PyProperty):
             return (True, valeur)
         except:
             return False
-
-
-
-
 
 
 # ---------------------------------------------------------------------------------------------------------------
