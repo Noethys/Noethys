@@ -617,7 +617,6 @@ class Dialog(wx.Dialog):
         box_caisses.Add(self.ctrl_caisses, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_haut_milieu.Add(box_caisses, 1, wx.EXPAND, 0)
 
-
         grid_sizer_haut_milieu.AddGrowableRow(1)
         grid_sizer_haut_milieu.AddGrowableCol(0)
         grid_sizer_haut_contenu.Add(grid_sizer_haut_milieu, 1, wx.EXPAND, 0)

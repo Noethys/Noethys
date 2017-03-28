@@ -25,7 +25,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
     # Si aucun fichier n'est chargé, on renvoie la valeur par défaut :
     if DB.echec == 1 :
         return dictParametres
-    
+
     req = u"""SELECT IDparametre, nom, parametre FROM parametres WHERE categorie="%s";""" % categorie
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()

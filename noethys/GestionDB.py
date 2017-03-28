@@ -1985,6 +1985,16 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 9, 3)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("profils") == False: self.CreationTable("profils", Tables.DB_DATA)
+                if self.IsTableExists("profils_parametres") == False: self.CreationTable("profils_parametres", Tables.DB_DATA)
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
 
 
@@ -2238,7 +2248,7 @@ if __name__ == "__main__":
                 
     # Création d'une table données
     # db = DB(suffixe="DATA")
-    # listeTables = ("portail_messages",)
+    # listeTables = ("profils_parametres",)
     # for nomTable in listeTables :
     #     db.CreationTable(nomTable, Tables.DB_DATA)
     # db.Close()

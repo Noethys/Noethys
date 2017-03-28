@@ -1,4 +1,8 @@
-Version 1.1.9.2 (20/03/2017) :
+Version 1.1.9.3 (26/03/2017) :
+
+- Nouvelle version de l'état global des consommations
+
+Version 1.1.9.2 (25/03/2017) :
 
 - Ajout du TaskBarIcon pour Connecthys
 - Ajout export PES ORMC Recette Aller version 2017

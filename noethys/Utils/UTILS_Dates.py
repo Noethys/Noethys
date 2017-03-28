@@ -14,6 +14,9 @@ from UTILS_Traduction import _
 import datetime
 import time
 
+LISTE_MOIS = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
+
+
 
 def DateEngFr(textDate):
     if textDate in (None, "") : return ""
@@ -238,6 +241,11 @@ def CalculerArrondi(arrondi_type="duree", arrondi_delta=15, heure_debut=None, he
         duree_arrondie = ArrondirDelta(duree=duree_reelle, delta_minutes=arrondi_delta, sens="sup")
 
     return duree_arrondie
+
+def FormateMois((annee, mois)):
+    return u"%s %d" % (LISTE_MOIS[mois-1].capitalize(), annee)
+
+
 
 
 

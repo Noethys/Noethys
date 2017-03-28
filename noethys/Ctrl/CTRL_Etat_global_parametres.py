@@ -3,8 +3,8 @@
 #-----------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
@@ -29,9 +29,9 @@ class Track(object):
         self.IDactivite = donnees[1]
         self.nomUnite = donnees[2]
         self.typeUnite = donnees[3]
-        self.coeffUnite = donnees[4]
-        self.nomActivite = donnees[5]
-        
+        self.nomActivite = donnees[4]
+        self.coeffUnite = None
+
         # Items HyperTreeList
         self.item = None
         self.itemParent = None
@@ -84,6 +84,42 @@ class Track(object):
             return False
         return self.ctrl_heure_seuil.GetValeur()
 
+    def GetParametres(self):
+        dictParametres = {
+            "IDunite": self.IDunite,
+            "typeCalcul": self.ctrl_type.GetParametre(),
+            "coeff": self.GetCoeff(),
+            "arrondi": self.ctrl_arrondi.GetParametre(),
+            "duree_plafond": self.GetDureePlafond(),
+            "duree_seuil": self.GetDureeSeuil(),
+            "heure_plafond": self.GetHeurePlafond(),
+            "heure_seuil": self.GetHeureSeuil(),
+            }
+        return dictParametres
+
+    def SetParametres(self, dictParametres={}):
+        # Coeff
+        if dictParametres.has_key("coeff") :
+            self.ctrl_coeff.SetValeur(dictParametres["coeff"])
+        # Arrondi
+        if dictParametres.has_key("arrondi") :
+            self.ctrl_arrondi.SetParametre(dictParametres["arrondi"])
+        # Type de calcul
+        if dictParametres.has_key("typeCalcul") :
+            self.ctrl_type.SetParametre(dictParametres["typeCalcul"])
+        # Durée seuil
+        if dictParametres.has_key("duree_seuil") :
+            self.ctrl_duree_seuil.SetValeur(dictParametres["duree_seuil"])
+        # Durée plafond
+        if dictParametres.has_key("duree_plafond") :
+            self.ctrl_duree_plafond.SetValeur(dictParametres["duree_plafond"])
+        # Heure seuil
+        if dictParametres.has_key("heure_seuil") :
+            self.ctrl_heure_seuil.SetValeur(dictParametres["heure_seuil"])
+        # Heure plafond
+        if dictParametres.has_key("heure_plafond") :
+            self.ctrl_heure_plafond.SetValeur(dictParametres["heure_plafond"])
+
 # --------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL_Type(wx.Choice):
@@ -102,7 +138,7 @@ class CTRL_Type(wx.Choice):
         else:
             self.SetSelection(0)
 
-    def OnChoice(self, event):
+    def OnChoice(self, event=None):
         if self.GetSelection() == 0 :
             self.track.ctrl_coeff.Enable(True)
             self.track.ctrl_arrondi.Enable(False)
@@ -124,6 +160,15 @@ class CTRL_Type(wx.Choice):
             self.track.ctrl_duree_plafond.Enable(False)
             self.track.ctrl_heure_seuil.Enable(False)
             self.track.ctrl_heure_plafond.Enable(False)
+
+    def SetParametre(self, index=0):
+        self.SetSelection(index)
+        self.OnChoice()
+
+    def GetParametre(self):
+        return self.GetSelection()
+
+
 
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -163,6 +208,12 @@ class CTRL_Arrondi(wx.Choice):
     def GetValeur(self):
         index = self.GetSelection() 
         return self.listeArrondis[index]
+
+    def SetParametre(self, index=0):
+        self.SetSelection(index)
+
+    def GetParametre(self):
+        return self.GetSelection()
 
 # -------------------------------------------------------------------------------------------------------------------
 
@@ -223,16 +274,20 @@ class CTRL_Heure(CTRL_Saisie_heure.Heure):
         else:
             return None
 
+    def SetValeur(self, heure=None):
+        self.SetHeure(heure)
+
+
 # -------------------------------------------------------------------------------------------------------------------
 
 class CTRL(HTL.HyperTreeList):
     def __init__(self, parent): 
         HTL.HyperTreeList.__init__(self, parent, -1)
         self.parent = parent
-        
+
+        self.dict_parametres = {}
         self.listeTracks = []
         self.listeActivites = []
-        self.dictCoeff = {}
         self.periode = (None, None)
                 
         # Création des colonnes
@@ -269,7 +324,7 @@ class CTRL(HTL.HyperTreeList):
         else : conditionActivites = "unites.IDactivite IN %s" % str(tuple(self.listeActivites))
         DB = GestionDB.DB()
         req = """SELECT 
-        unites.IDunite, unites.IDactivite, unites.nom, unites.type, unites.coeff,
+        unites.IDunite, unites.IDactivite, unites.nom, unites.type,
         activites.nom
         FROM unites
         LEFT JOIN activites ON activites.IDactivite = unites.IDactivite
@@ -284,23 +339,25 @@ class CTRL(HTL.HyperTreeList):
         for item in listeDonnees :
             track = Track(item)
             listeTracks.append(track)
-            
-            # Mémorisation du coeff initial
-            if self.dictCoeff.has_key(track.IDunite) == False :
-                self.dictCoeff[track.IDunite] = track.coeffUnite
-        
+
         return listeTracks
 
-    def MAJ(self):
+    def MAJ(self, reinitialisation=False):
         """ Met à jour (redessine) tout le contrôle """
-        # Mémorise les coeff déjà saisis
-        self.GetDictCoeff() 
-        # MAJ
+        # Mémorise les paramètres de chaque unité
+        dict_parametres = self.GetParametres()
+        if len(dict_parametres) > 0 :
+            self.dict_parametres = dict_parametres
+        if reinitialisation :
+            self.dict_parametres = {}
+        # MAJ du Ctrl
         self.Freeze()
         self.DeleteAllItems()
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
-        self.Thaw() 
+        # Applique les parametres mémorisés
+        self.SetParametres(self.dict_parametres)
+        self.Thaw()
 
     def Remplissage(self):        
         # Importation des données
@@ -350,8 +407,8 @@ class CTRL(HTL.HyperTreeList):
                     if track.ctrl_type.GetSelection() == 1 :
                         ctrl_coeff.Enable(False)
                     
-                    if self.dictCoeff.has_key(track.IDunite) :
-                        track.SetCoeff(self.dictCoeff[track.IDunite])
+                    #if self.dictCoeff.has_key(track.IDunite) :
+                    #    track.SetCoeff(self.dictCoeff[track.IDunite])
 
                     # CTRL de l'Arrondi
                     ctrl_arrondi = CTRL_Arrondi(self.GetMainWindow(), item=brancheUnite, track=track)
@@ -499,13 +556,30 @@ class CTRL(HTL.HyperTreeList):
         
         return dictDonnees
                 
-    def SauvegardeCoeff(self):
-        """ Sauvegarde des coeff sasis dans la table unités """
-        self.GetDictCoeff() 
-        DB = GestionDB.DB() 
-        for IDunite, coeff in self.dictCoeff.iteritems() :
-            DB.ReqMAJ("unites", [("coeff", coeff),], "IDunite", IDunite)
-        DB.Close() 
+
+    def GetParametres(self):
+        """ Récupération des paramètres pour sauvegarde dans profil """
+        dictParametres = {}
+        for track in self.listeTracks:
+            dictParametres["parametres_unite_%d" % track.IDunite] = track.GetParametres()
+        return dictParametres
+
+    def SetParametres(self, dictParametres={}):
+        """ Importation de paramètres """
+        # Réinitialisation si aucun profil
+        if dictParametres == None :
+            self.MAJ(reinitialisation=True)
+            return
+        # Envoi des paramètres au Ctrl
+        for IDunite, dictParametresTrack in dictParametres.iteritems():
+            if type(IDunite) in (str, unicode) and IDunite.startswith("parametres_unite_"):
+                IDunite = int(IDunite.replace("parametres_unite_", ""))
+            for track in self.listeTracks:
+                if IDunite == track.IDunite :
+                    track.SetParametres(dictParametresTrack)
+
+        # Mémorisation des paramètres
+        self.dict_parametres = dictParametres
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -516,8 +590,12 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
+
         self.ctrl = CTRL(panel)
-        self.ctrl.MAJ() 
+        self.ctrl.periode = (datetime.date(2016, 1, 1), datetime.date(2016, 12, 31))
+        self.ctrl.listeActivites = [1,]
+        self.ctrl.MAJ()
+
         self.boutonTest = wx.Button(panel, -1, _(u"Test"))
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
@@ -529,7 +607,7 @@ class MyFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.boutonTest)
     
     def OnBoutonTest(self, event):
-        print self.ctrl.GetDonnees()
+        print self.ctrl.GetParametres()
         
 
 if __name__ == '__main__':

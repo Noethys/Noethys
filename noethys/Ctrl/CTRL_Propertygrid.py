@@ -25,6 +25,220 @@ import copy
 
 
 
+
+
+
+class EditeurChoix(wxpg.PyChoiceEditor):
+    def __init__(self):
+        wxpg.PyChoiceEditor.__init__(self)
+
+    def CreateControls(self, propGrid, property, pos, size):
+        ctrl = self.CallSuperMethod("CreateControls", propGrid, property, pos, size)
+        self.SetControlIntValue(property, ctrl, 0)
+        return ctrl
+
+    def UpdateControl(self, property, ctrl):
+        ctrl.SetValue(property.GetDisplayedString())
+
+class Propriete_choix(wxpg.PyProperty):
+    """ Simple liste de choix """
+    def __init__(self, label, name=wxpg.LABEL_AS_NAME, liste_choix=[], valeur=None):
+        self.liste_choix = liste_choix
+        wxpg.PyProperty.__init__(self, label, name)
+        self.SetChoices([x[1] for x in self.liste_choix])
+        if valeur != None:
+            self.SetValue(valeur)
+
+    def GetClassName(self):
+        return "Propriete_choix"
+
+    def GetEditor(self):
+        return "Choice"
+
+    def ValueToString(self, value, flags):
+        for id, label in self.liste_choix:
+            if id == value:
+                return label
+        return ""
+
+    def IntToValue(self, index, flags):
+        try:
+            valeur = self.liste_choix[index][0]
+            return (True, valeur)
+        except:
+            return False
+
+
+
+
+
+
+# ---------------------------------------------------------------------------------------------------------------
+
+class Propriete_multichoix(wxpg.PyArrayStringProperty):
+    """ Propriété Multichoix """
+    def __init__(self, label, name = wxpg.LABEL_AS_NAME, liste_choix=[], liste_selections=[]):
+        self.liste_choix = liste_choix
+        self.liste_selections = liste_selections
+
+        # Initialisation
+        wxpg.PyArrayStringProperty.__init__(self, label, name)
+
+        # Set default delimiter
+        self.SetAttribute("Delimiter", ',')
+
+        # Importation des sélections
+        self.SetValue(self.liste_selections)
+
+    def GetEditor(self):
+        return "TextCtrlAndButton"
+
+    def ValueToString(self, value, flags):
+        return self.m_display
+
+    def OnSetValue(self):
+        self.GenerateValueAsString()
+
+    def DoSetAttribute(self, name, value):
+        # Proper way to call same method from super class
+        retval = self.CallSuperMethod("DoSetAttribute", name, value)
+
+        # Must re-generate cached string when delimiter changes
+        if name == "Delimiter":
+            self.GenerateValueAsString(delim=value)
+
+        return retval
+
+    def GenerateValueAsString(self, delim=None):
+        """ This function creates a cached version of displayed text (self.m_display). """
+        if not delim:
+            delim = self.GetAttribute("Delimiter")
+            if not delim:
+                delim = ','
+
+        selections = self.GetValue()
+        ls = [x[1] for x in self.liste_choix if x[0] in selections]
+        if delim == '"' or delim == "'":
+            text = ' '.join(['%s%s%s'%(delim,a,delim) for a in ls])
+        else:
+            text = ', '.join(ls)
+        self.m_display = text
+
+    def StringToValue(self, text, argFlags):
+        """ If failed, return False or (False, None). If success, return tuple (True, newValue) """
+        delim = self.GetAttribute("Delimiter")
+        if delim == '"' or delim == "'":
+            # Proper way to call same method from super class
+            return self.CallSuperMethod("StringToValue", text, 0)
+        valeurs_saisies = [a.strip() for a in text.split(delim)]
+        liste_id = []
+        for valeur in valeurs_saisies :
+            found = False
+            for id, label in self.liste_choix :
+                if valeur.lower() == label.lower() :
+                    liste_id.append(id)
+                    found = True
+            if not found :
+                liste_id = self.m_value
+                break
+        return (True, liste_id)
+
+    def OnEvent(self, propgrid, primaryEditor, event):
+        if event.GetEventType() == wx.wxEVT_COMMAND_BUTTON_CLICKED:
+            dlg = wx.MultiChoiceDialog(propgrid, _(u"Cochez les éléments à sélectionner :"), _(u"Sélection"), [x[1] for x in self.liste_choix])
+            liste_index = []
+            index = 0
+            for id, valeur in self.liste_choix :
+                if id in self.m_value :
+                    liste_index.append(index)
+                index += 1
+            dlg.SetSelections(liste_index)
+            if dlg.ShowModal() == wx.ID_OK:
+                liste_id = []
+                for index in dlg.GetSelections() :
+                    liste_id.append(self.liste_choix[index][0])
+                self.SetValueInEvent(liste_id)
+                retval = True
+            else:
+                retval = False
+            dlg.Destroy()
+            return retval
+        return False
+
+
+
+# -------------------------------------------------------------------------------------------------
+
+class Propriete_liste(wxpg.PyArrayStringProperty):
+    """ Propriété Multichoix """
+    def __init__(self, label, name = wxpg.LABEL_AS_NAME, type_donnees=int, liste_selections=[]):
+        self.type_donnees = type_donnees
+        self.liste_selections = liste_selections
+
+        # Initialisation
+        wxpg.PyArrayStringProperty.__init__(self, label, name)
+
+        # Set default delimiter
+        self.SetAttribute("Delimiter", ',')
+
+        # Importation des sélections
+        self.SetValue(self.liste_selections)
+
+    def GetEditor(self):
+        return "TextCtrl"
+
+    def ValueToString(self, value, flags):
+        return self.m_display
+
+    def OnSetValue(self):
+        self.GenerateValueAsString()
+
+    def DoSetAttribute(self, name, value):
+        # Proper way to call same method from super class
+        retval = self.CallSuperMethod("DoSetAttribute", name, value)
+
+        # Must re-generate cached string when delimiter changes
+        if name == "Delimiter":
+            self.GenerateValueAsString(delim=value)
+
+        return retval
+
+    def GenerateValueAsString(self, delim=None):
+        """ This function creates a cached version of displayed text (self.m_display). """
+        if not delim:
+            delim = self.GetAttribute("Delimiter")
+            if not delim:
+                delim = ','
+
+        ls = [unicode(x) for x in self.GetValue()]
+        if delim == '"' or delim == "'":
+            text = ' '.join(['%s%s%s'%(delim,a,delim) for a in ls])
+        else:
+            text = ', '.join(ls)
+        self.m_display = text
+
+    def StringToValue(self, text, argFlags):
+        """ If failed, return False or (False, None). If success, return tuple (True, newValue) """
+        delim = self.GetAttribute("Delimiter")
+        if delim == '"' or delim == "'":
+            # Proper way to call same method from super class
+            return self.CallSuperMethod("StringToValue", text, 0)
+        valeurs_saisies = [a.strip() for a in text.split(delim)]
+        liste_id = []
+        if valeurs_saisies != ["",] :
+            for valeur in valeurs_saisies :
+                try :
+                    liste_id.append(self.type_donnees(valeur))
+                except :
+                    liste_id = self.m_value
+                    break
+        return (True, liste_id)
+
+
+
+
+# -------------------------------------------------------------------------------------------------
+
 class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
     def __init__(self):
         wxpg.PyChoiceEditor.__init__(self)
@@ -53,11 +267,7 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
         return self.CallSuperMethod("OnEvent", propGrid, prop, ctrl, event)
 
 
-
-
-
-
-
+# ------------------------------------------------------------------------------------------------------
 
 class EditeurHeure(wxpg.PyEditor):
     def __init__(self):
@@ -121,6 +331,10 @@ class EditeurHeure(wxpg.PyEditor):
         ctrl.SetSelection(-1,-1)
         ctrl.SetFocus()
 
+
+
+
+
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class CTRL(wxpg.PropertyGrid) :
@@ -132,6 +346,7 @@ class CTRL(wxpg.PropertyGrid) :
         if not getattr(sys, '_PropGridEditorsRegistered', False):
             self.RegisterEditor(EditeurComboBoxAvecBoutons)
             self.RegisterEditor(EditeurHeure)
+            self.RegisterEditor(EditeurChoix)
             # ensure we only do it once
             sys._PropGridEditorsRegistered = True
         
@@ -324,16 +539,23 @@ class CTRL(wxpg.PropertyGrid) :
 ##        if propriete.GetName() == "reglement_auto" :
 ##            self.parent.ctrl_pieces.reglement_auto = propriete.GetValue()
     
-    def Reinitialisation(self):
-        dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser tous les paramètres ?"), _(u"Paramètres par défaut"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
-        reponse = dlg.ShowModal() 
-        dlg.Destroy()
-        if reponse == wx.ID_YES :
-            for nom, valeur in self.dictValeursDefaut.iteritems() :
-                propriete = self.GetPropertyByName(nom)
-                if self.GetPropertyAttribute(propriete, "reinitialisation_interdite") != True :
-                    propriete.SetValue(valeur)
-    
+    def Reinitialisation(self, afficher_dlg=True):
+        # Demande confirmation
+        if afficher_dlg == True :
+            dlg = wx.MessageDialog(None, _(u"Souhaitez-vous vraiment réinitialiser tous les paramètres ?"), _(u"Paramètres par défaut"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != wx.ID_YES :
+                return False
+
+        # Réinitialisation
+        for nom, valeur in self.dictValeursDefaut.iteritems() :
+            propriete = self.GetPropertyByName(nom)
+            if self.GetPropertyAttribute(propriete, "reinitialisation_interdite") != True :
+                propriete.SetValue(valeur)
+
+
+
 ##    def Sauvegarde(self):
 ##        # Récupération des noms et valeurs par défaut du contrôle
 ##        dictValeurs = copy.deepcopy(self.GetPropertyValues())

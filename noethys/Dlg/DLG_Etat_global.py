@@ -3,31 +3,33 @@
 #-----------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
-
 
 import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
-import time
 import sys
-import math
 
 import GestionDB
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Selection_activites
 from Ctrl import CTRL_Saisie_date
-import DLG_calendrier_simple
-from Ctrl import CTRL_Coefficients_siej
+from Ctrl import CTRL_Etat_global_parametres
+from Ctrl import CTRL_Etat_global_options
+from Ctrl import CTRL_Profil
 from Ol import OL_Liste_regimes
 from Utils import UTILS_Organisateur
 from Utils import UTILS_Dates
 from Utils import UTILS_Config
+from Utils import UTILS_Infos_individus
+from Utils import UTILS_Texte
+from Utils import UTILS_Divers
+from Utils import UTILS_Dialogs
 
 import FonctionsPerso
 import wx.lib.dialogs as dialogs
@@ -42,26 +44,6 @@ def ArrondirHeureSup(heures, minutes, pas):
             return (heures, x)
     return (heures+1, 0)
 
-def DateEngEnDateDD(dateEng):
-    if dateEng == None or dateEng == "" : return None
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
-
-##def FormateValeur(valeur, mode="decimal"):
-##    if mode == "decimal" :
-##        return valeur
-##    if mode == "heure" :
-##        hr, dec = str(valeur).split(".")
-##        if len(dec) == 1 : 
-##            mn = int(dec) * 0.1
-##        else:
-##            mn = int(dec) * 0.01
-##        mn = mn * 60 #int(dec)*60/100.0
-##        mn = math.ceil(mn)
-##        return u"%sh%02d" % (hr, mn)
 
 def FormateValeur(valeur, mode="decimal"):
     heures = (valeur.days*24) + (valeur.seconds/3600)
@@ -71,184 +53,32 @@ def FormateValeur(valeur, mode="decimal"):
         minDecimal = int(minutes)*100/60
         return float("%s.%s" % (heures, minDecimal))
 
-    if mode == "heure" :
+    if mode == "horaire" :
         return "%dh%02d" % (heures, minutes)
 
 
-##    if valeur == None or valeur == "" and mode == "decimal" : return 0.00
-##    if valeur == None or valeur == "" and mode != "decimal" : return "0h00"
-##    if type(valeur) == float and mode == "decimal" : return valeur
-##    if type(valeur) == str :
-##        hr, mn = valeur[1:].split(":")
-##    if type(valeur) == datetime.timedelta :
-##        hr, mn, sc = str(valeur).split(":")
-##    if mode == "decimal" :
-##        # Mode décimal
-##        minDecimal = int(mn)*100/60
-##        texte = "%s.%s" % (hr, minDecimal)
-##        resultat = float(texte)
-##    else:
-##        # Mode Heure
-##        if hr == "00" : hr = "0"
-##        resultat = u"%s:%s" % (hr, mn)
-##    return resultat
 
 
-class CTRL_Regroupement(wx.TextCtrl):
-    def __init__(self, parent):
-        wx.TextCtrl.__init__(self, parent, -1, "")
-        self.parent = parent
-        self.SetToolTipString(_(u"Saisissez des niveaux de regroupement par âge en les séparant par des points-virgules. Ex : '3;6;12'"))
+# ---------------------------------------------------------------------------------------
 
-    def Validation(self):
-        if self.GetDonnees() == False :
-            return False
-        else :
-            return True
+class CTRL_profil_perso(CTRL_Profil.CTRL):
+    def __init__(self, parent, categorie="", dlg=None):
+        CTRL_Profil.CTRL.__init__(self, parent, categorie=categorie)
+        self.dlg = dlg
 
-    def GetDonnees(self):
-        listeDonnees = []
-        try :
-            listeTemp = self.GetValue().split(";")
-            if len(listeTemp) > 0 and len(listeTemp[0]) > 0 :
-                for x in listeTemp :
-                    if int(x) not in listeDonnees :
-                        listeDonnees.append(int(x))
-        except Exception, err:
-            return False
-        listeDonnees.sort()
-        return listeDonnees
+    def Envoyer_parametres(self, dictParametres={}):
+        """ Envoi des paramètres du profil sélectionné à la fenêtre """
+        self.dlg.SetParametres(dictParametres)
 
-    def GetLabel(self):
-        liste_regroupements = self.GetDonnees()
-        if len(liste_regroupements) == 0 :
-            return _(u"Aucun regroupement par âge")
-        else :
-            return _(u"Regroupements par âge (%s)") % self.GetValue()
-
-class CTRL_Jours(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        self.liste_jours = ("lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi", "dimanche")
-        
-        # Périodes scolaires
-        self.label_periodes_scolaires = wx.StaticText(self, -1,_(u"Hors vacances :"))
-        self.CreationCaseJours("scolaire")
-        
-        # Périodes de vacances
-        self.label_periodes_vacances = wx.StaticText(self, -1,_(u"Vacances :"))
-        self.CreationCaseJours("vacances")
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
-                
-        # Périodes scolaires
-        grid_sizer_base.Add(self.label_periodes_scolaires, 0, 0, 0)
-
-        grid_sizer_scolaire = wx.FlexGridSizer(rows=1, cols=7, vgap=3, hgap=3)
-        for jour in self.liste_jours :
-            exec("grid_sizer_scolaire.Add(self.check_scolaire_%s, 0, 0, 0)" % jour)
-        grid_sizer_base.Add(grid_sizer_scolaire, 1, wx.EXPAND, 0)
-        
-        # Périodes de vacances
-        grid_sizer_base.Add(self.label_periodes_vacances, 0, wx.LEFT, 10)
-        
-        grid_sizer_vacances = wx.FlexGridSizer(rows=1, cols=7, vgap=3, hgap=3)
-        for jour in self.liste_jours :
-            exec("grid_sizer_vacances.Add(self.check_vacances_%s, 0, 0, 0)" % jour)
-        grid_sizer_base.Add(grid_sizer_vacances, 1, wx.EXPAND, 0)
-                
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-    
-    def CreationCaseJours(self, periode="scolaire"):
-        for jour in self.liste_jours :
-            exec("self.check_%s_%s = wx.CheckBox(self, -1,u'%s')" % (periode, jour, jour[0].upper()) )
-            exec("self.check_%s_%s.SetToolTipString(u'%s')" % (periode, jour, jour.capitalize()) )
-            exec("self.check_%s_%s.SetValue(True)" % (periode, jour))
-
-    def GetJours(self, periode="scolaire"):
-        listeTemp = []
-        index = 0
-        for jour in self.liste_jours :
-            exec("etat = self.check_%s_%s.GetValue()" % (periode, jour))
-            if etat == True :
-                listeTemp.append(index)
-            index += 1
-        return listeTemp
-    
-
-class CTRL_Etats(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        
-        self.check_attente = wx.CheckBox(self, -1, _(u"Pointage en attente"))
-        self.check_present = wx.CheckBox(self, -1, _(u"Présent"))
-        self.check_absentj = wx.CheckBox(self, -1, _(u"Absence justifiée"))
-        self.check_absenti = wx.CheckBox(self, -1, _(u"Absence injustifiée"))
-        
-        self.check_attente.SetValue(True) 
-        self.check_present.SetValue(True) 
-        self.check_absentj.SetValue(True) 
-        self.check_absenti.SetValue(True) 
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.check_attente, 1, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.check_present, 1, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.check_absentj, 1, wx.EXPAND, 0)
-        grid_sizer_base.Add(self.check_absenti, 1, wx.EXPAND, 0)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-
-    def GetEtats(self):
-        listeEtats = []
-        if self.check_attente.GetValue() == True : listeEtats.append("reservation")
-        if self.check_present.GetValue() == True : listeEtats.append("present")
-        if self.check_absentj.GetValue() == True : listeEtats.append("absentj")
-        if self.check_absenti.GetValue() == True : listeEtats.append("absenti")
-        return listeEtats
+    def Recevoir_parametres(self):
+        """ Récupération des paramètres pour la sauvegarde du profil """
+        dictParametres = self.dlg.GetParametres()
+        self.Enregistrer(dictParametres)
 
 
-class CTRL_QF(wx.Panel):
-    def __init__(self, parent):
-        wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
-        self.parent = parent
-        
-        self.check_qf = wx.CheckBox(self, -1, _(u"Quotient familial de la famille compris entre"))
-        self.ctrl_qf_min = wx.SpinCtrl(self, -1, "0", size=(70, -1), max=999999)
-        self.ctrl_qf_min.SetToolTipString(_(u"QF min (inclus)"))
-        self.label_et = wx.StaticText(self, -1, _(u"et"))
-        self.ctrl_qf_max = wx.SpinCtrl(self, -1, "0", size=(70, -1), max=999999)
-        self.ctrl_qf_max.SetToolTipString(_(u"QF max (inclus)"))
-        
-        # Layout
-        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=6, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.check_qf, 1, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(self.ctrl_qf_min, 1, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(self.label_et, 1, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(self.ctrl_qf_max, 1, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL, 0)
-        self.SetSizer(grid_sizer_base)
-        grid_sizer_base.Fit(self)
-        
-        # Binds
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_qf)
-        self.OnCheck() 
-    
-    def OnCheck(self, event=None):
-        self.ctrl_qf_min.Enable(self.check_qf.GetValue())
-        self.ctrl_qf_max.Enable(self.check_qf.GetValue())
-        
-    def GetDonnees(self):
-        if self.check_qf.GetValue() == True :
-            qf_min = int(self.ctrl_qf_min.GetValue())
-            qf_max = int(self.ctrl_qf_max.GetValue())
-            return (qf_min, qf_max)
-        return None
-    
 
+
+# ---------------------------------------------------------------------------------------
 
 class Parametres(wx.Panel):
     def __init__(self, parent):
@@ -262,16 +92,10 @@ class Parametres(wx.Panel):
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        # Séparation
-        self.staticbox_regroupement_staticbox = wx.StaticBox(self, -1, _(u"Regroupements par âge"))
-        self.ctrl_regroupement = CTRL_Regroupement(self)
-        
-        # Affichage Heure/Décimal
-        self.staticbox_affichage_staticbox = wx.StaticBox(self, -1, _(u"Affichage"))
-        self.radio_affichage_heure = wx.RadioButton(self, -1, _(u"Heure"), style=wx.RB_GROUP)
-        self.radio_affichage_decimal = wx.RadioButton(self, -1, _(u"Décimal"))
-        self.check_detail = wx.CheckBox(self, -1, _(u"Afficher le détail par activité"))
-        self.check_periodes_detail = wx.CheckBox(self, -1, _(u"Afficher les périodes détaillées"))
+        # Profil
+        self.staticbox_profil_staticbox = wx.StaticBox(self, -1, _(u"Profil de configuration"))
+        self.ctrl_profil = CTRL_profil_perso(self, categorie="etat_global", dlg=self.parent)
+        self.ctrl_profil.SetMinSize((100, -1))
 
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
@@ -280,16 +104,10 @@ class Parametres(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
-        # Init Contrôles
-        regroupement = UTILS_Config.GetParametre("etat_global_regroupement", defaut="")
-        self.ctrl_regroupement.SetValue(regroupement)
-
 
     def __set_properties(self):
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
-        self.check_detail.SetToolTipString(_(u"Cochez cette case pour afficher le détail par activité"))
-        self.check_periodes_detail.SetToolTipString(_(u"Cochez cette case pour afficher les périodes détaillées"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -303,26 +121,12 @@ class Parametres(wx.Panel):
         grid_sizer_periode.Add(self.ctrl_date_fin, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_periode, 1, wx.RIGHT|wx.EXPAND, 5)
-        
-        # Regroupement
-        staticbox_regroupement = wx.StaticBoxSizer(self.staticbox_regroupement_staticbox, wx.VERTICAL)
-        staticbox_regroupement.Add(self.ctrl_regroupement, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(staticbox_regroupement, 1, wx.RIGHT|wx.EXPAND, 5)
-        
-        # Affichage Heure/Décimal
-        staticbox_affichage = wx.StaticBoxSizer(self.staticbox_affichage_staticbox, wx.VERTICAL)
-        grid_sizer_affichage1 = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        
-        grid_sizer_affichage2 = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
-        grid_sizer_affichage2.Add(self.radio_affichage_heure, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage2.Add(self.radio_affichage_decimal, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_affichage1.Add(grid_sizer_affichage2, 1, wx.ALL|wx.EXPAND, 0)
 
-        grid_sizer_affichage1.Add(self.check_detail, 1, wx.LEFT|wx.EXPAND, 0)
-        grid_sizer_affichage1.Add(self.check_periodes_detail, 1, wx.LEFT|wx.EXPAND, 0)
-        staticbox_affichage.Add(grid_sizer_affichage1, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(staticbox_affichage, 1, wx.RIGHT|wx.EXPAND, 5)
-        
+        # Profil
+        staticbox_profil = wx.StaticBoxSizer(self.staticbox_profil_staticbox, wx.VERTICAL)
+        staticbox_profil.Add(self.ctrl_profil, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_base.Add(staticbox_profil, 1, wx.RIGHT|wx.EXPAND, 5)
+
         # Activités
         staticbox_activites = wx.StaticBoxSizer(self.staticbox_activites_staticbox, wx.VERTICAL)
         staticbox_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 5)
@@ -330,7 +134,7 @@ class Parametres(wx.Panel):
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
-        grid_sizer_base.AddGrowableRow(3)
+        grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
 
     def OnBoutonAfficher(self, event):
@@ -367,32 +171,17 @@ class Parametres(wx.Panel):
     
     def OnChoixDate(self):
         date_debut, date_fin = self.GetPeriode() 
-        self.parent.ctrl_coeff.periode = (date_debut, date_fin)
-        self.parent.ctrl_coeff.MAJ() 
+        self.parent.ctrl_parametres.periode = (date_debut, date_fin)
+        self.parent.ctrl_parametres.MAJ()
 
     def OnCheckActivites(self):
         date_debut, date_fin = self.GetPeriode() 
-        self.parent.ctrl_coeff.periode = (date_debut, date_fin)
-        self.parent.ctrl_coeff.listeActivites = self.ctrl_activites.GetActivites()
-        self.parent.ctrl_coeff.MAJ()
+        self.parent.ctrl_parametres.periode = (date_debut, date_fin)
+        self.parent.ctrl_parametres.listeActivites = self.ctrl_activites.GetActivites()
+        self.parent.ctrl_parametres.MAJ()
     
     def GetActivites(self):
         return self.ctrl_activites.GetActivites() 
-    
-    def GetModeAffichage(self):
-        if self.radio_affichage_decimal.GetValue() == True :
-            return "decimal"
-        else:
-            return "heure"
-    
-    def GetModeDetail(self):
-        return self.check_detail.GetValue()
-
-    def GetModeDetailPeriodes(self):
-        return self.check_periodes_detail.GetValue()
-
-    def GetLabelRegroupement(self):
-        return self.ctrl_regroupement.GetLabel()
 
     def GetNomsActivites(self):
         listeTemp = self.ctrl_activites.GetLabelActivites()
@@ -401,15 +190,12 @@ class Parametres(wx.Panel):
     def GetLabelParametres(self):
         # Label Paramètres
         listeParametres = [ 
-            _(u"Période du %s au %s") % (DateEngFr(str(self.ctrl_date_debut.GetDate())), DateEngFr(str(self.ctrl_date_fin.GetDate()))),
-            self.GetLabelRegroupement(),
+            _(u"Période du %s au %s") % (UTILS_Dates.DateEngFr(str(self.ctrl_date_debut.GetDate())), UTILS_Dates.DateEngFr(str(self.ctrl_date_fin.GetDate()))),
             _(u"Activités : %s") % self.GetNomsActivites(),
             ]
         labelParametres = " | ".join(listeParametres)
         return labelParametres
 
-    def Memorisation_parametres(self):
-        UTILS_Config.SetParametre("etat_global_regroupement", self.ctrl_regroupement.GetValue())
 
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------
@@ -418,28 +204,26 @@ class Dialog(wx.Dialog):
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
         self.parent = parent
-        
+        self.date_debut = None
+        self.date_fin = None
+
         # Bandeau
-        intro = _(u"Vous pouvez ici générer l'état global des consommations (Notez que les résultats sont conformes à l'interface SIEJ de la CAF). Commencez par saisir une période de référence, saisissez des niveaux de regroupement par âge (ex : '3;6;12'), sélectionnez une ou plusieurs activités puis choisissez une méthode de calcul par unité souhaitée.")
+        intro = _(u"Vous pouvez ici générer l'état global des consommations. C'est ici que vous pouvez notamment extraire des données à destination de la CAF ou de la MSA. Commencez par saisir une période de référence et sélectionnez une ou plusieurs activités. Après avoir renseigné les paramètres de calcul et les options, vous pouvez cliquer sur le bouton de sauvegarde d'un profil pour mémoriser la configuration. Vous pourrez ainsi la réutiliser facilement ultérieurement.")
         titre = _(u"Etat global des consommations")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Tableaux.png")
         self.SetTitle(titre)
         
         # Panel Paramètres
-        self.ctrl_parametres = Parametres(self)
+        self.panel_parametres = Parametres(self)
         
-        # CTRL Coefficients
-        self.staticbox_coeff_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de calcul"))
-        self.ctrl_coeff = CTRL_Coefficients_siej.CTRL(self)
+        # Paramètres de calcul
+        self.staticbox_parametres_staticbox = wx.StaticBox(self, -1, _(u"Paramètres de calcul"))
+        self.ctrl_parametres = CTRL_Etat_global_parametres.CTRL(self)
 
-        # Filtres
-        self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, _(u"Filtres"))
-        self.label_jours = wx.StaticText(self, -1, _(u"Périodes :"))
-        self.ctrl_jours = CTRL_Jours(self)
-        self.label_etats = wx.StaticText(self, -1, _(u"Etats :"))
-        self.ctrl_etats = CTRL_Etats(self)
-        self.label_qf = wx.StaticText(self, -1, _(u"QF :"))
-        self.ctrl_qf = CTRL_QF(self)
+        # Options
+        self.staticbox_filtres_staticbox = wx.StaticBox(self, -1, _(u"Options"))
+        self.ctrl_options = CTRL_Etat_global_options.CTRL(self)
+        self.ctrl_options.SetMinSize((-1, 130))
 
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Aperçu"), cheminImage="Images/32x32/Apercu.png")
@@ -455,8 +239,8 @@ class Dialog(wx.Dialog):
         
         # Données Test
         anneeActuelle = datetime.date.today().year
-        self.ctrl_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
-        self.ctrl_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
+        self.panel_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
+        self.panel_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
                 
 
     def __set_properties(self):
@@ -472,25 +256,18 @@ class Dialog(wx.Dialog):
         grid_sizer_contenu = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         
         # Panel des paramètres
-        grid_sizer_contenu.Add(self.ctrl_parametres, 1, wx.EXPAND, 0)
+        grid_sizer_contenu.Add(self.panel_parametres, 1, wx.EXPAND, 0)
         
         grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
         
-        # Ctrl des coeff
-        staticbox_coeff = wx.StaticBoxSizer(self.staticbox_coeff_staticbox, wx.VERTICAL)
-        staticbox_coeff.Add(self.ctrl_coeff, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_droit.Add(staticbox_coeff, 1, wx.EXPAND, 5)
+        # Ctrl des parametres
+        staticbox_parametres = wx.StaticBoxSizer(self.staticbox_parametres_staticbox, wx.VERTICAL)
+        staticbox_parametres.Add(self.ctrl_parametres, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_droit.Add(staticbox_parametres, 1, wx.EXPAND, 5)
 
         # Ctrl des filtres
         staticbox_filtres = wx.StaticBoxSizer(self.staticbox_filtres_staticbox, wx.VERTICAL)
-        grid_sizer_filtres = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
-        grid_sizer_filtres.Add(self.label_jours, 1,wx.ALIGN_RIGHT| wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_filtres.Add(self.ctrl_jours, 1, wx.EXPAND, 0)
-        grid_sizer_filtres.Add(self.label_etats, 1, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_filtres.Add(self.ctrl_etats, 1, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_filtres.Add(self.label_qf, 1, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_filtres.Add(self.ctrl_qf, 1, wx.ALIGN_CENTER_VERTICAL, 0)
-        staticbox_filtres.Add(grid_sizer_filtres, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_filtres.Add(self.ctrl_options, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_droit.Add(staticbox_filtres, 1, wx.EXPAND, 5)
 
         grid_sizer_droit.AddGrowableRow(0)
@@ -515,10 +292,11 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        UTILS_Dialogs.AjusteSizePerso(self, __file__)
         self.CenterOnScreen()
     
     def OnBoutonFermer(self, event):
-        self.Memorisation_parametres()
+        UTILS_Dialogs.SaveSizePerso(self, __file__)
         self.EndModal(wx.ID_CANCEL)
         
     def OnBoutonAide(self, event): 
@@ -526,26 +304,34 @@ class Dialog(wx.Dialog):
         UTILS_Aide.Aide("Etatglobal")
     
     def OnClose(self, event=None):
-        self.Memorisation_parametres()
-        event.Skip() 
+        event.Skip()
 
-    def Memorisation_parametres(self):
-        self.ctrl_coeff.SauvegardeCoeff()
-        self.ctrl_parametres.Memorisation_parametres()
+    def GetParametres(self):
+        """ Récupération des paramètres """
+        dictParametres = {}
+        dictParametres.update(self.ctrl_options.GetParametres())
+        dictParametres.update(self.ctrl_parametres.GetParametres())
+        return dictParametres
+
+    def SetParametres(self, dictParametres={}):
+        """ Importation des paramètres """
+        self.ctrl_parametres.SetParametres(dictParametres)
+        self.ctrl_options.SetParametres(dictParametres)
 
     def Apercu(self, event):
+        """ Génération du document PDF """
         listeAnomalies = []
 
         # Validation de la période
-        date_debut = self.ctrl_parametres.ctrl_date_debut.GetDate() 
-        if self.ctrl_parametres.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
+        date_debut = self.panel_parametres.ctrl_date_debut.GetDate() 
+        if self.panel_parametres.ctrl_date_debut.FonctionValiderDate() == False or date_debut == None :
             dlg = wx.MessageDialog(self, _(u"La date de début de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
         
-        date_fin = self.ctrl_parametres.ctrl_date_fin.GetDate() 
-        if self.ctrl_parametres.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
+        date_fin = self.panel_parametres.ctrl_date_fin.GetDate() 
+        if self.panel_parametres.ctrl_date_fin.FonctionValiderDate() == False or date_fin == None :
             dlg = wx.MessageDialog(self, _(u"La date de fin de période semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
@@ -556,57 +342,77 @@ class Dialog(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
-        # Validation du regroupement
-        if self.ctrl_parametres.ctrl_regroupement.Validation() == False :
-            dlg = wx.MessageDialog(self, _(u"Les niveaux de regroupement semble erronés !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        liste_regroupements = self.ctrl_parametres.ctrl_regroupement.GetDonnees()
-        
+
         # Validation des activités
-        listeActivites = self.ctrl_parametres.GetActivites()
+        listeActivites = self.panel_parametres.GetActivites()
         if len(listeActivites) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez sélectionner au moins une activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+
         # Récupération des méthodes de calcul
-        dictUnites = self.ctrl_coeff.GetDonnees()
+        dictUnites = self.ctrl_parametres.GetDonnees()
         if dictUnites == False :
             return False
         
-        # Récupération des filtres
-        jours_scolaires = self.ctrl_jours.GetJours("scolaire")
-        jours_vacances = self.ctrl_jours.GetJours("vacances")
-        etats = self.ctrl_etats.GetEtats() 
-        qf = self.ctrl_qf.GetDonnees() 
+        # Récupération des options
+        if self.ctrl_options.Validation() == False :
+            return False
+        dict_options = self.ctrl_options.GetParametres()
 
-        # Récupération du mode d'affichage
-        modeAffichage = self.ctrl_parametres.GetModeAffichage()
-        modeDetail = self.ctrl_parametres.GetModeDetail()
-        modePeriodesDetail = self.ctrl_parametres.GetModeDetailPeriodes()
+        modeAffichage = dict_options["format_donnees"]
+        modePeriodesDetail = dict_options["periodes_detaillees"]
+        regroupement_principal = dict_options["regroupement_principal"]
+        liste_regroupements = dict_options["regroupement_age"]
+        jours_scolaires = dict_options["jours_hors_vacances"]
+        jours_vacances = dict_options["jours_vacances"]
+        etats = dict_options["etat_consommations"]
+        qf = None # TODO
 
         # Récupération du labelParametres
-        labelParametres = self.ctrl_parametres.GetLabelParametres()
-        
+        labelParametres = self.panel_parametres.GetLabelParametres()
+
+        # Chargement des informations individuelles
+        if self.date_debut != date_debut :
+
+            # Infos individus et familles
+            self.infosIndividus = UTILS_Infos_individus.Informations(date_reference=date_debut, qf=True, inscriptions=True, messages=False, infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False, questionnaires=True, scolarite=True)
+            self.dictInfosIndividus = self.infosIndividus.GetDictValeurs(mode="individu", ID=None, formatChamp=False)
+            self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=False)
+
+        # Mémorisation des paramètres
+        self.date_debut = date_debut
+        self.date_fin = date_fin
+
         # Vérifie que toutes les familles ont une caisse attribuées
-        listeFamillesSansCaisses = OL_Liste_regimes.GetFamillesSansCaisse(listeActivites, date_debut, date_fin)
-        if len(listeFamillesSansCaisses) > 0 :
-            listeTemp = []
-            for dictTemp in listeFamillesSansCaisses :
-                listeTemp.append(dictTemp["titulaires"])
-            messageDetail = u"\n".join(listeTemp)
-            dlg = dialogs.MultiMessageDialog(self, _(u"Attention, le régime d'appartenance n'a pas été renseigné pour les %d familles suivantes :") % len(listeTemp), caption=_(u"Régime d'appartenance"), msg2=messageDetail, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, btnLabels={wx.ID_OK : _(u"Continuer quand même"), wx.ID_CANCEL : _(u"Annuler")})
-            reponse = dlg.ShowModal() 
-            dlg.Destroy() 
-            if reponse == wx.ID_CANCEL : 
-                return
+        if dict_options["afficher_regime_inconnu"] == True :
+            listeFamillesSansCaisses = OL_Liste_regimes.GetFamillesSansCaisse(listeActivites, date_debut, date_fin)
+            if len(listeFamillesSansCaisses) > 0 :
+                listeTemp = []
+                for dictTemp in listeFamillesSansCaisses :
+                    listeTemp.append(dictTemp["titulaires"])
+                messageDetail = u"\n".join(listeTemp)
+                dlg = dialogs.MultiMessageDialog(self, _(u"Attention, le régime d'appartenance n'a pas été renseigné pour les %d familles suivantes :") % len(listeTemp), caption=_(u"Régime d'appartenance"), msg2=messageDetail, style = wx.ICON_EXCLAMATION | wx.OK | wx.CANCEL, btnLabels={wx.ID_OK : _(u"Continuer quand même"), wx.ID_CANCEL : _(u"Annuler")})
+                reponse = dlg.ShowModal()
+                dlg.Destroy()
+                if reponse == wx.ID_CANCEL :
+                    return
+
+        DB = GestionDB.DB()
+
+        # Etiquettes
+        dictEtiquettes = {}
+        req = """SELECT IDetiquette, label, IDactivite, parent, ordre, couleur
+        FROM etiquettes;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        for IDetiquette, label, IDactivite, parent, ordre, couleur in listeDonnees :
+            couleurTemp = couleur[1:-1].split(",")
+            couleur = wx.Colour(int(couleurTemp[0]), int(couleurTemp[1]), int(couleurTemp[2]))
+            dictEtiquettes[IDetiquette] = {"label" : label, "IDactivite" : IDactivite, "parent" : parent, "ordre" : ordre, "couleur" : couleur}
 
         # Récupération des régimes
-        DB = GestionDB.DB()
         req = """SELECT 
         IDregime, nom
         FROM regimes
@@ -628,8 +434,8 @@ class Dialog(wx.Dialog):
         listeDonnees = DB.ResultatReq()     
         listeVacances = []
         for IDvacance, nom, annee, date_debut_Tmp, date_fin_Tmp in listeDonnees :
-            date_debut_Tmp = DateEngEnDateDD(date_debut_Tmp)
-            date_fin_Tmp = DateEngEnDateDD(date_fin_Tmp)
+            date_debut_Tmp = UTILS_Dates.DateEngEnDateDD(date_debut_Tmp)
+            date_fin_Tmp = UTILS_Dates.DateEngEnDateDD(date_fin_Tmp)
             if date_debut_Tmp.month in (6, 7, 8, 9) or date_fin_Tmp.month in (6, 7, 8, 9) :
                 grandesVacs = True
             else:
@@ -677,315 +483,337 @@ class Dialog(wx.Dialog):
                 label = _(u"Hors vacances %s-%s %d") % (LISTE_MOIS[date_debut_temp.month-1], LISTE_MOIS[date_fin_temp.month-1], annee)
                 listePeriodesDetail.append( {"code" : nom + "_%d" % annee, "annee" : annee, "label" : label, "date_debut" : date_debut_temp, "date_fin" : date_fin_temp, "vacs" : False, "grandesVacs" : False} )
             index += 1
-    
-        # Regroupement par activité
-        if modeDetail == True :
-            dictActivites = {}
-            for IDunite, dictUnite in dictUnites.iteritems() :
-                activite = (dictUnite["nomActivite"], dictUnite["IDactivite"])
-                if dictActivites.has_key(activite) == False :
-                    dictActivites[activite] = [IDunite,]
-                else :
-                    dictActivites[activite].append(IDunite)
-        else :
-            dictActivites = { (u"", 0) : dictUnites.keys() }
+
+        # Récupération des tranches de QF des tarifs
+        if regroupement_principal == "qf_tarifs":
+            if len(listeActivites) == 0 : condition = "AND IDactivite IN ()"
+            elif len(listeActivites) == 1 : condition = "AND IDactivite IN (%d)" % listeActivites[0]
+            else : condition = "AND IDactivite IN %s" % str(tuple(listeActivites))
+            req = """SELECT IDligne, qf_min, qf_max
+            FROM tarifs_lignes
+            WHERE qf_min IS NOT NULL AND qf_max IS NOT NULL
+            %s
+            ;""" % condition
+            DB.ExecuterReq(req)
+            listeDonnees = DB.ResultatReq()
+            liste_tranches_qf = []
+            for IDligne, qf_min, qf_max in listeDonnees:
+                tranche = (int(qf_min), int(qf_max))
+                if tranche not in liste_tranches_qf :
+                    liste_tranches_qf.append(tranche)
+                    liste_tranches_qf.sort()
+
+        # Récupération des tranches de qf perso
+        if regroupement_principal == "qf_perso":
+            liste_tranches_qf = []
+            temp = 0
+            for x in dict_options["tranches_qf_perso"] :
+                liste_tranches_qf.append((temp, x-1))
+                temp = x
+            liste_tranches_qf.append((temp, 999999))
 
         # Recherche des données
-        dictValeurs = {}
         listeRegimesUtilises = []
-        for (nomActivite, IDactivite), listeUnites in dictActivites.iteritems() :
-            
-            dictResultats = {}
-            
-            # Préparation des niveaux de regroupement
-            if len(liste_regroupements) == 0 :
-                dictResultats = { 0 : {"label" : u"", "min" : None, "max" : None} }
-            else :
-                dictResultats = {}
-                indexRegroupement = 0
-                for regroupement in liste_regroupements :
-                    if indexRegroupement == 0 :
-                        dictResultats[indexRegroupement] = {"label" : _(u"Âge < %d ans") % regroupement, "min" : None, "max" : regroupement}
-                    else :
-                        dictResultats[indexRegroupement] = {"label" : _(u"Âge >= %d et < %d ans") % (liste_regroupements[indexRegroupement-1], regroupement), "min" : liste_regroupements[indexRegroupement-1], "max" : regroupement}
-                    indexRegroupement += 1
-                dictResultats[indexRegroupement] = {"label" : _(u"Âge >= %d ans") % regroupement, "min" : regroupement, "max" : None}
 
 
-            # if regroupement == None :
-            #     dictResultats = { 0 : { "labelRegroupement" : u""} }
-            # elif regroupement[0] == "age" :
-            #     # Si en fonction de l'âge
-            #     ageReference = regroupement[1]
-            #     dictResultats = {
-            #         0 : { "labelRegroupement" : _(u"- %d ans") % ageReference},
-            #         1 : { "labelRegroupement" : _(u"+ %d ans") % ageReference},
-            #         }
-            # elif regroupement[0] == "dateNaiss" :
-            #     # Si en fonction de la date de naissance
-            #     dateNaissReference = regroupement[1]
-            #     dictResultats = {
-            #         0 : { "labelRegroupement" : _(u"Nés avant le %s") % DateEngFr(str(dateNaissReference))},
-            #         1 : { "labelRegroupement" : _(u"Nés après le %s") % DateEngFr(str(dateNaissReference))},
-            #         }
-        
-            # Récupère le QF de la famille
-            dictQuotientsFamiliaux = {}
-            if qf != None :
-                req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
-                FROM quotients
-                ORDER BY date_debut;"""
-                DB.ExecuterReq(req)
-                listeDonnees = DB.ResultatReq()
-                for IDquotient, IDfamille, date_debut_temp, date_fin_temp, quotient in listeDonnees :
-                    date_debut_temp = DateEngEnDateDD(date_debut_temp)
-                    date_fin_temp = DateEngEnDateDD(date_fin_temp)
-                    if dictQuotientsFamiliaux.has_key(IDfamille) == False :
-                        dictQuotientsFamiliaux[IDfamille] = []
-                    dictQuotientsFamiliaux[IDfamille].append((date_debut_temp, date_fin_temp, quotient))
-
-            # Récupération des consommations
-            listeUnitesUtilisees = listeUnites
-            if len(listeUnitesUtilisees) == 0 : conditionSQL = "AND consommations.IDunite IN ()"
-            elif len(listeUnitesUtilisees) == 1 : conditionSQL = "AND consommations.IDunite IN (%d)" % listeUnitesUtilisees[0]
-            else : conditionSQL = "AND consommations.IDunite IN %s" % str(tuple(listeUnitesUtilisees))
-                
-            req = """SELECT 
-            consommations.IDconso, consommations.IDindividu, consommations.IDactivite, 
-            consommations.date, consommations.IDunite, consommations.quantite,
-            consommations.heure_debut, consommations.heure_fin, consommations.etat,
-            consommations.IDprestation, prestations.temps_facture,
-            comptes_payeurs.IDfamille, familles.IDcaisse,
-            caisses.IDregime,
-            individus.date_naiss
-            FROM consommations
-            LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
-            LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
-            LEFT JOIN familles ON familles.IDfamille = comptes_payeurs.IDfamille
-            LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
-            LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
-            WHERE consommations.date >='%s' AND consommations.date <='%s'
-            AND etat NOT IN ('attente', 'refus')
-            %s
-            ORDER BY consommations.date;""" % (str(date_debut), str(date_fin), conditionSQL)
-            DB.ExecuterReq(req)
-            listeDonnees = DB.ResultatReq()     
-            
-            listePrestationsTraitees = []
-            for IDconso, IDindividu, IDactivite, date, IDunite, quantite, heure_debut, heure_fin, etat, IDprestation, temps_facture, IDfamille, IDcaisse, IDregime, date_naiss in listeDonnees :
-                date = DateEngEnDateDD(date)
-                if date_naiss != None : date_naiss = DateEngEnDateDD(date_naiss)
-                
-                # Quantité
-                if quantite == None :
-                    quantite = 1
-                
-                # Formatage des heures
-                if heure_debut != None and heure_debut != "" : 
-                    h, m = heure_debut.split(":")
-                    heure_debut = datetime.time(int(h), int(m))
-                if heure_fin != None and heure_fin != "" : 
-                    h, m = heure_fin.split(":")
-                    heure_fin = datetime.time(int(h), int(m))
-
-                # Recherche la période
-                periode = ""
-                if modePeriodesDetail == False :
-                    # Périodes non détaillées
-                    for dictVac in listeVacances :
-                        if date >= dictVac["date_debut"] and date <= dictVac["date_fin"] :
-                            if dictVac["grandesVacs"] == True :
-                                periode = "grandesVacs"
-                            else:
-                                periode = "petitesVacs"
-                    if periode == "" :
-                        periode = "horsVacs"
+        # Préparation des tranches d'âge
+        if len(liste_regroupements) == 0 :
+            dict_tranches_age = { 0 : {"label" : u"", "min" : None, "max" : None} }
+        else :
+            dict_tranches_age = {}
+            indexRegroupement = 0
+            for regroupement in liste_regroupements :
+                if indexRegroupement == 0 :
+                    dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge < %d ans") % regroupement, "min" : None, "max" : regroupement}
                 else :
-                    # Périodes détaillées
-                    for dictPeriode in listePeriodesDetail :
-                        if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"] :
-                            periode = dictPeriode["code"]
-                
-                if periode == "" :
-                    texte = _(u"Période inconnue pour la date du %s. Vérifiez que les périodes de vacances ont bien été paramétrées.") % UTILS_Dates.DateDDEnFr(date)
-                    if texte not in listeAnomalies :
-                        listeAnomalies.append(texte)
-                    
-                # ------------ Application de filtres ---------------
-                valide = False
-                
-                # Période
-                if periode == "horsVacs" or periode.startswith("mercredis") :
-                    if date.weekday() in jours_scolaires :
-                        valide = True
-                if periode in ("grandesVacs", "petitesVacs") or periode.startswith("vacances") :
-                    if date.weekday() in jours_vacances :
-                        valide = True
-                
-                # Etat
-                if etat not in etats :
-                    valide = False
-                
-                # QF
-                if qf != None :
-                    qf_min, qf_max = qf
-                    valide = False
-                    if dictQuotientsFamiliaux.has_key(IDfamille) :
-                        for date_debut_temp, date_fin_temp, quotient in dictQuotientsFamiliaux[IDfamille] :
-                            if date >= date_debut_temp and date <= date_fin_temp and quotient >= qf_min and quotient <= qf_max :
-                                valide = True
-                                break
-                
-                # Calculs
-                if valide == True :
-                    
-                    # ----- Recherche de la méthode de calcul pour cette unité -----
-                    dictCalcul = dictUnites[IDunite]
-                    valeur = datetime.timedelta(hours=0, minutes=0)
-                    
-                    if dictCalcul["typeCalcul"] == 0 :
-                        # Si c'est selon le coeff :
-                        if valeur == None or valeur == "" : 
-                            valeur = datetime.timedelta(hours=0, minutes=0)
-                        else :
-                            valeur = datetime.timedelta(hours=dictCalcul["coeff"], minutes=0)
-                        
-                    elif dictCalcul["typeCalcul"] == 1 :
-                        
-                        # Si c'est en fonction du temps réél :
-                        if heure_debut != None and heure_debut != "" and heure_fin != None and heure_fin != "" : 
+                    dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge >= %d et < %d ans") % (liste_regroupements[indexRegroupement-1], regroupement), "min" : liste_regroupements[indexRegroupement-1], "max" : regroupement}
+                indexRegroupement += 1
+                dict_tranches_age[indexRegroupement] = {"label" : _(u"Âge >= %d ans") % regroupement, "min" : regroupement, "max" : None}
 
-                            # Si une heure seuil est demandée
-                            heure_seuil = dictCalcul["heure_seuil"]
-                            if heure_seuil != None :
-                                heure_seuil = UTILS_Dates.HeureStrEnTime(heure_seuil)#datetime.time(hour=int(heure_seuil.split(":")[0]), minute=int(heure_seuil.split(":")[1]))
-                                if heure_debut < heure_seuil :
-                                    heure_debut = heure_seuil
 
-                            # Si une heure plafond est demandée
-                            heure_plafond = dictCalcul["heure_plafond"]
-                            if heure_plafond != None :
-                                heure_plafond = UTILS_Dates.HeureStrEnTime(heure_plafond)#datetime.time(hour=int(heure_plafond.split(":")[0]), minute=int(heure_plafond.split(":")[1]))
-                                if heure_fin > heure_plafond :
-                                    heure_fin = heure_plafond
+        # Récupère le QF de la famille
+        # dictQuotientsFamiliaux = {}
+        # if qf != None :
+        #     req = """SELECT IDquotient, IDfamille, date_debut, date_fin, quotient
+        #     FROM quotients
+        #     ORDER BY date_debut;"""
+        #     DB.ExecuterReq(req)
+        #     listeDonnees = DB.ResultatReq()
+        #     for IDquotient, IDfamille, date_debut_temp, date_fin_temp, quotient in listeDonnees :
+        #         date_debut_temp = UTILS_Dates.DateEngEnDateDD(date_debut_temp)
+        #         date_fin_temp = UTILS_Dates.DateEngEnDateDD(date_fin_temp)
+        #         if dictQuotientsFamiliaux.has_key(IDfamille) == False :
+        #             dictQuotientsFamiliaux[IDfamille] = []
+        #         dictQuotientsFamiliaux[IDfamille].append((date_debut_temp, date_fin_temp, quotient))
 
-                            # Calcul de la durée
-                            valeur = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute) - datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
-                            if "day" in str(valeur) :
-                                dlg = wx.MessageDialog(self, _(u"Les horaires de cette consommation sont incorrectes : IDconso=%d | IDindividu=%d | IDfamille=%d | date=%s.") % (IDconso, IDindividu, IDfamille, date), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
-                                dlg.ShowModal()
-                                dlg.Destroy()
-                                return False
+        # Récupération des consommations
+        listeUnitesUtilisees = dictUnites.keys()
+        if len(listeUnitesUtilisees) == 0 : conditionSQL = "AND consommations.IDunite IN ()"
+        elif len(listeUnitesUtilisees) == 1 : conditionSQL = "AND consommations.IDunite IN (%d)" % listeUnitesUtilisees[0]
+        else : conditionSQL = "AND consommations.IDunite IN %s" % str(tuple(listeUnitesUtilisees))
 
-                            # Si un arrondi est demandé
-                            arrondi = dictCalcul["arrondi"]
-                            if arrondi != None :
-                                arrondi_type, arrondi_delta = arrondi
-                                valeur = UTILS_Dates.CalculerArrondi(arrondi_type=arrondi_type, arrondi_delta=arrondi_delta, heure_debut=heure_debut, heure_fin=heure_fin)
+        req = """SELECT IDconso, consommations.date, consommations.IDindividu, consommations.IDunite, consommations.IDgroupe, consommations.IDactivite, consommations.etiquettes,
+        heure_debut, heure_fin, etat, quantite, consommations.IDprestation, prestations.temps_facture,
+        comptes_payeurs.IDfamille, activites.nom, groupes.nom, categories_tarifs.nom, 
+        familles.IDcaisse, caisses.IDregime, individus.date_naiss
+        FROM consommations
+        LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
+        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = consommations.IDcompte_payeur
+        LEFT JOIN familles ON familles.IDfamille = comptes_payeurs.IDfamille
+        LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
+        LEFT JOIN prestations ON prestations.IDprestation = consommations.IDprestation
+        LEFT JOIN activites ON activites.IDactivite = consommations.IDactivite
+        LEFT JOIN groupes ON groupes.IDgroupe = consommations.IDgroupe
+        LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = consommations.IDcategorie_tarif
+        WHERE consommations.date >='%s' AND consommations.date <='%s'
+        AND etat NOT IN ('attente', 'refus')
+        %s
+        ORDER BY consommations.date;""" % (str(date_debut), str(date_fin), conditionSQL)
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
 
-                                # heures = (valeur.days*24) + (valeur.seconds/3600)
-                                # minutes = valeur.seconds%3600/60
-                                # hr, mn = ArrondirHeureSup(heures, minutes, arrondi)
-                                # valeur = datetime.timedelta(hours=hr, minutes=mn)
+        dict_resultats = {}
 
-                            # Si une durée seuil est demandée
-                            duree_seuil = dictCalcul["duree_seuil"]
-                            if duree_seuil != None :
-                                duree_seuil = UTILS_Dates.HeureStrEnDelta(duree_seuil)#datetime.timedelta(hours=int(duree_seuil.split(":")[0]), minutes=int(duree_seuil.split(":")[1]))
-                                if valeur < duree_seuil :
-                                    valeur = duree_seuil
+        listePrestationsTraitees = []
+        for IDconso, date, IDindividu, IDunite, IDgroupe, IDactivite, etiquettes, heure_debut, heure_fin, etat, quantite, IDprestation, temps_facture, IDfamille, nomActivite, nomGroupe, nomCategorie, IDcaisse, IDregime, date_naiss in listeDonnees:
+            date = UTILS_Dates.DateEngEnDateDD(date)
+            mois = date.month
+            annee = date.year
 
-                            # Si une durée plafond est demandée
-                            duree_plafond = dictCalcul["duree_plafond"]
-                            if duree_plafond != None :
-                                duree_plafond = UTILS_Dates.HeureStrEnDelta(duree_plafond)#datetime.timedelta(hours=int(duree_plafond.split(":")[0]), minutes=int(duree_plafond.split(":")[1]))
-                                if valeur > duree_plafond :
-                                    valeur = duree_plafond
+            # ------------------------------------ REGROUPEMENT -----------------------------------
 
+            # Recherche du regroupement principal
+            try:
+                if regroupement_principal == "aucun": regroupement = None
+                if regroupement_principal == "jour": regroupement = date
+                if regroupement_principal == "mois": regroupement = (annee, mois)
+                if regroupement_principal == "annee": regroupement = annee
+                if regroupement_principal == "activite": regroupement = nomActivite
+                if regroupement_principal == "groupe": regroupement = nomGroupe
+                if regroupement_principal == "categorie_tarif": regroupement = nomCategorie
+                if regroupement_principal == "ville_residence": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                if regroupement_principal == "secteur": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
+                if regroupement_principal == "genre": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
+                if regroupement_principal == "age": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_AGE_INT"]
+                if regroupement_principal == "ville_naissance": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE_NAISS"]
+                if regroupement_principal == "nom_ecole": regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_ECOLE"]
+                if regroupement_principal == "nom_classe": regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_CLASSE"]
+                if regroupement_principal == "nom_niveau_scolaire": regroupement = self.dictInfosIndividus[IDindividu]["SCOLARITE_NOM_NIVEAU"]
+                if regroupement_principal == "famille": regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM"]
+                if regroupement_principal == "individu": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_NOM_COMPLET"]
+                if regroupement_principal == "regime": regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_REGIME"]
+                if regroupement_principal == "caisse": regroupement = self.dictInfosFamilles[IDfamille]["FAMILLE_NOM_CAISSE"]
+                if regroupement_principal == "categorie_travail": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_CATEGORIE_TRAVAIL"]
+                if regroupement_principal == "categorie_travail_pere": regroupement = self.dictInfosIndividus[IDindividu]["PERE_CATEGORIE_TRAVAIL"]
+                if regroupement_principal == "categorie_travail_mere": regroupement = self.dictInfosIndividus[IDindividu]["MERE_CATEGORIE_TRAVAIL"]
+
+                # QF par tranche de 100
+                if regroupement_principal == "qf_100":
+                    regroupement = None
+                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                    for x in range(0, 10000, 100):
+                        min, max = x, x + 99
+                        if qf >= min and qf <= max:
+                            regroupement = (min, max)
+
+                # QF par tranches
+                if regroupement_principal in ("qf_tarifs", "qf_perso") :
+                    regroupement = None
+                    qf = self.dictInfosFamilles[IDfamille]["FAMILLE_QF_ACTUEL_INT"]
+                    for min, max in liste_tranches_qf:
+                        if qf >= min and qf <= max:
+                            regroupement = (min, max)
+
+                # Etiquettes
+                if regroupement_principal == "etiquette":
+                    etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
+                    if len(etiquettes) > 0:
+                        temp = []
+                        for IDetiquette in etiquettes:
+                            if dictEtiquettes.has_key(IDetiquette):
+                                temp.append(dictEtiquettes[IDetiquette]["label"])
+                        regroupement = temp
                     else:
-                        # Si c'est en fonction du temps facturé
-                        if temps_facture != None and temps_facture != "" : 
-                            if IDprestation not in listePrestationsTraitees :
-                                hr, mn = temps_facture.split(":")
-                                valeur = datetime.timedelta(hours=int(hr), minutes=int(mn))
-                                listePrestationsTraitees.append(IDprestation)
+                        regroupement = _(u"- Aucune étiquette -")
 
-                    # Calcule l'âge de l'individu
-                    if date_naiss != None :
-                        age = (date.year - date_naiss.year) - int((date.month, date.day) < (date_naiss.month, date_naiss.day))
-                    else :
-                        age = None
+                # Questionnaires
+                if regroupement_principal.startswith("question_") and "famille" in regroupement_principal:
+                    regroupement = self.dictInfosFamilles[IDfamille]["QUESTION_%s" % regroupement_principal[17:]]
+                if regroupement_principal.startswith("question_") and "individu" in regroupement_principal:
+                    regroupement = self.dictInfosIndividus[IDindividu]["QUESTION_%s" % regroupement_principal[18:]]
 
-                    # ----- Recherche du regroupement par âge ou date de naissance  -----
-                    if len(dictResultats) == 0 :
-                        regroup = 0
-                    else :
-                        for key, dictTemp in dictResultats.iteritems() :
-                            if dictTemp.has_key("min") :
-                                if dictTemp["min"] == None and age < dictTemp["max"] :
-                                    regroup = key
-                                if dictTemp["max"] == None and age >= dictTemp["min"] :
-                                    regroup = key
-                                if dictTemp["min"] != None and dictTemp["max"] != None and age >= dictTemp["min"] and age < dictTemp["max"] :
-                                    regroup = key
+                # Formatage des regroupements de type date
+                if type(regroupement) == datetime.date :
+                    regroupement = str(regroupement)
 
-                    if age == None :
-                        regroup = None
+            except:
+                regroupement = None
 
-                    # if regroupement == None :
-                    #     regroup = 0
-                    # elif regroupement[0] == "age" :
-                    #     # Si en fonction de l'âge
-                    #     ageReference = regroupement[1]
-                    #     if date_naiss != None :
-                    #         age = (date.year - date_naiss.year) - int((date.month, date.day) < (date_naiss.month, date_naiss.day))
-                    #         if age >= ageReference :
-                    #             regroup = 1
-                    #         else:
-                    #             regroup = 0
-                    #     else:
-                    #         regroup = None
-                    # elif regroupement[0] == "dateNaiss" :
-                    #     # Si en fonction de la date de naissance
-                    #     dateNaissReference = regroupement[1]
-                    #     if date_naiss != None :
-                    #         if date_naiss >= dateNaissReference :
-                    #             regroup = 1
-                    #         else:
-                    #             regroup = 0
-                    #     else:
-                    #         regroup = None
-                    
-                    # Type de colonne : Facturé et Réalisé ?
-                    valeurFact = valeur
-                    valeurReal = valeur
-##                    if etat in ("absenti", "reservation", "present") : 
-##                        valeurFact = valeur
-##                    else:
-##                        valeurFact = datetime.timedelta(hours=0, minutes=0)
-##                    if etat in ("reservation", "present") : 
-##                        valeurReal = valeur
-##                    else:
-##                        valeurReal = datetime.timedelta(hours=0, minutes=0)
-                    
-                    # Mémorisation du résultat
-                    if valeurFact != datetime.timedelta(hours=0, minutes=0) or valeurReal != datetime.timedelta(hours=0, minutes=0) :
-                        if dictResultats.has_key(regroup) == False :
-                            dictResultats[regroup] = {}
-                        if dictResultats[regroup].has_key(periode) == False :
-                            dictResultats[regroup][periode] = {}
-                        if dictResultats[regroup][periode].has_key(IDregime) == False :
-                            dictResultats[regroup][periode][IDregime] = {"fact" : datetime.timedelta(hours=0, minutes=0), "real" : datetime.timedelta(hours=0, minutes=0)}
-                        if IDregime not in listeRegimesUtilises : 
-                            listeRegimesUtilises.append(IDregime)
-                        dictResultats[regroup][periode][IDregime]["fact"] += valeurFact * quantite
-                        dictResultats[regroup][periode][IDregime]["real"] += valeurReal * quantite
-                         
-            if modeDetail == True :
-                dictValeurs[IDactivite] = dictResultats
+            # ------------------------------------ ANALYSE DONNEES -----------------------------------
+
+            if date_naiss != None :
+                date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
+
+            # Quantité
+            if quantite == None :
+                quantite = 1
+
+            # Formatage des heures
+            if heure_debut != None and heure_debut != "" :
+                h, m = heure_debut.split(":")
+                heure_debut = datetime.time(int(h), int(m))
+            if heure_fin != None and heure_fin != "" :
+                h, m = heure_fin.split(":")
+                heure_fin = datetime.time(int(h), int(m))
+
+            # Recherche la période
+            periode = ""
+            if modePeriodesDetail == False :
+                # Périodes non détaillées
+                for dictVac in listeVacances :
+                    if date >= dictVac["date_debut"] and date <= dictVac["date_fin"] :
+                        if dictVac["grandesVacs"] == True :
+                            periode = "grandesVacs"
+                        else:
+                            periode = "petitesVacs"
+                if periode == "" :
+                    periode = "horsVacs"
             else :
-                dictValeurs[0] = dictResultats
-            
+                # Périodes détaillées
+                for dictPeriode in listePeriodesDetail :
+                    if date >= dictPeriode["date_debut"] and date <= dictPeriode["date_fin"] :
+                        periode = dictPeriode["code"]
+
+            if periode == "" :
+                texte = _(u"Période inconnue pour la date du %s. Vérifiez que les périodes de vacances ont bien été paramétrées.") % UTILS_Dates.DateDDEnFr(date)
+                if texte not in listeAnomalies :
+                    listeAnomalies.append(texte)
+
+            # ------------ Application de filtres ---------------
+            valide = False
+
+            # Période
+            if periode == "horsVacs" or periode.startswith("mercredis") :
+                if date.weekday() in jours_scolaires :
+                    valide = True
+            if periode in ("grandesVacs", "petitesVacs") or periode.startswith("vacances") :
+                if date.weekday() in jours_vacances :
+                    valide = True
+
+            # Etat
+            if etat not in etats :
+                valide = False
+
+            # Calculs
+            if valide == True :
+
+                # ----- Recherche de la méthode de calcul pour cette unité -----
+                dictCalcul = dictUnites[IDunite]
+                valeur = datetime.timedelta(hours=0, minutes=0)
+
+                if dictCalcul["typeCalcul"] == 0 :
+                    # Si c'est selon le coeff :
+                    if valeur == None or valeur == "" :
+                        valeur = datetime.timedelta(hours=0, minutes=0)
+                    else :
+                        valeur = datetime.timedelta(hours=dictCalcul["coeff"], minutes=0)
+
+                elif dictCalcul["typeCalcul"] == 1 :
+
+                    # Si c'est en fonction du temps réél :
+                    if heure_debut != None and heure_debut != "" and heure_fin != None and heure_fin != "" :
+
+                        # Si une heure seuil est demandée
+                        heure_seuil = dictCalcul["heure_seuil"]
+                        if heure_seuil != None :
+                            heure_seuil = UTILS_Dates.HeureStrEnTime(heure_seuil)#datetime.time(hour=int(heure_seuil.split(":")[0]), minute=int(heure_seuil.split(":")[1]))
+                            if heure_debut < heure_seuil :
+                                heure_debut = heure_seuil
+
+                        # Si une heure plafond est demandée
+                        heure_plafond = dictCalcul["heure_plafond"]
+                        if heure_plafond != None :
+                            heure_plafond = UTILS_Dates.HeureStrEnTime(heure_plafond)#datetime.time(hour=int(heure_plafond.split(":")[0]), minute=int(heure_plafond.split(":")[1]))
+                            if heure_fin > heure_plafond :
+                                heure_fin = heure_plafond
+
+                        # Calcul de la durée
+                        valeur = datetime.timedelta(hours=heure_fin.hour, minutes=heure_fin.minute) - datetime.timedelta(hours=heure_debut.hour, minutes=heure_debut.minute)
+                        if "day" in str(valeur) :
+                            dlg = wx.MessageDialog(self, _(u"Les horaires de cette consommation sont incorrectes : IDconso=%d | IDindividu=%d | IDfamille=%d | date=%s.") % (IDconso, IDindividu, IDfamille, date), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                            dlg.ShowModal()
+                            dlg.Destroy()
+                            return False
+
+                        # Si un arrondi est demandé
+                        arrondi = dictCalcul["arrondi"]
+                        if arrondi != None :
+                            arrondi_type, arrondi_delta = arrondi
+                            valeur = UTILS_Dates.CalculerArrondi(arrondi_type=arrondi_type, arrondi_delta=arrondi_delta, heure_debut=heure_debut, heure_fin=heure_fin)
+
+                            # heures = (valeur.days*24) + (valeur.seconds/3600)
+                            # minutes = valeur.seconds%3600/60
+                            # hr, mn = ArrondirHeureSup(heures, minutes, arrondi)
+                            # valeur = datetime.timedelta(hours=hr, minutes=mn)
+
+                        # Si une durée seuil est demandée
+                        duree_seuil = dictCalcul["duree_seuil"]
+                        if duree_seuil != None :
+                            duree_seuil = UTILS_Dates.HeureStrEnDelta(duree_seuil)#datetime.timedelta(hours=int(duree_seuil.split(":")[0]), minutes=int(duree_seuil.split(":")[1]))
+                            if valeur < duree_seuil :
+                                valeur = duree_seuil
+
+                        # Si une durée plafond est demandée
+                        duree_plafond = dictCalcul["duree_plafond"]
+                        if duree_plafond != None :
+                            duree_plafond = UTILS_Dates.HeureStrEnDelta(duree_plafond)#datetime.timedelta(hours=int(duree_plafond.split(":")[0]), minutes=int(duree_plafond.split(":")[1]))
+                            if valeur > duree_plafond :
+                                valeur = duree_plafond
+
+                else:
+                    # Si c'est en fonction du temps facturé
+                    if temps_facture != None and temps_facture != "" :
+                        if IDprestation not in listePrestationsTraitees :
+                            hr, mn = temps_facture.split(":")
+                            valeur = datetime.timedelta(hours=int(hr), minutes=int(mn))
+                            listePrestationsTraitees.append(IDprestation)
+
+                # Calcule l'âge de l'individu
+                if date_naiss != None :
+                    age = (date.year - date_naiss.year) - int((date.month, date.day) < (date_naiss.month, date_naiss.day))
+                else :
+                    age = None
+
+                # ----- Recherche du regroupement par âge ou date de naissance  -----
+                if len(dict_tranches_age) == 0 :
+                    index_tranche_age = 0
+                else :
+                    for key, dictTemp in dict_tranches_age.iteritems() :
+                        if dictTemp.has_key("min") :
+                            if dictTemp["min"] == None and age < dictTemp["max"] :
+                                index_tranche_age = key
+                            if dictTemp["max"] == None and age >= dictTemp["min"] :
+                                index_tranche_age = key
+                            if dictTemp["min"] != None and dictTemp["max"] != None and age >= dictTemp["min"] and age < dictTemp["max"] :
+                                index_tranche_age = key
+
+                if age == None :
+                    index_tranche_age = None
+
+                # Mémorisation du résultat
+                if valeur != datetime.timedelta(hours=0, minutes=0) or valeur != datetime.timedelta(hours=0, minutes=0) :
+                    # Si régime inconnu :
+                    if dict_options["associer_regime_inconnu"] not in (None, "non", "") and IDregime == None :
+                        IDregime = dict_options["associer_regime_inconnu"]
+
+                    # Mémoriser les régimes à afficher
+                    if IDregime not in listeRegimesUtilises :
+                        listeRegimesUtilises.append(IDregime)
+
+                    # Mémorisation du résultat
+                    dict_resultats = UTILS_Divers.DictionnaireImbrique(dictionnaire=dict_resultats, cles=[regroupement, index_tranche_age, periode, IDregime], valeur=datetime.timedelta(hours=0, minutes=0))
+                    dict_resultats[regroupement][index_tranche_age][periode][IDregime] += valeur * quantite
+
         DB.Close() 
         
         # Affichage d'anomalies
@@ -1008,20 +836,21 @@ class Dialog(wx.Dialog):
         from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
         
         # Initialisation du PDF
-        taillePage = landscape(A4)
-        HAUTEUR_PAGE = defaultPageSize[0]
-        LARGEUR_PAGE = defaultPageSize[1]
+        if dict_options["orientation"] == "paysage" :
+            taillePage = landscape(A4)
+        else :
+            taillePage = portrait(A4)
         nomDoc = FonctionsPerso.GenerationNomDoc("ETAT_GLOBAL", "pdf")
         if sys.platform.startswith("win") : nomDoc = nomDoc.replace("/", "\\")
-        doc = SimpleDocTemplate(nomDoc, pagesize=taillePage, topMargin=20, bottomMargin=20)
+        doc = SimpleDocTemplate(nomDoc, pagesize=taillePage, topMargin=20, bottomMargin=20, leftMargin=40, rightMargin=40)
         story = []
         
-        largeurContenu = 730
+        largeurContenu = taillePage[0] - 75
         
         # Création du titre du document
         dataTableau = []
-        largeursColonnes = ( (630, 100) )
-        dateDuJour = DateEngFr(str(datetime.date.today()))
+        largeursColonnes = ( (largeurContenu-100, 100) )
+        dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
         dataTableau.append( (_(u"Etat global des consommations"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
         style = TableStyle([
                 ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
@@ -1034,38 +863,22 @@ class Dialog(wx.Dialog):
         tableau = Table(dataTableau, largeursColonnes)
         tableau.setStyle(style)
         story.append(tableau)
-        story.append(Spacer(0, 10))       
-
-        # Création du texte d'Intro
-##        texteIntro = _(u"-  Période du %s au %s  -") % (DateEngFr(str(date_debut)), DateEngFr(str(date_fin)))
-##        dataTableau = []
-##        dataTableau.append((texteIntro,) )
-##        style = TableStyle([
-##                ('VALIGN', (0,0), (0,0), 'TOP'), 
-##                ('ALIGN', (0, 0), (0,0), 'CENTRE'), 
-##                ('FONT',(0,0),(0,0), "Helvetica", 9), 
-##                ])
-##        tableau = Table(dataTableau, [largeurContenu,])
-##        tableau.setStyle(style)
-##        story.append(tableau)
-##        story.append(Spacer(0,40))       
+        story.append(Spacer(0, 10))
 
         # Insertion du label Paramètres
         styleA = ParagraphStyle(name="A", fontName="Helvetica", fontSize=6, spaceAfter=20)
         story.append(Paragraph(labelParametres, styleA))       
 
-        
-        listeActivites = []
-        for (nomActivite, IDactivite), listeUnites in dictActivites.iteritems() : 
-            listeActivites.append((nomActivite, IDactivite))
-        listeActivites.sort() 
+        # Tri du niveau de regroupement principal
+        regroupements = dict_resultats.keys()
+        regroupements.sort()
         
         listeRegimesUtilises.sort() 
         
-        for nomActivite, IDactivite in listeActivites :
+        for regroupement in regroupements :
             
-            dictResultats = dictValeurs[IDactivite]
-            dictTotauxActivite = {}
+            dict_resultats_age = dict_resultats[regroupement]
+            dict_totaux_regroupement = {}
 
             # Création des colonnes
             listeColonnes = []
@@ -1087,11 +900,34 @@ class Dialog(wx.Dialog):
                 ('GRID', (1,0), (-1,-1), 0.25, colors.black), 
                 ('ALIGN', (0,0), (-1,-1), 'CENTRE'), 
                 ('FONT',(0,0),(0,0), "Helvetica-Bold", 7), 
-                ('ALIGN', (0,0), (0,0), 'LEFT'), 
-                ]
-                
+                ('ALIGN', (0,0), (0,0), 'LEFT'),
+            ]
+
+            if regroupement_principal != "aucun":
+                listeStyles.append(('BACKGROUND', (0, 0), (0, 0), UTILS_Divers.ConvertCouleurWXpourPDF(dict_options["couleur_case_regroupement"])))
+                listeStyles.append(('TEXTCOLOR', (0, 0), (0, 0), UTILS_Divers.ConvertCouleurWXpourPDF(dict_options["couleur_texte_regroupement"])))
+
+            # Formatage du regroupement
+            if regroupement_principal == "aucun" :
+                label_regroupement = ""
+            elif regroupement_principal == "jour" :
+                label_regroupement = UTILS_Dates.DateComplete(regroupement)
+            elif regroupement_principal == "mois" :
+                label_regroupement = UTILS_Dates.FormateMois(regroupement)
+            elif regroupement_principal == "annee" :
+                label_regroupement = str(regroupement)
+            elif regroupement_principal.startswith("qf") and type(regroupement) == tuple :
+                label_regroupement = u"%d-%d" % regroupement
+            elif regroupement_principal == "age" :
+                label_regroupement = "%d ans" % regroupement
+            else :
+                label_regroupement = unicode(regroupement)
+
+            if regroupement_principal != "aucun" and label_regroupement in ("None", "") :
+                label_regroupement = _(u"- Non renseigné -")
+
             # Régimes + total
-            ligne1 = [ nomActivite, ]
+            ligne1 = [label_regroupement,]
             largeursColonnes = [ 150, ]
             indexColonne = 1
             for IDregime, label, largeur in listeColonnes :
@@ -1101,6 +937,11 @@ class Dialog(wx.Dialog):
             
             dataTableau.append(ligne1)
 
+            # Création du tableau d'entete de colonnes
+            tableau = Table(dataTableau, largeursColonnes)
+            tableau.setStyle(TableStyle(listeStyles))
+            story.append(tableau)
+
             paraStyle = ParagraphStyle(name="normal",
                           fontName="Helvetica",
                           fontSize=7,
@@ -1109,29 +950,24 @@ class Dialog(wx.Dialog):
                           spaceAfter=0,
                           )
 
-            # Création du tableau d'entete de colonnes
-            tableau = Table(dataTableau, largeursColonnes)
-            tableau.setStyle(TableStyle(listeStyles))
-            story.append(tableau)
-##            story.append(Spacer(0, 10))
-
             # Création des lignes
             index = 1
-            for IDregroup, dictRegroup in dictResultats.iteritems() :
+            for index_tranche_age, dict_resultats_periode in dict_resultats_age.iteritems() :
                 
                 dataTableau = []
-                ligne = []
-                
+
                 # Création des niveaux de regroupement
-                if dictRegroup.has_key("label") :
-                    label = dictRegroup["label"]
+                if dict_tranches_age.has_key(index_tranche_age) :
+                    label_tranche_age = dict_tranches_age[index_tranche_age]["label"]
                 else :
-                    label = _(u"Sans date de naissance")
-                ligne = [label,]
-                for IDregime, label, largeur in listeColonnes[:-1] :
-                    ligne.append("")
-                dataTableau.append(ligne)
-                index += 1
+                    label_tranche_age = _(u"Sans date de naissance")
+
+                if label_tranche_age != "" :
+                    ligne = [label_tranche_age,]
+                    for IDregime, label, largeur in listeColonnes[:-1] :
+                        ligne.append("")
+                    dataTableau.append(ligne)
+                    index += 1
                 
                 # Création des lignes de périodes
                 if modePeriodesDetail == False :
@@ -1145,7 +981,7 @@ class Dialog(wx.Dialog):
                     
                 dictTotaux = {}
                 for dictPeriode in listePeriodes :
-                    if dictRegroup.has_key(dictPeriode["code"]) :
+                    if dict_resultats_periode.has_key(dictPeriode["code"]) :
                         ligne = []
                         
                         # Label ligne
@@ -1162,85 +998,75 @@ class Dialog(wx.Dialog):
                             ligne.append(Paragraph(label, paraStyle))
                             
                         # Valeurs
-                        totalLigneFact = datetime.timedelta(hours=0, minutes=0)
-                        totalLigneReal = datetime.timedelta(hours=0, minutes=0)
+                        totalLigne = datetime.timedelta(hours=0, minutes=0)
                         for IDregime, labelColonne, largeurColonne in listeColonnes :
                             if IDregime < 1000 :
-                                if dictRegroup[dictPeriode["code"]].has_key(IDregime) :
-                                    # Valeur Facturé
-                                    valeurFact = dictRegroup[dictPeriode["code"]][IDregime]["fact"]
-                                    valeurReal = dictRegroup[dictPeriode["code"]][IDregime]["real"]
+                                if dict_resultats_periode[dictPeriode["code"]].has_key(IDregime) :
+                                    valeur = dict_resultats_periode[dictPeriode["code"]][IDregime]
                                 else:
-                                    valeurFact = datetime.timedelta(hours=0, minutes=0)
-                                    valeurReal = datetime.timedelta(hours=0, minutes=0)
-    ##                            ligne.append(FormateValeur(valeurFact, modeAffichage))
-                                ligne.append(FormateValeur(valeurReal, modeAffichage))
-                                totalLigneFact += valeurFact
-                                totalLigneReal += valeurReal
+                                    valeur = datetime.timedelta(hours=0, minutes=0)
+                                ligne.append(FormateValeur(valeur, modeAffichage))
+                                totalLigne += valeur
                                 if dictTotaux.has_key(IDregime) == False :
-                                    dictTotaux[IDregime] = {"fact" : datetime.timedelta(hours=0, minutes=0), "real" :datetime.timedelta(hours=0, minutes=0)} 
-                                dictTotaux[IDregime]["fact"] += valeurFact
-                                dictTotaux[IDregime]["real"] += valeurReal
+                                    dictTotaux[IDregime] = datetime.timedelta(hours=0, minutes=0)
+                                dictTotaux[IDregime] += valeur
                         # Total de la ligne
                         if IDregime == 2000 :
-    ##                        ligne.append(FormateValeur(totalLigneFact, modeAffichage))
-                            ligne.append(FormateValeur(totalLigneReal, modeAffichage))
+                            ligne.append(FormateValeur(totalLigne, modeAffichage))
                         dataTableau.append(ligne)
                         index += 1
                 
                 # Création de la ligne de total
                 ligne = [_(u"Total"),]
-                totalLigneFact = datetime.timedelta(hours=0, minutes=0)
-                totalLigneReal = datetime.timedelta(hours=0, minutes=0)
+                totalLigne = datetime.timedelta(hours=0, minutes=0)
                 indexColonne = 0
                 for IDregime, labelColonne, largeurColonne in listeColonnes :
                     if IDregime < 1000 :
                         if dictTotaux.has_key(IDregime) :
-                            totalFact = dictTotaux[IDregime]["fact"]
-                            totalReal = dictTotaux[IDregime]["real"]
+                            total = dictTotaux[IDregime]
                         else:
-                            totalFact = datetime.timedelta(hours=0, minutes=0)
-                            totalReal = datetime.timedelta(hours=0, minutes=0)
+                            total = datetime.timedelta(hours=0, minutes=0)
 
-                        ligne.append(FormateValeur(totalReal, modeAffichage))
-                        totalLigneFact += totalFact
-                        totalLigneReal += totalReal
+                        ligne.append(FormateValeur(total, modeAffichage))
+                        totalLigne += total
 
-                        if dictTotauxActivite.has_key(indexColonne) == False :
-                            dictTotauxActivite[indexColonne] = datetime.timedelta(hours=0, minutes=0)
-                        dictTotauxActivite[indexColonne] += totalReal
+                        if dict_totaux_regroupement.has_key(indexColonne) == False :
+                            dict_totaux_regroupement[indexColonne] = datetime.timedelta(hours=0, minutes=0)
+                        dict_totaux_regroupement[indexColonne] += total
 
                     indexColonne += 1
 
 
                 # Total de la ligne
                 if IDregime == 2000 :
-    ##                ligne.append(FormateValeur(totalLigneFact, modeAffichage))
-                    ligne.append(FormateValeur(totalLigneReal, modeAffichage))
+                    ligne.append(FormateValeur(totalLigne, modeAffichage))
                 dataTableau.append(ligne)
                 index += 1
-                        
-                couleurFondFonce = (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
-                couleurFondClair = (0.96, 0.96, 1) 
-                
+
+                # Récupération des couleurs
+                couleurFondFonce = UTILS_Divers.ConvertCouleurWXpourPDF(dict_options["couleur_ligne_age"])
+                couleurFondClair = UTILS_Divers.ConvertCouleurWXpourPDF(dict_options["couleur_ligne_total"])
+
                 listeStyles = [
                         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), 
                         
                         ('FONT',(0,0),(-1,-1), "Helvetica", 7), 
                         ('GRID', (0,0), (-1,-1), 0.25, colors.black), 
-                        ('ALIGN', (0,1), (-1,-1), 'CENTRE'), 
-                        
-                        ('SPAN',(0,0),(-1,0)), 
-                        ('FONT',(0,0),(0,0), "Helvetica-Bold", 8), 
-                        ('BACKGROUND', (0, 0), (-1, 0), couleurFondFonce), 
-                        
+                        ('ALIGN', (0,0), (-1,-1), 'CENTRE'),
+
                         ('BACKGROUND', (0, -1), (-1, -1), couleurFondClair), 
-                        ('BACKGROUND', (-1, 1), (-1, -1), couleurFondClair), 
-                        
+                        ('BACKGROUND', (-1, 0), (-1, -1), couleurFondClair),
+
                         ('FONT',(0, -1),(-1, -1), "Helvetica-Bold", 7), # Gras pour totaux
-                        
                         ]
-                
+
+                if label_tranche_age != "" :
+                    listeStyles.extend([
+                        ('ALIGN', (0, 0), (-1, 0), 'LEFT'),
+                        ('SPAN',(0,0),(-1,0)),
+                        ('FONT',(0,0),(0,0), "Helvetica-Bold", 7),
+                        ('BACKGROUND', (0, 0), (-1, 0), couleurFondFonce),
+                        ])
 
                 # Création du tableau
                 tableau = Table(dataTableau, largeursColonnes)
@@ -1269,8 +1095,8 @@ class Dialog(wx.Dialog):
             for IDregime, label, largeur in listeColonnes :
 
                 # Colonne Total par régime
-                if dictTotauxActivite.has_key(indexColonne) :
-                    valeur = dictTotauxActivite[indexColonne]
+                if dict_totaux_regroupement.has_key(indexColonne) :
+                    valeur = dict_totaux_regroupement[indexColonne]
                 else :
                     valeur = datetime.timedelta(hours=0, minutes=0)
                 total += valeur

@@ -1551,8 +1551,19 @@ DB_DATA = {
                                     ("affichage_date_fin", "DATETIME", u"Date et heure de fin d'affichage"),
                                      ], # Messages pour la page d'accueil du portail
 
+    "profils":                      [("IDprofil", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Profil"),
+                                    ("label", "VARCHAR(400)", u"Nom de profil"),
+                                    ("categorie", "VARCHAR(200)", u"Catégorie du profil"),
+                                    ],  # Profils de paramètres
 
-    }
+    "profils_parametres":           [("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID parametre"),
+                                    ("IDprofil", "INTEGER", u"ID du profil"),
+                                    ("nom", "VARCHAR(200)", u"Nom"),
+                                    ("parametre", "VARCHAR(30000)", u"Parametre"),
+                                    ("type_donnee", "VARCHAR(200)", u"Type de données"),
+                                    ],  # Paramètres des profils
+
+}
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------
 

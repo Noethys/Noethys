@@ -71,6 +71,12 @@ def ConvertListeEnChaine(liste=[]):
         liste2.append(str(num))
     return ";".join(liste2)
 
+def ConvertCouleurWXpourPDF(couleurwx=(0, 0, 0)):
+    return (couleurwx[0]/255.0, couleurwx[1]/255.0, couleurwx[2]/255.0)
+
+def ConvertCouleurPDFpourWX(couleurpdf=(0, 0, 0)):
+    return (couleurpdf[0]*255.0, couleurpdf[1]*255.0, couleurpdf[2]*255.0)
+
 
 
 
