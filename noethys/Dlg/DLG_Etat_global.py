@@ -368,7 +368,6 @@ class Dialog(wx.Dialog):
         jours_scolaires = dict_options["jours_hors_vacances"]
         jours_vacances = dict_options["jours_vacances"]
         etats = dict_options["etat_consommations"]
-        qf = None # TODO
 
         # Récupération du labelParametres
         labelParametres = self.panel_parametres.GetLabelParametres()
@@ -580,6 +579,11 @@ class Dialog(wx.Dialog):
             mois = date.month
             annee = date.year
 
+            if dictUnites.has_key(IDunite) :
+                nom_unite_conso = dictUnites[IDunite]["nomUnite"]
+            else :
+                nom_unite_conso = _(u"Unité inconnue")
+
             # ------------------------------------ REGROUPEMENT -----------------------------------
 
             # Recherche du regroupement principal
@@ -591,6 +595,7 @@ class Dialog(wx.Dialog):
                 if regroupement_principal == "activite": regroupement = nomActivite
                 if regroupement_principal == "groupe": regroupement = nomGroupe
                 if regroupement_principal == "categorie_tarif": regroupement = nomCategorie
+                if regroupement_principal == "unite_conso": regroupement = nom_unite_conso
                 if regroupement_principal == "ville_residence": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
                 if regroupement_principal == "secteur": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SECTEUR"]
                 if regroupement_principal == "genre": regroupement = self.dictInfosIndividus[IDindividu]["INDIVIDU_SEXE"]
@@ -911,7 +916,7 @@ class Dialog(wx.Dialog):
             if regroupement_principal == "aucun" :
                 label_regroupement = ""
             elif regroupement_principal == "jour" :
-                label_regroupement = UTILS_Dates.DateComplete(regroupement)
+                label_regroupement = UTILS_Dates.DateEngFr(regroupement)
             elif regroupement_principal == "mois" :
                 label_regroupement = UTILS_Dates.FormateMois(regroupement)
             elif regroupement_principal == "annee" :
