@@ -140,7 +140,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
                 code = "Coche"
         except :
             pass
-        texte += code + separateur
+        texte += labelCol + separateur
     texte = texte[:-1] + "\n"
 
     for valeurs in listeValeurs :
@@ -156,7 +156,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
 
     # Création du fichier texte
     f = open(cheminFichier, "w")
-    f.write(texte.encode("iso-8859-15"))
+    f.write(texte.encode("utf8"))
     f.close()
     
     # Confirmation de création du fichier et demande d'ouverture directe dans Excel
@@ -269,7 +269,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
                 nomChamp = "Coche"
         except :
             pass
-        ws1.write(x, y, nomChamp)
+        ws1.write(x, y, labelCol)
         ws1.col(y).width = largeur*42
         y += 1
 
