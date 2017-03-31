@@ -348,7 +348,7 @@ def ExportExcel(listview=None, grid=None, titre=_(u"Liste"), listeColonnes=None,
             return (valeur, styleDate)
 
         if type(valeur) == datetime.timedelta :
-            return (valeur, styleHeure)
+            return (str(valeur), styleHeure)
 
         try :
             if len(valeur) > 3 :
