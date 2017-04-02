@@ -1325,6 +1325,9 @@ class Dialog(wx.Dialog):
 
         typeListe = self.GetTypeListe()
 
+        # Affiche la DLG d'attente
+        DlgAttente = wx.BusyInfo(_(u"Recherche des données..."), self)
+
         # Recherche des infos individuelles et familiales pour les colonnes perso
         if len(dictParametres["colonnes"]) >0 :
             infosIndividus = UTILS_Infos_individus.Informations(date_reference=listeDates[0], qf=True, inscriptions=True, messages=False, infosMedicales=False, cotisationsManquantes=False, piecesManquantes=False, questionnaires=True, scolarite=True)
@@ -2124,7 +2127,7 @@ class Dialog(wx.Dialog):
                                         except :
                                             donnee = ""
 
-                                    ligne.append(Paragraph(donnee, styleNormal))
+                                    ligne.append(Paragraph(unicode(donnee), styleNormal))
 
                                 # Infos médicales
                                 texteInfos = u""
@@ -2283,6 +2286,7 @@ class Dialog(wx.Dialog):
                                         dlg = wx.MessageDialog(self, _(u"Il y a trop de colonnes dans le tableau ! \n\nVeuillez sélectionner moins de jours dans le calendrier..."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                                         dlg.ShowModal()
                                         dlg.Destroy()
+                                        DlgAttente.Destroy()
                                         return False
 
                             # Création du tableau
@@ -2397,6 +2401,10 @@ class Dialog(wx.Dialog):
         if element == "Spacer(0, 20)" :
             story.pop(-1)
 
+        # Destruction de la DlgAttente
+        DlgAttente.Destroy()
+
+        # Si mode export Excel
         if modeExport == True :
             return listeExport, largeursColonnes
 
