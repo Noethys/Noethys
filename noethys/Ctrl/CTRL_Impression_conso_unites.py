@@ -3,8 +3,8 @@
 #-----------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #-----------------------------------------------------------
 
@@ -19,8 +19,6 @@ import GestionDB
 from Utils import UTILS_Config
 import copy
 
-try: import psyco; psyco.full()
-except: pass
 
 COULEUR_FOND_REGROUPEMENT = (200, 200, 200)
 COULEUR_TEXTE_REGROUPEMENT = (140, 140, 140)
@@ -99,17 +97,17 @@ class CTRL(HTL.HyperTreeList):
     def __init__(self, parent): 
         HTL.HyperTreeList.__init__(self, parent, -1)
         self.parent = parent
-        self.typeListe = "journ" # ou "period"
+        self.dictParametres = {}
         self.listeActivites = []
-        
+
         # Importation des données
-        self.dictTracks, self.dictActivites, self.dictInitial = self.Importation() 
+        self.Importation()
                 
         # Création des colonnes
         listeColonnes = [
-            ( _(u"Activité / Unité"), 160, wx.ALIGN_LEFT),
+            ( _(u"Activité / Unité"), 180, wx.ALIGN_LEFT),
             ( _(u"Abrégé"), 50, wx.ALIGN_LEFT),
-            ( _(u"Type"), 90, wx.ALIGN_LEFT),
+            ( _(u"Type"), 100, wx.ALIGN_LEFT),
             ( _(u"Affichage"), LARGEUR_COLONNE_AFFICHAGE, wx.ALIGN_LEFT),
 ##            ( _(u"Ordre"), 40, wx.ALIGN_CENTER),
             ]
@@ -129,9 +127,7 @@ class CTRL(HTL.HyperTreeList):
     def Importation(self):
         """ Importation des unités de conso et de remplissage """
         DB = GestionDB.DB()
-        listeTracks = []
-        dictActivites = {}
-        
+
         # Importation des unités de consommations
         type = "conso"
         req = """SELECT 
@@ -142,11 +138,13 @@ class CTRL(HTL.HyperTreeList):
         ORDER BY unites.IDactivite, ordre
         ;""" 
         DB.ExecuterReq(req)
-        listeUnitesConso = DB.ResultatReq()     
+        listeUnitesConso = DB.ResultatReq()
+        self.listeTracks = []
+        self.dictActivites = {}
         for item in listeUnitesConso :
             track = Track(item, type)
-            listeTracks.append(track)
-            dictActivites[track.IDactivite] = track.nomActivite
+            self.listeTracks.append(track)
+            self.dictActivites[track.IDactivite] = track.nomActivite
 
         # Importation des unités de remplissage
         type="remplissage"
@@ -161,68 +159,19 @@ class CTRL(HTL.HyperTreeList):
         listeUnitesRemplissage = DB.ResultatReq()     
         for item in listeUnitesRemplissage :
             track = Track(item, type)
-            listeTracks.append(track)
-            dictActivites[track.IDactivite] = track.nomActivite
+            self.listeTracks.append(track)
+            self.dictActivites[track.IDactivite] = track.nomActivite
 
         DB.Close() 
 
         # Met les tracks de la base de données dans un dict
-        dictTracks = {}
-        for track in listeTracks :
-            key = track.IDactivite
-            if dictTracks.has_key(key) :
-                dictTracks[key][(track.type, track.IDunite)] = track
-            else:
-                dictTracks[key] = { (track.type, track.IDunite) : track }
+        self.dictTracksInitial = {}
+        for track in self.listeTracks :
+            if self.dictTracksInitial.has_key(track.IDactivite) == False:
+                self.dictTracksInitial[track.IDactivite] = []
+            self.dictTracksInitial[track.IDactivite].append(track)
 
-        # Tri et récupération des valeurs par défaut
-        dictInitial = { "journ" : {}, "period" : {} }
-        dictFinal = { "journ" : {}, "period" : {} }
-        for typeListe in dictFinal.keys() :
-
-            # Création d'un dict avec les données initiales pour une ré-initialisation du tri
-            for track in listeTracks :
-                IDactivite = track.IDactivite
-                if dictInitial[typeListe].has_key(IDactivite) == False :
-                    dictInitial[typeListe][IDactivite] = []
-                trackTemp = copy.deepcopy(track)
-                dictInitial[typeListe][IDactivite].append(trackTemp)
-
-            # récupère les valeurs mémorisées dans le fichier Config
-            dictUnites = UTILS_Config.GetParametre("impression_conso_%s_unites" % typeListe, defaut={})
-            listeTracksTemp = listeTracks[:]
-            for IDactivite, listeUnites in dictUnites.iteritems() :
-                if dictFinal[typeListe].has_key(IDactivite) == False :
-                    dictFinal[typeListe][IDactivite] = []
-                for type, IDunite, affichage in listeUnites :
-                    if dictTracks.has_key(IDactivite) :
-                        if dictTracks[IDactivite].has_key((type, IDunite)) :
-                            track = dictTracks[IDactivite][(type, IDunite)]
-                            track.affichage = affichage
-                            dictFinal[typeListe][IDactivite].append(copy.deepcopy(track))
-                            listeTracksTemp.remove(track)
-            
-            # Rajoute les tracks n'apparaissant pas dans le dict par défaut
-            for track in listeTracksTemp :
-                IDactivite = track.IDactivite
-                if dictFinal[typeListe].has_key(IDactivite) == False :
-                    dictFinal[typeListe][IDactivite] = []
-                dictFinal[typeListe][IDactivite].append(copy.deepcopy(track))
-
-        return dictFinal, dictActivites, dictInitial
-    
-    def MemoriseParametres(self):
-        for typeListe in ("journ", "period") :
-            dictValeurs = {}
-            for IDactivite, listeTracks in self.dictTracks[typeListe].iteritems() :
-                if dictValeurs.has_key(IDactivite) == False :
-                    dictValeurs[IDactivite] = []
-                for track in listeTracks :
-                    dictValeurs[IDactivite].append((track.type, track.IDunite, track.affichage)) 
-            UTILS_Config.SetParametre("impression_conso_%s_unites" % typeListe, dictValeurs)   
-    
-    def SetTypeListe(self, type="journ") :
-        self.typeListe = type
+        self.dictTracksFinal = copy.deepcopy(self.dictTracksInitial)
 
     def SetActivites(self, listeActivites=[]):
         self.listeActivites = listeActivites
@@ -232,7 +181,6 @@ class CTRL(HTL.HyperTreeList):
         """ Met à jour (redessine) tout le contrôle """
         self.Freeze()
         self.DeleteAllItems()
-        # Création de la racine
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage(selectionItem)
         self.Thaw() 
@@ -256,10 +204,10 @@ class CTRL(HTL.HyperTreeList):
                 self.SetPyData(brancheActivite, IDactivite)
                 self.SetItemBold(brancheActivite, True)
                 self.SetItemBackgroundColour(brancheActivite, COULEUR_FOND_REGROUPEMENT)
-                
+
                 # Niveau Unités de consommation ou de remplissage
                 index = 0
-                for track in self.dictTracks[self.typeListe][IDactivite] :
+                for track in self.dictTracksFinal[IDactivite] :
                     
                     if track.IDactivite == IDactivite :
                     
@@ -293,23 +241,52 @@ class CTRL(HTL.HyperTreeList):
         
         # Pour éviter le bus de positionnement des contrôles
         self.GetMainWindow().CalculatePositions() 
-                
-    def RAZ(self):
-        self.DeleteAllItems()
-        for indexColonne in range(self.GetColumnCount()-1, -1, -1) :
-            self.RemoveColumn(indexColonne)
-        self.DeleteRoot() 
-        self.Initialisation()
-    
+
     def GetDonnees(self):
         """ Récupère les résultats des données saisies """
         dictDonnees = {}
-        for IDactivite, listeTracks in self.dictTracks[self.typeListe].iteritems() :
-            if dictDonnees.has_key(IDactivite) == False : 
-                dictDonnees[IDactivite] = []
+        for IDactivite, listeTracks in self.dictTracksFinal.iteritems() :
             for track in listeTracks :
-                dictDonnees[IDactivite].append((track.type, track.IDunite, track.affichage))
+                if track.affichage != None :
+                    if dictDonnees.has_key(IDactivite) == False:
+                        dictDonnees[IDactivite] = []
+                    dictDonnees[IDactivite].append((track.type, track.IDunite, track.affichage))
         return dictDonnees
+
+    def GetParametres(self):
+        return self.GetDonnees()
+
+    def SetParametres(self, dictParametres={}):
+        if dictParametres == None :
+            return False
+        if dictParametres.has_key("unites") :
+            self.dictParametres = dictParametres["unites"]
+
+        # Recherche les paramètres dans le profil de config
+        self.dictTracksFinal = {}
+        listeTracksTemp = self.listeTracks[:]
+        for IDactivite, listeUnites in self.dictParametres.iteritems():
+            if self.dictTracksFinal.has_key(IDactivite) == False:
+                self.dictTracksFinal[IDactivite] = []
+            for type, IDunite, affichage in listeUnites:
+                if self.dictTracksInitial.has_key(IDactivite):
+                    # Recherche si le track existe dans la liste initiale. Si oui, le récupère et le copie dans la liste finale
+                    for track in self.dictTracksInitial[IDactivite] :
+                        if track.type == type and track.IDunite == IDunite :
+                            track.affichage = affichage
+                            self.dictTracksFinal[IDactivite].append(copy.deepcopy(track))
+                            listeTracksTemp.remove(track)
+
+        # Rajoute les tracks n'apparaissant pas dans le dict des paramètres
+        for track in listeTracksTemp:
+            IDactivite = track.IDactivite
+            if self.dictTracksFinal.has_key(IDactivite) == False:
+                self.dictTracksFinal[IDactivite] = []
+            self.dictTracksFinal[IDactivite].append(copy.deepcopy(track))
+
+        # MAJ du remplissage
+        self.MAJ()
+
 
     def OnContextMenu(self, event):
         """Ouverture du menu contextuel """
@@ -347,7 +324,7 @@ class CTRL(HTL.HyperTreeList):
         menuPop.Destroy()
     
 ##    def RechercherTrack(self, trackSelection=None):
-##        for IDactivite, listeTracks in self.dictTracks[self.typeListe].iteritems() :
+##        for IDactivite, listeTracks in self.dictTracks.iteritems() :
 ##            index = 0
 ##            for track in listeTracks :
 ##                if track == trackSelection :
@@ -367,7 +344,7 @@ class CTRL(HTL.HyperTreeList):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        listeTemp = self.dictTracks[self.typeListe][track.IDactivite]
+        listeTemp = self.dictTracksFinal[track.IDactivite]
         listeTemp.remove(track) 
         track.position -= 1
         listeTemp.insert(track.position, track)
@@ -381,12 +358,12 @@ class CTRL(HTL.HyperTreeList):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        if track.position == len(self.dictTracks[self.typeListe][track.IDactivite])-1 :
+        if track.position == len(self.dictTracksFinal[track.IDactivite])-1 :
             dlg = wx.MessageDialog(self, _(u"Cette unité est déjà en dernière position !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return
-        listeTemp = self.dictTracks[self.typeListe][track.IDactivite]
+        listeTemp = self.dictTracksFinal[track.IDactivite]
         listeTemp.remove(track) 
         track.position += 1
         listeTemp.insert(track.position, track)
@@ -395,7 +372,7 @@ class CTRL(HTL.HyperTreeList):
     def Reinit(self, event):
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment réinitialiser la liste des unités ?"), _(u"Réinitialisation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         if dlg.ShowModal() == wx.ID_YES :
-            self.dictTracks = copy.deepcopy(self.dictInitial)
+            self.dictTracksFinal = copy.deepcopy(self.dictTracksInitial)
             self.MAJ() 
         dlg.Destroy()
 
