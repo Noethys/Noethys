@@ -20,6 +20,7 @@ class CTRL_Choix_profil(wx.Choice):
         wx.Choice.__init__(self, parent, -1)
         self.parent = parent
         self.categorie = categorie
+        self.defaut = None
         self.MAJ()
         if len(self.dictDonnees) > 0:
             self.Select(0)
@@ -39,7 +40,7 @@ class CTRL_Choix_profil(wx.Choice):
         listeItems = [_(u"Aucun")]
         self.dictDonnees = {0 : None}
         DB = GestionDB.DB()
-        req = """SELECT IDprofil, label
+        req = """SELECT IDprofil, label, defaut
         FROM profils
         WHERE categorie='%s'
         ORDER BY label;""" % self.categorie
@@ -47,7 +48,10 @@ class CTRL_Choix_profil(wx.Choice):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         index = 1
-        for IDprofil, label in listeDonnees:
+        self.defaut = None
+        for IDprofil, label, defaut in listeDonnees:
+            if defaut == 1 :
+                self.defaut = IDprofil
             listeItems.append(label)
             self.dictDonnees[index] = IDprofil
             index += 1
@@ -65,6 +69,9 @@ class CTRL_Choix_profil(wx.Choice):
         if index == -1: return None
         return self.dictDonnees[index]
 
+    def SetOnDefaut(self):
+        self.SetID(self.defaut)
+        return True
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -111,6 +118,10 @@ class CTRL(wx.Panel):
 
     def GetIDprofil(self):
         return self.ctrl_choix_profil.GetID()
+
+    def SetOnDefaut(self):
+        if self.ctrl_choix_profil.SetOnDefaut() == True :
+            self.OnChoixProfil()
 
     def OnChoixProfil(self, event=None):
         """ Lors du choix du profil """

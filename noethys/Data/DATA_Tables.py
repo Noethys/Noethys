@@ -1554,6 +1554,7 @@ DB_DATA = {
     "profils":                      [("IDprofil", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Profil"),
                                     ("label", "VARCHAR(400)", u"Nom de profil"),
                                     ("categorie", "VARCHAR(200)", u"Catégorie du profil"),
+                                    ("defaut", "INTEGER", u"(0/1) Profil sélectionné par défaut"),
                                     ],  # Profils de paramètres
 
     "profils_parametres":           [("IDparametre", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID parametre"),

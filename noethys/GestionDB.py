@@ -1995,6 +1995,17 @@ class DB:
 
         # =============================================================
 
+        versionFiltre = (1, 1, 9, 4)
+        if versionFichier < versionFiltre:
+            try:
+                if self.IsTableExists("profils") == False: self.CreationTable("profils", Tables.DB_DATA)
+                if self.IsTableExists("profils_parametres") == False: self.CreationTable("profils_parametres", Tables.DB_DATA)
+                self.AjoutChamp("profils", "defaut", "INTEGER")
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+        # =============================================================
+
 
 
 

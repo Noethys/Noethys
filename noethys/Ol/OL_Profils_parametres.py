@@ -21,6 +21,7 @@ class Track(object):
     def __init__(self, donnees):
         self.IDprofil = donnees[0]
         self.label = donnees[1]
+        self.defaut = donnees[2]
 
     
 class ListView(FastObjectListView):
@@ -50,7 +51,7 @@ class ListView(FastObjectListView):
         """ Récupération des données """
         listeID = None
         db = GestionDB.DB()
-        req = """SELECT IDprofil, label
+        req = """SELECT IDprofil, label, defaut
         FROM profils
         WHERE categorie='%s'
         ;""" % self.categorie
@@ -76,10 +77,19 @@ class ListView(FastObjectListView):
         self.oddRowsBackColor = UTILS_Interface.GetValeur("couleur_tres_claire", wx.Colour(240, 251, 237))
         self.evenRowsBackColor = wx.Colour(255, 255, 255)
         self.useExpansionColumn = True
-                    
+
+        # Préparation de la listeImages
+        imgDefaut = self.AddNamedImages("defaut", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG))
+
+        def GetImageDefaut(track):
+            if track.defaut == 1:
+                return "defaut"
+            else:
+                return None
+
         liste_Colonnes = [
-            ColumnDefn(_(u"ID"), "left", 0, "IDprofil", typeDonnee="entier"),
-            ColumnDefn(_(u"Nom"), "left", 480, "label", typeDonnee="texte"),
+            ColumnDefn(u"", "left", 22, "IDprofil", typeDonnee="entier", imageGetter=GetImageDefaut),
+            ColumnDefn(_(u"Nom"), "left", 460, "label", typeDonnee="texte"),
             ]
         
         self.SetColumns(liste_Colonnes)
@@ -123,8 +133,6 @@ class ListView(FastObjectListView):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Ajouter, id=10)
-        
-        menuPop.AppendSeparator()
 
         # Item Ajouter
         item = wx.MenuItem(menuPop, 20, _(u"Modifier"))
@@ -151,8 +159,21 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Dupliquer, id=60)
         if noSelection == True : item.Enable(False)
+
         menuPop.AppendSeparator()
-    
+
+        # Item Par défaut
+        item = wx.MenuItem(menuPop, 70, _(u"Définir comme profil par défaut"))
+        if noSelection == False :
+            if self.Selection()[0].defaut == 1 :
+                bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG)
+                item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.SetDefaut, id=70)
+        if noSelection == True : item.Enable(False)
+
+        menuPop.AppendSeparator()
+
         # Item Apercu avant impression
         item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
@@ -195,7 +216,11 @@ class ListView(FastObjectListView):
             return
         else:
             DB = GestionDB.DB()
-            listeDonnees = [("label", label), ("categorie", self.categorie)]
+            if len(self.donnees) == 0 :
+                defaut = 1
+            else :
+                defaut = 0
+            listeDonnees = [("label", label), ("categorie", self.categorie), ("defaut", defaut)]
             IDprofil = DB.ReqInsert("profils", listeDonnees)
             self.dernierProfilCree = IDprofil
             DB.Close()
@@ -239,9 +264,20 @@ class ListView(FastObjectListView):
         if dlg.ShowModal() == wx.ID_YES :
             IDprofil = self.Selection()[0].IDprofil
             DB = GestionDB.DB()
+            # Suppression
             DB.ReqDEL("profils", "IDprofil", IDprofil)
             DB.ReqDEL("profils_parametres", "IDprofil", IDprofil)
-            DB.Close() 
+            # Réattribution du défaut
+            defaut = None
+            for track in self.donnees :
+                if track.IDprofil != IDprofil :
+                    defaut = track.IDprofil
+                    if track.defaut == 1 :
+                        defaut == False
+                        break
+            if defaut not in (False, None) :
+                DB.ReqMAJ("profils", [("defaut", 1), ], "IDprofil", defaut)
+            DB.Close()
             self.MAJ()
         dlg.Destroy()
 
@@ -269,6 +305,24 @@ class ListView(FastObjectListView):
 
         DB.Close()
         self.MAJ(newIDprofil)
+
+    def SetDefaut(self, event=None):
+        if len(self.Selection()) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil dans la liste !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        IDprofil = self.Selection()[0].IDprofil
+        DB = GestionDB.DB()
+        for track in self.donnees :
+            if track.defaut == 1 :
+                DB.ReqMAJ("profils", [("defaut", 0),], "IDprofil", track.IDprofil)
+        DB.ReqMAJ("profils", [("defaut", 1),], "IDprofil", IDprofil)
+        DB.Close()
+        self.MAJ()
+
+
+
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
