@@ -1230,10 +1230,17 @@ class Dialog(wx.Dialog):
                         listeInfos = []
                         for element in valeur :
                             try :
-                                listeInfos.append(element.text)
+                                valeur = element.text
                             except :
-                                listeInfos.append(element.P.text) 
-                        feuille.write(numLigne, numColonne, " - ".join(listeInfos), styleDefaut)
+                                valeur = element.P.text
+                            if valeur == "X":
+                                valeur = "1"
+                            listeInfos.append(valeur)
+                        if len(listeInfos) == 1 and listeInfos[0] == "1" :
+                            texte = int(valeur)
+                        else :
+                            texte = " - ".join(listeInfos)
+                        feuille.write(numLigne, numColonne, texte, styleDefaut)
                     
                     numColonne += 1
                 numLigne += 1
