@@ -272,7 +272,7 @@ class Dialog(wx.Dialog):
         # Calendrier
         self.staticbox_date_staticbox = wx.StaticBox(self, -1, _(u"Période"))
         self.ctrl_calendrier = CTRL_Grille_periode.CTRL(self)
-        self.ctrl_calendrier.SetMinSize((200, 150))
+        self.ctrl_calendrier.SetMinSize((230, 150))
         
         # Activités
         self.staticbox_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
@@ -454,6 +454,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        self.SetMinSize(self.GetSize())
         self.CenterOnScreen() 
         
         self.grid_sizer_base = grid_sizer_base

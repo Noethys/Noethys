@@ -241,6 +241,9 @@ class Dialog(wx.Dialog):
         anneeActuelle = datetime.date.today().year
         self.panel_parametres.ctrl_date_debut.SetDate(datetime.date(anneeActuelle, 1, 1))
         self.panel_parametres.ctrl_date_fin.SetDate(datetime.date(anneeActuelle, 12, 31))
+
+        # Sélectionne profil par défaut
+        self.panel_parametres.ctrl_profil.SetOnDefaut()
                 
 
     def __set_properties(self):
