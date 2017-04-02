@@ -247,8 +247,9 @@ class Depannage():
         self.listeResultats = []
         EcritStatusbar(_(u"Recherche d'anomalies en cours...   Veuillez patientez..."))
         try :
-            dlgAttente = PBI.PyBusyInfo(_(u"Recherche d'anomalies en cours..."), parent=self.parent, title=_(u"Merci de patienter"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-            wx.Yield() 
+            #dlgAttente = PBI.PyBusyInfo(_(u"Recherche d'anomalies en cours..."), parent=self.parent, title=_(u"Merci de patienter"), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
+            dlgAttente = wx.BusyInfo(_(u"Recherche d'anomalies en cours. Veuillez patientez..."), self.parent)
+            wx.Yield()
         except :
             dlgAttente = None
         
@@ -274,8 +275,8 @@ class Depannage():
                 
         # Fermeture DB
         self.DB.Close()
-        
-        del dlgAttente
+
+        dlgAttente.Destroy()
         EcritStatusbar("")
         
     def InscriptionsSansIndividus(self):
