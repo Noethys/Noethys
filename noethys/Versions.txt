@@ -1,6 +1,11 @@
-Version 1.1.9.3 (26/03/2017) :
+Version 1.1.9.4 (02/04/2017) :
 
-- Nouvelle version de l'état global des consommations
+- Etat global : Ajout des profils de configuration
+- Etat global : Ajout des niveaux de regroupement
+- Etat global : Ajout de nouvelles options d'affichage
+- Liste des conso : Ajout des profils de configuration
+- Liste des conso : Ajout des colonnes personnalisées
+- Liste des conso : Ajout de nouvelles options d'affichage
 
 Version 1.1.9.2 (25/03/2017) :
 
