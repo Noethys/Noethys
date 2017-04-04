@@ -295,7 +295,7 @@ class ListView(FastObjectListView):
 
         # Duplication du profil
         conditions = "IDprofil=%d" % IDprofil
-        dictModifications = {"label": _(u"Copie de %s") % label}
+        dictModifications = {"label": _(u"Copie de %s") % label, "defaut" : 0}
         newIDprofil = DB.Dupliquer("profils", "IDprofil", conditions, dictModifications)
 
         # Duplication des paramètres

@@ -168,7 +168,11 @@ class CTRL(wx.Panel):
             return False
         else:
             DB = GestionDB.DB()
-            listeDonnees = [("label", label), ("categorie", self.categorie)]
+            if len(self.ctrl_choix_profil.dictDonnees) == 1 :
+                defaut = 1
+            else :
+                defaut = 0
+            listeDonnees = [("label", label), ("categorie", self.categorie), ("defaut", defaut)]
             IDprofil = DB.ReqInsert("profils", listeDonnees)
             DB.Close()
             self.ctrl_choix_profil.MAJ()
