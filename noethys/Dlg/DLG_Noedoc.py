@@ -4312,7 +4312,10 @@ class Dialog(wx.Dialog):
         if largeur == None : largeur = dictSpecial["largeurMin"] + 100
         if hauteur == None : hauteur = dictSpecial["hauteurMin"] + 100
         if x == None or y == None :
-            tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize() 
+            try:
+                tailleDC = wx.ClientDC(self.ctrl_canvas.canvas).GetSize()
+            except:
+                tailleDC = (self.ctrl_canvas.Size.x, self.ctrl_canvas.Size.y)
             x, y = self.ctrl_canvas.canvas.PixelToWorld((tailleDC[0]/2, tailleDC[1]/2))
             x, y = int(x - largeur/2), int(y - hauteur/2)
         
