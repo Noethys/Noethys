@@ -1,11 +1,8 @@
-Version 1.1.9.4 (02/04/2017) :
+Version 1.1.9.5 (07/04/2017) :
 
-- Etat global : Ajout des profils de configuration
-- Etat global : Ajout des niveaux de regroupement
-- Etat global : Ajout de nouvelles options d'affichage
-- Liste des conso : Ajout des profils de configuration
-- Liste des conso : Ajout des colonnes personnalisées
-- Liste des conso : Ajout de nouvelles options d'affichage
+- Etat global : Ajout des profils de configuration, des niveaux de regroupement et de nouvelles options d'affichage
+- Liste des consommations : Ajout des profils de configuration, des colonnes personnalisées et de nouvelles options d'affichage
+- Fix modèles de documents sous Linux [Claude]
 
 Version 1.1.9.2 (25/03/2017) :
 
