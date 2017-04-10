@@ -213,9 +213,9 @@ def GetListeIndividus(listview=None, listeActivites=None, presents=None, IDindiv
     FROM individus 
     LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
     %s
-    WHERE (inscriptions.parti=0 OR inscriptions.parti IS NULL) %s %s %s
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), jointurePresents, conditionActivites, conditionPresents, conditionIndividus)
+    ;""" % (",".join(listeChamps), jointurePresents, datetime.date.today(), conditionActivites, conditionPresents, conditionIndividus)
     
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
@@ -346,9 +346,9 @@ def GetListeFamilles(listview=None, listeActivites=None, presents=None, IDfamill
     AND inscriptions.IDfamille = familles.IDfamille
     LEFT JOIN caisses ON caisses.IDcaisse = familles.IDcaisse
     LEFT JOIN regimes ON regimes.IDregime = caisses.IDregime
-    WHERE (inscriptions.parti=0 or inscriptions.parti IS NULL) %s %s %s
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s %s
     GROUP BY familles.IDfamille
-    ;""" % (jointurePresents, conditionActivites, conditionPresents, conditionFamilles)
+    ;""" % (jointurePresents, datetime.date.today(), conditionActivites, conditionPresents, conditionFamilles)
 
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()

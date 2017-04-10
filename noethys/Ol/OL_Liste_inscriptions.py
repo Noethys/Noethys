@@ -159,9 +159,9 @@ class ListView(GroupListView):
         
         # Condition Partis
         if self.partis == True : 
-            conditionPartis = "(0, 1)"
+            conditionPartis = ""
         else : 
-            conditionPartis = "(0)"
+            conditionPartis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s'" % datetime.date.today()
         
         # Infos sur tous les individus
         GetDictInfosIndividus()
@@ -209,7 +209,7 @@ class ListView(GroupListView):
         WHERE inscriptions.IDactivite=%d
         AND inscriptions.IDgroupe IN %s
         AND inscriptions.IDcategorie_tarif IN %s
-        AND inscriptions.parti IN %s
+        %s
         GROUP BY individus.IDindividu
         ;""" % (",".join(listeChamps2), self.IDactivite, conditionGroupes, conditionCategories, conditionPartis)
         # LEFT JOIN prestations ON prestations.IDactivite = inscriptions.IDactivite a été supprimé pour accélérer le traitement

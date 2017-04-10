@@ -2007,6 +2007,13 @@ class DB:
         # =============================================================
 
 
+        versionFiltre = (1, 1, 10, 1)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("inscriptions", "date_desinscription", "DATE")
+                self.ReqMAJ("inscriptions", [("date_desinscription", datetime.date.today()), ], "parti", 1)
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
         return True

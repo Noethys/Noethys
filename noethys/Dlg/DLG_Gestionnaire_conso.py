@@ -397,9 +397,9 @@ class PanelGrille(wx.Panel):
         DB = GestionDB.DB()
         req = """SELECT IDinscription, IDindividu
         FROM inscriptions
-        WHERE IDactivite IN %s %s and parti=0
+        WHERE IDactivite IN %s %s and (date_desinscription IS NULL OR date_desinscription>='%s')
         GROUP BY IDindividu
-        ORDER BY IDindividu;""" % (conditionActivites, conditionGroupes)
+        ORDER BY IDindividu;""" % (conditionActivites, conditionGroupes, datetime.date.today())
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()      
         DB.Close() 

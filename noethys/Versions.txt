@@ -1,3 +1,6 @@
+Version 1.1.10.0 (28/03/2017) :
+- Ajout d'une date de desinscription aux activites
+
 Version 1.1.9.5 (07/04/2017) :
 
 - Etat global : Ajout des profils de configuration, des niveaux de regroupement et de nouvelles options d'affichage

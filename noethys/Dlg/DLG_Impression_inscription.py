@@ -312,7 +312,7 @@ class Dialog(wx.Dialog):
         dictChamps = {
             "inscriptions.IDinscription" : "IDINSCRIPTION",
             "inscriptions.date_inscription" : "DATE_INSCRIPTION",
-            "inscriptions.parti" : "EST_PARTI", 
+            "inscriptions.date_desinscription" : "EST_PARTI",
             
             "activites.IDactivite" : "IDACTIVITE",
             "activites.nom" : "ACTIVITE_NOM_LONG",

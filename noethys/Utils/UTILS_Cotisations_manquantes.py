@@ -59,9 +59,9 @@ def GetListeCotisationsManquantes(dateReference=None, listeActivites=None, prese
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
     LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
     %s
-    WHERE inscriptions.parti=0 %s %s AND activites.date_fin>='%s'
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s %s AND activites.date_fin>='%s'
     GROUP BY inscriptions.IDfamille, cotisations_activites.IDtype_cotisation, individus.IDindividu;
-    """ % (jonctionPresents, conditionActivites, conditionPresents, dateReference)
+    """ % (jonctionPresents, dateReference, conditionActivites, conditionPresents, dateReference)
     DB.ExecuterReq(req)
     listeCotisationsObligatoires = DB.ResultatReq()
     
