@@ -157,7 +157,17 @@ class ListView(FastObjectListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
         if noSelection == True : item.Enable(False)
-        
+
+        menuPop.AppendSeparator()
+
+        # Item Dupliquer
+        item = wx.MenuItem(menuPop, 60, _(u"Dupliquer"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Dupliquer.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.Dupliquer, id=60)
+        if noSelection == True : item.Enable(False)
+
         menuPop.AppendSeparator()
     
         # Item Apercu avant impression
@@ -229,7 +239,31 @@ class ListView(FastObjectListView):
             DB.Close() 
             self.MAJ()
         dlg.Destroy()
-    
+
+    def Dupliquer(self, event):
+        """ Dupliquer un budget """
+        if len(self.Selection()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun budget à dupliquer dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        track = self.Selection()[0]
+
+        DB = GestionDB.DB()
+
+        # Duplication compta_budgets
+        conditions = "IDbudget=%d" % track.IDbudget
+        dictModifications = {"nom": _(u"Copie de %s") % track.nom}
+        newIDbudget = DB.Dupliquer("compta_budgets", "IDbudget", conditions, dictModifications)
+
+        # Duplication compta_categories_budget
+        conditions = "IDbudget=%d" % track.IDbudget
+        dictModifications = {"IDbudget": newIDbudget}
+        newIDcategorie_budget = DB.Dupliquer("compta_categories_budget", "IDcategorie_budget", conditions, dictModifications)
+
+        DB.Close()
+        self.MAJ(newIDbudget)
+
     
     
 # -------------------------------------------------------------------------------------------------------------------------------------------
