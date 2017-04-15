@@ -329,19 +329,26 @@ class Panel(wx.Panel):
         self.bouton_supprimer_combi = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
         # Durée
-        self.ctrl_duree_forfait = wx.CheckBox(self, -1, _(u"Durée :"))
+        self.label_duree_forfait = wx.StaticText(self, -1, _(u"Durée par défaut :"))
+        self.ctrl_duree_forfait = wx.CheckBox(self, -1, _(u""))
         self.label_jours = wx.StaticText(self, -1, _(u"Jours :"))
         self.spin_jours = wx.SpinCtrl(self, -1, "", min=0, max=500)
         self.label_mois = wx.StaticText(self, -1, _(u"Mois :"))
         self.spin_mois = wx.SpinCtrl(self, -1, "", min=0, max=500)
         self.label_annees = wx.StaticText(self, -1, _(u"Années :"))
         self.spin_annees = wx.SpinCtrl(self, -1, "", min=0, max=500)
-        
+
+        # Blocage
+        self.label_blocage_plafond = wx.StaticText(self, -1, _(u"Blocage plafond :"))
+        self.ctrl_blocage_plafond = wx.CheckBox(self, -1, _(u"Bloquer si la quantité maximale de consommations est atteinte"))
+
         # Bénéficiaire
+        self.label_type_forfait = wx.StaticText(self, -1, _(u"Type de forfait :"))
         self.ctrl_beneficiaire_individu = wx.RadioButton(self, -1, _(u"Forfait individuel"), style = wx.RB_GROUP)
         self.ctrl_beneficiaire_famille = wx.RadioButton(self, -1, _(u"Forfait familial"))
         
         # Date de facturation
+        self.label_date_facturation = wx.StaticText(self, -1, _(u"Date de facturation :"))
         listeChoix = [
             ("date_debut_forfait", _(u"Date de début du forfait")),
             ("date_saisie", _(u"Date de la saisie du forfait")),
@@ -367,6 +374,7 @@ class Panel(wx.Panel):
         self.bouton_modifier_combi.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste"))
         self.bouton_supprimer_combi.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste"))
         self.ctrl_duree_forfait.SetToolTipString(_(u"Vous pouvez définir une durée de validité à partir de la date de début de forfait saisie par l'utilisateur"))
+        self.ctrl_blocage_plafond.SetToolTipString(_(u"Cliquez ici pour empêcher la saisie d'une consommation si la quantité maximale est atteinte"))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
@@ -389,7 +397,11 @@ class Panel(wx.Panel):
         grid_sizer_combinaisons.AddGrowableRow(0)
         grid_sizer_combinaisons.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_combinaisons, 1, wx.EXPAND, 0)
-        
+
+        grid_sizer_options = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
+
+        grid_sizer_options.Add(self.label_duree_forfait, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+
         grid_sizer_duree = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         grid_sizer_duree.Add(self.ctrl_duree_forfait, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_duree.Add(self.label_jours, 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -398,15 +410,22 @@ class Panel(wx.Panel):
         grid_sizer_duree.Add(self.spin_mois, 0, 0, 0)
         grid_sizer_duree.Add(self.label_annees, 0, wx.LEFT|wx.ALIGN_CENTER_VERTICAL, 5)
         grid_sizer_duree.Add(self.spin_annees, 0, 0, 0)
-        grid_sizer_base.Add(grid_sizer_duree, 0, 0, 0)
+        grid_sizer_options.Add(grid_sizer_duree, 0, 0, 0)
 
+        grid_sizer_options.Add(self.label_blocage_plafond, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_blocage_plafond, 0, 0, 0)
+
+        grid_sizer_options.Add(self.label_type_forfait, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_beneficiaire = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
         grid_sizer_beneficiaire.Add(self.ctrl_beneficiaire_individu, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_beneficiaire.Add(self.ctrl_beneficiaire_famille, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_base.Add(grid_sizer_beneficiaire, 0, 0, 0)
-        
-        grid_sizer_base.Add( (10, 10), 0, 0, 0)
-        grid_sizer_base.Add(self.ctrl_date_facturation, 0, wx.EXPAND, 0)
+        grid_sizer_options.Add(grid_sizer_beneficiaire, 0, 0, 0)
+
+        grid_sizer_options.Add(self.label_date_facturation, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options.Add(self.ctrl_date_facturation, 0, 0, 0)
+
+        grid_sizer_options.AddGrowableCol(1)
+        grid_sizer_base.Add(grid_sizer_options, 0, 0, 0)
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
@@ -474,18 +493,25 @@ class Panel(wx.Panel):
     
     def Importation(self):
         db = GestionDB.DB()
-        req = """SELECT forfait_duree, forfait_beneficiaire, date_facturation
+        req = """SELECT forfait_duree, forfait_beneficiaire, date_facturation, options
         FROM tarifs
         WHERE IDtarif=%d;""" % self.IDtarif
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
         if len(listeDonnees) == 0 : return
-        forfait_duree, forfait_beneficiaire, date_facturation = listeDonnees[0]
+        forfait_duree, forfait_beneficiaire, date_facturation, options = listeDonnees[0]
         # Remplissage des contrôles
         self.SetDuree(forfait_duree)
         self.SetBeneficiaire(forfait_beneficiaire)
         self.SetDateFacturation(date_facturation)
+
+        if options != None :
+            # Blocage plafond
+            if "blocage_plafond" in options :
+                self.ctrl_blocage_plafond.SetValue(True)
+            else :
+                self.ctrl_blocage_plafond.SetValue(False)
     
     def Validation(self):
         if self.ctrl_duree_forfait.GetValue() == True :
@@ -512,6 +538,12 @@ class Panel(wx.Panel):
         forfait_duree = self.GetDuree()
         forfait_beneficiaire = self.GetBeneficiaire()
         date_facturation = self.GetDateFacturation()
+
+        # Options
+        if self.ctrl_blocage_plafond.GetValue() == True :
+            options = "blocage_plafond"
+        else :
+            options = None
         
         # Sauvegarde
         DB = GestionDB.DB()
@@ -519,6 +551,7 @@ class Panel(wx.Panel):
             ("forfait_duree", forfait_duree ),
             ("forfait_beneficiaire", forfait_beneficiaire ),
             ("date_facturation", date_facturation ),
+            ("options", options),
             ]
         DB.ReqMAJ("tarifs", listeDonnees, "IDtarif", self.IDtarif)
         DB.Close() 

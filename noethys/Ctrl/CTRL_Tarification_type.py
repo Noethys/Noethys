@@ -31,7 +31,6 @@ class CTRL_Date_facturation(wx.Panel):
         self.listeChoix = listeChoix
         self.listeChoix.append(("date:", _(u"La date suivante")))
         
-        self.label_date = wx.StaticText(self, -1, _(u"Date de facturation :"))
         choices = []
         for code, label in self.listeChoix :
             choices.append(label)
@@ -40,10 +39,9 @@ class CTRL_Date_facturation(wx.Panel):
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
-        grid_sizer_base.Add(self.label_date, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
         grid_sizer_base.Add(self.ctrl_choix, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
         grid_sizer_base.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
-        grid_sizer_base.AddGrowableCol(1)
+        grid_sizer_base.AddGrowableCol(0)
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         self.Layout()

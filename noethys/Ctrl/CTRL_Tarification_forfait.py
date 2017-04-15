@@ -336,11 +336,12 @@ class Panel(wx.Panel):
         self.bouton_supprimer_combi = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
 
         # Autres paramètres
-        self.ctrl_saisie_manuelle = wx.CheckBox(self, -1, _(u"Saisie manuelle"))
-        self.ctrl_saisie_auto = wx.CheckBox(self, -1, _(u"Saisie automatique"))
-        self.ctrl_suppression_auto = wx.CheckBox(self, -1, _(u"Suppression verrouillée"))
+        self.ctrl_saisie_manuelle = wx.CheckBox(self, -1, _(u"Ce forfait peut être saisi manuellement depuis la grille des consommations"))
+        self.ctrl_saisie_auto = wx.CheckBox(self, -1, _(u"Ce forfait est automatiquement créé lors de l'inscription à l'activité"))
+        self.ctrl_suppression_auto = wx.CheckBox(self, -1, _(u"Ce forfait ne peut être supprimé que lors de la désinscription à l'activité"))
 
         # Date de facturation
+        self.label_date_facturation = wx.StaticText(self, -1, _(u"Date de facturation :"))
         listeChoix = [
             ("date_debut_forfait", _(u"Date de début du forfait")),
             ("date_saisie", _(u"Date de la saisie du forfait")),
@@ -401,14 +402,16 @@ class Panel(wx.Panel):
         grid_sizer_combinaisons.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_combinaisons, 1, wx.EXPAND, 0)
         
-        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
+        grid_sizer_options = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_options.Add(self.ctrl_saisie_manuelle, 0, 0, 0)
         grid_sizer_options.Add(self.ctrl_saisie_auto, 0, 0, 0)
         grid_sizer_options.Add(self.ctrl_suppression_auto, 0, 0, 0)
         grid_sizer_base.Add(grid_sizer_options, 0, 0, 0)
-        
-        grid_sizer_base.Add( (10, 10), 0, 0, 0)
-        grid_sizer_base.Add(self.ctrl_date_facturation, 0, wx.EXPAND, 0)
+
+        grid_sizer_date = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_date.Add(self.label_date_facturation, 0, wx.ALIGN_RIGHT | wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_date.Add(self.ctrl_date_facturation, 0, wx.EXPAND, 0)
+        grid_sizer_base.Add(grid_sizer_date, 0, wx.EXPAND, 0)
 
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)

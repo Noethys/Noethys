@@ -934,7 +934,7 @@ class Case():
                                         self.grid.listeConsoSupprimees.append(conso)
                                     if conso.IDconso == None : 
                                         conso.statut = "suppression"
-                                    case.MAJ_facturation() 
+                                    case.MAJ_facturation()
                                     case.listeBarres.remove(conso.barre)
                                     self.grid.dictConsoIndividus[case.IDindividu][case.date][case.IDunite].remove(conso)
                                     self.Refresh() 
@@ -952,7 +952,7 @@ class Case():
                                             listeCases.append(case)
         
         for case in listeCases :
-            case.MAJ_facturation() 
+            case.MAJ_facturation()
                                             
         self.MAJremplissage()
 
