@@ -22,6 +22,7 @@ from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Historique
 from Utils import UTILS_Titulaires
 from Dlg import DLG_Inscription_activite
+from Dlg import DLG_Inscription_desinscription
 from Dlg import DLG_Appliquer_forfait
 
 
@@ -184,6 +185,7 @@ class Dialog(wx.Dialog):
         self.dictActivite = None
         self.IDgroupe = None
         self.mode = mode
+        self.date_desinscription = None
 
         if intro == None :
             intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs.")
@@ -220,6 +222,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActivites, self.bouton_activites)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckboxParti, self.ctrl_parti)
 
         # Init contrôles
         self.ctrl_famille.SetID(self.IDfamille)
@@ -304,21 +307,35 @@ class Dialog(wx.Dialog):
         self.ctrl_famille.SetID(self.IDfamille)
 
         DB = GestionDB.DB()
-        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, parti
+        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, date_desinscription
         FROM inscriptions
         WHERE IDinscription=%d;""" % self.IDinscription
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            IDactivite, IDgroupe, IDcategorie_tarif, parti = listeDonnees[0]
+            IDactivite, IDgroupe, IDcategorie_tarif, date_desinscription = listeDonnees[0]
             self.SetIDactivite(IDactivite)
             self.ctrl_groupes.SetID(IDgroupe)
             self.IDgroupe = IDgroupe
             self.ctrl_categories.SetID(IDcategorie_tarif)
-            if parti == None : parti = 0
-            self.ctrl_parti.SetValue(parti)
+            # Cocher la checkbox 'Est parti' si la date de desinscription est anterieure à la date du jour
+            self.date_desinscription = date_desinscription
+            self.ctrl_parti.SetValue(bool(date_desinscription))
 
+    def OnCheckboxParti(self, event):
+        """Sur check demande informations complementaires, sur uncheck reinscription."""
+        if self.ctrl_parti.IsChecked():
+            # Demande informations complementaires
+            dlg = DLG_Inscription_desinscription.Dialog(
+                self, IDinscription=self.IDinscription, IDfamille=self.IDfamille,
+                IDindividu=self.IDindividu
+            )
+            dlg.ShowModal()
+            dlg.Destroy()
+        else:
+            # reinscription
+            self.date_desinscription = None
 
     def OnBoutonOk(self, event):
         # Vérification des données saisies

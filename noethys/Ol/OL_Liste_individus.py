@@ -92,9 +92,9 @@ def GetListe(listeActivites=None, presents=None):
     SELECT %s
     FROM inscriptions 
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
-    WHERE inscriptions.parti=0 %s
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s
     GROUP BY individus.IDindividu
-    ;""" % (",".join(listeChamps), conditionActivites)
+    ;""" % (",".join(listeChamps), datetime.date.today(), conditionActivites)
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close() 

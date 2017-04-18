@@ -2501,9 +2501,9 @@ class ObjectListView(wx.ListCtrl):
         req = """SELECT %s
         FROM inscriptions 
         %s
-        WHERE (inscriptions.parti=0 OR inscriptions.parti IS NULL)  %s %s %s
+        WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')  %s %s %s
         GROUP BY %s
-        ;""" % (key, jointurePresents, conditionActivites, conditionGroupes, conditionPresents, key)
+        ;""" % (key, jointurePresents, datetime.date.today(), conditionActivites, conditionGroupes, conditionPresents, key)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close() 

@@ -489,6 +489,7 @@ DB_DATA = {
                                     ("IDcompte_payeur", "INTEGER", u"ID du compte payeur par défaut"), 
                                     ("date_inscription", "DATE", u"Date de l'inscription"),
                                     ("parti", "INTEGER", u"(0/1) est parti"),
+                                    ("date_desinscription", "DATE", u"Date de désinscription"),
                                     ], # Inscriptions des individus à des activités
 
     "consommations":[    ("IDconso", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID consommation"),

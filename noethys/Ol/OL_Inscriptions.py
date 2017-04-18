@@ -58,7 +58,7 @@ class Track(object):
         self.nom_activite = donnees[7]
         self.nom_groupe = donnees[8]
         self.nom_categorie = donnees[9]
-        self.parti = donnees[10]
+        self.date_desinscription = donnees[10]
         self.date_debut = donnees[11]
         self.date_fin = donnees[12]
         self.psu_activation = donnees[13]
@@ -72,7 +72,8 @@ class Track(object):
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
 
         # Validité de la pièce
-        if str(datetime.date.today()) <= self.date_fin and self.parti != 1 :
+        if (str(datetime.date.today()) <= self.date_fin
+                and (self.date_desinscription is None or self.date_desinscription >= str(datetime.date.today()))):
             self.valide = True
         else:
             self.valide = False
@@ -144,7 +145,7 @@ class ListView(FastObjectListView):
         req = """SELECT IDinscription, IDindividu, IDfamille, 
         inscriptions.IDactivite, inscriptions.IDgroupe, inscriptions.IDcategorie_tarif, date_inscription, 
         activites.nom, groupes.nom, categories_tarifs.nom,
-        inscriptions.parti, activites.date_debut, activites.date_fin,
+        inscriptions.date_desinscription, activites.date_debut, activites.date_fin,
         activites.psu_activation
         FROM inscriptions 
         LEFT JOIN activites ON inscriptions.IDactivite=activites.IDactivite

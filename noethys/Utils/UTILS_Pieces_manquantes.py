@@ -87,9 +87,9 @@ def GetListePiecesManquantes(dateReference=None, listeActivites=None, presents=N
     LEFT JOIN inscriptions ON inscriptions.IDactivite = pieces_activites.IDactivite
     LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
     LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
-    WHERE inscriptions.parti=0 %s AND activites.date_fin>='%s'
+    WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s') %s AND activites.date_fin>='%s'
     GROUP BY inscriptions.IDfamille, pieces_activites.IDtype_piece, individus.IDindividu
-    ;""" % (conditionActivites.replace("consommations", "inscriptions"), dateReference)
+    ;""" % (dateReference, conditionActivites.replace("consommations", "inscriptions"), dateReference)
     DB.ExecuterReq(req)
     listePiecesObligatoires = DB.ResultatReq()
 
