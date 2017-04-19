@@ -1,5 +1,8 @@
-Version 1.1.10.0 (28/03/2017) :
-- Ajout d'une date de desinscription aux activites
+Version 1.1.9.7 (18/04/2017) :
+
+- Ajout d'une date de désinscription aux activités
+- Ajout de la duplication des budgets
+- Ajout de la capacité max dans les forfaits crédit
 
 Version 1.1.9.5 (07/04/2017) :
 
