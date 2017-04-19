@@ -142,7 +142,7 @@ class Dialog(wx.Dialog):
         # Controles de saisie
         # La date doit etre saisie
         if date_desinscription is None:
-            wx.MessageBox(_(u"Vous devez selectionner une date de départ"))
+            wx.MessageBox(_(u"Vous devez sélectionner une date de départ"))
             return
         # Dans le cas d'un départ motivé
         if self.ctrl_justification.IsChecked():
@@ -155,10 +155,12 @@ class Dialog(wx.Dialog):
                 # Calcul du remboursement
                 montant = self.ctrl_total.GetMontant() - (int(self.ctrl_nb_seances.GetValue()) * self.ctrl_prix_seance.GetMontant())
 
-            DB = GestionDB.DB()
-            # Modification de la date de desinscription
-            DB.ReqMAJ('inscriptions', [('date_desinscription', str(date_desinscription))], 'IDinscription', self.IDinscription)
-            # CrÃ©ation d'une prestation négative pour la famille correspondant au remboursement
+        DB = GestionDB.DB()
+        # Modification de la date de desinscription
+        DB.ReqMAJ('inscriptions', [('date_desinscription', str(date_desinscription))], 'IDinscription', self.IDinscription)
+
+        if self.ctrl_justification.IsChecked():
+            # Création d'une prestation négative pour la famille correspondant au remboursement
             req = "SELECT IDcompte_payeur FROM familles WHERE IDfamille=%d" % self.IDfamille
             IDcompte_payeur = DB.ExecuterReq(req)
 
@@ -174,7 +176,7 @@ class Dialog(wx.Dialog):
                 ("date_valeur", str(datetime.date.today())),
             ]
             DB.ReqInsert("prestations", listeDonnees)
-            DB.Close()
+        DB.Close()
 
         self.Destroy()
 
