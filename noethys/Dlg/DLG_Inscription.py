@@ -17,10 +17,12 @@ import datetime
 import GestionDB
 from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Bandeau
+from Ctrl import CTRL_Saisie_date
 from Utils import UTILS_Interface
 from Utils import UTILS_Utilisateurs
 from Utils import UTILS_Historique
 from Utils import UTILS_Titulaires
+from Utils import UTILS_Dates
 from Dlg import DLG_Inscription_activite
 from Dlg import DLG_Inscription_desinscription
 from Dlg import DLG_Appliquer_forfait
@@ -185,10 +187,11 @@ class Dialog(wx.Dialog):
         self.dictActivite = None
         self.IDgroupe = None
         self.mode = mode
-        self.date_desinscription = None
+        self.date_inscription = datetime.date.today()
+        self.dict_remboursement = None
 
         if intro == None :
-            intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs.")
+            intro = _(u"Pour inscrire un individu à une activité, vous devez sélectionner une activité, un groupe et une catégorie de tarifs. Utilisez la case Départ pour indiquer que l'individu ne fréquente plus l'activité.")
         if self.mode == "saisie" :
             titre = _(u"Saisie d'une inscription")
         else :
@@ -196,22 +199,30 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Activite.png")
         
         self.ctrl_famille = Choix_famille(self, IDindividu=self.IDindividu, verrouillage=self.mode!="saisie")
-        
+
+        # Activité
         self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
         self.ctrl_activite = CTRL_Activite(self)
         self.bouton_activites = CTRL_Bouton_image.CTRL(self, texte=_(u"Rechercher"), cheminImage="Images/32x32/Loupe.png")
         self.ctrl_activite.SetMinSize((-1, self.bouton_activites.GetSize()[1]))
 
+        # Groupe
         self.staticbox_groupe_staticbox = wx.StaticBox(self, -1, _(u"Groupe"))
         self.ctrl_groupes = ListBox(self, type="groupes")
-        self.ctrl_groupes.SetMinSize((-1, 80))
-        
+        self.ctrl_groupes.SetMinSize((-1, 100))
+
+        # Catégorie
         self.staticbox_categorie_staticbox = wx.StaticBox(self, -1, _(u"Catégorie de tarif"))
         self.ctrl_categories = ListBox(self, type="categories")
-        self.ctrl_categories.SetMinSize((-1, 80))
-        
-        self.ctrl_parti = wx.CheckBox(self, -1, _(u"Est parti"))
-        
+        self.ctrl_categories.SetMinSize((-1, 100))
+
+        # Départ
+        self.staticbox_depart_staticbox = wx.StaticBox(self, -1, _(u"Départ de l'activité"))
+        self.ctrl_check_depart = wx.CheckBox(self, -1, _(u"L'individu ne fréquente plus l'activité depuis le"))
+        self.ctrl_date_depart = CTRL_Saisie_date.Date2(self)
+        self.ctrl_date_depart.SetDate(datetime.date.today())
+        self.bouton_remboursement = wx.Button(self, -1, _(u"Remboursement"))
+
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
@@ -222,7 +233,8 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActivites, self.bouton_activites)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckboxParti, self.ctrl_parti)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckDepart, self.ctrl_check_depart)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonRemboursement, self.bouton_remboursement)
 
         # Init contrôles
         self.ctrl_famille.SetID(self.IDfamille)
@@ -238,6 +250,7 @@ class Dialog(wx.Dialog):
                     self.cp = dict_coords["cp_resid"]
                     self.ville = dict_coords["ville_resid"]
 
+        self.OnCheckDepart()
 
     def __set_properties(self):
         self.SetTitle(_(u"Inscription à une activité"))
@@ -245,12 +258,13 @@ class Dialog(wx.Dialog):
         self.ctrl_activite.SetToolTipString(_(u"Activité sélectionnée"))
         self.bouton_activites.SetToolTipString(_(u"Cliquez ici pour sélectionner une activité"))
         self.ctrl_groupes.SetToolTipString(_(u"Sélectionnez un groupe"))
-        self.ctrl_parti.SetToolTipString(_(u"Cochez cette case si l'individu ne fréquente plus cette activité"))
+        self.ctrl_check_depart.SetToolTipString(_(u"Cochez cette case si l'individu ne fréquente plus cette activité"))
+        self.ctrl_date_depart.SetToolTipString(_(u"Saisissez la date de départ de l'activité (le dernier jour)"))
+        self.bouton_remboursement.SetToolTipString(_(u"Cliquez ici pour générer un remboursement lié au départ de l'activité"))
         self.ctrl_categories.SetToolTipString(_(u"Sélectionnez une catégorie de tarif"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.SetMinSize((500, 600))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=10, hgap=10)
@@ -259,7 +273,6 @@ class Dialog(wx.Dialog):
         # Famille + Parti
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=30)
         grid_sizer_options.Add(self.ctrl_famille, 1, wx.EXPAND, 0)
-        grid_sizer_options.Add(self.ctrl_parti, 0, wx.EXPAND, 0)
         grid_sizer_options.AddGrowableCol(0)
         grid_sizer_base.Add(grid_sizer_options, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -282,6 +295,15 @@ class Dialog(wx.Dialog):
         staticbox_categorie.Add(self.ctrl_categories, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_categorie, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
+        # Départ
+        staticbox_depart = wx.StaticBoxSizer(self.staticbox_depart_staticbox, wx.VERTICAL)
+        grid_sizer_depart = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
+        grid_sizer_depart.Add(self.ctrl_check_depart, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_depart.Add(self.ctrl_date_depart, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_depart.Add(self.bouton_remboursement, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        staticbox_depart.Add(grid_sizer_depart, 1, wx.ALL | wx.EXPAND, 5)
+        grid_sizer_base.Add(staticbox_depart, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
         # Boutons
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
@@ -297,6 +319,7 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableRow(4)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        self.SetMinSize(self.GetSize())
         self.CenterOnScreen()
     
     def OnBoutonAide(self, event):
@@ -307,35 +330,36 @@ class Dialog(wx.Dialog):
         self.ctrl_famille.SetID(self.IDfamille)
 
         DB = GestionDB.DB()
-        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, date_desinscription
+        req = """SELECT IDactivite, IDgroupe, IDcategorie_tarif, date_inscription, date_desinscription
         FROM inscriptions
         WHERE IDinscription=%d;""" % self.IDinscription
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) > 0 :
-            IDactivite, IDgroupe, IDcategorie_tarif, date_desinscription = listeDonnees[0]
+            IDactivite, IDgroupe, IDcategorie_tarif, date_inscription, date_desinscription = listeDonnees[0]
             self.SetIDactivite(IDactivite)
             self.ctrl_groupes.SetID(IDgroupe)
             self.IDgroupe = IDgroupe
             self.ctrl_categories.SetID(IDcategorie_tarif)
-            # Cocher la checkbox 'Est parti' si la date de desinscription est anterieure à la date du jour
-            self.date_desinscription = date_desinscription
-            self.ctrl_parti.SetValue(bool(date_desinscription))
+            self.date_inscription = UTILS_Dates.DateEngEnDateDD(date_inscription)
+            if date_desinscription != None :
+                date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
+                self.ctrl_check_depart.SetValue(True)
+                self.ctrl_date_depart.SetDate(date_desinscription)
 
-    def OnCheckboxParti(self, event):
+    def OnCheckDepart(self, event=None):
         """Sur check demande informations complementaires, sur uncheck reinscription."""
-        if self.ctrl_parti.IsChecked():
-            # Demande informations complementaires
-            dlg = DLG_Inscription_desinscription.Dialog(
-                self, IDinscription=self.IDinscription, IDfamille=self.IDfamille,
-                IDindividu=self.IDindividu
-            )
-            dlg.ShowModal()
-            dlg.Destroy()
-        else:
-            # reinscription
-            self.date_desinscription = None
+        self.ctrl_date_depart.Enable(self.ctrl_check_depart.IsChecked())
+        self.bouton_remboursement.Enable(self.ctrl_check_depart.IsChecked())
+
+    def OnBoutonRemboursement(self, event=None):
+        """ Générer un remboursement """
+        dlg = DLG_Inscription_desinscription.Dialog(self)
+        dlg.SetDonnees(self.dict_remboursement)
+        if dlg.ShowModal() == wx.ID_OK :
+            self.dict_remboursement = dlg.GetDonnees()
+        dlg.Destroy()
 
     def OnBoutonOk(self, event):
         # Vérification des données saisies
@@ -360,12 +384,50 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return
 
+        DB = GestionDB.DB()
+
+        # Date départ
+        if self.ctrl_check_depart.IsChecked():
+            if self.ctrl_date_depart.GetDate() == None or self.ctrl_date_depart.Validation() == False :
+                dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de départ valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                DB.Close()
+                return
+
+            if self.date_inscription != None and self.ctrl_date_depart.GetDate() < self.date_inscription :
+                DB.Close()
+                dlg = wx.MessageDialog(self, _(u"La date de départ doit être supérieure ou égale à la date d'inscription !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return
+
+            date_desinscription = str(self.ctrl_date_depart.GetDate())
+
+            # Vérifie que il n'existe pas des conso après cette date
+            if self.IDinscription != None :
+                req = """SELECT IDconso, date
+                FROM consommations
+                WHERE IDinscription=%d AND date>'%s';""" % (self.IDinscription, date_desinscription)
+                DB.ExecuterReq(req)
+                listeConso = DB.ResultatReq()
+                if len(listeConso) > 0 :
+                    DB.Close()
+                    dlg = wx.MessageDialog(self, _(u"La date de départ est erronée car il existe %d consommations enregistrées après cette date !") % len(listeConso), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+
+        else :
+            date_desinscription = None
+
         # Verrouillage utilisateurs
         if self.mode == "saisie" :
             action = "creer"
         else :
             action = "modifier"
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("individus_inscriptions", action, IDactivite=IDactivite) == False :
+            DB.Close()
             return
 
         # Vérification du nombre d'inscrits max de l'activité
@@ -375,6 +437,7 @@ class Dialog(wx.Dialog):
                 reponse = dlg.ShowModal()
                 dlg.Destroy()
                 if reponse != wx.ID_YES :
+                    DB.Close()
                     return
 
         # Vérification du nombre d'inscrits max du groupe
@@ -386,6 +449,7 @@ class Dialog(wx.Dialog):
                         reponse = dlg.ShowModal()
                         dlg.Destroy()
                         if reponse != wx.ID_YES :
+                            DB.Close()
                             return
 
         # Récupération autres variables
@@ -394,9 +458,6 @@ class Dialog(wx.Dialog):
         nomGroupe = self.ctrl_groupes.GetStringSelection()
         nomCategorie = self.ctrl_categories.GetStringSelection()
         IDcompte_payeur = self.GetCompteFamille(IDfamille)
-        parti = self.ctrl_parti.GetValue()
-
-        DB = GestionDB.DB()
 
         # Vérifie que l'individu n'est pas déjà inscrit à cette activite
         if self.mode == "saisie" :
@@ -420,13 +481,29 @@ class Dialog(wx.Dialog):
             ("IDgroupe", IDgroupe),
             ("IDcategorie_tarif", IDcategorie_tarif),
             ("IDcompte_payeur", IDcompte_payeur),
-            ("parti", parti),
+            ("date_desinscription", date_desinscription),
             ]
         if self.mode == "saisie" :
             listeDonnees.append(("date_inscription", str(datetime.date.today())))
             self.IDinscription = DB.ReqInsert("inscriptions", listeDonnees)
         else :
             DB.ReqMAJ("inscriptions", listeDonnees, "IDinscription", self.IDinscription)
+
+        # Création d'une prestation négative pour la famille correspondant au remboursement
+        if self.dict_remboursement != None:
+            listeDonnees = [
+                ("IDcompte_payeur", IDcompte_payeur),
+                ("date", str(datetime.date.today())),
+                ("label", self.dict_remboursement["motif"]),
+                ("montant_initial", -self.dict_remboursement["montant"]),
+                ("montant", -self.dict_remboursement["montant"]),
+                ("IDactivite", IDactivite),
+                ("IDfamille", IDfamille),
+                ("IDindividu", self.IDindividu),
+                ("date_valeur", str(datetime.date.today())),
+            ]
+            DB.ReqInsert("prestations", listeDonnees)
+
         DB.Close()
 
         # Mémorise l'action dans l'historique
