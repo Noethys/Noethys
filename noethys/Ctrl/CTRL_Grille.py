@@ -393,9 +393,16 @@ class Ligne():
                             if self.grid.dictInfosInscriptions.has_key(IDindividu) :
                                 if self.grid.dictInfosInscriptions[IDindividu].has_key(IDactivite) :
                                     IDfamille = self.grid.dictInfosInscriptions[IDindividu][IDactivite]["IDfamille"]
-                        
-                        # S'il y a des conso rattachées à une autre famille, on verrouille la ligne
+
+                        # Verrouillage si parti de l'activité
                         verrouillage = 0
+                        if self.grid.dictInfosInscriptions.has_key(IDindividu) :
+                            if self.grid.dictInfosInscriptions[IDindividu].has_key(IDactivite) :
+                                date_desinscription = self.grid.dictInfosInscriptions[IDindividu][IDactivite]["date_desinscription"]
+                                if date_desinscription != None and self.date > date_desinscription :
+                                    verrouillage = 1
+
+                        # S'il y a des conso rattachées à une autre famille, on verrouille la ligne
                         if IDfamilleConso != None :
                             if IDfamille != IDfamilleConso :
                                 verrouillage = 1
@@ -1064,16 +1071,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictIndividus[IDindividu] = dictTemp 
             
             # Recherche des inscriptions pour chaque membre de la famille
-            req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom
+            req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_desinscription
             FROM inscriptions 
             LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
             WHERE IDfamille = %d ;""" % self.IDfamille
             self.DB.ExecuterReq(req)
             listeInscriptions = self.DB.ResultatReq()
-            for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions :
+            for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif, date_desinscription in listeInscriptions :
+                date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
                 dictTemp = { 
                     "IDinscription" : IDinscription, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, 
                     "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorie_tarif" : nomCategorie_tarif,
+                    "date_desinscription" : date_desinscription,
                     }
                 dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
         
@@ -1105,16 +1114,18 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 dictIndividus[IDindividu] = dictTemp 
             
             # Recherche des inscriptions
-            req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom
+            req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_desinscription
             FROM inscriptions 
             LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
             ;"""
             self.DB.ExecuterReq(req)
             listeInscriptions = self.DB.ResultatReq()
             for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions :
+                date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
                 dictTemp = { 
                     "IDinscription" : IDinscription, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, 
                     "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorie_tarif" : nomCategorie_tarif,
+                    "date_desinscription": date_desinscription,
                     }
                 if dictIndividus.has_key(IDindividu) :
                     dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
@@ -1368,19 +1379,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeIndividus) == 1 : condition = "(%d)" % listeIndividus[0]
         else : condition = str(tuple(listeIndividus))
         if self.IDfamille != None :
-            req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur
+            req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur, date_desinscription
             FROM inscriptions
             LEFT JOIN categories_tarifs ON inscriptions.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
             WHERE IDindividu IN %s AND IDfamille=%d;""" % (condition, self.IDfamille) 
         else:
-            req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur
+            req = """SELECT IDinscription, IDindividu, IDfamille, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom, date_inscription, IDcompte_payeur, date_desinscription
             FROM inscriptions
             LEFT JOIN categories_tarifs ON inscriptions.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
             WHERE IDindividu IN %s;""" % condition
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
-        for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, nom_categorie_tarif, date_inscription, IDcompte_payeur in listeDonnees :
-            dictInfos = { "IDinscription" : IDinscription, "IDfamille" : IDfamille, "IDgroupe" : IDgroupe, "IDcategorie_tarif" : IDcategorie_tarif, "nom_categorie_tarif" : nom_categorie_tarif, "date_inscription" : date_inscription, "IDcompte_payeur" : IDcompte_payeur }
+        for IDinscription, IDindividu, IDfamille, IDactivite, IDgroupe, IDcategorie_tarif, nom_categorie_tarif, date_inscription, IDcompte_payeur, date_desinscription in listeDonnees :
+            dictInfos = { "IDinscription" : IDinscription, "IDfamille" : IDfamille, "IDgroupe" : IDgroupe, "IDcategorie_tarif" : IDcategorie_tarif, "nom_categorie_tarif" : nom_categorie_tarif, "date_inscription" : date_inscription, "IDcompte_payeur" : IDcompte_payeur, "date_desinscription" : UTILS_Dates.DateEngEnDateDD(date_desinscription)}
             if dictInfosInscriptions.has_key(IDindividu) == False :
                 dictInfosInscriptions[IDindividu] = {}
             if dictInfosInscriptions[IDindividu].has_key(IDactivite) == False :
