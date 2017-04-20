@@ -1120,7 +1120,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             ;"""
             self.DB.ExecuterReq(req)
             listeInscriptions = self.DB.ResultatReq()
-            for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions :
+            for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif, date_desinscription in listeInscriptions :
                 date_desinscription = UTILS_Dates.DateEngEnDateDD(date_desinscription)
                 dictTemp = { 
                     "IDinscription" : IDinscription, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, 
