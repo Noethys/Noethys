@@ -28,8 +28,6 @@ class Dialog(wx.Dialog):
         self.parent = parent
 
         self.staticbox_remboursement_staticbox = wx.StaticBox(self, -1, _(u"Remboursement"))
-        self.ctrl_remboursement = wx.CheckBox(self, -1, _(u"Générer un remboursement"))
-        self.ctrl_remboursement.SetValue(0)
 
         self.label_motif = wx.StaticText(self, label=_(u"Motif du départ :"))
         self.ctrl_motif = wx.TextCtrl(self, -1, u"")
@@ -48,14 +46,10 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckboxJustification, self.ctrl_remboursement)
         self.ctrl_nb_seances.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocusSeances)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
-
-        # Init
-        self.OnCheckboxJustification(None)
 
     def __set_properties(self):
         self.SetTitle(_(u"Générer un remboursement"))
@@ -64,11 +58,10 @@ class Dialog(wx.Dialog):
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
+        grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
         # Remboursement
         staticbox_remboursement = wx.StaticBoxSizer(self.staticbox_remboursement_staticbox, wx.VERTICAL)
-        staticbox_remboursement.Add(self.ctrl_remboursement, 0, wx.ALL, 10)
 
         grid_sizer_remboursement = wx.FlexGridSizer(rows=5, cols=2, vgap=10, hgap=10)
         grid_sizer_remboursement.Add(self.label_motif, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -101,17 +94,6 @@ class Dialog(wx.Dialog):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("")
 
-    def OnCheckboxJustification(self, event):
-        """Sur check, active les champs de justification, sur uncheck les desactive"""
-        self.label_motif.Enable(self.ctrl_remboursement.IsChecked())
-        self.ctrl_motif.Enable(self.ctrl_remboursement.IsChecked())
-        self.label_total.Enable(self.ctrl_remboursement.IsChecked())
-        self.ctrl_total.Enable(self.ctrl_remboursement.IsChecked())
-        self.label_nb_seances.Enable(self.ctrl_remboursement.IsChecked())
-        self.ctrl_nb_seances.Enable(self.ctrl_remboursement.IsChecked())
-        self.label_prix_seance.Enable(self.ctrl_remboursement.IsChecked())
-        self.ctrl_prix_seance.Enable(self.ctrl_remboursement.IsChecked())
-
     def OnKillFocusSeances(self, event):
         """Le nombre de séances doit être un entier"""
         try:
@@ -124,19 +106,18 @@ class Dialog(wx.Dialog):
         self.Destroy()
 
     def OnBoutonOk(self, event):
-        if self.ctrl_remboursement.IsChecked():
-            if (self.ctrl_motif.IsEmpty() or self.ctrl_total.IsEmpty() or self.ctrl_nb_seances.IsEmpty() or self.ctrl_prix_seance.IsEmpty()):
-                dlg = wx.MessageDialog(self, _(u"Tous les champs doivent être remplis !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-                dlg.ShowModal()
-                dlg.Destroy()
-                return False
-
-            montant = self.GetMontant()
-            dlg = wx.MessageDialog(None, _(u"Confirmez-vous la génération d'un remboursement de %.2f %s ?") % (montant, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
-            reponse = dlg.ShowModal()
+        if (self.ctrl_motif.IsEmpty() or self.ctrl_total.IsEmpty() or self.ctrl_nb_seances.IsEmpty() or self.ctrl_prix_seance.IsEmpty()):
+            dlg = wx.MessageDialog(self, _(u"Tous les champs doivent être remplis !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
             dlg.Destroy()
-            if reponse != wx.ID_YES :
-                return False
+            return False
+
+        montant = self.GetMontant()
+        dlg = wx.MessageDialog(None, _(u"Confirmez-vous la génération d'un remboursement de %.2f %s ?") % (montant, SYMBOLE), _(u"Confirmation"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
+        reponse = dlg.ShowModal()
+        dlg.Destroy()
+        if reponse != wx.ID_YES :
+            return False
 
         # Fermeture de la fenêtre
         self.EndModal(wx.ID_OK)
@@ -146,16 +127,13 @@ class Dialog(wx.Dialog):
         return montant
 
     def GetDonnees(self):
-        if self.ctrl_remboursement.IsChecked():
-            return {
-                "motif" : self.ctrl_motif.GetValue(),
-                "total" : self.ctrl_total.GetMontant(),
-                "nb_seances" : self.ctrl_nb_seances.GetValue(),
-                "prix_seance" : self.ctrl_prix_seance.GetMontant(),
-                "montant": self.GetMontant(),
-                }
-        else :
-            return None
+        return {
+            "motif" : self.ctrl_motif.GetValue(),
+            "total" : self.ctrl_total.GetMontant(),
+            "nb_seances" : self.ctrl_nb_seances.GetValue(),
+            "prix_seance" : self.ctrl_prix_seance.GetMontant(),
+            "montant": self.GetMontant(),
+            }
 
     def SetDonnees(self, dict_remboursement={}):
         if dict_remboursement != None :
