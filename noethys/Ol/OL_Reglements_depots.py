@@ -91,11 +91,12 @@ class ListView(FastObjectListView):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        track = self.Selection()[0]
-        if self.inclus == True :
-            track.inclus = False
-        else:
-            track.inclus = True
+        tracks = self.Selection()
+        for track in tracks:
+            if self.inclus == True :
+                track.inclus = False
+            else:
+                track.inclus = True
         index = self.GetIndexOf(track)
         if index == len(self.donnees)-1 :
             if len(self.donnees) > 1 :
@@ -104,7 +105,7 @@ class ListView(FastObjectListView):
                 nextTrack = None
         else:
             nextTrack = self.GetObjectAt(index+1)
-        self.GetGrandParent().MAJListes(self.tracks, selectionTrack=track, nextTrack=nextTrack)
+        self.GetGrandParent().MAJListes(self.tracks, selectionTrack=tracks, nextTrack=nextTrack)
         
     def InitModel(self, tracks=None, IDcompte=None, IDmode=None):
         if tracks != None :
@@ -332,7 +333,7 @@ class ListView(FastObjectListView):
         self.InitObjectListView()
         # Sélection d'un item
         if selectionTrack != None :
-            self.SelectObject(selectionTrack, deselectOthers=True, ensureVisible=True)
+            self.SelectObjects(selectionTrack, deselectOthers=True)
             if self.GetSelectedObject() == None :
                 self.SelectObject(nextTrack, deselectOthers=True, ensureVisible=True)
                 
