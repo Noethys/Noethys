@@ -329,6 +329,9 @@ class ListView(FastObjectListView):
         self.SetObjects(self.donnees)
        
     def MAJ(self, tracks=None, ID=None, selectionTrack=None, nextTrack=None, IDcompte=None, IDmode=None):
+        # Save sorting
+        self.numColonneTri = self.sortColumnIndex
+        self.ordreAscendant = self.sortAscending
         self.InitModel(tracks, IDcompte, IDmode)
         self.InitObjectListView()
         # Sélection d'un item
