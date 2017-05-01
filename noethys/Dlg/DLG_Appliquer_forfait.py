@@ -56,7 +56,42 @@ class Forfaits():
         self.listeIndividus = listeIndividus
         self.saisieManuelle = saisieManuelle
         self.saisieAuto = saisieAuto
-    
+        self.listeVacances = self.GetListeVacances()
+
+    def GetListeVacances(self):
+        DB = GestionDB.DB()
+        req = """SELECT date_debut, date_fin, nom, annee
+        FROM vacances 
+        ORDER BY date_debut; """
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        return listeDonnees
+
+    def EstEnVacances(self, dateDD):
+        date = str(dateDD)
+        for valeurs in self.listeVacances :
+            date_debut = valeurs[0]
+            date_fin = valeurs[1]
+            if date >= date_debut and date <= date_fin :
+                return True
+        return False
+
+    def VerificationPeriodes(self, jours_scolaires, jours_vacances, date):
+        """ Vérifier si jour scolaire ou vacances """
+        valide = False
+        # Jours scolaires
+        if jours_scolaires != None :
+            if self.EstEnVacances(date) == False :
+                if date.weekday() in jours_scolaires :
+                    valide = True
+        # Jours vacances
+        if jours_vacances != None :
+            if self.EstEnVacances(date) == True :
+                if date.weekday() in jours_vacances :
+                    valide = True
+        return valide
+
     def GetForfaits(self):
         """ Permet d'obtenir la liste des forfaits disponibles """
         DB = GestionDB.DB()
@@ -403,8 +438,13 @@ class Forfaits():
                                         listeUnitesUtilisees = []
                                         for date, IDunite, IDgroupe in combi :
                                             listeUnitesUtilisees.append(IDunite)
-                                        
-                                        if self.IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
+
+                                        # Vérifie si date est dans jours scolaires ou de vacances
+                                        date_ok = True
+                                        if dictAide["jours_scolaires"] != None and dictAide["jours_scolaires"] != None:
+                                            date_ok = self.VerificationPeriodes(dictAide["jours_scolaires"], dictAide["jours_vacances"], date)
+
+                                        if date_ok == True and self.IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
                                             # Une aide valide a été trouvée...
                                             listeCombiValides = []
                                             
@@ -618,7 +658,7 @@ class Forfaits():
         
         # Importation des aides
         DB = GestionDB.DB()
-        req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max
+        req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max, jours_scolaires, jours_vacances
         FROM aides
         LEFT JOIN caisses ON caisses.IDcaisse = aides.IDcaisse
         WHERE IDfamille=%d
@@ -629,13 +669,15 @@ class Forfaits():
             DB.Close() 
             return dictAides
         listeIDaides = []
-        for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max in listeAides :
+        for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max, jours_scolaires, jours_vacances in listeAides :
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
+            jours_scolaires = ConvertStrToListe(jours_scolaires)
+            jours_vacances = ConvertStrToListe(jours_vacances)
             dictTemp = {
                 "IDaide" : IDaide, "IDfamille" : IDfamille, "IDactivite" : IDactivite, "nomAide" : nomAide, "date_debut" : date_debut, "date_fin" : date_fin, 
-                "IDcaisse" : IDcaisse, "nomCaisse" : nomCaisse, "montant_max" : montant_max, "nbre_dates_max" : nbre_dates_max, 
-                "beneficiaires" : [], "montants" : {} }
+                "IDcaisse" : IDcaisse, "nomCaisse" : nomCaisse, "montant_max" : montant_max, "nbre_dates_max" : nbre_dates_max, "jours_scolaires" : jours_scolaires,
+                "jours_vacances" : jours_vacances, "beneficiaires" : [], "montants" : {} }
             dictAides[IDaide] = dictTemp
             listeIDaides.append(IDaide)
         

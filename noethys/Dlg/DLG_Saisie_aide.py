@@ -17,6 +17,7 @@ import GestionDB
 
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
+from Dlg.DLG_Saisie_lot_conso import CTRL_Jours
 from Ol import OL_Aides_montants
 
 
@@ -46,7 +47,7 @@ class CTRL_Activite(wx.Choice):
             FROM inscriptions
             LEFT JOIN activites ON activites.IDactivite = inscriptions.IDactivite
             GROUP BY inscriptions.IDactivite
-            ORDER BY activites.nom;"""
+            ORDER BY activites.date_fin DESC;"""
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -88,8 +89,8 @@ class CTRL_Caisse(wx.Choice):
     def GetListeDonnees(self):
         listeItems = []
         self.dictDonnees = {}
-        self.dictDonnees[0] = { "ID" : None, "nom " : _(u"---------------- Aucune caisse ----------------") }
-        listeItems.append(_(u"---------------- Aucune caisse ---------------"))
+        self.dictDonnees[0] = { "ID" : None, "nom " : _(u"- Aucune caisse -") }
+        listeItems.append(_(u"- Aucune caisse -"))
         db = GestionDB.DB()
         req = """SELECT IDcaisse, nom
         FROM caisses
@@ -135,13 +136,19 @@ class CTRL_Beneficiaires(wx.CheckListBox):
         else:
             IDactivite = self.IDactivite
         db = GestionDB.DB()
+        # req = """SELECT rattachements.IDindividu, individus.nom, individus.prenom
+        # FROM rattachements
+        # LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
+        # LEFT JOIN inscriptions ON inscriptions.IDindividu = rattachements.IDindividu
+        # WHERE rattachements.IDfamille=%d AND IDcategorie IN (1, 2)
+        # AND inscriptions.IDactivite=%d
+        # ORDER BY individus.nom, individus.prenom;""" % (self.IDfamille, IDactivite)
         req = """SELECT rattachements.IDindividu, individus.nom, individus.prenom
         FROM rattachements
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-        LEFT JOIN inscriptions ON inscriptions.IDindividu = rattachements.IDindividu
         WHERE rattachements.IDfamille=%d AND IDcategorie IN (1, 2)
-        AND inscriptions.IDactivite=%d
-        ORDER BY individus.nom, individus.prenom;""" % (self.IDfamille, IDactivite)
+        ORDER BY individus.nom, individus.prenom;""" % self.IDfamille
+
         db.ExecuterReq(req)
         listeDonnees = db.ResultatReq()
         db.Close()
@@ -201,39 +208,50 @@ class Dialog(wx.Dialog):
         self.listeInitialeUnites = []
                 
         # Nom
-        self.staticbox_nom_staticbox = wx.StaticBox(self, -1, _(u"Nom de l'aide"))
-        self.label_nom = wx.StaticText(self, -1, _(u"Nom :"))
+        self.label_nom = wx.StaticText(self, -1, _(u"Nom de l'aide :"))
         self.ctrl_nom = wx.TextCtrl(self, -1, u"")
-        
+
+        # Généralités
+        self.staticbox_generalites_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
+
         # Activité
-        self.staticbox_activite_staticbox = wx.StaticBox(self, -1, _(u"Activité"))
+        self.label_activite = wx.StaticText(self, -1, _(u"Activité associée :"))
         self.ctrl_activite = CTRL_Activite(self, IDfamille=self.IDfamille)
-        
+
         # Caisse
-        self.staticbox_caisse_staticbox = wx.StaticBox(self, -1, _(u"Caisse"))
+        self.label_caisse = wx.StaticText(self, -1, _(u"Caisse associée :"))
         self.ctrl_caisse = CTRL_Caisse(self, IDfamille=self.IDfamille)
-        
+
         # Période
-        self.staticbox_periode_staticbox = wx.StaticBox(self, -1, _(u"Période de validité"))
-        self.label_date_debut = wx.StaticText(self, -1, u"Du")
+        self.label_periode = wx.StaticText(self, -1, _(u"Période de validité :"))
         self.ctrl_date_debut = CTRL_Saisie_date.Date2(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
-        
+
+        # Jours
+        self.label_scolaires = wx.StaticText(self, -1, _(u"Jours scolaires :"))
+        self.ctrl_scolaires = CTRL_Jours(self, "scolaires")
+        self.label_vacances = wx.StaticText(self, -1, _(u"Jours de vacances :"))
+        self.ctrl_vacances = CTRL_Jours(self, "vacances")
+        self.ctrl_scolaires.SetJoursStr("0;1;2;3;4;5;6")
+        self.ctrl_vacances.SetJoursStr("0;1;2;3;4;5;6")
+
+        # Plafonds
+        self.label_plafonds = wx.StaticText(self, -1, _(u"Plafonds :"))
+        self.checkbox_plafond_montant = wx.CheckBox(self, -1, _(u"Montant :"))
+        self.ctrl_plafond_montant = CTRL_Saisie_euros.CTRL(self, size=(65, -1))
+        self.checkbox_plafond_quantite = wx.CheckBox(self, -1, _(u"Quantité :"))
+        self.ctrl_plafond_quantite = wx.SpinCtrl(self, -1, u"", min=0, max=1000, size=(60, -1))
+
         # Bénéficiaires
         self.staticbox_beneficiaires_staticbox = wx.StaticBox(self, -1, _(u"Bénéficiaires"))
         self.ctrl_beneficiaires = CTRL_Beneficiaires(self, IDfamille=self.IDfamille, IDactivite=None)
-        
-        # Plafonds
-        self.staticbox_plafonds_staticbox = wx.StaticBox(self, -1, _(u"Plafonds"))
-        self.checkbox_montant_max = wx.CheckBox(self, -1, _(u"Montant max. :"))
-        self.ctrl_montant_max = CTRL_Saisie_euros.CTRL(self, size=(65, -1))
-        self.checkbox_dates_max = wx.CheckBox(self, -1, _(u"Nbre dates max. :"))
-        self.ctrl_dates_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000, size=(60, -1))
-        
+        self.ctrl_beneficiaires.SetMinSize((50, 80))
+
         # Montants
         self.staticbox_montants_staticbox = wx.StaticBox(self, -1, _(u"Montants"))
         self.ctrl_montants = OL_Aides_montants.ListView(self, id=-1, name="OL_montants", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_montants.SetMinSize((50, 100))
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
@@ -247,8 +265,8 @@ class Dialog(wx.Dialog):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckbox_montant_max, self.checkbox_montant_max)
-        self.Bind(wx.EVT_CHECKBOX, self.OnCheckbox_dates_max, self.checkbox_dates_max)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckbox_plafond_montant, self.checkbox_plafond_montant)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckbox_plafond_quantite, self.checkbox_plafond_quantite)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouter, self.bouton_ajouter)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
@@ -272,8 +290,8 @@ class Dialog(wx.Dialog):
             self.ctrl_montants.MAJ() 
         
         # Init contrôles
-        self.OnCheckbox_montant_max(None)
-        self.OnCheckbox_dates_max(None) 
+        self.OnCheckbox_plafond_montant(None)
+        self.OnCheckbox_plafond_quantite(None) 
         
         if self.IDfamille == None :
             self.staticbox_beneficiaires_staticbox.Show(False)
@@ -282,16 +300,16 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'aide"))
+        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'aide (Exemple : 'Bons vacances CAF 2017')"))
         self.ctrl_activite.SetToolTipString(_(u"Sélectionnez ici l'activité"))
         self.ctrl_caisse.SetToolTipString(_(u"Sélectionnez ici une caisse"))
         self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
         self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
         self.ctrl_beneficiaires.SetToolTipString(_(u"Cochez ici les bénéficiaires de l'aide"))
-        self.checkbox_montant_max.SetToolTipString(_(u"Cliquez ici pour appliquer un montant maximal"))
-        self.ctrl_montant_max.SetToolTipString(_(u"Saisissez ici le montant maximal"))
-        self.checkbox_dates_max.SetToolTipString(_(u"Cliquez ici pour appliquer un nombre de dates maximal"))
-        self.ctrl_dates_max.SetToolTipString(_(u"Cliquez ici le nombre maximal de dates"))
+        self.checkbox_plafond_montant.SetToolTipString(_(u"Cliquez ici pour appliquer un montant maximal"))
+        self.ctrl_plafond_montant.SetToolTipString(_(u"Saisissez ici le montant maximal"))
+        self.checkbox_plafond_quantite.SetToolTipString(_(u"Cliquez ici pour appliquer un nombre de dates maximal"))
+        self.ctrl_plafond_quantite.SetToolTipString(_(u"Cliquez ici le nombre maximal de dates"))
         self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un montant"))
         self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le montant sélectionné dans la liste"))
         self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le montant sélectionné dans la liste"))
@@ -299,64 +317,63 @@ class Dialog(wx.Dialog):
         self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer un modèle d'aide prédéfini"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
-        self.SetMinSize((600, 550))
 
     def __do_layout(self):
-        grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
-        staticbox_montants = wx.StaticBoxSizer(self.staticbox_montants_staticbox, wx.VERTICAL)
-        grid_sizer_montants = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
-        grid_sizer_boutons_montants = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
-        grid_sizer_param = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_droit = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        staticbox_plafonds = wx.StaticBoxSizer(self.staticbox_plafonds_staticbox, wx.VERTICAL)
-        grid_sizer_plafonds = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
-        grid_sizer_dates_max = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
-        grid_sizer_montant_max = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
-        staticbox_beneficiaires = wx.StaticBoxSizer(self.staticbox_beneficiaires_staticbox, wx.VERTICAL)
-        grid_sizer_gauche = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        grid_sizer_gauche2 = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
-        staticbox_periode = wx.StaticBoxSizer(self.staticbox_periode_staticbox, wx.VERTICAL)
+        grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+
+        # Généralites
+        staticbox_generalites = wx.StaticBoxSizer(self.staticbox_generalites_staticbox, wx.VERTICAL)
+        grid_sizer_generalites = wx.FlexGridSizer(rows=7, cols=2, vgap=10, hgap=10)
+
+        # Nom de l'aide
+        grid_sizer_generalites.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_nom, 1, wx.EXPAND, 0)
+
+        # Activité
+        grid_sizer_generalites.Add(self.label_activite, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_activite, 1, wx.EXPAND, 0)
+
+        # Caisse
+        grid_sizer_generalites.Add(self.label_caisse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_caisse, 1, wx.EXPAND, 0)
+
+        # Période
+        grid_sizer_generalites.Add(self.label_periode, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
-        staticbox_caisse = wx.StaticBoxSizer(self.staticbox_caisse_staticbox, wx.VERTICAL)
-        staticbox_activite = wx.StaticBoxSizer(self.staticbox_activite_staticbox, wx.VERTICAL)
-        staticbox_nom = wx.StaticBoxSizer(self.staticbox_nom_staticbox, wx.VERTICAL)
-        grid_sizer_nom = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_nom.Add(self.label_nom, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_nom.Add(self.ctrl_nom, 0, wx.EXPAND, 0)
-        grid_sizer_nom.AddGrowableCol(1)
-        staticbox_nom.Add(grid_sizer_nom, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_base.Add(staticbox_nom, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
-        staticbox_activite.Add(self.ctrl_activite, 0, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_gauche.Add(staticbox_activite, 1, wx.EXPAND, 0)
-        staticbox_caisse.Add(self.ctrl_caisse, 0, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_gauche2.Add(staticbox_caisse, 1, wx.EXPAND, 0)
-        grid_sizer_periode.Add(self.label_date_debut, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode.Add(self.ctrl_date_debut, 0, 0, 0)
         grid_sizer_periode.Add(self.label_date_fin, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_periode.Add(self.ctrl_date_fin, 0, 0, 0)
-        staticbox_periode.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_gauche2.Add(staticbox_periode, 1, wx.EXPAND, 0)
-        grid_sizer_gauche2.AddGrowableCol(0)
-        grid_sizer_gauche.Add(grid_sizer_gauche2, 1, wx.EXPAND, 0)
-        grid_sizer_gauche.AddGrowableCol(0)
-        grid_sizer_param.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
+        grid_sizer_generalites.Add(grid_sizer_periode, 1, wx.ALL|wx.EXPAND, 0)
+
+        # Jours
+        grid_sizer_generalites.Add(self.label_scolaires, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_scolaires, 0, 0, 0)
+        grid_sizer_generalites.Add(self.label_vacances, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_generalites.Add(self.ctrl_vacances, 0, 0, 0)
+
+        # Plafonds
+        grid_sizer_generalites.Add(self.label_plafonds, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_plafonds = wx.FlexGridSizer(rows=1, cols=5, vgap=0, hgap=0)
+        grid_sizer_plafonds.Add(self.checkbox_plafond_montant, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_plafonds.Add(self.ctrl_plafond_montant, 0, 0, 0)
+        grid_sizer_plafonds.Add((20, 20), 0, 0, 0)
+        grid_sizer_plafonds.Add(self.checkbox_plafond_quantite, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_plafonds.Add(self.ctrl_plafond_quantite, 0, 0, 0)
+        grid_sizer_generalites.Add(grid_sizer_plafonds, 0, 0, 0)
+
+        grid_sizer_generalites.AddGrowableCol(1)
+        staticbox_generalites.Add(grid_sizer_generalites, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_base.Add(staticbox_generalites, 1, wx.LEFT|wx.RIGHT|wx.TOP|wx.EXPAND, 10)
+
+        # Bénéficiaires
+        staticbox_beneficiaires = wx.StaticBoxSizer(self.staticbox_beneficiaires_staticbox, wx.VERTICAL)
         staticbox_beneficiaires.Add(self.ctrl_beneficiaires, 0, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_droit.Add(staticbox_beneficiaires, 1, wx.EXPAND, 0)
-        grid_sizer_montant_max.Add(self.checkbox_montant_max, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_montant_max.Add(self.ctrl_montant_max, 0, 0, 0)
-        grid_sizer_plafonds.Add(grid_sizer_montant_max, 1, wx.EXPAND, 0)
-        grid_sizer_dates_max.Add(self.checkbox_dates_max, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_dates_max.Add(self.ctrl_dates_max, 0, 0, 0)
-        grid_sizer_plafonds.Add(grid_sizer_dates_max, 1, wx.EXPAND, 0)
-        grid_sizer_plafonds.AddGrowableCol(0)
-        staticbox_plafonds.Add(grid_sizer_plafonds, 1, wx.ALL|wx.EXPAND, 5)
-        grid_sizer_droit.Add(staticbox_plafonds, 1, wx.EXPAND, 0)
-        grid_sizer_droit.AddGrowableCol(0)
-        grid_sizer_param.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
-        grid_sizer_param.AddGrowableCol(0)
-        grid_sizer_param.AddGrowableCol(1)
-        grid_sizer_base.Add(grid_sizer_param, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+        grid_sizer_base.Add(staticbox_beneficiaires, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Montants
+        staticbox_montants = wx.StaticBoxSizer(self.staticbox_montants_staticbox, wx.VERTICAL)
+        grid_sizer_montants = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_boutons_montants = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
         grid_sizer_montants.Add(self.ctrl_montants, 1, wx.EXPAND, 0)
         grid_sizer_boutons_montants.Add(self.bouton_ajouter, 0, 0, 0)
         grid_sizer_boutons_montants.Add(self.bouton_modifier, 0, 0, 0)
@@ -366,6 +383,9 @@ class Dialog(wx.Dialog):
         grid_sizer_montants.AddGrowableCol(0)
         staticbox_montants.Add(grid_sizer_montants, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_base.Add(staticbox_montants, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=5, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add(self.bouton_importer, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
@@ -373,11 +393,13 @@ class Dialog(wx.Dialog):
         grid_sizer_boutons.Add(self.bouton_annuler, 0, 0, 0)
         grid_sizer_boutons.AddGrowableCol(2)
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.LEFT|wx.RIGHT|wx.BOTTOM|wx.EXPAND, 10)
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableRow(2)
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
+        self.SetMinSize(self.GetSize())
         self.CenterOnScreen() 
     
     def OnChoixActivite(self, event):
@@ -386,17 +408,17 @@ class Dialog(wx.Dialog):
             self.ctrl_beneficiaires.SetIDactivite(IDactivite)
         self.ctrl_montants.SetIDactivite(IDactivite)
         
-    def OnCheckbox_montant_max(self, event): 
-        if self.checkbox_montant_max.GetValue() == True :
-            self.ctrl_montant_max.Enable(True)
+    def OnCheckbox_plafond_montant(self, event): 
+        if self.checkbox_plafond_montant.GetValue() == True :
+            self.ctrl_plafond_montant.Enable(True)
         else:
-            self.ctrl_montant_max.Enable(False)
+            self.ctrl_plafond_montant.Enable(False)
 
-    def OnCheckbox_dates_max(self, event): 
-        if self.checkbox_dates_max.GetValue() == True :
-            self.ctrl_dates_max.Enable(True)
+    def OnCheckbox_plafond_quantite(self, event): 
+        if self.checkbox_plafond_quantite.GetValue() == True :
+            self.ctrl_plafond_quantite.Enable(True)
         else:
-            self.ctrl_dates_max.Enable(False)
+            self.ctrl_plafond_quantite.Enable(False)
 
     def OnBoutonAjouter(self, event): 
         self.ctrl_montants.Ajouter(None)
@@ -426,7 +448,7 @@ class Dialog(wx.Dialog):
     def Importation(self, modele=False):
         # Importation des données sur l'aide
         DB = GestionDB.DB()
-        req = """SELECT IDaide, IDfamille, IDactivite, nom, date_debut, date_fin, IDcaisse, montant_max, nbre_dates_max
+        req = """SELECT IDaide, IDfamille, IDactivite, nom, date_debut, date_fin, IDcaisse, montant_max, nbre_dates_max, jours_scolaires, jours_vacances
         FROM aides
         WHERE IDaide=%d
         ;""" % self.IDaide
@@ -435,7 +457,7 @@ class Dialog(wx.Dialog):
         if len(listeDonnees) == 0 : 
             DB.Close()
             return None
-        IDaide, IDfamille, IDactivite, nom, date_debut, date_fin, IDcaisse, montant_max, nbre_dates_max = listeDonnees[0]
+        IDaide, IDfamille, IDactivite, nom, date_debut, date_fin, IDcaisse, plafond_montant, nbre_plafond_quantite, jours_scolaires, jours_vacances = listeDonnees[0]
         
         # Activité
         self.ctrl_activite.SetID(IDactivite)
@@ -452,14 +474,18 @@ class Dialog(wx.Dialog):
         # Dates de validité
         self.ctrl_date_debut.SetDate(date_debut)
         self.ctrl_date_fin.SetDate(date_fin)
-        
+
+        # Jours
+        self.ctrl_scolaires.SetJoursStr(jours_scolaires)
+        self.ctrl_vacances.SetJoursStr(jours_vacances)
+
         # Plafonds
-        if montant_max != None :
-            self.ctrl_montant_max.SetMontant(montant_max)
-            self.checkbox_montant_max.SetValue(True)
-        if nbre_dates_max != None :
-            self.ctrl_dates_max.SetValue(nbre_dates_max)
-            self.checkbox_dates_max.SetValue(True) 
+        if plafond_montant != None :
+            self.ctrl_plafond_montant.SetMontant(plafond_montant)
+            self.checkbox_plafond_montant.SetValue(True)
+        if nbre_plafond_quantite != None :
+            self.ctrl_plafond_quantite.SetValue(nbre_plafond_quantite)
+            self.checkbox_plafond_quantite.SetValue(True) 
         
         # Bénéficiaires
         listeIDindividus = []
@@ -584,30 +610,34 @@ class Dialog(wx.Dialog):
             dlg.ShowModal()
             dlg.Destroy()
             return
-        
+
+        # Jours
+        jours_scolaires = self.ctrl_scolaires.GetJoursStr()
+        jours_vacances = self.ctrl_vacances.GetJoursStr()
+
         # Plafonds
-        if self.checkbox_montant_max.GetValue() == True :
-            montant_max = self.ctrl_montant_max.GetMontant()
-            if montant_max == None or montant_max == 0.0 :
+        if self.checkbox_plafond_montant.GetValue() == True :
+            plafond_montant = self.ctrl_plafond_montant.GetMontant()
+            if plafond_montant == None or plafond_montant == 0.0 :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un montant plafond !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         else:
-            montant_max = None
-        if self.checkbox_dates_max.GetValue() == True :
-            nbre_dates_max = int(self.ctrl_dates_max.GetValue())
-            if nbre_dates_max == 0 :
+            plafond_montant = None
+        if self.checkbox_plafond_quantite.GetValue() == True :
+            nbre_plafond_quantite = int(self.ctrl_plafond_quantite.GetValue())
+            if nbre_plafond_quantite == 0 :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un de nombre de dates maximal !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         else:
-            nbre_dates_max = None
+            nbre_plafond_quantite = None
             
-##        if nbre_dates_max != None :
-##            self.ctrl_dates_max.SetValue(str(nbre_dates_max))
-##            self.checkbox_dates_max.SetValue(True) 
+##        if nbre_plafond_quantite != None :
+##            self.ctrl_plafond_quantite.SetValue(str(nbre_plafond_quantite))
+##            self.checkbox_plafond_quantite.SetValue(True) 
         
         # Bénéficiaires
         listeBeneficiaires = self.ctrl_beneficiaires.GetIDcoches()
@@ -635,9 +665,11 @@ class Dialog(wx.Dialog):
             ("date_debut", date_debut),
             ("date_fin", date_fin),
             ("IDcaisse", IDcaisse),
-            ("montant_max", montant_max),
-            ("nbre_dates_max", nbre_dates_max),
-            ]
+            ("montant_max", plafond_montant),
+            ("nbre_dates_max", nbre_plafond_quantite),
+            ("jours_scolaires", jours_scolaires),
+            ("jours_vacances", jours_vacances),
+        ]
         
         if self.IDaide == None :
             self.IDaide = DB.ReqInsert("aides", listeDonnees)
@@ -748,7 +780,7 @@ class Dialog(wx.Dialog):
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDaide=1, IDfamille=None)
+    dialog_1 = Dialog(None, IDaide=1, IDfamille=205)
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()

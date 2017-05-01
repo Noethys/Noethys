@@ -2006,7 +2006,6 @@ class DB:
 
         # =============================================================
 
-
         versionFiltre = (1, 1, 9, 7)
         if versionFichier < versionFiltre:
             try:
@@ -2014,6 +2013,25 @@ class DB:
                 self.ReqMAJ("inscriptions", [("date_desinscription", datetime.date.today()), ], "parti", 1)
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+        # =============================================================
+
+        versionFiltre = (1, 1, 9, 8)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("aides", "jours_scolaires", "VARCHAR(50)")
+                self.AjoutChamp("aides", "jours_vacances", "VARCHAR(50)")
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
+
+
+
+
+
+
 
 
         return True

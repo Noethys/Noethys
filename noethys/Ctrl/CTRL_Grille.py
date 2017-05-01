@@ -1959,13 +1959,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         
         # Importation des aides
         if self.mode == "individu" :
-            req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max
+            req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max, jours_scolaires, jours_vacances
             FROM aides
             LEFT JOIN caisses ON caisses.IDcaisse = aides.IDcaisse
             WHERE IDfamille=%d
             ORDER BY date_debut;""" % self.IDfamille
         else:
-            req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max
+            req = """SELECT IDaide, IDfamille, IDactivite, aides.nom, date_debut, date_fin, caisses.IDcaisse, caisses.nom, montant_max, nbre_dates_max, jours_scolaires, jours_vacances
             FROM aides
             LEFT JOIN caisses ON caisses.IDcaisse = aides.IDcaisse
             ORDER BY date_debut;"""
@@ -1974,13 +1974,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         if len(listeAides) == 0 : 
             return dictAides
         listeIDaides = []
-        for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max in listeAides :
+        for IDaide, IDfamille, IDactivite, nomAide, date_debut, date_fin, IDcaisse, nomCaisse, montant_max, nbre_dates_max, jours_scolaires, jours_vacances in listeAides :
             date_debut = DateEngEnDateDD(date_debut)
             date_fin = DateEngEnDateDD(date_fin)
+            jours_scolaires = ConvertStrToListe(jours_scolaires)
+            jours_vacances = ConvertStrToListe(jours_vacances)
             dictTemp = {
                 "IDaide" : IDaide, "IDfamille" : IDfamille, "IDactivite" : IDactivite, "nomAide" : nomAide, "date_debut" : date_debut, "date_fin" : date_fin, 
-                "IDcaisse" : IDcaisse, "nomCaisse" : nomCaisse, "montant_max" : montant_max, "nbre_dates_max" : nbre_dates_max, 
-                "beneficiaires" : [], "montants" : {} }
+                "IDcaisse" : IDcaisse, "nomCaisse" : nomCaisse, "montant_max" : montant_max, "nbre_dates_max" : nbre_dates_max, "jours_scolaires" : jours_scolaires,
+                "jours_vacances" : jours_vacances, "beneficiaires" : [], "montants" : {} }
             dictAides[IDaide] = dictTemp
             listeIDaides.append(IDaide)
         
@@ -2586,8 +2588,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 IDactiviteTemp = dictAide["IDactivite"]
                 dateDebutTemp = dictAide["date_debut"]
                 dateFinTemp = dictAide["date_fin"]
-                
-                if IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
+
+                # Vérifie si date est dans jours scolaires ou de vacances
+                date_ok = True
+                if dictAide["jours_scolaires"] != None and dictAide["jours_scolaires"] != None :
+                    date_ok = self.VerificationPeriodes(dictAide["jours_scolaires"], dictAide["jours_vacances"], date)
+
+                if date_ok == True and IDfamille == IDfamilleTemp and date >= dateDebutTemp and date <= dateFinTemp and IDindividu in listeBeneficiaires and IDactiviteTemp == IDactivite :
                     # Une aide valide a été trouvée...
                     listeCombiValides = []
                     

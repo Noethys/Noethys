@@ -654,6 +654,8 @@ DB_DATA = {
                                     ("IDcaisse", "INTEGER", u"ID de la caisse"),
                                     ("montant_max", "FLOAT", u"Montant maximal de l'aide"),
                                     ("nbre_dates_max", "INTEGER", u"Nbre maximal de dates"),
+                                    ("jours_scolaires", "VARCHAR(50)", u"Jours scolaires"),
+                                    ("jours_vacances", "VARCHAR(50)", u"Jours de vacances"),
                                     ], # Aides journalières
 
     "aides_beneficiaires":[("IDaide_beneficiaire", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID bénéficiaire"),
