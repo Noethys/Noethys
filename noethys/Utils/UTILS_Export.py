@@ -144,7 +144,7 @@ def ExportTexte(listview=None, grid=None, titre=u"", listeColonnes=None, listeVa
     texte = texte[:-1] + "\n"
 
     for valeurs in listeValeurs :
-        if autoriseSelections == False or int(valeurs[0]) in listeSelections :
+        if autoriseSelections == False or valeurs[0] == "" or int(valeurs[0]) in listeSelections :
             for valeur in valeurs :
                 if valeur == None :
                     valeur = u""
