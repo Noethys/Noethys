@@ -16,6 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import datetime
 
 from Ol import OL_Reglements_depots
+from Dlg import DLG_Messagebox
 
 import GestionDB
 
@@ -143,7 +144,7 @@ class Dialog(wx.Dialog):
         # Reglements disponibles
         self.staticbox_reglements_disponibles_staticbox = wx.StaticBox(self, -1, _(u"Règlements disponibles"))
 ##        self.ctrl_reglements_disponibles = OL_Reglements_depots.ListView(self, id=-1, inclus=False, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "style": wx.LB_MULTIPLE}) 
+        self.listviewAvecFooter1 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : False, "sortable" : True, "style": wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_VRULES|wx.LB_MULTIPLE})
         self.ctrl_reglements_disponibles = self.listviewAvecFooter1.GetListview()
 
         # Commandes
@@ -155,7 +156,7 @@ class Dialog(wx.Dialog):
         # Reglements du dépôt
         self.staticbox_reglements_depot_staticbox = wx.StaticBox(self, -1, _(u"Règlements du dépôt"))
 ##        self.ctrl_reglements_depot = OL_Reglements_depots.ListView(self, id=-1, inclus=True, name="OL_reglements_depot", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.listviewAvecFooter2 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True, "style": wx.LB_MULTIPLE}) 
+        self.listviewAvecFooter2 = OL_Reglements_depots.ListviewAvecFooter(self, kwargs={"inclus" : True, "style": wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_VRULES|wx.LB_MULTIPLE})
         self.ctrl_reglements_depot = self.listviewAvecFooter2.GetListview()
 
         # Boutons
@@ -356,20 +357,18 @@ class Dialog(wx.Dialog):
                         tracks_differes.append(track)
 
         # Regroupement des messages
-        label = ""
-        for track in tracks_differes:
-            label += _(u"Règlement ID%d du %s payé en %s par %s\n") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur)
-        dlg = wx.MessageDialog(
-            self,
-            _(u"""Vous avez sélectionné des règlements alors qu'ils comportent une date d'encaissement différé supérieure à la date du jour :\n\n> %s\n\n
-                Souhaitez-vous tout de même les inclure dans ce dépôt ?""") % label, _(u"Attention !"),
-            wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION
-        )
-        reponse = dlg.ShowModal()
-        dlg.Destroy()
-        if reponse !=  wx.ID_YES :
-            return False
-        
+        if len(tracks_differes) > 0 :
+            detail = []
+            for track in tracks_differes:
+                detail.append(_(u"Règlement ID%d du %s payé en %s par %s") % (track.IDreglement, DateEngFr(str(track.date)), track.nom_mode, track.nom_payeur))
+            introduction = _(u"Vous avez sélectionné des règlements alors qu'ils comportent une date d'encaissement différé supérieure à la date du jour :")
+            conclusion = _(u"Souhaitez-vous tout de même les inclure dans ce dépôt ?")
+            dlg = DLG_Messagebox.Dialog(self, titre=_(u"Avertissement"), introduction=introduction, detail=u"\n".join(detail), conclusion=conclusion, icone=wx.ICON_EXCLAMATION, boutons=[_(u"Oui"), _(u"Non"), _(u"Annuler")])
+            reponse = dlg.ShowModal()
+            dlg.Destroy()
+            if reponse != 0 :
+                return False
+
         # Fermeture
         self.EndModal(wx.ID_OK)
 

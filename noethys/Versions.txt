@@ -1,9 +1,12 @@
 Version 1.1.9.8 (30/04/2017) :
 
-- Ajout d'une date de désinscription aux activités
+- Ajout d'une date de désinscription aux activités [Nicolas Pantel]
 - Ajout de la duplication des budgets
 - Ajout de la capacité max dans les forfaits crédit
 - Ajout de la condition jours de la semaine dans les aides journalières
+- Dépôts de règlements : Ajout de la sélection multiple des règlements pour ajout et suppression avec la flèche unique [Nicolas Pantel]
+- Dépôts de règlements : Ajout regroupement des messages d'avertissement pour les dates d'encaissement différées [Nicolas Pantel]
+- Dépôts de règlements : Correction conservation du tri des tableaux [Nicolas Pantel]
 
 Version 1.1.9.5 (07/04/2017) :
 

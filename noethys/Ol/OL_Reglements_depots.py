@@ -65,7 +65,7 @@ class ListView(FastObjectListView):
         self.tracks = []
         self.numColonneTri = 1
         self.ordreAscendant = True
-        
+
         self.tailleImagesMaxi = (132/4.0, 72/4.0) #(132/2.0, 72/2.0)
         self.tailleImagesMini = (16, 16)
         self.afficheImages = True
@@ -73,10 +73,21 @@ class ListView(FastObjectListView):
 
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
+
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
-        
+
+    def OnClickColonne(self, indexColonne=None, ascendant=True):
+        try :
+            self.GetGrandParent().ctrl_tri.Select(indexColonne)
+            if ascendant :
+                self.GetGrandParent().ctrl_ordre.Select(0)
+            else :
+                self.GetGrandParent().ctrl_ordre.Select(1)
+        except :
+            pass
+
     def OnItemActivated(self,event):
         if self.selectionPossible == True :
             self.Deplacer()
@@ -307,13 +318,13 @@ class ListView(FastObjectListView):
             ColumnDefn(_(u"Mode"), 'left', 120, "nom_mode", typeDonnee="texte", imageGetter=GetImageMode),
             ColumnDefn(_(u"Emetteur"), 'left', 145, "nom_emetteur", typeDonnee="texte", imageGetter=GetImageEmetteur),
             ColumnDefn(_(u"Numéro"), 'left', 60, "numero_piece", typeDonnee="texte"),
-            ColumnDefn(_(u"Quittancier"), 'left', 65, "numero_quittancier", typeDonnee="texte"),
             ColumnDefn(_(u"Payeur"), 'left', 160, "nom_payeur", typeDonnee="texte"),
             ColumnDefn(_(u"Montant"), 'right', 80, "montant", typeDonnee="montant", stringConverter=FormateMontant),
-            ColumnDefn(_(u"Avis"), 'left', 35, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
+            ColumnDefn(_(u"Avis"), 'left', 110, "avis_depot", typeDonnee="date", stringConverter=FormateDateCourt, imageGetter=GetImageAvisDepot),
             ColumnDefn(_(u"Compte"), 'left', 100, "nom_compte", typeDonnee="texte"),
             ColumnDefn(_(u"Différé"), 'left', 85, "date_differe", typeDonnee="date", stringConverter=FormateDateCourt), #, imageGetter=GetImageDiffere),
             ColumnDefn(_(u"Attente"), 'left', 65, "encaissement_attente", typeDonnee="texte", stringConverter=FormateAttente), #, imageGetter=GetImageAttente),
+            ColumnDefn(_(u"Quittancier"), 'left', 75, "numero_quittancier", typeDonnee="texte"),
             ColumnDefn(_(u"Observations"), 'left', 200, "observations", typeDonnee="texte"),
             ]
         
@@ -330,8 +341,6 @@ class ListView(FastObjectListView):
        
     def MAJ(self, tracks=None, ID=None, selectionTrack=None, nextTrack=None, IDcompte=None, IDmode=None):
         # Save sorting
-        self.numColonneTri = self.sortColumnIndex
-        self.ordreAscendant = self.sortAscending
         self.InitModel(tracks, IDcompte, IDmode)
         self.InitObjectListView()
         # Sélection d'un item

@@ -1612,6 +1612,9 @@ class ObjectListView(wx.ListCtrl):
         self.SortBy(evt.GetColumn(), self.sortAscending)
         self._FormatAllRows()
 
+        if hasattr(self, "OnClickColonne") :
+            self.OnClickColonne(indexColonne=evt.GetColumn(), ascendant=self.sortAscending)
+
 
     def _HandleColumnDragging(self, evt):
         """
