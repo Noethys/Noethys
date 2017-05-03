@@ -1522,7 +1522,7 @@ class Dialog(wx.Dialog):
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
             LEFT JOIN scolarite ON scolarite.IDindividu = individus.IDindividu AND scolarite.date_debut <= '%s' AND scolarite.date_fin >= '%s'
             WHERE inscriptions.IDactivite IN %s and (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')
-            ; """ % (min(listeDates), max(listeDates), conditionActivites, datetime.date.today())
+            ; """ % (min(listeDates), max(listeDates), conditionActivites, max(listeDates))
             DB.ExecuterReq(req)
             listeTousInscrits = DB.ResultatReq()
             for IDindividu, IDcivilite, nom, prenom, date_naiss, nomSieste, IDactivite, IDgroupe, IDfamille, IDclasse in listeTousInscrits :

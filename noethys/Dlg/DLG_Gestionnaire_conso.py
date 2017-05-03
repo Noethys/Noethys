@@ -399,7 +399,7 @@ class PanelGrille(wx.Panel):
         FROM inscriptions
         WHERE IDactivite IN %s %s and (date_desinscription IS NULL OR date_desinscription>='%s')
         GROUP BY IDindividu
-        ORDER BY IDindividu;""" % (conditionActivites, conditionGroupes, datetime.date.today())
+        ORDER BY IDindividu;""" % (conditionActivites, conditionGroupes, self.date)
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()      
         DB.Close() 
