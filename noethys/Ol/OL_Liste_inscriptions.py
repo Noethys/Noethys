@@ -161,7 +161,7 @@ class ListView(GroupListView):
         if self.partis == True : 
             conditionPartis = ""
         else : 
-            conditionPartis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s'" % datetime.date.today()
+            conditionPartis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today()
         
         # Infos sur tous les individus
         GetDictInfosIndividus()

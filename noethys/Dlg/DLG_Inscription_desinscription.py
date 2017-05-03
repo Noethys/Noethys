@@ -18,7 +18,7 @@ from Ctrl import CTRL_Bouton_image
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
 from Utils.UTILS_Traduction import _
-import UTILS_Config
+from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 

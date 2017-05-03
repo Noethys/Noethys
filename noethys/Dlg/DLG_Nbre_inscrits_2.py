@@ -162,9 +162,9 @@ class CTRL(HTL.HyperTreeList):
         condition_partis = ""
         if UTILS_Config.GetParametre("nbre_inscrits_parametre_partis", 1) == 1 :
             if condition == "" :
-                condition_partis = "WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s'" % datetime.date.today()
+                condition_partis = "WHERE (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today()
             else :
-                condition_partis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s'" % datetime.date.today()
+                condition_partis = "AND (inscriptions.date_desinscription IS NULL OR inscriptions.date_desinscription>='%s')" % datetime.date.today()
 
         req = """SELECT groupes.IDgroupe, groupes.IDactivite, groupes.nom, groupes.abrege, groupes.nbre_inscrits_max,
         COUNT(inscriptions.IDinscription) as nbre_inscriptions
