@@ -72,7 +72,7 @@ class Track(object):
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
 
         # Validité de la pièce
-        if (str(datetime.date.today()) <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= datetime.date.today())):
+        if (str(datetime.date.today()) <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= str(datetime.date.today()))):
             self.valide = True
         else:
             self.valide = False
