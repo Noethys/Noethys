@@ -18,8 +18,7 @@ import cStringIO
 import datetime
 import GestionDB
 from Utils import UTILS_Historique
-
-
+from Utils import UTILS_Dates
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, ListCtrlPrinter
 
@@ -58,9 +57,9 @@ class Track(object):
         self.nom_activite = donnees[7]
         self.nom_groupe = donnees[8]
         self.nom_categorie = donnees[9]
-        self.date_desinscription = donnees[10]
-        self.date_debut = donnees[11]
-        self.date_fin = donnees[12]
+        self.date_desinscription = UTILS_Dates.DateEngEnDateDD(donnees[10])
+        self.date_debut = UTILS_Dates.DateEngEnDateDD(donnees[11])
+        self.date_fin = UTILS_Dates.DateEngEnDateDD(donnees[12])
         self.psu_activation = donnees[13]
 ##        self.logo_activite = donnees[13]
 ##        self.bmp = self.GetImage()
@@ -72,7 +71,7 @@ class Track(object):
                 self.nomTitulaires = parent.dictFamillesRattachees[self.IDfamille]["nomsTitulaires"]
 
         # Validité de la pièce
-        if (str(datetime.date.today()) <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= str(datetime.date.today()))):
+        if (datetime.date.today() <= self.date_fin and (self.date_desinscription is None or self.date_desinscription >= datetime.date.today())):
             self.valide = True
         else:
             self.valide = False
