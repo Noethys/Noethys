@@ -64,6 +64,7 @@ class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Initialisation du listCtrl
         self.IDactivite = 0
+        self.action = None
         self.categories_tarifs = []
         FastObjectListView.__init__(self, *args, **kwds)
         # DictTitulaires
@@ -80,11 +81,40 @@ class ListView(FastObjectListView):
         
         # Récupération des données        
         DB = GestionDB.DB()
-        
+
+        liste_inscriptions = None
+        if self.action != None and self.action["action"] in ("modification", "suppression", "etat"):
+
+            # Formatage de la condition Unités
+            liste_unites = []
+            for unite in self.action["unites"] :
+                liste_unites.append(unite["IDunite"])
+            liste_unites.sort()
+
+            # Recherche des conso
+            req = """SELECT IDinscription, IDunite
+            FROM consommations 
+            WHERE IDactivite=%d AND date>='%s' AND date<='%s'
+            ;""" % (self.IDactivite, self.action["date_debut"], self.action["date_fin"])
+            DB.ExecuterReq(req)
+            listeConso = DB.ResultatReq()
+
+            dict_conso = {}
+            for IDinscription, IDunite in listeConso :
+                if dict_conso.has_key(IDinscription) == False :
+                    dict_conso[IDinscription] = []
+                dict_conso[IDinscription].append(IDunite)
+
+            liste_inscriptions = []
+            for IDinscription, unites in dict_conso.iteritems() :
+                unites.sort()
+                if unites == liste_unites :
+                    liste_inscriptions.append(IDinscription)
+
         # Liste des inscrits
         req = """
         SELECT 
-        individus.IDindividu, individus.nom, individus.prenom, inscriptions.IDfamille, inscriptions.IDcompte_payeur, inscriptions.IDcategorie_tarif, categories_tarifs.nom, inscriptions.IDgroupe, groupes.nom
+        inscriptions.IDinscription, individus.IDindividu, individus.nom, individus.prenom, inscriptions.IDfamille, inscriptions.IDcompte_payeur, inscriptions.IDcategorie_tarif, categories_tarifs.nom, inscriptions.IDgroupe, groupes.nom
         FROM inscriptions
         LEFT JOIN individus ON individus.IDindividu = inscriptions.IDindividu
         LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
@@ -97,16 +127,17 @@ class ListView(FastObjectListView):
         DB.Close() 
         
         # Parcours les inscrits
-        for IDindividu, nom, prenom, IDfamille, IDcompte_payeur, IDcategorie_tarif, nomCategorieTarif, IDgroupe, nomGroupe in listeInscrits :
-            
-            # Mémorisation
-            dictTemp = {
-                "IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur,
-                "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorieTarif" : nomCategorieTarif, "IDgroupe" : IDgroupe, "nomGroupe" : nomGroupe,
-                }
-            track = Track(self, dictTemp)
-            listeListeView.append(track)
-        
+        for IDinscription, IDindividu, nom, prenom, IDfamille, IDcompte_payeur, IDcategorie_tarif, nomCategorieTarif, IDgroupe, nomGroupe in listeInscrits :
+
+            if liste_inscriptions == None or IDinscription in liste_inscriptions :
+                # Mémorisation
+                dictTemp = {
+                    "IDinscription" : IDinscription, "IDindividu" : IDindividu, "nom" : nom, "prenom" : prenom, "IDfamille" : IDfamille, "IDcompte_payeur" : IDcompte_payeur,
+                    "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorieTarif" : nomCategorieTarif, "IDgroupe" : IDgroupe, "nomGroupe" : nomGroupe,
+                    }
+                track = Track(self, dictTemp)
+                listeListeView.append(track)
+
         return listeListeView
 
 
@@ -157,7 +188,10 @@ class ListView(FastObjectListView):
         if IDactivite == None :
             IDactivite = 0
         self.IDactivite = IDactivite
-        
+
+    def SetAction(self, action=None):
+        self.action = action
+
     def MAJ(self, ID=None):
         self.InitModel()
         self.InitObjectListView()
@@ -306,6 +340,7 @@ class MyFrame(wx.Frame):
         self.SetSizer(sizer_1)
         self.myOlv = ListView(panel, -1, style=wx.LC_REPORT|wx.SUNKEN_BORDER)
         self.myOlv.SetActivite(1)
+        self.myOlv.SetAction({"action" : "modification", "date_debut" : datetime.date(2017, 4, 5), "date_fin" : datetime.date(2017, 4, 5), "unites" : [{"IDunite" : 1}, {"IDunite" : 2}]})
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

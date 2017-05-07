@@ -232,7 +232,7 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_activite.SetToolTipString(_(u"Sélectionnez l'activité pour laquelle vous souhaitez recalculer les prestations"))
-        self.bouton_action.SetToolTipString(_(u"Cliquez ici pour sélectionner les paramètres des actionmmations"))
+        self.bouton_action.SetToolTipString(_(u"Cliquez ici pour sélectionner les paramètres des actions"))
         self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
         self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
         self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour annuler"))
@@ -322,6 +322,7 @@ class Dialog(wx.Dialog):
             
         # Actualisation de la liste des individus
         self.ctrl_individus.SetActivite(IDactivite)
+        self.ctrl_individus.SetAction(None)
         self.ctrl_individus.MAJ() 
     
     def OnBoutonAction(self, event):
@@ -329,8 +330,13 @@ class Dialog(wx.Dialog):
         dlg = DLG_Saisie_lot_conso.Dialog(self, listeIndividus=[], date_debut=None, date_fin=None, IDactivite=IDactivite, mode_parametres=True)
         dlg.SetValeursDefaut(self.dictAction)
         if dlg.ShowModal() == wx.ID_OK :
-            self.dictAction = dlg.GetResultats() 
+            self.dictAction = dlg.GetResultats()
             self.ctrl_action.SetValue(self.dictAction["description"])
+
+            # Actualisation de la liste des individus
+            self.ctrl_individus.SetAction(self.dictAction)
+            self.ctrl_individus.MAJ()
+
         dlg.Destroy()
     
     def SetActivite(self, IDactivite=None):

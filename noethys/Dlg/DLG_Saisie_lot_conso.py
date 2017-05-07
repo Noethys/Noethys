@@ -1049,7 +1049,7 @@ class Dialog(wx.Dialog):
         # Description de l'action
         if self.action == "saisie" : description = _(u"Saisie de consommations sur la période")
         if self.action == "modification" : description = _(u"Modification de consommations sur la période")
-        if self.action == "suppression" : description = _(u"Saisie de consommations sur la période")
+        if self.action == "suppression" : description = _(u"Suppression de consommations sur la période")
         if self.action == "etat" : description = _(u"Changement d'état des consommations de la période")
         description += u" du %s au %s" % (UTILS_Dates.DateDDEnFr(date_debut), UTILS_Dates.DateDDEnFr(date_fin))
         
@@ -1088,13 +1088,14 @@ class Dialog(wx.Dialog):
         """ Importation de valeurs par défaut """
         if dictValeurs == None :
             return
-        
+
         # Action
         if dictValeurs["action"] == "saisie" : self.radio_saisie.SetValue(True) 
         if dictValeurs["action"] == "modification" : self.radio_modification.SetValue(True) 
         if dictValeurs["action"] == "suppression" : self.radio_suppression.SetValue(True) 
         if dictValeurs["action"] == "etat" : self.radio_etat.SetValue(True)
-        
+        self.OnRadioAction(None)
+
         self.ctrl_unites.MAJ() 
         self.ctrl_etat.MAJ() 
 
