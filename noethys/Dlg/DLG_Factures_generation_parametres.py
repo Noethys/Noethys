@@ -236,6 +236,11 @@ class Panel(wx.Panel):
         self.box_activites_staticbox = wx.StaticBox(self, -1, _(u"Activités"))
         self.ctrl_activites = CTRL_Selection_activites.CTRL(self)
 
+        # Inclure prestations antérieures non facturées
+        self.box_anterieures_staticbox = wx.StaticBox(self, -1, _(u"Prestations antérieures non facturées"))
+        self.check_prestations_anterieures = wx.CheckBox(self, -1, _(u"Inclure les prestations antérieures depuis le"))
+        self.ctrl_date_anterieures = CTRL_Saisie_date.Date2(self)
+
         self.__set_properties()
         self.__do_layout()
 
@@ -246,13 +251,15 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_toutes)
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioFamilles, self.radio_familles_unique)
         self.Bind(wx.EVT_BUTTON, self.AfficheProchainNumeroDefaut, self.bouton_prochain_numero)
-        
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckAnterieures, self.check_prestations_anterieures)
+
         # Init contrôles
         self.ctrl_date_emission.SetDate(datetime.date.today())
         self.check_consommations.SetValue(True)
         self.check_cotisations.SetValue(True)
         self.check_autres.SetValue(True)
         self.OnRadioFamilles(None)
+        self.OnCheckAnterieures(None)
                 
         self.AfficheProchainNumeroDefaut()
         self.check_numero_auto.SetValue(True)
@@ -276,11 +283,13 @@ class Panel(wx.Panel):
         self.radio_familles_toutes.SetToolTipString(_(u"Cliquez ici pour rechercher les factures de toutes les familles (par défaut)"))
         self.radio_familles_unique.SetToolTipString(_(u"Cliquez ici pour rechercher les factures d'une seule famille"))
         self.ctrl_famille.SetToolTipString(_(u"Sélectionnez ici une famille"))
+        self.check_prestations_anterieures.SetToolTipString(_(u"Cochez cette case pour inclure les prestations antérieures à la date de début non facturées depuis la date souhaitée"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
 
         grid_sizer_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
+        grid_sizer_droit = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
 
         # Période
         box_periode = wx.StaticBoxSizer(self.box_periode_staticbox, wx.VERTICAL)
@@ -348,18 +357,33 @@ class Panel(wx.Panel):
         grid_sizer_familles.AddGrowableCol(0)
         box_familles.Add(grid_sizer_familles, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_gauche.Add(box_familles, 1, wx.EXPAND, 0)
-        
-        # Activités
-        box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
+
         grid_sizer_gauche.AddGrowableRow(4)
         grid_sizer_base.Add(grid_sizer_gauche, 1, wx.EXPAND, 0)
+
+        # Activités
+        box_activites = wx.StaticBoxSizer(self.box_activites_staticbox, wx.VERTICAL)
+
         box_activites.Add(self.ctrl_activites, 1, wx.ALL|wx.EXPAND, 10)
-        grid_sizer_base.Add(box_activites, 1, wx.EXPAND, 0)
-        
+        grid_sizer_droit.Add(box_activites, 1, wx.EXPAND, 0)
+
+        # Inclure prestations antérieures
+        box_anterieures = wx.StaticBoxSizer(self.box_anterieures_staticbox, wx.VERTICAL)
+        grid_sizer_anterieures = wx.FlexGridSizer(rows=1, cols=3, vgap=2, hgap=2)
+        grid_sizer_anterieures.Add(self.check_prestations_anterieures, 0, wx.EXPAND, 0)
+        grid_sizer_anterieures.Add(self.ctrl_date_anterieures, 0, wx.EXPAND, 0)
+        box_anterieures.Add(grid_sizer_anterieures, 1, wx.ALL|wx.EXPAND, 10)
+        grid_sizer_droit.Add(box_anterieures, 1, wx.EXPAND, 0)
+
+        grid_sizer_droit.AddGrowableRow(0)
+        grid_sizer_droit.AddGrowableCol(0)
+        grid_sizer_base.Add(grid_sizer_droit, 1, wx.EXPAND, 0)
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableRow(0)
         grid_sizer_base.AddGrowableCol(1)
+        self.SetMinSize(self.GetSize())
 
     def OnBoutonLots(self, event):
         IDlot = self.ctrl_lot.GetID()
@@ -391,7 +415,11 @@ class Panel(wx.Panel):
         etat = self.check_numero_auto.GetValue()
         self.ctrl_prochain_numero.Enable(not etat)
         self.bouton_prochain_numero.Enable(not etat)
-        
+
+    def OnCheckAnterieures(self, event=None):
+        self.ctrl_date_anterieures.Enable(self.check_prestations_anterieures.GetValue())
+        self.ctrl_date_anterieures.SetFocus()
+
     def Validation(self):
         """ Validation des données saisies """
         # Vérifie date début
@@ -505,7 +533,18 @@ class Panel(wx.Panel):
             dlg.ShowModal()
             dlg.Destroy()
             return False
-        
+
+        # Date antérieure
+        date_anterieure = None
+        if self.check_prestations_anterieures.GetValue() == True :
+            date_anterieure = self.ctrl_date_anterieures.GetDate()
+            if self.ctrl_date_anterieures.FonctionValiderDate() == False or date_anterieure == None:
+                dlg = wx.MessageDialog(self, _(u"La date antérieure ne semble pas valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                self.ctrl_date_anterieures.SetFocus()
+                return False
+
         # Vérification droits utilisateurs
         for IDactivite in listeActivites :
             if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("facturation_factures", "creer", IDactivite=IDactivite, afficheMessage=False) == False : 
@@ -528,6 +567,7 @@ class Panel(wx.Panel):
             "listeActivites" : listeActivites,
             "IDprefixe" : IDprefixe,
             "prefixe" : prefixe,
+            "date_anterieure" : date_anterieure,
             }
 
         return True

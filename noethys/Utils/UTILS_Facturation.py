@@ -147,7 +147,7 @@ class Facturation():
                 texte = texte.replace(key, valeur)
         return texte
 
-    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "autre"], typeLabel=0):
+    def GetDonnees(self, listeFactures=[], liste_activites=[], date_debut=None, date_fin=None, date_edition=None, date_echeance=None, prestations=["consommation", "cotisation", "autre"], typeLabel=0, date_anterieure=None):
         """ Recherche des factures à créer """      
         
         dictFactures = {}
@@ -167,9 +167,15 @@ class Facturation():
             if len(listeIDfactures) == 0 : conditionFactures = "()"
             elif len(listeIDfactures) == 1 : conditionFactures = "(%d)" % listeIDfactures[0]
             else : conditionFactures = str(tuple(listeIDfactures))
-        
-        conditionDates = " prestations.date>='%s' AND prestations.date<='%s' AND IDfacture %s" % (date_debut, date_fin, conditionFactures)
-        
+
+        # En cas d'intégration des prestations antérieures
+        if date_anterieure == None :
+            date_debut_temp = date_debut
+        else :
+            date_debut_temp = date_anterieure
+
+        conditionDates = " prestations.date>='%s' AND prestations.date<='%s' AND IDfacture %s" % (date_debut_temp, date_fin, conditionFactures)
+
         if len(prestations) == 1 :
             conditionPrestations = " prestations.categorie='%s'" % prestations[0]
         else :
@@ -475,6 +481,7 @@ class Facturation():
                     "{FAMILLE_VILLE}" : ville_resid,
                     "individus" : {},
                     "listePrestations" : [],
+                    "listeIDprestations" : [],
                     "listeDeductions" : [],
                     "prestations_familiales" : [],
                     "total" : FloatToDecimal(0.0),
@@ -649,8 +656,9 @@ class Facturation():
                 dictComptes[ID]["individus"][IDindividu]["ventilation"] += montant_ventilation
                         
             # Stockage des IDprestation pour saisir le IDfacture après création de la facture
-            dictComptes[ID]["listePrestations"].append( (IDindividu, IDprestation) )
-            
+            dictComptes[ID]["listePrestations"].append((IDindividu, IDprestation))
+            dictComptes[ID]["listeIDprestations"].append(IDprestation)
+
             # Intégration des qf aux dates concernées
             for qf_idfamille, quotient, qfdate_debut, qfdate_fin in listeQfdates :
                 qfdate_debut = UTILS_Dates.DateEngEnDateDD(qfdate_debut)
@@ -693,7 +701,8 @@ class Facturation():
 
                 if len(listeFactures) == 0 :
                     
-                    if dictComptes.has_key(IDcompte_payeur) :
+                    #if dictComptes.has_key(IDcompte_payeur) :
+                    if dictComptes.has_key(IDcompte_payeur) and IDprestation not in dictComptes[IDcompte_payeur]["listeIDprestations"] :
                         if dictComptes[IDcompte_payeur]["reports"].has_key(periode) == False :
                             dictComptes[IDcompte_payeur]["reports"][periode] = FloatToDecimal(0.0)
                         dictComptes[IDcompte_payeur]["reports"][periode] += montant_impaye
@@ -704,7 +713,7 @@ class Facturation():
                     
                     if dictComptesPayeursFactures.has_key(IDcompte_payeur) :
                         for IDfacture in dictComptesPayeursFactures[IDcompte_payeur] :
-                            if date < dictComptes[IDfacture]["date_debut"] :
+                            if date < dictComptes[IDfacture]["date_debut"] and IDprestation not in dictComptes[IDfacture]["listeIDprestations"] :
                                 
                                 if dictComptes[IDfacture]["reports"].has_key(periode) == False :
                                     dictComptes[IDfacture]["reports"][periode] = FloatToDecimal(0.0)
@@ -1140,10 +1149,15 @@ if __name__ == '__main__':
     #wx.InitAllImageHandlers()
     
     # Test du module Facturation :
-    facturation = Facturation() 
-##    print facturation.GetDonnees(IDfacture=None, liste_activites=[], date_debut=datetime.date(2013, 1, 1), date_fin=datetime.date(2013, 12, 31), date_edition=datetime.date.today(), date_echeance=datetime.date(2013, 2, 28), prestations=["consommation", "cotisation", "autre"] )
-##    print facturation.Impression(listeFactures=[92, 93], nomDoc=None, afficherDoc=True, dictOptions=None)
-##    print len(facturation.GetDonnees2(listeFactures=range(3240, 3400)))
-##    facturation.GetDonneesImpression2(listeFactures=range(3240, 3400))
-    print "resultats =", facturation.Impression(listeFactures=[1387,])
+    facturation = Facturation()
+
+    # Recherche de factures à générer
+    #liste_factures = facturation.GetDonnees(liste_activites=[1, 2, 3], date_debut=datetime.date(2017, 1, 1), date_fin=datetime.date(2017, 1, 31), date_edition=datetime.date.today(), date_echeance=datetime.date(2017, 2, 28), prestations=["consommation", "cotisation", "autre"] )
+    #for IDfacture, facture in liste_factures.iteritems() :
+    #    print "Facture =", IDfacture, facture
+    #print "Nbre factures trouvees =", len(liste_factures)
+
+    # Affichage d'une facture
+    print "resultats =", facturation.Impression(listeFactures=[8063,])
+
     app.MainLoop()

@@ -332,6 +332,7 @@ class Impression():
                 # ------------------- TABLEAU CONTENU -----------------
                 montantPeriode = FloatToDecimal(0.0)
                 montantVentilation = FloatToDecimal(0.0)
+                nbre_total_prestations_anterieures = 0
 
                 # Recherche si TVA utilisée
                 activeTVA = False
@@ -351,7 +352,8 @@ class Impression():
                 for texteTemp, IDindividu, dictIndividus in listeIndividusTemp :
                     
                     if dictIndividus["select"] == True :
-                        
+
+                        nbre_prestations_anterieures = 0
                         listeIndexActivites = []
                         montantPeriode += dictIndividus["total"]
                         montantVentilation += dictIndividus["ventilation"]
@@ -453,7 +455,13 @@ class Impression():
                                         
                                         if detail == 1 : labelkey = label
                                         if detail == 2 : labelkey = label + " P.U. " + "%.2f %s" % (montant, SYMBOLE)
-                                            
+
+                                        # Si c'est une prestation antérieure
+                                        if date < str(dictValeur["date_debut"]) :
+                                            nbre_prestations_anterieures += 1
+                                            nbre_total_prestations_anterieures += 1
+                                            label += u"*"
+
                                         if dictRegroupement.has_key(labelkey) == False :
                                             dictRegroupement[labelkey] = {"labelpresta" : label, "total" : 0, "nbre" : 0, "base" : 0, "dates_forfait" : None}
                                             dictRegroupement[labelkey]["base"] = montant
@@ -537,8 +545,8 @@ class Impression():
 
                                 for date in listeDates :
                                     dictDates = dictActivites["presences"][date]
-                                    
-                                    date = dictDates["texte"]
+
+                                    dateFr = dictDates["texte"]
                                     prestations = dictDates["unites"]
                                     
                                     # Insertion des unités de présence
@@ -566,7 +574,7 @@ class Impression():
                                         tva = dictPrestation["tva"]
 
                                         # Date
-                                        texteDate = Paragraph("<para align='center'>%s</para>" % date, paraStyle)
+                                        texteDate = Paragraph("<para align='center'>%s</para>" % dateFr, paraStyle)
                                         
                                         # recherche d'un commentaire
                                         if dictOptions.has_key("dictCommentaires") :
@@ -574,6 +582,12 @@ class Impression():
                                             if dictOptions["dictCommentaires"].has_key(key) :
                                                 commentaire = dictOptions["dictCommentaires"][key]
                                                 label = "%s <i><font color='#939393'>%s</font></i>" % (label, commentaire)
+
+                                        # Si c'est une prestation antérieure
+                                        if date < str(dictValeur["date_debut"]):
+                                            nbre_prestations_anterieures += 1
+                                            nbre_total_prestations_anterieures += 1
+                                            label += u"*"
 
                                         # Affiche le Label de la prestation
                                         listeIntitules.append(Paragraph(label, paraStyle)) 
@@ -640,16 +654,24 @@ class Impression():
                                 ]
                             tableau.setStyle(TableStyle(listeStyles))
                             story.append(tableau)
-                        
+
+                        # Préparation du texet des prestations antérieures
+                        if nbre_prestations_anterieures == 0 :
+                            texte_prestations_anterieures = ""
+                        elif nbre_prestations_anterieures == 1 :
+                            texte_prestations_anterieures = _(u"* 1 prestation antérieure reportée")
+                        else :
+                            texte_prestations_anterieures = _(u"* %d prestations antérieures reportées") % nbre_prestations_anterieures
+
                         # Insertion des totaux
                         dataTableau = []
                         if activeTVA == True and detail == 0 :
-                            dataTableau.append(["", "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                            dataTableau.append([texte_prestations_anterieures, "", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         else :
                             if detail != 0 :
-                                dataTableau.append(["", "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                                dataTableau.append([texte_prestations_anterieures, "", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                             else :
-                                dataTableau.append(["", "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
+                                dataTableau.append([texte_prestations_anterieures, "", Paragraph("<para align='center'>%.02f %s</para>" % (dictIndividus["total"], SYMBOLE) , paraStyle)])
                         
                         listeStyles = [
                                 ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
@@ -658,8 +680,10 @@ class Impression():
                                 ('ALIGN', (-1, -1), (-1, -1), 'CENTRE'),
                                 ('BACKGROUND', (-1, -1), (-1, -1), couleurFond), 
                                 ('TOPPADDING', (0, 0), (-1, -1), 1), 
-                                ('BOTTOMPADDING', (0, 0), (-1, -1), 3), 
-                                ]
+                                ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+                                ('SPAN', (0, -1), (-2, -1)), # Fusion de la dernière ligne pour le texte_prestations_anterieures
+                                ('FONT', (0, -1), (0, -1), "Helvetica", dictOptions["taille_texte_prestations_anterieures"]),
+                            ]
                             
                         # Création du tableau
                         tableau = Table(dataTableau, largeursColonnes)
@@ -681,7 +705,13 @@ class Impression():
 ##                if dictOptions["echeance"] != None :
 ##                    listeMessages.append(Paragraph(dictOptions["echeance"], paraStyle))
 
-               # QF aux dates de facture
+                # Texte Prestations antérieures
+                texte_prestations_anterieures = dictOptions["texte_prestations_anterieures"]
+                if nbre_total_prestations_anterieures > 0 and len(texte_prestations_anterieures) > 0 :
+                    texte = _(u"<b>%d prestations antérieures : </b>%s") % (nbre_total_prestations_anterieures, texte_prestations_anterieures)
+                    listeMessages.append(Paragraph(texte, paraStyle))
+
+                # QF aux dates de facture
                 if mode == "facture" and dictOptions["afficher_qf_dates"] == True :
                     dictQfdates = dictValeur["qfdates"]
                     listeDates = dictQfdates.keys() 
@@ -689,11 +719,9 @@ class Impression():
                     if len(listeDates) > 0 :
                         for dates in listeDates :
                             qf = dictQfdates[dates]
-##                            texteQf = _(u"--- Votre QF %s : <b>%s</b> ---") % (dates, qf)
                             texteQf = _(u"<b>Votre quotient familial : </b>Votre QF est de %s sur la période %s.") % (qf, dates)
                             listeMessages.append(Paragraph(texteQf, paraStyle))
-                
-                
+
                 # Reports
                 if mode == "facture" and dictOptions["afficher_impayes"] == True :
                     dictReports = dictValeur["reports"]
@@ -703,7 +731,7 @@ class Impression():
                         if dictOptions["integrer_impayes"] == True :
                             texteReport = _(u"<b>Détail des impayés : </b>")
                         else :
-                            texteReport = _(u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations antérieures : ")
+                            texteReport = _(u"<b>Impayés : </b>Merci de bien vouloir nous retourner également le règlement des prestations impayées suivantes : ")
                         for periode in listePeriodes :
                             annee, mois = periode
                             nomPeriode = PeriodeComplete(mois, annee)

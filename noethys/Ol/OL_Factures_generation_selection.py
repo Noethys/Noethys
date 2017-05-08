@@ -81,13 +81,14 @@ class ListView(FastObjectListView):
         
         try :
             facturation = UTILS_Facturation.Facturation()
-            self.dictComptes = facturation.GetDonnees(     liste_activites=self.dictParametres["listeActivites"],
-                                                                                            date_debut=self.dictParametres["date_debut"], 
-                                                                                            date_fin=self.dictParametres["date_fin"], 
-                                                                                            date_edition=self.dictParametres["date_emission"],
-                                                                                            date_echeance=self.dictParametres["date_echeance"],
-                                                                                            prestations=self.dictParametres["prestations"],
-                                                                                            )
+            self.dictComptes = facturation.GetDonnees(  liste_activites=self.dictParametres["listeActivites"],
+                                                        date_debut=self.dictParametres["date_debut"],
+                                                        date_fin=self.dictParametres["date_fin"],
+                                                        date_edition=self.dictParametres["date_emission"],
+                                                        date_echeance=self.dictParametres["date_echeance"],
+                                                        prestations=self.dictParametres["prestations"],
+                                                        date_anterieure=self.dictParametres["date_anterieure"],
+                                                        )
             del dlgAttente
         except Exception, err:
             del dlgAttente
@@ -148,15 +149,15 @@ class ListView(FastObjectListView):
         self.useExpansionColumn = True
         self.SetColumns([
             ColumnDefn(_(u"IDfamille"), "left", 0, "IDfamille", typeDonnee="entier"),
-            ColumnDefn(_(u"Famille"), "left", 250, "nomSansCivilite", typeDonnee="texte", isSpaceFilling=True),
+            ColumnDefn(_(u"Famille"), "left", 195, "nomSansCivilite", typeDonnee="texte"),#, isSpaceFilling=True),
             ColumnDefn(_(u"Total période"), "right", 85, "total", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Déjà réglé"), "right", 85, "ventilation", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Dû période"), "right", 85, "du_periode", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuPeriode),
-            ColumnDefn(_(u"Report"), "right", 85, "total_reports", typeDonnee="montant", stringConverter=FormateMontant),
+            ColumnDefn(_(u"Rep. impayés"), "right", 90, "total_reports", typeDonnee="montant", stringConverter=FormateMontant),
             ColumnDefn(_(u"Dû total"), "right", 85, "du_total", typeDonnee="montant", stringConverter=FormateMontant, imageGetter=GetImageDuTotal),
         ])
         self.CreateCheckStateColumn(0)
-        self.SetSortColumn(self.columns[1])
+        self.SetSortColumn(self.columns[2])
         self.SetEmptyListMsg(_(u"Aucune facture à générer"))
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
         self.SetObjects(self.donnees)
@@ -164,7 +165,7 @@ class ListView(FastObjectListView):
     def MAJ(self):
         self.InitModel()
         self.InitObjectListView()
-        self._ResizeSpaceFillingColumns() 
+        #self._ResizeSpaceFillingColumns()
         self.CocheListeTout()
         self.Refresh()
     
@@ -272,8 +273,22 @@ class ListView(FastObjectListView):
             else: label = _(u"%d factures sélectionnées") % nbreComptes
             grandParent.box_factures_staticbox.SetLabel(label)
 
-    def OnCheck(self, track):
+    def OnCheck(self, track=None):
         self.AfficheNbreComptes(len(self.GetTracksCoches()))
+
+    def CocherMontant(self, montant=0.0):
+        if self.GetFilter() != None :
+            listeObjets = self.GetFilteredObjects()
+        else :
+            listeObjets = self.GetObjects()
+        for track in listeObjets :
+            if track.du_periode >= montant :
+                self.Check(track)
+            else :
+                self.Uncheck(track)
+            #self.RefreshObject(track)
+        self.Refresh()
+        self.OnCheck()
 
     def AfficherApercu(self, event=None):
         if len(self.Selection()) == 0 :

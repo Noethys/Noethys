@@ -33,7 +33,8 @@ class Dialog(wx.Dialog):
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Generation.png")
         
         self.listePages = ("Page1", "Page2", "Page3")
-        
+        self.nbrePages = len(self.listePages)
+
         self.static_line = wx.StaticLine(self, -1)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -49,11 +50,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.Onbouton_suite, self.bouton_suite)
         
         self.bouton_retour.Enable(False)
-        self.nbrePages = len(self.listePages)    
         self.pageVisible = 1
                         
         # Création des pages
-        self.Creation_Pages()        
+
         
             
     def Creation_Pages(self):
@@ -71,7 +71,6 @@ class Dialog(wx.Dialog):
         self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
         self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
         self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
-        self.SetMinSize((760, 685))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
@@ -81,6 +80,8 @@ class Dialog(wx.Dialog):
         # Contenu
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         sizer_pages = wx.BoxSizer(wx.VERTICAL)
+        self.sizer_pages = sizer_pages
+
         grid_sizer_base.Add(sizer_pages, 1, wx.EXPAND|wx.ALL, 10)
         grid_sizer_base.Add(self.static_line, 0, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
@@ -95,14 +96,15 @@ class Dialog(wx.Dialog):
         grid_sizer_base.Add(grid_sizer_boutons, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.AddGrowableRow(1)
         grid_sizer_base.AddGrowableCol(0)
-        
+
+        self.Creation_Pages()
+
         self.SetSizer(grid_sizer_base)
         grid_sizer_base.Fit(self)
         self.Layout()
+        self.SetMinSize(self.GetSize())
         self.CenterOnScreen()
-        
-        self.sizer_pages = sizer_pages
-    
+
     def Onbouton_aide(self, event):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Gnration")
@@ -179,8 +181,8 @@ if __name__ == "__main__":
     IDactivite = 1
     frame_1 = Dialog(None) 
     # TESTS
-    frame_1.page1.ctrl_date_debut.SetDate(datetime.date(2015, 7, 1))
-    frame_1.page1.ctrl_date_fin.SetDate(datetime.date(2015, 7, 31))
+    frame_1.page1.ctrl_date_debut.SetDate(datetime.date(2017, 1, 1))
+    frame_1.page1.ctrl_date_fin.SetDate(datetime.date(2017, 1, 31))
     
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
