@@ -1,3 +1,11 @@
+Version 1.1.9.9 (08/05/2017) :
+
+- Ajout des prestations antérieures dans les factures
+- Ajout du montant minimal d'émission des factures
+- Ajout de la récupération auto des nouveaux lots de factures et de rappels
+- Correction de la suppression du traitement par lot global
+- Correction de divers petits bugs
+
 Version 1.1.9.8 (01/05/2017) :
 
 - Ajout d'une date de désinscription aux activités [Nicolas Pantel]
