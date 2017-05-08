@@ -347,6 +347,8 @@ class CTRL(wx.TreeCtrl):
                 
                 # Niveau 2 : Nom des pièces
                 for IDfamille, IDtype_piece, nomPiece, publicPiece, prenom, IDindividu, valide in valeurs :
+                    if nomPiece == None :
+                        nomPiece = "?"
                     if publicPiece == "famille" or self.IDindividu != None :
                         label = nomPiece
                     else:

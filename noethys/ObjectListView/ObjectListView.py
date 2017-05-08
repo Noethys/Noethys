@@ -2522,13 +2522,13 @@ class ObjectListView(wx.ListCtrl):
     def CocheListeTout(self, event=None):
         for track in self.donnees :
             self.Check(track)
-            self.RefreshObject(track)
+        self.Refresh()
         self.OnCheck(None)
         
     def CocheListeRien(self, event=None):
         for track in self.donnees :
             self.Uncheck(track)
-            self.RefreshObject(track)
+        self.Refresh()
         self.OnCheck(None)
 
 ########################################################################

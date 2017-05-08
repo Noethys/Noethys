@@ -69,7 +69,8 @@ class CTRL_Choix(FastObjectListView):
         WHERE IDquestion=%d
         ORDER BY ordre;""" % self.IDquestion
         DB.ExecuterReq(req)
-        listeTemp = DB.ResultatReq()  
+        listeTemp = DB.ResultatReq()
+        DB.Close()
         listeChoix = []   
         for item in listeTemp :
             track = listeChoix.append(Track(item))
