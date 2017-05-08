@@ -38,6 +38,7 @@ class ListView(FastObjectListView):
         self.itemSelected = False
         self.popupIndex = -1
         self.listeFiltres = []
+        self.dernierLotCree = None
         # Initialisation du listCtrl
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
@@ -193,6 +194,7 @@ class ListView(FastObjectListView):
                 IDlot = DB.ReqInsert("lots_factures", listeDonnees)
                 DB.Close()
                 self.MAJ(IDlot)
+                self.dernierLotCree = IDlot
         dlg.Destroy()
 
     def Modifier(self, event):

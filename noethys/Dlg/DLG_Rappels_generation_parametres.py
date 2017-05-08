@@ -285,11 +285,14 @@ class Panel(wx.Panel):
         IDlot = self.ctrl_lot.GetID()
         import DLG_Lots_rappels
         dlg = DLG_Lots_rappels.Dialog(self)
-        dlg.ShowModal() 
+        dlg.ShowModal()
+        dernierLotCree = dlg.GetDernierLotCree()
         dlg.Destroy()
         self.ctrl_lot.MAJ() 
         if IDlot == None : IDlot = 0
         self.ctrl_lot.SetID(IDlot)
+        if dernierLotCree != None :
+            self.ctrl_lot.SetID(dernierLotCree)
 
     def OnRadioFamilles(self, event):
         self.ctrl_famille.Enable(self.radio_familles_unique.GetValue())

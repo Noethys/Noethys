@@ -389,11 +389,15 @@ class Panel(wx.Panel):
         IDlot = self.ctrl_lot.GetID()
         import DLG_Lots_factures
         dlg = DLG_Lots_factures.Dialog(self)
-        dlg.ShowModal() 
+        dlg.ShowModal()
+        dernierLotCree = dlg.GetDernierLotCree()
         dlg.Destroy()
         self.ctrl_lot.MAJ() 
         if IDlot == None : IDlot = 0
         self.ctrl_lot.SetID(IDlot)
+        if dernierLotCree != None :
+            self.ctrl_lot.SetID(dernierLotCree)
+
 
     def OnChoixPrefixe(self, event=None):
         self.AfficheProchainNumeroDefaut()

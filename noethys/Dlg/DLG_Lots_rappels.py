@@ -97,6 +97,9 @@ class Dialog(wx.Dialog):
         from Utils import UTILS_Aide
         UTILS_Aide.Aide("Lotsderappels")
 
+    def GetDernierLotCree(self):
+        return self.ctrl_listview.dernierLotCree
+
 
 
 if __name__ == "__main__":
