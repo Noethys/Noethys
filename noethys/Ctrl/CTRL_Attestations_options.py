@@ -228,6 +228,21 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
         self.SetPropertyEditor("taille_texte_montants_totaux", "SpinCtrl")
 
+        # Catégorie
+        self.Append( wxpg.PropertyCategory(_(u"Prestations antérieures")) )
+
+        # Taille de texte
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte du commentaire"), name="taille_texte_prestations_anterieures", value=5)
+        propriete.SetHelpString(_(u"Saisissez la taille de texte du commentaire de bas de tableaux (5 par défaut)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor("taille_texte_prestations_anterieures", "SpinCtrl")
+
+        # Texte d'information
+        propriete = wxpg.LongStringProperty(label=_(u"Texte d'information"), name="texte_prestations_anterieures", value=_(u"Des prestations antérieures ont été reportées sur cette attestation."))
+        propriete.SetHelpString(_(u"Saisissez un texte d'information pour les prestations antérieures"))
+        self.Append(propriete)
+
         # Catégorie 
         self.Append( wxpg.PropertyCategory(_(u"Texte d'introduction")) )
 
