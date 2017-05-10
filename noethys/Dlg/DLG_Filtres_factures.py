@@ -214,10 +214,10 @@ class Dialog(wx.Dialog):
         self.ctrl_prefixe = CTRL_Prefixe_factures(self)
 
         self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"Numéros de factures de"))
-        self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
+        self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=9999999)
         self.ctrl_numeros_intervalle_min.SetMinSize((70, -1))
         self.label_numeros_intervalle_a = wx.StaticText(self, -1, u"à")
-        self.ctrl_numeros_intervalle_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
+        self.ctrl_numeros_intervalle_max = wx.SpinCtrl(self, -1, u"", min=0, max=9999999)
         self.ctrl_numeros_intervalle_max.SetMinSize((70, -1))
 
         self.check_numeros_liste = wx.CheckBox(self, -1, _(u"Numéros de factures suivants :"))
