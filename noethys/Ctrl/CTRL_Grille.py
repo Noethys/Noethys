@@ -2706,7 +2706,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # Supprime si nécessaire l'ancienne prestation
                     valeur = (conso.IDprestation, "consommation")
-                    if IDprestation < 0 :# True
+                    if IDprestation < 0 or IDprestation in self.dictForfaits.keys() :# True
                         if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in self.dictForfaits.keys() :
                             listeAnciennesPrestations.append(valeur)
 
