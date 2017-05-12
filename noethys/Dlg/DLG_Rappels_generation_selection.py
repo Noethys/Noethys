@@ -85,10 +85,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimerTexte, self.bouton_supprimer_texte)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu PDF de la lettre de rappel sélectionnée"))
-        self.bouton_ajouter_texte.SetToolTipString(_(u"Cliquez ici pour ajouter un texte de rappel"))
-        self.bouton_modifier_texte.SetToolTipString(_(u"Cliquez ici pour modifier le texte sélectionné dans la liste"))
-        self.bouton_supprimer_texte.SetToolTipString(_(u"Cliquez ici pour supprimer le texte sélectionné dans la liste"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu PDF de la lettre de rappel sélectionnée")))
+        self.bouton_ajouter_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un texte de rappel")))
+        self.bouton_modifier_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le texte sélectionné dans la liste")))
+        self.bouton_supprimer_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le texte sélectionné dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)

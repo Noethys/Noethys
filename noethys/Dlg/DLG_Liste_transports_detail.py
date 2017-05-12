@@ -111,19 +111,19 @@ class Panel(wx.Panel):
         self.MAJ() 
         
     def __set_properties(self):
-        self.ctrl_individu.SetToolTipString(_(u"Filtrer par individu"))
-        self.ctrl_depart_date.SetToolTipString(_(u"Filtrer par date de départ"))
-        self.ctrl_depart_heure.SetToolTipString(_(u"Filtrer par heure de départ"))
-        self.ctrl_depart_lieu.SetToolTipString(_(u"Filtrer par lieu de départ"))
-        self.ctrl_arrivee_date.SetToolTipString(_(u"Filtrer par date d'arrivée"))
-        self.ctrl_arrivee_heure.SetToolTipString(_(u"Filtrer par heure d'arrivée"))
-        self.ctrl_arrivee_lieu.SetToolTipString(_(u"Filtrer par lieu d'arrivée"))
-        self.bouton_modifier.SetToolTipString(_(u"Modifier le transport sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Supprimer le transport sélectionné dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Afficher un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Imprimer la liste"))
-        self.bouton_export_excel.SetToolTipString(_(u"Exporter la liste au format Excel"))
-        self.bouton_export_texte.SetToolTipString(_(u"Exporter la liste au format Texte"))
+        self.ctrl_individu.SetToolTip(wx.ToolTip(_(u"Filtrer par individu")))
+        self.ctrl_depart_date.SetToolTip(wx.ToolTip(_(u"Filtrer par date de départ")))
+        self.ctrl_depart_heure.SetToolTip(wx.ToolTip(_(u"Filtrer par heure de départ")))
+        self.ctrl_depart_lieu.SetToolTip(wx.ToolTip(_(u"Filtrer par lieu de départ")))
+        self.ctrl_arrivee_date.SetToolTip(wx.ToolTip(_(u"Filtrer par date d'arrivée")))
+        self.ctrl_arrivee_heure.SetToolTip(wx.ToolTip(_(u"Filtrer par heure d'arrivée")))
+        self.ctrl_arrivee_lieu.SetToolTip(wx.ToolTip(_(u"Filtrer par lieu d'arrivée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Modifier le transport sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Supprimer le transport sélectionné dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Afficher un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Imprimer la liste")))
+        self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Exporter la liste au format Excel")))
+        self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Exporter la liste au format Texte")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)
@@ -295,7 +295,7 @@ class Panel(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Utilisez les filtres pour afficher les transports souhaités et imprimer ou exportez la liste affichée.")
@@ -312,8 +312,8 @@ class Dialog(wx.Dialog):
         self.__do_layout()
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((830, 700))
 
     def __do_layout(self):

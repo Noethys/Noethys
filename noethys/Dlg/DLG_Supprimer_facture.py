@@ -21,7 +21,7 @@ import GestionDB
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Supprimer_facture", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Supprimer_facture", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
             
         # Bandeau
@@ -44,10 +44,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_annulation.SetToolTipString(_(u"Cliquez ici pour annuler la ou les factures sélectionnées"))
-        self.bouton_suppression.SetToolTipString(_(u"Cliquez ici pour supprimer totalement la ou les factures sélectionnées"))
-        self.bouton_aide.SetToolTipString(_(u"Obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Annuler"))
+        self.bouton_annulation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la ou les factures sélectionnées")))
+        self.bouton_suppression.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer totalement la ou les factures sélectionnées")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

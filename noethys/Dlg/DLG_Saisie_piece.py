@@ -143,7 +143,7 @@ class Choix_Piece_autre(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDpiece=None, IDfamille=None, IDindividu=None, dictFamillesRattachees={}):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_piece", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_piece", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDpiece = IDpiece
         self.IDfamille = IDfamille
@@ -225,17 +225,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.radio_pieces_1.SetValue(1)
-        self.radio_pieces_2.SetToolTipString(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas dans la liste des pièces obligatoires à fournir"))
-        self.ctrl_pieces_obligatoires.SetToolTipString(_(u"Sélectionnez un type de pièce en cliquant sur son nom"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de validité.\nRemarque : Il s'agit bien de la date d'emission de la pièce \n(par exemple, la date d'obtention d'un diplôme) et non la date à laquelle vous avez reçue la pièce"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date d'expiration de la pièce"))
-        self.radio_date_fin_1.SetToolTipString(_(u"Cliquez ici si la pièce a une durée de validité limitée dans le temps"))
-        self.radio_date_fin_2.SetToolTipString(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer a une durée de validité illimitée"))
-        self.bouton_ajouter_page.SetToolTipString(_(u"Cliquez ici pour ajouter un document"))
-        self.bouton_supprimer_page.SetToolTipString(_(u"Cliquez ici pour supprimer le document sélectionné"))
-        self.bouton_visualiser_page.SetToolTipString(_(u"Cliquez ici pour visualiser le document sélectionné"))
-        self.bouton_zoom_plus.SetToolTipString(_(u"Cliquez ici pour agrandir les vignettes"))
-        self.bouton_zoom_moins.SetToolTipString(_(u"Cliquez ici pour réduire les vignettes"))
+        self.radio_pieces_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer n'est pas dans la liste des pièces obligatoires à fournir")))
+        self.ctrl_pieces_obligatoires.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de pièce en cliquant sur son nom")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de validité.\nRemarque : Il s'agit bien de la date d'emission de la pièce \n(par exemple, la date d'obtention d'un diplôme) et non la date à laquelle vous avez reçue la pièce")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'expiration de la pièce")))
+        self.radio_date_fin_1.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce a une durée de validité limitée dans le temps")))
+        self.radio_date_fin_2.SetToolTip(wx.ToolTip(_(u"Cliquez ici si la pièce que vous souhaitez enregistrer a une durée de validité illimitée")))
+        self.bouton_ajouter_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un document")))
+        self.bouton_supprimer_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le document sélectionné")))
+        self.bouton_visualiser_page.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le document sélectionné")))
+        self.bouton_zoom_plus.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour agrandir les vignettes")))
+        self.bouton_zoom_moins.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réduire les vignettes")))
         self.SetMinSize((640, 500)) 
         
     def __do_layout(self):

@@ -126,7 +126,7 @@ class CTRL_Tiers(CTRL_Combobox_autocomplete.CTRL):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDcompte_bancaire=None, typeOperation="credit", IDoperation=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_operation_tresorerie", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_operation_tresorerie", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
         self.IDcompte_bancaire = IDcompte_bancaire
         self.typeOperation = typeOperation  
@@ -213,21 +213,21 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de l'opération"))
-        self.ctrl_libelle.SetToolTipString(_(u"Saisissez un libellé"))
-        self.ctrl_tiers.SetToolTipString(_(u"Sélectionnez un tiers"))
-        self.bouton_tiers.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des tiers"))
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez un mode"))
-        self.bouton_mode.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modes"))
-        self.ctrl_num_cheque.SetToolTipString(_(u"Saisissez le numéro de chèque"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations"))
-        self.ctrl_num_piece.SetToolTipString(_(u"Saisissez le numéro de pièce"))
-        self.bouton_ajouter_ventilation.SetToolTipString(_(u"Cliquez ici pour ajouter une ventilation"))
-        self.bouton_modifier_ventilation.SetToolTipString(_(u"Cliquez ici pour modifier la ventilation sélectionnée"))
-        self.bouton_supprimer_ventilation.SetToolTipString(_(u"Cliquez ici pour supprimer la ventilation sélectionnée"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de l'opération")))
+        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez un libellé")))
+        self.ctrl_tiers.SetToolTip(wx.ToolTip(_(u"Sélectionnez un tiers")))
+        self.bouton_tiers.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des tiers")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mode")))
+        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes")))
+        self.ctrl_num_cheque.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de chèque")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
+        self.ctrl_num_piece.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de pièce")))
+        self.bouton_ajouter_ventilation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une ventilation")))
+        self.bouton_modifier_ventilation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ventilation sélectionnée")))
+        self.bouton_supprimer_ventilation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ventilation sélectionnée")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((750, 520))
 
     def __do_layout(self):

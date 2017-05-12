@@ -25,7 +25,7 @@ LISTE_METHODES_ARRONDI = [
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, dictFrais={}):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_frais_gestion", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_frais_gestion", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.dictFrais = dictFrais
         
@@ -70,16 +70,16 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_frais_fixe.SetMinSize((60, -1))
         self.ctrl_frais_prorata.SetMinSize((50, -1))
-        self.radio_frais_aucun.SetToolTipString(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement"))
-        self.radio_frais_fixe.SetToolTipString(_(u"Cochez ici si des frais d'un montant fixe sont applicables"))
-        self.ctrl_frais_fixe.SetToolTipString(_(u"Saisissez le montant fixe des frais de gestion"))
-        self.radio_frais_prorata.SetToolTipString(_(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable"))
-        self.ctrl_frais_prorata.SetToolTipString(_(u"Saisissez ici le pourcentage du montant du règlement"))
-        self.ctrl_frais_arrondi.SetToolTipString(_(u"Selectionnez une méthode de calcul de l'arrondi"))
-        self.ctrl_frais_label.SetToolTipString(_(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
+        self.radio_frais_aucun.SetToolTip(wx.ToolTip(_(u"Cochez ici si aucun frais de gestion n'est applicable pour ce mode de règlement")))
+        self.radio_frais_fixe.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais d'un montant fixe sont applicables")))
+        self.ctrl_frais_fixe.SetToolTip(wx.ToolTip(_(u"Saisissez le montant fixe des frais de gestion")))
+        self.radio_frais_prorata.SetToolTip(wx.ToolTip(_(u"Cochez ici si des frais de gestion d'un montant au prorata est applicable")))
+        self.ctrl_frais_prorata.SetToolTip(wx.ToolTip(_(u"Saisissez ici le pourcentage du montant du règlement")))
+        self.ctrl_frais_arrondi.SetToolTip(wx.ToolTip(_(u"Selectionnez une méthode de calcul de l'arrondi")))
+        self.ctrl_frais_label.SetToolTip(wx.ToolTip(_(u"Vous avez ici la possibilité de modifier le label de la prestation qui sera créée pour les frais de gestion")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
         self.SetMinSize((350, -1))
         self.SetTitle(_(u"Appliquer des frais de gestion"))
 

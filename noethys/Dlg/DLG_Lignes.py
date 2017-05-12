@@ -33,7 +33,7 @@ DICT_CATEGORIES = {
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie="bus", mode="gestion"):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Lignes", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Lignes", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.mode = mode
         self.categorie = categorie
@@ -82,12 +82,12 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une %s") % self.categorieSingulier)
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la %s sélectionnée dans la liste") % self.categorieSingulier)
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la %s sélectionnée dans la liste") % self.categorieSingulier)
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une %s") % self.categorieSingulier))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la %s sélectionnée dans la liste") % self.categorieSingulier))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la %s sélectionnée dans la liste") % self.categorieSingulier))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
         self.SetMinSize((650, 600))
 
     def __do_layout(self):

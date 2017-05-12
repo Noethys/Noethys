@@ -58,11 +58,11 @@ class CTRL(wx.Panel):
         self.OnCheckRepertoire(None)
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez le modèle"))
-        self.bouton_modele.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles"))
-##        self.checkbox_coupon.SetToolTipString(_(u"Cochez cette case pour insérer un coupon à découper"))
-        self.checkbox_repertoire.SetToolTipString(_(u"Cochez cette case pour enregistrer un exemplaire de chaque cotisation au format PDF dans le répertoire indiqué"))
-        self.bouton_repertoire.SetToolTipString(_(u"Cliquez ici pour sélectionner un répertoire de destination"))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle")))
+        self.bouton_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles")))
+##        self.checkbox_coupon.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un coupon à découper")))
+        self.checkbox_repertoire.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour enregistrer un exemplaire de chaque cotisation au format PDF dans le répertoire indiqué")))
+        self.bouton_repertoire.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un répertoire de destination")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)

@@ -607,9 +607,9 @@ class CTRL_Page_inscrits(wx.Panel):
         self.label_au = wx.StaticText(self, -1, _(u"au"))
         self.ctrl_date_fin = CTRL_Saisie_date.Date2(self)
 
-        self.check_presents.SetToolTipString(_(u"Cochez cette case pour saisir une période de présence"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de période"))
+        self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une période de présence")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de période")))
 
         self.__do_layout()
 
@@ -932,7 +932,7 @@ class CTRL_Filtres_archive(wx.Treebook):
 
 class Dialog_archive(wx.Dialog):
     def __init__(self, parent, ctrl_listview=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.ctrl_listview = ctrl_listview
         self.SetTitle(_(u"Saisie d'un filtre"))  
@@ -1238,7 +1238,7 @@ class CTRL_Filtres(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, ctrl_listview=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.ctrl_listview = ctrl_listview
         self.SetTitle(_(u"Saisie d'un filtre"))  

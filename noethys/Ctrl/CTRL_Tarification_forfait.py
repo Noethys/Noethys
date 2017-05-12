@@ -372,14 +372,14 @@ class Panel(wx.Panel):
         self.OnCheckOptions(None)
 
     def __set_properties(self):
-        self.radio_conso_ouvertures.SetToolTipString(_(u"Cochez ce choix pour qu'aucune consommation ne soit créée"))
-        self.radio_conso_ouvertures.SetToolTipString(_(u"Cochez ce choix pour que le forfait soit associé au calendrier des ouvertures"))
-        self.radio_conso_perso.SetToolTipString(_(u"Cochez ce choix pour que le forfait soit basé sur les dates et unités saisies"))
-        self.bouton_modifier_combi.SetToolTipString(_(u"Cliquez ici pour saisir ou modifier des combinaisons d'unités pour ce forfait"))
-        self.bouton_supprimer_combi.SetToolTipString(_(u"Cliquez ici pour supprimer en un clic TOUTES les combinaisons d'unités de cette liste"))
-        self.ctrl_saisie_manuelle.SetToolTipString(_(u"Ce forfait peut être saisi manuellement dans la grille des consommations grâce à la commande dédiée"))
-        self.ctrl_saisie_auto.SetToolTipString(_(u"Ce forfait est automatiquement saisi lorsqu'un individu s'inscrit à l'activité"))
-        self.ctrl_suppression_auto.SetToolTipString(_(u"La suppression manuelle est impossible. Le forfait peut être uniquement supprimé lors d'un désincription à l'activité"))
+        self.radio_conso_ouvertures.SetToolTip(wx.ToolTip(_(u"Cochez ce choix pour qu'aucune consommation ne soit créée")))
+        self.radio_conso_ouvertures.SetToolTip(wx.ToolTip(_(u"Cochez ce choix pour que le forfait soit associé au calendrier des ouvertures")))
+        self.radio_conso_perso.SetToolTip(wx.ToolTip(_(u"Cochez ce choix pour que le forfait soit basé sur les dates et unités saisies")))
+        self.bouton_modifier_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir ou modifier des combinaisons d'unités pour ce forfait")))
+        self.bouton_supprimer_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer en un clic TOUTES les combinaisons d'unités de cette liste")))
+        self.ctrl_saisie_manuelle.SetToolTip(wx.ToolTip(_(u"Ce forfait peut être saisi manuellement dans la grille des consommations grâce à la commande dédiée")))
+        self.ctrl_saisie_auto.SetToolTip(wx.ToolTip(_(u"Ce forfait est automatiquement saisi lorsqu'un individu s'inscrit à l'activité")))
+        self.ctrl_suppression_auto.SetToolTip(wx.ToolTip(_(u"La suppression manuelle est impossible. Le forfait peut être uniquement supprimé lors d'un désincription à l'activité")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=8, cols=1, vgap=10, hgap=10)

@@ -168,15 +168,15 @@ class Dialog(wx.Dialog):
         self.Importation()
 
     def __set_properties(self):
-        self.radio_activation_oui.SetToolTipString(_(u"Cliquez ici pour activer le mode P.S.U. pour cette activité"))
-        self.radio_activation_non.SetToolTipString(_(u"Cliquez ici pour désactiver le mode P.S.U. pour cette activité"))
-        self.ctrl_unite_prevision.SetToolTipString(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de prévision"))
-        self.ctrl_unite_presence.SetToolTipString(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de présence"))
-        self.ctrl_tarif_forfait.SetToolTipString(_(u"Sélectionnez le tarif qui doit être utilisé comme forfait-crédit pour les mensualités"))
-        self.ctrl_etiquette_rtt.SetToolTipString(_(u"Sélectionnez l'étiquette qui représente les absences RTT"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le mode P.S.U. pour cette activité")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver le mode P.S.U. pour cette activité")))
+        self.ctrl_unite_prevision.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de prévision")))
+        self.ctrl_unite_presence.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité de consommation qui doit être utilisée comme unité de présence")))
+        self.ctrl_tarif_forfait.SetToolTip(wx.ToolTip(_(u"Sélectionnez le tarif qui doit être utilisé comme forfait-crédit pour les mensualités")))
+        self.ctrl_etiquette_rtt.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'étiquette qui représente les absences RTT")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

@@ -11,8 +11,13 @@
 import wx
 import datetime
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx import Control
+else :
+    from wx import PyControl as Control
 
-class Footer(wx.PyControl):
+
+class Footer(Control):
     def __init__(self, 
             parent, 
             id=-1, 
@@ -28,7 +33,7 @@ class Footer(wx.PyControl):
         self.dictColonnes = {}
         self.dictTotaux = {}
         self.listeImpression = []
-        wx.PyControl.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
+        Control.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
         self.SetInitialSize(size)
                     
         self.Bind(wx.EVT_PAINT, self.OnPaint)

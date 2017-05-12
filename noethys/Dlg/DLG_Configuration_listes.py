@@ -75,7 +75,7 @@ def RestaurationConfiguration(nomListe=None, listeColonnesDefaut=[]):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeDonnees=[], listeDonneesDefaut=[]):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.listeDonnees = listeDonnees
         self.listeDonneesDefaut = listeDonneesDefaut
@@ -112,14 +112,14 @@ class Dialog(wx.Dialog):
         self.Remplissage(listeDonnees) 
 
     def __set_properties(self):
-        self.bouton_premier.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée au début de la liste"))
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée vers le haut"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée vers le bas"))
-        self.bouton_dernier.SetToolTipString(_(u"Cliquez ici pour déplacer la colonne sélectionnée à la fin de la liste"))
-        self.bouton_reinitialiser.SetToolTipString(_(u"Cliquez ici restaurer les valeurs par défaut"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer la colonne sélectionnée au début de la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer la colonne sélectionnée vers le haut")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer la colonne sélectionnée vers le bas")))
+        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer la colonne sélectionnée à la fin de la liste")))
+        self.bouton_reinitialiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici restaurer les valeurs par défaut")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.SetMinSize((500, 500))
 
     def __do_layout(self):

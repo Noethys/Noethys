@@ -359,7 +359,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucune pièce"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
         self.SetObjects(self.donnees)

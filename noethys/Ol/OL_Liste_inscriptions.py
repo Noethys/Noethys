@@ -378,7 +378,7 @@ class ListView(GroupListView):
         if len(self.columns) > 0 :
             self.SetSortColumn(self.columns[0])
         self.SetEmptyListMsg(_(u"Aucune inscription"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.donnees)
         
     def GetTitresColonnes(self):
@@ -413,7 +413,7 @@ class ListView(GroupListView):
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
-        attente.Destroy() 
+        del attente
         # Sélection d'un item
         if self.selectionTrack != None :
             self.SelectObject(self.selectionTrack, deselectOthers=True, ensureVisible=True)

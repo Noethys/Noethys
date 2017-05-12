@@ -90,9 +90,9 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonEnregistrer, self.bouton_enregistrer)
 
-        self.ctrl_choix_profil.SetToolTipString(_(u"Sélectionnez un profil de configuration"))
-        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des profils"))
-        self.bouton_enregistrer.SetToolTipString(_(u"Cliquez ici pour enregistrer le profil sélectionné"))
+        self.ctrl_choix_profil.SetToolTip(wx.ToolTip(_(u"Sélectionnez un profil de configuration")))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des profils")))
+        self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le profil sélectionné")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_choix_profil, 0, wx.EXPAND|wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)

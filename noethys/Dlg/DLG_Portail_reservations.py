@@ -47,7 +47,7 @@ class Dialog(wx.Dialog):
             dlgparent = None
         else :
             dlgparent = parent.parent
-        wx.Dialog.__init__(self, dlgparent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, dlgparent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.track = track
         self.reponse = ""
@@ -102,12 +102,12 @@ class Dialog(wx.Dialog):
             self.ctrl_demande.SetTexte(self.parent.parent.ctrl_description.GetTexte())
 
     def __set_properties(self):
-        self.bouton_traiter.SetToolTipString(_(u"Cliquez ici pour appliquer la demande"))
-        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour annuler les modifications"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder au menu des outils"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour commencer le traitement des demandes"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_traiter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer la demande")))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler les modifications")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au menu des outils")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour commencer le traitement des demandes")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):

@@ -117,7 +117,7 @@ class CTRL_Jours(wx.Panel):
         
         for jour in self.liste_jours :
             exec("self.check_%s = wx.CheckBox(self, -1,u'%s')" % (jour, jour[0].upper()) )
-            exec("self.check_%s.SetToolTipString(u'%s')" % (jour, jour.capitalize()) )
+            exec("self.check_%s.SetToolTip(wx.ToolTip(u'%s'))" % (jour, jour.capitalize()) )
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
@@ -631,7 +631,7 @@ class CTRL_Etat(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeIndividus=[], date_debut=None, date_fin=None, IDactivite=None, mode_parametres=False):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.action = None
         self.listeIndividus = listeIndividus
@@ -735,21 +735,21 @@ class Dialog(wx.Dialog):
         self.OnChoixActivite(None)
 
     def __set_properties(self):
-        self.bouton_activite.SetToolTipString(_(u"Cliquez ici pour rechercher une activité"))
-        self.radio_saisie.SetToolTipString(_(u"Cochez ici pour saisir un lot de consommations"))
-        self.radio_modification.SetToolTipString(_(u"Cochez ici pour modifier un lot de consommations"))
-        self.radio_suppression.SetToolTipString(_(u"Cochez ici pour supprimer un lot de consommations"))
-        self.radio_etat.SetToolTipString(_(u"Cochez ici pour modifier l'état d'un lot de consommations"))
-        self.ctrl_individus.SetToolTipString(_(u"Sélectionnez les individus visés"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Sélectionnez une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Sélectionnez une date de fin"))
-        self.ctrl_semaines.SetToolTipString(_(u"Sélectionnez une fréquence"))
-        self.ctrl_feries.SetToolTipString(_(u"Cochez cette case pour inclure les jours fériés dans le processus"))
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
-        self.ctrl_etat.SetToolTipString(_(u"Sélectionnez une état pour les consommations"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_activite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher une activité")))
+        self.radio_saisie.SetToolTip(wx.ToolTip(_(u"Cochez ici pour saisir un lot de consommations")))
+        self.radio_modification.SetToolTip(wx.ToolTip(_(u"Cochez ici pour modifier un lot de consommations")))
+        self.radio_suppression.SetToolTip(wx.ToolTip(_(u"Cochez ici pour supprimer un lot de consommations")))
+        self.radio_etat.SetToolTip(wx.ToolTip(_(u"Cochez ici pour modifier l'état d'un lot de consommations")))
+        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Sélectionnez les individus visés")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de fin")))
+        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"Sélectionnez une fréquence")))
+        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les jours fériés dans le processus")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
+        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez une état pour les consommations")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

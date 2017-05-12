@@ -19,7 +19,7 @@ from Ol import OL_Profils_parametres
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie=""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.categorie = categorie
         
@@ -50,13 +50,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des profils de configuration"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un profil"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le profil sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le profil sélectionné"))
-        self.bouton_dupliquer.SetToolTipString(_(u"Cliquez ici pour dupliquer le profil sélectionné"))
-        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir ce profil par défaut"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un profil")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le profil sélectionné")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le profil sélectionné")))
+        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer le profil sélectionné")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir ce profil par défaut")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((580, 500))
 
     def __do_layout(self):

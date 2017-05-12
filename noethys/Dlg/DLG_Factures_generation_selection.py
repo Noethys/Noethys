@@ -53,8 +53,8 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.CocherMontant, self.bouton_option_montant)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu PDF de la facture sélectionnée"))
-        self.bouton_option_montant.SetToolTipString(_(u"Cliquez ici pour cocher uniquement les factures dont le montant 'Dû Période' est supérieur ou égal au montant souhaité"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu PDF de la facture sélectionnée")))
+        self.bouton_option_montant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher uniquement les factures dont le montant 'Dû Période' est supérieur ou égal au montant souhaité")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)

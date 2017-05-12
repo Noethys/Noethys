@@ -276,7 +276,7 @@ class Depannage():
         # Fermeture DB
         self.DB.Close()
 
-        dlgAttente.Destroy()
+        del dlgAttente
         EcritStatusbar("")
         
     def InscriptionsSansIndividus(self):

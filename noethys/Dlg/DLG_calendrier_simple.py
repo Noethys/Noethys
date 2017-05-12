@@ -20,7 +20,7 @@ from Ctrl import CTRL_Calendrier
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Calendrier_simple", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Calendrier_simple", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 ##        self.locale = wx.Locale(wx.LANGUAGE_FRENCH)
         
@@ -41,8 +41,8 @@ class Dialog(wx.Dialog):
         
         self.SetTitle(_(u"Cliquez sur une date pour la sélectionner..."))
         self.SetMinSize((800, 600))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=0, hgap=0)

@@ -23,7 +23,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Importation_page", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Importation_page", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -46,10 +46,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Importation d'un document"))
-        self.bouton_dossier.SetToolTipString(_(u"Importer un document depuis un dossier"))
-        self.bouton_scanner.SetToolTipString(_(u"Importer un document depuis un scanner"))
-        self.bouton_aide.SetToolTipString(_(u"Obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Annuler"))
+        self.bouton_dossier.SetToolTip(wx.ToolTip(_(u"Importer un document depuis un dossier")))
+        self.bouton_scanner.SetToolTip(wx.ToolTip(_(u"Importer un document depuis un scanner")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
         self.SetMinSize((370, 310))
 
     def __do_layout(self):

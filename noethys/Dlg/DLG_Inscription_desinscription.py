@@ -11,7 +11,6 @@
 import Chemins
 import datetime
 import wx
-import wx.calendar
 
 import GestionDB
 from Ctrl import CTRL_Bouton_image
@@ -59,9 +58,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Générer un remboursement"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie et fermer"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie et fermer")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

@@ -206,7 +206,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(1)
         self.SetEmptyListMsg(_(u"Aucun transport"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         if self.IDindividu == None :
             self.SetSortColumn(self.columns[4])
         else :

@@ -45,7 +45,7 @@ class CTRL_Jours(wx.Panel):
         
         for jour in self.liste_jours :
             exec("self.check_%s = wx.CheckBox(self, -1,u'%s')" % (jour, jour[0].upper()) )
-            exec("self.check_%s.SetToolTipString(u'%s')" % (jour, jour.capitalize()) )
+            exec("self.check_%s.SetToolTip(wx.ToolTip(u'%s'))" % (jour, jour.capitalize()) )
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
@@ -542,7 +542,7 @@ class CTRL_Unites(HTL.HyperTreeList):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, IDunite=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         self.IDunite = IDunite
@@ -581,11 +581,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un paramètre de planning"))
-        self.ctrl_semaines.SetToolTipString(_(u"Sélectionnez une fréquence"))
-        self.ctrl_feries.SetToolTipString(_(u"Cochez cette case pour inclure les jours fériés"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_semaines.SetToolTip(wx.ToolTip(_(u"Sélectionnez une fréquence")))
+        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les jours fériés")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, 500))
 
     def __do_layout(self):

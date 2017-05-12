@@ -475,8 +475,8 @@ class BarreTitre(wx.Panel):
         self.barreTitre.SetForegroundColour('White')
         # Panel
         self.SetBackgroundColour(couleurFond)
-        self.SetToolTipString(infoBulle)
-        self.barreTitre.SetToolTipString(infoBulle)
+        self.SetToolTip(wx.ToolTip(infoBulle))
+        self.barreTitre.SetToolTip(wx.ToolTip(infoBulle))
         # Positionnement
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
         sizer_base.Add(self.barreTitre, 0, wx.EXPAND|wx.ALL, 3)
@@ -1708,6 +1708,59 @@ def InsertCode():
     print "Fini !!!!!!!!!!!!!!!!!"
 
 
+def InsertCodeToolTip():
+    """ Pour insérer  dans tous les fichiers """
+    import re
+    #x = re.compile(r'\.SetToolTipString\((.*?\))')
+    x = re.compile(r'\.SetToolTip\(')
+
+    for repertoire in ("Ctrl", "Dlg", "Ol", "Utils") :
+        # Création du répertoire temporaire
+        if not os.path.isdir("%s/New" % repertoire):
+            os.mkdir("%s/New" % repertoire)
+
+        # Get fichiers
+        listeFichiers = os.listdir(os.path.join(os.getcwd(), repertoire))
+        indexFichier = 0
+        for nomFichier in listeFichiers :
+            if nomFichier.endswith("py") :
+                print "%d/%d :  %s..." % (indexFichier, len(listeFichiers), nomFichier)
+
+                # Ouverture des fichiers
+                fichier = open(os.path.join(repertoire, nomFichier), "r")
+                dirty = False
+
+                listeLignes = []
+                for ligne in fichier :
+
+                    # Modification chemin Images
+                    #m = x.search(ligne)
+                    if ".SetToolTip(" in ligne and '))"))' in ligne :
+                        #chaine = m.group(1)
+                        ligne = ligne.replace('))"))', ')")))')
+                        dirty = True
+                        print ("      > ", ligne)
+
+                    listeLignes.append(ligne)
+
+                # Clôture des fichiers
+                fichier.close()
+
+                # Ecriture du nouveau fichier
+                if dirty == True :
+                    nouveauFichier = open(os.path.join(repertoire, "New", nomFichier), "w")
+                    for ligne in listeLignes :
+                        nouveauFichier.write(ligne)
+                    nouveauFichier.close()
+
+            indexFichier += 1
+
+    print "Fini !!!!!!!!!!!!!!!!!"
+
+
+
+
+
 if __name__ == "__main__":
 ##    RemplacerContenuFichier() 
     # ------- Affiche les stats -------
@@ -1741,4 +1794,6 @@ if __name__ == "__main__":
     
     #VideRepertoireUpdates(forcer=True)
 
-    InsertCode()
+    #InsertCodeToolTip()
+
+    pass

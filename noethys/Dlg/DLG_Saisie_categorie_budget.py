@@ -157,13 +157,13 @@ class Dialog(wx.Dialog):
         self.OnRadioValeur(None)
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez la catégorie comptable à associer"))
-        self.bouton_categories.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des catégories comptables"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez un montant plafonf (Ex : 200.00)"))
-        self.ctrl_formule.SetToolTipString("Saisissez une formule de calcul du plafond (Ex : {NBRE_UNITE_1}*3.00)")
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez la catégorie comptable à associer")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories comptables")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant plafonf (Ex : 200.00)")))
+        self.ctrl_formule.SetToolTip(wx.ToolTip(_(u"Saisissez une formule de calcul du plafond (Ex : {NBRE_UNITE_1}*3.00)")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((600, 600))
 
     def __do_layout(self):

@@ -22,7 +22,7 @@ import datetime
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDmessage=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDmessage = IDmessage
 
@@ -66,10 +66,10 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'un message"))
         else:
             self.SetTitle(_(u"Modification d'un message"))
-        self.ctrl_titre.SetToolTipString(_(u"Saisissez ici un titre interne pour ce message. Ce titre n'apparaîtra pas sur le portail."))
-        self.ctrl_texte.SetToolTipString(_(u"Saisissez ici le texte qui apparaîtra sur la page d'accueil du portail"))
-        self.radio_oui.SetToolTipString(_(u"Sélectionnez cette option pour toujours afficher ce message sur le portail"))
-        self.radio_dates.SetToolTipString(_(u"Sélectionnez cette option pour afficher message sur le portail uniquement entre les dates souhaitées"))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez ici un titre interne pour ce message. Ce titre n'apparaîtra pas sur le portail.")))
+        self.ctrl_texte.SetToolTip(wx.ToolTip(_(u"Saisissez ici le texte qui apparaîtra sur la page d'accueil du portail")))
+        self.radio_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour toujours afficher ce message sur le portail")))
+        self.radio_dates.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour afficher message sur le portail uniquement entre les dates souhaitées")))
         self.SetMinSize((550, 450))
 
     def __do_layout(self):

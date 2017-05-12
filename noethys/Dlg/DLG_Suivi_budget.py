@@ -137,10 +137,10 @@ class Panel_Donnees(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl.ExportTexte, self.bouton_texte)
         
         # Properties
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression des données"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer les données"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter au format Excel les données"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter au format texte les données"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression des données")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les données")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter au format Excel les données")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter au format texte les données")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 2, 5, 5)
@@ -189,8 +189,8 @@ class Panel_Graphe(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Options, self.bouton_options)
 
         # Properties
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour ouvrir le visualiseur de graphe pour accéder aux fonctions d'export et d'impression"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options du graphe"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le visualiseur de graphe pour accéder aux fonctions d'export et d'impression")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options du graphe")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(1, 2, 5, 5)
@@ -357,7 +357,7 @@ class Panel_Graphe(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
 
         intro = _(u"Sélectionnez un budget dans la liste déroulante pour afficher les données correspondantes.")
@@ -420,13 +420,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_budget.SetToolTipString(_(u"Sélectionnez une budget dans la liste"))
-        self.check_periode.SetToolTipString(_(u"Cochez cette case pour saisir une autre date que celle définie dans le budget"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
-        self.bouton_valider_periode.SetToolTipString(_(u"Cliquez ici pour valider les dates saisies"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_budget.SetToolTip(wx.ToolTip(_(u"Sélectionnez une budget dans la liste")))
+        self.check_periode.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une autre date que celle définie dans le budget")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.bouton_valider_periode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les dates saisies")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((770, 680))
 
     def __do_layout(self):

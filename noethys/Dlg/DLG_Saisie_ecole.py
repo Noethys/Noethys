@@ -25,7 +25,7 @@ class CTRL_Secteurs(wx.CheckListBox):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
         self.data = []
-        self.SetToolTipString(_(u"Cochez les secteurs à rattacher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les secteurs à rattacher")))
         self.listeSecteurs, self.dictSecteurs = self.Importation()
         self.SetListeChoix()
 
@@ -84,7 +84,7 @@ class CTRL_Secteurs(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         
         # Nom
@@ -123,11 +123,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Ajout d'une école"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de l'école"))
-        self.ctrl_rue.SetToolTipString(_(u"Saisissez la rue"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'école")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 ##        self.SetMinSize((375, 600))
 
     def __do_layout(self):

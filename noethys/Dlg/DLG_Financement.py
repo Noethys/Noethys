@@ -32,9 +32,9 @@ class Page_documentation(wx.Panel):
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         # Propriétés
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour en savoir plus sur le manuel de référence"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur le manuel de référence")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
         largeurImage, hauteurImage = self.image_fond.GetSize()
@@ -115,9 +115,9 @@ class Page_connecthys(wx.Panel):
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         # Propriétés
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour en savoir plus sur Connecthys Easy"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur Connecthys Easy")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le bon de commande et les conditions générales de vente")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
         largeurImage, hauteurImage = self.image_fond.GetSize()
@@ -195,8 +195,8 @@ class Page_formations(wx.Panel):
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Fermer"), cheminImage="Images/32x32/Fermer.png")
 
         # Propriétés
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour en savoir plus sur les formations"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour en savoir plus sur les formations")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
         # Calcule les espaces du sizer
         largeurImage, hauteurImage = self.image_fond.GetSize()

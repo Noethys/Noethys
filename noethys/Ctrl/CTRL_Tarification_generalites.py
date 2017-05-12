@@ -97,7 +97,7 @@ class CTRL_Label_prestation(wx.Panel):
         for code, label in self.listeChoix:
             choices.append(label)
         self.ctrl_choix = wx.Choice(self, -1, choices=choices)
-        self.ctrl_choix.SetToolTipString(_(u"Sélectionnez le label de la prestation"))
+        self.ctrl_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez le label de la prestation")))
         self.ctrl_autre = wx.TextCtrl(self, -1, "")
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -235,12 +235,12 @@ class Panel(wx.Panel):
         sizer_base.Fit(self)
                 
         # Tooltips
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
-        self.ctrl_description.SetToolTipString(_(u"Saisissez une description explicite pour ce tarif [Optionnel]"))
-        self.ctrl_categories.SetToolTipString(_(u"Cochez les catégories de tarifs à rattacher à ce tarif"))
-        self.ctrl_tva.SetToolTipString(_(u"Saisissez le taux de TVA inclus [Optionnel]"))
-        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description explicite pour ce tarif [Optionnel]")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories de tarifs à rattacher à ce tarif")))
+        self.ctrl_tva.SetToolTip(wx.ToolTip(_(u"Saisissez le taux de TVA inclus [Optionnel]")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]")))
 
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckDateFin, self.check_date_fin)

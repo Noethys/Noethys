@@ -23,7 +23,7 @@ from DLG_Attestations_fiscales_selection import Panel as Page2
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Attestations_fiscales_generation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Attestations_fiscales_generation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici générer des attestions fiscales à imprimer ou envoyer par Email Page 1 : Sélectionnez des paramètres puis cliquez sur Rafraîchir pour afficher les prestations à inclure. Vous pouvez ajuster chaque prestation grâce à la fonction Ajustement (pour déduire le coût des repas par exemple). Page 2 : Cochez les attestations à générer puis cliquez sur les boutons Envoyer par Email ou Imprimer.")
@@ -66,10 +66,10 @@ class Dialog(wx.Dialog):
         self.sizer_pages.Layout()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
-        self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour fermer")))
         self.SetMinSize((990, 760))
 
     def __do_layout(self):

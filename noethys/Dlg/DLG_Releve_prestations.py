@@ -58,7 +58,7 @@ def ConvertCouleurPDFpourWX(couleurpdf=(0, 0, 0)):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Emetteurs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Emetteurs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
         
@@ -115,15 +115,15 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une période"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la période sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la période sélectionnée dans la liste"))
-        self.checkbox_couleur.SetToolTipString(_(u"Cochez cette case pour insérer une couleur"))
-        self.check_memoriser_parametres.SetToolTipString(_(u"Cochez cette case pour mémoriser les périodes"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour créer un aperçu du document PDF"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une période")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la période sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la période sélectionnée dans la liste")))
+        self.checkbox_couleur.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer une couleur")))
+        self.check_memoriser_parametres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour mémoriser les périodes")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu du document PDF")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((650, 400))
 
     def __do_layout(self):

@@ -177,7 +177,7 @@ class CTRL_Activite(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, mode="saisie", IDindividu=None, IDinscription=None, IDfamille=None, cp=None, ville=None, intro=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDindividu = IDindividu
         self.IDinscription = IDinscription
@@ -254,17 +254,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Inscription à une activité"))
-        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez une famille"))
-        self.ctrl_activite.SetToolTipString(_(u"Activité sélectionnée"))
-        self.bouton_activites.SetToolTipString(_(u"Cliquez ici pour sélectionner une activité"))
-        self.ctrl_groupes.SetToolTipString(_(u"Sélectionnez un groupe"))
-        self.ctrl_check_depart.SetToolTipString(_(u"Cochez cette case si l'individu ne fréquente plus cette activité"))
-        self.ctrl_date_depart.SetToolTipString(_(u"Saisissez la date de départ de l'activité (le dernier jour)"))
-        self.bouton_remboursement.SetToolTipString(_(u"Cliquez ici pour générer un remboursement lié au départ de l'activité"))
-        self.ctrl_categories.SetToolTipString(_(u"Sélectionnez une catégorie de tarif"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez une famille")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Activité sélectionnée")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une activité")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Sélectionnez un groupe")))
+        self.ctrl_check_depart.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu ne fréquente plus cette activité")))
+        self.ctrl_date_depart.SetToolTip(wx.ToolTip(_(u"Saisissez la date de départ de l'activité (le dernier jour)")))
+        self.bouton_remboursement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer un remboursement lié au départ de l'activité")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie de tarif")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=10, hgap=10)

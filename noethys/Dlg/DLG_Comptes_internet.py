@@ -36,7 +36,7 @@ CHOIX_DELAIS = [
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter et imprimer la liste des comptes internet. Vous pouvez utiliser les fonctions Activer et Désactiver disponibles à droite de la liste pour modifier l'activation des comptes cochés.")
@@ -93,19 +93,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des comptes internet"))
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_actif.SetToolTipString(_(u"Cliquez ici activer les comptes cochés dans la liste"))
-        self.bouton_inactif.SetToolTipString(_(u"Cliquez ici désactiver les comptes cochés dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer un email contenant des codes internet aux familles cochées"))
-        self.bouton_reinit_passwords.SetToolTipString(_(u"Cliquez ici pour réinitialiser les mots de passe des familles cochées"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille sélectionnée dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_actif.SetToolTip(wx.ToolTip(_(u"Cliquez ici activer les comptes cochés dans la liste")))
+        self.bouton_inactif.SetToolTip(wx.ToolTip(_(u"Cliquez ici désactiver les comptes cochés dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer un email contenant des codes internet aux familles cochées")))
+        self.bouton_reinit_passwords.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser les mots de passe des familles cochées")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 700))
 
     def __do_layout(self):

@@ -370,11 +370,11 @@ class Panel(wx.Panel):
         self.OnCheckDuree() 
 
     def __set_properties(self):
-        self.bouton_ajouter_combi.SetToolTipString(_(u"Cliquez ici pour ajouter une combinaison d'unités"))
-        self.bouton_modifier_combi.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste"))
-        self.bouton_supprimer_combi.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste"))
-        self.ctrl_duree_forfait.SetToolTipString(_(u"Vous pouvez définir une durée de validité à partir de la date de début de forfait saisie par l'utilisateur"))
-        self.ctrl_blocage_plafond.SetToolTipString(_(u"Cliquez ici pour empêcher la saisie d'une consommation si la quantité maximale est atteinte"))
+        self.bouton_ajouter_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaison d'unités")))
+        self.bouton_modifier_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste")))
+        self.bouton_supprimer_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste")))
+        self.ctrl_duree_forfait.SetToolTip(wx.ToolTip(_(u"Vous pouvez définir une durée de validité à partir de la date de début de forfait saisie par l'utilisateur")))
+        self.ctrl_blocage_plafond.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour empêcher la saisie d'une consommation si la quantité maximale est atteinte")))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))

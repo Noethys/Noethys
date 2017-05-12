@@ -37,7 +37,7 @@ class CTRL_archive(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTipString(_(u"Cochez les activités à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
         self.listeActivites = []
         self.dictActivites = {}
         # Binds
@@ -136,7 +136,7 @@ class CTRL(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(_(u"Cochez les activités et groupes à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités et groupes à afficher")))
         
         # Création des colonnes
         self.AddColumn(_(u"Activité/groupe"))

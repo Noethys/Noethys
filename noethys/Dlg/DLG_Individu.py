@@ -133,7 +133,7 @@ class Notebook(wx.Notebook):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDindividu=None, dictInfosNouveau={}):
-        wx.Dialog.__init__(self, parent, id=-1, name="fiche_individu", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, id=-1, name="fiche_individu", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.IDindividu = IDindividu
         self.dictInfosNouveau = dictInfosNouveau
         self.nouvelleFiche = False
@@ -223,11 +223,11 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Fiche individuelle n°%d") % self.IDindividu)
         self.ctrl_ID.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         self.ctrl_nom.SetFont(wx.Font(16, wx.FONTFAMILY_DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_photo.SetToolTipString(_(u"Cliquez sur le bouton droit de la souris\npour accéder aux outils photo"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer la fiche"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la\nsaisie et fermer la fiche"))
+        self.ctrl_photo.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de la souris\npour accéder aux outils photo")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer la fiche")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la\nsaisie et fermer la fiche")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

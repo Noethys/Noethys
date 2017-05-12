@@ -18,14 +18,18 @@ import wx.lib.platebtn as PB
 import textwrap
 from wx.lib.wordwrap import wordwrap
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx import Control
+else :
+    from wx import PyControl as Control
 
 ID_OUI = wx.NewId()
 ID_NON = wx.NewId()
 
 
-class CTRL_Bouton_toggle_archive(wx.PyControl):
+class CTRL_Bouton_toggle_archive(Control):
     def __init__(self, parent, id=-1, texte=u"", couleurClaire=(255, 255, 255), couleurFoncee=(255, 0, 0), selection=False, taille=wx.DefaultSize):
-        wx.PyControl.__init__(self, parent, id=id, pos=wx.DefaultPosition, size=taille, style=wx.NO_BORDER, name="boutonToggle")
+        Control.__init__(self, parent, id=id, pos=wx.DefaultPosition, size=taille, style=wx.NO_BORDER, name="boutonToggle")
         self.parent = parent
         self.texte = texte
         self.couleurClaire = couleurClaire
@@ -90,8 +94,10 @@ class CTRL_Bouton_toggle_archive(wx.PyControl):
         dc.SetFont(font)
         largeurTexte = 460#tailleDC[0] - self.marge - tailleImage[0] - self.marge - self.marge
         self.texte = wordwrap(self.texte, largeurTexte, dc, breakLongWords=True)
-        largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(self.texte)
-
+        if 'phoenix' in wx.PlatformInfo:
+            largeur, hauteur, hauteurLigne = dc.GetFullMultiLineTextExtent(self.texte)
+        else :
+            largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(self.texte)
         dc.SetBrush(wx.Brush((255, 0, 0)))
         dc.DrawRoundedRectangle(x+tailleImage[0]+self.marge, self.marge, largeurTexte, hauteur, 1)
 
@@ -200,8 +206,10 @@ class CTRL_Bouton_toggle(wx.Panel):
         dc.SetFont(font)
         largeurTexte = 520#tailleDC[0] - self.marge - tailleImage[0] - self.marge - self.marge
         self.texte = wordwrap(self.texte, largeurTexte, dc, breakLongWords=True)
-        largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(self.texte)
-        
+        if 'phoenix' in wx.PlatformInfo:
+            largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(self.texte)
+        else :
+            largeur, hauteur, hauteurLigne = dc.GetFullMultiLineTextExtent(self.texte)
         # Cadre pour les tests de taille
 ##        dc.SetBrush(wx.Brush((255, 0, 0)))
 ##        dc.DrawRoundedRectangle(x+tailleImage[0]+self.marge, self.marge, largeurTexte, hauteur, 1)

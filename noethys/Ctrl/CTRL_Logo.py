@@ -64,7 +64,7 @@ class CTRL(wx.StaticBitmap):
         # Propriétés
         self.SetMinSize(size)
         self.SetBackgroundColour(self.couleurFond)
-        self.SetToolTipString(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions")))
         
         #Binds
         self.Bind(wx.EVT_LEFT_DOWN, self.Menu)
@@ -167,7 +167,10 @@ class CTRL(wx.StaticBitmap):
         position = (((largeurCadre/2.0) - (largeurImage/2.0)), ((hauteurCadre/2.0) - (hauteurImage/2.0)))
         img.Resize(self.GetSize(), position, 255, 255, 255)
         # Affiche l'image
-        bmp = wx.BitmapFromImage(img)
+        if 'phoenix' in wx.PlatformInfo:
+            bmp = wx.Bitmap(img)
+        else :
+            bmp = wx.BitmapFromImage(img)
         self.SetBitmap(bmp)
     
     def Supprimer(self):
@@ -191,7 +194,10 @@ class CTRL(wx.StaticBitmap):
         """ Charge l'image à partir d'un buffer """
         if buffer == None : return
         io = cStringIO.StringIO(buffer)
-        self.imagewx = wx.ImageFromStream(io, wx.BITMAP_TYPE_PNG)
+        if 'phoenix' in wx.PlatformInfo:
+            self.imagewx = wx.Image(io, wx.BITMAP_TYPE_PNG)
+        else :
+            self.imagewx = wx.ImageFromStream(io, wx.BITMAP_TYPE_PNG)
         self.MAJ() 
 
     def GetBuffer(self):

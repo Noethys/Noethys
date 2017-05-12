@@ -149,7 +149,7 @@ class Panel_OL(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDbudget=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
         self.IDbudget = IDbudget
         
@@ -226,16 +226,16 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce budget (Ex : Année 2015)"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période à budgéter"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période à budgéter"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations"))
-        self.bouton_ajouter_categories.SetToolTipString(_(u"Cliquez ici pour ajouter une catégorie budgétaire"))
-        self.bouton_modifier_categories.SetToolTipString(_(u"Cliquez ici pour modifier la catégorie budgétaire sélectionnée"))
-        self.bouton_supprimer_categories.SetToolTipString(_(u"Cliquez ici pour supprimer la catégorie budgétaire sélectionnée"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce budget (Ex : Année 2015)")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période à budgéter")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période à budgéter")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
+        self.bouton_ajouter_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une catégorie budgétaire")))
+        self.bouton_modifier_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la catégorie budgétaire sélectionnée")))
+        self.bouton_supprimer_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la catégorie budgétaire sélectionnée")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((700, 620))
 
     def __do_layout(self):

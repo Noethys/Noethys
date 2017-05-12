@@ -68,7 +68,7 @@ class CTRL(wx.TextCtrl):
         wx.TextCtrl.__init__(self, parent, -1, "", size=size, validator=MyValidator(), style=style)
         self.parent = parent
         self.separateur = separateur
-        self.SetToolTipString(_(u"Saisissez une durée.\n\nExemples de formats acceptés :\n12h45, 6:32, 12.5, 45h, 1725H30"))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez une durée.\n\nExemples de formats acceptés :\n12h45, 6:32, 12.5, 45h, 1725H30")))
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         self.SetValue(datetime.timedelta(0))
         self.oldValeur = self.GetValue()

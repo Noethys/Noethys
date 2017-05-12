@@ -54,7 +54,7 @@ class CheckListBox(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.SetTitle(_(u"Saisie d'un vaccin"))  
         
@@ -92,15 +92,15 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom de vaccin. Par exemple : 'DT Polio'"))
-        self.radio_duree_1.SetToolTipString(_(u"Sélectionnez 'Illimitée' si le vaccin est valable à vie"))
-        self.radio_duree_2.SetToolTipString(_(u"Sélectionnez 'Limitée' si vous pouvez définir une durée pour ce vaccin"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom de vaccin. Par exemple : 'DT Polio'")))
+        self.radio_duree_1.SetToolTip(wx.ToolTip(_(u"Sélectionnez 'Illimitée' si le vaccin est valable à vie")))
+        self.radio_duree_2.SetToolTip(wx.ToolTip(_(u"Sélectionnez 'Limitée' si vous pouvez définir une durée pour ce vaccin")))
         self.spin_jours.SetMinSize((60, -1))
         self.spin_mois.SetMinSize((60, -1))
         self.spin_annees.SetMinSize((60, -1))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
         self.SetMinSize((400, 550))
 
     def __do_layout(self):

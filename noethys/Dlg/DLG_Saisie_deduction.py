@@ -18,7 +18,7 @@ from Ctrl import CTRL_Saisie_euros
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDdeduction=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_deduction", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_deduction", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDdeduction = IDdeduction
         
@@ -42,10 +42,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(_(u"Saisissez ici un label pour cette déduction"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant de la déduction"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label pour cette déduction")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la déduction")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, -1))
 
     def __do_layout(self):

@@ -16,13 +16,18 @@ import CTRL_Bouton_image
 import datetime
 import calendar
 import GestionDB
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
+else :
+    from wx import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
 
 
-class DatePickerCtrl(wx.DatePickerCtrl):
+
+class MyDatePickerCtrl(DatePickerCtrl):
     def __init__(self, parent):
-        wx.DatePickerCtrl.__init__(self, parent, -1, style=wx.DP_DROPDOWN) 
+        DatePickerCtrl.__init__(self, parent, -1, style=DP_DROPDOWN)
         self.parent = parent
-        self.Bind(wx.EVT_DATE_CHANGED, self.OnDateChanged)
+        self.Bind(EVT_DATE_CHANGED, self.OnDateChanged)
         self.Bind(wx.EVT_CHILD_FOCUS, self.OnFocus)
             
     def OnFocus(self,event):
@@ -50,7 +55,7 @@ class CTRL_Annee(wx.SpinCtrl):
         wx.SpinCtrl.__init__(self, parent, -1, min=1977, max=2999) 
         self.parent = parent
         self.SetMinSize((60, -1))
-        self.SetToolTipString(_(u"Sélectionnez une année"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
         annee_actuelle = datetime.date.today().year
         self.SetAnnee(annee_actuelle)
     
@@ -69,7 +74,7 @@ class CTRL_ListBox(wx.ListBox):
     def __init__(self, parent):
         wx.ListBox.__init__(self, parent, -1, style=wx.LB_EXTENDED) 
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez une ou plusieurs périodes avec les touches SHIFT ou CTRL"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez une ou plusieurs périodes avec les touches SHIFT ou CTRL")))
         self.listeChoix = []
     
     def SetListeChoix(self, listeChoix=[], conserveSelections=False):
@@ -255,12 +260,12 @@ class Dates(wx.Panel):
         self.parent = parent
         # Controles
         self.label_date_debut = wx.StaticText(self, -1, u"Du :")
-        self.ctrl_date_debut = DatePickerCtrl(self)
+        self.ctrl_date_debut = MyDatePickerCtrl(self)
         self.label_date_fin = wx.StaticText(self, -1, _(u"Au :"))
-        self.ctrl_date_fin = DatePickerCtrl(self)
+        self.ctrl_date_fin = MyDatePickerCtrl(self)
         # Propriétés
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
         # Layout
         grid_sizer_dates = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
         grid_sizer_dates.Add(self.label_date_debut, 0, wx.LEFT|wx.TOP|wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 5)
@@ -382,7 +387,10 @@ class CTRL(wx.Panel):
             if annee != None :
                 page.ctrl_annee.SetValue(annee)
                 page.MAJ()
-            page.ctrl_mois.DeselectAll()
+            if 'phoenix' in wx.PlatformInfo:
+                page.ctrl_mois.SetSelection(-1)
+            else :
+                page.ctrl_mois.DeselectAll()
             for index in listeSelections :
                 page.ctrl_mois.SetSelectionIndex(index)
         
@@ -391,7 +399,10 @@ class CTRL(wx.Panel):
             if annee != None :
                 page.ctrl_annee.SetValue(annee)
                 page.MAJ()
-            page.ctrl_periode.DeselectAll()
+            if 'phoenix' in wx.PlatformInfo:
+                page.ctrl_periode.SetSelection(-1)
+            else :
+                page.ctrl_periode.DeselectAll()
             for index in listeSelections :
                 page.ctrl_periode.SetSelectionIndex(index)
         

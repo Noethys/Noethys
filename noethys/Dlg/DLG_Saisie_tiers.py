@@ -48,11 +48,11 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'un tiers"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom du tiers"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations sur le tiers"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du tiers")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations sur le tiers")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)

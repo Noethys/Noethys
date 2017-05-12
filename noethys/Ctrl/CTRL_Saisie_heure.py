@@ -25,7 +25,7 @@ class Heure(masked.TextCtrl):
         self.parent = parent
         self.heure_max = heure_max
         self.SetMinSize((60, -1))
-        self.SetToolTipString(_(u"Saisissez une heure"))   
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def StrEnDatetime(self, texteHeure):

@@ -22,7 +22,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Ecoles", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Ecoles", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des écoles. Vous pouvez renseigner les coordonnées de l'établissement ainsi que les secteurs géographiques rattachés. Vous pourrez ensuite inscrire les individus dans ces écoles depuis les fiches individuelles.")
@@ -50,11 +50,11 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une école"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'école sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'école sélectionnée dans la iste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une école")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'école sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'école sélectionnée dans la iste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((750, 600))
 
     def __do_layout(self):

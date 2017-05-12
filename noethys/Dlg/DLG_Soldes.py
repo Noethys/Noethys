@@ -22,7 +22,7 @@ from Ctrl import CTRL_Saisie_date
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter la liste des comptes des familles. Double-cliquez sur une ligne pour ouvrir la fiche famille correspondante. Utilisez le champ Date pour connaître la situation des comptes à une date précise.")
@@ -78,17 +78,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Soldes des comptes"))
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.ctrl_date.SetToolTipString(_(u"Veuillez saisir une date de situation"))
-        self.check_debit.SetToolTipString(_(u"Afficher les soldes débiteurs"))
-        self.check_credit.SetToolTipString(_(u"Afficher les soldes créditeurs"))
-        self.check_nul.SetToolTipString(_(u"Afficher les soldes nuls"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Veuillez saisir une date de situation")))
+        self.check_debit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes débiteurs")))
+        self.check_credit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes créditeurs")))
+        self.check_nul.SetToolTip(wx.ToolTip(_(u"Afficher les soldes nuls")))
         self.SetMinSize((780, 700))
 
     def __do_layout(self):

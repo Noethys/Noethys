@@ -36,7 +36,7 @@ def DateEngEnDateDD(dateEng):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDtype_cotisation=None, premiereCotisation=False):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_type_cotisation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_type_cotisation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDtype_cotisation = IDtype_cotisation
         self.dictUnites = {}
@@ -92,17 +92,17 @@ class Dialog(wx.Dialog):
             
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de la cotisation"))
-        self.ctrl_type.SetToolTipString(_(u"Sélectionnez ici le type de la cotisation"))
-        self.ctrl_carte.SetToolTipString(_(u"Cochez cette case si la cotisation est représentée par une carte d'adhérent"))
-        self.bouton_ajouter_unite.SetToolTipString(_(u"Cliquez ici pour ajouter une unité"))
-        self.bouton_modifier_unite.SetToolTipString(_(u"Cliquez ici pour modifier l'unité sélectionnée dans la liste"))
-        self.bouton_supprimer_unite.SetToolTipString(_(u"Cliquez ici pour supprimer l'unité sélectionnée dans la liste"))
-        self.bouton_defaut.SetToolTipString(_(u"Cliquez ici pour définir l'unité de cotisation sélectionnée comme celle par défaut"))
-        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez un code comptable pour cette cotisation si vous souhaitez exporter les écritures comptables vers des logiciels de compta"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la cotisation")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de la cotisation")))
+        self.ctrl_carte.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la cotisation est représentée par une carte d'adhérent")))
+        self.bouton_ajouter_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une unité")))
+        self.bouton_modifier_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unité sélectionnée dans la liste")))
+        self.bouton_supprimer_unite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unité sélectionnée dans la liste")))
+        self.bouton_defaut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir l'unité de cotisation sélectionnée comme celle par défaut")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable pour cette cotisation si vous souhaitez exporter les écritures comptables vers des logiciels de compta")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((510, 590))
 
     def __do_layout(self):

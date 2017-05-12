@@ -56,13 +56,13 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_liste_calendrier)
 
         # Propriétés
-        self.bouton_prog_ajouter.SetToolTipString(_(u"Cliquez ici pour programmer un transport"))
-        self.bouton_prog_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la programmation sélectionnée dans la liste"))
-        self.bouton_prog_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la programmation sélectionnée dans la liste"))
-        self.bouton_liste_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un ou plusieurs transports"))
-        self.bouton_liste_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le transport sélectionné dans la liste"))
-        self.bouton_liste_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le transport sélectionné ou les transports cochés dans la liste"))
-        self.bouton_liste_calendrier.SetToolTipString(_(u"Cliquez ici pour afficher le planning des transports"))
+        self.bouton_prog_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour programmer un transport")))
+        self.bouton_prog_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la programmation sélectionnée dans la liste")))
+        self.bouton_prog_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la programmation sélectionnée dans la liste")))
+        self.bouton_liste_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un ou plusieurs transports")))
+        self.bouton_liste_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le transport sélectionné dans la liste")))
+        self.bouton_liste_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le transport sélectionné ou les transports cochés dans la liste")))
+        self.bouton_liste_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le planning des transports")))
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)

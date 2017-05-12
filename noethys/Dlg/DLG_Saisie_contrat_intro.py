@@ -149,7 +149,7 @@ class CTRL_Contrats(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDindividu=None, dictFamillesRattachees=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_contrat_intro", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_contrat_intro", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
 
         # Type de contrat
         self.box_type_staticbox = wx.StaticBox(self, wx.ID_ANY, _(u"Type de contrat"))
@@ -197,18 +197,18 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un nouveau contrat"))
-        self.radio_type_classique.SetToolTipString(_(u"Cliquez ici pour sélectionner le type de contrat classique"))
-        self.radio_type_psu.SetToolTipString(_(u"Cliquez ici pour sélectionner le type de contrat de type P.S.U."))
-        self.ctrl_inscriptions.SetToolTipString(_(u"Sélectionnez une activité pour laquelle créer le contrat"))
-        self.radio_option_vierge.SetToolTipString(_(u"Cliquez ici pour créer un contrat vierge"))
-        self.radio_option_modele.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat"))
-        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de contrat dans la liste"))
-        self.bouton_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des contrats"))
-        self.radio_option_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat basé sur un autre contrat"))
-        self.ctrl_contrat.SetToolTipString(_(u"Sélectionnez le contrat à copier"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.radio_type_classique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner le type de contrat classique")))
+        self.radio_type_psu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner le type de contrat de type P.S.U.")))
+        self.ctrl_inscriptions.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité pour laquelle créer le contrat")))
+        self.radio_option_vierge.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat vierge")))
+        self.radio_option_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat basé sur un modèle de contrat")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle de contrat dans la liste")))
+        self.bouton_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des contrats")))
+        self.radio_option_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat basé sur un autre contrat")))
+        self.ctrl_contrat.SetToolTip(wx.ToolTip(_(u"Sélectionnez le contrat à copier")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((600, 500))
 
     def __do_layout(self):

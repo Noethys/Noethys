@@ -310,7 +310,7 @@ class CheckListBoxIncompat(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, IDunite=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         self.IDunite = IDunite
@@ -398,30 +398,30 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une unité"))
         self.SetSize((650, -1))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom complet de l'unité"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom complet de l'unité")))
         self.ctrl_abrege.SetMinSize((80, -1))
-        self.ctrl_abrege.SetToolTipString(_(u"Saisissez ici le nom abrégé de l'unité"))
-        self.ctrl_type.SetToolTipString(_(u"Sélectionnez un type d'unité"))
-        self.ctrl_heure_debut.SetToolTipString(_(u"Saisissez l'heure minimale (Ex : 08:30)"))
-        self.ctrl_heure_fin.SetToolTipString(_(u"Saisissez l'heure maximale (Ex : 09:30)"))
-        self.ctrl_heure_debut_fixe.SetToolTipString(_(u"Cochez cette case si l'heure de début est obligatoirement celle-ci"))
-        self.ctrl_heure_fin_fixe.SetToolTipString(_(u"Cochez cette case si l'heure de fin est obligatoirement celle-ci"))
-        self.radio_groupes_tous.SetToolTipString(_(u"Cochez ici pour que tous les groupes bénéficient de cette unité"))
-        self.radio_groupes_suivants.SetToolTipString(_(u"Cochez ici pour sélectionner certains groupes"))
-        self.ctrl_repas.SetToolTipString(_(u"Cochez cette case si cette unité est ou comporte un repas"))
-        self.ctrl_restaurateur.SetToolTipString(_(u"Selectionnez un restaurateur"))
-        self.bouton_restaurateur.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des restaurateurs"))
-        self.ctrl_incompat.SetToolTipString(_(u"Cochez les unités qui sont incompatibles avec cette unité"))
-        self.check_autogen.SetToolTipString(_(u"Cochez cette case pour activer l'auto-génération de cette unité de conommation"))
-        self.bouton_autogen.SetToolTipString(_(u"Cliquez sur ce bouton pour renseigner les paramètres de l'auto-génération"))
-        self.radio_illimitee.SetToolTipString(_(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité"))
-        self.radio_limitee.SetToolTipString(_(u"Cliquez ici pour définir une période de validité précise"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
-        self.ctrl_raccourci.SetToolTipString(_(u"La touche de raccourci est utile dans la grille de saisie des \nconsommations : Lorsque cette touche est maintenue enfoncée,\nune consommation de cette unité est automatiquement créée."))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrégé de l'unité")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type d'unité")))
+        self.ctrl_heure_debut.SetToolTip(wx.ToolTip(_(u"Saisissez l'heure minimale (Ex : 08:30)")))
+        self.ctrl_heure_fin.SetToolTip(wx.ToolTip(_(u"Saisissez l'heure maximale (Ex : 09:30)")))
+        self.ctrl_heure_debut_fixe.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'heure de début est obligatoirement celle-ci")))
+        self.ctrl_heure_fin_fixe.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'heure de fin est obligatoirement celle-ci")))
+        self.radio_groupes_tous.SetToolTip(wx.ToolTip(_(u"Cochez ici pour que tous les groupes bénéficient de cette unité")))
+        self.radio_groupes_suivants.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner certains groupes")))
+        self.ctrl_repas.SetToolTip(wx.ToolTip(_(u"Cochez cette case si cette unité est ou comporte un repas")))
+        self.ctrl_restaurateur.SetToolTip(wx.ToolTip(_(u"Selectionnez un restaurateur")))
+        self.bouton_restaurateur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des restaurateurs")))
+        self.ctrl_incompat.SetToolTip(wx.ToolTip(_(u"Cochez les unités qui sont incompatibles avec cette unité")))
+        self.check_autogen.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'auto-génération de cette unité de conommation")))
+        self.bouton_autogen.SetToolTip(wx.ToolTip(_(u"Cliquez sur ce bouton pour renseigner les paramètres de l'auto-génération")))
+        self.radio_illimitee.SetToolTip(wx.ToolTip(_(u"Cochez ici si l'unité est valable sur toute la durée de validité de l'activité")))
+        self.radio_limitee.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir une période de validité précise")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
+        self.ctrl_raccourci.SetToolTip(wx.ToolTip(_(u"La touche de raccourci est utile dans la grille de saisie des \nconsommations : Lorsque cette touche est maintenue enfoncée,\nune consommation de cette unité est automatiquement créée.")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
 
     def __do_layout(self):

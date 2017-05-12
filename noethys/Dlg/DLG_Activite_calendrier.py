@@ -40,8 +40,8 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOuvertures_Modifier, self.bouton_ouvertures_modifier)
 
     def __set_properties(self):
-        self.ctrl_ouvertures.SetToolTipString(_(u"Calendrier des ouvertures et du nombre de places"))
-        self.bouton_ouvertures_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le calendrier des ouvertures et du nombre de places"))
+        self.ctrl_ouvertures.SetToolTip(wx.ToolTip(_(u"Calendrier des ouvertures et du nombre de places")))
+        self.bouton_ouvertures_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le calendrier des ouvertures et du nombre de places")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

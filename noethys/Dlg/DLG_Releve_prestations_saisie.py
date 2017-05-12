@@ -108,20 +108,20 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une période"))
-        self.radio_type_prestations.SetToolTipString(_(u"Sélectionnez le type de données à afficher"))
-        self.radio_type_factures.SetToolTipString(_(u"Sélectionnez le type de données à afficher"))
-        self.check_impayes.SetToolTipString(_(u"Uniquement les impayés"))
-        self.check_regroupement.SetToolTipString(_(u"Regroupement des prestations"))
+        self.radio_type_prestations.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
+        self.radio_type_factures.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
+        self.check_impayes.SetToolTip(wx.ToolTip(_(u"Uniquement les impayés")))
+        self.check_regroupement.SetToolTip(wx.ToolTip(_(u"Regroupement des prestations")))
         self.ctrl_regroupement_date.SetSelection(0)
-        self.check_conso.SetToolTipString(_(u"Détailler les consommations"))
+        self.check_conso.SetToolTip(wx.ToolTip(_(u"Détailler les consommations")))
         self.ctrl_mois.SetSelection(0)
         self.ctrl_mois_annee.SetMinSize((60, -1))
         self.ctrl_annee.SetMinSize((60, -1))
         self.ctrl_vacances.SetSelection(0)
         self.ctrl_vacances_annee.SetMinSize((60, -1))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)

@@ -62,7 +62,7 @@ class CTRL_Options(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
 
         # Bandeau
         titre = _(u"Importer des familles depuis un fichier Noethys")
@@ -117,19 +117,19 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.radio_local.SetToolTipString(_(u"Cliquez ici pour afficher les fichiers disponibles en mode local"))
-        self.radio_reseau.SetToolTipString(_(u"Cliquez ici pour afficher les fichiers disponibles en mode réseau"))
+        self.radio_local.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode local")))
+        self.radio_reseau.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les fichiers disponibles en mode réseau")))
         self.ctrl_port.SetMinSize((40, -1))
-        self.ctrl_port.SetToolTipString(_(u"Le numéro de port est 3306 par défaut"))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Le numéro de port est 3306 par défaut")))
         self.ctrl_hote.SetMinSize((90,-1))
-        self.ctrl_hote.SetToolTipString(_(u"Indiquez ici le nom du serveur hôte"))
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom du serveur hôte")))
         self.ctrl_utilisateur.SetMinSize((90,-1))
-        self.ctrl_utilisateur.SetToolTipString(_(u"Indiquez ici le nom de l'utilisateur"))
-        self.ctrl_motdepasse.SetToolTipString(_(u"Indiquez ici le mot de passe nécessaire à la connexion à MySQL"))
-        self.bouton_valider_codes.SetToolTipString(_(u"Cliquez ici pour valider les codes réseau et afficher la liste des fichiers disponibles"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Indiquez ici le nom de l'utilisateur")))
+        self.ctrl_motdepasse.SetToolTip(wx.ToolTip(_(u"Indiquez ici le mot de passe nécessaire à la connexion à MySQL")))
+        self.bouton_valider_codes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les codes réseau et afficher la liste des fichiers disponibles")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)

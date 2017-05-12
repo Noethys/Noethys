@@ -95,7 +95,7 @@ class ListView(FastObjectListView):
 
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun visage détecté"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
        
@@ -142,7 +142,7 @@ class ListView(FastObjectListView):
 
 class DLG_Rechercher_individu(wx.Dialog):
     def __init__(self, parent, bmp=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.bmp = bmp
         
@@ -206,7 +206,7 @@ class DLG_Rechercher_individu(wx.Dialog):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.nom_fichier = None
         
@@ -236,10 +236,10 @@ class Dialog(wx.Dialog):
         self.AnalysePhoto() 
 
     def __set_properties(self):
-        self.bouton_image.SetToolTipString(_(u"Cliquez ici pour charger une image"))
-        self.bouton_sauvegarder.SetToolTipString(_(u"Cliquez ici pour enregistrer les images identifiées dans les fiches individuelles correspondantes"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour charger une image")))
+        self.bouton_sauvegarder.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer les images identifiées dans les fiches individuelles correspondantes")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((820, 650))
 
     def __do_layout(self):

@@ -87,7 +87,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune correction"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
@@ -267,8 +267,8 @@ class Saisie(wx.Dialog):
             self.SetTitle(_(u"Modification d'une correction"))
         self.SetMinSize((500, -1))
         
-        self.ctrl_mot.SetToolTipString(_(u"Saisissez ici le mot à corriger"))
-        self.ctrl_correction.SetToolTipString(_(u"Saisissez ici la correction du mot"))
+        self.ctrl_mot.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot à corriger")))
+        self.ctrl_correction.SetToolTip(wx.ToolTip(_(u"Saisissez ici la correction du mot")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)

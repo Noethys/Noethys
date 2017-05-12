@@ -206,15 +206,15 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.ctrl_caisse.SetToolTipString(_(u"Sélectionnez une caisse"))
-        self.bouton_caisses.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des caisses"))
-        self.ctrl_numero.SetToolTipString(_(u"Saisissez le numéro d'allocataire"))
-        self.ctrl_allocataire.SetToolTipString(_(u"Sélectionnez l'individu titulaire du dossier d'allocataire"))
-        self.check_autorisation_cafpro.SetToolTipString(_(u"Cochez cette case si la famille a donné une autorisation de consultation CAFPRO"))
-        self.bouton_cafpro.SetToolTipString(_(u"Cliquez ici pour accéder au site CAFPRO"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une aide journalière"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste"))
+        self.ctrl_caisse.SetToolTip(wx.ToolTip(_(u"Sélectionnez une caisse")))
+        self.bouton_caisses.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des caisses")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro d'allocataire")))
+        self.ctrl_allocataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'individu titulaire du dossier d'allocataire")))
+        self.check_autorisation_cafpro.SetToolTip(wx.ToolTip(_(u"Cochez cette case si la famille a donné une autorisation de consultation CAFPRO")))
+        self.bouton_cafpro.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au site CAFPRO")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une aide journalière")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'aide sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'aide sélectionnée dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)

@@ -34,7 +34,7 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
 
         # Bandeau
@@ -88,15 +88,15 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(_(u"Saisissez le label de la déduction"))
-        self.radio_montant_fixe.SetToolTipString(_(u"Saisie d'un montant pour chaque déduction"))
-        self.radio_montant_pourcent.SetToolTipString(_(u"Saisie d'un pourcentage du montant de la prestation"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la déduction")))
+        self.radio_montant_fixe.SetToolTip(wx.ToolTip(_(u"Saisie d'un montant pour chaque déduction")))
+        self.radio_montant_pourcent.SetToolTip(wx.ToolTip(_(u"Saisie d'un pourcentage du montant de la prestation")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((690, 650))
 
     def __do_layout(self):

@@ -19,7 +19,7 @@ class CTRL(wx.TextCtrl):
     def __init__(self, parent, font=None, size=(-1, -1), style=wx.TE_RIGHT):
         wx.TextCtrl.__init__(self, parent, -1, u"0.00", size=size, style=style)
         self.parent = parent
-        self.SetToolTipString(_(u"Saisissez un montant"))   
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
         if font != None :
             self.SetFont(font)

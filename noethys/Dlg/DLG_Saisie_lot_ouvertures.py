@@ -27,7 +27,7 @@ class CTRL_Jours(wx.Panel):
         
         for jour in self.liste_jours :
             exec("self.check_%s = wx.CheckBox(self, -1, u'%s')" % (jour, jour[0].upper()) )
-            exec("self.check_%s.SetToolTipString(u'%s')" % (jour, jour.capitalize()) )
+            exec("self.check_%s.SetToolTip(wx.ToolTip(u'%s'))" % (jour, jour.capitalize()) )
         
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=7, vgap=5, hgap=5)
@@ -132,17 +132,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie et suppression par lot"))
-        self.ctrl_date.SetToolTipString(_(u"Sélectionnez une date modèle. Les éléments de cette date seront copiés vers les dates cibles"))
-        self.radio_date.SetToolTipString(_(u"Sélectionnez ce mode pour copier les éléments d'une date donnée"))
-        self.radio_renitialisation.SetToolTipString(_(u"Sélectionnez ce mode pour réinitialiser les éléments des dates cibles"))
-        self.check_ouvertures.SetToolTipString(_(u"Cochez cette case pour modifier les ouvertures"))
-        self.check_places.SetToolTipString(_(u"Cochez cette case pour modifier les nbres de places max. (remplissage)"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Sélectionnez une date de début de période cible"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Sélectionnez une date de fin de période cible"))
-        self.ctrl_feries.SetToolTipString(_(u"Cochez cette case pour modifier également les jours fériés"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date modèle. Les éléments de cette date seront copiés vers les dates cibles")))
+        self.radio_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour copier les éléments d'une date donnée")))
+        self.radio_renitialisation.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour réinitialiser les éléments des dates cibles")))
+        self.check_ouvertures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les ouvertures")))
+        self.check_places.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier les nbres de places max. (remplissage)")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de début de période cible")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date de fin de période cible")))
+        self.ctrl_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour modifier également les jours fériés")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

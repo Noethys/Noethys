@@ -23,7 +23,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, modeImportation=False):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.panel_saisie = wx.Panel(self, -1)
         
         titre = _(u"Villes et codes postaux")
@@ -68,14 +68,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_cp.SetMinSize((60, -1))
-        self.ctrl_cp.SetToolTipString(_(u"Saisissez ici un code postal"))
-        self.ctrl_ville.SetToolTipString(_(u"Saisissez ici le nom d'une ville"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une ville"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la ville sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la ville sélectionnée dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer la ville saisie manuellement ou sélectionnée dans la liste"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_cp.SetToolTip(wx.ToolTip(_(u"Saisissez ici un code postal")))
+        self.ctrl_ville.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom d'une ville")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une ville")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ville sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ville sélectionnée dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer la ville saisie manuellement ou sélectionnée dans la liste")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((480, 600))
 
     def __do_layout(self):

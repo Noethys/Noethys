@@ -184,34 +184,34 @@ class CTRL_Conditions(wx.Panel) :
 
 
     def __set_properties(self):
-        self.check_jour.SetToolTipString(_(u"Cochez cette case pour activer une condition de jour"))
-        self.check_scolaire_lundi.SetToolTipString(_(u"Lundi"))
-        self.check_scolaire_mardi.SetToolTipString(_(u"Mardi"))
-        self.check_scolaire_mercredi.SetToolTipString(_(u"Mercredi"))
-        self.check_scolaire_jeudi.SetToolTipString(_(u"Jeudi"))
-        self.check_scolaire_vendredi.SetToolTipString(_(u"Vendredi"))
-        self.check_scolaire_samedi.SetToolTipString(_(u"Samedi"))
-        self.check_scolaire_dimanche.SetToolTipString(_(u"Dimanche"))
-        self.check_vacances_lundi.SetToolTipString(_(u"Lundi"))
-        self.check_vacances_mardi.SetToolTipString(_(u"Mardi"))
-        self.check_vacances_mercredi.SetToolTipString(_(u"Mercredi"))
-        self.check_vacances_jeudi.SetToolTipString(_(u"Jeudi"))
-        self.check_vacances_vendredi.SetToolTipString(_(u"Vendredi"))
-        self.check_vacances_samedi.SetToolTipString(_(u"Samedi"))
-        self.check_vacances_dimanche.SetToolTipString(_(u"Dimanche"))
-        self.check_heure.SetToolTipString(_(u"Cochez cette case pour activer une condition d'heure"))
-        self.ctrl_heure_debut.SetToolTipString(_(u"Saisissez une heure minimale"))
-        self.ctrl_heure_fin.SetToolTipString(_(u"Saisissez une heure maximale"))
-        self.check_poste.SetToolTipString(_(u"Cochez cette case pour activer une condition de poste"))
-        self.radio_poste_1.SetToolTipString(_(u"Uniquement pour ce poste"))
-        self.radio_poste_2.SetToolTipString(_(u"Uniquement parmi une liste de postes cochés"))
-        self.ctrl_postes.SetToolTipString(_(u"Saisissez les noms de poste du réseau séparés par des points-virgules (;)"))
-        self.check_derniere.SetToolTipString(_(u"Cochez cette case pour activer une condition de délai"))
-        self.ctrl_derniere.SetToolTipString(_(u"Sélectionnez un délai"))
-        self.check_utilisateur.SetToolTipString(_(u"Cochez cette case pour activer une condition d'utilisateur"))
-        self.radio_utilisateur_1.SetToolTipString(_(u"Uniquement cet utilisateur"))
-        self.radio_utilisateur_2.SetToolTipString(_(u"Uniquement parmi une liste d'utilisateurs cochés"))
-        self.ctrl_utilisateurs.SetToolTipString(_(u"Cochez les utilisateurs"))
+        self.check_jour.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer une condition de jour")))
+        self.check_scolaire_lundi.SetToolTip(wx.ToolTip(_(u"Lundi")))
+        self.check_scolaire_mardi.SetToolTip(wx.ToolTip(_(u"Mardi")))
+        self.check_scolaire_mercredi.SetToolTip(wx.ToolTip(_(u"Mercredi")))
+        self.check_scolaire_jeudi.SetToolTip(wx.ToolTip(_(u"Jeudi")))
+        self.check_scolaire_vendredi.SetToolTip(wx.ToolTip(_(u"Vendredi")))
+        self.check_scolaire_samedi.SetToolTip(wx.ToolTip(_(u"Samedi")))
+        self.check_scolaire_dimanche.SetToolTip(wx.ToolTip(_(u"Dimanche")))
+        self.check_vacances_lundi.SetToolTip(wx.ToolTip(_(u"Lundi")))
+        self.check_vacances_mardi.SetToolTip(wx.ToolTip(_(u"Mardi")))
+        self.check_vacances_mercredi.SetToolTip(wx.ToolTip(_(u"Mercredi")))
+        self.check_vacances_jeudi.SetToolTip(wx.ToolTip(_(u"Jeudi")))
+        self.check_vacances_vendredi.SetToolTip(wx.ToolTip(_(u"Vendredi")))
+        self.check_vacances_samedi.SetToolTip(wx.ToolTip(_(u"Samedi")))
+        self.check_vacances_dimanche.SetToolTip(wx.ToolTip(_(u"Dimanche")))
+        self.check_heure.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer une condition d'heure")))
+        self.ctrl_heure_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une heure minimale")))
+        self.ctrl_heure_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une heure maximale")))
+        self.check_poste.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer une condition de poste")))
+        self.radio_poste_1.SetToolTip(wx.ToolTip(_(u"Uniquement pour ce poste")))
+        self.radio_poste_2.SetToolTip(wx.ToolTip(_(u"Uniquement parmi une liste de postes cochés")))
+        self.ctrl_postes.SetToolTip(wx.ToolTip(_(u"Saisissez les noms de poste du réseau séparés par des points-virgules (;)")))
+        self.check_derniere.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer une condition de délai")))
+        self.ctrl_derniere.SetToolTip(wx.ToolTip(_(u"Sélectionnez un délai")))
+        self.check_utilisateur.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer une condition d'utilisateur")))
+        self.radio_utilisateur_1.SetToolTip(wx.ToolTip(_(u"Uniquement cet utilisateur")))
+        self.radio_utilisateur_2.SetToolTip(wx.ToolTip(_(u"Uniquement parmi une liste d'utilisateurs cochés")))
+        self.ctrl_utilisateurs.SetToolTip(wx.ToolTip(_(u"Cochez les utilisateurs")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(1, 2, 10, 10)
@@ -558,11 +558,11 @@ class CTRL_Options(wx.Panel) :
         self.OnCheckSuppression(None) 
         
     def __set_properties(self):
-        self.check_demander.SetToolTipString(_(u"Noethys affichera une boîte de dialogue proposant la sauvegarde. A défaut, la sauvegarde sera réalisée automatiquement sans demander l'avis de l'utilisateur."))
-        self.check_interface.SetToolTipString(_(u"Pour afficher l'interface utilisateur avant la sauvegarde afin de permettre à l'utilisateur de modifier certains paramètres."))
-        self.check_confirmation.SetToolTipString(_(u"Pour afficher un message de confirmation si la sauvegarde a été réussie."))
-        self.check_suppression.SetToolTipString(_(u"Cochez cette case pour activer la suppression automatique des sauvegardes les plus anciennes"))
-        self.ctrl_suppression.SetToolTipString(_(u"Sélectionnez l'ancienneté des sauvegardes à supprimer"))
+        self.check_demander.SetToolTip(wx.ToolTip(_(u"Noethys affichera une boîte de dialogue proposant la sauvegarde. A défaut, la sauvegarde sera réalisée automatiquement sans demander l'avis de l'utilisateur.")))
+        self.check_interface.SetToolTip(wx.ToolTip(_(u"Pour afficher l'interface utilisateur avant la sauvegarde afin de permettre à l'utilisateur de modifier certains paramètres.")))
+        self.check_confirmation.SetToolTip(wx.ToolTip(_(u"Pour afficher un message de confirmation si la sauvegarde a été réussie.")))
+        self.check_suppression.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la suppression automatique des sauvegardes les plus anciennes")))
+        self.ctrl_suppression.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'ancienneté des sauvegardes à supprimer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)
@@ -681,7 +681,7 @@ class CTRL_Parametres(wx.Notebook):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDsauvegarde=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDsauvegarde = IDsauvegarde
 
@@ -717,11 +717,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une procédure de sauvegarde automatique"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette procédure de sauvegarde (Ex : 'Ma sauvegarde 1')"))
-        self.ctrl_observations.SetToolTipString(_(u"Vous pouvez saisir des observations [Optionnel]"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette procédure de sauvegarde (Ex : 'Ma sauvegarde 1')")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Vous pouvez saisir des observations [Optionnel]")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 10)

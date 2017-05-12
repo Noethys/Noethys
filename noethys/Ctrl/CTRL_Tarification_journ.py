@@ -376,10 +376,10 @@ class Panel(wx.Panel):
             self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_etats.SetToolTipString(_(u"Cochez les états de consommation associées à ce tarif"))
-        self.bouton_ajouter_combi.SetToolTipString(_(u"Cliquez ici pour ajouter une combinaison d'unités"))
-        self.bouton_modifier_combi.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste"))
-        self.bouton_supprimer_combi.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste"))
+        self.ctrl_etats.SetToolTip(wx.ToolTip(_(u"Cochez les états de consommation associées à ce tarif")))
+        self.bouton_ajouter_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaison d'unités")))
+        self.bouton_modifier_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unités selectionnée dans la liste")))
+        self.bouton_supprimer_combi.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unités selectionnée dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)

@@ -153,7 +153,7 @@ class CTRL_Donnees(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucune donnée"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        
@@ -344,11 +344,11 @@ class Page_scanner(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         
         # Propriétés
-        self.ctrl_port.SetToolTipString(_(u"Sélectionnez le port sur lequel est branché le scanner"))
-        self.check_vider.SetToolTipString(_(u"Cochez cette case pour vider l'appareil après l'importation"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes spéciales du scanner"))
-        self.ctrl_appareil.SetToolTipString(_(u"Sélectionnez le nom du scanner"))
-        self.check_heure_auto.SetToolTipString(_(u"Cochez cette case pour que le réglage de l'heure de l'appareil soit automatique"))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Sélectionnez le port sur lequel est branché le scanner")))
+        self.check_vider.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour vider l'appareil après l'importation")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux commandes spéciales du scanner")))
+        self.ctrl_appareil.SetToolTip(wx.ToolTip(_(u"Sélectionnez le nom du scanner")))
+        self.check_heure_auto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que le réglage de l'heure de l'appareil soit automatique")))
 
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -537,7 +537,7 @@ class Page_excel(wx.Panel):
         self.label_infos.SetForegroundColour((130, 130, 130))
         
         # Propriétés
-        self.ctrl_fichier.SetToolTipString(_(u"Sélectionnez le fichier source"))
+        self.ctrl_fichier.SetToolTip(wx.ToolTip(_(u"Sélectionnez le fichier source")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -628,10 +628,10 @@ class Page_csv(wx.Panel):
         self.ctrl_format = wx.TextCtrl(self, -1, "")
         
         # Propriétés
-        self.ctrl_fichier.SetToolTipString(_(u"Sélectionnez le fichier source"))
-        self.ctrl_delimiteur.SetToolTipString(_(u"Sélectionnez le symbole délimiteur des champs"))
+        self.ctrl_fichier.SetToolTip(wx.ToolTip(_(u"Sélectionnez le fichier source")))
+        self.ctrl_delimiteur.SetToolTip(wx.ToolTip(_(u"Sélectionnez le symbole délimiteur des champs")))
         self.ctrl_delimiteur.SetSelection(1)
-        self.ctrl_format.SetToolTipString(_(u"Saisissez le format de la ligne de la source : \n\n- CODE : Code-barre\n- AAAA : Année\n- MM : Mois\n- JJ : Jour\n- HH : Heures\n- MN : Minutes\n- SS : Secondes\n- X : Autre\n\nExemple : 'CODE;AAAA-MM-JJ HH:MN:SS;' \n"))
+        self.ctrl_format.SetToolTip(wx.ToolTip(_(u"Saisissez le format de la ligne de la source : \n\n- CODE : Code-barre\n- AAAA : Année\n- MM : Mois\n- JJ : Jour\n- HH : Heures\n- MN : Minutes\n- SS : Secondes\n- X : Autre\n\nExemple : 'CODE;AAAA-MM-JJ HH:MN:SS;' \n")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -847,7 +847,7 @@ class Notebook(wx.Notebook):
 # ---------------------------------------------------------------------------------------------------------------------------------------------
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -896,15 +896,15 @@ class Dialog(wx.Dialog):
         self.ctrl_donnees.MAJ() 
 
     def __set_properties(self):
-        self.bouton_lire.SetToolTipString(_(u"Cliquer ici pour lire la source des données"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour faire un export Excel de la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour faire un export Texte de la liste"))
-        self.check_archiver.SetToolTipString(_(u"Cochez cette case pour archiver les données"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer l'importation"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_lire.SetToolTip(wx.ToolTip(_(u"Cliquer ici pour lire la source des données")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un export Excel de la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un export Texte de la liste")))
+        self.check_archiver.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour archiver les données")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((570, 700))
 
     def __do_layout(self):

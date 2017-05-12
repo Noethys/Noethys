@@ -155,7 +155,7 @@ class CTRL_Activite(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
 
         # Bandeau
@@ -206,13 +206,13 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez l'activité pour laquelle vous souhaitez recalculer les prestations"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'activité pour laquelle vous souhaitez recalculer les prestations")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((820, 800))
 
     def __do_layout(self):

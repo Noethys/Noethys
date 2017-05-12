@@ -61,14 +61,14 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonDupliquerTarif, self.bouton_dupliquer_tarif)
         
     def __set_properties(self):
-        self.ctrl_tarification.SetToolTipString(_(u"Calendrier des tarifs et du nombre de places"))
-        self.bouton_ajouter_categorie.SetToolTipString(_(u"Cliquez ici pour ajouter une catégorie de tarif"))
-        self.bouton_modifier_categorie.SetToolTipString(_(u"Cliquez ici pour modifier la catégorie sélectionnés"))
-        self.bouton_supprimer_categorie.SetToolTipString(_(u"Cliquez ici pour supprimer la catégorie sélectionnée"))
-        self.bouton_ajouter_tarif.SetToolTipString(_(u"Cliquez ici pour ajouter un nom de prestation ou un tarif"))
-        self.bouton_modifier_tarif.SetToolTipString(_(u"Cliquez ici pour modifier l'item sélectionné"))
-        self.bouton_supprimer_tarif.SetToolTipString(_(u"Cliquez ici pour supprimer l'item sélectionné"))
-        self.bouton_dupliquer_tarif.SetToolTipString(_(u"Cliquez ici pour dupliquer l'item sélectionné"))
+        self.ctrl_tarification.SetToolTip(wx.ToolTip(_(u"Calendrier des tarifs et du nombre de places")))
+        self.bouton_ajouter_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une catégorie de tarif")))
+        self.bouton_modifier_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la catégorie sélectionnés")))
+        self.bouton_supprimer_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la catégorie sélectionnée")))
+        self.bouton_ajouter_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un nom de prestation ou un tarif")))
+        self.bouton_modifier_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'item sélectionné")))
+        self.bouton_supprimer_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'item sélectionné")))
+        self.bouton_dupliquer_tarif.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer l'item sélectionné")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

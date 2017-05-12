@@ -218,7 +218,7 @@ class Choix_tarif(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDprestation=None, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_prestation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_prestation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDprestation = IDprestation
         self.IDfamille = IDfamille
@@ -366,27 +366,27 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(_(u"Saisissez ici la date de la prestation"))
-        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici la catégorie de la prestation"))
-        self.ctrl_label.SetToolTipString(_(u"Saisissez un intitulé pour cette prestation"))
-        self.radio_type_familiale.SetToolTipString(_(u"Selectionnez cette case si la prestation concerne toute la famille"))
-        self.radio_type_individuelle.SetToolTipString(_(u"Selectionnez cette case si la prestation ne concerne qu'un individu"))
-        self.ctrl_individu.SetToolTipString(_(u"Selectionnez l'individu associé à la prestation"))
-        self.ctrl_activite.SetToolTipString(_(u"Selectionnez ici l'activité concernée par la prestation"))
-        self.ctrl_categorie_tarif.SetToolTipString(_(u"Selectionnez ici la catégorie de tarif rattaché a cette prestation"))
-        self.ctrl_tarif.SetToolTipString(_(u"Selectionnez un tarif parmi ceux proposés"))
-        self.ctrl_montant_avant_deduc.SetToolTipString(_(u"Saisissez ici le montant avant déductions en Euros"))
-        self.ctrl_montant.SetToolTipString(_(u"Montant après déductions en Euros"))
-        self.ctrl_facture.SetToolTipString(_(u"Quand une prestation a été facturée, le numéro de facture apparait ici"))
-        self.ctrl_temps.SetToolTipString(_(u"Vous pouvez modifier ici le temps facturé pour cette prestation (utile pour la CAF)"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une nouvelle déduction"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la déduction selectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la déduction selectionnée dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
-        self.ctrl_tva.SetToolTipString(_(u"Saisissez le taux de TVA inclus [Optionnel]"))
-        self.ctrl_code_comptable.SetToolTipString(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de la prestation")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la catégorie de la prestation")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez un intitulé pour cette prestation")))
+        self.radio_type_familiale.SetToolTip(wx.ToolTip(_(u"Selectionnez cette case si la prestation concerne toute la famille")))
+        self.radio_type_individuelle.SetToolTip(wx.ToolTip(_(u"Selectionnez cette case si la prestation ne concerne qu'un individu")))
+        self.ctrl_individu.SetToolTip(wx.ToolTip(_(u"Selectionnez l'individu associé à la prestation")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Selectionnez ici l'activité concernée par la prestation")))
+        self.ctrl_categorie_tarif.SetToolTip(wx.ToolTip(_(u"Selectionnez ici la catégorie de tarif rattaché a cette prestation")))
+        self.ctrl_tarif.SetToolTip(wx.ToolTip(_(u"Selectionnez un tarif parmi ceux proposés")))
+        self.ctrl_montant_avant_deduc.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant avant déductions en Euros")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Montant après déductions en Euros")))
+        self.ctrl_facture.SetToolTip(wx.ToolTip(_(u"Quand une prestation a été facturée, le numéro de facture apparait ici")))
+        self.ctrl_temps.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le temps facturé pour cette prestation (utile pour la CAF)")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une nouvelle déduction")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la déduction selectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la déduction selectionnée dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
+        self.ctrl_tva.SetToolTip(wx.ToolTip(_(u"Saisissez le taux de TVA inclus [Optionnel]")))
+        self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de cette prestation si vous souhaitez utiliser l'export vers les logiciels de comptabilité [Optionnel]")))
 
         self.ctrl_label.SetFont(wx.Font(8, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
         

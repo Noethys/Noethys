@@ -51,7 +51,7 @@ class MyHtml(html.HtmlWindow):
         
 class Dialog(wx.Dialog):
     def __init__(self, parent, texte=u"", titre=_(u"Information"), size=(360, 410), nePlusAfficher=False):
-        wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER)
         self.SetTitle(titre)
         self.size = size
         
@@ -73,8 +73,8 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.check_nePlusAfficher.SetToolTipString(_(u"Cochez cette case pour ne plus afficher ce message"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer ce message"))
+        self.check_nePlusAfficher.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour ne plus afficher ce message")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer ce message")))
         self.SetMinSize(self.size)
 
     def __do_layout(self):

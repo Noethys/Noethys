@@ -75,8 +75,8 @@ class Interface(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_theme.SetToolTipString(_(u"Sélectionnez un thème pour l'interface. Redémarrez le logiciel pour appliquer la modification."))
-        self.ctrl_langue.SetToolTipString(_(u"Sélectionnez la langue de l'interface parmi les langues disponibles dans la liste. Redémarrez le logiciel pour appliquer la modification."))
+        self.ctrl_theme.SetToolTip(wx.ToolTip(_(u"Sélectionnez un thème pour l'interface. Redémarrez le logiciel pour appliquer la modification.")))
+        self.ctrl_langue.SetToolTip(wx.ToolTip(_(u"Sélectionnez la langue de l'interface parmi les langues disponibles dans la liste. Redémarrez le logiciel pour appliquer la modification.")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -140,7 +140,7 @@ class Interface_mysql(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_interface.SetToolTipString(_(u"Sélectionnez l'interface MySQL à utiliser pour les fichiers réseau. 'Mysqldb' est conseillé mais il est possible que 'mysql.connector' soit parfois plus rapide pour certaines connexions distantes (par internet). Vous pouvez tester les deux pour choisir le plus rapide."))
+        self.ctrl_interface.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'interface MySQL à utiliser pour les fichiers réseau. 'Mysqldb' est conseillé mais il est possible que 'mysql.connector' soit parfois plus rapide pour certaines connexions distantes (par internet). Vous pouvez tester les deux pour choisir le plus rapide.")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -199,11 +199,11 @@ class Monnaie(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_singulier.SetToolTipString(_(u"'Euro' par défaut (au singulier)"))
-        self.ctrl_division.SetToolTipString(_(u"'Centime' par défaut (au singulier)"))
-        self.ctrl_pluriel.SetToolTipString(_(u"'Euros' par défaut (au pluriel)"))
+        self.ctrl_singulier.SetToolTip(wx.ToolTip(_(u"'Euro' par défaut (au singulier)")))
+        self.ctrl_division.SetToolTip(wx.ToolTip(_(u"'Centime' par défaut (au singulier)")))
+        self.ctrl_pluriel.SetToolTip(wx.ToolTip(_(u"'Euros' par défaut (au pluriel)")))
         self.ctrl_symbole.SetMinSize((60, -1))
-        self.ctrl_symbole.SetToolTipString(u"'¤' par défaut")
+        self.ctrl_symbole.SetToolTip(wx.ToolTip(_(u"'¤' par défaut")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -292,8 +292,8 @@ class Telephones(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.radio_france.SetToolTipString(_(u"Format français"))
-        self.radio_libre.SetToolTipString(_(u"Format libre"))
+        self.radio_france.SetToolTip(wx.ToolTip(_(u"Format français")))
+        self.radio_libre.SetToolTip(wx.ToolTip(_(u"Format libre")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -337,8 +337,8 @@ class Codes_postaux(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.radio_france.SetToolTipString(_(u"Format français"))
-        self.radio_libre.SetToolTipString(_(u"Format libre"))
+        self.radio_france.SetToolTip(wx.ToolTip(_(u"Format français")))
+        self.radio_libre.SetToolTip(wx.ToolTip(_(u"Format libre")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -381,7 +381,7 @@ class Adresses(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check_autoComplete.SetToolTipString(_(u"Activation de l'auto-complétion"))
+        self.check_autoComplete.SetToolTip(wx.ToolTip(_(u"Activation de l'auto-complétion")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -416,7 +416,7 @@ class Rapport_bugs(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check.SetToolTipString(_(u"Affichage du rapport de bugs lorsqu'une erreur est rencontrée"))
+        self.check.SetToolTip(wx.ToolTip(_(u"Affichage du rapport de bugs lorsqu'une erreur est rencontrée")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -451,7 +451,7 @@ class Propose_maj(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check.SetToolTipString(_(u"Propose le téléchargement des mises à jour à l'ouverture du logiciel"))
+        self.check.SetToolTip(wx.ToolTip(_(u"Propose le téléchargement des mises à jour à l'ouverture du logiciel")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -491,8 +491,8 @@ class DerniersFichiers(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.ctrl_nbre.SetToolTipString(_(u"Saisissez ici le nombre de fichiers à afficher dans la liste des fichiers ouverts"))
-        self.bouton_purge.SetToolTipString(_(u"Cliquez ici pour purger la liste des derniers fichiers ouverts"))
+        self.ctrl_nbre.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre de fichiers à afficher dans la liste des fichiers ouverts")))
+        self.bouton_purge.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour purger la liste des derniers fichiers ouverts")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -564,8 +564,8 @@ class Autodeconnect(wx.Panel):
         self.Importation() 
 
     def __set_properties(self):
-        self.check_autodeconnect.SetToolTipString(_(u"Cochez cette case pour activer la déconnexion automatique de l'utilisateur au bout du temps d'inactivité sélectionné dans la liste"))
-        self.ctrl_temps.SetToolTipString(_(u"Sélectionnez un temps d'inactivité"))
+        self.check_autodeconnect.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la déconnexion automatique de l'utilisateur au bout du temps d'inactivité sélectionné dans la liste")))
+        self.ctrl_temps.SetToolTip(wx.ToolTip(_(u"Sélectionnez un temps d'inactivité")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -634,7 +634,7 @@ class Comptes_internet(wx.Panel):
         self.Importation()
 
     def __set_properties(self):
-        self.ctrl_taille.SetToolTipString(_(u"Saisissez ici la taille des mots de passe des comptes internet. Ce paramètre ne sera valable que pour les prochains comptes créés."))
+        self.ctrl_taille.SetToolTip(wx.ToolTip(_(u"Saisissez ici la taille des mots de passe des comptes internet. Ce paramètre ne sera valable que pour les prochains comptes créés.")))
 
     def __do_layout(self):
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -714,9 +714,9 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.SetTitle(_(u"Préférences"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

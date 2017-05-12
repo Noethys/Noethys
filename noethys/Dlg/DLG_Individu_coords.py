@@ -29,7 +29,7 @@ class Adresse_auto(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez ici un représentant de la famille.\n(Les individus sans adresse n'apparaissent pas)"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un représentant de la famille.\n(Les individus sans adresse n'apparaissent pas)")))
     
     def MAJ(self, DB=None):
         if self.parent.IDindividu != None :
@@ -99,7 +99,7 @@ class Categorie(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez la catégorie socio-professionnelle de l'individu"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez la catégorie socio-professionnelle de l'individu")))
     
     def MAJ(self, DB=None):
         choices = self.GetListeDonnees(DB)
@@ -134,7 +134,7 @@ class Secteur(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=[]) 
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez le secteur géographique du lieu de résidence de l'individu"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le secteur géographique du lieu de résidence de l'individu")))
     
     def MAJ(self, DB=None):
         listeItems = self.GetListeDonnees(DB)
@@ -181,7 +181,7 @@ class CTRL_diff(wx.CheckListBox):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
         self.SetMinSize((20, 20))
-        self.SetToolTipString(_(u"Cochez les listes de diffusion souhaitées"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les listes de diffusion souhaitées")))
         self.listeDiff = []
         self.dictDiff = {}
         
@@ -318,14 +318,14 @@ class Panel_coords(wx.Panel):
                 
 
     def __set_properties(self):
-        self.radio_adresse_auto.SetToolTipString(_(u"Cliquez ici pour utiliser l'adresse d'un autre membre de la famille"))
-        self.radio_adresse_manuelle.SetToolTipString(_(u"Cliquez ici pour saisir manuellement une adresse"))
-        self.ctrl_rue.SetToolTipString(_(u"Saisissez la rue de l'adresse"))
-        self.ctrl_profession.SetToolTipString(_(u"Saisissez la profession de l'individu"))
-        self.ctrl_employeur.SetToolTipString(_(u"Saisissez le nom de l'employeur de l'individu"))
-        self.bouton_secteurs.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des secteurs"))
-        self.bouton_mail_travail.SetToolTipString(_(u"Cliquez ici pour envoyer un email à cette adresse internet"))
-        self.bouton_mail_perso.SetToolTipString(_(u"Cliquez ici pour envoyer un email à cette adresse internet"))
+        self.radio_adresse_auto.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour utiliser l'adresse d'un autre membre de la famille")))
+        self.radio_adresse_manuelle.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement une adresse")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'adresse")))
+        self.ctrl_profession.SetToolTip(wx.ToolTip(_(u"Saisissez la profession de l'individu")))
+        self.ctrl_employeur.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'employeur de l'individu")))
+        self.bouton_secteurs.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des secteurs")))
+        self.bouton_mail_travail.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer un email à cette adresse internet")))
+        self.bouton_mail_perso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer un email à cette adresse internet")))
 
     def __do_layout(self):
         grid_sizer_base0 = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

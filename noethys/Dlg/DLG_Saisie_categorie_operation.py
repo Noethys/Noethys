@@ -106,14 +106,14 @@ class Dialog(wx.Dialog):
         self.SetTitle(titre)
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de la catégorie"))
-        self.ctrl_abrege.SetToolTipString(_(u"Saisissez le nom abrégé de la catégorie"))
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez un compte comptable"))
-        self.bouton_comptes.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des comptes comptables"))
-        self.ctrl_journal.SetToolTipString(_(u"Saisissez le code du journal"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la catégorie")))
+        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez le nom abrégé de la catégorie")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez un compte comptable")))
+        self.bouton_comptes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des comptes comptables")))
+        self.ctrl_journal.SetToolTip(wx.ToolTip(_(u"Saisissez le code du journal")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)

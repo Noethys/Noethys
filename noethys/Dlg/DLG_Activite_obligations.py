@@ -389,10 +389,10 @@ class Panel(wx.Panel):
             
 
     def __set_properties(self):
-        self.ctrl_pieces.SetToolTipString(_(u"Cochez les pièces que l'individu inscrit à cette activité doit fournir"))
-        self.ctrl_vaccins.SetToolTipString(_(u"Cochez cette case si l'individu inscrit à cette activité doit obligatoirement justifier de ses vaccins à jour"))
-        self.ctrl_infos.SetToolTipString(_(u"Cochez les informations que l'individu inscrit à cette activité doit obligatoirement renseigner dans son dossier"))
-        self.ctrl_cotisations.SetToolTipString(_(u"Cochez les cotisations que l'individu inscrit à cette activité doit avoir à jour (au moins l'une d'elle)"))
+        self.ctrl_pieces.SetToolTip(wx.ToolTip(_(u"Cochez les pièces que l'individu inscrit à cette activité doit fournir")))
+        self.ctrl_vaccins.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu inscrit à cette activité doit obligatoirement justifier de ses vaccins à jour")))
+        self.ctrl_infos.SetToolTip(wx.ToolTip(_(u"Cochez les informations que l'individu inscrit à cette activité doit obligatoirement renseigner dans son dossier")))
+        self.ctrl_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez les cotisations que l'individu inscrit à cette activité doit avoir à jour (au moins l'une d'elle)")))
         self.ctrl_pieces.SetMinSize((-1, 90))
         
     def __do_layout(self):

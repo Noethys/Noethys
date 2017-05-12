@@ -19,7 +19,7 @@ from Ctrl import CTRL_Saisie_date
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.SetTitle(_(u"Saisie d'un agrément"))  
         
@@ -44,9 +44,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_agrement.SetToolTipString(_(u"Saisissez ici un numéro d'agrément Par exemple : '098GHJ25542'"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
+        self.ctrl_agrement.SetToolTip(wx.ToolTip(_(u"Saisissez ici un numéro d'agrément Par exemple : '098GHJ25542'")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
         self.SetMinSize((340, 200))
 
     def __do_layout(self):

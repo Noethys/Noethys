@@ -427,8 +427,8 @@ class Panel_Expediteur(wx.Panel):
         self.bouton_exp = self.bouton_exp = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         # Propriétés
-        self.ctrl_exp.SetToolTipString(_(u"Sélectionnez l'adresse d'expéditeur"))
-        self.bouton_exp.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des adresses d'expédition"))
+        self.ctrl_exp.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'adresse d'expéditeur")))
+        self.bouton_exp.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des adresses d'expédition")))
         
         # Layout
         grid_sizer = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

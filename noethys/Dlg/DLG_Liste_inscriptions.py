@@ -408,15 +408,15 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonBas, self.bouton_bas)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
-        self.check_partis.SetToolTipString(_(u"Cochez cette case pour inclure dans la liste des individus partis"))
-        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes à afficher"))
-        self.ctrl_categories.SetToolTipString(_(u"Cochez les catégories à afficher"))
-        self.ctrl_regroupement.SetToolTipString(_(u"Sélectionnez un regroupement"))
-        self.ctrl_colonnes.SetToolTipString(_(u"Cochez les colonnes souhaitées"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
-        self.bouton_haut.SetToolTipString(_(u"Cliquez ici pour monter la colonne"))
-        self.bouton_bas.SetToolTipString(_(u"Cliquez ici pour descendre la colonne"))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
+        self.check_partis.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure dans la liste des individus partis")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
+        self.ctrl_categories.SetToolTip(wx.ToolTip(_(u"Cochez les catégories à afficher")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez un regroupement")))
+        self.ctrl_colonnes.SetToolTip(wx.ToolTip(_(u"Cochez les colonnes souhaitées")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
+        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne")))
+        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -538,7 +538,7 @@ class Parametres(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter et imprimer la liste des inscriptions. Commencez par sélectionner une activité avant de cliquer sur le bouton 'Rafraîchir la liste' pour afficher les résultats. Vous pouvez également regrouper les données par type d'informations et sélectionner les colonnes à afficher. Les données peuvent être ensuite imprimées ou exportées au format Texte ou Excel.")
@@ -575,13 +575,13 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.MAJ(listeColonnes=listeColonnes) 
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):

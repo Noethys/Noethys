@@ -33,7 +33,7 @@ class CTRL_Medecin(html.HtmlWindow):
             self.SetStandardFonts()
         self.SetBorders(0)
         self.SetMinSize((-1, hauteur))
-        self.SetToolTipString(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")))
 ##        couleurFond = wx.SystemSettings.GetColour(30)
 ##        self.SetBackgroundColour("#F0FBED" )
     
@@ -91,10 +91,10 @@ class CTRL_Medecin(html.HtmlWindow):
             if tel == None : tel = ""
             texteMedecin = _(u"Dr %s %s<BR>%s") % (nom, prenom, tel)
             txtToolTip = _(u"Dr %s %s\n\n%s\n%s %s\n\nTél. Cabinet : %s\nTél. Mobile : %s") % (nom, prenom, rue, cp, ville, tel, mobile)
-            self.SetToolTipString(txtToolTip)
+            self.SetToolTip(wx.ToolTip(txtToolTip))
         else:
             texteMedecin = None
-            self.SetToolTipString(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin"))
+            self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")))
         self.SetTexteMedecin(texteMedecin)
     
     def DetacherMedecin(self):
@@ -104,7 +104,7 @@ class CTRL_Medecin(html.HtmlWindow):
         self.IDmedecin = None
         db.Close()
         self.SetTexteMedecin(None)
-        self.SetToolTipString(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton Modifier pour sélectionner un médecin")))
         
     def SetTexteMedecin(self, texteMedecin=""):
         if texteMedecin == None or texteMedecin == "" :
@@ -181,15 +181,15 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimer_probleme, self.bouton_supprimer_probleme)
 
     def __set_properties(self):
-        self.ctrl_maladies.SetToolTipString(_(u"Liste des maladies dont le vaccin est obligatoire"))
-        self.bouton_ajouter_vaccin.SetToolTipString(_(u"Cliquez ici pour ajouter un vaccin"))
-        self.bouton_modifier_vaccin.SetToolTipString(_(u"Cliquez ici pour modifier le vaccin sélectionné"))
-        self.bouton_supprimer_vaccin.SetToolTipString(_(u"Cliquez ici pour supprimer le vaccin sélectionné"))
-        self.bouton_ajouter_probleme.SetToolTipString(_(u"Cliquez ici pour ajouter une information médicale"))
-        self.bouton_modifier_probleme.SetToolTipString(_(u"Cliquez ici pour modifier l'information médicale sélectionnée dans la liste"))
-        self.bouton_supprimer_probleme.SetToolTipString(_(u"Cliquez ici pour supprimer l'information médicale sélectionnée dans la liste"))
-        self.bouton_medecin.SetToolTipString(_(u"Cliquez ici pour sélectionner un médecin traitant"))
-        self.bouton_detacher_medecin.SetToolTipString(_(u"Cliquez ici pour détacher le médecin de cette fiche individuelle"))
+        self.ctrl_maladies.SetToolTip(wx.ToolTip(_(u"Liste des maladies dont le vaccin est obligatoire")))
+        self.bouton_ajouter_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un vaccin")))
+        self.bouton_modifier_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le vaccin sélectionné")))
+        self.bouton_supprimer_vaccin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le vaccin sélectionné")))
+        self.bouton_ajouter_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une information médicale")))
+        self.bouton_modifier_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'information médicale sélectionnée dans la liste")))
+        self.bouton_supprimer_probleme.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'information médicale sélectionnée dans la liste")))
+        self.bouton_medecin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un médecin traitant")))
+        self.bouton_detacher_medecin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour détacher le médecin de cette fiche individuelle")))
 ##        self.ctrl_maladies.SetMinSize((130, -1))
         self.ctrl_medecin.SetMinSize((90, 100))
 

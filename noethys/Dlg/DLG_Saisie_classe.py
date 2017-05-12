@@ -81,7 +81,7 @@ class CTRL_Niveaux(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
 
         self.label_nom = wx.StaticText(self, -1, _(u"Nom :"), style=wx.ALIGN_RIGHT)
@@ -109,13 +109,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une classe"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de la classe. Ex : 'CP - Mme PICHON'..."))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de saison"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de saison"))
-        self.ctrl_niveaux.SetToolTipString(_(u"Cochez les niveaux scolaires de la classe"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la classe. Ex : 'CP - Mme PICHON'...")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de saison")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de saison")))
+        self.ctrl_niveaux.SetToolTip(wx.ToolTip(_(u"Cochez les niveaux scolaires de la classe")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, 400))
 
     def __do_layout(self):

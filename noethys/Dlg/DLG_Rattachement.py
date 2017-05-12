@@ -84,7 +84,7 @@ class CtrlRecherche(wx.TextCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Rattachement", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Rattachement", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.IDfamille = IDfamille
         self.mode = None
 
@@ -151,16 +151,16 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Rattachement d'un individu"))
-        self.bouton_categorie_1.SetToolTipString(_(u"Représentants"))
-        self.bouton_categorie_2.SetToolTipString(_(u"Enfants"))
-        self.bouton_categorie_3.SetToolTipString(_(u"Contacts"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'individu à rattacher (en majuscules et sans accents)"))
-        self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prénom de l'individu à rattacher"))
-        self.ctrl_propositions.SetToolTipString(_(u"Double-cliquez sur le nom de l'individu à rattacher"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour rattacher l'individu selectionné dans la liste"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
-        self.ctrl_titulaire.SetToolTipString(_(u"Cochez cette case si l'individu doit être considéré comme titulaire du dossier"))
+        self.bouton_categorie_1.SetToolTip(wx.ToolTip(_(u"Représentants")))
+        self.bouton_categorie_2.SetToolTip(wx.ToolTip(_(u"Enfants")))
+        self.bouton_categorie_3.SetToolTip(wx.ToolTip(_(u"Contacts")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'individu à rattacher (en majuscules et sans accents)")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prénom de l'individu à rattacher")))
+        self.ctrl_propositions.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur le nom de l'individu à rattacher")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rattacher l'individu selectionné dans la liste")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
+        self.ctrl_titulaire.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu doit être considéré comme titulaire du dossier")))
         self.SetMinSize((500, 550))
 
     def __do_layout(self):

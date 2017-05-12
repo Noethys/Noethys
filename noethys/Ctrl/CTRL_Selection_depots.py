@@ -40,7 +40,7 @@ class CTRL(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(_(u"Cochez les dépôts à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les dépôts à afficher")))
         
         # Création des colonnes
         self.AddColumn(_(u"Dépôts"))

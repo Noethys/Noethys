@@ -46,7 +46,11 @@ def DateEngEnDateDD(dateEng):
 class CTRL(HTL.HyperTreeList):
     def __init__(self, parent, listePrestations=[]): 
         HTL.HyperTreeList.__init__(self, parent, -1)
-        self.SetAGWWindowStyleFlag(wx.TR_COLUMN_LINES | HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT )
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(TR_COLUMN_LINES | HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.parent = parent
         
         self.SetBackgroundColour(wx.WHITE)

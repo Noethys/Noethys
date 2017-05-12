@@ -209,12 +209,12 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonHistorique, self.bouton_historique)
 
     def __set_properties(self):
-        self.check_activation.SetToolTipString(_(u"Cochez cette case pour activer le compte internet"))
-        self.ctrl_identifiant.SetToolTipString(_(u"Code identifiant du compte internet"))
-        self.ctrl_mdp.SetToolTipString(_(u"Mot de passe du compte internet"))
-        self.bouton_mdp_renew.SetToolTipString(_(u"Générer un nouveau mot de passe"))
-        self.bouton_envoi_mail.SetToolTipString(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet"))
-        self.bouton_historique.SetToolTipString(_(u"Consulter et traiter les demandes de la famille"))
+        self.check_activation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer le compte internet")))
+        self.ctrl_identifiant.SetToolTip(wx.ToolTip(_(u"Code identifiant du compte internet")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Mot de passe du compte internet")))
+        self.bouton_mdp_renew.SetToolTip(wx.ToolTip(_(u"Générer un nouveau mot de passe")))
+        self.bouton_envoi_mail.SetToolTip(wx.ToolTip(_(u"Envoyer un couriel à la famille avec les codes d'accès au portail Internet")))
+        self.bouton_historique.SetToolTip(wx.ToolTip(_(u"Consulter et traiter les demandes de la famille")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

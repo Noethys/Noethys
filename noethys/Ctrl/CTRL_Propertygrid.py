@@ -23,14 +23,19 @@ from Utils import UTILS_Dates
 from Utils import UTILS_Parametres
 import copy
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.propgrid import PG_LABEL as NAME
+    from wx.propgrid import PGChoiceEditor as ChoiceEditor
+    from wx.propgrid import PGEditor as Editor
+else:
+    from wx.propgrid import LABEL_AS_NAME as NAME
+    from wx.propgrid import PyChoiceEditor as ChoiceEditor
+    from wx.propgrid import PyEditor as Editor
 
 
-
-
-
-class EditeurChoix(wxpg.PyChoiceEditor):
+class EditeurChoix(ChoiceEditor):
     def __init__(self):
-        wxpg.PyChoiceEditor.__init__(self)
+        ChoiceEditor.__init__(self)
 
     def CreateControls(self, propGrid, property, pos, size):
         ctrl = self.CallSuperMethod("CreateControls", propGrid, property, pos, size)
@@ -44,7 +49,7 @@ class EditeurChoix(wxpg.PyChoiceEditor):
 
 class Propriete_choix(wxpg.PyProperty):
     """ Simple liste de choix """
-    def __init__(self, label, name=wxpg.LABEL_AS_NAME, liste_choix=[], valeur=None):
+    def __init__(self, label, name=NAME, liste_choix=[], valeur=None):
         self.liste_choix = liste_choix
         wxpg.PyProperty.__init__(self, label, name)
         self.SetChoices([x[1] for x in self.liste_choix])
@@ -75,7 +80,7 @@ class Propriete_choix(wxpg.PyProperty):
 
 class Propriete_multichoix(wxpg.PyArrayStringProperty):
     """ Propriété Multichoix """
-    def __init__(self, label, name = wxpg.LABEL_AS_NAME, liste_choix=[], liste_selections=[]):
+    def __init__(self, label, name = NAME, liste_choix=[], liste_selections=[]):
         self.liste_choix = liste_choix
         self.liste_selections = liste_selections
 
@@ -169,7 +174,7 @@ class Propriete_multichoix(wxpg.PyArrayStringProperty):
 
 class Propriete_liste(wxpg.PyArrayStringProperty):
     """ Propriété Multichoix """
-    def __init__(self, label, name = wxpg.LABEL_AS_NAME, type_donnees=int, liste_selections=[]):
+    def __init__(self, label, name = NAME, type_donnees=int, liste_selections=[]):
         self.type_donnees = type_donnees
         self.liste_selections = liste_selections
 
@@ -237,9 +242,9 @@ class Propriete_liste(wxpg.PyArrayStringProperty):
 
 # -------------------------------------------------------------------------------------------------
 
-class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
+class EditeurComboBoxAvecBoutons(ChoiceEditor):
     def __init__(self):
-        wxpg.PyChoiceEditor.__init__(self)
+        ChoiceEditor.__init__(self)
 
     def CreateControls(self, propGrid, property, pos, sz):
         # Create and populate buttons-subwindow
@@ -247,7 +252,7 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des paramètres"))
+        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des paramètres")))
         
         # Create the 'primary' editor control (textctrl in this case)
         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
@@ -267,9 +272,9 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
 
 # ------------------------------------------------------------------------------------------------------
 
-class EditeurHeure(wxpg.PyEditor):
+class EditeurHeure(Editor):
     def __init__(self):
-        wxpg.PyEditor.__init__(self)
+        Editor.__init__(self)
 
     def CreateControls(self, propgrid, property, pos, size):
         try:
@@ -568,7 +573,7 @@ class Bouton_reinitialisation(wx.BitmapButton):
     def __init__(self, parent, ctrl_parametres=None):
         wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Actualiser.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_parametres = ctrl_parametres
-        self.SetToolTipString(_(u"Cliquez ici pour réinitialiser tous les paramètres"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser tous les paramètres")))
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
@@ -578,7 +583,7 @@ class Bouton_sauvegarde(wx.BitmapButton):
     def __init__(self, parent, ctrl_parametres=None):
         wx.BitmapButton.__init__(self, parent, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Sauvegarder.png"), wx.BITMAP_TYPE_ANY))
         self.ctrl_parametres = ctrl_parametres
-        self.SetToolTipString(_(u"Cliquez ici pour mémoriser tous les paramètres"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour mémoriser tous les paramètres")))
         self.Bind(wx.EVT_BUTTON, self.OnBouton)
     
     def OnBouton(self, event):
@@ -781,7 +786,7 @@ class CTRL_TEST(CTRL) :
         # Envoie les paramètres dans le contrôle
         for nom, valeur in dictParametres.iteritems() :
             propriete = self.GetPropertyByName(nom)
-            print propriete
+            # propriete
             ancienneValeur = propriete.GetValue() 
             propriete.SetValue(valeur)
     

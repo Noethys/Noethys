@@ -57,7 +57,10 @@ class CTRL(wx.StaticBitmap):
                 self.bmpBuffer = listeDonnees[0][0]
                 if self.bmpBuffer != None :
                     io = cStringIO.StringIO(self.bmpBuffer)
-                    img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+                    if 'phoenix' in wx.PlatformInfo:
+                        img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+                    else :
+                        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
                     bmp = img.Rescale(width=self.tailleImage[0], height=self.tailleImage[1], quality=wx.IMAGE_QUALITY_HIGH) 
                     bmp = bmp.ConvertToBitmap()
                     self.modeDefaut = False
@@ -178,7 +181,7 @@ class CTRL(wx.StaticBitmap):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDmode=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         
         self.ctrl_image = CTRL(self, table="modes_reglements", key="IDmode", IDkey=1, imageDefaut=Chemins.GetStaticPath("Images/Special/Image_non_disponible.png"), style=wx.BORDER_SUNKEN)
         self.bouton_ajouter_image = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))

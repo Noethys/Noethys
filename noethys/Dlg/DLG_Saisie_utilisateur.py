@@ -113,7 +113,7 @@ class CTRL_Image(wx.StaticBitmap):
         self.SetMinSize(self.tailleImage) 
         self.SetSize(self.tailleImage) 
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
-        self.SetToolTipString(_(u"Cliquez sur le bouton droit de votre souris\npour sélectionner un avatar"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour sélectionner un avatar")))
         
         self.Bind(wx.EVT_LEFT_DOWN, self.ContextMenu)
         self.Bind(wx.EVT_RIGHT_DOWN, self.ContextMenu)
@@ -245,7 +245,7 @@ class CTRL_Modeles_droits(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDutilisateur=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.IDutilisateur = IDutilisateur
         self.mdp = None
@@ -305,18 +305,18 @@ class Dialog(wx.Dialog):
         self.MAJboutonMdp()
 
     def __set_properties(self):
-        self.ctrl_sexe.SetToolTipString(_(u"Sélectionnez le sexe de l'utilisateur"))
+        self.ctrl_sexe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le sexe de l'utilisateur")))
         self.ctrl_sexe.SetSelection(0)
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de famille de l'utilisateur"))
-        self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prénom de l'utilisateur"))
-        self.radio_droits_admin.SetToolTipString(_(u"Sélectionnez l'option 'Administrateur' pour donner tous les droits à cet utilisateur"))
-        self.radio_droits_modele.SetToolTipString(_(u"Sélectionnez cette option pour attribuer un modèle de droits à cet utilisateur"))
-        self.radio_droits_perso.SetToolTipString(_(u"Sélectionnez cette option pour attribuer des droits personnalisés à cet utilisateur"))
-        self.ctrl_actif.SetToolTipString(_(u"Décochez cette case pour désactiver l'utilisateur. L'utilisateur n'aura plus accès à ce fichier de données."))
-        self.bouton_modif_mdp.SetToolTipString(_(u"Cliquez ici pour saisir un nouveau mot de passe pour cet utilisateur"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de famille de l'utilisateur")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prénom de l'utilisateur")))
+        self.radio_droits_admin.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'option 'Administrateur' pour donner tous les droits à cet utilisateur")))
+        self.radio_droits_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour attribuer un modèle de droits à cet utilisateur")))
+        self.radio_droits_perso.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour attribuer des droits personnalisés à cet utilisateur")))
+        self.ctrl_actif.SetToolTip(wx.ToolTip(_(u"Décochez cette case pour désactiver l'utilisateur. L'utilisateur n'aura plus accès à ce fichier de données.")))
+        self.bouton_modif_mdp.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un nouveau mot de passe pour cet utilisateur")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((690, 750))
 
     def __do_layout(self):
@@ -623,10 +623,10 @@ class DLG_Saisie_mdp(wx.Dialog):
         self.ctrl_mdp.SetFocus()
 
     def __set_properties(self):
-        self.ctrl_mdp.SetToolTipString(_(u"Saisissez un mot de passe"))
-        self.ctrl_confirmation.SetToolTipString(_(u"Confirmez le mot de passe en le saisissant une nouvelle fois"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez un mot de passe")))
+        self.ctrl_confirmation.SetToolTip(wx.ToolTip(_(u"Confirmez le mot de passe en le saisissant une nouvelle fois")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.ctrl_mdp.SetMinSize((300, -1))
 
     def __do_layout(self):

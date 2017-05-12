@@ -202,7 +202,10 @@ def CompareDict(dict1={}, dict2={}, keys=[]):
 
 def CreationImage(largeur, hauteur, couleur=None):
     """ couleur peut être RGB ou HEXA """
-    b = wx.EmptyBitmap(largeur, hauteur) 
+    if 'phoenix' in wx.PlatformInfo:
+        b = wx.Bitmap(largeur, hauteur)
+    else :
+        b = wx.EmptyBitmap(largeur, hauteur)
     dc = wx.MemoryDC() 
     dc.SelectObject(b) 
     dc.SetBackground(wx.Brush("black")) 
@@ -337,7 +340,8 @@ class Ligne():
         else:
             hauteurLigne = self.grid.dictParametres["hauteur"]
         self.grid.SetRowLabelValue(numLigne, self.labelLigne)
-        self.grid.SetRowSize(numLigne, hauteurLigne)
+        if hauteurLigne != None :
+            self.grid.SetRowSize(numLigne, hauteurLigne)
         if self.EstEnVacances(self.date) == True :
             couleurCase = couleurVacances
         else:
@@ -674,7 +678,10 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.Bind(gridlib.EVT_GRID_LABEL_LEFT_CLICK, self.OnLabelLeftClick)
-        self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnModificationMemo)
+        if 'phoenix' in wx.PlatformInfo:
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.OnModificationMemo)
+        else :
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnModificationMemo)
         self.Bind(gridlib.EVT_GRID_ROW_SIZE, self.OnChangeRowSize)
         self.Bind(gridlib.EVT_GRID_COL_SIZE, self.OnChangeColSize)
         self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
@@ -714,7 +721,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.prochainIDtransport = -1
         self.listeTransportsInitiale = []
         self.moveTo = None
-        self.GetGridWindow().SetToolTipString("")
+        self.GetGridWindow().SetToolTip(wx.ToolTip(""))
         self.caseSurvolee = None
         self.listeHistorique = []
         self.dictLignes = {}
@@ -741,7 +748,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DB.Close()
         self.MAJ()
         if modeSilencieux == False :
-            attente.Destroy() 
+            del attente
 
     def SetModeDate(self, listeActivites=[], listeSelectionIndividus=[], date=None, modeSilencieux=False):
         if modeSilencieux == False :
@@ -760,7 +767,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.DB.Close()
         self.MAJ()
         if modeSilencieux == False :
-            attente.Destroy() 
+            del attente
 
     def MAJ(self):
         self.MAJ_donnees()
@@ -2274,12 +2281,16 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
     def SetCurseur(self, region=None):
         """ Change la forme du curseur lors d'un dragging """
-        if region == "gauche" or region == "droite" :
-            self.SetCursor(wx.StockCursor(wx.CURSOR_SIZEWE))
-        elif region == "milieu":
-            self.SetCursor(wx.StockCursor(wx.CURSOR_SIZING))    
+        if 'phoenix' in wx.PlatformInfo:
+            cursor = wx.Cursor
         else :
-            self.SetCursor(wx.StockCursor(wx.CURSOR_ARROW))
+            cursor = wx.StockCursor
+        if region == "gauche" or region == "droite" :
+            self.SetCursor(cursor(wx.CURSOR_SIZEWE))
+        elif region == "milieu":
+            self.SetCursor(cursor(wx.CURSOR_SIZING))
+        else :
+            self.SetCursor(cursor(wx.CURSOR_ARROW))
 
 
 
@@ -2695,7 +2706,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                     # Supprime si nécessaire l'ancienne prestation
                     valeur = (conso.IDprestation, "consommation")
-                    if True:#IDprestation < 0 :
+                    if IDprestation < 0 :# True
                         if conso.IDprestation != None and valeur not in listeAnciennesPrestations and conso.IDprestation not in self.dictForfaits.keys() :
                             listeAnciennesPrestations.append(valeur)
 
@@ -5874,7 +5885,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=291, selectionIndividus=[937])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=36, selectionIndividus=[76])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()

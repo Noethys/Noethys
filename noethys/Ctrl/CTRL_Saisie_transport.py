@@ -13,7 +13,10 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 import datetime
 
 import GestionDB
@@ -180,7 +183,7 @@ class CTRL_Choix_arrets(wx.Choice):
         self.IDligne = IDligne
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(_(u"Sélectionnez ici un arrêt"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un arrêt")))
     
     def MAJ(self, IDligne=0):
         if IDligne == None : IDligne = 0
@@ -235,7 +238,7 @@ class CTRL_Arrets(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des arrêts"))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des arrêts")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_arrets, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -292,7 +295,7 @@ class CTRL_Choix_lignes(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(_(u"Sélectionnez ici une ligne"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une ligne")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -346,7 +349,7 @@ class CTRL_Lignes(wx.Panel):
         self.Bind(wx.EVT_CHOICE, self.OnChoix, self.ctrl_lignes)
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des lignes"))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des lignes")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_lignes, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -448,7 +451,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.parent = parent
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(_(u"Sélectionnez ici une activité"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une activité")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -536,7 +539,7 @@ class CTRL_Choix_ecole(wx.Choice):
         self.parent = parent
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(_(u"Sélectionnez ici une école"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une école")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -632,7 +635,7 @@ class CTRL_Localisation_autre(wx.Panel):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour saisir ou modifier l'adresse"))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir ou modifier l'adresse")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_base.Add(self.label_adresse, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
@@ -685,7 +688,7 @@ class CTRL_Localisation(wx.Choicebook):
     def __init__(self, parent):
         wx.Choicebook.__init__(self, parent, id=-1)
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez ici une localisation"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une localisation")))
         
         self.listePanels = [
             ("DOMI", _(u"Domicile de l'individu"), CTRL_Localisation_domicile(self) ),
@@ -824,7 +827,7 @@ class CTRL_Details(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        self.SetToolTipString(_(u"Saisissez ici les détails concernant ce transport (Ex : numéro de place, classe, etc...)"))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez ici les détails concernant ce transport (Ex : numéro de place, classe, etc...)")))
     
     def SetDetails(self, details=""):
         if details == None : details = ""
@@ -853,7 +856,7 @@ class CTRL_Observations(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1), style=wx.TE_MULTILINE) 
         self.parent = parent
-        self.SetToolTipString(_(u"Saisissez ici des observations"))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations")))
     
     def SetObservations(self, observations=""):
         if observations == None : observations = ""
@@ -882,8 +885,8 @@ class CTRL_Numero(wx.TextCtrl):
     def __init__(self, parent, categorie="avion"):
         wx.TextCtrl.__init__(self, parent, -1, size=(170, -1)) 
         self.parent = parent
-        if categorie == "avion" : self.SetToolTipString(_(u"Saisissez ici le numéro du vol"))
-        if categorie == "train" : self.SetToolTipString(_(u"Saisissez ici le numéro du train"))
+        if categorie == "avion" : self.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro du vol")))
+        if categorie == "train" : self.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro du train")))
     
     def SetNumero(self, numero=""):
         if numero == None : numero = ""
@@ -915,7 +918,7 @@ class CTRL_Choix_compagnies(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(_(u"Sélectionnez ici une compagnie"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une compagnie")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -968,7 +971,7 @@ class CTRL_Compagnies(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des compagnies"))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des compagnies")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_compagnies, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -1020,7 +1023,7 @@ class CTRL_Choix_lieux(wx.Choice):
         self.categorie = categorie
         self.MAJ() 
         self.Select(0)
-        self.SetToolTipString(_(u"Sélectionnez ici un lieu"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un lieu")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -1073,7 +1076,7 @@ class CTRL_Lieux(wx.Panel):
         self.bouton_gestion = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonGestion, self.bouton_gestion)
-        self.bouton_gestion.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrages des lieux"))
+        self.bouton_gestion.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrages des lieux")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_lieux, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL|wx.EXPAND, 0)
@@ -1125,14 +1128,14 @@ class CTRL_Lieux(wx.Panel):
 #------------------------------------------------------------------------------------------------------
 
 
-class CTRL_Categorie(wx.combo.BitmapComboBox):
+class CTRL_Categorie(BitmapComboBox):
     def __init__(self, parent, size=(-1,  -1)):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.MAJlisteDonnees() 
         if len(self.dictDonnees) > 0 :
             self.SetSelection(0)
-        self.SetToolTipString(_(u"Sélectionnez ici un moyen de locomotion"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un moyen de locomotion")))
     
     def MAJlisteDonnees(self):
         listeItems = self.GetListeDonnees()

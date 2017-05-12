@@ -283,7 +283,7 @@ class ClsCommune():
 # ---------------------------------------------------------------------------------------------
 class Assistant(wx.Dialog, ClsCommune):
     def __init__(self, parent, IDactivite=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_activite", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_activite", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         self.nouvelleActivite = False
@@ -339,11 +339,11 @@ class Assistant(wx.Dialog, ClsCommune):
 
     def __set_properties(self):
         self.SetTitle(_(u"Paramétrage d'une activité"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux paramètres avancés"))
-        self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
-        self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux paramètres avancés")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((800, 740))
 
     def __do_layout(self):
@@ -542,7 +542,7 @@ class Notebook(wx.Notebook, ClsCommune):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         self.nouvelleActivite = False
@@ -573,10 +573,10 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.SetTitle(_(u"Paramétrage d'une activité"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux paramètres avancés"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux paramètres avancés")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

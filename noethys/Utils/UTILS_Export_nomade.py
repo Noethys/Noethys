@@ -255,7 +255,6 @@ class Export():
             print "Erreur dans UTILS_Export_nomade.Run :", err
             traceback.print_exc(file=sys.stdout)
             if afficherDlgAttente == True :
-                dlgAttente.Destroy()
                 del dlgAttente
             dlg = wx.MessageDialog(None, _(u"Désolé, l'erreur suivante a été rencontrée : ") + str(err), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
@@ -263,7 +262,6 @@ class Export():
             return None
 
         if afficherDlgAttente == True :
-            dlgAttente.Destroy()
             del dlgAttente
         return nomFichierFinal
         
@@ -295,14 +293,12 @@ class Export():
             fichier.close()
             ftp.quit()
         except Exception, err :
-            dlgAttente.Destroy() 
             del dlgAttente
             dlg = wx.MessageDialog(None, _(u"Le fichier n'a pas pu être envoyé !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        dlgAttente.Destroy() 
         del dlgAttente
         dlg = wx.MessageDialog(None, _(u"Le fichier a été envoyé avec succès !"), u"Succès", wx.OK | wx.ICON_INFORMATION)
         dlg.ShowModal()

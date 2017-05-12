@@ -116,8 +116,8 @@ class Page_serveur(wx.Panel):
         self.ctrl_port = wx.TextCtrl(self, -1, u"8000")
         
         # Propriétés
-        self.check_activer.SetToolTipString(_(u"Cochez cette case pour activer/désactiver le serveur WIFI/Direct au prochain démarrage de Noethys"))
-        self.ctrl_port.SetToolTipString(_(u"Sélectionnez le port de communication"))
+        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/désactiver le serveur WIFI/Direct au prochain démarrage de Noethys")))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Sélectionnez le port de communication")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -174,11 +174,11 @@ class Page_ftp(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTest, self.bouton_test)
         
         # Propriétés
-        self.ctrl_hote.SetToolTipString(_(u"Saisissez l'adresse de l'hôte"))
-        self.ctrl_identifiant.SetToolTipString(_(u"Saisissez l'identifiant"))
-        self.ctrl_mdp.SetToolTipString(_(u"Saisissez le mot de passe"))
-        self.ctrl_repertoire.SetToolTipString(_(u"Saisissez le chemin du répertoire. Exemple : 'www/mesfichiers"))
-        self.bouton_test.SetToolTipString(_(u"Cliquez ici pour tester les paramètres de connexion")) 
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Saisissez l'adresse de l'hôte")))
+        self.ctrl_identifiant.SetToolTip(wx.ToolTip(_(u"Saisissez l'identifiant")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe")))
+        self.ctrl_repertoire.SetToolTip(wx.ToolTip(_(u"Saisissez le chemin du répertoire. Exemple : 'www/mesfichiers")))
+        self.bouton_test.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tester les paramètres de connexion"))) 
         
         # Layout
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -256,8 +256,8 @@ class Page_cryptage(wx.Panel):
         self.ctrl_mdp.SetMinSize((200, -1)) 
         
         # Propriétés
-        self.check_activer.SetToolTipString(_(u"Cochez cette case pour activer/désactiver le cryptage des données envoyées"))
-        self.ctrl_mdp.SetToolTipString(_(u"Saisissez le mot de passe qui sera utiliser pour crypter les données envoyées et décrypter les données reçues. Recommandé si transfert sur internet."))
+        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer/désactiver le cryptage des données envoyées")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez le mot de passe qui sera utiliser pour crypter les données envoyées et décrypter les données reçues. Recommandé si transfert sur internet.")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -313,8 +313,8 @@ class Page_archivage(wx.Panel):
         self.ctrl_delai = wx.SpinCtrl(self, -1, "30")
         
         # Propriétés
-        self.check_activer.SetToolTipString(_(u"Cochez cette case pour activer la suppression automatique des fichiers de synchronisation archivés obsolètes"))
-        self.ctrl_delai.SetToolTipString(_(u"Sélectionnez un nombre de jours"))
+        self.check_activer.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la suppression automatique des fichiers de synchronisation archivés obsolètes")))
+        self.ctrl_delai.SetToolTip(wx.ToolTip(_(u"Sélectionnez un nombre de jours")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -423,7 +423,7 @@ class Notebook(wx.Notebook):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -480,16 +480,16 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez le mode de transfert souhaité pour envoyer/recevoir des données manuellement"))
-        self.check_archives.SetToolTipString(_(u"Cochez cette case pour afficher également dans la liste les fichiers de synchronisation archivés"))
-        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer manuellement le fichier de données"))
-        self.bouton_recevoir.SetToolTipString(_(u"Cliquez ici pour recevoir manuellement un fichier de données"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste des fichiers à synchroniser"))
-        self.bouton_lecture.SetToolTipString(_(u"Cliquez ici pour lire le contenu des fichiers sélectionnés"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_googleplay.SetToolTipString(_(u"Cliquez ici pour accéder à la page de téléchargement de Nomadhys sur Google Play"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder à des outils"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de transfert souhaité pour envoyer/recevoir des données manuellement")))
+        self.check_archives.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher également dans la liste les fichiers de synchronisation archivés")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer manuellement le fichier de données")))
+        self.bouton_recevoir.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour recevoir manuellement un fichier de données")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste des fichiers à synchroniser")))
+        self.bouton_lecture.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lire le contenu des fichiers sélectionnés")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_googleplay.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la page de téléchargement de Nomadhys sur Google Play")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à des outils")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((700, 700))
 
     def __do_layout(self):
@@ -654,7 +654,6 @@ class Dialog(wx.Dialog):
             # Analyse du fichier
             dlgAttente = wx.BusyInfo(_(u"Analyse du fichier synchronisation..."), self)
             resultat = AnalyserFichier(nomFichier, typeTransfert="manuel") 
-            dlgAttente.Destroy() 
             del dlgAttente
             if resultat == True :
                 dlg = wx.MessageDialog(self, _(u"Le fichier a été réceptionné avec succès !"), u"Succès", wx.OK | wx.ICON_INFORMATION)
@@ -692,14 +691,12 @@ class Dialog(wx.Dialog):
             ftp.quit()
         except Exception, err :
             print err
-            dlgAttente.Destroy() 
             del dlgAttente
             dlg = wx.MessageDialog(self, _(u"La connexion FTP n'a pas pu être établie !\n\nVérifiez les paramètres de connexion FTP dans les paramètres de synchronisation."), "Erreur ", wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
         
-        dlgAttente.Destroy() 
         del dlgAttente
             
         # Analyse du fichier
@@ -711,7 +708,6 @@ class Dialog(wx.Dialog):
             # Analyse du fichier
             dlgAttente = wx.BusyInfo(_(u"Analyse du fichier synchronisation..."), self)
             resultat = AnalyserFichier(nomFichier=nomFichier, tailleFichier=tailleFichier, typeTransfert="ftp") 
-            dlgAttente.Destroy() 
             del dlgAttente
             
             # Suppression du fichier dans le répertoire FTP

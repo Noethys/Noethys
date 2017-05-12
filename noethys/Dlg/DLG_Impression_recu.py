@@ -226,8 +226,10 @@ class CTRL_Donnees(gridlib.Grid):
                 key += 1
             
         # test all the events
-        self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
-        
+        if 'phoenix' in wx.PlatformInfo:
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.OnCellChange)
+        else :
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
         self.moveTo = (1, 1)
 
     def OnCellChange(self, evt):
@@ -319,7 +321,7 @@ class CTRL_Donnees(gridlib.Grid):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDreglement=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_recu", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_recu", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDreglement = IDreglement
         self.dictSave = {}
@@ -397,17 +399,17 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.SetTitle(_(u"Edition d'un reçu de règlement"))
-        self.ctrl_donnees.SetToolTipString(_(u"Vous pouvez modifier ici les données de base"))
-        self.ctrl_modele.SetToolTipString(_(u"Selectionnez un modèle de documents"))
-        self.ctrl_signataire.SetToolTipString(_(u"Sélectionnez ici le signataire du document"))
-        self.ctrl_intro.SetToolTipString(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' "))
-        self.ctrl_texte_intro.SetToolTipString(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes."))
-        self.ctrl_prestations.SetToolTipString(_(u"Afficher la liste des prestations payées avec ce règlement"))
-        self.bouton_gestion_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles de documents"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici les données de base")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Selectionnez un modèle de documents")))
+        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le signataire du document")))
+        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")))
+        self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nUtilisez les mots-clés {GENRE}, {NOM}, {FONCTION}, {ENFANTS}, \n{DATE_DEBUT} et {DATE_FIN} pour inclure dynamiquement les \nvaleurs correspondantes.")))
+        self.ctrl_prestations.SetToolTip(wx.ToolTip(_(u"Afficher la liste des prestations payées avec ce règlement")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles de documents")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le PDF")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((570, 500))
 
     def __do_layout(self):

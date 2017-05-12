@@ -536,7 +536,7 @@ class ListBox_Messages(wx.ListBox):
 
 class Saisie_Message(wx.Dialog):
     def __init__(self, parent, IDmessage=None, titre=u"", texte=u""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         self.label_titre = wx.StaticText(self, -1, _(u"Titre :"))
@@ -626,10 +626,10 @@ class CTRL_Messages(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnSupprimerMessage, self.bouton_supprimer_message)
 
     def __set_properties(self):
-        self.ctrl_messages.SetToolTipString(_(u"Saisissez ou ou plusieurs messages qui apparaitront à la fin du document"))
-        self.bouton_ajouter_message.SetToolTipString(_(u"Cliquez ici pour ajouter un message"))
-        self.bouton_modifier_message.SetToolTipString(_(u"Cliquez ici pour modifier le message sélectionné dans la liste"))
-        self.bouton_supprimer_message.SetToolTipString(_(u"Cliquez ici pour supprimer le message sélectionné dans la liste"))
+        self.ctrl_messages.SetToolTip(wx.ToolTip(_(u"Saisissez ou ou plusieurs messages qui apparaitront à la fin du document")))
+        self.bouton_ajouter_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un message")))
+        self.bouton_modifier_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sélectionné dans la liste")))
+        self.bouton_supprimer_message.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sélectionné dans la liste")))
 
     def __do_layout(self):       
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

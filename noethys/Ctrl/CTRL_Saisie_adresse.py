@@ -152,16 +152,16 @@ class TextCtrlCp(masked.TextCtrl):
         """ Créé une info-bulle pour les cp et villes pour indiquer les régions et départements """
         cp = self.GetValue()
         if cp == "" or cp == "     " :
-            controle.SetToolTipString(_(u"Saisissez un code postal"))
+            controle.SetToolTip(wx.ToolTip(_(u"Saisissez un code postal")))
         else:
             try :
                 num_dep = cp[:2]
                 nomDepartement, num_region = self.dictDepartements[num_dep]
                 nomRegion = self.dictRegions[num_region]
                 texte = _(u"Département : %s (%s)\nRégion : %s") % (nomDepartement, num_dep, nomRegion)
-                self.SetToolTipString(texte)
+                self.SetToolTip(wx.ToolTip(texte))
             except :
-                self.SetToolTipString(_(u"Le code postal saisi ne figure pas dans la base de données"))
+                self.SetToolTip(wx.ToolTip(_(u"Le code postal saisi ne figure pas dans la base de données")))
 
 
 class TextCtrlVille(wx.TextCtrl):
@@ -284,9 +284,9 @@ class Adresse(wx.Panel):
 
     def __set_properties(self):
         self.ctrl_cp.SetMinSize((50, -1))
-        self.ctrl_cp.SetToolTipString(_(u"Saisissez ici le code postal de la ville"))
-        self.ctrl_ville.SetToolTipString(_(u"Saisissez ici le nom de la ville"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non présente dans la base\nde données du logiciel"))
+        self.ctrl_cp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code postal de la ville")))
+        self.ctrl_ville.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de la ville")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher une ville ou pour saisir \nmanuellement une ville non présente dans la base\nde données du logiciel")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)

@@ -48,7 +48,7 @@ class CTRL_document(wx.Choice):
         self.nbreJoursRetard = nbreJoursRetard
         choices=self.GetListe()
         self.SetItems(choices)
-        self.SetToolTipString(infobulle)
+        self.SetToolTip(wx.ToolTip(infobulle))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
 
         self.SetValeurDefaut() 
@@ -124,7 +124,11 @@ class CTRL(HTL.HyperTreeList):
 ##        self.AssignImageList(il)
         
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag( wx.TR_COLUMN_LINES | wx.TR_HAS_BUTTONS |wx.TR_HIDE_ROOT  | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_AUTO_CHECK_CHILD | HTL.TR_AUTO_CHECK_PARENT) # HTL.TR_NO_HEADER
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag( TR_COLUMN_LINES | wx.TR_HAS_BUTTONS |wx.TR_HIDE_ROOT  | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_AUTO_CHECK_CHILD | HTL.TR_AUTO_CHECK_PARENT) # HTL.TR_NO_HEADER
         self.EnableSelectionVista(True)
 
         # Binds

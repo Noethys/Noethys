@@ -210,9 +210,9 @@ class Panel(wx.Panel):
 ##        self.Bind(wx.EVT_CHECKBOX, self.OnCheckRegroupement, self.ctrl_regroupement)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une prestation"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la prestation sélectionnée"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la prestation sélectionnée"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une prestation")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la prestation sélectionnée")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la prestation sélectionnée")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

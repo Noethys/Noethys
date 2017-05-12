@@ -62,12 +62,12 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer_Cotisation, self.bouton_supprimer_cotisation)
 
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une pièce"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la pièce sélectionnée"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la pièce sélectionnée"))
-        self.bouton_ajouter_cotisation.SetToolTipString(_(u"Cliquez ici pour saisir une cotisation individuelle"))
-        self.bouton_modifier_cotisation.SetToolTipString(_(u"Cliquez ici pour modifier la cotisation individuelle sélectionnée"))
-        self.bouton_supprimer_cotisation.SetToolTipString(_(u"Cliquez ici pour supprimer la cotisation individuelle sélectionnée"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une pièce")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la pièce sélectionnée")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la pièce sélectionnée")))
+        self.bouton_ajouter_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une cotisation individuelle")))
+        self.bouton_modifier_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la cotisation individuelle sélectionnée")))
+        self.bouton_supprimer_cotisation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation individuelle sélectionnée")))
 
         # --- Layout ---
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)

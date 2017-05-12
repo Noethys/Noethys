@@ -71,15 +71,15 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Génération automatique de périodes"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période"))
-        self.ctrl_periodicite.SetToolTipString(_(u"Sélectionnez la périodicité à appliquer"))
-        self.ctrl_label_prestation.SetToolTipString(_(u"Saisissez le label de la prestation. Le mot-clé {LABEL_AUTO} permet d'insérer un label automatiquement (Ex : 'Janvier 2014'). Les mots-clés suivants sont également disponibles : {ANNEE} {NUM_MOIS} {NOM_MOIS} {NUM_SEMAINE}."))
-        self.ctrl_date_prestation.SetToolTipString(_(u"Sélectionnez la date de la prestation"))
-        self.ctrl_montant_prestation.SetToolTipString(_(u"Saisissez le montant de la prestation"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
+        self.ctrl_periodicite.SetToolTip(wx.ToolTip(_(u"Sélectionnez la périodicité à appliquer")))
+        self.ctrl_label_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la prestation. Le mot-clé {LABEL_AUTO} permet d'insérer un label automatiquement (Ex : 'Janvier 2014'). Les mots-clés suivants sont également disponibles : {ANNEE} {NUM_MOIS} {NOM_MOIS} {NUM_SEMAINE}.")))
+        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date de la prestation")))
+        self.ctrl_montant_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le montant de la prestation")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(4, 1, 10, 10)

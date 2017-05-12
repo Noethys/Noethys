@@ -48,7 +48,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Utilisez cette fonctionnalité pour convertir les anciens RIB utilisés pour les prélèvements nationaux en mandats SEPA. Noethys a déjà sélectionné les RIB qui peuvent être convertis. Il ne vous reste plus qu'à cliquer sur le bouton VALIDER pour lancer la procédure. Attention, il est conseillé de faire une sauvegarde avant...")
@@ -81,9 +81,9 @@ class Dialog(wx.Dialog):
         self.ctrl_listview.CocheValides()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la conversion des RIB en mandats SEPA"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la conversion des RIB en mandats SEPA")))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):

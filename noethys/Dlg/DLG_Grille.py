@@ -103,12 +103,12 @@ class Commandes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonLot, self.bouton_lot)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         # Infosbulles
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder au menu des options"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder au menu des outils"))
-        self.bouton_lot.SetToolTipString(_(u"Cliquez ici pour saisir, modifier ou supprimer un lot de consommations"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au menu des options")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au menu des outils")))
+        self.bouton_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir, modifier ou supprimer un lot de consommations")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
 
     def OnBoutonOk(self, event):
         # Sauvegarde
@@ -223,9 +223,17 @@ class PanelGrille(wx.Panel):
             self.barreOutils.AddStretchableSpace()
         except :
             self.barreOutils.AddSeparator()
-        self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=_(u"Réservation"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=_(u"Mode de saisie 'Réservation'"), longHelp=_(u"Mode de saisie 'Réservation'"))
-        self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=_(u"Attente"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=_(u"Mode de saisie 'Attente'"), longHelp=_(u"Mode de saisie 'Attente'"))
-        self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=_(u"Refus"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=_(u"Mode de saisie 'Refus'"), longHelp=_(u"Mode de saisie 'Refus'"))
+
+        liste_tools = [
+            (ID_MODE_RESERVATION, _(u"Réservation"), CTRL_Grille.COULEUR_RESERVATION, _(u"Mode de saisie 'Réservation'")),
+            (ID_MODE_ATTENTE, _(u"Attente"), CTRL_Grille.COULEUR_ATTENTE, _(u"Mode de saisie 'Attente'")),
+            (ID_MODE_REFUS, _(u"Refus"), CTRL_Grille.COULEUR_REFUS, _(u"Mode de saisie 'Refus'")),
+        ]
+        for ID, label, couleur, help in liste_tools :
+            if 'phoenix' in wx.PlatformInfo:
+                self.barreOutils.AddRadioTool(ID, label, CTRL_Grille.CreationImage(10, 20, couleur), wx.NullBitmap, help, help)
+            else :
+                self.barreOutils.AddRadioLabelTool(ID, label=label, bitmap=CTRL_Grille.CreationImage(10, 20, couleur), shortHelp=help, longHelp=help)
         self.barreOutils.Realize()
 
         # Layout
@@ -330,7 +338,7 @@ class Notebook(aui.AuiNotebook):
         
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None, selectionIndividus=[], selectionTous=False):
-        wx.Dialog.__init__(self, parent, -1, name="grille", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="grille", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
         

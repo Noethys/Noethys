@@ -43,11 +43,11 @@ class MyDialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie automatique des jours fériés variables"))
-        self.ctrl_annees.SetToolTipString(_(u"Saisissez une année ou plusieurs années séparées de points-virgules (;). Exemple : '2011;2012;2013' "))
-        self.ctrl_jours.SetToolTipString(_(u"Cochez les jours fériés à créer"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour créer les jours fériés"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_annees.SetToolTip(wx.ToolTip(_(u"Saisissez une année ou plusieurs années séparées de points-virgules (;). Exemple : '2011;2012;2013' ")))
+        self.ctrl_jours.SetToolTip(wx.ToolTip(_(u"Cochez les jours fériés à créer")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer les jours fériés")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(3, 1, 10, 0)

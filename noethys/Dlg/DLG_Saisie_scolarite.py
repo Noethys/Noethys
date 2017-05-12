@@ -249,7 +249,7 @@ class CTRL_Niveau(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDscolarite=None, donneesScolarite=[]):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.donneesScolarite = donneesScolarite
         self.IDscolarite = IDscolarite
@@ -288,14 +288,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une étape de la scolarité"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de debut"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
-        self.ctrl_ecole.SetToolTipString(_(u"Sélectionnez une école"))
-        self.ctrl_classe.SetToolTipString(_(u"Sélectionnez une classe"))
-        self.ctrl_niveau.SetToolTipString(_(u"Sélectionnez un niveau scolaire"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de debut")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin")))
+        self.ctrl_ecole.SetToolTip(wx.ToolTip(_(u"Sélectionnez une école")))
+        self.ctrl_classe.SetToolTip(wx.ToolTip(_(u"Sélectionnez une classe")))
+        self.ctrl_niveau.SetToolTip(wx.ToolTip(_(u"Sélectionnez un niveau scolaire")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((500, 200))
 
     def __do_layout(self):

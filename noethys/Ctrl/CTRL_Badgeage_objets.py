@@ -477,7 +477,7 @@ if __name__ == u"__main__":
     from Dlg import DLG_Badgeage_interface
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = DLG_Badgeage_interface.Dialog(None, log=None, IDprocedure=1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+    frame_1 = DLG_Badgeage_interface.Dialog(None, log=None, IDprocedure=1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

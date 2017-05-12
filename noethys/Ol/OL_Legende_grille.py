@@ -53,7 +53,7 @@ class ListView(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitModel()
         self.InitObjectListView()
-        self.SetToolTipString(_(u"Retrouvez ici la liste des codes couleurs et icônes utilisés dans la grille des consommations"))
+        self.SetToolTip(wx.ToolTip(_(u"Retrouvez ici la liste des codes couleurs et icônes utilisés dans la grille des consommations")))
                         
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -89,7 +89,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune légende"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
        

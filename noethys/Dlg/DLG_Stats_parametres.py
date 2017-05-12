@@ -123,8 +123,8 @@ class CTRL_Mode(wx.Panel):
         self.OnRadioMethode()
 
     def __set_properties(self):
-        self.radio_inscrits.SetToolTipString(_(u"Cochez ici pour baser les calculs sur les inscrits"))
-        self.radio_presents.SetToolTipString(_(u"Cochez ici pour baser les calculs sur les présents sur une période donnée"))
+        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez ici pour baser les calculs sur les inscrits")))
+        self.radio_presents.SetToolTip(wx.ToolTip(_(u"Cochez ici pour baser les calculs sur les présents sur une période donnée")))
         self.ctrl_vacances_annee.SetMinSize((70, -1))
         self.ctrl_mois_annee.SetMinSize((70, -1))
         self.ctrl_annee.SetMinSize((70, -1))
@@ -393,7 +393,7 @@ class CTRL_Mode(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Stats_parametres", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Stats_parametres", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.dictParametres = {}
         
@@ -433,9 +433,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Sélection des paramètres"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((460, 600))
 
     def __do_layout(self):

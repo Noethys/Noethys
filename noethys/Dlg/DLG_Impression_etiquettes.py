@@ -248,7 +248,7 @@ class Panel_Donnees(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie="individu", IDindividu=None, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.categorie = categorie
 
@@ -390,32 +390,32 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici une catégorie de données"))
-        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez ici un modèle"))
-        self.bouton_modele.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage des modèles"))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une catégorie de données")))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un modèle")))
+        self.bouton_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage des modèles")))
         self.ctrl_largeur_page.SetMinSize((60, -1))
-        self.ctrl_largeur_page.SetToolTipString(_(u"Saisissez ici la largeur de la page (en mm)"))
+        self.ctrl_largeur_page.SetToolTip(wx.ToolTip(_(u"Saisissez ici la largeur de la page (en mm)")))
         self.ctrl_marge_haut.SetMinSize((60, -1))
-        self.ctrl_marge_haut.SetToolTipString(_(u"Saisissez ici la marge de haut de page (en mm)"))
+        self.ctrl_marge_haut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la marge de haut de page (en mm)")))
         self.ctrl_hauteur_page.SetMinSize((60, -1))
-        self.ctrl_hauteur_page.SetToolTipString(_(u"Saisissez ici la hauteur de la page (en mm)"))
+        self.ctrl_hauteur_page.SetToolTip(wx.ToolTip(_(u"Saisissez ici la hauteur de la page (en mm)")))
         self.ctrl_marge_bas.SetMinSize((60, -1))
-        self.ctrl_marge_bas.SetToolTipString(_(u"Saisissez ici la marge de bas de page (en mm)"))
+        self.ctrl_marge_bas.SetToolTip(wx.ToolTip(_(u"Saisissez ici la marge de bas de page (en mm)")))
         self.ctrl_espace_vertic.SetMinSize((60, -1))
-        self.ctrl_espace_vertic.SetToolTipString(_(u"Saisissez ici l'espace vertical entre 2 étiquettes (en mm)"))
+        self.ctrl_espace_vertic.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'espace vertical entre 2 étiquettes (en mm)")))
         self.ctrl_marge_gauche.SetMinSize((60, -1))
-        self.ctrl_marge_gauche.SetToolTipString(_(u"Saisissez ici la marge gauche de la page (en mm)"))
+        self.ctrl_marge_gauche.SetToolTip(wx.ToolTip(_(u"Saisissez ici la marge gauche de la page (en mm)")))
         self.ctrl_espace_horiz.SetMinSize((60, -1))
-        self.ctrl_espace_horiz.SetToolTipString(_(u"Saisissez ici l'espace horizontal entre 2 étiquettes de la page (en mm)"))
+        self.ctrl_espace_horiz.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'espace horizontal entre 2 étiquettes de la page (en mm)")))
         self.ctrl_marge_droite.SetMinSize((60, -1))
-        self.ctrl_marge_droite.SetToolTipString(_(u"Saisissez ici la marge droite de la page (en mm)"))
-        self.ctrl_nbre_copies.SetToolTipString(_(u"Saisissez le nombre de copies de chaque étiquette"))
-        self.check_contour.SetToolTipString(_(u"Cochez ici pour afficher un cadre noir autour de chaque étiquette"))
-        self.check_reperes.SetToolTipString(_(u"Cochez cette case pour afficher les repères de découpe sur chaque page"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher un apercu du PDF"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.ctrl_memoriser.SetToolTipString(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition"))
+        self.ctrl_marge_droite.SetToolTip(wx.ToolTip(_(u"Saisissez ici la marge droite de la page (en mm)")))
+        self.ctrl_nbre_copies.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre de copies de chaque étiquette")))
+        self.check_contour.SetToolTip(wx.ToolTip(_(u"Cochez ici pour afficher un cadre noir autour de chaque étiquette")))
+        self.check_reperes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les repères de découpe sur chaque page")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un apercu du PDF")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+        self.ctrl_memoriser.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")))
         self.SetMinSize((980, 770))
 
     def __do_layout(self):

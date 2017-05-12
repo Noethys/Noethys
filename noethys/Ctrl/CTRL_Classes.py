@@ -63,7 +63,11 @@ class CTRL(HTL.HyperTreeList):
         # Création des branches
         self.root = self.AddRoot(_(u"Classes"))
         self.SetPyData(self.root, {"type" : "root", "ID" : None} )
-        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_COLUMN_LINES | wx.TR_HAS_BUTTONS)
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | TR_COLUMN_LINES | wx.TR_HAS_BUTTONS)
         
         # Binds
         if self.modeSelection == False :

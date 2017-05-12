@@ -48,7 +48,7 @@ class ListView(FastObjectListView):
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitModel()
         self.InitObjectListView()
-        self.SetToolTipString(_(u"Retrouvez ici la liste des raccourcis clavier que vous pouvez utilisez dans la grille des consommations. Conservez la touche appuyée puis cliquez sur une case de la grille."))
+        self.SetToolTip(wx.ToolTip(_(u"Retrouvez ici la liste des raccourcis clavier que vous pouvez utilisez dans la grille des consommations. Conservez la touche appuyée puis cliquez sur une case de la grille.")))
 
     def InitModel(self):
         self.donnees = self.GetTracks()
@@ -84,7 +84,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune touche raccourci"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        

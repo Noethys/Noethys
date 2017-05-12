@@ -204,7 +204,7 @@ class CTRL_Mode(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDcotisation=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDcotisation = IDcotisation
         self.IDfamille = None
@@ -282,22 +282,22 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Edition d'un reçu Dons aux Oeuvres"))
-        self.ctrl_memoriser_organisme.SetToolTipString(_(u"Cochez cette case pour ne pas avoir à re-saisir les données sur l'organisme la prochaine fois !"))
-        self.ctrl_nom_beneficiaire.SetToolTipString(_(u"Saisissez ici le nom de l'organisme"))
-        self.ctrl_adresse_beneficiaire.SetToolTipString(_(u"Saisissez ici l'adresse de l'organisme"))
-        self.ctrl_objet.SetToolTipString(_(u"Saisissez ici l'objet de l'organisme"))
-        self.ctrl_type.SetToolTipString(_(u"Saisissez ici le type d'oeuvre dont il s'agit"))
-        self.ctrl_nom_auto.SetToolTipString(_(u"Sélectionnez un destinataire"))
-        self.ctrl_nom_autre.SetToolTipString(_(u"Saisissez un nom de destinataire"))
-        self.ctr_adresse_donateur.SetToolTipString(_(u"Saisissez ici l'adresse du destinataire"))
-        self.ctrl_date_versement.SetToolTipString(_(u"Saisissez ici la date du versement"))
-        self.ctrl_mode_auto.SetToolTipString(_(u"Sélectionnez ici le mode de versement"))
-        self.ctrl_mode_autre.SetToolTipString(_(u"Saisissez ici un autre mode de versement"))
-        self.ctrl_date_edition.SetToolTipString(_(u"Saisissez ici la date d'édition du document"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_memoriser_organisme.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour ne pas avoir à re-saisir les données sur l'organisme la prochaine fois !")))
+        self.ctrl_nom_beneficiaire.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'organisme")))
+        self.ctrl_adresse_beneficiaire.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'adresse de l'organisme")))
+        self.ctrl_objet.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'objet de l'organisme")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Saisissez ici le type d'oeuvre dont il s'agit")))
+        self.ctrl_nom_auto.SetToolTip(wx.ToolTip(_(u"Sélectionnez un destinataire")))
+        self.ctrl_nom_autre.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de destinataire")))
+        self.ctr_adresse_donateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'adresse du destinataire")))
+        self.ctrl_date_versement.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date du versement")))
+        self.ctrl_mode_auto.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le mode de versement")))
+        self.ctrl_mode_autre.SetToolTip(wx.ToolTip(_(u"Saisissez ici un autre mode de versement")))
+        self.ctrl_date_edition.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'édition du document")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((550, 400))
 
     def __do_layout(self):

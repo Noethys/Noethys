@@ -48,10 +48,10 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir une cotisation"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la cotisation sélectionnée"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la cotisation sélectionnée"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer un document"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une cotisation")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la cotisation sélectionnée")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la cotisation sélectionnée")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer un document")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

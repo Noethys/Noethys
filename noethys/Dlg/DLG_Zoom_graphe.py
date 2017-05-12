@@ -94,7 +94,7 @@ class PanelGraph(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, figure=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Zoom_graphe", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Zoom_graphe", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Graphe
@@ -120,11 +120,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Visualisateur de graphe"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_save_image.SetToolTipString(_(u"Cliquez ici pour enregistrer le graphe au format image"))
-        self.bouton_clipboard_image.SetToolTipString(_(u"Cliquez ici pour envoyer le graphe dans le presse-papiers"))
-        self.bouton_imprimer_image.SetToolTipString(_(u"Cliquez ici pour publier le graphe au format PDF"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_save_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le graphe au format image")))
+        self.bouton_clipboard_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le graphe dans le presse-papiers")))
+        self.bouton_imprimer_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour publier le graphe au format PDF")))
         self.SetMinSize((950, 650)) 
         
     def __do_layout(self):

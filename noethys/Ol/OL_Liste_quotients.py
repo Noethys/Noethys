@@ -211,7 +211,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune famille"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
@@ -226,7 +226,7 @@ class ListView(FastObjectListView):
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.InitModel()
         self.InitObjectListView()
-        attente.Destroy()
+        del attente
     
     def Selection(self):
         return self.GetSelectedObjects()

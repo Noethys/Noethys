@@ -102,7 +102,11 @@ class CTRL(HTL.HyperTreeList):
         # Création des branches
         self.root = self.AddRoot(_(u"Tarifs"))
         self.SetPyData(self.root, {"type" : "root", "ID" : None} )
-        self.SetAGWWindowStyleFlag(wx.TR_COLUMN_LINES)
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(TR_COLUMN_LINES)
         
         # Binds
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContextMenu)

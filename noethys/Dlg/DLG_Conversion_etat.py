@@ -100,13 +100,13 @@ class Dialog(wx.Dialog):
             self.radio_lignes_selectionnees.SetValue(True)
 
     def __set_properties(self):
-        self.ctrl_etat_avant.SetToolTipString(_(u"Sélectionnez l'état à convertir. Seules les consommations ayant cet état seront converties."))
-        self.ctrl_etat_apres.SetToolTipString(_(u"Sélectionnez l'état souhaité"))
-        self.radio_lignes_affichees.SetToolTipString(_(u"Sélectionnez cette option pour appliquer la conversion sur toutes les lignes affichées"))
-        self.radio_lignes_selectionnees.SetToolTipString(_(u"Sélectionnez cette option pour appliquer la conversion uniquement sur les lignes sélectionnées"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_etat_avant.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'état à convertir. Seules les consommations ayant cet état seront converties.")))
+        self.ctrl_etat_apres.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'état souhaité")))
+        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer la conversion sur toutes les lignes affichées")))
+        self.radio_lignes_selectionnees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer la conversion uniquement sur les lignes sélectionnées")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, 510))
         
     def __do_layout(self):

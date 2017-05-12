@@ -546,8 +546,10 @@ class CTRL_Donnees(gridlib.Grid):
                 key += 1
             
         # test all the events
-        self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
-        
+        if 'phoenix' in wx.PlatformInfo:
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.OnCellChange)
+        else :
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
         self.moveTo = (1, 1)
 
     def OnCellChange(self, evt):
@@ -656,7 +658,7 @@ class CTRL_Donnees(gridlib.Grid):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None, date_debut=None, date_fin=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_attestation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_attestation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
         
@@ -736,19 +738,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Edition d'une attestation de présence"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
-        self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
-        self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de fin"))
-        self.ctrl_individus.SetToolTipString(_(u"Cochez les individus"))
-        self.ctrl_activites.SetToolTipString(_(u"Cochez les activités"))
-        self.ctrl_unites.SetToolTipString(_(u"Cochez les unites"))
-        self.ctrl_donnees.SetToolTipString(_(u"Vous pouvez modifier ici les données de base"))
-        self.ctrl_afficher_conso.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les consommations dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début")))
+        self.bouton_date_debut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin")))
+        self.bouton_date_fin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de fin")))
+        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus")))
+        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activités")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unites")))
+        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici les données de base")))
+        self.ctrl_afficher_conso.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les consommations dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le PDF")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((760, 660))
 
     def __do_layout(self):

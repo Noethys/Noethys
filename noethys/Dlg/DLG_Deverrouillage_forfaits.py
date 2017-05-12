@@ -46,7 +46,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Si vous n'arrivez plus à supprimer certaines consommations liées à des forfaits, utilisez cette fonctionnalité pour les déverrouiller. Elles deviendront alors supprimables. Cochez les consommations à déverrouiller plus cliquer sur le bouton Déverrouiller.")
@@ -73,9 +73,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour déverrouiller les consommations cochées"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déverrouiller les consommations cochées")))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):

@@ -203,7 +203,7 @@ class CTRL_Titulaire(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None, IDmandat=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
         self.IDmandat = IDmandat
@@ -324,27 +324,27 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_iban.SetMinSize((200, -1))
         self.ctrl_bic.SetMinSize((120, -1))
-        self.ctrl_controle.SetToolTipString(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides"))
-##        self.ctrl_banque.SetToolTipString(_(u"Sélectionnez ici l'établissement du compte"))
-        self.ctrl_iban.SetToolTipString(_(u"Saisissez ici le numéro IBAN"))
-        self.ctrl_bic.SetToolTipString(_(u"Saisissez ici le numéro BIC"))
-##        self.bouton_banques.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires"))
-        self.radio_membre.SetToolTipString(_(u"Cliquez ici pour sélectionner un membre de la famille"))
-        self.ctrl_membre.SetToolTipString(_(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire"))
-        self.radio_individu.SetToolTipString(_(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire"))
-        self.ctrl_individu_nom.SetToolTipString(_(u"Saisissez un nom de titulaire pour ce compte bancaire"))
-        self.ctrl_individu_rue.SetToolTipString(_(u"Saisissez la rue de l'individu"))
-        self.ctrl_reference_mandat.SetToolTipString(_(u"Lors de la saisie d'un mandat, il est attribué automatiquement par Noethys en fonction du RUM du dernier mandat saisi. Mais vous pouvez le modifier en fonction de vos besoins (Ex : '004567', 'XZA-34654', etc...). Attention, il doit s'agir d'une référence alphanumérique unique."))
-        self.ctrl_date_mandat.SetToolTipString(_(u"Saisissez ici la date de signature du mandat SEPA"))
-        self.ctrl_type_mandat.SetToolTipString(_(u"Utilisez le type 'Récurrent' si le mandant est utilisable pour plusieurs prélèvements ou 'Ponctuel' s'il n'était destiné qu'à un prélèvement unique."))
-        self.ctrl_memo.SetToolTipString(_(u"Saisissez des observations"))
-        self.ctrl_sequence.SetToolTipString(_(u"Sélectionnez la séquence de la prochaine opération (Automatique par défaut)\n\nImportant : Sélectionnez RCUR si ce mandat a déjà été utilisé hors de Noethys ou avant le 01/01/2014."))
-        self.ctrl_actif.SetToolTipString(_(u"Mandat activé ou non. Si vous le désactivez, il ne sera plus utilisable pour de futurs prélèvements."))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer le mandat au format PDF"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer le mandat en PDF par Email"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
+##        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'établissement du compte")))
+        self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro IBAN")))
+        self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro BIC")))
+##        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires")))
+        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un membre de la famille")))
+        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un membre de la famille en tant que titulaire du compte bancaire")))
+        self.radio_individu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement un titulaire de compte bancaire")))
+        self.ctrl_individu_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de titulaire pour ce compte bancaire")))
+        self.ctrl_individu_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'individu")))
+        self.ctrl_reference_mandat.SetToolTip(wx.ToolTip(_(u"Lors de la saisie d'un mandat, il est attribué automatiquement par Noethys en fonction du RUM du dernier mandat saisi. Mais vous pouvez le modifier en fonction de vos besoins (Ex : '004567', 'XZA-34654', etc...). Attention, il doit s'agir d'une référence alphanumérique unique.")))
+        self.ctrl_date_mandat.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de signature du mandat SEPA")))
+        self.ctrl_type_mandat.SetToolTip(wx.ToolTip(_(u"Utilisez le type 'Récurrent' si le mandant est utilisable pour plusieurs prélèvements ou 'Ponctuel' s'il n'était destiné qu'à un prélèvement unique.")))
+        self.ctrl_memo.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
+        self.ctrl_sequence.SetToolTip(wx.ToolTip(_(u"Sélectionnez la séquence de la prochaine opération (Automatique par défaut)\n\nImportant : Sélectionnez RCUR si ce mandat a déjà été utilisé hors de Noethys ou avant le 01/01/2014.")))
+        self.ctrl_actif.SetToolTip(wx.ToolTip(_(u"Mandat activé ou non. Si vous le désactivez, il ne sera plus utilisable pour de futurs prélèvements.")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer le mandat au format PDF")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le mandat en PDF par Email")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         
 
     def __do_layout(self):

@@ -1037,7 +1037,7 @@ class LogTest():
 if __name__ == u"__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    frame_1 = Dialog(None, log=LogTest(), IDprocedure=6, date=datetime.date.today(), dateauto=True, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+    frame_1 = Dialog(None, log=LogTest(), IDprocedure=6, date=datetime.date.today(), dateauto=True, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
     app.SetTopWindow(frame_1)
     frame_1.ShowModal()
     app.MainLoop()

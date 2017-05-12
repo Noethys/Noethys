@@ -76,11 +76,11 @@ class Dialog(wx.Dialog):
         self.ctrl_heure_fin.Bind(wx.EVT_KEY_DOWN, self.OnKey)
 
     def __set_properties(self):
-        self.bouton_heure_debut_now.SetToolTipString(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de début"))
-        self.bouton_heure_fin_now.SetToolTipString(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de fin"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer cette consommation"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_heure_debut_now.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de début")))
+        self.bouton_heure_fin_now.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer l'heure actuelle à l'heure de fin")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer cette consommation")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((350, 110))
         
     def __do_layout(self):

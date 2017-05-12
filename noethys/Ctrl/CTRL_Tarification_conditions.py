@@ -259,7 +259,7 @@ class CTRL_Periodes(wx.Panel):
     def CreationCaseJours(self, periode="scolaire"):
         for jour in self.liste_jours :
             exec("self.check_%s_%s = wx.CheckBox(self, -1,u'%s')" % (periode, jour, jour[0].upper()) )
-            exec("self.check_%s_%s.SetToolTipString(u'%s')" % (periode, jour, jour.capitalize()) )
+            exec("self.check_%s_%s.SetToolTip(wx.ToolTip(u'%s'))" % (periode, jour, jour.capitalize()) )
 
     def GetJours(self, periode="scolaire"):
         listeTemp = []
@@ -315,7 +315,7 @@ class Page_Groupes(wx.Panel):
         self.OnCheckGroupes(None)
 
     def __set_properties(self):
-        self.check_groupes.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de groupe"))
+        self.check_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre de groupe")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -384,7 +384,7 @@ class Page_Etiquettes(wx.Panel):
         self.OnCheckEtiquettes(None)
 
     def __set_properties(self):
-        self.check_etiquettes.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur les étiquettes"))
+        self.check_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur les étiquettes")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -451,7 +451,7 @@ class Page_Cotisations(wx.Panel):
         self.OnCheckCotisations(None)
 
     def __set_properties(self):
-        self.check_cotisations.SetToolTipString(_(u"Cochez cette case pour appliquer ce tarif uniquement lorsque une des cotisations cochées est à jour"))
+        self.check_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour appliquer ce tarif uniquement lorsque une des cotisations cochées est à jour")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -524,10 +524,10 @@ class Page_Questionnaires(wx.Panel):
         self.OnCheckFiltres(None)
 
     def __set_properties(self):
-        self.check_filtres.SetToolTipString(_(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels ou familiaux"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un filtre"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste"))
+        self.check_filtres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels ou familiaux")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un filtre")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -613,7 +613,7 @@ class Page_Caisses(wx.Panel):
         self.OnCheckCaisses(None)
 
     def __set_properties(self):
-        self.check_caisses.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de caisses"))
+        self.check_caisses.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre de caisses")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -679,7 +679,7 @@ class Page_Periodes(wx.Panel):
         self.OnCheckPeriodes(None)
 
     def __set_properties(self):
-        self.check_periodes.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes"))
+        self.check_periodes.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)

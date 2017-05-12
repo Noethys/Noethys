@@ -55,7 +55,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeChamps=[], IDchamp=None, code="", nom="", formule="", titre=u""):
         """ listeChamps = [(code, label), ...] """
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.listeChamps = listeChamps
         self.IDchamp = IDchamp
@@ -87,13 +87,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un champ personnalisé"))
-        self.ctrl_code.SetToolTipString(_(u"Saisissez un code pour ce champ. Ex : 'MONCHAMP1' [OBLIGATOIRE]"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce champ. Ex : 'Total des présences' [OBLIGATOIRE]"))
-        self.ctrl_titre.SetToolTipString(_(u"Saisissez un titre de colonne pour ce champ [OBLIGATOIRE]"))
-        self.ctrl_formule.SetToolTipString(_(u"Saisissez une formule pour ce champ [OPTIONNEL]"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_code.SetToolTip(wx.ToolTip(_(u"Saisissez un code pour ce champ. Ex : 'MONCHAMP1' [OBLIGATOIRE]")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce champ. Ex : 'Total des présences' [OBLIGATOIRE]")))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez un titre de colonne pour ce champ [OBLIGATOIRE]")))
+        self.ctrl_formule.SetToolTip(wx.ToolTip(_(u"Saisissez une formule pour ce champ [OPTIONNEL]")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.label_code_info.SetFont(wx.Font(6, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, ""))
         self.SetMinSize((550, 350))
 

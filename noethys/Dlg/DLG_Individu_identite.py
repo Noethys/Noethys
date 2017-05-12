@@ -34,7 +34,7 @@ class Sieste(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=[]) 
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez le type de sieste nécessaire pour cet individu"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de sieste nécessaire pour cet individu")))
         self.MAJ() 
     
     def MAJ(self):
@@ -143,22 +143,22 @@ class Panel_identite(wx.Panel):
         self.ctrl_paysnaiss.SetValue(IDpays=73)
         
     def __set_properties(self):
-        self.ctrl_nomjfille.SetToolTipString(_(u"Saisissez ici le nom de jeune fille de l'individu"))
+        self.ctrl_nomjfille.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de jeune fille de l'individu")))
         self.ctrl_nomjfille.Enable(False)
         self.label_nomjfille.Enable(False)
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'individu"))
-        self.ctrl_prenom.SetToolTipString(_(u"Saisissez ici le prénom de l'individu"))
-        self.ctrl_datenaiss.SetToolTipString(_(u"Saisissez ici la date de naissance de l'individu"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'individu")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le prénom de l'individu")))
+        self.ctrl_datenaiss.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de naissance de l'individu")))
         self.ctrl_datenaiss.SetMinSize((95, -1))
         self.ctrl_age.SetMinSize((60, -1))
-        self.ctrl_age.SetToolTipString(_(u"Age de l'individu"))
+        self.ctrl_age.SetToolTip(wx.ToolTip(_(u"Age de l'individu")))
         self.ctrl_age.Enable(False)
-        self.ctrl_deces.SetToolTipString(_(u"Cochez cette case si l'individu est décédé"))
-        self.ctrl_annee_deces.SetToolTipString(_(u"Saisissez ici l'année de décès de l'individu"))
+        self.ctrl_deces.SetToolTip(wx.ToolTip(_(u"Cochez cette case si l'individu est décédé")))
+        self.ctrl_annee_deces.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'année de décès de l'individu")))
         self.ctrl_annee_deces.SetMinSize((40, -1))
-        self.ctrl_sieste.SetToolTipString(_(u"Sélectionnez ici un type de sieste pour cet individu"))
-        self.bouton_sieste.SetToolTipString(_(u"Cliquez ici pour accéder à la fenêtre de gestion des types de sieste"))
-        self.ctrl_memo.SetToolTipString(_(u"Saisissez ici les informations de votre choix concernant cet individu"))
+        self.ctrl_sieste.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un type de sieste pour cet individu")))
+        self.bouton_sieste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la fenêtre de gestion des types de sieste")))
+        self.ctrl_memo.SetToolTip(wx.ToolTip(_(u"Saisissez ici les informations de votre choix concernant cet individu")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

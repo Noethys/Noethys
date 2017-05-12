@@ -108,12 +108,12 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un prélèvement manuel"))
-        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez la famille"))
-        self.ctrl_libelle.SetToolTipString(_(u"Saisissez ici le libellé du prélèvement"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant du prélèvement"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez la famille")))
+        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez ici le libellé du prélèvement")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant du prélèvement")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

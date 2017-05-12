@@ -35,7 +35,7 @@ class CTRL_Date_facturation(wx.Panel):
         for code, label in self.listeChoix :
             choices.append(label)
         self.ctrl_choix = wx.Choice(self, -1, choices=choices)
-        self.ctrl_choix.SetToolTipString(_(u"Sélectionnez la date de facturation de la prestation"))
+        self.ctrl_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date de facturation de la prestation")))
         self.ctrl_date = CTRL_Saisie_date.Date2(self)
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)

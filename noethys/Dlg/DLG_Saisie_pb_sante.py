@@ -13,7 +13,10 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 from Ctrl import CTRL_Saisie_date
 import GestionDB
 
@@ -31,9 +34,9 @@ LISTE_TYPES = [
 
 
 
-class BitmapComboBox(wx.combo.BitmapComboBox):
+class MyBitmapComboBox(BitmapComboBox):
     def __init__(self, parent, listeImages=[], size=(-1,  -1) ):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.dictID = {}
         
     def Remplissage(self, listeDonnees=[]):
@@ -63,7 +66,7 @@ class BitmapComboBox(wx.combo.BitmapComboBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDindividu=None, IDprobleme=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDindividu = IDindividu
         self.IDprobleme = IDprobleme
@@ -71,7 +74,7 @@ class Dialog(wx.Dialog):
         # Caractéristiques
         self.staticbox_gauche_staticbox = wx.StaticBox(self, -1, _(u"Caractéristiques"))
         self.label_type = wx.StaticText(self, -1, _(u"Type :"))
-        self.ctrl_type = BitmapComboBox(self)
+        self.ctrl_type = MyBitmapComboBox(self)
         self.ctrl_type.Remplissage(LISTE_TYPES)
         self.label_intitule = wx.StaticText(self, -1, _(u"Intitulé :"))
         self.ctrl_intitule = wx.TextCtrl(self, -1, u"")
@@ -138,27 +141,27 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une information médicale"))
-        self.ctrl_type.SetToolTipString(_(u"Selectionnez un type d'information"))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Selectionnez un type d'information")))
         self.ctrl_intitule.SetFont(wx.Font(10, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, u""))
-        self.ctrl_intitule.SetToolTipString(_(u"Saisissez l'intitule de l'information"))
-        self.radio_indefinie.SetToolTipString(_(u"Sans période définie"))
-        self.radio_definie.SetToolTipString(_(u"Définir une période"))
-        self.ctrl_periode_debut.SetToolTipString(_(u"Saisissez une date de début"))
-        self.ctrl_periode_fin.SetToolTipString(_(u"Saisissez une date de fin"))
-        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour le problème de santé"))
-        self.ctrl_coche_traitement.SetToolTipString(_(u"Cochez cette case pour saisir un traitement médical"))
-        self.ctrl_description_traitement.SetToolTipString(_(u"Saisissez ici le détail du traitement médical"))
-        self.ctrl_traitement_debut.SetToolTipString(_(u"Saisissez ici la date de debut du traitement"))
-        self.ctrl_traitement_fin.SetToolTipString(_(u"Saisissez ici la date de fin de traitement"))
-        self.ctrl_coche_eviction.SetToolTipString(_(u"Cochez cette case si cette information médicale nécessite une éviction de l'activité"))
-        self.ctrl_eviction_debut.SetToolTipString(_(u"Saisissez ici la date de début de l'éviction"))
-        self.ctrl_eviction_fin.SetToolTipString(_(u"Saisissez ici la date de fin de la periode d'éviction"))
-        self.ctrl_listing_enfants.SetToolTipString(_(u"Cliquez ici pour diffuser l'information sur le listing enfants"))
-        self.ctrl_listing_presences.SetToolTipString(_(u"Cliquez ici pour diffuser l'information sur le listing des consommations"))
-        self.ctrl_listing_repas.SetToolTipString(_(u"Cliquez ici pour diffuser l'information sur la commande des repas"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour valider la saisie"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_intitule.SetToolTip(wx.ToolTip(_(u"Saisissez l'intitule de l'information")))
+        self.radio_indefinie.SetToolTip(wx.ToolTip(_(u"Sans période définie")))
+        self.radio_definie.SetToolTip(wx.ToolTip(_(u"Définir une période")))
+        self.ctrl_periode_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_periode_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour le problème de santé")))
+        self.ctrl_coche_traitement.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir un traitement médical")))
+        self.ctrl_description_traitement.SetToolTip(wx.ToolTip(_(u"Saisissez ici le détail du traitement médical")))
+        self.ctrl_traitement_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de debut du traitement")))
+        self.ctrl_traitement_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de traitement")))
+        self.ctrl_coche_eviction.SetToolTip(wx.ToolTip(_(u"Cochez cette case si cette information médicale nécessite une éviction de l'activité")))
+        self.ctrl_eviction_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de l'éviction")))
+        self.ctrl_eviction_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de la periode d'éviction")))
+        self.ctrl_listing_enfants.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour diffuser l'information sur le listing enfants")))
+        self.ctrl_listing_presences.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour diffuser l'information sur le listing des consommations")))
+        self.ctrl_listing_repas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour diffuser l'information sur la commande des repas")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider la saisie")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
         self.SetMinSize((686, 418))
 
     def __do_layout(self):

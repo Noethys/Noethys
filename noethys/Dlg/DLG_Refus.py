@@ -27,7 +27,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, dictDonnees={}, dictEtatPlaces={}, dictUnitesRemplissage={}):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter la liste des individus qui avaient réservé des places sur liste d'attente et qui après libération de places, les avaient finalement refusé. Cette liste vous permet donc de déterminer avec précision le nombre de places qui auraient été nécessaires afin d'accueillir tout le monde...")
@@ -51,10 +51,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des places refusées"))
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sélectionné dans la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer cette liste (PDF)"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille de l'individu sélectionné dans la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste (PDF)")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((780, 600))
 
     def __do_layout(self):

@@ -226,19 +226,19 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(_(u"Selectionnez un modèle de documents"))
-        self.ctrl_signataire.SetToolTipString(_(u"Sélectionnez ici le signataire du document"))
-        self.ctrl_intro.SetToolTipString(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' "))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Selectionnez un modèle de documents")))
+        self.ctrl_signataire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le signataire du document")))
+        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure le texte d'introduction : 'Je soussigné... atteste...' ")))
         listeMotsCles = []
         for mot in self.dictInscription.keys() :
             listeMotsCles.append(u"{%s}" % mot)
-        self.ctrl_texte_intro.SetToolTipString(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nVous pouvez utiliser les mots-clés suivants : %s") % ", ".join(listeMotsCles))
-        self.ctrl_tableau.SetToolTipString(_(u"Afficher un tableau comportant les caractéristiques de l'inscription"))
-        self.bouton_gestion_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles de documents"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour envoyer ce document par Email"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher le PDF"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_texte_intro.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le texte d'introduction. \n\nVous pouvez utiliser les mots-clés suivants : %s") % ", ".join(listeMotsCles)))
+        self.ctrl_tableau.SetToolTip(wx.ToolTip(_(u"Afficher un tableau comportant les caractéristiques de l'inscription")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles de documents")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce document par Email")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le PDF")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((570, 500))
 
     def __do_layout(self):

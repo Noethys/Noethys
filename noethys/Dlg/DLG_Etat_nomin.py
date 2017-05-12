@@ -478,7 +478,7 @@ class CTRL_Profil(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -552,14 +552,14 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.AfficheAvertissement)
 
     def __set_properties(self):
-        self.ctrl_profil.SetToolTipString(_(u"Selectionnez un profil de liste"))
-        self.bouton_profils.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des profils"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la liste des champs"))
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter le champ sélectionné"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre le champ sélectionné"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher les resultats"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_profil.SetToolTip(wx.ToolTip(_(u"Selectionnez un profil de liste")))
+        self.bouton_profils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des profils")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la liste des champs")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le champ sélectionné")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le champ sélectionné")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les resultats")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):

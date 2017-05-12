@@ -12,7 +12,10 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
 
-
+if 'phoenix' in wx.PlatformInfo:
+    TYPE_COULEUR = wx._core.Colour
+else:
+    TYPE_COULEUR = wx._gdi.Colour
 
 
 def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=""):
@@ -50,7 +53,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
         elif type_parametre == list : valeurTmp = str(valeur)
         elif type_parametre == dict : valeurTmp = str(valeur)
         elif type_parametre == bool : valeurTmp = str(valeur)
-        elif type_parametre == wx._gdi.Colour : valeurTmp = str(valeur)
+        elif type_parametre == TYPE_COULEUR : valeurTmp = str(valeur)
         else : valeurTmp = ""
 
         if dictDonnees.has_key(nom) :
@@ -68,7 +71,7 @@ def ParametresCategorie(mode="get", categorie="", dictParametres={}, nomFichier=
                     if type_parametre == list : exec("valeur = " + valeur)
                     if type_parametre == dict : exec("valeur = " + valeur)
                     if type_parametre == bool : exec("valeur = " + valeur)
-                    if type_parametre == wx._gdi.Colour and valeur != "" : exec("valeur = " + valeur)
+                    if type_parametre == TYPE_COULEUR and valeur != "" : exec("valeur = " + valeur)
                 except :
                     valeur = None
                 dictFinal[nom] = valeur

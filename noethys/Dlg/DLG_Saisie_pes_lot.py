@@ -68,7 +68,7 @@ class EditeurComboBoxAvecBoutons(wxpg.PyChoiceEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des paramètres"))
+        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des paramètres")))
         
         # Create the 'primary' editor control (textctrl in this case)
         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
@@ -340,7 +340,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDlot=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_pes_lot", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_pes_lot", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent  
         self.IDlot = IDlot 
         
@@ -419,18 +419,18 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un bordereau PES ORMC"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce bordereau (Ex : 'Janvier 2013', etc...). Nom interne à Noethys."))
-        self.ctrl_verrouillage.SetToolTipString(_(u"Cochez cette case pour verrouiller le bordereau lorsqu'il a été communiqué à la Trésorerie"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez ici des observations sur ce bordereau"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une pièce"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la pièce sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour retirer la pièce sélectionnée dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste des pièces"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste des pièces de ce bordereau"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fichier.SetToolTipString(_(u"Cliquez ici pour générer un fichier normalisé xml PES Recette ORMC destiné à votre trésorerie"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider les données"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce bordereau (Ex : 'Janvier 2013', etc...). Nom interne à Noethys.")))
+        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour verrouiller le bordereau lorsqu'il a été communiqué à la Trésorerie")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations sur ce bordereau")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une pièce")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la pièce sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la pièce sélectionnée dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste des pièces")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des pièces de ce bordereau")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer un fichier normalisé xml PES Recette ORMC destiné à votre trésorerie")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les données")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((900, 780))
 
     def __do_layout(self):

@@ -237,7 +237,7 @@ class ListView(FastObjectListView):
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun transport programmé"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        

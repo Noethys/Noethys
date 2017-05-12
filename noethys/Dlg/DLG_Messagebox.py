@@ -62,7 +62,10 @@ class Dialog(wx.Dialog):
 
             dc = wx.ClientDC(t)
             dc.SetFont(t.GetFont())
-            w,h,lh = dc.GetMultiLineTextExtent(detail)
+            if 'phoenix' in wx.PlatformInfo:
+                w,h,lh = dc.GetFullMultiLineTextExtent(detail)
+            else :
+                w,h,lh = dc.GetMultiLineTextExtent(detail)
             w = min(self.largeur_max, 10 + w + wx.SystemSettings.GetMetric(wx.SYS_VSCROLL_X))
             h = min(self.hauteur_max, 10 + h) + 20
             t.SetMinSize((w,h))

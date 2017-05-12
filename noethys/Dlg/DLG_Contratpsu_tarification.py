@@ -58,13 +58,13 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_tarifs.Imprimer, self.bouton_tarifs_imprimer)
 
     def __set_properties(self):
-        self.bouton_tarifs_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un tarif"))
-        self.bouton_tarifs_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le tarif sélectionné"))
-        self.bouton_tarifs_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le tarif sélectionné"))
-        self.bouton_tarifs_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_tarifs_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.ctrl_regularisation.SetToolTipString(_(u"Saisissez ici le nombre d'heure de régularisation (en positif ou négatif)"))
-        self.ctrl_tolerance.SetToolTipString(_(u"Saisissez ici la valeur de tolérance des dépassements. Une facturation ne sera ainsi appliquée que lorsque le dépassement sera supérieur à la valeur renseignée."))
+        self.bouton_tarifs_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un tarif")))
+        self.bouton_tarifs_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le tarif sélectionné")))
+        self.bouton_tarifs_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le tarif sélectionné")))
+        self.bouton_tarifs_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_tarifs_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.ctrl_regularisation.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre d'heure de régularisation (en positif ou négatif)")))
+        self.ctrl_tolerance.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur de tolérance des dépassements. Une facturation ne sera ainsi appliquée que lorsque le dépassement sera supérieur à la valeur renseignée.")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

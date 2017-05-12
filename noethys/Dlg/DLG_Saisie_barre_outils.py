@@ -264,7 +264,7 @@ class CTRL_Style(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, texte=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Généralités
@@ -322,19 +322,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((300, 21))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette barre d'outils"))
-        self.ctrl_style.SetToolTipString(_(u"Sélectionnez un style d'affichage pour cette barre d'outils"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations (optionnel)"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette barre d'outils")))
+        self.ctrl_style.SetToolTip(wx.ToolTip(_(u"Sélectionnez un style d'affichage pour cette barre d'outils")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations (optionnel)")))
         self.label_elements_dispo.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
         self.label_elements_barre.SetFont(wx.Font(7, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.bouton_droite.SetToolTipString(_(u"Cliquez ici pour insérer l'élément sélectionné dans la barre d'outils (Vous pouvez également double-cliquer dessus)"))
-        self.bouton_gauche.SetToolTipString(_(u"Cliquez ici pour retirer l'élément sélectionné de la barre d'outils (Vous pouvez également double-cliquer dessus)"))
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour déplacer cet élément"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour déplacer cet élément"))
-##        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier cet élément"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_droite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour insérer l'élément sélectionné dans la barre d'outils (Vous pouvez également double-cliquer dessus)")))
+        self.bouton_gauche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer l'élément sélectionné de la barre d'outils (Vous pouvez également double-cliquer dessus)")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer cet élément")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déplacer cet élément")))
+##        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier cet élément")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((800, 550))
 
     def __do_layout(self):

@@ -75,7 +75,7 @@ class CTRL(wx.Panel):
         if self.afficherBouton == True :
             self.bouton_releve = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_ANY))
             self.Bind(wx.EVT_BUTTON, self.OnBoutonReleve, self.bouton_releve)
-            self.bouton_releve.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des relevés bancaires"))
+            self.bouton_releve.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des relevés bancaires")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_releve, 1, wx.EXPAND|wx.ALL, 0)

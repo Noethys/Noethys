@@ -101,7 +101,7 @@ class MyRichTextCtrl(rt.RichTextCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDtexte=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.IDtexte = IDtexte
         self.couleur = (255, 255, 255)
@@ -167,16 +167,16 @@ class Dialog(wx.Dialog):
         self.OnCheckAttribution(None)
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce texte"))
-        self.ctrl_titre.SetToolTipString(_(u"Saisissez le titre qui apparaîtra en entête du document"))
-        self.ctrl_couleur.SetToolTipString(_(u"Sélectionnez une couleur"))
-        self.ctrl_attribution.SetToolTipString(_(u"Cochez cette case pour que ce texte soit automatiquement attribué en fonction du nombre de jours de retard du paiement"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce texte")))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Saisissez le titre qui apparaîtra en entête du document")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Sélectionnez une couleur")))
+        self.ctrl_attribution.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que ce texte soit automatiquement attribué en fonction du nombre de jours de retard du paiement")))
         self.ctrl_retard_min.SetMinSize((60, -1))
         self.ctrl_retard_max.SetMinSize((60, -1))
-        self.ctrl_motscles.SetToolTipString(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades)."))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_motscles.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur un mot-clé pour l'insérer dans le texte\nou recopiez-le directement (avec ses accolades).")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((580, 500))
 
     def __do_layout(self):

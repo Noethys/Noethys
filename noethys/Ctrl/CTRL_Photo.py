@@ -37,7 +37,10 @@ def GetPhoto(IDindividu=None, nomFichier=None, taillePhoto=(128, 128), qualite=w
                 IDphoto, bufferPhoto = listeDonnees[0]
                 # Transformation du buffer en wx.bitmap
                 io = cStringIO.StringIO(bufferPhoto)
-                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+                if 'phoenix' in wx.PlatformInfo:
+                    img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+                else :
+                    img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
                 img = img.Rescale(width=taillePhoto[0], height=taillePhoto[1], quality=qualite) 
                 bmp = img.ConvertToBitmap()
                 return (IDphoto, bmp)
@@ -92,7 +95,10 @@ def GetPhotos(listeIndividus=[], taillePhoto=None, qualite=wx.IMAGE_QUALITY_HIGH
             IDphoto = dictPhotosDB[IDindividu]["IDphoto"]
             bufferPhoto = dictPhotosDB[IDindividu]["bufferPhoto"]
             io = cStringIO.StringIO(bufferPhoto)
-            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            if 'phoenix' in wx.PlatformInfo:
+                img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+            else :
+                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
             if taillePhoto != None :
                 img = img.Rescale(width=taillePhoto[0], height=taillePhoto[1], quality=qualite) 
             bmp = img.ConvertToBitmap()    
@@ -120,7 +126,7 @@ class CTRL_Photo(wx.StaticBitmap):
         self.IDindividu = IDindividu
         
         self.SetBackgroundColour(wx.Colour(0, 0, 0))
-        self.SetToolTipString(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions photo"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez sur le bouton droit de votre souris\npour accéder aux fonctions photo")))
         
         self.Bind(wx.EVT_LEFT_DOWN, self.MenuPhoto)
         self.Bind(wx.EVT_RIGHT_DOWN, self.MenuPhoto)

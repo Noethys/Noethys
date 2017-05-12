@@ -331,7 +331,7 @@ class ListView(FastObjectListView):
             self.SetSortColumn(self.columns[tri])
 
         self.SetEmptyListMsg(_(u"Aucune lettre de rappel"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.donnees)
             
     def MAJ(self, ID=None):

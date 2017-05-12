@@ -28,7 +28,7 @@ from Utils import UTILS_Fichiers
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeFichiers=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.listeFichiers = listeFichiers
 
@@ -82,16 +82,16 @@ class Dialog(wx.Dialog):
         self.ctrl_donnees.MAJ()
         
     def __set_properties(self):
-        self.check_cacher_doublons.SetToolTipString(_(u"Cochez cette case pour cacher les doublons"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_enregistrer.SetToolTipString(_(u"Cliquez ici pour enregistrer le contenu du journal dans un fichier"))
-        self.ctrl_regroupement.SetToolTipString(_(u"Cliquez ici pour sélectionner une colonne de regroupement"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer l'importation des données"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.check_cacher_doublons.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour cacher les doublons")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_enregistrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour enregistrer le contenu du journal dans un fichier")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une colonne de regroupement")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation des données")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((900, 700))
 
     def __do_layout(self):
@@ -431,7 +431,7 @@ class Traitement(Thread):
 
 class Dialog_Traitement(wx.Dialog):
     def __init__(self, parent, listeTracks=[], debug=False):
-        wx.Dialog.__init__(self, parent, -1, style=wx.CAPTION|wx.SYSTEM_MENU|wx.THICK_FRAME)#wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.CAPTION|wx.SYSTEM_MENU)#wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.listeTracks = listeTracks
         self.debug = debug
@@ -459,8 +459,8 @@ class Dialog_Traitement(wx.Dialog):
         
     def __set_properties(self):
         self.SetTitle(_(u"Importation des données"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer l'importation des données"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer l'importation des données")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         if self.debug == False :
             self.SetMinSize((500, 100))
         else :

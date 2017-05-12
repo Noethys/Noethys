@@ -144,9 +144,9 @@ class ChoixPeriode(wx.Panel):
         self.ctrl_date_fin = CTRL_Saisie_date.Date(self)
         
         # Propriétés
-        self.check.SetToolTipString(infobulle)
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
+        self.check.SetToolTip(wx.ToolTip(infobulle))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin")))
         self.ctrl_date_debut.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
         self.ctrl_date_debut.SetMinSize((70, 18))
         self.ctrl_date_fin.SetFont(wx.Font(8, wx.SWISS, wx.NORMAL, wx.NORMAL))
@@ -240,14 +240,14 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
-        self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de début dans un calendrier"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
-        self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de fin dans un calendrier"))
-        self.radio_cotisations.SetToolTipString(_(u"Cochez cette case pour afficher les cotisations dans la synthèse"))
-        self.radio_consommations.SetToolTipString(_(u"Cochez cette case pour afficher les consommations dans la synthèse"))
-        self.radio_autres.SetToolTipString(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
+        self.bouton_date_debut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de début dans un calendrier")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.bouton_date_fin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de fin dans un calendrier")))
+        self.radio_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les cotisations dans la synthèse")))
+        self.radio_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les consommations dans la synthèse")))
+        self.radio_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les autres types de prestations dans la synthèse")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser les résultats en fonction des paramètres sélectionnés")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -357,7 +357,7 @@ class Parametres(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -420,12 +420,12 @@ class Dialog(wx.Dialog):
         self.MAJ() 
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter les résultats au format MS Excel"))
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez le mode d'affichage souhaité"))
-        self.check_details.SetToolTipString(_(u"Cliquez ici pour afficher les détails dans les résultats"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression des résultats (PDF)")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les résultats au format MS Excel")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode d'affichage souhaité")))
+        self.check_details.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher les détails dans les résultats")))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):

@@ -21,7 +21,7 @@ from Ctrl import CTRL_Image_mode
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDmode=None, IDemetteur=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_emetteur", style=wx.DEFAULT_DIALOG_STYLE|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_emetteur", style=wx.DEFAULT_DIALOG_STYLE|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDmode = IDmode
         self.IDemetteur = IDemetteur
@@ -57,9 +57,9 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom pour cet émetteur"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour importer une image"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'image active"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour cet émetteur")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer une image")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'image active")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)

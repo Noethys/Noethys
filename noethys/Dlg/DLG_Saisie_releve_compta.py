@@ -83,7 +83,7 @@ class CTRL_Compte(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDreleve=None, IDcompte_bancaire=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.IDreleve = IDreleve
         
@@ -137,13 +137,13 @@ class Dialog(wx.Dialog):
         self.ctrl_operations.MAJ() 
 
     def __set_properties(self):
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez le compte bancaire associé"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom du relevé bancaire (Ex : 'Janvier 2014')"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début du relevé"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin du relevé"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire associé")))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du relevé bancaire (Ex : 'Janvier 2014')")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début du relevé")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin du relevé")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((800, 600))
 
     def __do_layout(self):

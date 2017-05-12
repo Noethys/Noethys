@@ -45,7 +45,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des activités. Une activité peut être un Accueil de Loisirs, un séjour de vacances, une cantine scolaire, une garderie périscolaire, une crèche, une activité sportive ou culturelle, etc...")
@@ -82,14 +82,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des activités"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une activité"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'activité sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'activité sélectionnée dans la liste"))
-        self.bouton_dupliquer.SetToolTipString(_(u"Cliquez ici pour dupliquer l'activité sélectionnée dans la liste"))
-        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer un paramétrage d'activité (.nxa)"))
-        self.bouton_exporter.SetToolTipString(_(u"Cliquez ici pour exporter un ou plusieurs paramétrages d'activités (.nxa)"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une activité")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'activité sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'activité sélectionnée dans la liste")))
+        self.bouton_dupliquer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour dupliquer l'activité sélectionnée dans la liste")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer un paramétrage d'activité (.nxa)")))
+        self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter un ou plusieurs paramétrages d'activités (.nxa)")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((700, 600))
 
     def __do_layout(self):

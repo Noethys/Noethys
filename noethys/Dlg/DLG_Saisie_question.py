@@ -14,7 +14,10 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import GestionDB
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 from PIL import Image
 import os
 import cStringIO
@@ -105,7 +108,7 @@ class CTRL_Choix(FastObjectListView):
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun choix"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetObjects(self.listeChoix)
        
     def MAJ(self):
@@ -303,9 +306,9 @@ class CTRL_Categorie(wx.Choice):
 # -----------------------------------------------------------------------------------------------------------------------
 
 
-class CTRL_Controle(wx.combo.BitmapComboBox):
+class CTRL_Controle(BitmapComboBox):
     def __init__(self, parent, size=(-1,  -1)):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.MAJlisteDonnees() 
         self.SetSelection(0)
@@ -373,7 +376,7 @@ class CTRL_Controle(wx.combo.BitmapComboBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, type="individu", IDquestion=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent    
         self.type = type
         self.IDquestion = IDquestion  
@@ -451,21 +454,21 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une question"))
-        self.ctrl_label.SetToolTipString(_(u"Saisissez ici le label de la question"))
-        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez ici la catégorie de la question"))
-        self.ctrl_controle.SetToolTipString(_(u"Sélectionnez ici le type de contrôle souhaité"))
-        self.ctrl_visible.SetToolTipString(_(u"Cochez cette case pour rendre visible cette question"))
-        self.bouton_ajouter_choix.SetToolTipString(_(u"Cliquez ici pour ajouter une nouvelle question"))
-        self.bouton_modifier_choix.SetToolTipString(_(u"Cliquez ici pour modifier la ligne sélectionnée dans la liste"))
-        self.bouton_supprimer_choix.SetToolTipString(_(u"Cliquez ici pour supprimer la ligne sélectionnée dans la liste"))
-        self.bouton_monter_choix.SetToolTipString(_(u"Cliquez ici pour monter la ligne sélectionnée dans la liste"))
-        self.bouton_descendre_choix.SetToolTipString(_(u"Cliquez ici pour descendre la ligne sélectionnée dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.ctrl_hauteur.SetToolTipString(_(u"Saisissez ici la hauteur du contrôle (en pixels)\nIndiquez '-1' pour définir une taille automatiquement"))
-        self.ctrl_valmin.SetToolTipString(_(u"Saisissez ici la valeur minimale du contrôle"))
-        self.ctrl_valmax.SetToolTipString(_(u"Saisissez ici la valeur maximale du contrôle"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la question")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la catégorie de la question")))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de contrôle souhaité")))
+        self.ctrl_visible.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour rendre visible cette question")))
+        self.bouton_ajouter_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une nouvelle question")))
+        self.bouton_modifier_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la ligne sélectionnée dans la liste")))
+        self.bouton_supprimer_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la ligne sélectionnée dans la liste")))
+        self.bouton_monter_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la ligne sélectionnée dans la liste")))
+        self.bouton_descendre_choix.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la ligne sélectionnée dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.ctrl_hauteur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la hauteur du contrôle (en pixels)\nIndiquez '-1' pour définir une taille automatiquement")))
+        self.ctrl_valmin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur minimale du contrôle")))
+        self.ctrl_valmax.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur maximale du contrôle")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((650, 450))
 
     def __do_layout(self):

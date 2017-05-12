@@ -449,7 +449,7 @@ class CTRL_Activites(wx.TextCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDcotisation=None, IDfamille=None, IDindividu=None, dictFamillesRattachees={}):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDcotisation = IDcotisation
         self.IDfamille = IDfamille
@@ -541,28 +541,28 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetFocus() 
         
     def __set_properties(self):
-        self.ctrl_type.SetToolTipString(_(u"Sélectionnez ici le type de cotisation"))
-        self.ctrl_unite.SetToolTipString(_(u"Sélectionnez ici l'unité de cotisation"))
-        self.ctrl_beneficiaire.SetToolTipString(_(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
-        self.bouton_activites.SetToolTipString(_(u"Cliquez ici pour associer une ou plusieurs activités à cette cotisation"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez un texte libre (optionnel)"))
-        self.ctrl_creation.SetToolTipString(_(u"Selectionnez OUI si une carte d'adhérent a ete créee"))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de cotisation")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'unité de cotisation")))
+        self.ctrl_beneficiaire.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la famille ou l'individu qui bénéficie de cette cotisation")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.bouton_activites.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour associer une ou plusieurs activités à cette cotisation")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez un texte libre (optionnel)")))
+        self.ctrl_creation.SetToolTip(wx.ToolTip(_(u"Selectionnez OUI si une carte d'adhérent a ete créee")))
         self.ctrl_numero.SetMinSize((70, -1))
-        self.ctrl_numero.SetToolTipString(_(u"Saisissez ici le numéro de la carte d'adhérent"))
-        self.ctrl_date_creation.SetToolTipString(_(u"Saisissez ici la date de création de la carte d'adhérent"))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de la carte d'adhérent")))
+        self.ctrl_date_creation.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de création de la carte d'adhérent")))
         self.ctrl_depot.SetMinSize((70, -1))
-        self.ctrl_depot.SetToolTipString(_(u"Numero et date du dépôt"))
-        self.ctrl_facturer.SetToolTipString(_(u"Selectionnez OUI si la carte doit etre facturée"))
-        self.ctrl_date_prestation.SetToolTipString(_(u"Saisissez ici la date de la prestation à facturer"))
+        self.ctrl_depot.SetToolTip(wx.ToolTip(_(u"Numero et date du dépôt")))
+        self.ctrl_facturer.SetToolTip(wx.ToolTip(_(u"Selectionnez OUI si la carte doit etre facturée")))
+        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de la prestation à facturer")))
         self.ctrl_montant.SetMinSize((70, -1))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant a facturer"))
-        self.ctrl_label.SetToolTipString(_(u"Saisissez ici le label de la prestation a créer"))
-        self.ctrl_payeur.SetToolTipString(_(u"Sélectionnez la famille à facturer"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant a facturer")))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la prestation a créer")))
+        self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"Sélectionnez la famille à facturer")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((450, 437))
 
     def __do_layout(self):

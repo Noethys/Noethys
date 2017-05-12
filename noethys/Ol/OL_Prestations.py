@@ -322,7 +322,7 @@ class ListView(GroupListView):
         self.SetShowItemCounts(False)
         self.SetSortColumn(self.columns[2])
         self.SetEmptyListMsg(_(u"Aucune prestation"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.rowFormatter = rowFormatter
         self.SetObjects(self.donnees)
     

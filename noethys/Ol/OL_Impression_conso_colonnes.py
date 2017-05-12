@@ -78,7 +78,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune colonne personnalisée"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
        
@@ -347,12 +347,12 @@ class DLG_Saisie_colonne(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((300, -1))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le label de la colonne"))
-        self.ctrl_donnee.SetToolTipString(_(u"Sélectionnez ici la donnée à insérer dans la colonne"))
-        self.ctrl_largeur.SetToolTipString(_(u"Saisissez ici la largeur de la colonne (en pixels)"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le label de la colonne")))
+        self.ctrl_donnee.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la donnée à insérer dans la colonne")))
+        self.ctrl_largeur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la largeur de la colonne (en pixels)")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

@@ -51,11 +51,11 @@ class Dialog(wx.Dialog):
         if date_fin != None : self.SetDateFin(date_fin)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((500, 200))
 
     def __do_layout(self):

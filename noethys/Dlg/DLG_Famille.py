@@ -140,7 +140,7 @@ class Notebook(wx.Notebook):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None):
-        wx.Dialog.__init__(self, parent, id=-1, name="fiche_famille", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, id=-1, name="fiche_famille", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
         
@@ -207,17 +207,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Fiche familiale n°%d") % self.IDfamille)
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter ou créer un nouvel individu"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'individu sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer ou détacher l'individu sélectionné"))
-        self.bouton_liens_famille.SetToolTipString(_(u"Cliquez ici pour visualiser l'ensemble des liens de la famille"))
-        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour ouvrir la grille des consommations de l'individu sélectionné"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
-        self.bouton_consommations.SetToolTipString(_(u"Cliquez ici pour consulter ou modifier les consommations d'un membre de la famille"))
-        self.bouton_saisie_reglement.SetToolTipString(_(u"Cliquez ici pour saisir rapidement un règlement"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou créer un nouvel individu")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'individu sélectionné")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer ou détacher l'individu sélectionné")))
+        self.bouton_liens_famille.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser l'ensemble des liens de la famille")))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la grille des consommations de l'individu sélectionné")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_consommations.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour consulter ou modifier les consommations d'un membre de la famille")))
+        self.bouton_saisie_reglement.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir rapidement un règlement")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
         self.bouton_ajouter.SetSize(self.bouton_ajouter.GetBestSize())
         self.bouton_modifier.SetSize(self.bouton_modifier.GetBestSize())

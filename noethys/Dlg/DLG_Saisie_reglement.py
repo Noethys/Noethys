@@ -92,7 +92,10 @@ class CTRL_Image(wx.StaticBitmap):
                 bmpBuffer = listeDonnees[0][0]
                 if bmpBuffer != None :
                     io = cStringIO.StringIO(bmpBuffer)
-                    img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+                    if 'phoenix' in wx.PlatformInfo:
+                        img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+                    else :
+                        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
                     bmp = img.Rescale(width=self.tailleImage[0], height=self.tailleImage[1], quality=wx.IMAGE_QUALITY_HIGH) 
                     bmp = bmp.ConvertToBitmap()
                     return bmp
@@ -545,7 +548,7 @@ class CTRL_Compte(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDcompte_payeur=None, IDreglement=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Emetteurs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Emetteurs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDcompte_payeur = IDcompte_payeur
         self.IDreglement = IDreglement
@@ -720,30 +723,30 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date d'émission du règlement"))
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez le mode de règlement"))
-        self.ctrl_emetteur.SetToolTipString(_(u"Sélectionnez l'émetteur du règlement (banque ou organisme)"))
-        self.ctrl_numero.SetToolTipString(_(u"Saisissez le numéro de la pièce"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez un montant en %s") % SYMBOLE)
-        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour sélectionner la date dans un calendrier"))
-        self.bouton_mode.SetToolTipString(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de règlement"))
-        self.bouton_emetteur.SetToolTipString(_(u"Cliquez ici pour ajouter, modifier ou supprimer un émetteur de règlement"))
-        self.ctrl_attente.SetToolTipString(_(u"Cochez cette case si vous souhaitez laisser l'encaissement en attente"))
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionner le compte bancaire sur lequel encaisser ce règlement"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez ici les observations de votre choix"))
-        self.ctrl_quittancier.SetToolTipString(_(u"Saisissez ici le numéro de quittancier si vous en utilisez un"))
-        self.ctrl_recu.SetToolTipString(_(u"Cochez cette case si vous souhaitez éditer un reçu pour ce règlement juste après la validation de celui-ci"))
-        self.bouton_ajouter_payeur.SetToolTipString(_(u"Cliquez ici pour ajouter un payeur"))
-        self.bouton_modifier_payeur.SetToolTipString(_(u"Cliquez ici pour modifier le payeur sélectionné"))
-        self.bouton_supprimer_payeur.SetToolTipString(_(u"Cliquez ici pour supprimer le payeur sélectionné"))
-        self.ctrl_check_differe.SetToolTipString(_(u"Cochez cette case pour préciser une date d'encaissement ultérieure"))
-        self.bouton_calendrier_differe.SetToolTipString(_(u"Cliquez ici pour sélectionner une date d'encaissement différé dans un calendrier"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_calculatrice.SetToolTipString(_(u"Cliquez ici pour ouvrir la calculatrice installée par défaut sur votre ordinateur"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.ctrl_differe.SetToolTipString(_(u"Saisissez ici la date d'encaissement souhaitée"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'émission du règlement")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de règlement")))
+        self.ctrl_emetteur.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'émetteur du règlement (banque ou organisme)")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de la pièce")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant en %s") % SYMBOLE))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans un calendrier")))
+        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de règlement")))
+        self.bouton_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un émetteur de règlement")))
+        self.ctrl_attente.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez laisser l'encaissement en attente")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionner le compte bancaire sur lequel encaisser ce règlement")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici les observations de votre choix")))
+        self.ctrl_quittancier.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de quittancier si vous en utilisez un")))
+        self.ctrl_recu.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez éditer un reçu pour ce règlement juste après la validation de celui-ci")))
+        self.bouton_ajouter_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un payeur")))
+        self.bouton_modifier_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le payeur sélectionné")))
+        self.bouton_supprimer_payeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le payeur sélectionné")))
+        self.ctrl_check_differe.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour préciser une date d'encaissement ultérieure")))
+        self.bouton_calendrier_differe.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une date d'encaissement différé dans un calendrier")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_calculatrice.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la calculatrice installée par défaut sur votre ordinateur")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+        self.ctrl_differe.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'encaissement souhaitée")))
         self.ctrl_mode.SetMinSize((200, -1))
         self.ctrl_montant.SetMinSize((-1, 30))
         self.ctrl_compte.SetMinSize((200, 21))

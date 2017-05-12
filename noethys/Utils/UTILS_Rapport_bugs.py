@@ -56,7 +56,7 @@ def Activer_rapport_erreurs(version=""):
 
 class DLG_Rapport(wx.Dialog):
     def __init__(self, parent, texte=""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         self.ctrl_image = wx.StaticBitmap(self, wx.ID_ANY, wx.Bitmap(Chemins.GetStaticPath(u"Images/48x48/Erreur.png"), wx.BITMAP_TYPE_ANY))
@@ -88,10 +88,10 @@ class DLG_Rapport(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Rapport d'erreurs"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_rapport.SetToolTipString(_(u"Ce rapport d'erreur a été copié dans le presse-papiers"))
-        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer ce rapport d'erreur à l'auteur par Email"))
-        self.bouton_forum.SetToolTipString(_(u"Cliquez ici pour ouvrir votre navigateur internet et accéder au forum de Noethys. Vous pourrez ainsi signaler ce bug dans la rubrique dédiée."))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_rapport.SetToolTip(wx.ToolTip(_(u"Ce rapport d'erreur a été copié dans le presse-papiers")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer ce rapport d'erreur à l'auteur par Email")))
+        self.bouton_forum.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir votre navigateur internet et accéder au forum de Noethys. Vous pourrez ainsi signaler ce bug dans la rubrique dédiée.")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((650, 450))
 
     def __do_layout(self):
@@ -238,7 +238,7 @@ class DLG_Rapport(wx.Dialog):
 
 class DLG_Envoi(wx.Dialog):
     def __init__(self, parent, texteRapport=u""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.texteRapport = texteRapport
 
@@ -260,10 +260,10 @@ class DLG_Envoi(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Envoyer le rapport à l'auteur"))
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_commentaires.SetToolTipString(_(u"Vous pouvez saisir des commentaires ici"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour visualiser le contenu du message qui sera envoyé à l'auteur"))
-        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_commentaires.SetToolTip(wx.ToolTip(_(u"Vous pouvez saisir des commentaires ici")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour visualiser le contenu du message qui sera envoyé à l'auteur")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, 300))
 
     def __do_layout(self):

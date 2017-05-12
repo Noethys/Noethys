@@ -208,12 +208,12 @@ class Panel(wx.Panel):
 ##        self.Bind(wx.EVT_BUTTON, self.OnBoutonRepartition, self.bouton_repartition)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un règlement"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le règlement sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le règlement sélectionné"))
-        self.bouton_rembourser.SetToolTipString(_(u"Cliquez ici pour saisir un remboursement"))
-        self.bouton_ventilationAuto.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes de ventilation automatique"))
-##        self.bouton_repartition.SetToolTipString(_(u"Cliquez ici pour afficher la ventilation détaillée"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un règlement")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le règlement sélectionné")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le règlement sélectionné")))
+        self.bouton_rembourser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un remboursement")))
+        self.bouton_ventilationAuto.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux commandes de ventilation automatique")))
+##        self.bouton_repartition.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la ventilation détaillée")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

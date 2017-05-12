@@ -21,7 +21,7 @@ class Civilite(wx.Choice):
     def __init__(self, parent):
         wx.Choice.__init__(self, parent, -1, choices=self.GetListeCivilites()) 
         self.parent = parent
-        self.SetToolTipString(_(u"Sélectionnez ici la civilité de l'individu s'il s'agit\nd'un adulte ou le genre s'il s'agit d'un enfant"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la civilité de l'individu s'il s'agit\nd'un adulte ou le genre s'il s'agit d'un enfant")))
     
     def GetListeCivilites(self):
         self.dictCivilites = {}

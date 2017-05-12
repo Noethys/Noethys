@@ -46,11 +46,11 @@ class Choice_groupe(wx.Choice):
         self.IDdefaut = IDdefaut
         self.MAJ()
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
-        self.SetToolTipString(
+        self.SetToolTip(wx.ToolTip(
 u"""Le groupe par défaut est signalé par une *.\n 
 Vous pouvez sélectionner ponctuellement 
 un autre groupe dans la liste. Le groupe par 
-défaut n'en sera pas pour autant modifié.""")
+défaut n'en sera pas pour autant modifié."""))
         
     def MAJ(self):
         index = 0
@@ -285,7 +285,7 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        self.data = []
 ##        self.dictIndividus = dictIndividus
 ##        self.dictActivites = dictActivites
-##        self.SetToolTipString(_(u"Cochez les activités à afficher"))
+##        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
 ##        self.listeActivites = []
 ##        # Binds
 ##        self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
@@ -359,9 +359,9 @@ class CTRL_Activites(ULC.UltimateListCtrl):
 ##        self.radio_refus = wx.RadioButton(self, -1, _(u"Refus") )
 ##        self.radio_reservation.SetValue(True)
 ##        
-##        self.radio_reservation.SetToolTipString(_(u"Le mode Réservation permet de saisir une réservation"))
-##        self.radio_attente.SetToolTipString(_(u"Le mode Attente permet de saisir une place sur liste d'attente"))
-##        self.radio_refus.SetToolTipString(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique"))
+##        self.radio_reservation.SetToolTip(wx.ToolTip(_(u"Le mode Réservation permet de saisir une réservation")))
+##        self.radio_attente.SetToolTip(wx.ToolTip(_(u"Le mode Attente permet de saisir une place sur liste d'attente")))
+##        self.radio_refus.SetToolTip(wx.ToolTip(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")))
 ##        
 ##        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
 ##        grid_sizer_base.Add(self.label_mode, 0, wx.EXPAND, 0)

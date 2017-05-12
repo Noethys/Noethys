@@ -112,10 +112,10 @@ class Commandes(wx.Panel):
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         # Propriétés
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour définir les paramètres d'affichage de la fenêtre"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir les paramètres d'affichage de la fenêtre")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -215,9 +215,9 @@ class Commandes(wx.Panel):
 ##        self.radio_refus = wx.RadioButton(self, -1, _(u"Refus") )
 ##        self.radio_reservation.SetValue(True)
 ##        
-##        self.radio_reservation.SetToolTipString(_(u"Le mode Réservation permet de saisir une réservation"))
-##        self.radio_attente.SetToolTipString(_(u"Le mode Attente permet de saisir une place sur liste d'attente"))
-##        self.radio_refus.SetToolTipString(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique"))
+##        self.radio_reservation.SetToolTip(wx.ToolTip(_(u"Le mode Réservation permet de saisir une réservation")))
+##        self.radio_attente.SetToolTip(wx.ToolTip(_(u"Le mode Attente permet de saisir une place sur liste d'attente")))
+##        self.radio_refus.SetToolTip(wx.ToolTip(_(u"Le mode de refus permet de saisir une place sur liste d'attente qui a été refusée par l'individu. Cette saisie est juste utilisée à titre statistique")))
 ##        
 ##        grid_sizer_base = wx.FlexGridSizer(rows=1, cols=8, vgap=5, hgap=5)
 ##        grid_sizer_base.Add(self.hyper_ajouter_individu, 0, wx.EXPAND, 0)
@@ -427,7 +427,7 @@ class PanelGrille(wx.Panel):
         
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Gestionnaire_conso", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Gestionnaire_conso", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         self._mgr = aui.AuiManager()

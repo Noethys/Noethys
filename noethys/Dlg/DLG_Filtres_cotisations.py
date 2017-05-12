@@ -290,7 +290,7 @@ class CTRL_Filtres(wx.Panel):
         
         self.ctrl_html = MyHtml(self, texte=_(u"Aucun filtre de sélection."), couleurFond=couleurFond, hauteur=25)
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Filtre.png"), wx.BITMAP_TYPE_ANY))#wx.Bitmap("Images/32x32/Configuration2.png", wx.BITMAP_TYPE_ANY))
-        self.bouton_parametres.SetToolTipString(_(u"Cliquez ici pour modifier les filtres de sélection des cotisations"))
+        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les filtres de sélection des cotisations")))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonParametres, self.bouton_parametres)
         
@@ -339,15 +339,15 @@ class Dialog(wx.Dialog):
         
         # Filtres
         self.check_type = wx.CheckBox(self, -1, _(u"Type de cotisation :"))
-        self.check_type.SetToolTipString(_(u"Filtre type de cotisation"))
+        self.check_type.SetToolTip(wx.ToolTip(_(u"Filtre type de cotisation")))
         self.ctrl_type = CTRL_Types_cotisations(self)
-        self.ctrl_type.SetToolTipString(_(u"Sélectionnez un type de cotisation dans la liste"))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de cotisation dans la liste")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_type)
 
         self.check_unite = wx.CheckBox(self, -1, _(u"Unité de cotisation :"))
-        self.check_unite.SetToolTipString(_(u"Filtre unité de cotisation"))
+        self.check_unite.SetToolTip(wx.ToolTip(_(u"Filtre unité de cotisation")))
         self.ctrl_unite = CTRL_Unites_cotisations(self)
-        self.ctrl_unite.SetToolTipString(_(u"Sélectionnez une unité de cotisation dans la liste"))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une unité de cotisation dans la liste")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_unite)
         
 ##        self.check_echeance = wx.CheckBox(self, -1, _(u"Date d'échéance de"))
@@ -356,60 +356,60 @@ class Dialog(wx.Dialog):
 ##        self.ctrl_echeance_max = CTRL_Saisie_date.Date2(self)
         
         self.check_numeros_intervalle = wx.CheckBox(self, -1, _(u"Numéros de cotisations de"))
-        self.check_numeros_intervalle.SetToolTipString(_(u"Filtre Intervalle de numéros de cotisation"))
+        self.check_numeros_intervalle.SetToolTip(wx.ToolTip(_(u"Filtre Intervalle de numéros de cotisation")))
         self.ctrl_numeros_intervalle_min = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_min.SetMinSize((70, -1))
         self.label_numeros_intervalle_a = wx.StaticText(self, -1, u"à")
         self.ctrl_numeros_intervalle_max = wx.SpinCtrl(self, -1, u"", min=0, max=1000000)
         self.ctrl_numeros_intervalle_max.SetMinSize((70, -1))
-        self.ctrl_numeros_intervalle_min.SetToolTipString(_(u"Saisissez un numéro de cotisation min"))
-        self.ctrl_numeros_intervalle_max.SetToolTipString(_(u"Saisissez un numéro de cotisation max"))
+        self.ctrl_numeros_intervalle_min.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de cotisation min")))
+        self.ctrl_numeros_intervalle_max.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de cotisation max")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_numeros_intervalle)
         
         self.check_numeros_liste = wx.CheckBox(self, -1, _(u"Numéros de cotisations suivants :"))
-        self.check_numeros_liste.SetToolTipString(_(u"Filtre Liste de numéros de cotisations"))
+        self.check_numeros_liste.SetToolTip(wx.ToolTip(_(u"Filtre Liste de numéros de cotisations")))
         self.ctrl_numeros_liste = wx.TextCtrl(self, -1, u"")
-        self.ctrl_numeros_liste.SetToolTipString(_(u"Saisissez les numéros de cotisations souhaités en les séparant par un point-virgule (;)"))
+        self.ctrl_numeros_liste.SetToolTip(wx.ToolTip(_(u"Saisissez les numéros de cotisations souhaités en les séparant par un point-virgule (;)")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_numeros_liste)
         
         listeOperateurs = (u"=", u"<>", u">", u"<", u">=", u"<=")
         
         self.check_montant = wx.CheckBox(self, -1, _(u"Montant facturé"))
-        self.check_montant.SetToolTipString(_(u"Filtre montant facturé"))
+        self.check_montant.SetToolTip(wx.ToolTip(_(u"Filtre montant facturé")))
         self.ctrl_montant_operateur = wx.Choice(self, -1, choices=listeOperateurs)
         self.ctrl_montant_operateur.SetSelection(0)
-        self.ctrl_montant_operateur.SetToolTipString(_(u"Sélectionnez un opérateur de comparaison"))
+        self.ctrl_montant_operateur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un opérateur de comparaison")))
         self.ctrl_montant_montant = CTRL_Saisie_euros.CTRL(self)
-        self.ctrl_montant_montant.SetToolTipString(_(u"Saisissez un montant"))
+        self.ctrl_montant_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_montant)
         
         self.check_solde_actuel = wx.CheckBox(self, -1, _(u"Solde actuel"))
-        self.check_solde_actuel.SetToolTipString(_(u"Filtre Solde actuel"))
+        self.check_solde_actuel.SetToolTip(wx.ToolTip(_(u"Filtre Solde actuel")))
         self.ctrl_solde_actuel_operateur = wx.Choice(self, -1, choices=listeOperateurs)
         self.ctrl_solde_actuel_operateur.SetSelection(0)
-        self.ctrl_solde_actuel_operateur.SetToolTipString(_(u"Sélectionnez un opérateur de comparaison"))
+        self.ctrl_solde_actuel_operateur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un opérateur de comparaison")))
         self.ctrl_solde_actuel_montant = CTRL_Saisie_euros.CTRL(self)
-        self.ctrl_solde_actuel_montant.SetToolTipString(_(u"Saisissez un montant"))
+        self.ctrl_solde_actuel_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_solde_actuel)
         
         self.check_carte = wx.CheckBox(self, -1, _(u"Carte créée"))
-        self.check_carte.SetToolTipString(_(u"Filtre carte créée"))
+        self.check_carte.SetToolTip(wx.ToolTip(_(u"Filtre carte créée")))
         self.ctrl_carte = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_carte.SetSelection(0)
-        self.ctrl_carte.SetToolTipString(_(u"Oui/Non"))
+        self.ctrl_carte.SetToolTip(wx.ToolTip(_(u"Oui/Non")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_carte)
         
         self.check_facturee = wx.CheckBox(self, -1, _(u"Cotisation facturée"))
-        self.check_facturee.SetToolTipString(_(u"Filtre cotisation facturée"))
+        self.check_facturee.SetToolTip(wx.ToolTip(_(u"Filtre cotisation facturée")))
         self.ctrl_facturee = wx.Choice(self, -1, choices=["Oui", _(u"Non")])
         self.ctrl_facturee.SetSelection(0)
-        self.ctrl_facturee.SetToolTipString(_(u"Oui/Non"))
+        self.ctrl_facturee.SetToolTip(wx.ToolTip(_(u"Oui/Non")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_facturee)
         
         self.check_depot = wx.CheckBox(self, -1, _(u"Dépôt de cotisations :"))
-        self.check_depot.SetToolTipString(_(u"Filtre dépôt de cotisations"))
+        self.check_depot.SetToolTip(wx.ToolTip(_(u"Filtre dépôt de cotisations")))
         self.ctrl_depot = CTRL_Depots_cotisations(self)
-        self.ctrl_depot.SetToolTipString(_(u"Sélectionnez un dépôt de cotisations dans la liste"))
+        self.ctrl_depot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un dépôt de cotisations dans la liste")))
         self.Bind(wx.EVT_CHECKBOX, self.OnCheck, self.check_depot)
         
         # Boutons
@@ -430,9 +430,9 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=20, hgap=20)

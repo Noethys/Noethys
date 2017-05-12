@@ -417,13 +417,13 @@ class CTRL(wx.Panel):
         self.__do_layout()
         
         # Properties
-        self.ctrl_radio_portrait.SetToolTipString(_(u"Cliquez ici pour sélectionner une orientation portrait"))
-        self.ctrl_image_portrait.SetToolTipString(_(u"Cliquez ici pour sélectionner une orientation portrait"))
-        self.ctrl_radio_paysage.SetToolTipString(_(u"Cliquez ici pour sélectionner une orientation paysage"))
-        self.ctrl_image_paysage.SetToolTipString(_(u"Cliquez ici pour sélectionner une orientation paysage"))
-        self.ctrl_titre.SetToolTipString(_(u"Vous pouvez modifier ici le titre du document"))
-        self.ctrl_introduction.SetToolTipString(_(u"Vous pouvez modifier ici l'introduction du document"))
-        self.ctrl_conclusion.SetToolTipString(_(u"Vous pouvez modifier ici la conclusion du document"))
+        self.ctrl_radio_portrait.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une orientation portrait")))
+        self.ctrl_image_portrait.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une orientation portrait")))
+        self.ctrl_radio_paysage.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une orientation paysage")))
+        self.ctrl_image_paysage.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une orientation paysage")))
+        self.ctrl_titre.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici le titre du document")))
+        self.ctrl_introduction.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici l'introduction du document")))
+        self.ctrl_conclusion.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici la conclusion du document")))
 
         # Bind
         self.ctrl_image_portrait.Bind(wx.EVT_LEFT_DOWN, self.OnLeftDownPortrait)
@@ -536,7 +536,7 @@ class CTRL(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, dictOptions={}):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
 
         # Bandeau
@@ -563,9 +563,9 @@ class Dialog(wx.Dialog):
         self.bouton_ok.SetFocus() 
 
     def __set_properties(self):
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((550, 550))
 
     def __do_layout(self):

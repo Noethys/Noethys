@@ -24,6 +24,11 @@ import wx.lib.mixins.gridlabelrenderer as glr
 import CTRL_Grille
 import datetime
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.grid import GridCellRenderer
+else :
+    from wx.grid import PyGridCellRenderer as GridCellRenderer
+
 from Utils import UTILS_Dates
 from Utils import UTILS_Couleurs
 from CTRL_Saisie_transport import DICT_CATEGORIES as DICT_CATEGORIES_TRANSPORTS
@@ -66,9 +71,9 @@ def DrawBorder(grid, dc, rect):
 
 
 
-class CaseStandard(gridlib.PyGridCellRenderer):
+class CaseStandard(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
         self.grid = None
 
@@ -77,7 +82,10 @@ class CaseStandard(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(self.GetCouleur(), wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
@@ -94,7 +102,10 @@ class CaseStandard(gridlib.PyGridCellRenderer):
         if self.case.etat == None and self.case.verrouillage == 1 :
             dc.SetBrush(wx.Brush( (100, 100, 100), wx.SOLID))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else :
+                dc.DrawRectangleRect(rect)
             dc.SetBrush(wx.Brush(self.GetCouleur(), wx.SOLID))
         
         if self.case.verrouillage == 1 :
@@ -265,9 +276,9 @@ class CaseStandard(gridlib.PyGridCellRenderer):
 
 
 
-class CaseMemo(gridlib.PyGridCellRenderer):
+class CaseMemo(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
@@ -275,8 +286,10 @@ class CaseMemo(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush("WHITE", wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
-    
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
         
@@ -320,9 +333,9 @@ class CaseMemo(gridlib.PyGridCellRenderer):
 
 
 
-class CaseTransports(gridlib.PyGridCellRenderer):
+class CaseTransports(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
         self.grid = None
 
@@ -331,8 +344,10 @@ class CaseTransports(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(self.case.couleurFond, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
-    
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
         
@@ -365,9 +380,9 @@ class CaseTransports(gridlib.PyGridCellRenderer):
     
 
 
-class CaseActivite(gridlib.PyGridCellRenderer):
+class CaseActivite(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
@@ -375,8 +390,10 @@ class CaseActivite(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(self.case.couleurFond, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
-
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
         
@@ -400,9 +417,9 @@ class CaseActivite(gridlib.PyGridCellRenderer):
         return RendererCase()
 
 
-class CaseMultihoraires(gridlib.PyGridCellRenderer):
+class CaseMultihoraires(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
@@ -653,7 +670,10 @@ class LabelLigneStandard(glr.GridLabelRenderer):
         if self.couleurFond != None :
             dc.SetBrush(wx.Brush(self.couleurFond))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else :
+                dc.DrawRectangleRect(rect)
 ##        self.couleurFond = dc.GetBackground().GetColour() 
         DrawBorder(grid, dc, rect)
 
@@ -697,7 +717,10 @@ class LabelLigneStandard(glr.GridLabelRenderer):
         # Adaptation au scrolling
         xView, yView = self.grid.GetViewStart()
         xDelta, yDelta = self.grid.GetScrollPixelsPerUnit()
-        rect.OffsetXY(0,-(yView*yDelta)) # rect.OffsetXY(-(xView*xDelta),-(yView*yDelta))
+        if 'phoenix' in wx.PlatformInfo:
+            rect.Offset(0,-(yView*yDelta))
+        else :
+            rect.OffsetXY(0,-(yView*yDelta))
         self.grid.GetGridRowLabelWindow().RefreshRect(rect)
 
     def Flash(self, couleur=None):
@@ -715,12 +738,18 @@ class LabelLigneSeparation(glr.GridLabelRenderer):
         if self._bgcolor != None :
             dc.SetBrush(wx.Brush(self._bgcolor))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else :
+                dc.DrawRectangleRect(rect)
         else:
             couleurSeparation = (255, 255, 255)
             dc.SetBrush(wx.Brush(couleurSeparation))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else :
+                dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetRowLabelAlignment()
         text = grid.GetRowLabelValue(row)
         DrawBorder(grid, dc, rect)
@@ -747,7 +776,10 @@ class LabelColonneStandard(glr.GridLabelRenderer):
         if self._bgcolor != None :
             dc.SetBrush(wx.Brush(self._bgcolor))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else :
+                dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetColLabelAlignment()
         text = grid.GetColLabelValue(col)
         if self.typeColonne == "unite" :
@@ -778,7 +810,10 @@ class LabelColonneMultihoraires(glr.GridLabelRenderer):
         if self.couleurFond != None :
             dc.SetBrush(wx.Brush(self.couleurFond))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else :
+                dc.DrawRectangleRect(rect)
         
         # Label
         dc.SetFont(wx.Font(9, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_BOLD))

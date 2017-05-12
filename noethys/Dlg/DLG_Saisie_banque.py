@@ -47,11 +47,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un établissement bancaire"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de l'établissement"))
-        self.ctrl_rue.SetToolTipString(_(u"Saisissez la rue de l'établissement"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de l'établissement")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue de l'établissement")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

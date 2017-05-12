@@ -22,7 +22,7 @@ from Utils import UTILS_Fichiers
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, code="", nom=""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.code = code
         self.nom = nom
@@ -75,16 +75,16 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom_langue.SetToolTipString(_(u"Saisissez le nom de la langue (Exemple : 'Anglais'"))
-        self.ctrl_code_langue.SetToolTipString(_(u"Saisissez un code alpha pour cette langue sans espaces ni majuscules ni caractères spéciaux (Exemple : 'anglais')"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour saisir une traduction pour la ligne sélectionnée dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
+        self.ctrl_nom_langue.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la langue (Exemple : 'Anglais'")))
+        self.ctrl_code_langue.SetToolTip(wx.ToolTip(_(u"Saisissez un code alpha pour cette langue sans espaces ni majuscules ni caractères spéciaux (Exemple : 'anglais')")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une traduction pour la ligne sélectionnée dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.SetMinSize((950, 750))
 
     def __do_layout(self):

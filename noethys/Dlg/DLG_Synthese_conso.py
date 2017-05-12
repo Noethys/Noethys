@@ -328,14 +328,14 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de période"))
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
-        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes à prendre en compte"))
-        self.check_detail_groupes.SetToolTipString(_(u"Cochez cette case pour afficher le détail par groupe"))
-        self.ctrl_donnees.SetToolTipString(_(u"Sélectionnez le type de données à afficher"))
-        self.ctrl_regroupement.SetToolTipString(_(u"Sélectionnez le regroupement par période"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de période")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à prendre en compte")))
+        self.check_detail_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher le détail par groupe")))
+        self.ctrl_donnees.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de données à afficher")))
+        self.ctrl_regroupement.SetToolTip(wx.ToolTip(_(u"Sélectionnez le regroupement par période")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=6, cols=1, vgap=5, hgap=5)
@@ -483,7 +483,7 @@ class Parametres(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici éditer une synthèse des consommations pour une période et une activité données. Commencez par sélectionner une date de début et de fin puis choisissez une activité. Vous pouvez affiner vos résultats et modifier l'affichage des données grâce aux options proposées.")
@@ -516,11 +516,11 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste (PDF)"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste (PDF)")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((980, 700))
 
     def __do_layout(self):

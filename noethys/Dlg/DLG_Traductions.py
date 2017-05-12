@@ -57,7 +57,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_modeles_docs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_modeles_docs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -99,13 +99,13 @@ class Dialog(wx.Dialog):
         self.ctrl_langues.MAJ() 
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une nouvelle traduction"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la traduction sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la traduction sélectionnée dans la liste"))
-        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer une traduction (.xlang)"))
-        self.bouton_exporter.SetToolTipString(_(u"Cliquez ici pour exporter la traduction personnalisée sélectionnée dans la liste (.xlang)"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une nouvelle traduction")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la traduction sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la traduction sélectionnée dans la liste")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer une traduction (.xlang)")))
+        self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la traduction personnalisée sélectionnée dans la liste (.xlang)")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((650, 560))
 
     def __do_layout(self):
@@ -175,7 +175,7 @@ class Dialog(wx.Dialog):
 
 class DLG_Envoi(wx.Dialog):
     def __init__(self, parent, texteRapport=u""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.texteRapport = texteRapport
         
@@ -206,10 +206,10 @@ class DLG_Envoi(wx.Dialog):
 
     def __set_properties(self):
         self.label_ligne_1.SetFont(wx.Font(9, wx.DEFAULT, wx.NORMAL, wx.BOLD, 0, ""))
-        self.ctrl_commentaires.SetToolTipString(_(u"Vous pouvez saisir des commentaires ici"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_commentaires.SetToolTip(wx.ToolTip(_(u"Vous pouvez saisir des commentaires ici")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le rapport et les commentaires à l'auteur")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((460, 450))
 
     def __do_layout(self):

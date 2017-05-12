@@ -109,7 +109,10 @@ class Calendrier(wx.ScrolledWindow):
     def OffsetRect(self, r):
         xView, yView = self.GetViewStart()
         xDelta, yDelta = self.GetScrollPixelsPerUnit()
-        r.OffsetXY(-(xView*xDelta),-(yView*yDelta))
+        if 'phoenix' in wx.PlatformInfo:
+            r.Offset(-(xView*xDelta),-(yView*yDelta))
+        else :
+            r.OffsetXY(-(xView*xDelta),-(yView*yDelta))
  
     def OnPaint(self, event):
         # Create a buffered paint DC.  It will create the real
@@ -157,7 +160,11 @@ class Calendrier(wx.ScrolledWindow):
         
         self.dictCases = {}
         self.listeCasesJours = []
-        largeur, hauteur = self.GetClientSizeTuple()
+
+        if 'phoenix' in wx.PlatformInfo:
+            largeur, hauteur = self.GetClientSize()
+        else :
+            largeur, hauteur = self.GetClientSizeTuple()
 
         annee = self.anneeCalendrier
 
@@ -963,7 +970,7 @@ class CTRL(wx.Panel):
             self.listeMois = [_(u"Janv."), _(u"Fév."), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juil."), _(u"Août"), _(u"Sept."), _(u"Oct."), _(u"Nov."), _(u"Déc.")]
         self.combo_mois = wx.ComboBox(self, -1, "" , (-1, -1) , (70, -1), self.listeMois , wx.CB_READONLY)
         
-        self.spin = wx.SpinButton(self, -1, size=(17, 20),  style=wx.wx.SP_VERTICAL)
+        self.spin = wx.SpinButton(self, -1, size=(17, 20),  style=wx.SP_VERTICAL)
         self.spin.SetRange(-1, 1)
         
         if "linux" in sys.platform :
@@ -987,7 +994,7 @@ class CTRL(wx.Panel):
             self.calendrier.SelectJours( [datetime.date.today(),] )
             
         self.bouton_CalendrierAnnuel = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Calendrier_jour.png"), wx.BITMAP_TYPE_PNG), size=(28, 21))
-        self.bouton_CalendrierAnnuel.SetToolTipString(_(u"Cliquez ici pour afficher le calendrier annuel"))
+        self.bouton_CalendrierAnnuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le calendrier annuel")))
         
         # Layout
         sizer =  wx.BoxSizer(wx.VERTICAL)
@@ -1026,11 +1033,11 @@ class CTRL(wx.Panel):
         if self.typeCalendrier == "annuel" :
             self.combo_mois.Enable(False)
             self.spin.Enable(False)
-            self.bouton_CalendrierAnnuel.SetToolTipString(_(u"Cliquez ici pour afficher le calendrier mensuel"))
+            self.bouton_CalendrierAnnuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le calendrier mensuel")))
         else:
             self.combo_mois.Enable(True)
             self.spin.Enable(True)
-            self.bouton_CalendrierAnnuel.SetToolTipString(_(u"Cliquez ici pour afficher le calendrier annuel"))
+            self.bouton_CalendrierAnnuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le calendrier annuel")))
     
     def SetMultiSelection(self, etat=False):
         self.multiSelections = etat
@@ -1082,12 +1089,12 @@ class CTRL(wx.Panel):
             self.calendrier.SetTypeCalendrier("annuel")
             self.combo_mois.Enable(False)
             self.spin.Enable(False)
-            self.bouton_CalendrierAnnuel.SetToolTipString(_(u"Cliquez ici pour afficher le calendrier mensuel"))
+            self.bouton_CalendrierAnnuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le calendrier mensuel")))
         else:
             self.calendrier.SetTypeCalendrier("mensuel")
             self.combo_mois.Enable(True)
             self.spin.Enable(True)
-            self.bouton_CalendrierAnnuel.SetToolTipString(_(u"Cliquez ici pour afficher le calendrier annuel"))
+            self.bouton_CalendrierAnnuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le calendrier annuel")))
     
     def MAJPeriodeCalendrier(self) :
         mois = self.combo_mois.GetSelection() + 1
@@ -1137,11 +1144,6 @@ class TestFrame(wx.Frame):
         self.Show(False)
         self.Destroy()
 
-##    def OnSize(self, event):
-##        largeur, hauteur = self.GetClientSizeTuple()
-##        self.tailleRect = (55, 55, largeur - 80, hauteur - 80)
-##        self.canvas.MAJAffichage()
-##        event.Skip()
 
 
         

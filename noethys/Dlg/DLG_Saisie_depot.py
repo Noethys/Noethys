@@ -161,7 +161,7 @@ class Track(object):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDdepot=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_depot", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_depot", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDdepot = IDdepot
         
@@ -222,18 +222,18 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom (Ex : 'Chèques - Février 2012'..."))
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de dépôt"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste des règlements du dépôt"))
-        self.bouton_avis_depots.SetToolTipString(_(u"Cliquez ici pour envoyer par Email des avis de dépôts"))
-        self.ctrl_verrouillage.SetToolTipString(_(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des règlements qui le contient !"))
-        self.ctrl_code_compta.SetToolTipString(_(u"Saisissez le code comptable de ce dépôt. Utile uniquement pour l'export des écritures comptables vers des logiciels de compta."))
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez le compte bancaire d'encaissement"))
-        self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez des commentaires"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter ou retirer des règlements de ce dépôt"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom (Ex : 'Chèques - Février 2012'...")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de dépôt")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des règlements du dépôt")))
+        self.bouton_avis_depots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer par Email des avis de dépôts")))
+        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le dépôt doit être verrouillé. Dans ce cas, il devient impossible de modifier la liste des règlements qui le contient !")))
+        self.ctrl_code_compta.SetToolTip(wx.ToolTip(_(u"Saisissez le code comptable de ce dépôt. Utile uniquement pour l'export des écritures comptables vers des logiciels de compta.")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire d'encaissement")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez des commentaires")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter ou retirer des règlements de ce dépôt")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((890, 720))
 
     def __do_layout(self):

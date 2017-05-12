@@ -56,13 +56,13 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_contrats.Supprimer, self.bouton_supprimer_contrat)
 
         # Propriétés
-        self.bouton_ajouter_inscription.SetToolTipString(_(u"Cliquez ici pour inscrire l'individu à une activité"))
-        self.bouton_modifier_inscription.SetToolTipString(_(u"Cliquez ici pour modifier l'inscription sélectionnée"))
-        self.bouton_supprimer_inscription.SetToolTipString(_(u"Cliquez ici pour supprimer l'inscription sélectionnée"))
-        self.bouton_forfait.SetToolTipString(_(u"Cliquez ici pour saisir manuellement des forfaits datés"))
-        self.bouton_ajouter_contrat.SetToolTipString(_(u"Cliquez ici pour créer un contrat pour cet individu"))
-        self.bouton_modifier_contrat.SetToolTipString(_(u"Cliquez ici pour modifier le contrat sélectionné"))
-        self.bouton_supprimer_contrat.SetToolTipString(_(u"Cliquez ici pour supprimer le contrat sélectionné"))
+        self.bouton_ajouter_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour inscrire l'individu à une activité")))
+        self.bouton_modifier_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'inscription sélectionnée")))
+        self.bouton_supprimer_inscription.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'inscription sélectionnée")))
+        self.bouton_forfait.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement des forfaits datés")))
+        self.bouton_ajouter_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un contrat pour cet individu")))
+        self.bouton_modifier_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contrat sélectionné")))
+        self.bouton_supprimer_contrat.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contrat sélectionné")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=0, hgap=0)

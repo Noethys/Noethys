@@ -47,7 +47,10 @@ class Track(object):
         # Recherche de l'image
         if self.bufferImage != None :
             io = cStringIO.StringIO(self.bufferImage)
-            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            if 'phoenix' in wx.PlatformInfo:
+                img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+            else :
+                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
             bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=wx.IMAGE_QUALITY_HIGH) 
             bmp = bmp.ConvertToBitmap()
             return bmp
@@ -139,7 +142,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun émetteur"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        

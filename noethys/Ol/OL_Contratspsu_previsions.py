@@ -162,7 +162,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucune consommation"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(2)
         
     def MAJ(self):

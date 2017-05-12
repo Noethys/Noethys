@@ -144,7 +144,7 @@ class MyPageTemplate(PageTemplate):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici imprimer la liste des anniversaires des individus inscrits sur les activités cochées et présents sur la période donnée. Il est possible d'inclure un thème graphique et les photos individuelles.")
@@ -195,13 +195,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des anniversaires"))
-        self.check_photos.SetToolTipString(_(u"Cochez cette case pour utiliser un thème graphique"))
-        self.ctrl_photos.SetToolTipString(_(u"Selectionnez ici le thème souhaité"))
-        self.check_photos.SetToolTipString(_(u"Cochez cette case pour afficher les photos des individus"))
-        self.ctrl_photos.SetToolTipString(_(u"Selectionnez ici la taille des photos"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour afficher la liste au format PDF"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.check_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser un thème graphique")))
+        self.ctrl_photos.SetToolTip(wx.ToolTip(_(u"Selectionnez ici le thème souhaité")))
+        self.check_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les photos des individus")))
+        self.ctrl_photos.SetToolTip(wx.ToolTip(_(u"Selectionnez ici la taille des photos")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la liste au format PDF")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((520, 460))
 
     def __do_layout(self):

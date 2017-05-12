@@ -116,8 +116,8 @@ class MainFrame(wx.Frame):
 
         # Ecrit la date et l'heure dans le journal.log
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-        systeme = u"%s %s %s %s" % (sys.platform, platform.system(), platform.release(), platform.machine())
-        print "------------ %s | %s | %s ------------" % (dateDuJour, VERSION_APPLICATION, systeme)
+        systeme = u"%s %s %s %s " % (sys.platform, platform.system(), platform.release(), platform.machine())
+        print "-------- %s | %s | wxPython %s | %s --------" % (dateDuJour, VERSION_APPLICATION, wx.version(), systeme)
 
         # Diminution de la taille de la police sous linux
         from Utils import UTILS_Linux
@@ -1043,7 +1043,10 @@ class MainFrame(wx.Frame):
             try :
                 menuParent.Append(itemMenu)
             except :
-                menuParent.AppendItem(itemMenu)
+                if 'phoenix' in wx.PlatformInfo:
+                    menuParent.Append(itemMenu)
+                else :
+                    menuParent.AppendItem(itemMenu)
             if item.has_key("actif") :
                 itemMenu.Enable(item["actif"])
             self.Bind(wx.EVT_MENU, item["action"], id=id)
@@ -1105,7 +1108,10 @@ class MainFrame(wx.Frame):
                 try :
                     menu_fichier.Append(item)
                 except :
-                    menu_fichier.AppendItem(item)
+                    if 'phoenix' in wx.PlatformInfo:
+                        menu_fichier.Append(item)
+                    else :
+                        menu_fichier.AppendItem(item)
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
 
@@ -1154,7 +1160,10 @@ class MainFrame(wx.Frame):
             menu_maj = wx.Menu()
             item = wx.MenuItem(menu_maj, id, _(u"Télécharger la mise à jour"), _(u"Télécharger la nouvelle mise à jour"))
             item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Updater.png"), wx.BITMAP_TYPE_PNG))
-            menu_maj.AppendItem(item)
+            if 'phoenix' in wx.PlatformInfo:
+                menu_maj.Append(item)
+            else :
+                menu_maj.AppendItem(item)
             self.menu.Append(menu_maj, _(u"<< Télécharger la mise à jour >>"))
             self.Bind(wx.EVT_MENU, self.On_outils_updater, id=id)
 
@@ -3240,7 +3249,10 @@ class MainFrame(wx.Frame):
             if item == None : 
                 break
             else:
-                menuFichier.RemoveItem(self.menu.FindItemById(index)) 
+                if 'phoenix' in wx.PlatformInfo:
+                    menuFichier.Remove(self.menu.FindItemById(index))
+                else :
+                    menuFichier.RemoveItem(self.menu.FindItemById(index))
                 self.Disconnect(index, -1, 10014) # Annule le Bind
 
         # Ré-intégration des derniers fichiers ouverts :
@@ -3252,7 +3264,10 @@ class MainFrame(wx.Frame):
                 if "[RESEAU]" in nomFichier :
                     nomFichier = nomFichier[nomFichier.index("[RESEAU]"):]
                 item = wx.MenuItem(menuFichier, ID_DERNIER_FICHIER + index, u"%d. %s" % (index+1, nomFichier), _(u"Ouvrir le fichier : '%s'") % nomFichier)
-                menuFichier.AppendItem(item)
+                if 'phoenix' in wx.PlatformInfo:
+                    menuFichier.Append(item)
+                else :
+                    menuFichier.AppendItem(item)
                 index += 1
             self.Bind(wx.EVT_MENU_RANGE, self.On_fichier_DerniersFichiers, id=ID_DERNIER_FICHIER, id2=ID_DERNIER_FICHIER + index)
 
@@ -3954,7 +3969,7 @@ class MyApp(wx.App):
         if hasattr(frame, 'ctrl_serveur_nomade') == True:
             frame.ctrl_serveur_nomade.StartServeur()
 
-        #print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
+        print "Temps de chargement ouverture de Noethys = ", time.time() - heure_debut
         return True
 
 

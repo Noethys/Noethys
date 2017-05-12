@@ -27,7 +27,7 @@ ID_SUPPRIMER_FAMILLE = 3
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDindividu=None, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Supprimer_fiche", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Supprimer_fiche", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDindividu = IDindividu
         self.IDfamille = IDfamille
@@ -52,10 +52,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Supprimer une fiche"))
-        self.bouton_detacher.SetToolTipString(_(u"Cliquez ici pour détacher la fiche"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la fiche"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_detacher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour détacher la fiche")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la fiche")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, 240))
 
     def __do_layout(self):

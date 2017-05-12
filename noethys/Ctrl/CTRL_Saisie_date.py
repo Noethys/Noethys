@@ -365,7 +365,7 @@ class Date2(wx.Panel):
         self.bouton_calendrier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Calendrier.png"), wx.BITMAP_TYPE_ANY))
         
         self.Bind(wx.EVT_BUTTON, self.OnBoutonCalendrier, self.bouton_calendrier)
-        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour sélectionner la date dans le calendrier"))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans le calendrier")))
 
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
         grid_sizer_base.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL|wx.ALL, 0)
@@ -375,8 +375,11 @@ class Date2(wx.Panel):
         self.Layout()
     
     def SetToolTipString(self, texte=""):
-        self.ctrl_date.SetToolTipString(texte)
-        
+        self.ctrl_date.SetToolTip(wx.ToolTip(texte))
+
+    def SetToolTip(self, tip=None):
+        self.ctrl_date.SetToolTip(tip)
+
     def OnBoutonCalendrier(self, event): 
         from Dlg import DLG_calendrier_simple
         dlg = DLG_calendrier_simple.Dialog(self)

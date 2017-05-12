@@ -55,11 +55,11 @@ class Dialog(wx.Dialog):
         self.ctrl_montant.SetFocus() 
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant de la prestation et tapez sur la touche Entrée pour valider rapidement"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Vous pouvez modifier ici un label personnalisé pour la prestation")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant de la prestation et tapez sur la touche Entrée pour valider rapidement")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

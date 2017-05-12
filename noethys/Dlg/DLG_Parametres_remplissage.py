@@ -26,7 +26,7 @@ class CTRL_activites(wx.CheckListBox):
         wx.CheckListBox.__init__(self, parent, -1)
         self.parent = parent
         self.data = []
-        self.SetToolTipString(_(u"Cochez les activités à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
         self.listeActivites = []
 
     def MAJ(self):
@@ -95,7 +95,7 @@ class CTRL_activites(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, dictDonnees = {}, largeurColonneUnite=60, afficheLargeurColonneUnite=True, afficheAbregeGroupes=True, abregeGroupes=False, affichePresents=1):
-        wx.Dialog.__init__(self, parent, -1, name="parametres_remplissage", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="parametres_remplissage", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.afficheLargeurColonneUnite = afficheLargeurColonneUnite
         
@@ -168,9 +168,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Paramètres d'affichage"))
-        self.ctrl_masquer_activites.SetToolTipString(_(u"Cochez cette case pour masquer de cette liste les activités vieilles de plus de 2 ans"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_masquer_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour masquer de cette liste les activités vieilles de plus de 2 ans")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((640, 450))
 
     def __do_layout(self):

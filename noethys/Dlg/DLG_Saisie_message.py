@@ -95,7 +95,7 @@ class CTRL_Categorie(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDmessage=None, IDfamille=None, IDindividu=None, mode="accueil"):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.IDmessage = IDmessage
         self.IDfamille = IDfamille
@@ -155,17 +155,17 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Modification d'un message"))
 
     def __set_properties(self):
-        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez une catégorie"))
-        self.bouton_categorie.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des catégories de messages"))
-        self.ctrl_afficher_accueil.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la page d'accueil"))
-        self.ctrl_afficher_factures.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur les futures factures de la famille"))
-        self.ctrl_parution.SetToolTipString(_(u"Saisissez ici la date de parution du message"))
-        self.ctrl_afficher_liste.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la liste des consommations"))
-        self.ctrl_priorite.SetToolTipString(_(u"Sélectionnez ici la priorité du message"))
-        self.ctrl_rappel.SetToolTipString(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie")))
+        self.bouton_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories de messages")))
+        self.ctrl_afficher_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la page d'accueil")))
+        self.ctrl_afficher_factures.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur les futures factures de la famille")))
+        self.ctrl_parution.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de parution du message")))
+        self.ctrl_afficher_liste.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la liste des consommations")))
+        self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la priorité du message")))
+        self.ctrl_rappel.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((550, 440))
 
     def __do_layout(self):

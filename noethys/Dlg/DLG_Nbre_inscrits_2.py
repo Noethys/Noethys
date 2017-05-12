@@ -42,7 +42,11 @@ class CTRL(HTL.HyperTreeList):
         
         self.couleurFond = wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW)
         self.SetBackgroundColour(self.couleurFond)
-        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | wx.TR_HAS_BUTTONS | wx.TR_COLUMN_LINES | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT  | wx.TR_ROW_LINES | wx.TR_HAS_BUTTONS | TR_COLUMN_LINES | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
 
         # Génération des colonnes
         self.CreationColonnes()
@@ -691,15 +695,15 @@ class Panel(wx.Panel):
         
         # Commandes
         self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
         self.bouton_export = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Excel.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_export.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
+        self.bouton_export.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
         self.bouton_parametres = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Mecanisme.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_parametres.SetToolTipString(_(u"Cliquez ici pour modifier les paramètres d'affichage"))
+        self.bouton_parametres.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier les paramètres d'affichage")))
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
         self.bouton_tarifs = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Euro.png"), wx.BITMAP_TYPE_PNG))
-        self.bouton_tarifs.SetToolTipString(_(u"Cliquez ici pour consulter les tarifs de l'activité sélectionnée (ou double-cliquez sur une activité dans la liste)"))
+        self.bouton_tarifs.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour consulter les tarifs de l'activité sélectionnée (ou double-cliquez sur une activité dans la liste)")))
 
         # Barre de recherche
         self.ctrl_recherche = BarreRecherche(self, ctrl=self.ctrl_inscriptions)

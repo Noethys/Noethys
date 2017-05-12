@@ -21,7 +21,7 @@ from Ctrl import CTRL_Droits
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDmodele=None, defaut=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.defaut = defaut
         self.IDmodele = IDmodele
@@ -58,11 +58,11 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'un modèle de droits"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle"))
-        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour ce modèle"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour ce modèle")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((670, 580))
 
     def __do_layout(self):

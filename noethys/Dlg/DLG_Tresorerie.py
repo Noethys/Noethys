@@ -23,7 +23,7 @@ from Ctrl import CTRL_Saisie_date
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDcompte_bancaire=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Sélectionnez un compte et une période pour afficher le suivi de la trésorerie correspondante.")
@@ -63,9 +63,9 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser l'affichage"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser l'affichage")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 690))
 
     def __do_layout(self):

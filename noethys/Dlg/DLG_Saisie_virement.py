@@ -70,7 +70,7 @@ class CTRL_Compte(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDvirement=None, IDoperation=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
         self.IDoperation = IDoperation
         self.IDvirement = IDvirement
@@ -135,14 +135,14 @@ class Dialog(wx.Dialog):
                 
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de l'opération"))
-        self.ctrl_compte_debit.SetToolTipString(_(u"Sélectionnez le compte à débiter"))
-        self.ctrl_compte_credit.SetToolTipString(_(u"Sélectionnez le compte à créditer"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez le montant du virement"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez des observations"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de l'opération")))
+        self.ctrl_compte_debit.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte à débiter")))
+        self.ctrl_compte_credit.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte à créditer")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez le montant du virement")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez des observations")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((500, 430))
 
     def __do_layout(self):

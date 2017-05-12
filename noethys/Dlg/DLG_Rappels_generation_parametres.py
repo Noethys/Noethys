@@ -194,16 +194,16 @@ class Panel(wx.Panel):
         
 
     def __set_properties(self):
-        self.ctrl_lot.SetToolTipString(_(u"Sélectionnez un lot de lettres de rappel à associer : Janvier 2013, Février, 2013, etc... Ce nom vous permettra de retrouver vos rappels facilement [Optionnel]"))
-        self.bouton_lots.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des lots"))
-        self.ctrl_date_emission.SetToolTipString(_(u"Saisissez ici la date d'émission la date des lettres de rappel (Par défaut la date du jour)"))
-        self.ctrl_date_reference.SetToolTipString(_(u"Saisissez la date de référence avant laquelle Noethys recherchera des impayés"))
-        self.check_consommations.SetToolTipString(_(u"Cochez cette case pour inclure les prestations de consommations"))
-        self.check_cotisations.SetToolTipString(_(u"Cochez cette case pour inclure les prestations de cotisations"))
-        self.check_autres.SetToolTipString(_(u"Cochez cette case pour inclure les autres types de prestations"))
-        self.radio_familles_toutes.SetToolTipString(_(u"Cliquez ici pour rechercher les lettres de rappel de toutes les familles (par défaut)"))
-        self.radio_familles_unique.SetToolTipString(_(u"Cliquez ici pour rechercher les lettres de rappel d'une seule famille"))
-        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez ici une famille"))
+        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un lot de lettres de rappel à associer : Janvier 2013, Février, 2013, etc... Ce nom vous permettra de retrouver vos rappels facilement [Optionnel]")))
+        self.bouton_lots.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des lots")))
+        self.ctrl_date_emission.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date d'émission la date des lettres de rappel (Par défaut la date du jour)")))
+        self.ctrl_date_reference.SetToolTip(wx.ToolTip(_(u"Saisissez la date de référence avant laquelle Noethys recherchera des impayés")))
+        self.check_consommations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de consommations")))
+        self.check_cotisations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les prestations de cotisations")))
+        self.check_autres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure les autres types de prestations")))
+        self.radio_familles_toutes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les lettres de rappel de toutes les familles (par défaut)")))
+        self.radio_familles_unique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rechercher les lettres de rappel d'une seule famille")))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une famille")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)

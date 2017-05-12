@@ -285,7 +285,7 @@ class CTRL_Type_donnee(wx.Choice):
         UTILS_Linux.AdaptePolice(self)
 
         self.MAJ()
-        self.SetToolTipString(_(u"Sélectionnez le type de donnée qui se trouve dans cette colonne"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de donnée qui se trouve dans cette colonne")))
         
     def MAJ(self):
         index = 0
@@ -551,7 +551,7 @@ class CTRL_Donnees(FastObjectListView):
         self.SetColumns(listeColonnes)
         self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucune donnée"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[0])
         self.SetObjects(self.donnees)
        
@@ -767,7 +767,7 @@ class Page_colonnes(wx.Panel):
         self.label_colonnes = wx.StaticText(self, -1, _(u"Sélectionnez les colonnes à importer et indiquez pour chacune d'entre elles le type de donnée qu'elle contient :"))
         self.ctrl_colonnes = CTRL_Colonnes(self)
         self.check_supprimerEntetes = wx.CheckBox(self, -1, _(u"Enlever la première ligne du fichier (Titres de colonnes)"))
-        self.check_supprimerEntetes.SetToolTipString(_(u"Cochez cette case si le fichier de données contient une première ligne d'entêtes de colonnes"))
+        self.check_supprimerEntetes.SetToolTip(wx.ToolTip(_(u"Cochez cette case si le fichier de données contient une première ligne d'entêtes de colonnes")))
         self.hyper_tout = Hyperlien(self, label=_(u"Tout cocher"), infobulle=_(u"Cliquez ici pour tout cocher"), URL="tout")
         self.label_separation = wx.StaticText(self, -1, u"|")
         self.hyper_rien = Hyperlien(self, label=_(u"Tout décocher"), infobulle=_(u"Cliquez ici pour tout décocher"), URL="rien")
@@ -931,7 +931,7 @@ class Page_analyse(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.dictDonnees = {}
         
@@ -982,10 +982,10 @@ class Dialog(wx.Dialog):
         self.sizer_pages.Layout()
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_retour.SetToolTipString(_(u"Cliquez ici pour revenir à la page précédente"))
-        self.bouton_suite.SetToolTipString(_(u"Cliquez ici pour passer à l'étape suivante"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
+        self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
         self.SetMinSize((730, 620))
 
     def __do_layout(self):

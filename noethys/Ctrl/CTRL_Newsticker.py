@@ -13,8 +13,13 @@ import wx
 import CTRL_Bouton_image
 from wx.lib.wordwrap import wordwrap
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx import Control
+else :
+    from wx import PyControl as Control
 
-class Newsticker(wx.PyControl):
+
+class Newsticker(Control):
     def __init__(self, 
             parent, 
             id=-1, 
@@ -31,10 +36,7 @@ class Newsticker(wx.PyControl):
             style=wx.NO_BORDER, 
             name="Newsticker"
         ):
-        try :
-            wx.Control.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
-        except :
-            wx.PyControl.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
+        Control.__init__(self, parent, id=id, pos=pos, size=size, style=style, name=name)
         self.timer = wx.Timer(self, -1)
         self.timerPause = wx.Timer(self, -1)
         self.textSize = (-1, -1) 
@@ -157,7 +159,10 @@ class Newsticker(wx.PyControl):
         if not texte:
             self.textSize = (-1, -1)
             return
-        largeurBloc, hauteurBloc, hauteurLigne = dc.GetMultiLineTextExtent(texte, dc.GetFont())
+        if 'phoenix' in wx.PlatformInfo:
+            largeurBloc, hauteurBloc, hauteurLigne = dc.GetFullMultiLineTextExtent(texte, dc.GetFont())
+        else :
+            largeurBloc, hauteurBloc, hauteurLigne = dc.GetMultiLineTextExtent(texte, dc.GetFont())
         self.textSize = (largeurBloc, hauteurBloc)
             
     def DrawText(self, dc):

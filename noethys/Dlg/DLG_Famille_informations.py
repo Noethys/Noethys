@@ -46,8 +46,8 @@ class CTRL_Solde(wx.Panel):
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
         
-        self.SetToolTipString(_(u"Solde final du compte"))
-        self.ctrl_solde.SetToolTipString(_(u"Solde final du compte"))
+        self.SetToolTip(wx.ToolTip(_(u"Solde final du compte")))
+        self.ctrl_solde.SetToolTip(wx.ToolTip(_(u"Solde final du compte")))
     
     def SetSolde(self, montant=FloatToDecimal(0.0)):
         """ MAJ integrale du controle avec MAJ des donnees """
@@ -98,9 +98,9 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un mémo familial"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le mémo familial sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le mémo familial sélectionné"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un mémo familial")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le mémo familial sélectionné")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le mémo familial sélectionné")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)

@@ -116,8 +116,11 @@ class CTRL(CT.CustomTreeCtrl):
         # Imagelist
         tailleImages = (11,16)
         self.il = wx.ImageList(tailleImages[0], tailleImages[1])
-        self.imgRoot = self.il.Add(wx.ArtProvider_GetBitmap(wx.ART_FILE_OPEN, wx.ART_OTHER, tailleImages))
-        
+        if 'phoenix' in wx.PlatformInfo:
+            self.imgRoot = self.il.Add(wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_OTHER, tailleImages))
+        else :
+            self.imgRoot = self.il.Add(wx.ArtProvider_GetBitmap(wx.ART_FILE_OPEN, wx.ART_OTHER, tailleImages))
+
         self.dictImages = {}
         for dictEtiquette in self.listeEtiquettes :
             couleur = dictEtiquette["couleurRVB"]
@@ -596,7 +599,7 @@ class CTRL(CT.CustomTreeCtrl):
 
 class DialogSelection(wx.Dialog):
     def __init__(self, parent, listeActivites=[], nomActivite=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.listeActivites = listeActivites
         self.SetTitle(_(u"Sélectionner des étiquettes"))
@@ -616,9 +619,9 @@ class DialogSelection(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((550, 500))
 
     def __do_layout(self):

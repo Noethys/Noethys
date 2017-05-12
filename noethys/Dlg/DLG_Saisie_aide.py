@@ -197,7 +197,7 @@ class CTRL_Beneficiaires(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDaide=None, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
         self.IDaide = IDaide
         self.IDfamille = IDfamille
@@ -300,23 +300,23 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'aide (Exemple : 'Bons vacances CAF 2017')"))
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez ici l'activité"))
-        self.ctrl_caisse.SetToolTipString(_(u"Sélectionnez ici une caisse"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
-        self.ctrl_beneficiaires.SetToolTipString(_(u"Cochez ici les bénéficiaires de l'aide"))
-        self.checkbox_plafond_montant.SetToolTipString(_(u"Cliquez ici pour appliquer un montant maximal"))
-        self.ctrl_plafond_montant.SetToolTipString(_(u"Saisissez ici le montant maximal"))
-        self.checkbox_plafond_quantite.SetToolTipString(_(u"Cliquez ici pour appliquer un nombre de dates maximal"))
-        self.ctrl_plafond_quantite.SetToolTipString(_(u"Cliquez ici le nombre maximal de dates"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un montant"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le montant sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le montant sélectionné dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer un modèle d'aide prédéfini"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'aide (Exemple : 'Bons vacances CAF 2017')")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'activité")))
+        self.ctrl_caisse.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une caisse")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.ctrl_beneficiaires.SetToolTip(wx.ToolTip(_(u"Cochez ici les bénéficiaires de l'aide")))
+        self.checkbox_plafond_montant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer un montant maximal")))
+        self.ctrl_plafond_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant maximal")))
+        self.checkbox_plafond_quantite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour appliquer un nombre de dates maximal")))
+        self.ctrl_plafond_quantite.SetToolTip(wx.ToolTip(_(u"Cliquez ici le nombre maximal de dates")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un montant")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le montant sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le montant sélectionné dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer un modèle d'aide prédéfini")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

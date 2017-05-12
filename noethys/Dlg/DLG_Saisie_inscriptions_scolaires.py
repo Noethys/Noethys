@@ -286,7 +286,7 @@ class CTRL_Niveau(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDecole=None, IDclasse=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.IDecole = IDecole
         self.IDclasse = IDclasse
@@ -339,18 +339,18 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Inscrire des individus"))
-        self.ctrl_niveau.SetToolTipString(_(u"Sélectionnez ici le niveau scolaire"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de scolarisation"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de scolarisation"))
-        self.ctrl_filtre_date_debut.SetToolTipString(_(u"Saisissez ici un filtre de période"))
-        self.ctrl_filtre_date_fin.SetToolTipString(_(u"Saisissez ici un filtre de période"))
-        self.ctrl_filtre_ecole.SetToolTipString(_(u"Vous pouvez sélectionner ici un filtre sur les écoles"))
-        self.ctrl_filtre_classe.SetToolTipString(_(u"Vous pouvez sélectionner ici un filtre sur les classes"))
-        self.ctrl_filtre_niveau.SetToolTipString(_(u"Vous pouvez sélectionner ici un filtre sur les niveaux scolaires"))
-        self.ctrl_individus.SetToolTipString(_(u"Cochez les individus à inscrire"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_niveau.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le niveau scolaire")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de scolarisation")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de scolarisation")))
+        self.ctrl_filtre_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici un filtre de période")))
+        self.ctrl_filtre_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici un filtre de période")))
+        self.ctrl_filtre_ecole.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un filtre sur les écoles")))
+        self.ctrl_filtre_classe.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un filtre sur les classes")))
+        self.ctrl_filtre_niveau.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un filtre sur les niveaux scolaires")))
+        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus à inscrire")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((660, 700))
 
     def __do_layout(self):

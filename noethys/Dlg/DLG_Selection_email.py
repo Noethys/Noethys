@@ -156,10 +156,10 @@ class Panel_adresse_unique(wx.Panel):
         self.ctrl_autre = CTRL_Saisie_mail.Mail(self)
 
         # Properties
-        self.radio_membre.SetToolTipString(_(u"Cliquez ici pour sélectionner l'adresse Email d'un membre de la famille"))
-        self.ctrl_membre.SetToolTipString(_(u"Sélectionnez ici l'adresse Email d'un membre de la famille"))
-        self.radio_autre.SetToolTipString(_(u"Cliquez ici pour saisir manuellement une adresse Email"))
-        self.ctrl_autre.SetToolTipString(_(u"Saisissez une adresse Email"))
+        self.radio_membre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner l'adresse Email d'un membre de la famille")))
+        self.ctrl_membre.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'adresse Email d'un membre de la famille")))
+        self.radio_autre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement une adresse Email")))
+        self.ctrl_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une adresse Email")))
 
         # Binds
         self.Bind(wx.EVT_RADIOBUTTON, self.OnRadioAdresse, self.radio_membre)
@@ -255,8 +255,8 @@ class Panel_adresses_multiples(wx.Panel):
         self.ctrl_autres = wx.TextCtrl(self, -1, "")
 
         # Properties
-        self.ctrl_membres.SetToolTipString(_(u"Cochez une ou plusieurs adresses de destination"))
-        self.ctrl_autres.SetToolTipString(_(u"Saisissez directement d'autres adresses en les séparant d'un point-virgule (;)"))
+        self.ctrl_membres.SetToolTip(wx.ToolTip(_(u"Cochez une ou plusieurs adresses de destination")))
+        self.ctrl_autres.SetToolTip(wx.ToolTip(_(u"Saisissez directement d'autres adresses en les séparant d'un point-virgule (;)")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
@@ -368,11 +368,11 @@ class Dialog(wx.Dialog):
         self.Importation() 
 
     def __set_properties(self):
-        self.radio_activation_oui.SetToolTipString(_(u"Cliquez ici pour activer l'envoi par Email"))
-        self.radio_activation_non.SetToolTipString(_(u"Cliquez ici pour désactiver l'envoi par Email"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer l'envoi par Email")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver l'envoi par Email")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

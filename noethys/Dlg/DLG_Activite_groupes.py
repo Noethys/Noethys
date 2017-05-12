@@ -55,11 +55,11 @@ class Panel(wx.Panel):
         
         
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un groupe"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le groupe selectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le groupe selectionné dans la liste"))
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter le groupe sélectionné dans la liste"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre le groupe sélectionné dans la liste"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un groupe")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le groupe selectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le groupe selectionné dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter le groupe sélectionné dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre le groupe sélectionné dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=1, vgap=10, hgap=10)

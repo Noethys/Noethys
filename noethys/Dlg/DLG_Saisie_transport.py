@@ -45,7 +45,7 @@ class CTRL_Choix_unites(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(_(u"Cochez les unités conditionnelles"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les unités conditionnelles")))
         
         # Création des colonnes
         self.AddColumn(_(u"Unités"))
@@ -231,20 +231,20 @@ class CTRL_Saisie_prog(wx.Panel):
             self.Importation() 
 
     def __set_properties(self):
-        self.check_scolaire_lundi.SetToolTipString(_(u"Lundi"))
-        self.check_scolaire_mardi.SetToolTipString(_(u"Mardi"))
-        self.check_scolaire_mercredi.SetToolTipString(_(u"Mercredi"))
-        self.check_scolaire_jeudi.SetToolTipString(_(u"Jeudi"))
-        self.check_scolaire_vendredi.SetToolTipString(_(u"Vendredi"))
-        self.check_scolaire_samedi.SetToolTipString(_(u"Samedi"))
-        self.check_scolaire_dimanche.SetToolTipString(_(u"Dimanche"))
-        self.check_vacances_lundi.SetToolTipString(_(u"Lundi"))
-        self.check_vacances_mardi.SetToolTipString(_(u"Mardi"))
-        self.check_vacances_mercredi.SetToolTipString(_(u"Mercredi"))
-        self.check_vacances_jeudi.SetToolTipString(_(u"Jeudi"))
-        self.check_vacances_vendredi.SetToolTipString(_(u"Vendredi"))
-        self.check_vacances_samedi.SetToolTipString(_(u"Samedi"))
-        self.check_vacances_dimanche.SetToolTipString(_(u"Dimanche"))
+        self.check_scolaire_lundi.SetToolTip(wx.ToolTip(_(u"Lundi")))
+        self.check_scolaire_mardi.SetToolTip(wx.ToolTip(_(u"Mardi")))
+        self.check_scolaire_mercredi.SetToolTip(wx.ToolTip(_(u"Mercredi")))
+        self.check_scolaire_jeudi.SetToolTip(wx.ToolTip(_(u"Jeudi")))
+        self.check_scolaire_vendredi.SetToolTip(wx.ToolTip(_(u"Vendredi")))
+        self.check_scolaire_samedi.SetToolTip(wx.ToolTip(_(u"Samedi")))
+        self.check_scolaire_dimanche.SetToolTip(wx.ToolTip(_(u"Dimanche")))
+        self.check_vacances_lundi.SetToolTip(wx.ToolTip(_(u"Lundi")))
+        self.check_vacances_mardi.SetToolTip(wx.ToolTip(_(u"Mardi")))
+        self.check_vacances_mercredi.SetToolTip(wx.ToolTip(_(u"Mercredi")))
+        self.check_vacances_jeudi.SetToolTip(wx.ToolTip(_(u"Jeudi")))
+        self.check_vacances_vendredi.SetToolTip(wx.ToolTip(_(u"Vendredi")))
+        self.check_vacances_samedi.SetToolTip(wx.ToolTip(_(u"Samedi")))
+        self.check_vacances_dimanche.SetToolTip(wx.ToolTip(_(u"Dimanche")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -440,20 +440,20 @@ class CTRL_Planning(wx.Panel):
         self.__do_layout()
 
     def __set_properties(self):
-        self.check_scolaire_lundi.SetToolTipString(_(u"Lundi"))
-        self.check_scolaire_mardi.SetToolTipString(_(u"Mardi"))
-        self.check_scolaire_mercredi.SetToolTipString(_(u"Mercredi"))
-        self.check_scolaire_jeudi.SetToolTipString(_(u"Jeudi"))
-        self.check_scolaire_vendredi.SetToolTipString(_(u"Vendredi"))
-        self.check_scolaire_samedi.SetToolTipString(_(u"Samedi"))
-        self.check_scolaire_dimanche.SetToolTipString(_(u"Dimanche"))
-        self.check_vacances_lundi.SetToolTipString(_(u"Lundi"))
-        self.check_vacances_mardi.SetToolTipString(_(u"Mardi"))
-        self.check_vacances_mercredi.SetToolTipString(_(u"Mercredi"))
-        self.check_vacances_jeudi.SetToolTipString(_(u"Jeudi"))
-        self.check_vacances_vendredi.SetToolTipString(_(u"Vendredi"))
-        self.check_vacances_samedi.SetToolTipString(_(u"Samedi"))
-        self.check_vacances_dimanche.SetToolTipString(_(u"Dimanche"))
+        self.check_scolaire_lundi.SetToolTip(wx.ToolTip(_(u"Lundi")))
+        self.check_scolaire_mardi.SetToolTip(wx.ToolTip(_(u"Mardi")))
+        self.check_scolaire_mercredi.SetToolTip(wx.ToolTip(_(u"Mercredi")))
+        self.check_scolaire_jeudi.SetToolTip(wx.ToolTip(_(u"Jeudi")))
+        self.check_scolaire_vendredi.SetToolTip(wx.ToolTip(_(u"Vendredi")))
+        self.check_scolaire_samedi.SetToolTip(wx.ToolTip(_(u"Samedi")))
+        self.check_scolaire_dimanche.SetToolTip(wx.ToolTip(_(u"Dimanche")))
+        self.check_vacances_lundi.SetToolTip(wx.ToolTip(_(u"Lundi")))
+        self.check_vacances_mardi.SetToolTip(wx.ToolTip(_(u"Mardi")))
+        self.check_vacances_mercredi.SetToolTip(wx.ToolTip(_(u"Mercredi")))
+        self.check_vacances_jeudi.SetToolTip(wx.ToolTip(_(u"Jeudi")))
+        self.check_vacances_vendredi.SetToolTip(wx.ToolTip(_(u"Vendredi")))
+        self.check_vacances_samedi.SetToolTip(wx.ToolTip(_(u"Samedi")))
+        self.check_vacances_dimanche.SetToolTip(wx.ToolTip(_(u"Dimanche")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=1, vgap=8, hgap=8)
@@ -552,7 +552,7 @@ class CTRL_Mode_multiple(wx.Choicebook):
     def __init__(self, parent):
         wx.Choicebook.__init__(self, parent, id=-1)
         self.parent = parent
-        #self.SetToolTipString(_(u"Sélectionnez ici une localisation"))
+        #self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une localisation")))
         
         self.listePanels = [
             ("CALENDRIER", _(u"Selon les dates sélectionnées"), CTRL_Calendrier.CTRL(self, afficheBoutonAnnuel=False) ),
@@ -603,7 +603,7 @@ class CTRL_Choix_activite(wx.Choice):
         self.parent = parent
         self.IDindividu = IDindividu
         self.MAJ() 
-        self.SetToolTipString(_(u"Sélectionnez ici une activité"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici une activité")))
     
     def MAJ(self):
         listeItems = self.GetListeDonnees()
@@ -678,11 +678,11 @@ class CTRL_Saisie_multiple(wx.Panel):
         self.OnChoixMode(None)
 
     def __set_properties(self):
-        self.radio_unique.SetToolTipString(_(u"Sélectionnez ce mode pour saisir un seul transport"))
-        self.radio_multiple.SetToolTipString(_(u"Sélectionnez ce mode pour saisir plusieurs transports à la fois"))
-        self.check_feries.SetToolTipString(_(u"Cochez cette case pour saisir également des transports sur les jours fériés"))
-        self.check_activite.SetToolTipString(_(u"Cochez cette case pour saisir ce transport uniquement les jours sur lesquels l'individu est inscrit sur une activité donnée"))
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
+        self.radio_unique.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour saisir un seul transport")))
+        self.radio_multiple.SetToolTip(wx.ToolTip(_(u"Sélectionnez ce mode pour saisir plusieurs transports à la fois")))
+        self.check_feries.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir également des transports sur les jours fériés")))
+        self.check_activite.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir ce transport uniquement les jours sur lesquels l'individu est inscrit sur une activité donnée")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)
@@ -767,7 +767,7 @@ class CTRL_Saisie_multiple(wx.Panel):
 
 class Dialog_prog(wx.Dialog):
     def __init__(self, parent, IDtransport=None, IDindividu=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.IDtransport = IDtransport
         self.IDindividu = IDindividu
@@ -798,9 +798,9 @@ class Dialog_prog(wx.Dialog):
         self.AffichageDates(False)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((800, 660))
 
     def __do_layout(self):
@@ -869,7 +869,7 @@ class Dialog_prog(wx.Dialog):
 
 class Dialog_multiple(wx.Dialog):
     def __init__(self, parent, IDindividu=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.IDindividu = IDindividu
 
@@ -896,9 +896,9 @@ class Dialog_multiple(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((800, 660))
 
     def __do_layout(self):
@@ -970,7 +970,7 @@ class Dialog_multiple(wx.Dialog):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDtransport=None, IDindividu=None, modeVirtuel=False, dictDonnees={}, verrouilleBoutons=False):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.IDindividu = IDindividu
         self.IDtransport = IDtransport
@@ -1001,9 +1001,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
 
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((450, 660))
 
     def __do_layout(self):

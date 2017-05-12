@@ -72,17 +72,17 @@ class PreviewControlBar(wx.PyPreviewControlBar):
         self.Bind(wx.EVT_BUTTON, self.OnZoomPlus, self.bouton_zoom_plus)
 
     def __set_properties(self):
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour afficher l'impression"))
-        self.bouton_rapide_x1.SetToolTipString(_(u"Cliquez ici pour lancer une impression rapide en 1 exemplaire"))
-        self.bouton_rapide_x2.SetToolTipString(_(u"Cliquez ici pour lancer une impression rapide en 2 exemplaires"))
-        self.bouton_premier.SetToolTipString(_(u"Cliquez ici pour accéder à la première page"))
-        self.bouton_precedent.SetToolTipString(_(u"Cliquez ici pour accéder à la page précédente"))
-        self.bouton_suivant.SetToolTipString(_(u"Cliquez ici pour accéder à la page suivante"))
-        self.bouton_dernier.SetToolTipString(_(u"Cliquez ici pour accéder à la dernière page"))
-        self.bouton_zoom_moins.SetToolTipString(_(u"Cliquez ici pour faire un zoom arrière"))
-        self.ctrl_zoom.SetToolTipString(_(u"Déplacez la règlette pour zoomer"))
-        self.bouton_zoom_plus.SetToolTipString(_(u"Cliquez ici pour faire un zoom avant"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer l'aperçu"))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher l'impression")))
+        self.bouton_rapide_x1.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer une impression rapide en 1 exemplaire")))
+        self.bouton_rapide_x2.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer une impression rapide en 2 exemplaires")))
+        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la première page")))
+        self.bouton_precedent.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la page précédente")))
+        self.bouton_suivant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la page suivante")))
+        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la dernière page")))
+        self.bouton_zoom_moins.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un zoom arrière")))
+        self.ctrl_zoom.SetToolTip(wx.ToolTip(_(u"Déplacez la règlette pour zoomer")))
+        self.bouton_zoom_plus.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire un zoom avant")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer l'aperçu")))
 
     def __do_layout(self):
         grid_sizer_base = wx.GridSizer(rows=2, cols=1, vgap=0, hgap=0)

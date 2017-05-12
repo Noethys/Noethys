@@ -68,7 +68,7 @@ class MargeGauche(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, id=-1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         
         # Marge gauche
         self.margeGauche = MargeGauche(self)
@@ -97,8 +97,8 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Bienvenue"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer cette fenêtre"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir le fichier sélectionné dans la liste")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer cette fenêtre")))
         self.SetMinSize((800, 640))
 
     def __do_layout(self):

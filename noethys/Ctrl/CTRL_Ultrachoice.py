@@ -13,11 +13,14 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import OwnerDrawnComboBox, ODCB_PAINTING_CONTROL, ODCB_PAINTING_SELECTED
+else :
+    from wx.combo import OwnerDrawnComboBox, ODCB_PAINTING_CONTROL, ODCB_PAINTING_SELECTED
 import wx.lib.wordwrap as wordwrap
 
 
-class CTRL(wx.combo.OwnerDrawnComboBox):
+class CTRL(OwnerDrawnComboBox):
     def __init__(self, parent, donnees=[], nbreLignesDescription=1, wrap=False, hauteur=None, style=wx.CB_READONLY) :
         self.donnees = donnees
         self.nbreLignesDescription = nbreLignesDescription
@@ -33,7 +36,7 @@ class CTRL(wx.combo.OwnerDrawnComboBox):
         for donnee in self.donnees :
             listeLabels.append(donnee["label"])
 
-        wx.combo.OwnerDrawnComboBox.__init__(self, parent, -1, choices=listeLabels, size=(-1, self.hauteurItem), style=style)
+        OwnerDrawnComboBox.__init__(self, parent, -1, choices=listeLabels, size=(-1, self.hauteurItem), style=style)
 
         self.Bind(wx.EVT_COMBOBOX, self.OnSelection)
 
@@ -67,7 +70,7 @@ class CTRL(wx.combo.OwnerDrawnComboBox):
         
         if len(self.donnees) > 0 :
             dictItem = self.donnees[item]
-            if flags & wx.combo.ODCB_PAINTING_CONTROL:
+            if flags & ODCB_PAINTING_CONTROL:
                 # for painting the control itself
                 self.selection = item
                 self.DessineItemActif(dc, r, dictItem)
@@ -114,16 +117,19 @@ class CTRL(wx.combo.OwnerDrawnComboBox):
     def OnDrawBackground(self, dc, rect, item, flags):
         # If the item is selected, or its item # iseven, or we are painting the
         # combo control itself, then use the default rendering.
-        if (item & 1 == 0 or flags & (wx.combo.ODCB_PAINTING_CONTROL |
-                                      wx.combo.ODCB_PAINTING_SELECTED)):
-            wx.combo.OwnerDrawnComboBox.OnDrawBackground(self, dc, rect, item, flags)
+        if (item & 1 == 0 or flags & (ODCB_PAINTING_CONTROL |
+                                      ODCB_PAINTING_SELECTED)):
+            OwnerDrawnComboBox.OnDrawBackground(self, dc, rect, item, flags)
             return
 
         # Otherwise, draw every other background with different colour.
         bgCol = wx.Colour(240, 240, 250)
         dc.SetBrush(wx.Brush(bgCol))
         dc.SetPen(wx.Pen(bgCol))
-        dc.DrawRectangleRect(rect);
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
 
     # Overridden from OwnerDrawnComboBox, should return the height
     # needed to display an item in the popup, or -1 for default

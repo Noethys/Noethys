@@ -67,7 +67,7 @@ class CTRL_Affichage(wx.Choice):
             self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher"), _(u"Afficher si ouvert")])
         else:
             self.SetItems([_(u"Toujours afficher"), _(u"Ne jamais afficher")])
-        self.SetToolTipString(_(u"Sélectionnez un type d'affichage pour cette unité"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type d'affichage pour cette unité")))
         # Defaut
         self.SetDefaut() 
         # Bind
@@ -121,7 +121,11 @@ class CTRL(HTL.HyperTreeList):
         self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContextMenu)
         
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag(wx.TR_ROW_LINES |  wx.TR_COLUMN_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(wx.TR_ROW_LINES |  TR_COLUMN_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
         self.EnableSelectionVista(True)
                     
     def Importation(self):

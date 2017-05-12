@@ -106,12 +106,12 @@ class Options(wx.Panel):
         self.OnRadio(None)
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date de situation"))
-        self.bouton_date.SetToolTipString(_(u"Cliquez ici pour sélectionner la date de situation dans un calendrier"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici une date de début"))
-        self.bouton_date_debut.SetToolTipString(_(u"Cliquez ici pour saisir une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici une date de fin"))
-        self.bouton_date_fin.SetToolTipString(_(u"Cliquez ici pour saisir une date de fin"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date de situation")))
+        self.bouton_date.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date de situation dans un calendrier")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici une date de début")))
+        self.bouton_date_debut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici une date de fin")))
+        self.bouton_date_fin.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une date de fin")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=9, cols=1, vgap=5, hgap=5)
@@ -244,8 +244,8 @@ class Parametres(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAfficher, self.bouton_afficher)
 
     def __set_properties(self):
-        self.bouton_afficher.SetToolTipString(_(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés"))
-        self.ctrl_type_quotient.SetToolTipString(_(u"Sélectionnez un type de quotient dans la liste"))
+        self.bouton_afficher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la liste en fonction des paramètres sélectionnés")))
+        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de quotient dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
@@ -319,7 +319,7 @@ class Parametres(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter et imprimer la liste des quotients familiaux/revenus à la date de référence donnée pour la ou les activités sélectionnées. Commencez par saisir une date de référence puis sélectionnez un ou plusieurs groupes d'activités ou certaines activités avant de cliquer sur le bouton 'Rafraîchir la liste'.")
@@ -355,13 +355,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche de la famille sélectionnée dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((950, 700))
 
     def __do_layout(self):

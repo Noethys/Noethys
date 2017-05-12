@@ -16,7 +16,10 @@ import CTRL_Bouton_image
 import datetime
 
 import GestionDB
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 import CTRL_Saisie_heure
 
 
@@ -107,9 +110,9 @@ def DateEngEnDateDD(dateEng):
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-class CTRL_Icone(wx.combo.BitmapComboBox):
+class CTRL_Icone(BitmapComboBox):
     def __init__(self, parent, size=(-1,  -1)):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         
         # MAJ
@@ -261,13 +264,13 @@ class CTRL_Message(wx.Panel):
         self.OnChoixMessage(None)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un message"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le message sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le message sélectionné"))
-        self.ctrl_icone.SetToolTipString(_(u"Sélectionnez l'icône à afficher dans la boîte de dialogue"))
-        self.ctrl_duree.SetToolTipString(_(u"Sélectionnez la durée d'affichage du message (en secondes)"))
-        self.ctrl_frequence.SetToolTipString(_(u"Sélectionnez la fréquence de diffusion (en %)"))
-        self.ctrl_vocal.SetToolTipString(_(u"Cochez cette case pour activer la synthèse vocale"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un message")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le message sélectionné")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le message sélectionné")))
+        self.ctrl_icone.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'icône à afficher dans la boîte de dialogue")))
+        self.ctrl_duree.SetToolTip(wx.ToolTip(_(u"Sélectionnez la durée d'affichage du message (en secondes)")))
+        self.ctrl_frequence.SetToolTip(wx.ToolTip(_(u"Sélectionnez la fréquence de diffusion (en %)")))
+        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=7, cols=2, vgap=5, hgap=5)
@@ -649,23 +652,23 @@ class CTRL_Enregistrer(wx.Panel):
         self.OnCheckTicket(None)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
-        self.ctrl_unite.SetToolTipString(_(u"Sélectionnez une unité de consommation"))
-        self.ctrl_etat.SetToolTipString(_(u"Sélectionnez un état"))
-        self.check_demander.SetToolTipString(_(u"Cochez cette case pour que Noethys demande s'il s'agit du début ou de la fin de la consommation. Utile quand l'unité de consommation n'a pas d'heure fixe de début ou de fin (ex : crèche, accueil de loisirs)"))
-        self.radio_debut_defaut.SetToolTipString(_(u"Heure par défaut définie dans le paramétrage de l'unité"))
-        self.radio_debut_pointee.SetToolTipString(_(u"Heure pointée"))
-        self.radio_debut_autre.SetToolTipString(_(u"Autre heure"))
-        self.ctrl_debut_autre.SetToolTipString(_(u"Saisissez une heure"))
-        self.radio_fin_defaut.SetToolTipString(_(u"Heure par défaut définie dans le paramétrage de l'unité"))
-        self.radio_fin_pointee.SetToolTipString(_(u"Heure pointée"))
-        self.radio_fin_autre.SetToolTipString(_(u"Autre heure"))
-        self.ctrl_fin_autre.SetToolTipString(_(u"Saisissez une heure"))
-        self.check_message_actif.SetToolTipString(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation"))
-        self.ctrl_message_texte.SetToolTipString(_(u"Saisissez un message de confirmation"))
-        self.ctrl_vocal.SetToolTipString(_(u"Cochez cette case pour activer la synthèse vocale"))
-        self.check_ticket_actif.SetToolTipString(_(u"Cochez cette case pour activer l'impression d'un ticket"))
-        self.ctrl_ticket_modele.SetToolTipString(_(u"Sélectionnez le modèle de ticket à utiliser"))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une unité de consommation")))
+        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez un état")))
+        self.check_demander.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys demande s'il s'agit du début ou de la fin de la consommation. Utile quand l'unité de consommation n'a pas d'heure fixe de début ou de fin (ex : crèche, accueil de loisirs)")))
+        self.radio_debut_defaut.SetToolTip(wx.ToolTip(_(u"Heure par défaut définie dans le paramétrage de l'unité")))
+        self.radio_debut_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointée")))
+        self.radio_debut_autre.SetToolTip(wx.ToolTip(_(u"Autre heure")))
+        self.ctrl_debut_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))
+        self.radio_fin_defaut.SetToolTip(wx.ToolTip(_(u"Heure par défaut définie dans le paramétrage de l'unité")))
+        self.radio_fin_pointee.SetToolTip(wx.ToolTip(_(u"Heure pointée")))
+        self.radio_fin_autre.SetToolTip(wx.ToolTip(_(u"Autre heure")))
+        self.ctrl_fin_autre.SetToolTip(wx.ToolTip(_(u"Saisissez une heure")))
+        self.check_message_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation")))
+        self.ctrl_message_texte.SetToolTip(wx.ToolTip(_(u"Saisissez un message de confirmation")))
+        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale")))
+        self.check_ticket_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'impression d'un ticket")))
+        self.ctrl_ticket_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle de ticket à utiliser")))
         self.ctrl_debut_autre.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
         self.ctrl_fin_autre.SetFont(wx.Font(7, wx.FONTFAMILY_DEFAULT, wx.FONTSTYLE_NORMAL, wx.FONTWEIGHT_NORMAL, False, 'Arial'))
 
@@ -1039,15 +1042,15 @@ class CTRL_Reserver(wx.Panel):
         self.OnCheckConfirmation(None)
 
     def __set_properties(self):
-        self.ctrl_activite.SetToolTipString(_(u"Sélectionnez une activité"))
-        self.ctrl_unite.SetToolTipString(_(u"Sélectionnez les unités de consommation à proposer"))
-        self.ctrl_etat.SetToolTipString(_(u"Sélectionnez un état"))
-        self.check_attente.SetToolTipString(_(u"Cochez cette case pour que Noethys propose une place sur liste d'attente sur il n'y a plus de places"))
-        self.ctrl_date.SetToolTipString(_(u"Sélectionnez la date à proposer"))
-        self.ctrl_question.SetToolTipString(_(u"Saisissez le texte de la question"))
-        self.check_confirmation_actif.SetToolTipString(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation"))
-        self.ctrl_confirmation.SetToolTipString(_(u"Saisissez un message de confirmation"))
-        self.ctrl_vocal.SetToolTipString(_(u"Cochez cette case pour activer la synthèse vocale"))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Sélectionnez une activité")))
+        self.ctrl_unite.SetToolTip(wx.ToolTip(_(u"Sélectionnez les unités de consommation à proposer")))
+        self.ctrl_etat.SetToolTip(wx.ToolTip(_(u"Sélectionnez un état")))
+        self.check_attente.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys propose une place sur liste d'attente sur il n'y a plus de places")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez la date à proposer")))
+        self.ctrl_question.SetToolTip(wx.ToolTip(_(u"Saisissez le texte de la question")))
+        self.check_confirmation_actif.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer l'affichage d'un message de confirmation")))
+        self.ctrl_confirmation.SetToolTip(wx.ToolTip(_(u"Saisissez un message de confirmation")))
+        self.ctrl_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)

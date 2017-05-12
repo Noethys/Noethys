@@ -128,7 +128,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         gridlib.Grid.__init__(self, parent, -1, style=wx.WANTS_CHARS)
         glr.GridWithLabelRenderersMixin.__init__(self)
         self.moveTo = None
-        self.GetGridWindow().SetToolTipString("")
+        self.GetGridWindow().SetToolTip(wx.ToolTip(""))
         self.CreateGrid(0, 0)
         self.SetRowLabelSize(200)
         self.SetColLabelSize(45)

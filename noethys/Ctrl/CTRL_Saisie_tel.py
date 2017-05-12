@@ -24,7 +24,7 @@ class Tel(masked.TextCtrl):
         masked.TextCtrl.__init__(self, parent, -1, "", style=wx.TE_CENTRE, mask=self.mask)
         self.parent = parent
         self.SetMinSize((125, -1))
-        self.SetToolTipString(_(u"Saisissez un numéro de %s") % intitule)   
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez un numéro de %s") % intitule))
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def OnKillFocus(self, event):

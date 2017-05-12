@@ -31,7 +31,7 @@ class EditeurAvecBoutons(wxpg.PyTextCtrlEditor):
 
         # Add two regular buttons
         buttons.AddBitmapButton(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_PNG))
-        buttons.GetButton(0).SetToolTipString(_(u"Cliquez ici pour rétablir la valeur par défaut"))
+        buttons.GetButton(0).SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rétablir la valeur par défaut")))
         
         # Create the 'primary' editor control (textctrl in this case)
         wnd = self.CallSuperMethod("CreateControls", propGrid, property, pos, buttons.GetPrimarySize())
@@ -95,7 +95,7 @@ class CTRL_Proprietes(wxpg.PropertyGrid) :
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeDonnees=[]):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.listeDonnees = listeDonnees
         
@@ -120,10 +120,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAnnuler, self.bouton_annuler)
         
     def __set_properties(self):
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour rétablir toutes les valeurs par défaut"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour rétablir toutes les valeurs par défaut")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((600, 550))
 
     def __do_layout(self):

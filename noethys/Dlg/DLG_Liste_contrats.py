@@ -121,7 +121,7 @@ class CTRL_Activite(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici consulter la liste complète des contrats générés dans le logiciel. Les commandes proposées vous permettent de modifier, supprimer ou imprimer des contrats. Pour supprimer un lot de contrats, cochez-les et utilisez le bouton Supprimer.")
@@ -173,13 +173,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Liste des contrats"))
-        self.bouton_ouvrir_fiche.SetToolTipString(_(u"Cliquez ici pour ouvrir la fiche famille du contrat sélectionné dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour créer un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer directement la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le contrat sélectionné dans la liste"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le contrat sélectionné dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ouvrir_fiche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir la fiche famille du contrat sélectionné dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer directement la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le contrat sélectionné dans la liste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le contrat sélectionné dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):
@@ -253,7 +253,7 @@ class Dialog(wx.Dialog):
         attente = wx.BusyInfo(_(u"Recherche des données..."), self)
         self.ctrl_listview.listeFiltres = listeFiltres
         self.ctrl_listview.MAJ() 
-        attente.Destroy()
+        del attente
         
     def OuvrirFiche(self, event):
         self.ctrl_listview.OuvrirFicheFamille(None)

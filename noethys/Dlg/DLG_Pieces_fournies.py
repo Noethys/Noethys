@@ -70,7 +70,7 @@ class CTRL_Piece(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDlot=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Pieces_fournies", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Pieces_fournies", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent  
 
         # Bandeau
@@ -120,16 +120,16 @@ class Dialog(wx.Dialog):
         self.OnPieceValide(None)
 
     def __set_properties(self):
-        self.ctrl_piece.SetToolTipString(_(u"Sélectionnez une pièce dans la liste"))
-        self.ctrl_valide.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les pièces valides à la date choisie"))
-        self.ctrl_date.SetToolTipString(_(u"Choisissez la date à laquelle les pièces doivent être valides"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste en fonction des paramètres sélectionnés"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_piece.SetToolTip(wx.ToolTip(_(u"Sélectionnez une pièce dans la liste")))
+        self.ctrl_valide.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les pièces valides à la date choisie")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Choisissez la date à laquelle les pièces doivent être valides")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste en fonction des paramètres sélectionnés")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((750, 650))
 
     def __do_layout(self):

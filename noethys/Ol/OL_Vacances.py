@@ -15,7 +15,10 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
-
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import DatePickerCtrl, DP_DROPDOWN
+else :
+    from wx import DatePickerCtrl, DP_DROPDOWN
 
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -104,7 +107,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune période de vacances"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[3])
         self.SetObjects(self.donnees)
        
@@ -283,9 +286,9 @@ class ListView(FastObjectListView):
         
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
-class DatePickerCtrl(wx.DatePickerCtrl):
+class MyDatePickerCtrl(DatePickerCtrl):
     def __init__(self, parent):
-        wx.DatePickerCtrl.__init__(self, parent, -1, style=wx.DP_DROPDOWN) 
+        DatePickerCtrl.__init__(self, parent, -1, style=DP_DROPDOWN)
         self.parent = parent
         
     def SetDate(self, dateTxt=None):
@@ -305,7 +308,7 @@ class DatePickerCtrl(wx.DatePickerCtrl):
     
 class Saisie(wx.Dialog):
     def __init__(self, parent, IDvacance=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         self.sizer_periode_staticbox = wx.StaticBox(self, -1, _(u"Nom de la période"))
@@ -320,22 +323,22 @@ class Saisie(wx.Dialog):
         
         self.sizer_dates_staticbox = wx.StaticBox(self, -1, _(u"Dates de la période"))
         self.label_dateDebut = wx.StaticText(self, -1, u"Du")
-        self.ctrl_dateDebut = DatePickerCtrl(self)
+        self.ctrl_dateDebut = MyDatePickerCtrl(self)
         self.label_dateFin = wx.StaticText(self, -1, _(u"au"))
-        self.ctrl_dateFin = DatePickerCtrl(self)
+        self.ctrl_dateFin = MyDatePickerCtrl(self)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         # Propriétés
-        self.ctrl_nom.SetToolTipString(_(u"Choisissez ici le nom de la période"))
-        self.ctrl_annee.SetToolTipString(_(u"Saisissez ici l'année de la période. Ex. : '2011'"))
-        self.ctrl_dateDebut.SetToolTipString(_(u"Saisissez ici la date de début de la période"))
-        self.ctrl_dateFin.SetToolTipString(_(u"Saisissez ici la date de fin de la période"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Choisissez ici le nom de la période")))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'année de la période. Ex. : '2011'")))
+        self.ctrl_dateDebut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de la période")))
+        self.ctrl_dateFin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de la période")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
         if IDvacance == None :
             self.SetTitle(_(u"Saisie d'une période de vacances"))
         else:

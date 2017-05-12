@@ -151,7 +151,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, date_debut=None, date_fin=None, dateNaiss=None, listeActivites=[], listePrestations=[]):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Attestations_selection", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Attestations_selection", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.date_debut = date_debut
         self.date_fin = date_fin
@@ -195,10 +195,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Sélection des attestations à éditer"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_liste.SetToolTipString(_(u"Cliquez ici pour imprimer la liste affichée"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour créer l'aperçu des attestations (PDF)"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste affichée")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer l'aperçu des attestations (PDF)")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((600, 650))
 
     def __do_layout(self):

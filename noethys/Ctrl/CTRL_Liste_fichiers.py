@@ -99,7 +99,10 @@ class FirstColumnRenderer(object):
 
     def GetLineHeight(self):
         dc = wx.MemoryDC()
-        dc.SelectObject(wx.EmptyBitmap(100, 20))
+        if 'phoenix' in wx.PlatformInfo:
+            dc.SelectObject(wx.Bitmap(100, 20))
+        else :
+            dc.SelectObject(wx.EmptyBitmap(100, 20))
         
         if self.icon != None :
             bmpWidth, bmpHeight = self.icon.GetWidth(), self.icon.GetHeight()
@@ -157,7 +160,10 @@ class SecondColumnRenderer(object):
 
     def GetLineHeight(self):
         dc = wx.MemoryDC()
-        dc.SelectObject(wx.EmptyBitmap(100, 20))
+        if 'phoenix' in wx.PlatformInfo:
+            dc.SelectObject(wx.Bitmap(100, 20))
+        else :
+            dc.SelectObject(wx.EmptyBitmap(100, 20))
         textWidth, textHeight, d1, d2 = dc.GetFullTextExtent("xx", self.smallerFont)
         dc.SelectObject(wx.NullBitmap)
         return 2*textHeight + 20
@@ -165,8 +171,11 @@ class SecondColumnRenderer(object):
 
     def GetSubItemWidth(self):
         dc = wx.MemoryDC()
-        dc.SelectObject(wx.EmptyBitmap(100, 20))
-        
+        if 'phoenix' in wx.PlatformInfo:
+            dc.SelectObject(wx.Bitmap(100, 20))
+        else :
+            dc.SelectObject(wx.EmptyBitmap(100, 20))
+
         if self.date != None :
             texte = _(u"Date modif.:") + self.date
         else :
@@ -273,7 +282,10 @@ class CTRL(ULC.UltimateListCtrl):
                 if logo != None :
                     try :
                         io = cStringIO.StringIO(logo)
-                        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
+                        if 'phoenix' in wx.PlatformInfo:
+                            img = wx.Image(io, wx.BITMAP_TYPE_ANY)
+                        else :
+                            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_ANY)
                         img = RecadreImg(img)
                         image = img.ConvertToBitmap()
                     except :

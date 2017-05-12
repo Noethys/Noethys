@@ -23,7 +23,7 @@ except: pass
 class Dialog_pays(wx.Dialog):
     def __init__(self, parent, typeSelection="pays"):
         """ typeSelection = "pays" | "nationalite" """
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.typeSelection = typeSelection
         if self.typeSelection == "pays" :
             intro = _(u"Vous pouvez sélectionner ici un pays en double-cliquant sur sa ligne. La barre de recherche peut vous permettre de retrouver rapidement un élément de la liste.")
@@ -50,9 +50,9 @@ class Dialog_pays(wx.Dialog):
             self.SetTitle(_(u"Sélection d'un pays"))
         else:
             self.SetTitle(_(u"Sélection d'une nationalité"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
         self.SetMinSize((500, 500))
 
     def __do_layout(self):

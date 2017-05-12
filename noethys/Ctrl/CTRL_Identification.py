@@ -133,7 +133,7 @@ class Dialog(wx.Dialog):
         self.ctrl_mdp.SetFocus() 
         
     def __set_properties(self):
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.ctrl_mdp.SetMinSize((300, -1))
 
     def __do_layout(self):

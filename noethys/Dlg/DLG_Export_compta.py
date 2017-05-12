@@ -31,7 +31,10 @@ import wx.lib.agw.labelbook as LB
 import wx.propgrid as wxpg
 import wx.lib.dialogs as dialogs
 import wx.lib.agw.pybusyinfo as PBI
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 from Ctrl import CTRL_Propertygrid
 
 from Utils import UTILS_XImport
@@ -1071,9 +1074,9 @@ class Donnees():
 ### -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-class CTRL_Logiciel(wx.combo.BitmapComboBox):
+class CTRL_Logiciel(BitmapComboBox):
     def __init__(self, parent, size=(-1,  -1)):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.listeFormats = [
             {"code" : "ebp_compta", "label" : _(u"EBP Compta"), "image" : wx.Bitmap(Chemins.GetStaticPath('Images/48x48/Logiciel_ebp.png'), wx.BITMAP_TYPE_PNG)},
@@ -1449,7 +1452,7 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         # Bandeau
@@ -1495,11 +1498,11 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.ctrl_date_debut.SetFocus)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période à exporter"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période à exporter"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la génération des fichiers d'exportation"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période à exporter")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période à exporter")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la génération des fichiers d'exportation")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((700, 680))
 
     def __do_layout(self):
@@ -1674,7 +1677,7 @@ class CTRL_Codes(wxpg.PropertyGrid) :
 
 class Dialog_codes(wx.Dialog):
     def __init__(self, parent, dictCodes=None, keyStr=False, titre=_(u"Vérification des codes comptables")):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.dictCodes = dictCodes
         
@@ -1684,8 +1687,8 @@ class Dialog_codes(wx.Dialog):
         self.bouton_fermer = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         
         # Propriétés
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((590, 600))
         self.SetTitle(titre)
         

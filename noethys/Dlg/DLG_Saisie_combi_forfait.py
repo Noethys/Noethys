@@ -50,7 +50,7 @@ class CTRL_Unites(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, listeUnites=[]):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_combi_forfait", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_combi_forfait", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         self.listeUnites = listeUnites
@@ -76,11 +76,11 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une combinaison de forfait"))
-        self.ctrl_date.SetToolTipString(_(u"Saisissez ici la date de la consommation"))
-        self.bouton_calendrier.SetToolTipString(_(u"Cliquez ici pour sélectionner la date dans un calendrier"))
-        self.ctrl_unites.SetToolTipString(_(u"Cochez les unités à combiner"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de la consommation")))
+        self.bouton_calendrier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner la date dans un calendrier")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unités à combiner")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((350, 420))
 
     def __do_layout(self):

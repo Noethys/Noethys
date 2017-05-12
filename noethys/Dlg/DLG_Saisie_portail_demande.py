@@ -27,6 +27,10 @@ from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
+else :
+    from wx import DatePickerCtrl, DP_DROPDOWN, EVT_DATE_CHANGED
 
 
 class CTRL_Html(html.HtmlWindow):
@@ -52,11 +56,11 @@ class CTRL_Html(html.HtmlWindow):
 
 
 
-class DatePickerCtrl(wx.DatePickerCtrl):
+class MyDatePickerCtrl(DatePickerCtrl):
     def __init__(self, parent):
-        wx.DatePickerCtrl.__init__(self, parent, -1, style=wx.DP_DROPDOWN)
+        DatePickerCtrl.__init__(self, parent, -1, style=DP_DROPDOWN)
         self.parent = parent
-        self.Bind(wx.EVT_DATE_CHANGED, self.OnDateChanged)
+        self.Bind(EVT_DATE_CHANGED, self.OnDateChanged)
         self.Bind(wx.EVT_CHILD_FOCUS, self.OnFocus)
 
     def OnFocus(self,event):
@@ -152,7 +156,7 @@ class CTRL_Solde(wx.TextCtrl):
         font = self.GetFont()
         font.SetWeight(wx.BOLD)
         self.SetFont(font)
-        self.SetToolTipString(_(u"Solde du compte de la famille"))
+        self.SetToolTip(wx.ToolTip(_(u"Solde du compte de la famille")))
 
     def MAJ(self, IDfamille=None):
         DB = GestionDB.DB()
@@ -218,7 +222,7 @@ class CTRL_Solde(wx.TextCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, track=None, tracks=[]):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.track = track
         self.tracks = tracks
 
@@ -270,7 +274,7 @@ class Dialog(wx.Dialog):
         self.label_etat = wx.StaticText(self, -1, _(u"Etat :"), style=wx.ALIGN_RIGHT)
         self.radio_attente = wx.RadioButton(self, -1, _(u"En attente"), style=wx.RB_GROUP)
         self.radio_validation = wx.RadioButton(self, -1, _(u"Traité le"))
-        self.ctrl_date_validation = DatePickerCtrl(self)
+        self.ctrl_date_validation = MyDatePickerCtrl(self)
 
         self.image_email_reponse = wx.StaticBitmap(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_ANY))
         self.label_email_reponse = wx.StaticText(self, -1, "")
@@ -333,10 +337,10 @@ class Dialog(wx.Dialog):
         self.radio_validation.SetToolTip(wx.ToolTip(_(u"Demande traitée")))
         self.ctrl_date_validation.SetToolTip(wx.ToolTip(_(u"Date de traitement de la demande")))
         self.ctrl_reponse.SetToolTip(wx.ToolTip(_(u"Cette réponse apparaîtra sur le portail et dans l'email de confirmation (si vous utilisez le mot-clé {DEMANDE_REPONSE} dans l'email). Cette réponse est générée automatiquement par Noethys mais vous pouvez la modifier librement.")))
-        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer directement un email de réponse à la famille sans passer par l'éditeur d'Emails."))
-        self.bouton_editeur.SetToolTipString(_(u"Cliquez ici pour ouvrir l'éditeur d'Email afin d'envoyer un email de réponse à la famille"))
-        self.ctrl_modele_email.SetToolTipString(_(u"Sélectionnez un modèle d'email"))
-        self.bouton_gestion_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles d'emails"))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer directement un email de réponse à la famille sans passer par l'éditeur d'Emails.")))
+        self.bouton_editeur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ouvrir l'éditeur d'Email afin d'envoyer un email de réponse à la famille")))
+        self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle d'email")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles d'emails")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_automatique.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer le traitement automatique de cette demande")))
         self.bouton_manuel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer le traitement manuel de cette demande")))

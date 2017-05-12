@@ -111,7 +111,7 @@ class CTRL_Procedure(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -175,19 +175,19 @@ class Dialog(wx.Dialog):
         
         
     def __set_properties(self):
-        self.ctrl_procedure.SetToolTipString(_(u"Sélectionnez une procédure"))
-        self.bouton_procedures.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des procédures"))
-        self.ctrl_date.SetToolTipString(_(u"Sélectionnez une date (Par défaut la date du jour)"))
-        self.check_dateauto.SetToolTipString(_(u"Cochez cette case pour que Noethys sélectionne automatiquement la date du jour (A minuit, la date changera automatiquement)"))
-        self.bouton_log_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression"))
-        self.bouton_log_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer"))
-        self.bouton_log_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_log_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Texte"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_vocal.SetToolTipString(_(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale"))
-        self.bouton_importation.SetToolTipString(_(u"Cliquez ici pour importer des badgeages manuellement"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour lancer la procédure de badgeage en temps réél"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_procedure.SetToolTip(wx.ToolTip(_(u"Sélectionnez une procédure")))
+        self.bouton_procedures.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des procédures")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date (Par défaut la date du jour)")))
+        self.check_dateauto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys sélectionne automatiquement la date du jour (A minuit, la date changera automatiquement)")))
+        self.bouton_log_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression")))
+        self.bouton_log_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer")))
+        self.bouton_log_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_log_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Texte")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_vocal.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au paramétrage de la synthèse vocale")))
+        self.bouton_importation.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer des badgeages manuellement")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la procédure de badgeage en temps réél")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 700))
 
     def __do_layout(self):
@@ -369,7 +369,7 @@ class Dialog(wx.Dialog):
         
         # Ouvre la fenêtre de badgeage
         if modeDebug == True :
-            style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME # CONSERVER LA TOUCHE ALT ENFONCEE POUR EVITER L'AFFICHAGE PLEIN ECRAN
+            style = wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX # CONSERVER LA TOUCHE ALT ENFONCEE POUR EVITER L'AFFICHAGE PLEIN ECRAN
         else :
             style = wx.BORDER_NONE
         dlg = DLG_Badgeage_interface.Dialog(self, log=self.ctrl_log, IDprocedure=IDprocedure, date=date, dateauto=self.check_dateauto.GetValue(), importationManuelle=importationManuelle, style=style)

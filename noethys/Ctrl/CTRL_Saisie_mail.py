@@ -19,7 +19,7 @@ class Mail(wx.TextCtrl):
     def __init__(self, parent):
         wx.TextCtrl.__init__(self, parent, -1, "")
         self.parent = parent
-        self.SetToolTipString(_(u"Saisissez une adresse mail"))   
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez une adresse mail")))   
         self.Bind(wx.EVT_KILL_FOCUS, self.OnKillFocus)
     
     def OnKillFocus(self, event):

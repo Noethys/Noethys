@@ -72,18 +72,18 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.radio_predefini.SetToolTipString(_(u"Cliquez ici pour sélectionner un serveur prédéfini dans la liste"))
+        self.radio_predefini.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner un serveur prédéfini dans la liste")))
         self.ctrl_predefinis.SetMinSize((200, -1))
-        self.radio_personnalise.SetToolTipString(_(u"Cliquez ici pour saisir manuellement les caractéristiques du serveur de messagerie"))
-        self.ctrl_smtp.SetToolTipString(_(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)"))
+        self.radio_personnalise.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir manuellement les caractéristiques du serveur de messagerie")))
+        self.ctrl_smtp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom du serveur SMPT (exemple : smtp.orange.fr)")))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTipString(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)"))
-        self.ctrl_authentification.SetToolTipString(_(u"Cliquez ici sur le serveur de messagerie nécessite une authentification"))
-        self.ctrl_adresse.SetToolTipString(_(u"Saisissez ici votre adresse mail"))
-        self.ctrl_mdp.SetToolTipString(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour accéder à l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)")))
+        self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici sur le serveur de messagerie nécessite une authentification")))
+        self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

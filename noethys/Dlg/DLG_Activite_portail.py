@@ -44,9 +44,9 @@ class Page_periodes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_periodes.Supprimer, self.bouton_periodes_supprimer)
 
         # Properties
-        self.bouton_periodes_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une période de réservations"))
-        self.bouton_periodes_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la période de réservations sélectionnée dans la liste"))
-        self.bouton_periodes_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la période de réservations selectionnée dans la liste"))
+        self.bouton_periodes_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une période de réservations")))
+        self.bouton_periodes_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la période de réservations sélectionnée dans la liste")))
+        self.bouton_periodes_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la période de réservations selectionnée dans la liste")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
@@ -97,12 +97,12 @@ class Page_unites(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_unites.Descendre, self.bouton_unites_descendre)
 
         # Properties
-        self.bouton_unites_ajouter.SetToolTipString(_(u"Cliquez ici pour créer une unité de réservation"))
-        self.bouton_unites_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'unité de réservation sélectionnée dans la liste"))
-        self.bouton_unites_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'unité de réservation sélectionnée dans la liste"))
-        self.bouton_unites_monter.SetToolTipString(_(u"Cliquez ici pour monter l'unité de réservation dans la liste"))
-        self.bouton_unites_descendre.SetToolTipString(_(u"Cliquez ici pour descendre l'unité de réservation dans la liste"))
-        self.check_unites_multiples.SetToolTipString(_(u"Cochez cette case pour autoriser l'internaute à cocher plusieurs unités à la fois"))
+        self.bouton_unites_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer une unité de réservation")))
+        self.bouton_unites_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'unité de réservation sélectionnée dans la liste")))
+        self.bouton_unites_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'unité de réservation sélectionnée dans la liste")))
+        self.bouton_unites_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unité de réservation dans la liste")))
+        self.bouton_unites_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unité de réservation dans la liste")))
+        self.check_unites_multiples.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour autoriser l'internaute à cocher plusieurs unités à la fois")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)
@@ -302,11 +302,11 @@ class Panel(wx.Panel):
         self.OnRadioInscriptions()
 
     def __set_properties(self):
-        self.radio_inscriptions_oui.SetToolTipString(_(u"Sélectionnez cette option pour autoriser l'inscription à cette activité sur le portail"))
-        self.radio_inscriptions_dates.SetToolTipString(_(u"Sélectionnez cette option pour autoriser l'inscription à cette activité sur le portail uniquement entre les dates souhaitées"))
-        self.radio_inscriptions_non.SetToolTipString(_(u"Sélectionnez cette option pour ne pas autoriser l'inscription à cette activité sur le portail"))
-        self.radio_reservations_oui.SetToolTipString(_(u"Sélectionnez cette option pour autoriser les réservations à cette activité sur le portail"))
-        self.radio_reservations_non.SetToolTipString(_(u"Sélectionnez cette option pour ne pas autoriser les réservations à cette activité sur le portail"))
+        self.radio_inscriptions_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour autoriser l'inscription à cette activité sur le portail")))
+        self.radio_inscriptions_dates.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour autoriser l'inscription à cette activité sur le portail uniquement entre les dates souhaitées")))
+        self.radio_inscriptions_non.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour ne pas autoriser l'inscription à cette activité sur le portail")))
+        self.radio_reservations_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour autoriser les réservations à cette activité sur le portail")))
+        self.radio_reservations_non.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour ne pas autoriser les réservations à cette activité sur le portail")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

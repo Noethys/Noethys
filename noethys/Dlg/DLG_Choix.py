@@ -19,7 +19,7 @@ import textwrap
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeBoutons=[], titre=_(u"Quel type de prélèvement souhaitez-vous créer ?"), intro=_(u"Cliquez sur la norme souhaitée..."), minSize=(500, 400)):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.minSize = minSize
                 
@@ -45,7 +45,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_fermer)
 
     def __set_properties(self):
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize(self.minSize)
 
     def __do_layout(self):

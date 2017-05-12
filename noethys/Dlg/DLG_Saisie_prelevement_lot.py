@@ -230,7 +230,7 @@ class Hyperlien(Hyperlink.HyperLinkCtrl):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDlot=None, typePrelevement="national"):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_prelevement_lot", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_prelevement_lot", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent  
         self.IDlot = IDlot 
         self.typePrelevement = typePrelevement
@@ -345,25 +345,25 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'un lot de prélèvements - format SEPA"))
         else :
             self.SetTitle(_(u"Saisie d'un lot de prélèvements - format National"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce lot (Ex : 'Janvier 2013', etc...)"))
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date prévue du prélèvement"))
-        self.ctrl_verrouillage.SetToolTipString(_(u"Cochez cette case pour verrouiller le lot lorsqu'il a été communiqué à la banque"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez ici des observations sur ce lot de prélèvements"))
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez le compte à créditer"))
-        self.bouton_comptes.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des comptes"))
-        self.ctrl_reglement_auto.SetToolTipString(_(u"Cochez cette case pour que Noethys créée automatiquement le règlement correspondant au solde de la facture lors de la validation du prélèvement"))
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez le mode de règlement à utiliser pour le règlement des prestations"))
-        self.bouton_modes.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modes de règlements"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un prélèvement"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le prélèvement sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour retirer le prélèvement sélectionné dans la liste"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste des prélèvements"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste des prélèvements de ce lot"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fichier_national.SetToolTipString(_(u"Cliquez ici pour générer un fichier normalisé AFB-CFONB destiné à votre banque"))
-        self.bouton_fichier_SEPA.SetToolTipString(_(u"Cliquez ici pour générer un fichier normalisé SEPA destiné à votre banque"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider les données"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce lot (Ex : 'Janvier 2013', etc...)")))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date prévue du prélèvement")))
+        self.ctrl_verrouillage.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour verrouiller le lot lorsqu'il a été communiqué à la banque")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations sur ce lot de prélèvements")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte à créditer")))
+        self.bouton_comptes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des comptes")))
+        self.ctrl_reglement_auto.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour que Noethys créée automatiquement le règlement correspondant au solde de la facture lors de la validation du prélèvement")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de règlement à utiliser pour le règlement des prestations")))
+        self.bouton_modes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes de règlements")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un prélèvement")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le prélèvement sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer le prélèvement sélectionné dans la liste")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste des prélèvements")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste des prélèvements de ce lot")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fichier_national.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer un fichier normalisé AFB-CFONB destiné à votre banque")))
+        self.bouton_fichier_SEPA.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer un fichier normalisé SEPA destiné à votre banque")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider les données")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((900, 780))
 
     def __do_layout(self):

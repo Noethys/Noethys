@@ -59,12 +59,12 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez ici le modèle de document"))
-##        self.check_coupons.SetToolTipString(_(u"Cochez cette case pour insérer les coupons-réponses"))
-##        self.check_codesbarres.SetToolTipString(_(u"Cochez cette case pour insérer les codes-barres"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le modèle de document")))
+##        self.check_coupons.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer les coupons-réponses")))
+##        self.check_codesbarres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer les codes-barres")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

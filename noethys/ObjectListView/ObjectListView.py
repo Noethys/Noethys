@@ -110,7 +110,7 @@ import sys
 sys.path.append("..")
 
 from Utils import UTILS_Dates
-
+from Utils.UTILS_Traduction import _
 
 
 class ObjectListView(wx.ListCtrl):
@@ -365,16 +365,31 @@ class ObjectListView(wx.ListCtrl):
         self.columns.append(defn)
 
         info = wx.ListItem()
-        info.m_mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_FORMAT
-        if isinstance(defn.headerImage, basestring) and self.smallImageList is not None:
-            info.m_image = self.smallImageList.GetImageIndex(defn.headerImage)
-        else:
-            info.m_image = defn.headerImage
-        if info.m_image != -1:
-            info.m_mask = info.m_mask | wx.LIST_MASK_IMAGE
-        info.m_format = defn.GetAlignment()
-        info.m_text = defn.title
-        info.m_width = defn.width
+
+        if 'phoenix' in wx.PlatformInfo:
+            info.SetMask(wx.LIST_MASK_TEXT | wx.LIST_MASK_FORMAT)
+            if isinstance(defn.headerImage, basestring) and self.smallImageList is not None:
+                info.SetImage(self.smallImageList.GetImageIndex(defn.headerImage))
+            else:
+                info.SetImage(defn.headerImage)
+            if info.GetImage() != -1:
+                info.SetMask(info.GetMask() | wx.LIST_MASK_IMAGE)
+            info.SetAlign(defn.GetAlignment())
+            info.SetText(defn.title)
+            info.SetWidth(defn.width)
+        else :
+            info.m_mask = wx.LIST_MASK_TEXT | wx.LIST_MASK_FORMAT
+            if isinstance(defn.headerImage, basestring) and self.smallImageList is not None:
+                info.m_image = self.smallImageList.GetImageIndex(defn.headerImage)
+            else:
+                info.m_image = defn.headerImage
+            if info.m_image != -1:
+                info.m_mask = info.m_mask | wx.LIST_MASK_IMAGE
+            info.m_format = defn.GetAlignment()
+            info.m_text = defn.title
+            info.m_width = defn.width
+
+
         try :
             self.InsertColumn(len(self.columns)-1, info)
         except :
@@ -393,7 +408,10 @@ class ObjectListView(wx.ListCtrl):
         Initialize some checkbox images for use by this control.
         """
         def _makeBitmap(state, size):
-            bitmap = wx.EmptyBitmap(size, size)
+            if 'phoenix' in wx.PlatformInfo:
+                bitmap = wx.Bitmap(size, size)
+            else :
+                bitmap = wx.EmptyBitmap(size, size)
             dc = wx.MemoryDC(bitmap)
             dc.Clear()
 
@@ -908,7 +926,12 @@ class ObjectListView(wx.ListCtrl):
         # Calculate how much free space is available in the control
         totalFixedWidth = sum(self.GetColumnWidth(i) for (i, x) in enumerate(self.columns)
                               if not x.isSpaceFilling)
-        freeSpace = max(0, self.GetClientSizeTuple()[0] - totalFixedWidth)
+
+        if 'phoenix' in wx.PlatformInfo:
+            freeSpace = max(0, self.GetClientSize()[0] - totalFixedWidth)
+        else :
+            freeSpace = max(0, self.GetClientSizeTuple()[0] - totalFixedWidth)
+
 
         # Calculate the total number of slices the free space will be divided into
         totalProportion = sum(x.freeSpaceProportion for x in self.columns if x.isSpaceFilling)
@@ -2300,7 +2323,7 @@ class ObjectListView(wx.ListCtrl):
         attente = wx.BusyInfo(u"Configuration de la liste en cours...", self)
         self.InitModel()
         self.InitObjectListView()
-        attente.Destroy()
+        del attente
     
     def SauvegardeConfiguration(self, event=None):
         """ Sauvegarde de la configuration """
@@ -2593,7 +2616,7 @@ class CTRL_Outils(wx.Panel):
         
         # Bouton Filtrer
         self.bouton_filtrer = platebtn.PlateButton(self, -1, u" Filtrer", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Filtre.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_filtrer.SetToolTipString(u"Cliquez ici pour filtrer cette liste")
+        self.bouton_filtrer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour filtrer cette liste")))
         
         menu = wx.Menu()
         item = wx.MenuItem(menu, 10, u"Ajouter, modifier ou supprimer des filtres", u"Cliquez ici pour accéder à la gestion des filtres de listes")
@@ -2609,7 +2632,7 @@ class CTRL_Outils(wx.Panel):
         # Bouton Cocher
         if afficherCocher == True :
             self.bouton_cocher = platebtn.PlateButton(self, -1, u" Cocher", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
-            self.bouton_cocher.SetToolTipString(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")
+            self.bouton_cocher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")))
             
             menu = wx.Menu()
             item = wx.MenuItem(menu, 20, u"Tout cocher", u"Cliquez ici pour cocher tous les éléments de la liste")
@@ -2659,7 +2682,7 @@ class CTRL_Outils(wx.Panel):
                 texte = u"Cliquez ici pour filtrer cette liste\n> 1 filtre activé"
             else :
                 texte = u"Cliquez ici pour filtrer cette liste\n> %d filtres activés" % nbreFiltres        
-        self.bouton_filtrer.SetToolTipString(texte)
+        self.bouton_filtrer.SetToolTip(wx.ToolTip(texte))
         
     def OnBoutonFiltrer(self, event):
         listeFiltres = []
@@ -3183,7 +3206,10 @@ class GroupListView(FastObjectListView):
         Initialize the images used to indicate expanded/collapsed state of groups.
         """
         def _makeBitmap(state, size):
-            bitmap = wx.EmptyBitmap(size, size)
+            if 'phoenix' in wx.PlatformInfo:
+                bitmap = wx.Bitmap(size, size)
+            else :
+                bitmap = wx.EmptyBitmap(size, size)
             dc = wx.MemoryDC(bitmap)
             dc.SetBackground(wx.Brush(self.groupBackgroundColour))
             dc.Clear()

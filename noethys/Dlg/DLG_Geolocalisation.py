@@ -21,7 +21,7 @@ from Ctrl import CTRL_Saisie_adresse
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, titre=_(u"Géolocalisation GPS")):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         
         # Bandeau
@@ -53,10 +53,10 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonFermer, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_rue.SetToolTipString(_(u"Saisissez un nom de rue [Optionnel]"))
-        self.bouton_rechercher.SetToolTipString(_(u"Cliquez ici pour lancer la recherche"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez un nom de rue [Optionnel]")))
+        self.bouton_rechercher.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour lancer la recherche")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((520, 500))
 
     def __do_layout(self):

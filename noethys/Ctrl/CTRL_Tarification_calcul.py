@@ -378,7 +378,10 @@ class Tableau(gridlib.Grid):
         self.listeQuestions = self.GetQuestionnaires() 
 
         # Binds
-        self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
+        if 'phoenix' in wx.PlatformInfo:
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.OnCellChange)
+        else :
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
         self.Bind(gridlib.EVT_GRID_CELL_RIGHT_CLICK, self.OnCellRightClick)
         #self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
         self.GetGridWindow().Bind(wx.EVT_MOTION, self.OnMouseOver)
@@ -1209,12 +1212,12 @@ class Panel(wx.Panel):
         self.ctrl_parametres.Importation(IDtarif)
 
     def __set_properties(self):
-        self.ctrl_methode.SetToolTipString(_(u"Sélectionnez une méthode de calcul dans la liste"))
-        self.bouton_ajouter_ligne.SetToolTipString(_(u"Cliquez ici pour insérer des lignes"))
-        self.bouton_supprimer_ligne.SetToolTipString(_(u"Cliquez ici pour supprimer les lignes sélectionnées"))
-        self.bouton_copier.SetToolTipString(_(u"Cliquez ici pour copier les cases sélectionnées du tableau dans le presse-papiers"))
-        self.bouton_coller.SetToolTipString(_(u"Cliquez ici pour coller les cases mémorisées dans le presse-papiers dans le tableau"))
-        self.ctrl_type_quotient.SetToolTipString(_(u"[OPTIONNEL] Sélectionnez ici le type de QF que vous souhaitez utiliser dans ce tarif. Indifférent par défaut."))
+        self.ctrl_methode.SetToolTip(wx.ToolTip(_(u"Sélectionnez une méthode de calcul dans la liste")))
+        self.bouton_ajouter_ligne.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour insérer des lignes")))
+        self.bouton_supprimer_ligne.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les lignes sélectionnées")))
+        self.bouton_copier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour copier les cases sélectionnées du tableau dans le presse-papiers")))
+        self.bouton_coller.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour coller les cases mémorisées dans le presse-papiers dans le tableau")))
+        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"[OPTIONNEL] Sélectionnez ici le type de QF que vous souhaitez utiliser dans ce tarif. Indifférent par défaut.")))
         self.ctrl_parametres.SetMinSize((100, 50))
 
     def __do_layout(self):

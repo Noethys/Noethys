@@ -22,7 +22,7 @@ from Ctrl import CTRL_Selection_activites
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, afficherPresents=True):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         self.radio_tous = wx.RadioButton(self, -1, _(u"Tous les individus"))
@@ -57,13 +57,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Sélection d'individus"))
-        self.radio_tous.SetToolTipString(_(u"Cochez ici pour sélectionner tous les individus"))
-        self.radio_inscrits.SetToolTipString(_(u"Cochez ici pour sélectionner des inscrits"))
-        self.check_presents.SetToolTipString(_(u"Cochez cette case pour saisir une période de présence"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de période"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de période"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.radio_tous.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner tous les individus")))
+        self.radio_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner des inscrits")))
+        self.check_presents.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour saisir une période de présence")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de période")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de période")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((430, 460))
 
     def __do_layout(self):

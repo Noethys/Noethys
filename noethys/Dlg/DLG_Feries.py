@@ -34,9 +34,9 @@ class Panel(wx.Panel):
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
         
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un jour férié %s") % self.type)
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le jour férié %s sélectionné dans la liste") % self.type)
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le jour férié %s sélectionné dans la liste") % self.type)
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un jour férié %s") % self.type))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le jour férié %s sélectionné dans la liste") % self.type))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le jour férié %s sélectionné dans la liste") % self.type))
         
         # Layout
         sizer_staticbox = wx.StaticBoxSizer(self.staticbox, wx.VERTICAL)
@@ -82,7 +82,7 @@ class Panel(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici saisir, modifier ou supprimer des jours fériés. Ces informations sont utilisées dans le calendrier de saisie des consommations et dans le paramétrage des unités des activités.")
@@ -104,9 +104,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Gestion des jours fériés"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_saisie_auto.SetToolTipString(_(u"Cliquez ici pour saisir automatiquement les jours fériés variables"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_saisie_auto.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir automatiquement les jours fériés variables")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((550, 680))
 
     def __do_layout(self):

@@ -21,7 +21,7 @@ from Ctrl import CTRL_Editeur_email
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, donnees=[], texte_xml=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent  
         self.donnees = donnees 
         self.texte_xml = texte_xml
@@ -65,14 +65,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Aperçu de la fusion"))
-        self.bouton_premier.SetToolTipString(_(u"Cliquez ici pour atteindre le premier"))
+        self.bouton_premier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le premier")))
         self.bouton_reculer.SetMinSize((50, -1))
-        self.bouton_reculer.SetToolTipString(_(u"Cliquez ici pour atteindre le précédent"))
+        self.bouton_reculer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le précédent")))
         self.bouton_avancer.SetMinSize((50, -1))
-        self.bouton_avancer.SetToolTipString(_(u"Cliquez ici pour atteindre le suivant"))
-        self.bouton_dernier.SetToolTipString(_(u"Cliquez ici pour atteindre le dernier"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_avancer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le suivant")))
+        self.bouton_dernier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour atteindre le dernier")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((600, 500))
 
     def __do_layout(self):

@@ -110,13 +110,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une formule conditionnelle"))
-        self.ctrl_champ.SetToolTipString(_(u"Sélectionnez ici un champ dans la liste"))
-        self.ctrl_operateur.SetToolTipString(_(u"Sélectionnez un opérateur dans la liste"))
-        self.ctrl_condition.SetToolTipString(_(u"Saisissez ici la valeur conditionnelle. Il peut s'agir \nd'un mot ou d'une phrase. Vous pouvez également \nsaisir ' OU ' entre plusieurs mots pour saisir plusieurs \nconditions avec l'opérateur =."))
-        self.ctrl_afficher.SetToolTipString(_(u"Saisissez ici le texte à afficher si la condition est vraie.\nIl peut s'agir d'un mot ou d'une phrase mais aussi \nd'un mot-clé. Ex : 'bonjour', '{INDIVIDU_NOM}',\n'123', etc..."))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_champ.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un champ dans la liste")))
+        self.ctrl_operateur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un opérateur dans la liste")))
+        self.ctrl_condition.SetToolTip(wx.ToolTip(_(u"Saisissez ici la valeur conditionnelle. Il peut s'agir \nd'un mot ou d'une phrase. Vous pouvez également \nsaisir ' OU ' entre plusieurs mots pour saisir plusieurs \nconditions avec l'opérateur =.")))
+        self.ctrl_afficher.SetToolTip(wx.ToolTip(_(u"Saisissez ici le texte à afficher si la condition est vraie.\nIl peut s'agir d'un mot ou d'une phrase mais aussi \nd'un mot-clé. Ex : 'bonjour', '{INDIVIDU_NOM}',\n'123', etc...")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)

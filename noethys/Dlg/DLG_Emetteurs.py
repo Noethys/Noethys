@@ -22,16 +22,19 @@ from Ol import OL_Emetteurs
 from PIL import Image
 import os
 import cStringIO
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 
 
 TAILLE_IMAGE = (132/2.0, 72/2.0)
 IMAGE_DEFAUT = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
 
 
-class CTRL_Mode(wx.combo.BitmapComboBox):
+class CTRL_Mode(BitmapComboBox):
     def __init__(self, parent, size=(-1,  -1)):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.MAJlisteDonnees() 
         if len(self.dictDonnees) > 0 :
@@ -69,7 +72,10 @@ class CTRL_Mode(wx.combo.BitmapComboBox):
         # Recherche de l'image
         if bufferImage != None :
             io = cStringIO.StringIO(bufferImage)
-            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+            if 'phoenix' in wx.PlatformInfo:
+                img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+            else :
+                img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
             bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=qualite) 
             bmp = bmp.ConvertToBitmap()
             return bmp
@@ -152,7 +158,7 @@ class CTRL_Mode_archive(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Emetteurs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Emetteurs", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Bandeau
@@ -189,12 +195,12 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez ici un mode de règlement"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un émetteur à ce mode de règlement"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'émetteur sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'émetteur sélectionné dans la liste"))
-        self.boutons_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer la fenetre"))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici un mode de règlement")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un émetteur à ce mode de règlement")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'émetteur sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'émetteur sélectionné dans la liste")))
+        self.boutons_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer la fenetre")))
         self.SetMinSize((600, 640))
 
     def __do_layout(self):

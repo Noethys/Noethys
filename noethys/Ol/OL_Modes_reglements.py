@@ -42,7 +42,10 @@ def GetImage(bufferImage):
     # Recherche de l'image
     if bufferImage != None :
         io = cStringIO.StringIO(bufferImage)
-        img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
+        if 'phoenix' in wx.PlatformInfo:
+            img = wx.Image(io, wx.BITMAP_TYPE_JPEG)
+        else :
+            img = wx.ImageFromStream(io, wx.BITMAP_TYPE_JPEG)
         bmp = img.Rescale(width=TAILLE_IMAGE[0], height=TAILLE_IMAGE[1], quality=qualite) 
         bmp = bmp.ConvertToBitmap()
         return bmp
@@ -158,7 +161,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun mode de règlement"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        

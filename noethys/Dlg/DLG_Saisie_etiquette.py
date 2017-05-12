@@ -22,7 +22,7 @@ import GestionDB
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, listeActivites=[], nomActivite=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.listeActivites = listeActivites
         
@@ -61,12 +61,12 @@ class Dialog(wx.Dialog):
         wx.CallLater(1, self.ctrl_label.SetFocus)
 
     def __set_properties(self):
-        self.ctrl_label.SetToolTipString(_(u"Saisissez un label pour cette étiquette"))
-        self.ctrl_couleur.SetToolTipString(_(u"Cliquez ici pour sélectionner une couleur pour cette étiquette"))
-        self.ctrl_active.SetToolTipString(_(u"Décochez cette case pour empêcher l'utilisateur de sélectionner cette étiquette. Cette option peut par exemple servir pour créer une étiquette de regroupement pour des sous-étiquettes ou pour désactiver une étiquette obsolète."))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez un label pour cette étiquette")))
+        self.ctrl_couleur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une couleur pour cette étiquette")))
+        self.ctrl_active.SetToolTip(wx.ToolTip(_(u"Décochez cette case pour empêcher l'utilisateur de sélectionner cette étiquette. Cette option peut par exemple servir pour créer une étiquette de regroupement pour des sous-étiquettes ou pour désactiver une étiquette obsolète.")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((500, 500))
 
     def __do_layout(self):

@@ -84,13 +84,13 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonListeExportExcel, self.bouton_liste_export_excel)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la lettre de rappel sélectionnée"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici envoyer la lettre de rappel sélectionnée par Email"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la lettre de rappel sélectionnée ou les lettres de rappel cochées"))
-        self.bouton_liste_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste"))
-        self.bouton_liste_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer cette liste"))
-        self.bouton_liste_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Texte"))
-        self.bouton_liste_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Excel"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la lettre de rappel sélectionnée")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la lettre de rappel sélectionnée par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la lettre de rappel sélectionnée ou les lettres de rappel cochées")))
+        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")))
+        self.bouton_liste_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste")))
+        self.bouton_liste_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Texte")))
+        self.bouton_liste_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Excel")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)

@@ -93,7 +93,7 @@ class Liste_unites_conso(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDunite=None, IDactivite=None, ordre=1):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDunite = IDunite
         self.IDactivite = IDactivite
@@ -135,10 +135,10 @@ class Dialog(wx.Dialog):
         else :
             self.SetTitle(_(u"Modification d'une unité de réservation"))
         self.SetSize((650, -1))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'unité de réservation"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'unité de réservation")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
 
     def __do_layout(self):

@@ -151,7 +151,7 @@ class ListView(FastObjectListView):
 
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucune ventilation"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[5])
         self.SetObjects(self.donnees)
        

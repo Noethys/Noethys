@@ -14,7 +14,6 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
-import wx.calendar
 
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
@@ -90,7 +89,7 @@ class CTRL_profil_perso(CTRL_Profil.CTRL):
 class CTRL_Cocher(platebtn.PlateButton):
     def __init__(self, parent, ctrl_liste=None):
         platebtn.PlateButton.__init__(self, parent, -1, u" Cocher", wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cocher.png"), wx.BITMAP_TYPE_ANY))
-        self.SetToolTipString(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher ou décocher rapidement tous les éléments de cette liste")))
         self.ctrl_liste = ctrl_liste
         self.SetBackgroundColour(wx.WHITE)
 
@@ -184,7 +183,7 @@ class CTRL_Activites(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(_(u"Cochez les activités et groupes à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités et groupes à afficher")))
         
         # Création des colonnes
         self.AddColumn(_(u"Activité/groupe"))
@@ -344,7 +343,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
         
-        self.SetToolTipString(_(u"Cochez les écoles et classes à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les écoles et classes à afficher")))
         
         # Création des colonnes
         self.AddColumn(_(u"Ecole/classe"))
@@ -544,8 +543,8 @@ class Page_Activites(wx.Panel):
         self.checkbox_saut_groupes = wx.CheckBox(self, -1, _(u"Après le groupe"))
         
         # Propriétés
-        self.checkbox_saut_activites.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque activité"))
-        self.checkbox_saut_groupes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque groupe"))
+        self.checkbox_saut_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque activité")))
+        self.checkbox_saut_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque groupe")))
         self.ctrl_cocher = CTRL_Cocher(self, ctrl_liste=self.ctrl_activites)
 
         # Layout
@@ -603,9 +602,9 @@ class Page_Scolarite(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckEcoles, self.checkbox_ecoles)
         
         # Propriétés
-        self.checkbox_ecoles.SetToolTipString(_(u"Cochez cette case pour regrouper les individus par école et par classe"))
-        self.checkbox_saut_ecoles.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque école"))
-        self.checkbox_saut_classes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque classe"))
+        self.checkbox_ecoles.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour regrouper les individus par école et par classe")))
+        self.checkbox_saut_ecoles.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque école")))
+        self.checkbox_saut_classes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque classe")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -679,8 +678,8 @@ class Page_Etiquettes(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckEtiquettes, self.checkbox_etiquettes)
         
         # Propriétés
-        self.checkbox_etiquettes.SetToolTipString(_(u"Cochez cette case pour regrouper les consommations par étiquette"))
-        self.checkbox_saut_etiquettes.SetToolTipString(_(u"Cochez cette case pour insérer un saut de page après chaque étiquette"))
+        self.checkbox_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour regrouper les consommations par étiquette")))
+        self.checkbox_saut_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque étiquette")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -751,9 +750,9 @@ class Page_Unites(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_unites.Reinit, self.bouton_reinit)
         
         # Propriétés
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter l'unité sélectionnée dans la liste"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre l'unité sélectionnée dans la liste"))
-        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour réinitialiser la liste complète des unités"))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter l'unité sélectionnée dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre l'unité sélectionnée dans la liste")))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser la liste complète des unités")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -807,11 +806,11 @@ class Page_Colonnes(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_colonnes.Descendre, self.bouton_descendre)
 
         # Propriétés
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une colonne personnalisée"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la colonne sélectionnée dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la colonne sélectionnée dans la liste"))
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour monter la colonne sélectionnée dans la liste"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour descendre la colonne sélectionnée dans la liste"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une colonne personnalisée")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la colonne sélectionnée dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la colonne sélectionnée dans la liste")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour monter la colonne sélectionnée dans la liste")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour descendre la colonne sélectionnée dans la liste")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -857,7 +856,7 @@ class Page_Options(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Reinitialisation, self.bouton_reinit)
 
         # Propriétés
-        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour réinitialiser les options"))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser les options")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -946,7 +945,7 @@ class CTRL_Parametres(wx.Notebook):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, date=None):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_conso", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_conso", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.date = date
         
@@ -1006,12 +1005,12 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Impression d'une liste de consommations"))
-        self.radio_journ.SetToolTipString(_(u"Cochez ici pour sélectionner une liste journalière"))
-        self.radio_period.SetToolTipString(_(u"Cochez ici pour sélectionner une liste périodique"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_export.SetToolTipString(_(u"Cliquez ici pour exporter les données vers Excel"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.radio_journ.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner une liste journalière")))
+        self.radio_period.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner une liste périodique")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_export.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les données vers Excel")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((880, 600))
 
     def __do_layout(self):
@@ -2410,7 +2409,7 @@ class Dialog(wx.Dialog):
             story.pop(-1)
 
         # Destruction de la DlgAttente
-        DlgAttente.Destroy()
+        del DlgAttente
 
         # Si mode export Excel
         if modeExport == True :

@@ -15,7 +15,10 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
 import GestionDB
-
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import DatePickerCtrl, DP_DROPDOWN
+else :
+    from wx import DatePickerCtrl, DP_DROPDOWN
 
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
@@ -121,7 +124,7 @@ class ListView(FastObjectListView):
         
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun jour férié %s") % self.type)
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        
@@ -286,9 +289,9 @@ class ListView(FastObjectListView):
 
 # -------------------------------------------------------------------------------------------------------------------------------------------
 
-class DatePickerCtrl(wx.DatePickerCtrl):
+class MyDatePickerCtrl(DatePickerCtrl):
     def __init__(self, parent):
-        wx.DatePickerCtrl.__init__(self, parent, -1, style=wx.DP_DROPDOWN) 
+        DatePickerCtrl.__init__(self, parent, -1, style=DP_DROPDOWN)
         self.parent = parent
         
     def SetDate(self, dateTxt=None):
@@ -318,7 +321,7 @@ class DatePickerCtrl(wx.DatePickerCtrl):
     
 class Saisie(wx.Dialog):
     def __init__(self, parent, type="variable", IDferie=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.type = type
 
@@ -332,7 +335,7 @@ class Saisie(wx.Dialog):
         self.label_mois_fixe = wx.StaticText(self, -1, _(u"Mois :"))
         self.choice_mois_fixe = wx.Choice(self, -1, choices=[_(u"Janvier"), _(u"Février"), _(u"Mars"), _(u"Avril"), _(u"Mai"), _(u"Juin"), _(u"Juillet"), _(u"Août"), _(u"Septembre"), _(u"Octobre"), _(u"Novembre"), _(u"Décembre")])
         self.label_date_variable = wx.StaticText(self, -1, _(u"Date :"))
-        self.datepicker_date_variable = DatePickerCtrl(self)
+        self.datepicker_date_variable = MyDatePickerCtrl(self)
         
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
@@ -351,13 +354,13 @@ class Saisie(wx.Dialog):
         # Propriétés
         self.choice_jour_fixe.SetMinSize((50, -1))
         self.choice_mois_fixe.SetMinSize((130, 21))
-        self.text_ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce jour férié (ex: 'Noël', 'Ascension', 'Jour de l'an', etc...)"))
-        self.choice_jour_fixe.SetToolTipString(_(u"Sélectionnez le jour"))
-        self.choice_mois_fixe.SetToolTipString(_(u"Sélectionnez le mois"))
-        self.datepicker_date_variable.SetToolTipString(_(u"Saisissez ou sélectionnez une date pour ce jour férié"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler la saisie"))
+        self.text_ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce jour férié (ex: 'Noël', 'Ascension', 'Jour de l'an', etc...)")))
+        self.choice_jour_fixe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le jour")))
+        self.choice_mois_fixe.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mois")))
+        self.datepicker_date_variable.SetToolTip(wx.ToolTip(_(u"Saisissez ou sélectionnez une date pour ce jour férié")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler la saisie")))
         if IDferie == None :
             if self.type == "fixe" :
                 self.SetTitle(_(u"Saisie d'un jour férié fixe"))
@@ -524,7 +527,7 @@ class MyFrame(wx.Frame):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
-        self.myOlv = ListView(panel, type="fixe", id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.myOlv = ListView(panel, type="variable", id=-1, name="OL_test", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
         self.myOlv.MAJ() 
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.myOlv, 1, wx.ALL|wx.EXPAND, 4)

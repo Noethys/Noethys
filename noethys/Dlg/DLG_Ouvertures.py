@@ -110,7 +110,10 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.afficherTousGroupes = None
 
         self.Bind(gridlib.EVT_GRID_CELL_LEFT_CLICK, self.OnCellLeftClick)
-        self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
+        if 'phoenix' in wx.PlatformInfo:
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGED, self.OnCellChange)
+        else :
+            self.Bind(gridlib.EVT_GRID_CELL_CHANGE, self.OnCellChange)
         self.Bind(gridlib.EVT_GRID_LABEL_RIGHT_CLICK, self.OnLabelRightClick)
     
     def Sauvegarde(self):
@@ -918,7 +921,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         
@@ -983,14 +986,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Calendrier des ouvertures"))
-        self.ctrl_mois.SetToolTipString(_(u"Sélectionnez un mois"))
+        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mois")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTipString(_(u"Sélectionnez une année"))
-        self.check_tous_groupes.SetToolTipString(_(u"Cochez cette case pour afficher les lignes 'Total max.' afin de saisir des limitations d'effectifs globales"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_saisie_lot.SetToolTipString(_(u"Cliquez ici saisir ou supprimer un lot d'ouvertures"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
+        self.check_tous_groupes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les lignes 'Total max.' afin de saisir des limitations d'effectifs globales")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_saisie_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici saisir ou supprimer un lot d'ouvertures")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.ctrl_calendrier.SetMinSize((100, 100))
         self.SetMinSize((890, 700))
 

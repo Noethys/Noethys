@@ -180,7 +180,7 @@ class ListView(FastObjectListView):
         ])
         self.SetSortColumn(self.columns[1])
         self.SetEmptyListMsg(_(u"Aucune attestation de présence"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.rowFormatter = rowFormatter
         self.SetObjects(self.donnees)
             

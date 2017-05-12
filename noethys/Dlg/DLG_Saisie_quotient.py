@@ -69,7 +69,7 @@ class CTRL_Type_quotient(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         
         # Dates
@@ -109,16 +109,16 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
-        self.ctrl_type_quotient.SetToolTipString(_(u"Sélectionnez un type de quotient"))
-        self.bouton_types_quotients.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des types de quotients"))
-        self.ctrl_quotient.SetToolTipString(_(u"Saisissez ici le quotient familial"))
-        self.ctrl_revenu.SetToolTipString(_(u"Saisissez ici le revenu"))
-        self.ctrl_observations.SetToolTipString(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient/revenu"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.ctrl_type_quotient.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type de quotient")))
+        self.bouton_types_quotients.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des types de quotients")))
+        self.ctrl_quotient.SetToolTip(wx.ToolTip(_(u"Saisissez ici le quotient familial")))
+        self.ctrl_revenu.SetToolTip(wx.ToolTip(_(u"Saisissez ici le revenu")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"[Optionnel] Saisissez ici des commentaires sur ce quotient/revenu")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

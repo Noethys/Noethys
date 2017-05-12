@@ -448,9 +448,9 @@ class CTRL(wx.Panel):
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Modifier.png"), wx.BITMAP_TYPE_PNG))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_PNG))
         
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour saisir un forfait crédit"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le forfait sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le forfait sélectionné dans la liste"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir un forfait crédit")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le forfait sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le forfait sélectionné dans la liste")))
         
         # Binds
         self.Bind(wx.EVT_BUTTON, self.Ajouter, self.bouton_ajouter)

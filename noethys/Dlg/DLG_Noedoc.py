@@ -16,7 +16,10 @@ from Ctrl import CTRL_Bouton_image
 import wx.lib.agw.aui as aui
 from wx.lib.floatcanvas import FloatCanvas, GUIMode
 import wx.lib.colourselect as csel
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import OwnerDrawnComboBox, ODCB_PAINTING_CONTROL, ODCB_PAINTING_SELECTED
+else :
+    from wx.combo import OwnerDrawnComboBox, ODCB_PAINTING_CONTROL, ODCB_PAINTING_SELECTED
 import wx.grid
 import wx.lib.agw.floatspin as FloatSpin
 import wx.lib.agw.pybusyinfo as PBI
@@ -1161,7 +1164,7 @@ class Panel_infos(wx.Panel):
 # ------------------------------------------------------------------------------------------------------------------
 
     
-class CTRL_Style(wx.combo.OwnerDrawnComboBox):
+class CTRL_Style(OwnerDrawnComboBox):
     """ ComboBox pour sélectionner le style de trait """
     def __init__(self, parent, categorie="trait", choices=[], style=0):
         self.parent = parent
@@ -1207,7 +1210,7 @@ class CTRL_Style(wx.combo.OwnerDrawnComboBox):
                 7 : "VerticalHatch",
                 }
 
-        wx.combo.OwnerDrawnComboBox.__init__(self, parent, choices=choices, style=style)
+        OwnerDrawnComboBox.__init__(self, parent, choices=choices, style=style)
 
         self.Bind(wx.EVT_COMBOBOX, self.OnSelection)
 
@@ -1252,7 +1255,7 @@ class CTRL_Style(wx.combo.OwnerDrawnComboBox):
         pen = wx.Pen(dc.GetTextForeground(), 3, penStyle)
         dc.SetPen(pen)
 
-        if flags & wx.combo.ODCB_PAINTING_CONTROL:
+        if flags & ODCB_PAINTING_CONTROL:
             # for painting the control itself
             dc.DrawLine( r.x+5, r.y+r.height/2, r.x+r.width - 5, r.y+r.height/2 )
             self.selection = item
@@ -1267,9 +1270,9 @@ class CTRL_Style(wx.combo.OwnerDrawnComboBox):
     def OnDrawBackground(self, dc, rect, item, flags):
         # If the item is selected, or its item # iseven, or we are painting the
         # combo control itself, then use the default rendering.
-        if (item & 1 == 0 or flags & (wx.combo.ODCB_PAINTING_CONTROL |
-                                      wx.combo.ODCB_PAINTING_SELECTED)):
-            wx.combo.OwnerDrawnComboBox.OnDrawBackground(self, dc, rect, item, flags)
+        if (item & 1 == 0 or flags & (ODCB_PAINTING_CONTROL |
+                                      ODCB_PAINTING_SELECTED)):
+            OwnerDrawnComboBox.OnDrawBackground(self, dc, rect, item, flags)
             return
 
         # Otherwise, draw every other background with different colour.
@@ -1309,7 +1312,7 @@ class CTRL_Verrou(wx.StaticBitmap):
         self.bmpVerrouON_SURVOL = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Cadenas_ferme_survol.png"), wx.BITMAP_TYPE_ANY)
         # Init Bitmap
         wx.StaticBitmap.__init__(self, parent, id, bitmap=self.bmpVerrouOFF, pos=pos, size=size, style=style)
-        self.SetToolTipString(_(u"Cliquez ici pour verrouiller ce paramètre"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour verrouiller ce paramètre")))
         # Binds
         self.Bind(wx.EVT_MOTION, self.OnMotion)
         self.Bind(wx.EVT_LEAVE_WINDOW, self.OnLeave)
@@ -1332,11 +1335,11 @@ class CTRL_Verrou(wx.StaticBitmap):
         if self.verrouillage : 
             self.verrouillage = False
             self.SetBitmap(self.bmpVerrouOFF)
-            self.SetToolTipString(_(u"Cliquez ici pour verrouiller ce paramètre"))
+            self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour verrouiller ce paramètre")))
         else: 
             self.verrouillage = True
             self.SetBitmap(self.bmpVerrouON)
-            self.SetToolTipString(_(u"Cliquez ici pour déverrouiller ce paramètre"))
+            self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour déverrouiller ce paramètre")))
         # Modifie le contrôle lié du paramètre
         if self.lienControle != None :
             self.lienControle.Enable(not self.verrouillage)
@@ -1436,11 +1439,11 @@ class Panel_proprietes_doc(wx.Panel):
         self.Bind(wx.EVT_CHOICE, self.OnChangeFond, self.ctrl_fond)
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom du fond"))
-        self.ctrl_largeur.SetToolTipString(_(u"Saisissez ici la largeur du document"))
-        self.ctrl_hauteur.SetToolTipString(_(u"Saisissez ici la hauteur du document"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez ici d'éventuelles observations"))
-        self.ctrl_fond.SetToolTipString(_(u"Vous pouvez sélectionner ici un fond de page"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom du fond")))
+        self.ctrl_largeur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la largeur du document")))
+        self.ctrl_hauteur.SetToolTip(wx.ToolTip(_(u"Saisissez ici la hauteur du document")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici d'éventuelles observations")))
+        self.ctrl_fond.SetToolTip(wx.ToolTip(_(u"Vous pouvez sélectionner ici un fond de page")))
         self.ctrl_largeur.SetMinSize((60, -1))
         self.label_x.SetMinSize((20, -1))
         self.ctrl_hauteur.SetMinSize((60, -1))
@@ -2123,7 +2126,10 @@ class CTRL_Points(wx.grid.Grid):
         self.SetColLabelValue(1, u"Y")
         
         # Binds
-        self.Bind(wx.grid.EVT_GRID_CELL_CHANGE, self.OnChangeValeur)
+        if 'phoenix' in wx.PlatformInfo:
+            self.Bind(wx.grid.EVT_GRID_CELL_CHANGED, self.OnChangeValeur)
+        else :
+            self.Bind(wx.grid.EVT_GRID_CELL_CHANGE, self.OnChangeValeur)
     
     def OnChangeValeur(self, event):
         indexPoint = event.GetRow()
@@ -2420,8 +2426,8 @@ class Proprietes_codebarres(wx.Panel):
         self.label_numero = wx.StaticText(self, -1, _(u"Numéro :"))
         self.ctrl_numero = wx.CheckBox(self, -1, _(u"Afficher"))
         
-        self.ctrl_norme.SetToolTipString(_(u"Sélectionnez une norme pour ce code-barres"))
-        self.ctrl_numero.SetToolTipString(_(u"Cochez cette case pour afficher la valeur sous le code-barres"))
+        self.ctrl_norme.SetToolTip(wx.ToolTip(_(u"Sélectionnez une norme pour ce code-barres")))
+        self.ctrl_numero.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher la valeur sous le code-barres")))
 
         # Layout
         staticbox = wx.StaticBoxSizer(self.staticbox_staticbox, wx.VERTICAL)
@@ -3650,7 +3656,7 @@ class Panel_canvas(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDmodele=None, nom="", observations=u"", IDfond=None, categorie=None, taille_page=(210, 297), size=(800, 600)):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent     
         self.IDmodele = IDmodele
         self.categorie = categorie

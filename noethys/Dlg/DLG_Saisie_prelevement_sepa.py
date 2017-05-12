@@ -257,22 +257,22 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.ctrl_iban.SetMinSize((200, -1))
         self.ctrl_bic.SetMinSize((120, -1))
-        self.ctrl_iban.SetToolTipString(_(u"Saisissez ici le numéro IBAN"))
-        self.ctrl_bic.SetToolTipString(_(u"Saisissez ici le numéro BIC"))
+        self.ctrl_iban.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro IBAN")))
+        self.ctrl_bic.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro BIC")))
 
         self.ctrl_type.SetForegroundColour(wx.Colour(150, 150, 150))
         self.ctrl_reglement.SetForegroundColour(wx.Colour(150, 150, 150))
 
-        self.ctrl_famille.SetToolTipString(_(u"Sélectionnez ici la famille à débiter"))
-        self.ctrl_controle.SetToolTipString(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides"))
-##        self.ctrl_banque.SetToolTipString(_(u"Sélectionnez ici l'établissement du compte"))
-##        self.bouton_banques.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires"))
+        self.ctrl_famille.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la famille à débiter")))
+        self.ctrl_controle.SetToolTip(wx.ToolTip(_(u"Une coche verte apparaît si les coordonnées bancaires sont valides")))
+##        self.ctrl_banque.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici l'établissement du compte")))
+##        self.bouton_banques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des établissements bancaires")))
         
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         
-        self.ctrl_sequence.SetToolTipString(_(u"Sélectionnez la séquence de l'opération (Si vous n'êtes pas sûr, laissez ce que Noethys a sélectionné automatiquement)"))
+        self.ctrl_sequence.SetToolTip(wx.ToolTip(_(u"Sélectionnez la séquence de l'opération (Si vous n'êtes pas sûr, laissez ce que Noethys a sélectionné automatiquement)")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

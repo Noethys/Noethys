@@ -77,7 +77,7 @@ def ConvertCouleur(couleur=None):
 
 class DLG_Choix_creation(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.bouton_categorie = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/BoutonsImages/Questionnaire_categorie.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_question = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/BoutonsImages/Questionnaire_question.png"), wx.BITMAP_TYPE_ANY))
@@ -96,10 +96,10 @@ class DLG_Choix_creation(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Choix de l'élément à créer"))
-        self.bouton_categorie.SetToolTipString(_(u"Créer une nouvelle catégorie"))
-        self.bouton_question.SetToolTipString(_(u"Créer une nouvelle question"))
-        self.bouton_aide.SetToolTipString(_(u"Obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Annuler"))
+        self.bouton_categorie.SetToolTip(wx.ToolTip(_(u"Créer une nouvelle catégorie")))
+        self.bouton_question.SetToolTip(wx.ToolTip(_(u"Créer une nouvelle question")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Annuler")))
         self.SetMinSize((340, 230))
 
     def __do_layout(self):
@@ -293,7 +293,7 @@ class CTRL_montant(CTRL_Saisie_euros.CTRL):
         self.item = item
         self.track = track
         self.SetBackgroundColour((255, 255, 255))
-        self.SetToolTipString(_(u"Saisissez un montant"))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))
     
     def SetValeur(self, valeur=None):
         if valeur == None : valeur = u""
@@ -509,7 +509,7 @@ class CTRL_date(CTRL_Saisie_date.Date2):
         self.item = item
         self.track = track
         self.SetBackgroundColour((255, 255, 255))
-        self.ctrl_date.SetToolTipString(_(u"Saisissez une date"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez une date")))
     
     def SetValeur(self, valeur=None):
         if valeur == None : valeur = u""
@@ -564,7 +564,7 @@ class CTRL_slider(wx.Panel):
         self.ctrl_slider.SetValue(0)
         self.Bind(wx.EVT_COMMAND_SCROLL, self.OnSlider, self.ctrl_slider)
         self.ctrl_slider.SetBackgroundColour(wx.Colour(255, 255, 255))
-        self.ctrl_slider.SetToolTipString(_(u"Faites glisser la glissière sur la valeur de votre choix"))
+        self.ctrl_slider.SetToolTip(wx.ToolTip(_(u"Faites glisser la glissière sur la valeur de votre choix")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=0, hgap=0)
@@ -613,7 +613,7 @@ class CTRL_couleur(wx.lib.colourselect.ColourSelect):
         self.item = item
         self.track = track
         self.SetBackgroundColour((255, 255, 255))
-        self.SetToolTipString(_(u"Cliquez ici pour sélectionner une couleur"))
+        self.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une couleur")))
 
     def SetValeur(self, valeur=None):
         if valeur == None : valeur = u""
@@ -724,7 +724,7 @@ class CTRL_documents(wx.Panel):
         self.ctrl_vignettes = CTRL_Vignettes_documents.CTRL(self, type_donnee="reponse", IDreponse=None, afficheLabels=False, tailleVignette=hauteur-20, style=wx.BORDER_SUNKEN)
         
         self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux commandes disponibles"))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux commandes disponibles")))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         
         # Layout
@@ -804,7 +804,7 @@ class CTRL_rfid(wx.Panel):
         # Contrôles
         self.ctrl_code = wx.TextCtrl(self, -1, "")
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Rfid.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour scanner un badge"))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour scanner un badge")))
         self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
         
         # Layout

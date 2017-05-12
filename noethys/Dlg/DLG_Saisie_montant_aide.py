@@ -244,7 +244,7 @@ class ListBoxCombinaisons(wx.ListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, dictMontant={}):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
         self.IDactivite = IDactivite
         self.dictMontant = dictMontant
@@ -278,13 +278,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un montant"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici un montant en euros"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une combinaisons d'unités"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la combinaison d'unités sélectionnées dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la combinaison d'unités sélectionnées dans la liste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici un montant en euros")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une combinaisons d'unités")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la combinaison d'unités sélectionnées dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la combinaison d'unités sélectionnées dans la liste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
         self.SetMinSize((380, 250))
 
     def __do_layout(self):

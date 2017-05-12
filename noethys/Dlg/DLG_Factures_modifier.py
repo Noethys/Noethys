@@ -61,15 +61,15 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.check_lot.SetToolTipString(_(u"Cochez pour modifier cette caractéristique"))
-        self.ctrl_lot.SetToolTipString(_(u"Sélectionnez un lot de factures dans la liste"))
-        self.check_emission.SetToolTipString(_(u"Cochez pour modifier cette caractéristique"))
-        self.ctrl_emission.SetToolTipString(_(u"Sélectionnez une date d'émission"))
-        self.check_echeance.SetToolTipString(_(u"Cochez pour modifier cette caractéristique"))
-        self.ctrl_echeance.SetToolTipString(_(u"Sélectionnez une date d'échéance"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.check_lot.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.ctrl_lot.SetToolTip(wx.ToolTip(_(u"Sélectionnez un lot de factures dans la liste")))
+        self.check_emission.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.ctrl_emission.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date d'émission")))
+        self.check_echeance.SetToolTip(wx.ToolTip(_(u"Cochez pour modifier cette caractéristique")))
+        self.ctrl_echeance.SetToolTip(wx.ToolTip(_(u"Sélectionnez une date d'échéance")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=20, hgap=20)

@@ -21,7 +21,7 @@ from Ctrl import CTRL_Saisie_date
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDcategorie=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         self.IDcategorie = IDcategorie
         
@@ -58,13 +58,13 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Modification d'une catégorie de message"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette catégorie"))
-        self.ctrl_afficher_accueil.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la page d'accueil"))
-        self.ctrl_afficher_liste.SetToolTipString(_(u"Cochez cette case pour afficher ce message sur la liste des consommations"))
-        self.ctrl_priorite.SetToolTipString(_(u"Sélectionnez ici la priorité du message"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette catégorie")))
+        self.ctrl_afficher_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la page d'accueil")))
+        self.ctrl_afficher_liste.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la liste des consommations")))
+        self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la priorité du message")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((460, 220))
 
     def __do_layout(self):

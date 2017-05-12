@@ -247,7 +247,7 @@ class ListView(GroupListView):
         self.showItemCounts = False
 
         self.SetEmptyListMsg(_(u"Aucune action"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
        

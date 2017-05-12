@@ -85,14 +85,14 @@ class CTRL(wx.Panel):
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckAnnulations, self.ctrl_afficher_annulations)
         
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici envoyer la facture sélectionnée par Email"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées"))
-        self.bouton_liste_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste"))
-        self.bouton_liste_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer cette liste"))
-        self.bouton_liste_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Texte"))
-        self.bouton_liste_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter cette liste au format Excel"))
-        self.ctrl_afficher_annulations.SetToolTipString(_(u"Cochez cette case pour afficher les factures annulées dans la liste"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la facture sélectionnée par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées")))
+        self.bouton_liste_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de cette liste")))
+        self.bouton_liste_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer cette liste")))
+        self.bouton_liste_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Texte")))
+        self.bouton_liste_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter cette liste au format Excel")))
+        self.ctrl_afficher_annulations.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les factures annulées dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)

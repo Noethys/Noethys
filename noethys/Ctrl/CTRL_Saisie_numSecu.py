@@ -41,7 +41,7 @@ class NumSecu(wx.Panel):
         FFF : Numéro d'ordre INSEE
         GG : Clé
         """
-        self.ctrl_numsecu.SetToolTipString(texteNumSecu)
+        self.ctrl_numsecu.SetToolTip(wx.ToolTip(texteNumSecu))
         self.ctrl_numsecu.SetMinSize((170, -1))
 
     def __do_layout(self):

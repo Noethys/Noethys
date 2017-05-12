@@ -42,10 +42,10 @@ class Dialog(wx.Dialog):
         
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un choix"))
-        self.ctrl_label.SetToolTipString(_(u"Saisissez ici un label"))
-        self.ctrl_visible.SetToolTipString(_(u"Cochez cette case pour afficher ce choix"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_label.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label")))
+        self.ctrl_visible.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce choix")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)

@@ -7313,11 +7313,11 @@ class UltimateListMainWindow(wx.PyScrolledWindow):
                     if (newItem._itemId, newItem._col) in self._shortItems:
                         text = newItem.GetText()
                         if self.GetToolTip() and self.GetToolTip().GetTip() != text:                            
-                            self.SetToolTipString(text)
+                            self.SetToolTip(wx.ToolTip(text))
                     else:
-                        self.SetToolTipString("")    
+                        self.SetToolTip(wx.ToolTip(""))
                 else:
-                    self.SetToolTipString("")
+                    self.SetToolTip(wx.ToolTip(""))
 
             if self.HasAGWFlag(ULC_HOT_TRACKING):
                 if hitResult:

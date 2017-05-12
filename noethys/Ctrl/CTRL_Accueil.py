@@ -161,7 +161,10 @@ class Panel(wx.Panel):
             # Dessine le texte
             dc.SetFont(wx.Font(taille_police, wx.DEFAULT, wx.NORMAL, wx.NORMAL, 0, "MS Shell Dlg 2"))
             texte = wordwrap(texte_html, largeurTexte, dc, breakLongWords=True)
-            largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(texte)
+            if 'phoenix' in wx.PlatformInfo:
+                largeur, hauteur, hauteurLigne = dc.GetFullMultiLineTextExtent(texte)
+            else :
+                largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(texte)
             dc.DrawLabel(texte, wx.Rect(x, y + 22, largeurTexte, hauteur))
 
 

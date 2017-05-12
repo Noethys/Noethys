@@ -148,7 +148,7 @@ class Page_Saisie_manuelle(wx.Panel):
         self.ctrl = wx.TextCtrl(self, -1, style=wx.TE_MULTILINE)
         self.ctrl.SetMinSize((10, 10))
         self.Bind(wx.EVT_TEXT, self.OnCheck, self.ctrl)
-        self.ctrl.SetToolTipString(_(u"Saisissez manuellement des adresses emails en les séparant par des points-virgules (;)"))
+        self.ctrl.SetToolTip(wx.ToolTip(_(u"Saisissez manuellement des adresses emails en les séparant par des points-virgules (;)")))
         
         # Layout
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -192,7 +192,7 @@ class CTRL_Listes_diffusion(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTipString(_(u"Cochez les listes de diffusion souhaitées"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les listes de diffusion souhaitées")))
         self.listeDiff = []
         self.dictDiff = {}
         self.dictAbonnements = {}
@@ -536,7 +536,7 @@ class CTRL_Pages(wx.Notebook):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         
         self.texte_intro = _(u"Sélectionnez des adresses Emails grâce aux contrôles ci-dessous...")
@@ -558,10 +558,10 @@ class Dialog(wx.Dialog):
                 
     def __set_properties(self):
         self.SetTitle(_(u"Sélection des destinataires"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_detail.SetToolTipString(_(u"Cliquez ici pour afficher la liste des adresses valides"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_detail.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher la liste des adresses valides")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((700, 550))
 
     def __do_layout(self):

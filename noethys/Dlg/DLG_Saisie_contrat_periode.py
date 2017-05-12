@@ -22,7 +22,7 @@ from Ol import OL_Contrats_conso
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, track=None, listeTracks=[]):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_contrat_periode", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_contrat_periode", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         self.track = track
@@ -87,20 +87,20 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début de la période"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin de la période"))
-        self.ctrl_label_prestation.SetToolTipString(_(u"Saisissez le label de la prestation"))
-        self.ctrl_date_prestation.SetToolTipString(_(u"Saisissez la date de la prestation"))
-        self.ctrl_montant_prestation.SetToolTipString(_(u"Saisissez le montant de la prestation"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-##        self.bouton_generer_conso.SetToolTipString(_(u"Cliquez ici pour générer automatiquement des consommations"))
-##        self.bouton_ajouter_conso.SetToolTipString(_(u"Cliquez ici pour ajouter une consommation"))
-##        self.bouton_modifier_conso.SetToolTipString(_(u"Cliquez ici pour modifier la consommation sélectionnée"))
-        self.bouton_supprimer_conso.SetToolTipString(_(u"Cliquez ici pour supprimer les consommations sélectionnées ou cochées"))
-        self.bouton_cocher_conso.SetToolTipString(_(u"Cliquez ici pour tout cocher"))
-        self.bouton_decocher_conso.SetToolTipString(_(u"Cliquez ici pour tout décocher"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début de la période")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin de la période")))
+        self.ctrl_label_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le label de la prestation")))
+        self.ctrl_date_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez la date de la prestation")))
+        self.ctrl_montant_prestation.SetToolTip(wx.ToolTip(_(u"Saisissez le montant de la prestation")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+##        self.bouton_generer_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer automatiquement des consommations")))
+##        self.bouton_ajouter_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une consommation")))
+##        self.bouton_modifier_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la consommation sélectionnée")))
+        self.bouton_supprimer_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer les consommations sélectionnées ou cochées")))
+        self.bouton_cocher_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout cocher")))
+        self.bouton_decocher_conso.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour tout décocher")))
         self.SetMinSize((500, 550))
 
     def __do_layout(self):

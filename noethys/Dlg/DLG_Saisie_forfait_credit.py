@@ -31,7 +31,11 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 class CTRL_Forfaits(HTL.HyperTreeList):
     def __init__(self, parent, grille=None): 
         HTL.HyperTreeList.__init__(self, parent, -1)
-        self.SetAGWWindowStyleFlag(wx.TR_COLUMN_LINES | HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT )
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(TR_COLUMN_LINES | HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.parent = parent
         self.grille = grille
         self.IDfamille = None
@@ -195,7 +199,7 @@ class CTRL_Famille(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, grille=None, listeFamilles=[]):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.grille = grille
         
@@ -249,10 +253,10 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un forfait crédit"))
-        self.ctrl_forfaits.SetToolTipString(_(u"Sélectionnez un forfait à créer"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_forfaits.SetToolTip(wx.ToolTip(_(u"Sélectionnez un forfait à créer")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((-1, 640))
 
     def __do_layout(self):

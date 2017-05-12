@@ -216,7 +216,7 @@ class ListView(FastObjectListView):
         self.rowFormatter = rowFormatter
         self.SetColumns(liste_Colonnes)
         self.SetEmptyListMsg(_(u"Aucun vaccin"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
        
@@ -378,7 +378,7 @@ class Choice(wx.Choice):
         wx.Choice.__init__(self, parent, -1) 
         self.parent = parent
         self.listeData = []
-        self.SetToolTipString(_(u"Sélectionnez le vaccin"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le vaccin")))
     
     def SetListe(self, listeData=[]):
         self.Clear()
@@ -403,7 +403,7 @@ class Choice(wx.Choice):
     
 class Saisie(wx.Dialog):
     def __init__(self, parent, IDtype_vaccin=None, date=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         listeVaccins = self.GetListeVaccins()

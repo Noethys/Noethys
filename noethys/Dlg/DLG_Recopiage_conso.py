@@ -147,17 +147,17 @@ class Dialog(wx.Dialog):
         self.OnChoixUnite(None)
 
     def __set_properties(self):
-        self.ctrl_unite_origine.SetToolTipString(_(u"Sélectionnez l'unité à recopier"))
-        self.ctrl_unite_destination.SetToolTipString(_(u"Sélectionnez l'unité sur laquelle effectuer le recopiage"))
-        self.check_param_horaires.SetToolTipString(_(u"Cochez cette option pour recopier les horaires"))
-        self.check_param_quantite.SetToolTipString(_(u"Cochez cette option pour recopier la quantité"))
-        self.check_param_etiquettes.SetToolTipString(_(u"Cochez cette option pour recopier les étiquettes. Cette option n'est disponible que lorsque les unités sélectionnées appartiennent à la même activité."))
-        self.check_param_etat.SetToolTipString(_(u"Cochez cette option pour recopier l'état"))
-        self.radio_lignes_affichees.SetToolTipString(_(u"Sélectionnez cette option pour appliquer le recopiage sur toutes les lignes affichées"))
-        self.radio_lignes_selectionnees.SetToolTipString(_(u"Sélectionnez cette option pour appliquer le recopiage uniquement sur les lignes sélectionnées"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_unite_origine.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité à recopier")))
+        self.ctrl_unite_destination.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'unité sur laquelle effectuer le recopiage")))
+        self.check_param_horaires.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier les horaires")))
+        self.check_param_quantite.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier la quantité")))
+        self.check_param_etiquettes.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier les étiquettes. Cette option n'est disponible que lorsque les unités sélectionnées appartiennent à la même activité.")))
+        self.check_param_etat.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour recopier l'état")))
+        self.radio_lignes_affichees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer le recopiage sur toutes les lignes affichées")))
+        self.radio_lignes_selectionnees.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour appliquer le recopiage uniquement sur les lignes sélectionnées")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((400, 510))
         
     def __do_layout(self):

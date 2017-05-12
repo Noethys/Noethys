@@ -70,17 +70,17 @@ class Panel(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée"))
-        self.bouton_email_facture.SetToolTipString(_(u"Cliquez ici envoyer la facture sélectionnée par Email"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées"))
-        self.bouton_apercu_liste.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_imprimer_liste.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_export_texte.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format texte"))
-        self.bouton_export_excel.SetToolTipString(_(u"Cliquez ici pour exporter la liste au format Excel"))
-        self.bouton_prelevements.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des prélèvements automatiques"))
-        self.bouton_email.SetToolTipString(_(u"Cliquez ici pour accéder à l'envoi des factures par Email"))
-        self.bouton_helios.SetToolTipString(_(u"Cliquez ici pour accéder à l'export HELIOS des factures"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer les factures générées"))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu de la facture sélectionnée")))
+        self.bouton_email_facture.SetToolTip(wx.ToolTip(_(u"Cliquez ici envoyer la facture sélectionnée par Email")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la facture sélectionnée ou les factures cochées")))
+        self.bouton_apercu_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_imprimer_liste.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_export_texte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format texte")))
+        self.bouton_export_excel.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter la liste au format Excel")))
+        self.bouton_prelevements.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des prélèvements automatiques")))
+        self.bouton_email.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'envoi des factures par Email")))
+        self.bouton_helios.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'export HELIOS des factures")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer les factures générées")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=10, hgap=10)

@@ -22,7 +22,7 @@ import GestionDB
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, tracks=[]):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_depot_cotisation_ajouter", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_depot_cotisation_ajouter", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.tracks= tracks
         
@@ -73,19 +73,19 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Ajouter ou retirer des cotisations"))
-        self.ctrl_tri.SetToolTipString(_(u"Sélectionnez le critère de tri"))
-        self.ctrl_ordre.SetToolTipString(_(u"Sélectionnez l'ordre de tri"))
-        self.bouton_bas_tout.SetToolTipString(_(u"Cliquez ici pour ajouter toutes les cotisations dans le dépôt"))
-        self.bouton_bas.SetToolTipString(_(u"Cliquez ici pour ajouter la cotisation disponible selectionné dans le dépôt"))
+        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"Sélectionnez le critère de tri")))
+        self.ctrl_ordre.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'ordre de tri")))
+        self.bouton_bas_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter toutes les cotisations dans le dépôt")))
+        self.bouton_bas.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter la cotisation disponible selectionné dans le dépôt")))
         self.bouton_bas_tout.SetMinSize((80, -1))
         self.bouton_bas.SetMinSize((150, -1))
         self.bouton_haut.SetMinSize((150, -1))
         self.bouton_haut_tout.SetMinSize((80, -1))
-        self.bouton_haut.SetToolTipString(_(u"Cliquez ici pour retirer la cotisation sélectionnée du dépôt"))
-        self.bouton_haut_tout.SetToolTipString(_(u"Cliquez ici pour retirer toutes les cotisations du dépôt"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_haut.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la cotisation sélectionnée du dépôt")))
+        self.bouton_haut_tout.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer toutes les cotisations du dépôt")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((950, 680))
 
     def __do_layout(self):

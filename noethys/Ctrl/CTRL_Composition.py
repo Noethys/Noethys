@@ -32,6 +32,11 @@ from Utils import UTILS_Utilisateurs
 
 DICT_TYPES_LIENS = Liens.DICT_TYPES_LIENS
 
+if 'phoenix' in wx.PlatformInfo:
+    CURSOR = wx.Cursor
+else :
+    CURSOR = wx.StockCursor
+
 
 class GetValeurs() :
     def __init__(self, IDfamille=None):
@@ -410,13 +415,18 @@ class CadreIndividu():
             ecart = 5
             self.dc.SetBrush(wx.Brush((0, 0, 0), style=wx.TRANSPARENT))
             self.dc.SetPen(wx.Pen(couleurSelectionCadre, 1, wx.DOT))
-            self.dc.DrawRoundedRectangleRect(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
-        
+            if 'phoenix' in wx.PlatformInfo:
+                self.dc.DrawRoundedRectangle(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
+            else :
+                self.dc.DrawRoundedRectangleRect(wx.Rect(x-ecart, y-ecart, largeur+(ecart*2), hauteur+(ecart*2)), radius=5*self.zoom)
+
         # Dessin du cadre
         self.dc.SetBrush(wx.Brush(couleurFondBasCadre))
         self.dc.SetPen(wx.Pen(couleurBordCadre, 1))
-        self.dc.DrawRoundedRectangleRect(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
-        
+        if 'phoenix' in wx.PlatformInfo:
+            self.dc.DrawRoundedRectangle(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
+        else :
+            self.dc.DrawRoundedRectangleRect(wx.Rect(x, y, largeur, hauteur), radius=5*self.zoom)
         coordsSpline = [(x+1, y+(hauteur/3)), (x+(largeur/2.5), y+(hauteur/4.1)), (x+largeur-1, y+(hauteur/1.8))]
         self.dc.DrawSpline(coordsSpline)
         
@@ -514,7 +524,10 @@ class CadreIndividu():
         if self.zoom == 1 :
             for x in range(10, int(coef*10)):
                 self.zoom = (x*0.1)+0.1
-                wx.Usleep(vitesse)
+                if 'phoenix' in wx.PlatformInfo:
+                    wx.MilliSleep(int(vitesse))
+                else :
+                    wx.Usleep(vitesse)
                 self.Draw()
                 self.parent.Refresh()
                 self.parent.Update()
@@ -523,68 +536,13 @@ class CadreIndividu():
         if self.zoom > 1 :
             for x in range(int(self.zoom*10), 10-1, -1):
                 self.zoom = (x*0.1)
-                wx.Usleep(vitesse)
+                if 'phoenix' in wx.PlatformInfo:
+                    wx.MilliSleep(int(vitesse))
+                else :
+                    wx.Usleep(vitesse)
                 self.Draw()
                 self.parent.Refresh()
                 self.parent.Update()
-
-
-##class LienCadreFiliation():
-##    def __init__(self, parent, IDobjetLien, dc, IDenfant, listeParents, nbreLiensFiliation):
-##        self.parent = parent
-##        self.dc = dc
-##        self.IDobjetLien = IDobjetLien
-##        self.IDobjet = wx.NewId()
-##        self.dictCadres = self.parent.dictCadres
-##        self.IDenfant = IDenfant
-##        self.listeParents = listeParents
-##        self.nbreLiensFiliation = nbreLiensFiliation
-##        self.posSeparationBlocs = self.parent.posSeparationCol1
-##        
-##        self.Draw()
-##    
-##    def Draw(self):
-##        # Création de l'ID pour le dictionnaire d'objets
-##        if self.parent.dictIDs.has_key(self.IDobjet) : 
-##            self.dc.RemoveId(self.IDobjet)
-##        self.dc.SetId(self.IDobjet)
-##        
-##        posXLigneParents = self.posSeparationBlocs-5
-##        posXLigneEnfants = self.posSeparationBlocs+5
-##        
-##        # Dessine la ligne qui part du cadre ENFANT
-##        xCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].xCentre
-##        yCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].yCentre
-##        largeurCadreEnfant = self.dictCadres[self.IDenfant]["ctrl"].largeur*self.dictCadres[self.IDenfant]["ctrl"].zoom
-##        bordCadreEnfant = (xCadreEnfant-largeurCadreEnfant/2.0, yCadreEnfant)
-##        extremiteLigneEnfant = (posXLigneEnfants, yCadreEnfant)
-##        self.dc.SetPen(wx.Pen((0, 0, 0), 1))
-##        self.dc.DrawLinePoint(bordCadreEnfant, extremiteLigneEnfant)
-##        
-##        # Dessine la ligne qui part de chaque cadre PARENT
-##        listePointsParents = []
-##        for IDparent in self.listeParents :
-##            xCentre = self.dictCadres[IDparent]["ctrl"].xCentre
-##            yCentre = self.dictCadres[IDparent]["ctrl"].yCentre
-##            largeur = self.dictCadres[IDparent]["ctrl"].largeur*self.dictCadres[IDparent]["ctrl"].zoom
-##            bordCadre = (xCentre+largeur/2.0, yCentre)
-##            extremiteLigne = (posXLigneParents, yCentre)
-##            self.dc.SetPen(wx.Pen((0, 0, 0), 1))
-##            self.dc.DrawLinePoint(bordCadre, extremiteLigne)
-##            listePointsParents.append(extremiteLigne)
-##        
-##        # Barre qui relient les parents
-##        pointBas, pointHaut = listePointsParents[0][0], listePointsParents[0][1]
-##        for x, y in listePointsParents :
-##            print "x=", x, "y=", y
-##            if y < pointBas : pointBas = y
-##            if y > pointHaut : pointHaut = y
-##        print pointBas, pointHaut
-##        self.dc.DrawLine(posXLigneParents, pointBas, posXLigneParents, pointHaut)
-##
-##        # Mémorisation dans le dictionnaire d'objets
-##        self.parent.dictIDs[self.IDobjet] = ("lien", self.IDobjetLien)
-
 
 
 
@@ -598,7 +556,7 @@ class CTRL_Graphique(wx.ScrolledWindow):
         self.init_ok = False
         
         # Initialisation du tooltip
-##        self.SetToolTipString("")
+##        self.SetToolTip(wx.ToolTip(""))
         self.tip = STT.SuperToolTip(u"")
         self.tip.SetEndDelay(10000) # Fermeture auto du tooltip après 10 secs
         self.tip.IDindividu = None
@@ -627,7 +585,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
         
         
         # create a PseudoDC to record our drawing
-        self.pdc = wx.PseudoDC()
+        if 'phoenix' in wx.PlatformInfo:
+            self.pdc = wx.adv.PseudoDC()
+        else :
+            self.pdc = wx.PseudoDC()
         self.dictIDs = {}
 ##        self.DoDrawing(self.pdc)
 
@@ -681,8 +642,11 @@ class CTRL_Graphique(wx.ScrolledWindow):
     def DoDrawing(self, dc):
         """ Creation du dessin dans le PseudoDC """
         dc.RemoveAll()
-        dc.BeginDrawing()
-        tailleDC = self.GetSizeTuple()[0], self.GetSizeTuple()[1]      
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.BeginDrawing()
+            tailleDC = self.GetSizeTuple()[0], self.GetSizeTuple()[1]
+        else :
+            tailleDC = self.GetSize()[0], self.GetSize()[1]
                 
         # Calcul des positions horizontales des cases
         largeurCase = self.largeurCaseDefaut
@@ -759,8 +723,9 @@ class CTRL_Graphique(wx.ScrolledWindow):
         # Dessin des liens de cadres
         dc.SetId(wx.NewId())
         self.DrawLiens(dc)
-        
-        dc.EndDrawing()
+
+        if 'phoenix' not in wx.PlatformInfo:
+            dc.EndDrawing()
     
     def DrawLiensCouple(self, dc, listeLiensCouple, type=""):
         nbreLiensCouple = len(listeLiensCouple)
@@ -776,10 +741,16 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     bordCadre = (xCentre-largeur/2.0-1, yCentre)
                     extremiteLigne = (xCentre-largeur/2.0-decalage, yCentre)
                     dc.SetPen(wx.Pen((123, 241, 131), 1, wx.DOT))
-                    dc.DrawLinePoint(bordCadre, extremiteLigne)
+                    if 'phoenix' in wx.PlatformInfo:
+                        dc.DrawLine(bordCadre, extremiteLigne)
+                    else :
+                        dc.DrawLinePoint(bordCadre, extremiteLigne)
                     listePoints.append(extremiteLigne)
                 # Barre qui relie
-                dc.DrawLinePoint(listePoints[0], listePoints[1])
+                if 'phoenix' in wx.PlatformInfo:
+                    dc.DrawLine(listePoints[0], listePoints[1])
+                else :
+                    dc.DrawLinePoint(listePoints[0], listePoints[1])
                 # Dessin d'un bitmap
                 if type == "ex-couple" :
                     bmpCouple = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Divorce.png"), wx.BITMAP_TYPE_PNG) 
@@ -830,7 +801,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     extremiteLigneEnfant = (posXLigneEnfants, yCadreEnfant)
                     listeYenfants.append(yCadreEnfant)
                     dc.SetPen(wx.Pen((0, 0, 0), 1))
-                    dc.DrawLinePoint(bordCadreEnfant, extremiteLigneEnfant)
+                    if 'phoenix' in wx.PlatformInfo:
+                        dc.DrawLine(bordCadreEnfant, extremiteLigneEnfant)
+                    else :
+                        dc.DrawLinePoint(bordCadreEnfant, extremiteLigneEnfant)
                 # Relient les enfants par une ligne VERTICALE
                 if len(listeYenfants) > 0 :
                     dc.DrawLine(posXLigneEnfants, min(listeYenfants), posXLigneEnfants, max(listeYenfants))
@@ -846,7 +820,10 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     extremiteLigneParent = (posXLigneParents, yCentre)
                     listeYparents.append(yCentre)
                     dc.SetPen(wx.Pen((0, 0, 0), 1))
-                    dc.DrawLinePoint(bordCadre, extremiteLigneParent)
+                    if 'phoenix' in wx.PlatformInfo:
+                        dc.DrawLine(bordCadre, extremiteLigneParent)
+                    else :
+                        dc.DrawLinePoint(bordCadre, extremiteLigneParent)
                 # Relient les parents par une ligne VERTICALE
                 if len(listeYparents) > 0 :
                     dc.DrawLine(posXLigneParents, min(listeYparents), posXLigneParents, max(listeYparents))
@@ -938,27 +915,27 @@ class CTRL_Graphique(wx.ScrolledWindow):
                     survolCalendrier = cadre.SurvolCalendrier(x, y)
                     if survolCalendrier == True :
                         cadre.ActiveCalendrier(True)
-                        self.SetCursor(wx.StockCursor(wx.CURSOR_MAGNIFIER))
+                        self.SetCursor(CURSOR(wx.CURSOR_MAGNIFIER))
                     else:
                         cadre.ActiveCalendrier(False)
                         # Change le curseur de la souris
-                        self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+                        self.SetCursor(CURSOR(wx.CURSOR_HAND))
                 else:
                     # Change le curseur de la souris
-                    self.SetCursor(wx.StockCursor(wx.CURSOR_HAND))
+                    self.SetCursor(CURSOR(wx.CURSOR_HAND))
         else:
             # Désactivation du toolTip
             self.ActiveTooltip(actif=False)
             
             # Change le curseur de la souris
-            self.SetCursor(wx.StockCursor(wx.CURSOR_DEFAULT))
+            self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
             # Dézoom tous les cadres
             self.DezoomTout() 
     
             
     def OnLeaveWindow(self, event):
         """ Rétablit le zoom normal pour tous les cadres si le focus quitte la fenêtre """
-        self.SetCursor(wx.StockCursor(wx.CURSOR_DEFAULT))
+        self.SetCursor(CURSOR(wx.CURSOR_DEFAULT))
         self.DezoomTout()
         self.ActiveTooltip(False) 
 
@@ -1415,7 +1392,11 @@ class CTRL_Liste(HTL.HyperTreeList):
         self.SetSpacing(10)
         
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_COLUMN_LINES | wx.TR_ROW_LINES ) # HTL.TR_NO_HEADER
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_FULL_ROW_HIGHLIGHT | wx.TR_HAS_VARIABLE_ROW_HEIGHT | TR_COLUMN_LINES | wx.TR_ROW_LINES ) # HTL.TR_NO_HEADER
         self.EnableSelectionVista(True)
         
         # Binds

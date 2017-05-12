@@ -305,15 +305,15 @@ class Panel(wx.Panel):
         
         # MAJ du bouton Analyser
         if nbreFichiers == 0 :
-            self.bouton_analyse.SetToolTipString(_(u"Aucun fichier à importer"))
+            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"Aucun fichier à importer")))
             self.bouton_analyse.SetBackgroundColour(self.couleur_defaut)
             self.bouton_analyse.Enable(False)            
         elif nbreFichiers == 1 :
-            self.bouton_analyse.SetToolTipString(_(u"1 fichier à importer"))
+            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"1 fichier à importer")))
             self.bouton_analyse.SetBackgroundColour((150, 255, 150))
             self.bouton_analyse.Enable(True)
         else :
-            self.bouton_analyse.SetToolTipString(_(u"%d fichiers à importer") % nbreFichiers)
+            self.bouton_analyse.SetToolTip(wx.ToolTip(_(u"%d fichiers à importer") % nbreFichiers))
             self.bouton_analyse.SetBackgroundColour((150, 255, 150))
             self.bouton_analyse.Enable(True)
         

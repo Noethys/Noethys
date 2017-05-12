@@ -201,7 +201,7 @@ class CTRL_Emetteur(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
 
         # Bandeau
@@ -255,18 +255,18 @@ class Dialog(wx.Dialog):
         wx.CallLater(0, self.Layout)
 
     def __set_properties(self):
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez un compte bancaire à créditer"))
-        self.bouton_compte.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des comptes bancaires"))
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez un mode de règlement"))
-        self.bouton_mode.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modes de règlements"))
-        self.ctrl_emetteur.SetToolTipString(_(u"Sélectionnez un émetteur de règlement"))
-        self.bouton_emetteur.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modes de règlements"))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez une date de début"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez une date de fin"))
-        self.bouton_actualiser.SetToolTipString(_(u"Cliquez ici pour actualiser la liste"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez un compte bancaire à créditer")))
+        self.bouton_compte.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des comptes bancaires")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mode de règlement")))
+        self.bouton_mode.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes de règlements")))
+        self.ctrl_emetteur.SetToolTip(wx.ToolTip(_(u"Sélectionnez un émetteur de règlement")))
+        self.bouton_emetteur.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modes de règlements")))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez une date de début")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez une date de fin")))
+        self.bouton_actualiser.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour actualiser la liste")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((530, 650))
 
     def __do_layout(self):

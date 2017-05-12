@@ -51,10 +51,10 @@ __version__ = "1.0"
 import datetime
 import wx
 
-try :
-    from wx import DatePickerCtrl as DatePickerCtrl
-except :
-    from wx.adv import DatePickerCtrl as DatePickerCtrl
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import DatePickerCtrl
+else :
+    from wx import DatePickerCtrl
 
 
 #======================================================================

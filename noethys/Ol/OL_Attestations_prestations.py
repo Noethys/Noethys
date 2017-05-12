@@ -121,7 +121,7 @@ class ListView(FastObjectListView):
         self.CreateCheckStateColumn(0)
 
         self.SetEmptyListMsg(_(u"Aucune prestation"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[1])
         self.SetObjects(self.donnees)
 

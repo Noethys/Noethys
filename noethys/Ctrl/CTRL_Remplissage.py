@@ -26,6 +26,11 @@ import datetime
 import calendar
 import textwrap 
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.grid import GridCellRenderer
+else :
+    from wx.grid import PyGridCellRenderer as GridCellRenderer
+
 import GestionDB
 from Utils import UTILS_Config
 from Utils import UTILS_Texte
@@ -505,9 +510,9 @@ class Ligne():
 
         
 
-class RendererCase(gridlib.PyGridCellRenderer):
+class RendererCase(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
@@ -515,7 +520,10 @@ class RendererCase(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(self.case.couleurFond, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
 
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
@@ -574,9 +582,9 @@ class RendererCase(gridlib.PyGridCellRenderer):
                 return texteTemp2 + "..." 
 
 
-class RendererCaseActivite(gridlib.PyGridCellRenderer):
+class RendererCaseActivite(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
@@ -584,8 +592,10 @@ class RendererCaseActivite(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(self.case.couleurFond, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
-
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
         
@@ -618,7 +628,10 @@ class MyRowLabelRenderer(glr.GridLabelRenderer):
         if self._bgcolor != None :
             dc.SetBrush(wx.Brush(self._bgcolor))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else:
+                dc.DrawRectangleRect(rect)
         else:
             pass
         hAlign, vAlign = grid.GetRowLabelAlignment()
@@ -646,7 +659,10 @@ class MyColLabelRenderer(glr.GridLabelRenderer):
         if self._bgcolor != None :
             dc.SetBrush(wx.Brush(self._bgcolor))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else:
+                dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetColLabelAlignment()
         text = grid.GetColLabelValue(col)
         if self.typeColonne == "unite" :
@@ -672,7 +688,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         try :
             self.GetGridWindow().SetToolTip("")
         except :
-            self.GetGridWindow().SetToolTipString("")
+            self.GetGridWindow().SetToolTip(wx.ToolTip(""))
         self.caseSurvolee = None
         
         global LARGEUR_COLONNE_UNITE

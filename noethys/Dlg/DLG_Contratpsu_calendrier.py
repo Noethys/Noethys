@@ -57,12 +57,12 @@ class Page_planning(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.Generer, self.bouton_generer)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un paramètre de planning"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le paramètre de planning sélectionné"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le paramètre de planning sélectionné"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
-        self.bouton_generer.SetToolTipString(_(u"Cliquez ici pour générer les consommations selon le planning"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un paramètre de planning")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le paramètre de planning sélectionné")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le paramètre de planning sélectionné")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
+        self.bouton_generer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer les consommations selon le planning")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -122,11 +122,11 @@ class Page_consommations(wx.Panel):
         self.Bind(wx.EVT_BUTTON, self.ctrl_consommations.Imprimer, self.bouton_imprimer)
 
     def __set_properties(self):
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une consommation"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier la consommation sélectionnée"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer la consommation sélectionnée"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste"))
-        self.bouton_imprimer.SetToolTipString(_(u"Cliquez ici pour imprimer la liste"))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une consommation")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la consommation sélectionnée")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la consommation sélectionnée")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher un aperçu avant impression de la liste")))
+        self.bouton_imprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
@@ -225,9 +225,9 @@ class Panel(wx.Panel):
         self.ctrl_arrondi_delta.Enable(self.ctrl_arrondi_type.GetSelection() != 0)
 
     def __set_properties(self):
-        self.ctrl_absences_prevues.SetToolTipString(_(u"Saisissez ici le nombre d'heures d'absences prévues (RTT)"))
-        self.ctrl_arrondi_type.SetToolTipString(_(u"Sélectionnez un type d'arrondi"))
-        self.ctrl_arrondi_delta.SetToolTipString(_(u"Sélectionnez le deltade l'arrondi"))
+        self.ctrl_absences_prevues.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nombre d'heures d'absences prévues (RTT)")))
+        self.ctrl_arrondi_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez un type d'arrondi")))
+        self.ctrl_arrondi_delta.SetToolTip(wx.ToolTip(_(u"Sélectionnez le deltade l'arrondi")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

@@ -218,16 +218,16 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.ctrl_date_budget.SetInsertionPoint, 0)
 
     def __set_properties(self):
-        self.ctrl_date_budget.SetToolTipString(_(u"Saisissez la date d'impact budgétaire"))
-        self.ctrl_categorie.SetToolTipString(_(u"Sélectionnez une catégorie"))
-        self.bouton_categories.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des catégories"))
-        self.ctrl_analytique.SetToolTipString(_(u"Sélectionnez un poste analytique"))
-        self.bouton_analytiques.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des postes analytiques"))
-        self.ctrl_libelle.SetToolTipString(_(u"Saisissez un libellé (Optionnel)"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez un montant"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date_budget.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'impact budgétaire")))
+        self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie")))
+        self.bouton_categories.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories")))
+        self.ctrl_analytique.SetToolTip(wx.ToolTip(_(u"Sélectionnez un poste analytique")))
+        self.bouton_analytiques.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des postes analytiques")))
+        self.ctrl_libelle.SetToolTip(wx.ToolTip(_(u"Saisissez un libellé (Optionnel)")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez un montant")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)

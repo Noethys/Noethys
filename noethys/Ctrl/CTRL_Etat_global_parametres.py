@@ -130,7 +130,7 @@ class CTRL_Type(wx.Choice):
         self.item = item
         self.track = track
         self.SetItems([_(u"Nombre d'unités consommées"), _(u"Temps réél de présence"), _(u"Temps de présence facturé")])
-        self.SetToolTipString(_(u"Sélectionnez le type de calcul à appliquer à cette unité de consommation"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez le type de calcul à appliquer à cette unité de consommation")))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         # Defaut
         if self.track.typeUnite == "Horaire" :
@@ -201,7 +201,7 @@ class CTRL_Arrondi(wx.Choice):
             self.listeArrondis.append(valeur)
 
         self.SetItems(self.listeLabels)
-        self.SetToolTipString(_(u"Sélectionnez un arrondi à appliquer à chaque consommation. \n\nExemples : \n\nDurée 15 min. sup. = Arrondit la durée de la consommation aux 15 minutes supérieures (Si durée = 1h20 alors la durée devient 1h30)\n\nHoraire 30 min. = Arrondit l'heure de début à la demi-heure inférieure et l'heure de fin à la demi-heure supérieure (Si consommation de 13h10 à 13h45 alors durée = 1h)"))
+        self.SetToolTip(wx.ToolTip(_(u"Sélectionnez un arrondi à appliquer à chaque consommation. \n\nExemples : \n\nDurée 15 min. sup. = Arrondit la durée de la consommation aux 15 minutes supérieures (Si durée = 1h20 alors la durée devient 1h30)\n\nHoraire 30 min. = Arrondit l'heure de début à la demi-heure inférieure et l'heure de fin à la demi-heure supérieure (Si consommation de 13h10 à 13h45 alors durée = 1h)")))
         # Defaut
         self.SetSelection(0)
     
@@ -224,7 +224,7 @@ class CTRL_Coeff(wx.TextCtrl):
         self.parent = parent
         self.item = item
         self.track = track
-        self.SetToolTipString(_(u"Saisissez le coefficient multiplicateur à appliquer"))
+        self.SetToolTip(wx.ToolTip(_(u"Saisissez le coefficient multiplicateur à appliquer")))
     
     def Validation(self):
         valeur = self.GetValue() 
@@ -265,7 +265,7 @@ class CTRL_Heure(CTRL_Saisie_heure.Heure):
         self.SetSize((80, -1))
         self.item = item
         self.track = track
-        self.SetToolTipString(tooltip)
+        self.SetToolTip(wx.ToolTip(tooltip))
     
     def GetValeur(self):
         valeur = self.GetHeure() 
@@ -309,7 +309,11 @@ class CTRL(HTL.HyperTreeList):
             numColonne += 1
         
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag(wx.TR_ROW_LINES |  wx.TR_COLUMN_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
+        if 'phoenix' in wx.PlatformInfo:
+            TR_COLUMN_LINES = HTL.TR_COLUMN_LINES
+        else :
+            TR_COLUMN_LINES = wx.TR_COLUMN_LINES
+        self.SetAGWWindowStyleFlag(wx.TR_ROW_LINES |  TR_COLUMN_LINES |wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT ) # HTL.TR_NO_HEADER
         self.EnableSelectionVista(True)
                     
     def Importation(self):

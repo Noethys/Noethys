@@ -20,7 +20,7 @@ LISTE_SUFFIXES = ("data", "photos", "documents")
 
 class Dialog(wx.Dialog):
     def __init__(self, parent,  nomUtilisateur="", nomHote="", nomBase=""):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
 
         self.nomUtilisateur = nomUtilisateur
@@ -87,14 +87,14 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom pour l'utilisateur. \nIl est fortement conseillé de n'inclure aucun caractères spéciaux (accents, symboles...)"))
-        self.radio_1.SetToolTipString(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir du serveur sur lequel se trouve la base de données."))
-        self.radio_2.SetToolTipString(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante."))
-        self.radio_3.SetToolTipString(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante."))
-        self.ctrl_mdp_1.SetToolTipString(_(u"Saisissez un mot de passe pour cet utilisateur"))
-        self.ctrl_mdp_2.SetToolTipString(_(u"Confirmez le mot de passe en le tapant une seconde fois..."))
-        self.ctrl_autorisation.SetToolTipString(_(u"Cochez cette case pour autoriser l'utilisateur à se connecter \nau fichier à partir de l'hôte indiqué ci-dessus."))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour l'utilisateur. \nIl est fortement conseillé de n'inclure aucun caractères spéciaux (accents, symboles...)")))
+        self.radio_1.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir du serveur sur lequel se trouve la base de données.")))
+        self.radio_2.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante.")))
+        self.radio_3.SetToolTip(wx.ToolTip(_(u"L'utilisateur ne peut se connecter à la base de données\n qu'à partir des ordinateurs dont les adresses locales ou\n distantes sont cochées dans la liste suivante.")))
+        self.ctrl_mdp_1.SetToolTip(wx.ToolTip(_(u"Saisissez un mot de passe pour cet utilisateur")))
+        self.ctrl_mdp_2.SetToolTip(wx.ToolTip(_(u"Confirmez le mot de passe en le tapant une seconde fois...")))
+        self.ctrl_autorisation.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour autoriser l'utilisateur à se connecter \nau fichier à partir de l'hôte indiqué ci-dessus.")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

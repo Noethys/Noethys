@@ -16,7 +16,10 @@ from Ctrl import CTRL_Bouton_image
 import GestionDB
 from Utils import UTILS_Dates
 import datetime
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 from Ctrl import CTRL_Bandeau
 
 from Utils import UTILS_Config
@@ -52,9 +55,9 @@ LISTE_MODELES = [
     ]
 
 
-class CTRL_Modele(wx.combo.BitmapComboBox):
+class CTRL_Modele(BitmapComboBox):
     def __init__(self, parent, size=(-1,  -1)):
-        wx.combo.BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
+        BitmapComboBox.__init__(self, parent, size=size, style=wx.CB_READONLY)
         self.parent = parent
         self.MAJlisteDonnees() 
         if len(self.dictDonnees) > 0 :
@@ -544,7 +547,7 @@ class CTRL_Graphique(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent 
 
         intro = _(u"Sélectionnez un modèle de graphique dans la liste proposée puis ajustez les paramètres si besoin.")
@@ -590,13 +593,13 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_modele.SetToolTipString(_(u"Sélectionnez un modèle de graphique"))
-        self.ctrl_exercice.SetToolTipString(_(u"Sélectionnez un exercice"))
-        self.ctrl_analytique.SetToolTipString(_(u"Sélectionnez un poste analytique"))
-        self.bouton_zoom.SetToolTipString(_(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique"))
-        self.bouton_options.SetToolTipString(_(u"Cliquez ici pour accéder aux options du graphique"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_modele.SetToolTip(wx.ToolTip(_(u"Sélectionnez un modèle de graphique")))
+        self.ctrl_exercice.SetToolTip(wx.ToolTip(_(u"Sélectionnez un exercice")))
+        self.ctrl_analytique.SetToolTip(wx.ToolTip(_(u"Sélectionnez un poste analytique")))
+        self.bouton_zoom.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux fonctions d'export et d'impression du graphique")))
+        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux options du graphique")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((800, 700))
 
     def __do_layout(self):

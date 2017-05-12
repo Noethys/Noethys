@@ -649,7 +649,7 @@ class Calendrier(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDactivite=None, dictSelections={}, activeIncompatibilites=True):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDactivite = IDactivite
         
@@ -709,13 +709,13 @@ class Dialog(wx.Dialog):
         self.MAJCalendrier()
 
     def __set_properties(self):
-        self.ctrl_mois.SetToolTipString(_(u"Sélectionnez un mois"))
+        self.ctrl_mois.SetToolTip(wx.ToolTip(_(u"Sélectionnez un mois")))
         self.ctrl_annee.SetMinSize((70, -1))
-        self.ctrl_annee.SetToolTipString(_(u"Sélectionnez une année"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_saisie_lot.SetToolTipString(_(u"Cliquez ici saisir ou supprimer un lot"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_annee.SetToolTip(wx.ToolTip(_(u"Sélectionnez une année")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_saisie_lot.SetToolTip(wx.ToolTip(_(u"Cliquez ici saisir ou supprimer un lot")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.ctrl_calendrier.SetMinSize((100, 100))
         self.SetMinSize((850, 700))
 

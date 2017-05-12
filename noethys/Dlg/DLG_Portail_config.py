@@ -891,7 +891,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         # Bandeau
@@ -940,10 +940,10 @@ class Dialog(wx.Dialog):
         wx.CallAfter(self.Afficher_avertissement)
 
     def __set_properties(self):
-        self.bouton_easy.SetToolTipString(_(u"Cliquez ici pour souscrire à l'offre Connecthys Easy"))
-        self.bouton_site.SetToolTipString(_(u"Cliquez ici pour accéder au site internet www.connecthys.com"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.bouton_easy.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour souscrire à l'offre Connecthys Easy")))
+        self.bouton_site.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder au site internet www.connecthys.com")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((850, 700))
 
     def __do_layout(self):

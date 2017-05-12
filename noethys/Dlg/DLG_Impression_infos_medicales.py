@@ -74,7 +74,7 @@ class CTRL_Activites(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.listePeriodes = []
-        self.SetToolTipString(_(u"Cochez les activités à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités à afficher")))
         self.listeActivites = []
         self.dictActivites = {}
         self.SetMinSize((-1, 100))
@@ -171,7 +171,7 @@ class CTRL_Groupes(wx.CheckListBox):
         self.parent = parent
         self.data = []
         self.date = None
-        self.SetToolTipString(_(u"Cochez les groupes à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les groupes à afficher")))
         self.listeGroupes = []
         self.dictGroupes = {}
         self.SetMinSize((-1, 100))
@@ -262,7 +262,7 @@ class CTRL_Groupes(wx.CheckListBox):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_infos_medicales", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Impression_infos_medicales", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici imprimer une liste au format PDF des informations médicales des individus présents sur la période de votre choix. Pour une liste standard, sélectionnez simplement une période puis cliquez sur 'Aperçu'.")
@@ -373,16 +373,16 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Impression de la liste des informations médicales"))
-        self.checkbox_lignes_vierges.SetToolTipString(_(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste"))
-        self.checkbox_page_groupe.SetToolTipString(_(u"Cochez cette case pour afficher une page par groupe"))
-        self.checkbox_age.SetToolTipString(_(u"Cochez cette case pour afficher l'âge des individus dans la liste"))
-        self.checkbox_photos.SetToolTipString(_(u"Cochez cette case pour afficher les photos individuelles"))
-        self.ctrl_nbre_lignes.SetToolTipString(_(u"Sélectionnez le nombre de lignes à afficher"))
-        self.checkbox_nonvides.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les individus qui ont au moins une information médicale"))
-        self.ctrl_memoriser.SetToolTipString(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.checkbox_lignes_vierges.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher des lignes vierges à la fin de la liste")))
+        self.checkbox_page_groupe.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher une page par groupe")))
+        self.checkbox_age.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher l'âge des individus dans la liste")))
+        self.checkbox_photos.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les photos individuelles")))
+        self.ctrl_nbre_lignes.SetToolTip(wx.ToolTip(_(u"Sélectionnez le nombre de lignes à afficher")))
+        self.checkbox_nonvides.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les individus qui ont au moins une information médicale")))
+        self.ctrl_memoriser.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour mémoriser les paramètres pour la prochaine édition")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

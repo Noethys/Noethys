@@ -282,7 +282,7 @@ class CTRL_Periode(wx.Panel):
     def CreationCaseJours(self, periode="scolaire"):
         for jour in self.liste_jours :
             exec("self.check_%s_%s = wx.CheckBox(self, -1,u'%s')" % (periode, jour, jour[0].upper()) )
-            exec("self.check_%s_%s.SetToolTipString(u'%s')" % (periode, jour, jour.capitalize()) )
+            exec("self.check_%s_%s.SetToolTip(wx.ToolTip(u'%s'))" % (periode, jour, jour.capitalize()) )
 
     def GetJours(self, periode="scolaire"):
         listeTemp = []
@@ -408,7 +408,7 @@ class Page_Activite(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur les activités"))
+        self.check.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur les activités")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -470,7 +470,7 @@ class Page_Heure(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur l'heure de badgeage"))
+        self.check.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre sur l'heure de badgeage")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -531,7 +531,7 @@ class Page_Periode(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(_(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes"))
+        self.check.SetToolTip(wx.ToolTip(_(u"Cochez cette case si vous souhaitez appliquer un filtre de périodes")))
         
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
@@ -609,10 +609,10 @@ class Page_Poste(wx.Panel):
         self.OnCheck(None)
 
     def __set_properties(self):
-        self.check.SetToolTipString(_(u"Cochez cette case pour appliquer un filtre sur les noms de postes réseau"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un nom de poste"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le nom de poste sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le nom de poste sélectionné dans la liste"))
+        self.check.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour appliquer un filtre sur les noms de postes réseau")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un nom de poste")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le nom de poste sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le nom de poste sélectionné dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)
@@ -705,10 +705,10 @@ class Page_Questionnaire(wx.Panel):
         self.OnCheckFiltres(None)
 
     def __set_properties(self):
-        self.check_filtres.SetToolTipString(_(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels "))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un filtre"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste"))
+        self.check_filtres.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour appliquer des filtres sur les questionnaires individuels ")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un filtre")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le filtre sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le filtre sélectionné dans la liste")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=2, cols=2, vgap=5, hgap=5)

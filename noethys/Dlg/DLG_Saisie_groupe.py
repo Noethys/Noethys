@@ -18,7 +18,7 @@ import GestionDB
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, nom=None, abrege=None, nbre_inscrits_max=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
 
         # Généralités
@@ -65,13 +65,13 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_nom.SetMinSize((300, -1))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici l'intitulé du groupe (Ex : '3-6 ans', 'Grands'...)"))
-        self.ctrl_abrege.SetToolTipString(_(u"Saisissez ici le nom abrégé du groupe (Ex : '3-6', 'GRANDS'..."))
-        self.check_limitation_inscrits.SetToolTipString(_(u"Cochez cette case pour définir un nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activités à durée limitée)"))
-        self.ctrl_limitation_inscrits.SetToolTipString(_(u"Saisissez ici une nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activités à durée limitée)"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'intitulé du groupe (Ex : '3-6 ans', 'Grands'...)")))
+        self.ctrl_abrege.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom abrégé du groupe (Ex : '3-6', 'GRANDS'...")))
+        self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir un nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activités à durée limitée)")))
+        self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez ici une nombre d'inscrits maximal pour ce groupe (Utile uniquement pour les activités à durée limitée)")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

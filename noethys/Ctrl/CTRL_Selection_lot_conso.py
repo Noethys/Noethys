@@ -438,14 +438,14 @@ class CTRL(wx.Panel):
         self.OnRadioPeriode(None)
 
     def __set_properties(self):
-        self.radio_periode_1.SetToolTipString(_(u"Cochez ici pour sélectionner la période affichée dans la grille des consommations"))
-        self.radio_periode_2.SetToolTipString(_(u"Cochez ici pour sélectionner une autre période"))
-        self.ctrl_individus.SetToolTipString(_(u"Cochez les individus souhaités"))
-        self.ctrl_activite.SetToolTipString(_(u"Selectionnez l'activité souhaitée"))
-        self.ctrl_groupes.SetToolTipString(_(u"Cochez les groupes souhaités"))
-        self.ctrl_unites.SetToolTipString(_(u"Cochez les unités de consommations souhaitées"))
-        self.ctrl_modes.SetToolTipString(_(u"Cochez les modes souhaités"))
-        self.ctrl_etats.SetToolTipString(_(u"Cochez les etats souhaités"))
+        self.radio_periode_1.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner la période affichée dans la grille des consommations")))
+        self.radio_periode_2.SetToolTip(wx.ToolTip(_(u"Cochez ici pour sélectionner une autre période")))
+        self.ctrl_individus.SetToolTip(wx.ToolTip(_(u"Cochez les individus souhaités")))
+        self.ctrl_activite.SetToolTip(wx.ToolTip(_(u"Selectionnez l'activité souhaitée")))
+        self.ctrl_groupes.SetToolTip(wx.ToolTip(_(u"Cochez les groupes souhaités")))
+        self.ctrl_unites.SetToolTip(wx.ToolTip(_(u"Cochez les unités de consommations souhaitées")))
+        self.ctrl_modes.SetToolTip(wx.ToolTip(_(u"Cochez les modes souhaités")))
+        self.ctrl_etats.SetToolTip(wx.ToolTip(_(u"Cochez les etats souhaités")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

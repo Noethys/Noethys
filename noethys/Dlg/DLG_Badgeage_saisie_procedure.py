@@ -178,14 +178,14 @@ class CTRL_Interface(wx.Panel):
         self.OnChoixIdentification(None)
 
     def __set_properties(self):
-        self.ctrl_style.SetToolTipString(_(u"Sélectionnez un style d'interface"))
-        self.ctrl_theme.SetToolTipString(_(u"Sélectionnez un thème"))
-        self.radio_barre.SetToolTipString(_(u"Recommandé pour la saisie avec lecteur de code-barres"))
-        self.radio_clavier.SetToolTipString(_(u"Recommandé pour la saisie avec écrans tactiles"))
-        self.radio_liste.SetToolTipString(_(u"Recommandé pour la saisie avec écrans tactiles"))
-        self.check_activites.SetToolTipString(_(u"Cochez cette case pour afficher uniquement les inscrits aux activités sélectionnées"))
-        self.ctrl_activites.SetToolTipString(_(u"Cochez les activités"))
-        self.bouton_image.SetToolTipString(_(u"Cliquez ici pour sélectionner une image personnalisée"))
+        self.ctrl_style.SetToolTip(wx.ToolTip(_(u"Sélectionnez un style d'interface")))
+        self.ctrl_theme.SetToolTip(wx.ToolTip(_(u"Sélectionnez un thème")))
+        self.radio_barre.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec lecteur de code-barres")))
+        self.radio_clavier.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec écrans tactiles")))
+        self.radio_liste.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec écrans tactiles")))
+        self.check_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les inscrits aux activités sélectionnées")))
+        self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activités")))
+        self.bouton_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une image personnalisée")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
@@ -301,7 +301,7 @@ class CTRL_Interface(wx.Panel):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDprocedure=None, defaut=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDprocedure = IDprocedure
         self.defaut = defaut
@@ -358,18 +358,18 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'une procédure"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour cette procédure"))
-        self.check_vocal.SetToolTipString(_(u"Cochez cette case pour activer la synthèse vocale dans cette procédure"))
-        self.check_tutoiement.SetToolTipString(_(u"Cochez cette case pour utiliser le tutoiement au lieu du vouvoiement"))
-        self.check_confirmation.SetToolTipString(_(u"Noethys demandera la confirmation de l'identité de l'individu après son identification"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter une action"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier l'action sélectionnée"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer l'action sélectionnée"))
-        self.bouton_monter.SetToolTipString(_(u"Cliquez ici pour faire monter l'action sélectionnée"))
-        self.bouton_descendre.SetToolTipString(_(u"Cliquez ici pour faire descendre l'action sélectionnée"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour cette procédure")))
+        self.check_vocal.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer la synthèse vocale dans cette procédure")))
+        self.check_tutoiement.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser le tutoiement au lieu du vouvoiement")))
+        self.check_confirmation.SetToolTip(wx.ToolTip(_(u"Noethys demandera la confirmation de l'identité de l'individu après son identification")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une action")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier l'action sélectionnée")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer l'action sélectionnée")))
+        self.bouton_monter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire monter l'action sélectionnée")))
+        self.bouton_descendre.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour faire descendre l'action sélectionnée")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((750, 700))
 
     def __do_layout(self):

@@ -49,13 +49,13 @@ class Dialog(wx.Dialog):
     def __set_properties(self):
         self.SetTitle(_(u"Paramètres de connexion"))
         self.ctrl_port.SetMinSize((60, -1))
-        self.ctrl_port.SetToolTipString(u"Saisissez ici le numéro de port")
-        self.ctrl_hote.SetToolTipString(u"Saisissez ici l'hôte")
-        self.ctrl_utilisateur.SetToolTipString(u"Saisissez ici l'utilisateur")
-        self.ctrl_mdp.SetToolTipString(u"Saisissez ici le mot de passe")
-        self.bouton_aide.SetToolTipString(u"Cliquez ici pour obtenir de l'aide")
-        self.bouton_ok.SetToolTipString(u"Cliquez ici pour valider")
-        self.bouton_annuler.SetToolTipString(u"Cliquez ici pour annuler")
+        self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de port")))
+        self.ctrl_hote.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'hôte")))
+        self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici l'utilisateur")))
+        self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

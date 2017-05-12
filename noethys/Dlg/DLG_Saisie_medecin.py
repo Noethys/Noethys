@@ -21,7 +21,7 @@ from Ctrl import CTRL_Saisie_tel
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent      
         
         self.staticbox_adresse_staticbox = wx.StaticBox(self, -1, _(u"Adresse"))
@@ -54,14 +54,14 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Saisie d'un médecin"))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de famille du médecin"))
-        self.ctrl_prenom.SetToolTipString(_(u"Saisissez le prénom du médecin"))
-        self.ctrl_rue.SetToolTipString(_(u"Saisissez la rue du cabinet du médecin"))
-        self.ctrl_tel.SetToolTipString(_(u"Saisissez le numéro de téléphone du cabinet"))
-        self.ctrl_mobile.SetToolTipString(_(u"Saisissez le numéro de mobile du médecin"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de famille du médecin")))
+        self.ctrl_prenom.SetToolTip(wx.ToolTip(_(u"Saisissez le prénom du médecin")))
+        self.ctrl_rue.SetToolTip(wx.ToolTip(_(u"Saisissez la rue du cabinet du médecin")))
+        self.ctrl_tel.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de téléphone du cabinet")))
+        self.ctrl_mobile.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de mobile du médecin")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

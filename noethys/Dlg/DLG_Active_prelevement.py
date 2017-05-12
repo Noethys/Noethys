@@ -20,7 +20,7 @@ from Ol import OL_Mandats
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDfamille = IDfamille
                 
@@ -68,14 +68,14 @@ class Dialog(wx.Dialog):
         self.Importation()
 
     def __set_properties(self):
-        self.radio_activation_oui.SetToolTipString(_(u"Cliquez ici pour activer le prélèvement"))
-        self.radio_activation_non.SetToolTipString(_(u"Cliquez ici pour désactiver le prélèvement"))
-        self.bouton_ajouter.SetToolTipString(_(u"Cliquez ici pour ajouter un mandat"))
-        self.bouton_modifier.SetToolTipString(_(u"Cliquez ici pour modifier le mandat sélectionné dans la liste"))
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer le mandat sélectionné dans la iste"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_rib.SetToolTipString(_(u"Cliquez ici pour paramétrer un RIB pour les prélèvements nationaux (jusqu'au 1er février 2014)"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.radio_activation_oui.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour activer le prélèvement")))
+        self.radio_activation_non.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour désactiver le prélèvement")))
+        self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter un mandat")))
+        self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier le mandat sélectionné dans la liste")))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer le mandat sélectionné dans la iste")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_rib.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour paramétrer un RIB pour les prélèvements nationaux (jusqu'au 1er février 2014)")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((680, 500))
 
     def __do_layout(self):

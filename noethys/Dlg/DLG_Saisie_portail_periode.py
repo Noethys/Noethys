@@ -158,18 +158,18 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici un nom pour cette période (Ex : 'Juillet 2016', 'Année 2016', etc...)"))
-        self.ctrl_intro.SetToolTipString(_(u"Saisissez ici un texte d'introduction qui apparaîtra au-dessus du planning des réservations [Optionnel]"))
-        self.radio_oui.SetToolTipString(_(u"Sélectionnez cette option pour afficher cette période sur le portail"))
-        self.radio_dates.SetToolTipString(_(u"Sélectionnez cette option pour afficher cette période sur le portail uniquement entre les dates souhaitées"))
-        self.radio_non.SetToolTipString(_(u"Sélectionnez cette option pour ne pas afficher cette période sur le portail"))
-        self.radio_modele_defaut.SetToolTipString(_(u"Sélectionnez cette option pour utiliser le modèle d'Email par défaut pour l'envoi des réponses aux demandes"))
-        self.radio_modele_choix.SetToolTipString(_(u"Sélectionnez cette option pour utiliser un modèle d'Email spécifique pour les réponses aux demandes"))
-        self.ctrl_modele_email.SetToolTipString(_(u"Sélectionnez le modèle d'Email à associer à la période"))
-        self.bouton_gestion_modeles.SetToolTipString(_(u"Cliquez ici pour accéder à la gestion des modèles d'Emails"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici un nom pour cette période (Ex : 'Juillet 2016', 'Année 2016', etc...)")))
+        self.ctrl_intro.SetToolTip(wx.ToolTip(_(u"Saisissez ici un texte d'introduction qui apparaîtra au-dessus du planning des réservations [Optionnel]")))
+        self.radio_oui.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour afficher cette période sur le portail")))
+        self.radio_dates.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour afficher cette période sur le portail uniquement entre les dates souhaitées")))
+        self.radio_non.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour ne pas afficher cette période sur le portail")))
+        self.radio_modele_defaut.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour utiliser le modèle d'Email par défaut pour l'envoi des réponses aux demandes")))
+        self.radio_modele_choix.SetToolTip(wx.ToolTip(_(u"Sélectionnez cette option pour utiliser un modèle d'Email spécifique pour les réponses aux demandes")))
+        self.ctrl_modele_email.SetToolTip(wx.ToolTip(_(u"Sélectionnez le modèle d'Email à associer à la période")))
+        self.bouton_gestion_modeles.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des modèles d'Emails")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)

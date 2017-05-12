@@ -51,9 +51,9 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_TEXT_ENTER, self.OnBoutonOk, self.ctrl_quantite)
         
     def __set_properties(self):
-        self.bouton_supprimer.SetToolTipString(_(u"Cliquez ici pour supprimer cette consommation"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer cette consommation")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((350, 110))
         
     def __do_layout(self):

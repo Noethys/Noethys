@@ -37,9 +37,9 @@ class Panel(wx.Panel):
         self.__do_layout()
 
     def __set_properties(self):
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez la date de début du contrat"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez la date de fin du contrat"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez d'éventuelles observations"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez la date de début du contrat")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez la date de fin du contrat")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez d'éventuelles observations")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=3, cols=1, vgap=10, hgap=10)

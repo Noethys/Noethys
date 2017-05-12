@@ -22,7 +22,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Choix_modele_aide", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Choix_modele_aide", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         intro = _(u"Vous pouvez ici sélectionner un modèle prédéfini d'aide journalière. Cette fonction vous permet de gagner du temps lors de la saisie d'une aide. Sélectionnez une ligne et cliquez sur Ok ou double-cliquez directement sur une ligne.")
@@ -44,9 +44,9 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Importation d'un modèle d'aide"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour importer le modèle d'aide sélectionné"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer le modèle d'aide sélectionné")))
         self.SetMinSize((600, 600))
 
     def __do_layout(self):

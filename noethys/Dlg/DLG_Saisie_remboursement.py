@@ -199,16 +199,16 @@ class Dialog(wx.Dialog):
 
 
     def __set_properties(self):
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant du remboursement"))
-        self.ctrl_observations.SetToolTipString(_(u"Saisissez ici des observations [Optionnel]. Vous pouvez par exemple saisir le numéro de chèque qui a été utilisé pour le remboursement, etc..."))
-        self.ctrl_payeur.SetToolTipString(_(u"Sélectionnez le payeur qui sera utilisé dans l'enregistrement du règlement fictif"))
-        self.bouton_payeurs.SetToolTipString(_(u"Cliquez ici pour ajouter, modifier ou supprimer un payeur"))
-        self.ctrl_mode.SetToolTipString(_(u"Sélectionnez le mode de règlement qui sera utilisé. Si un mode 'Remboursement' n'existe pas, créez-le."))
-        self.bouton_modes.SetToolTipString(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de règlement"))
-        self.ctrl_compte.SetToolTipString(_(u"Sélectionnez le compte bancaire qui sera utilisé pour le remboursement"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant du remboursement")))
+        self.ctrl_observations.SetToolTip(wx.ToolTip(_(u"Saisissez ici des observations [Optionnel]. Vous pouvez par exemple saisir le numéro de chèque qui a été utilisé pour le remboursement, etc...")))
+        self.ctrl_payeur.SetToolTip(wx.ToolTip(_(u"Sélectionnez le payeur qui sera utilisé dans l'enregistrement du règlement fictif")))
+        self.bouton_payeurs.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un payeur")))
+        self.ctrl_mode.SetToolTip(wx.ToolTip(_(u"Sélectionnez le mode de règlement qui sera utilisé. Si un mode 'Remboursement' n'existe pas, créez-le.")))
+        self.bouton_modes.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter, modifier ou supprimer un mode de règlement")))
+        self.ctrl_compte.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire qui sera utilisé pour le remboursement")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)

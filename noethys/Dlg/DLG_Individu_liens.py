@@ -16,7 +16,10 @@ from Ctrl import CTRL_Bouton_image
 import wx.aui
 import wx.lib.agw.hypertreelist as HTL
 import wx.lib.agw.hyperlink as Hyperlink
-import wx.combo
+if 'phoenix' in wx.PlatformInfo:
+    from wx.adv import BitmapComboBox
+else :
+    from wx.combo import BitmapComboBox
 
 from Ctrl import CTRL_Bandeau
 
@@ -310,7 +313,7 @@ class Choice_liens(wx.Choice):
         self.sexeIndividu = sexeIndividu
         choices=self.GetListeTypesLiens()
         self.SetItems(choices)
-        self.SetToolTipString(infobulle)
+        self.SetToolTip(wx.ToolTip(infobulle))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.SetIDtypeLien(IDtypeLien)
                 
@@ -356,12 +359,12 @@ class Choice_liens(wx.Choice):
 
 # ---------------------------------------------------------------------------------------------------------------------------------------------------------
 
-class Choice_autorisations(wx.combo.BitmapComboBox):
+class Choice_autorisations(BitmapComboBox):
     def __init__(self, parent, id=-1, IDfamille=None, IDindividu_objet=None, IDcategorie=None, IDindividu_sujet=None, nomIndividu="", typeIndividu="" , sexeIndividu="", IDautorisation=None, infobulle="" ):
         """ typeIndividu = "A" ou "E" (adulte ou enfant) """
         """ sexeIndividu = "M" ou "F" (masculin ou féminin) """
         """ Lien = ID type lien par défaut """
-        wx.combo.BitmapComboBox.__init__(self, parent, id=id, size=(190, -1), style=wx.CB_READONLY ) 
+        BitmapComboBox.__init__(self, parent, id=id, size=(190, -1), style=wx.CB_READONLY )
         self.parent = parent
         self.IDfamille = IDfamille
         self.IDindividu_objet = IDindividu_objet
@@ -372,7 +375,7 @@ class Choice_autorisations(wx.combo.BitmapComboBox):
         listeChoix = self.GetListe()
         for texte, img, IDautorisationTmp in listeChoix :
             self.Append(texte, img, IDautorisationTmp)
-        self.SetToolTipString(infobulle)
+        self.SetToolTip(wx.ToolTip(infobulle))
         self.Bind(wx.EVT_COMBOBOX, self.OnChoice)
         self.SetIDautorisation(IDautorisation)
                 
@@ -432,7 +435,7 @@ class Choice_autorisations_archive(wx.Choice):
         self.sexeIndividu = sexeIndividu
         choices=self.GetListe()
         self.SetItems(choices)
-        self.SetToolTipString(infobulle)
+        self.SetToolTip(wx.ToolTip(infobulle))
         self.Bind(wx.EVT_CHOICE, self.OnChoice)
         self.SetIDautorisation(IDautorisation)
                 
@@ -485,12 +488,12 @@ class CheckboxAvecImage(wx.Panel):
         self.IDindividu_sujet = IDindividu_sujet
         self.typeDonnee = typeDonnee
         self.SetBackgroundColour((255, 255, 255))
-        self.SetToolTipString(infobulle)
+        self.SetToolTip(wx.ToolTip(infobulle))
         self.cb = wx.CheckBox(self, id=-1, label=label) 
-        self.cb.SetToolTipString(infobulle)
+        self.cb.SetToolTip(wx.ToolTip(infobulle))
         if img != None :
             self.img = wx.StaticBitmap(self, -1, img)
-            self.img.SetToolTipString(infobulle)
+            self.img.SetToolTip(wx.ToolTip(infobulle))
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=4, vgap=5, hgap=5)
         grid_sizer_base.Add(self.cb, 1, wx.EXPAND|wx.ALL, 0)
@@ -880,7 +883,7 @@ class Notebook(wx.aui.AuiNotebook):
                  
 class Dialog_liens(wx.Dialog):
     def __init__(self, parent, IDindividu=None, IDfamille=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         
         intro = _(u"Vous bénéficiez ici d'une vue d'ensemble des liens unissant les membres de la famille sélectionnée. Vous pouvez utiliser un glisser-déposer avec votre souris sur chaque onglet pour afficher plusieurs individus à la fois.")
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=_(u"Définition des liens"), texte=intro, hauteurHtml=30, nomImage="Images/32x32/Famille.png")
@@ -901,9 +904,9 @@ class Dialog_liens(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Définition des liens"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider et fermer"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler et fermer"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider et fermer")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler et fermer")))
         self.SetMinSize((650, 550))
 
     def __do_layout(self):

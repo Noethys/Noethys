@@ -20,7 +20,7 @@ from Utils import UTILS_Config
 
 class Dialog(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         # Activités
@@ -66,15 +66,15 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.SetTitle(_(u"Paramètres d'affichage des inscriptions"))
-        self.ctrl_tri.SetToolTipString(_(u"Sélectionner un critère de tri"))
-        self.ctrl_sens.SetToolTipString(_(u"Sélectionner un sens de tri"))
-        self.ctrl_alerte.SetToolTipString(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur"))
-        self.ctrl_ouvert.SetToolTipString(_(u"Masquer les activités dont la date de fin de validité est supérieure à la date du jour"))
-        self.ctrl_partis.SetToolTipString(_(u"Masquer les individus partis de l'activité"))
-        self.ctrl_regroup.SetToolTipString(_(u"Regrouper les activités par groupe d'activités"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_tri.SetToolTip(wx.ToolTip(_(u"Sélectionner un critère de tri")))
+        self.ctrl_sens.SetToolTip(wx.ToolTip(_(u"Sélectionner un sens de tri")))
+        self.ctrl_alerte.SetToolTip(wx.ToolTip(_(u"Saisissez une valeur de seuil d'alerte. Noethys signale ainsi lorsque le nombre de places restantes est égal ou inférieur à cette valeur")))
+        self.ctrl_ouvert.SetToolTip(wx.ToolTip(_(u"Masquer les activités dont la date de fin de validité est supérieure à la date du jour")))
+        self.ctrl_partis.SetToolTip(wx.ToolTip(_(u"Masquer les individus partis de l'activité")))
+        self.ctrl_regroup.SetToolTip(wx.ToolTip(_(u"Regrouper les activités par groupe d'activités")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((500, 570))
 
     def __do_layout(self):

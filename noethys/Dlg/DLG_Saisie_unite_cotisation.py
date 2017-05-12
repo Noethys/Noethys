@@ -26,7 +26,7 @@ except: pass
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, nomTypeCotisation=u"", dictDonnees={}):
-        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_unite_cotisation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, name="DLG_Saisie_unite_cotisation", style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         self.IDunite_cotisation = None
         self.defaut = 0
@@ -80,17 +80,17 @@ class Dialog(wx.Dialog):
 
     def __set_properties(self):
         self.ctrl_label_defaut.SetForegroundColour((100, 100, 100))
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez ici le nom de l'unité"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez ici le nom de l'unité")))
         self.label_date_debut.SetMinSize((30, -1))
-        self.ctrl_date_debut.SetToolTipString(_(u"Saisissez ici la date de début de validité"))
-        self.ctrl_date_fin.SetToolTipString(_(u"Saisissez ici la date de fin de validité"))
-        self.ctrl_montant.SetToolTipString(_(u"Saisissez ici le montant en euros de l'unité de cotisation"))
-        self.radio_label_defaut.SetToolTipString(_(u"Cochez cette case pour utiliser le label de prestation par défaut"))
-        self.radio_label_personnalise.SetToolTipString(_(u"Cochez cette case pour utiliser un label de prestation personnalisé"))
-        self.ctrl_label_personnalise.SetToolTipString(_(u"Saisissez ici un label personnalisé"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_date_debut.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de début de validité")))
+        self.ctrl_date_fin.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de fin de validité")))
+        self.ctrl_montant.SetToolTip(wx.ToolTip(_(u"Saisissez ici le montant en euros de l'unité de cotisation")))
+        self.radio_label_defaut.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser le label de prestation par défaut")))
+        self.radio_label_personnalise.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour utiliser un label de prestation personnalisé")))
+        self.ctrl_label_personnalise.SetToolTip(wx.ToolTip(_(u"Saisissez ici un label personnalisé")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((470, 360))
 
     def __do_layout(self):

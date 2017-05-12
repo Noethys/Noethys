@@ -60,7 +60,7 @@ class CTRL_Imprimante(wx.Choice):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie="", IDmodele=None):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.categorie = categorie
         self.IDmodele = IDmodele     
@@ -99,11 +99,11 @@ class Dialog(wx.Dialog):
         # texte
         self.staticbox_texte_staticbox = wx.StaticBox(self, -1, _(u"Ticket"))
         self.ctrl_editeur = gizmos.EditableListBox(self, -1, _(u"Saisissez ci-dessous les lignes à imprimer sur le ticket"))
-        self.ctrl_editeur.GetDelButton().SetToolTipString(_(u"Supprimer la ligne sélectionnée"))
-        self.ctrl_editeur.GetDownButton().SetToolTipString(_(u"Descendre la ligne sélectionnée"))
-        self.ctrl_editeur.GetUpButton().SetToolTipString(_(u"Monter la ligne sélectionnée"))
-        self.ctrl_editeur.GetEditButton().SetToolTipString(_(u"Editer la ligne sélectionnée"))
-        self.ctrl_editeur.GetNewButton().SetToolTipString(_(u"Insérer une nouvelle ligne"))
+        self.ctrl_editeur.GetDelButton().SetToolTip(wx.ToolTip(_(u"Supprimer la ligne sélectionnée")))
+        self.ctrl_editeur.GetDownButton().SetToolTip(wx.ToolTip(_(u"Descendre la ligne sélectionnée")))
+        self.ctrl_editeur.GetUpButton().SetToolTip(wx.ToolTip(_(u"Monter la ligne sélectionnée")))
+        self.ctrl_editeur.GetEditButton().SetToolTip(wx.ToolTip(_(u"Editer la ligne sélectionnée")))
+        self.ctrl_editeur.GetNewButton().SetToolTip(wx.ToolTip(_(u"Insérer une nouvelle ligne")))
         
         # Commandes
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
@@ -128,15 +128,15 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez un nom pour ce modèle"))
-        self.ctrl_description.SetToolTipString(_(u"Saisissez une description pour ce modèle"))
-        self.ctrl_taille.SetToolTipString(_(u"Sélectionnez une taille de police"))
-        self.ctrl_interligne.SetToolTipString(_(u"Sélectionnez la hauteur d'interligne"))
-        self.ctrl_imprimante.SetToolTipString(_(u"Sélectionnez l'imprimante à utiliser"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour imprimer une page de test"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez un nom pour ce modèle")))
+        self.ctrl_description.SetToolTip(wx.ToolTip(_(u"Saisissez une description pour ce modèle")))
+        self.ctrl_taille.SetToolTip(wx.ToolTip(_(u"Sélectionnez une taille de police")))
+        self.ctrl_interligne.SetToolTip(wx.ToolTip(_(u"Sélectionnez la hauteur d'interligne")))
+        self.ctrl_imprimante.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'imprimante à utiliser")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour imprimer une page de test")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((700, 580))
 
     def __do_layout(self):

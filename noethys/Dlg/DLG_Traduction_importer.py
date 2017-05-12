@@ -124,12 +124,12 @@ class Dialog(wx.Dialog):
         
 
     def __set_properties(self):
-        self.ctrl_langues.SetToolTipString(_(u"Sélectionnez la langue souhaitée"))
-        self.check_nontraduits.SetToolTipString(_(u"Cochez cette case pour inclure uniquement les textes non traduits"))
-        self.bouton_exporter.SetToolTipString(_(u"Cliquez ici pour exporter les textes originaux au format txt"))
-        self.bouton_importer.SetToolTipString(_(u"Cliquez ici pour importer les traductions du fichier txt"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_langues.SetToolTip(wx.ToolTip(_(u"Sélectionnez la langue souhaitée")))
+        self.check_nontraduits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour inclure uniquement les textes non traduits")))
+        self.bouton_exporter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour exporter les textes originaux au format txt")))
+        self.bouton_importer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour importer les traductions du fichier txt")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(5, 1, 10, 10)

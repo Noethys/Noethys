@@ -58,7 +58,7 @@ class CTRL_Type_impression(CTRL_Ultrachoice.CTRL):
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, filtres=[]):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
 
         # Bandeau
@@ -132,17 +132,17 @@ class Dialog(wx.Dialog):
         self.ctrl_code_rec.SetValue(UTILS_Parametres.Parametres(mode="get", categorie="rolmre", nom="code_rec", valeur=""))
 
     def __set_properties(self):
-        self.ctrl_date.SetToolTipString(_(u"Saisissez la date d'émission du rôle"))
-        self.ctrl_code_coll.SetToolTipString(_(u"Saisissez ici le code Collectivité du rôle (ROLCOL)"))
-        self.ctrl_exercice.SetToolTipString(_(u"Saisissez ici le code Exercice du rôle (ROLEX)"))
-        self.ctrl_code_nat.SetToolTipString(_(u"Saisissez ici le code Nature du rôle (ROLNAT)"))
-        self.ctrl_num_role.SetToolTipString(_(u"Saisissez ici le numéro de rôle du rôle (ROLROL)"))
-        self.ctrl_code_rec.SetToolTipString(_(u"Saisissez ici le code Recette du rôle (ROLREC)"))
-        self.bouton_fichier.SetToolTipString(_(u"Cliquez ici pour générer le fichier ROLMRE"))
-        self.ctrl_type.SetToolTipString(_(u"Sélectionnez ici le type de l'impression"))
-        self.bouton_apercu.SetToolTipString(_(u"Cliquez ici pour afficher le rôle au format PDF"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_fermer.SetToolTipString(_(u"Cliquez ici pour fermer"))
+        self.ctrl_date.SetToolTip(wx.ToolTip(_(u"Saisissez la date d'émission du rôle")))
+        self.ctrl_code_coll.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Collectivité du rôle (ROLCOL)")))
+        self.ctrl_exercice.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Exercice du rôle (ROLEX)")))
+        self.ctrl_code_nat.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Nature du rôle (ROLNAT)")))
+        self.ctrl_num_role.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numéro de rôle du rôle (ROLROL)")))
+        self.ctrl_code_rec.SetToolTip(wx.ToolTip(_(u"Saisissez ici le code Recette du rôle (ROLREC)")))
+        self.bouton_fichier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour générer le fichier ROLMRE")))
+        self.ctrl_type.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici le type de l'impression")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour afficher le rôle au format PDF")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_fermer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
         self.SetMinSize((740, 740))
 
     def __do_layout(self):

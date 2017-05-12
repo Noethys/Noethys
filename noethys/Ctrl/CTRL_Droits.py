@@ -19,7 +19,13 @@ import wx.lib.mixins.gridlabelrenderer as glr
 import GestionDB
 import CTRL_Selection_activites
 import wx.lib.agw.supertooltip as STT
-import textwrap 
+import textwrap
+
+if 'phoenix' in wx.PlatformInfo:
+    from wx.grid import GridCellRenderer
+else :
+    from wx.grid import PyGridCellRenderer as GridCellRenderer
+
 
 
 LISTE_CATEGORIES = [
@@ -191,7 +197,10 @@ class MyRowLabelRenderer(glr.GridLabelRenderer):
     def Draw(self, grid, dc, rect, row):
         dc.SetBrush(wx.Brush(self._bgcolor))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetRowLabelAlignment()
         text = grid.GetRowLabelValue(row)
 ##        self.DrawBorder(grid, dc, rect)
@@ -204,7 +213,10 @@ class MyColLabelRenderer(glr.GridLabelRenderer):
     def Draw(self, grid, dc, rect, col):
         dc.SetBrush(wx.Brush(self._bgcolor))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetColLabelAlignment()
         text = grid.GetColLabelValue(col)
         self.DrawBorder(grid, dc, rect)
@@ -306,9 +318,9 @@ class Case():
         return dictDonnees
 
         
-class RendererCase(gridlib.PyGridCellRenderer):
+class RendererCase(GridCellRenderer):
     def __init__(self, case):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.case = case
         self.grid = None
 
@@ -339,7 +351,10 @@ class RendererCase(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(couleurFond, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         
         # Dessin d'une image
         if bmp != None :
@@ -923,7 +938,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 class DLG_Restrictions(wx.Dialog):
     def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent
         
         self.label_intro = wx.StaticText(self, wx.ID_ANY, _(u"Vous pouvez sélectionner des activités ou des groupes d'activités :"))
@@ -934,9 +949,9 @@ class DLG_Restrictions(wx.Dialog):
         
         # Propriétés
         self.SetTitle(_(u"Appliquer des restrictions"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((500, 500))
         
         # Layout

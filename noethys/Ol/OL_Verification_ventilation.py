@@ -383,7 +383,7 @@ class ListView(FastObjectListView):
         self.SetColumns(liste_Colonnes)
         self.CreateCheckStateColumn(0)
         self.SetEmptyListMsg(_(u"Aucun problème de ventilation"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         if self.colonneTri == None :
             self.SortBy(1, self.sensTri)
         else:

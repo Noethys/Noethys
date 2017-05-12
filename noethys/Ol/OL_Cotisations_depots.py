@@ -149,7 +149,7 @@ class ListView(FastObjectListView):
             self.SetEmptyListMsg(_(u"Aucune cotisation dans ce dépôt"))
         else:
             self.SetEmptyListMsg(_(u"Aucune cotisation disponible"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
 ##        self.SetSortColumn(self.columns[self.numColonneTri])
         self.SortBy(self.numColonneTri, ascending=self.ordreAscendant)
         self.SetObjects(self.donnees)

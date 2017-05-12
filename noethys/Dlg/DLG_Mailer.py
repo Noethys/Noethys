@@ -38,7 +38,7 @@ from Ol import OL_Pieces_jointes_emails
 
 class Dialog(wx.Dialog):
     def __init__(self, parent, categorie="saisie_libre", afficher_confirmation_envoi=True):
-        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX|wx.THICK_FRAME)
+        wx.Dialog.__init__(self, parent, -1, style=wx.DEFAULT_DIALOG_STYLE|wx.RESIZE_BORDER|wx.MAXIMIZE_BOX|wx.MINIMIZE_BOX)
         self.parent = parent   
         self.categorie = categorie
         self.afficher_confirmation_envoi = afficher_confirmation_envoi
@@ -105,18 +105,18 @@ class Dialog(wx.Dialog):
         self.ctrl_objet.SetFocus()
         
     def __set_properties(self):
-        self.ctrl_exp.SetToolTipString(_(u"Sélectionnez l'adresse d'expéditeur"))
-        self.ctrl_objet.SetToolTipString(_(u"Saisissez l'objet du message"))
-        self.bouton_modifier_dest.SetToolTipString(_(u"Cliquez pour ajouter ou supprimer des destinataires"))
-        self.bouton_ajouter_piece_spec.SetToolTipString(_(u"Cliquez pour ajouter une pièce jointe personnelle au destinataire sélectionné dans la liste"))
-        self.bouton_retirer_piece_spec.SetToolTipString(_(u"Cliquez pour retirer une pièce jointe personnelle au destinataire sélectionné dans la liste"))
-        self.bouton_ajouter_piece.SetToolTipString(_(u"Cliquez ici pour ajouter une pièce jointe"))
-        self.bouton_suppr_piece.SetToolTipString(_(u"Cliquez ici pour retirer la pièce jointe sélectionnée dans la liste"))
-        self.check_accuseReception.SetToolTipString(_(u"Cochez cette option pour demander un accusé de réception"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez pour obtenir de l'aide"))
-        self.bouton_outils.SetToolTipString(_(u"Cliquez ici pour accéder aux outils"))
-        self.bouton_envoyer.SetToolTipString(_(u"Cliquez ici pour envoyer le mail"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_exp.SetToolTip(wx.ToolTip(_(u"Sélectionnez l'adresse d'expéditeur")))
+        self.ctrl_objet.SetToolTip(wx.ToolTip(_(u"Saisissez l'objet du message")))
+        self.bouton_modifier_dest.SetToolTip(wx.ToolTip(_(u"Cliquez pour ajouter ou supprimer des destinataires")))
+        self.bouton_ajouter_piece_spec.SetToolTip(wx.ToolTip(_(u"Cliquez pour ajouter une pièce jointe personnelle au destinataire sélectionné dans la liste")))
+        self.bouton_retirer_piece_spec.SetToolTip(wx.ToolTip(_(u"Cliquez pour retirer une pièce jointe personnelle au destinataire sélectionné dans la liste")))
+        self.bouton_ajouter_piece.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour ajouter une pièce jointe")))
+        self.bouton_suppr_piece.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour retirer la pièce jointe sélectionnée dans la liste")))
+        self.check_accuseReception.SetToolTip(wx.ToolTip(_(u"Cochez cette option pour demander un accusé de réception")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez pour obtenir de l'aide")))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
+        self.bouton_envoyer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour envoyer le mail")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         self.SetMinSize((750, 680))
 
     def __do_layout(self):

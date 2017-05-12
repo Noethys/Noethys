@@ -111,7 +111,10 @@ class ImgBox(wx.Window):
         
     def InitValeursPhoto(self):
         """ Calcule la position et la taille initiale de la photo (au milieu) """
-        largeurDC, hauteurDC = self.GetClientSizeTuple()
+        if 'phoenix' in wx.PlatformInfo:
+            largeurDC, hauteurDC = self.GetClientSize()
+        else :
+            largeurDC, hauteurDC = self.GetClientSizeTuple()
         largeurImg, hauteurImg = self.source.GetSize()
         # Calcule le zoom en fonction de la taille de la photo
         largeurMax = max(self.tailleCadre) * 1.0 #min(largeurDC, hauteurDC) / 2.0
@@ -140,7 +143,10 @@ class ImgBox(wx.Window):
         
         # Définit la position et la taille du cadre de sélection
         coeffReduction = 2.0
-        largeurDC, hauteurDC = self.GetClientSizeTuple()
+        if 'phoenix' in wx.PlatformInfo:
+            largeurDC, hauteurDC = self.GetClientSize()
+        else :
+            largeurDC, hauteurDC = self.GetClientSizeTuple()
         self.posxCadre = (largeurDC / 2.0) - (self.tailleCadre[0] / 2.0)
         self.posyCadre = (hauteurDC / 2.0) - (self.tailleCadre[1] / 2.0)
         
@@ -179,7 +185,10 @@ class ImgBox(wx.Window):
     def evt_size(self,event):
         """ OnSize """
         ancLargeurDC, ancHauteurDC = self.largeurDC, self.hauteurDC
-        self.largeurDC, self.hauteurDC = self.GetClientSizeTuple()
+        if 'phoenix' in wx.PlatformInfo:
+            self.largeurDC, self.hauteurDC = self.GetClientSize()
+        else :
+            self.largeurDC, self.hauteurDC = self.GetClientSizeTuple()
         # Initialise la taille et la position initiale de la photo
         if self.posxPhoto == None : 
             self.InitValeursPhoto()
@@ -331,14 +340,14 @@ class Dialog(wx.Dialog):
             
     def __set_properties(self):
         self.SetTitle(_(u"Editeur de photo"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider l'image"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider l'image")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
         
-        self.bouton_rotation_gauche.SetToolTipString(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens inverse des aiguilles d'une montre"))
-        self.bouton_rotation_droite.SetToolTipString(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens des aiguilles d'une montre"))
-        self.slider_zoom.SetToolTipString(_(u"Ajustez avec cette fonction zoom\nla taille de la photo"))
-        self.bouton_reinit.SetToolTipString(_(u"Cliquez ici pour réinitialiser la position\net la taille de la photo initiale"))
+        self.bouton_rotation_gauche.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens inverse des aiguilles d'une montre")))
+        self.bouton_rotation_droite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour effectuer une rotation de 90°\n dans le sens des aiguilles d'une montre")))
+        self.slider_zoom.SetToolTip(wx.ToolTip(_(u"Ajustez avec cette fonction zoom\nla taille de la photo")))
+        self.bouton_reinit.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour réinitialiser la position\net la taille de la photo initiale")))
         
         self.SetMinSize((700, 600))
 

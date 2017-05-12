@@ -163,7 +163,7 @@ class ListView(FastObjectListView):
         self.CreateCheckStateColumn(0)
 
         self.SetEmptyListMsg(_(u"Aucune donnée"))
-        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, face="Tekton"))
+        self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(self.columns[2])
         self.SetObjects(self.donnees)
         self.cellEditMode = ObjectListView.CELLEDIT_SINGLECLICK
