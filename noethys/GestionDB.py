@@ -2014,7 +2014,6 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
-
         # =============================================================
 
         versionFiltre = (1, 1, 9, 8)
@@ -2025,6 +2024,15 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 0, 0)
+        if versionFichier < versionFiltre:
+            try:
+                if self.isNetwork == True:
+                    self.ExecuterReq("ALTER TABLE modeles_emails MODIFY COLUMN texte_xml MEDIUMTEXT;")
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 

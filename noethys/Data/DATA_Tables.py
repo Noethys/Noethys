@@ -1178,7 +1178,7 @@ DB_DATA = {
                                     ("nom", "VARCHAR(455)", u"Nom du modèle"),
                                     ("description", "VARCHAR(455)", u"Description du modèle"),
                                     ("objet", "VARCHAR(455)", u"Texte objet du mail"),
-                                    ("texte_xml", "VARCHAR(5000)", u"Contenu du texte version XML"),
+                                    ("texte_xml", "VARCHAR(50000)", u"Contenu du texte version XML"),
                                     ("IDadresse", "INTEGER", u"IDadresse d'expédition de mails"),
                                     ("defaut", "INTEGER", u"Modèle par défaut (0/1)"),
                                     ], # Modèles d'Emails

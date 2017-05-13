@@ -199,7 +199,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             self.ctrl_editeur.SetFocus()
             return     
-        
+
         # Sauvegarde
         DB = GestionDB.DB()
         listeDonnees = [    
