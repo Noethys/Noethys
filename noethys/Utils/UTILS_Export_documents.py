@@ -74,7 +74,7 @@ def Exporter(IDmodele=None, fichier="", depuisFichierDefaut=False):
     
     # Enregistrement dans un fichier Shelve
     if fichier != "" :
-        doc = shelve.open(fichier, "n")
+        doc = shelve.open(fichier.encode("iso-8859-15"), "n")
         doc["nom"] = nom
         doc["categorie"] = categorie
         doc["largeur"] = largeur
