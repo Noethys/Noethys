@@ -156,7 +156,7 @@ class CTRL_Image(wx.StaticBitmap):
     def OnItemMenu(self, event):
         id = event.GetId() 
         if id == 999 :
-            nomImage = "automatique"
+            nomImage = "Automatique"
         else :
             numCategorie = int((str(id))[0]) - 1
             numItem = id - ((numCategorie+1)*1000)
