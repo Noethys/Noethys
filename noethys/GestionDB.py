@@ -841,10 +841,10 @@ class DB:
                 connexionDefaut = mysql.connector.connect(host=host, user=user, passwd=passwd, port=int(port), use_unicode=True, pool_name="mypool4%s" % self.suffixe, pool_size=3)
                 
             cursor = connexionDefaut.cursor()
-            
+
             # Ouverture Database
             cursor.execute("USE %s;" % nomFichier)
-            
+
         except Exception, err:
             print "La connexion avec la base de donnees MYSQL a importer a echouee : \nErreur detectee :%s" % err
             erreur = err
@@ -856,18 +856,18 @@ class DB:
         req = "SELECT * FROM %s" % nomTable
         cursor.execute(req)
         listeDonneesTmp = cursor.fetchall()
+
+        # Lecture des champs
         listeChamps = []
-        for fieldDesc in cursor.description:
-            listeChamps.append(fieldDesc[0])
-        
+        req = "SHOW COLUMNS FROM %s;" % nomTable
+        cursor.execute(req)
+        listeTmpChamps = cursor.fetchall()
+        for valeurs in listeTmpChamps:
+            listeChamps.append((valeurs[0], valeurs[1]))
+
         # Préparation des noms de champs pour le transfert
-        txtChamps = "("
-        txtQMarks = "("
-        for nomChamp in listeChamps[0:] :
-            txtChamps += nomChamp + ", "
-            txtQMarks += "?, "
-        txtChamps = txtChamps[:-2] + ")"
-        txtQMarks = txtQMarks[:-2] + ")"
+        txtChamps = "(" + ", ".join([nomChamp for nomChamp, typeChamp in listeChamps]) + ")"
+        txtQMarks = "(" + ", ".join(["?" for nomChamp, typeChamp in listeChamps]) + ")"
 
         # Récupération des données
         listeDonnees = []
@@ -876,14 +876,14 @@ class DB:
             numColonne = 0
             listeValeurs = []
             for donnee in donnees[0:] :
-                typeChamp = dictTables[nomTable][numColonne][1]
-                if typeChamp == "BLOB" or typeChamp == "LONGBLOB" :
+                nomChamp, typeChamp = listeChamps[numColonne]
+                if "BLOB" in typeChamp.upper() :
                     if donnee != None :
                         donnee = sqlite3.Binary(donnee)
                 listeValeurs.append(donnee)
                 numColonne += 1
             listeDonnees.append(tuple(listeValeurs))
-        
+
         # Importation des données vers la nouvelle table
         req = "INSERT INTO %s %s VALUES %s" % (nomTable, txtChamps, txtQMarks)
         self.cursor.executemany(req, listeDonnees)
