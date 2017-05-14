@@ -346,10 +346,10 @@ class Dialog(wx.Dialog):
         
         # Récupération des paramètres
         listeIDfactures = []
-        montantTotal = 0.0
+        montantTotal = FloatToDecimal(0.0)
         for track in self.tracks :
             listeIDfactures.append(track.IDfacture)
-            montantTotal += -track.solde
+            montantTotal += track.total
 
         if len(listeIDfactures) == 0 : conditionFactures = "()"
         elif len(listeIDfactures) == 1 : conditionFactures = "(%d)" % listeIDfactures[0]
