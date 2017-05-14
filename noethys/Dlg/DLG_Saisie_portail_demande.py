@@ -1074,7 +1074,6 @@ class Traitement():
             from Dlg import DLG_Inscription
             dlg = DLG_Inscription.Dialog(self.parent, mode="saisie", IDindividu=self.track.IDindividu, IDfamille=self.track.IDfamille, intro=intro)
             dlg.bouton_activites.Show(False)
-            dlg.ctrl_parti.Show(False)
             dlg.ctrl_famille.Enable(False)
             dlg.SetIDactivite(IDactivite)
             dlg.SetIDgroupe(IDgroupe)
