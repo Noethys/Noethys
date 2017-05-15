@@ -27,7 +27,8 @@ import FonctionsPerso
 from Utils import UTILS_Dates
 import datetime
 from Utils import UTILS_Organisateur
-
+from Utils import UTILS_Questionnaires
+from Utils import UTILS_Infos_individus
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
@@ -106,6 +107,30 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetAttribute("obligatoire", True)
         self.Append(propriete)
 
+        # --------------------------- FAMILLES ------------------------------------------
+        self.Append( wxpg.PropertyCategory(_(u"Champs personnalisés")) )
+
+        liste_choix = []
+        for dictQuestion in self.GetGrandParent().Questionnaires.listeQuestions:
+            liste_choix.append(("{QUESTION_%d}" % dictQuestion["IDquestion"], dictQuestion["label"]))
+
+        # Question 1
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 1"), name="question_1", liste_choix=liste_choix, valeur=None)
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez un item du questionnaire famille à inclure dans le document"))
+        self.Append(propriete)
+
+        # Question 2
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 2"), name="question_2", liste_choix=liste_choix, valeur=None)
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez un item du questionnaire famille à inclure dans le document"))
+        self.Append(propriete)
+
+        # Question 3
+        propriete = CTRL_Propertygrid.Propriete_choix(label=_(u"Champ 3"), name="question_3", liste_choix=liste_choix, valeur=None)
+        propriete.SetEditor("EditeurChoix")
+        propriete.SetHelpString(_(u"Sélectionnez un item du questionnaire famille à inclure dans le document"))
+        self.Append(propriete)
 
         # --------------------------- INTRODUCTION ------------------------------------------
         self.Append( wxpg.PropertyCategory(_(u"Introduction")) )
@@ -283,6 +308,13 @@ class Dialog(wx.Dialog):
         intro = _(u"Vous pouvez ici modifier les paramètres d'impression du document. Cliquez sur le bouton 'Mémoriser les paramètres' pour réutiliser les mêmes paramètres pour les impressions suivantes.")
         self.SetTitle(titre)
         self.ctrl_bandeau = CTRL_Bandeau.Bandeau(self, titre=titre, texte=intro, hauteurHtml=30, nomImage="Images/32x32/Imprimante.png")
+
+        # Récupération des questionnaires
+        self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
+
+        # Récupération des infos de base familles
+        # self.infosIndividus = UTILS_Infos_individus.Informations()
+        # self.dictInfosFamilles = self.infosIndividus.GetDictValeurs(mode="famille", ID=None, formatChamp=True)
 
         # Paramètres
         self.ctrl_parametres = CTRL(self, dictOptions=dictOptions)
@@ -542,14 +574,12 @@ class Dialog(wx.Dialog):
                 else : cp = u""
                 if track.adresse_famille["ville"] != None : ville = track.adresse_famille["ville"]
                 else : ville = u""
-                
-                dataTableau = [(Paragraph(_(u"Famille"), styleLabel), Paragraph(_(u"Adresse"), styleLabel), Paragraph(_(u"Prélèvement bancaire"), styleLabel)),]
+
+                dataTableau = []
+                dataTableau.append((Paragraph(_(u"Famille"), styleLabel), Paragraph(_(u"Adresse"), styleLabel), Paragraph(_(u"Prélèvement bancaire"), styleLabel)))
+                dataTableau.append((Paragraph(track.nomsTitulaires, styleTexte), (Paragraph(rue, styleTexte), Paragraph(u"%s %s" % (cp, ville), styleTexte)),Paragraph(textePrelevement, styleTexte)))
+
                 largeursColonnes = [180, 140, largeurContenu-320]
-                dataTableau.append((
-                    Paragraph(track.nomsTitulaires, styleTexte), 
-                    (Paragraph(rue, styleTexte), Paragraph(u"%s %s" % (cp, ville), styleTexte)),
-                    Paragraph(textePrelevement, styleTexte),
-                    ))
                 tableau = Table(dataTableau, largeursColonnes)
                 listeStyles = [
                     ('TOPPADDING', (0, 0), (-1, 0), 0), 
@@ -562,7 +592,34 @@ class Dialog(wx.Dialog):
                     ]
                 tableau.setStyle(TableStyle(listeStyles))
                 story.append(tableau)
-                
+
+                # Récupération des champs personnalisés
+                dataTableau = []
+
+                label_1, label_2, label_3, question_1, question_2, question_3 = "", "", "", "", "", ""
+                for dictReponse in self.Questionnaires.GetDonnees(track.IDfamille) :
+                    if dictReponse["champ"] == dictOptions["question_1"] : label_1, question_1 = dictReponse["label"], dictReponse["reponse"]
+                    if dictReponse["champ"] == dictOptions["question_2"]: label_2, question_2 = dictReponse["label"], dictReponse["reponse"]
+                    if dictReponse["champ"] == dictOptions["question_3"] : label_3, question_3 = dictReponse["label"], dictReponse["reponse"]
+
+                if len(label_1) > 0 or len(label_2) > 0 or len(label_3) > 0 :
+                    dataTableau.append((Paragraph(label_1, styleLabel), Paragraph(label_2, styleLabel), Paragraph(label_3, styleLabel)))
+                    dataTableau.append((Paragraph(question_1, styleTexte), Paragraph(question_2, styleTexte), Paragraph(question_3, styleTexte)))
+                    largeursColonnes = [largeurContenu/3.0, largeurContenu/3.0, largeurContenu/3.0]
+                    tableau = Table(dataTableau, largeursColonnes)
+                    listeStyles = [
+                        ('TOPPADDING', (0, 0), (-1, 0), 0),
+                        ('BOTTOMPADDING',(0, 0), (-1, 0), -1),
+                        ('FONT', (0, -1), (-1, -1), "Helvetica", 7),
+                        ('GRID', (0, 0), (-1, 0), 0.25, colors.black),
+                        ('BOX', (0, 1), (-1, 1), 0.25, colors.black),
+                        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                        ('BACKGROUND', (0, 0), (-1, 0), couleurFond2),
+                        ]
+                    tableau.setStyle(TableStyle(listeStyles))
+                    story.append(tableau)
+
+
                 # Détail des prestations
                 if dictOptions["type_document"] == 0 and dictPrestations.has_key(track.IDfacture) :
                     
