@@ -43,7 +43,30 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
         self.timer = wx.Timer(self, -1)
         self.dernierRFID = None
         self.delai = 0
-        
+
+        # Importation des individus
+        listeActivites = self.interface.dictProcedure["parametres"]["activites"]
+        if listeActivites != None :
+            if len(listeActivites) == 0 : conditionActivites = "()"
+            elif len(listeActivites) == 1 : conditionActivites = "(%d)" % listeActivites[0]
+            else : conditionActivites = str(tuple(listeActivites))
+            req = """SELECT individus.IDindividu, nom, prenom 
+                    FROM individus 
+                    LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
+                    WHERE inscriptions.IDactivite IN %s
+                    AND (date_desinscription IS NULL OR date_desinscription>='%s')
+                    GROUP BY individus.IDindividu
+                    ORDER BY nom, prenom;""" % (conditionActivites, self.interface.date)
+            DB = GestionDB.DB()
+            DB.ExecuterReq(req)
+            listeTemp = DB.ResultatReq()
+            DB.Close()
+            self.listeIndividus = []
+            for IDindividu, nom, prenom in listeTemp :
+                self.listeIndividus.append(IDindividu)
+        else :
+            self.listeIndividus = None
+
         self.SetDescriptiveText(_(u"Rechercher..."))
         self.ShowSearchButton(True)
                 
@@ -219,6 +242,12 @@ class CTRL_Barre_numerique(wx.SearchCtrl):
             DIALOGUES.DLG_Message(self.interface, message=_(u"Ce numéro de badge n'existe pas !"), icone="erreur")
             return False
         else :
+            # Vérification que l'individu est inscrit
+            if self.listeIndividus != None :
+                if IDindividu not in self.listeIndividus :
+                    DIALOGUES.DLG_Message(self.interface, message=_(u"Il n'y a pas d'inscription valide !"), icone="erreur")
+                    return False
+            # Lance la procédure
             self.interface.Procedure(IDindividu)
 
 
@@ -241,8 +270,9 @@ class CTRL_Liste_individus(ULC.UltimateListCtrl):
                         FROM individus 
                         LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
                         WHERE inscriptions.IDactivite IN %s
+                        AND (date_desinscription IS NULL OR date_desinscription>='%s')
                         GROUP BY individus.IDindividu
-                        ORDER BY nom, prenom;""" % conditionActivites
+                        ORDER BY nom, prenom;""" % (conditionActivites, self.interface.date)
         else :
             req = """SELECT IDindividu, IDcivilite, nom, prenom FROM individus ORDER BY nom, prenom;"""
         DB = GestionDB.DB()

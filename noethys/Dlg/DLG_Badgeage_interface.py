@@ -258,7 +258,7 @@ class CTRL_Interface(wx.Panel):
         self.ctrl_grille.Show(montrerGrille) # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ICI AFFICHAGE DU CTRL_GRILLE
         self.ctrl_barre_numerique = CONTROLES.CTRL_Barre_numerique(self)
         self.ctrl_barre_numerique.Show(False)
-        self.ctrl_liste_individus = CONTROLES.CTRL_Liste_individus(self) 
+        self.ctrl_liste_individus = CONTROLES.CTRL_Liste_individus(self)
         self.ctrl_liste_individus.Show(False) 
         if self.nomControleActif == "liste_individus" :
             self.ctrl_liste_individus.Initialisation() 

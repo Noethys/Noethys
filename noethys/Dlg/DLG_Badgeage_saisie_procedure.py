@@ -160,7 +160,7 @@ class CTRL_Interface(wx.Panel):
         self.radio_barre = wx.RadioButton(self, -1, _(u"Barre numérique"), style=wx.RB_GROUP)
         self.radio_clavier = wx.RadioButton(self, -1, _(u"Barre et clavier numérique"))
         self.radio_liste = wx.RadioButton(self, -1, _(u"Liste des individus"))
-        self.check_activites = wx.CheckBox(self, -1, _(u"Afficher uniquement les inscrits aux activités :"))
+        self.check_activites = wx.CheckBox(self, -1, _(u"Activer uniquement les inscrits aux activités :"))
         self.ctrl_activites = CTRL_Activite(self)
 
         self.__set_properties()
@@ -183,7 +183,7 @@ class CTRL_Interface(wx.Panel):
         self.radio_barre.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec lecteur de code-barres")))
         self.radio_clavier.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec écrans tactiles")))
         self.radio_liste.SetToolTip(wx.ToolTip(_(u"Recommandé pour la saisie avec écrans tactiles")))
-        self.check_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher uniquement les inscrits aux activités sélectionnées")))
+        self.check_activites.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour activer uniquement les inscrits aux activités sélectionnées")))
         self.ctrl_activites.SetToolTip(wx.ToolTip(_(u"Cochez les activités")))
         self.bouton_image.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour sélectionner une image personnalisée")))
 
@@ -215,8 +215,8 @@ class CTRL_Interface(wx.Panel):
         grid_sizer_identification.Add(self.radio_barre, 0, 0, 0)
         grid_sizer_identification.Add(self.radio_clavier, 0, 0, 0)
         grid_sizer_identification.Add(self.radio_liste, 0, 0, 0)
-        grid_sizer_identification.Add(self.check_activites, 0, wx.LEFT, 20)
-        grid_sizer_identification.Add(self.ctrl_activites, 0, wx.LEFT|wx.EXPAND, 20)
+        grid_sizer_identification.Add(self.check_activites, 0, wx.TOP, 10)
+        grid_sizer_identification.Add(self.ctrl_activites, 0, wx.EXPAND, 0)
         grid_sizer_identification.AddGrowableRow(4)
         grid_sizer_identification.AddGrowableCol(0)
         sizer_identification.Add(grid_sizer_identification, 1, wx.ALL|wx.EXPAND, 10)
@@ -261,12 +261,13 @@ class CTRL_Interface(wx.Panel):
         else:
             dlg.Destroy()
 
-    def OnChoixIdentification(self, event): 
-        self.check_activites.Enable(self.radio_liste.GetValue())
-        self.OnCheckActivites(None)
+    def OnChoixIdentification(self, event):
+        pass
+        # self.check_activites.Enable(self.radio_liste.GetValue())
+        # self.OnCheckActivites(None)
 
     def OnCheckActivites(self, event): 
-        if self.radio_liste.GetValue() == True and self.check_activites.GetValue() == True :
+        if self.check_activites.GetValue() == True :
             self.ctrl_activites.Enable(True)
         else :
             self.ctrl_activites.Enable(False)
@@ -287,9 +288,8 @@ class CTRL_Interface(wx.Panel):
 ##                dlg.Destroy()
 ##                return False
         
-        if self.radio_liste.GetValue() and self.check_activites.GetValue() :
-            if len(self.ctrl_activites.GetIDcoches()) == 0 :
-                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'affichage des inscrits mais sans sélectionner d'activités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
+        if self.check_activites.GetValue() and len(self.ctrl_activites.GetIDcoches()) == 0 :
+                dlg = wx.MessageDialog(self, _(u"Vous avez sélectionné l'activation des inscrits mais sans sélectionner d'activités !"), _(u"Erreur"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return False
@@ -579,7 +579,7 @@ class Dialog(wx.Dialog):
         if self.ctrl_interface.radio_barre.GetValue() : systeme = "barre_numerique"
         if self.ctrl_interface.radio_clavier.GetValue() : systeme = "clavier_numerique"
         if self.ctrl_interface.radio_liste.GetValue() : systeme = "liste_individus"
-        if self.ctrl_interface.radio_liste.GetValue() == True and self.ctrl_interface.check_activites.GetValue() == True :
+        if self.ctrl_interface.check_activites.GetValue() == True :
             activites = self.ctrl_interface.ctrl_activites.GetTexteCoches() 
         else :
             activites = None
