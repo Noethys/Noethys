@@ -770,7 +770,14 @@ class Page_installation(wx.Panel):
             self.journal.WriteText(_(u"\n\nEffacement fichiers temporaires. Veuillez patienter..."))
             os.system("rm -rf " + dirTemp +"/Noethys-master")
         else :
-            FonctionsPerso.LanceFichierExterne(fichierMAJ)
+            try :
+                FonctionsPerso.LanceFichierExterne(fichierMAJ)
+            except :
+                self.journal.WriteText(_(u"\nErreur : Impossible d'ouvrir l'installeur."))
+                dlg = wx.MessageDialog(self, _(u"Noethys n'a pas réussi à ouvrir l'installeur.\n\nCe blocage peut peut-être venir de votre antivirus. Essayez éventuellement de le désactiver le temps de l'installation de la mise à jour."), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
         
         # Fermeture de Noethys
         try :
