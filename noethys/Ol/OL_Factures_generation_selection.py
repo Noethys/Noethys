@@ -61,6 +61,7 @@ class ListView(FastObjectListView):
         # Initialisation du listCtrl
         self.dictParametres = {}
         self.dictComptes = {}
+        self.donnees = []
         FastObjectListView.__init__(self, *args, **kwds)
         # DictTitulaires
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 
@@ -181,14 +182,28 @@ class ListView(FastObjectListView):
         # Création du menu contextuel
         menuPop = wx.Menu()
 
-        # Item Ouvrir fiche famille
-        item = wx.MenuItem(menuPop, 5, _(u"Afficher un aperçu PDF"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
+        # Aperçu sélection
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Aperçu de la facture sélectionnée"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
         menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.AfficherApercu, id=5)
+        self.Bind(wx.EVT_MENU, self.ApercuSelection, id=id)
         if ID == None : item.Enable(False)
-        
+
+        # Aperçu factures cochées
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Aperçu des factures cochées"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ApercuCoches, id=id)
+
+        # Aperçu Toutes les factures
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Aperçu de toutes les factures"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ApercuToutes, id=id)
+
         menuPop.AppendSeparator()
 
         # Item Tout cocher
@@ -303,25 +318,58 @@ class ListView(FastObjectListView):
         # Récupération des données
         dictCompte = self.dictComptes[IDcompte_payeur]
 
+    def ApercuSelection(self, event=None):
+        if len(self.Selection()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        track = self.Selection()[0]
+        dictComptes = {track.IDcompte_payeur: self.dictComptes[track.IDcompte_payeur]}
+        self.ApercuFactures(dictComptes)
+
+    def ApercuCoches(self, event=None):
+        if len(self.GetTracksCoches()) == 0:
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez coché aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        dictComptes = {}
+        for track in self.GetTracksCoches() :
+            dictComptes[track.IDcompte_payeur] = self.dictComptes[track.IDcompte_payeur]
+        self.ApercuFactures(dictComptes)
+
+    def ApercuToutes(self, event=None):
+        if len(self.donnees) == 0:
+            dlg = wx.MessageDialog(self, _(u"Il n'y a aucune facture dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
+        dictComptes = {}
+        for track in self.donnees :
+            dictComptes[track.IDcompte_payeur] = self.dictComptes[track.IDcompte_payeur]
+        self.ApercuFactures(dictComptes)
+
+    def ApercuFactures(self, dictComptes={}):
         # Récupération des paramètres d'affichage
         dlg = DLG_Apercu_facture.Dialog(self, provisoire=True)
         if dlg.ShowModal() == wx.ID_OK:
             dictOptions = dlg.GetParametres()
             dlg.Destroy()
-        else :
+        else:
             dlg.Destroy()
             return False
-                   
+
         # Fabrication du PDF
         dlgAttente = PBI.PyBusyInfo(_(u"Création de l'aperçu au format PDF..."), parent=None, title=_(u"Veuillez patienter..."), icon=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Logo.png"), wx.BITMAP_TYPE_ANY))
-        wx.Yield() 
-        try :
-            UTILS_Impression_facture.Impression({IDcompte_payeur : dictCompte}, dictOptions, IDmodele=dictOptions["IDmodele"])
+        wx.Yield()
+        try:
+            UTILS_Impression_facture.Impression(dictComptes, dictOptions, IDmodele=dictOptions["IDmodele"])
             del dlgAttente
         except Exception, err:
             del dlgAttente
             traceback.print_exc(file=sys.stdout)
-            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu de la facture : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+            dlg = wx.MessageDialog(self, _(u"Désolé, le problème suivant a été rencontré dans la création de l'aperçu des factures : \n\n%s") % err, _(u"Erreur"), wx.OK | wx.ICON_ERROR)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -365,10 +413,11 @@ class MyFrame(wx.Frame):
         self.ctrl = self.listviewAvecFooter.GetListview()
         
         dictParametres = {
-            "date_debut" : datetime.date(2015, 7, 1),
-            "date_fin" : datetime.date(2015, 7, 31),
+            "date_debut" : datetime.date(2015, 1, 1),
+            "date_fin" : datetime.date(2017, 3, 31),
             "date_emission" : datetime.date.today(),
             "date_echeance" : None,
+            "date_anterieure" : None,
             "prestations" : ["consommation", "cotisation", "autre"],
             "IDcompte_payeur" : None,
             "listeActivites" : [1, 2, 3],

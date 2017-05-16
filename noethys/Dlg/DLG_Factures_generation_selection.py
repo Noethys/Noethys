@@ -49,11 +49,11 @@ class Panel(wx.Panel):
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_BUTTON, self.ctrl_factures.AfficherApercu, self.bouton_apercu)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonApercu, self.bouton_apercu)
         self.Bind(wx.EVT_BUTTON, self.CocherMontant, self.bouton_option_montant)
 
     def __set_properties(self):
-        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu PDF de la facture sélectionnée")))
+        self.bouton_apercu.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour créer un aperçu PDF d'une ou plusieurs factures")))
         self.bouton_option_montant.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour cocher uniquement les factures dont le montant 'Dû Période' est supérieur ou égal au montant souhaité")))
 
     def __do_layout(self):
@@ -143,6 +143,52 @@ class Panel(wx.Panel):
             topWindow.SetStatusText(texte)
         except : 
             pass
+
+    def OnBoutonApercu(self, event):
+        """Ouverture du menu contextuel """
+        # Création du menu contextuel
+        menuPop = wx.Menu()
+
+        # Aperçu sélection
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Aperçu de la facture sélectionnée"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_factures.ApercuSelection, id=id)
+
+        # Aperçu factures cochées
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Aperçu des factures cochées"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_factures.ApercuCoches, id=id)
+
+        # Aperçu Toutes les factures
+        id = wx.NewId()
+        item = wx.MenuItem(menuPop, id, _(u"Aperçu de toutes les factures"))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG))
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_factures.ApercuToutes, id=id)
+
+        menuPop.AppendSeparator()
+
+        # Item Apercu avant impression
+        item = wx.MenuItem(menuPop, 40, _(u"Aperçu avant impression de la liste"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_factures.Apercu, id=40)
+
+        # Item Imprimer
+        item = wx.MenuItem(menuPop, 50, _(u"Imprimer la liste"))
+        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
+        item.SetBitmap(bmp)
+        menuPop.AppendItem(item)
+        self.Bind(wx.EVT_MENU, self.ctrl_factures.Imprimer, id=50)
+
+        self.PopupMenu(menuPop)
+        menuPop.Destroy()
+
 
     def SauvegardeFactures(self):
         """ Sauvegarde des factures """
