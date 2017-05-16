@@ -43,7 +43,7 @@ def DateEngEnDateDD(dateEng):
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
-def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=True):
+def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=True, afficherFactures=False):
     DB = GestionDB.DB()    
     # Récupère les comptes payeurs
     req = """SELECT IDcompte_payeur, IDfamille
@@ -66,18 +66,22 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
         dictVentilations[IDcompte_payeur] = total_ventilations
     
     # Récupère les prestations
+    if afficherFactures == True :
+        condition = "AND IDfacture IS NOT NULL"
+    else :
+        condition = ""
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_prestations
     FROM prestations
-    WHERE date<='%s'
+    WHERE date<='%s' %s
     GROUP BY IDcompte_payeur
     ORDER BY IDcompte_payeur
-    ;""" % date
+    ;""" % (date, condition)
     DB.ExecuterReq(req)
     listePrestations = DB.ResultatReq()
     dictPrestations = {}
     for IDcompte_payeur, total_prestations in listePrestations :
         dictPrestations[IDcompte_payeur] = total_prestations
-        
+    
     # Récupère les règlements
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_reglements
     FROM reglements
@@ -175,8 +179,8 @@ class ListView(FastObjectListView):
     def OnItemActivated(self,event):
         self.OuvrirFicheFamille(None)
                 
-    def InitModel(self, date=None, afficherDebit=True, afficherCredit=True, afficherNul=True):
-        self.donnees = Importation(date, afficherDebit, afficherCredit, afficherNul)
+    def InitModel(self, date=None, afficherDebit=True, afficherCredit=True, afficherNul=True, afficherFactures=False):
+        self.donnees = Importation(date, afficherDebit, afficherCredit, afficherNul, afficherFactures)
             
     def InitObjectListView(self):            
         # Couleur en alternance des lignes
@@ -219,9 +223,9 @@ class ListView(FastObjectListView):
         self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, False, "Tekton"))
         self.SetSortColumn(1)
         
-    def MAJ(self, date=None, afficherDebit=True, afficherCredit=True, afficherNul=True):
+    def MAJ(self, date=None, afficherDebit=True, afficherCredit=True, afficherNul=True, afficherFactures=False):
         self.date = date
-        self.InitModel(date, afficherDebit, afficherCredit, afficherNul)
+        self.InitModel(date, afficherDebit, afficherCredit, afficherNul, afficherFactures)
         self.SetObjects(self.donnees)
 ##        self.AjouteLigneTotal(listeNomsColonnes=["solde", "total_prestations", "total_reglements"]) 
 

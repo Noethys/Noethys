@@ -37,6 +37,7 @@ class Dialog(wx.Dialog):
         self.check_debit = wx.CheckBox(self, -1, _(u"Débiteurs"))
         self.check_credit = wx.CheckBox(self, -1, _(u"Créditeurs"))
         self.check_nul = wx.CheckBox(self, -1, _(u"Nuls"))
+        self.check_factures = wx.CheckBox(self, -1, _(u"Uniquement les prestations facturées"))
         self.bouton_actualiser = wx.Button(self, -1, _(u"Actualiser"))
         
         # Liste
@@ -67,6 +68,7 @@ class Dialog(wx.Dialog):
         self.Bind(wx.EVT_CHECKBOX, self.OnFiltres, self.check_debit)
         self.Bind(wx.EVT_CHECKBOX, self.OnFiltres, self.check_credit)
         self.Bind(wx.EVT_CHECKBOX, self.OnFiltres, self.check_nul)
+        self.Bind(wx.EVT_CHECKBOX, self.OnFiltres, self.check_factures)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonActualiser, self.bouton_actualiser)
         
         # Init contrôles
@@ -89,6 +91,7 @@ class Dialog(wx.Dialog):
         self.check_debit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes débiteurs")))
         self.check_credit.SetToolTip(wx.ToolTip(_(u"Afficher les soldes créditeurs")))
         self.check_nul.SetToolTip(wx.ToolTip(_(u"Afficher les soldes nuls")))
+        self.check_factures.SetToolTip(wx.ToolTip(_(u"Inclure uniquement les prestations qui apparaissent sur des factures")))
         self.SetMinSize((780, 700))
 
     def __do_layout(self):
@@ -97,7 +100,7 @@ class Dialog(wx.Dialog):
                 
         # Parametres
         box_parametres = wx.StaticBoxSizer(self.box_parametres_staticbox, wx.VERTICAL)
-        grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=9, vgap=5, hgap=5)
+        grid_sizer_parametres = wx.FlexGridSizer(rows=1, cols=11, vgap=5, hgap=5)
         grid_sizer_parametres.Add(self.label_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.ctrl_date, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add( (5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
@@ -105,7 +108,9 @@ class Dialog(wx.Dialog):
         grid_sizer_parametres.Add(self.check_debit, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.check_credit, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.check_nul, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_parametres.Add( (5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add((5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add(self.check_factures, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_parametres.Add((5, 5), 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.Add(self.bouton_actualiser, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_parametres.AddGrowableCol(7)
         box_parametres.Add(grid_sizer_parametres, 1, wx.ALL|wx.EXPAND, 5)
@@ -161,8 +166,9 @@ class Dialog(wx.Dialog):
         date = self.ctrl_date.GetDate() 
         afficherDebit = self.check_debit.GetValue() 
         afficherCredit = self.check_credit.GetValue() 
-        afficherNul = self.check_nul.GetValue() 
-        self.ctrl_soldes.MAJ(date, afficherDebit, afficherCredit, afficherNul)
+        afficherNul = self.check_nul.GetValue()
+        afficherFactures = self.check_factures.GetValue()
+        self.ctrl_soldes.MAJ(date, afficherDebit, afficherCredit, afficherNul, afficherFactures)
         
     def OuvrirFiche(self, event):
         self.ctrl_soldes.OuvrirFicheFamille(None)
