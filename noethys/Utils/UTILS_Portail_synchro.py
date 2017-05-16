@@ -424,6 +424,9 @@ class Synchro():
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER", parametre=str(self.dict_parametres["recevoir_document_site"])))
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER_LIEU", parametre=self.dict_parametres["recevoir_document_site_lieu"]))
         session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_ACTIF", parametre=str(self.dict_parametres["paiement_ligne_actif"])))
+        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
+        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MULTI_FACTURES", parametre=str(self.dict_parametres["paiement_ligne_multi_factures"])))
+        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
         session.add(models.Parametre(nom="ACCUEIL_MESSAGES_AFFICHER", parametre=str(self.dict_parametres["accueil_messages_afficher"])))
         session.add(models.Parametre(nom="ACCUEIL_ETAT_DOSSIER_AFFICHER", parametre=str(self.dict_parametres["accueil_etat_dossier_afficher"])))
@@ -457,13 +460,13 @@ class Synchro():
         # Création des users
         dictTitulaires = UTILS_Titulaires.GetTitulaires()
 
-        req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp
+        req = """SELECT IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus
         FROM familles;"""
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
 
         listeIDfamille = []
-        for IDfamille, internet_actif, internet_identifiant, internet_mdp in listeDonnees :
+        for IDfamille, internet_actif, internet_identifiant, internet_mdp, email_recus in listeDonnees :
             nomsTitulaires = dictTitulaires[IDfamille]["titulairesSansCivilite"]
             # Cryptage du mot de passe
             internet_mdp = SHA256.new(internet_mdp).hexdigest()
@@ -471,8 +474,22 @@ class Synchro():
             # Génération du session_token
             session_token = "famille-%d-%s-%s-%d" % (IDfamille, internet_identifiant, internet_mdp[:20], internet_actif)
 
+            # Récupération de l email de recu
+            if email_recus != None :
+                IDindividu, categorie, adresse = email_recus.split(";")
+                if IDindividu != "" :
+                    req = """SELECT IDindividu, mail, travail_mail FROM individus WHERE IDindividu=%d;""" % int(IDindividu)
+                    DB.ExecuterReq(req)
+                    listeA = DB.ResultatReq()
+                    dictA = {}
+                    for IDindividu, mail, travail_mail in listeA :
+                        dictA[IDindividu] = {"perso":mail, "travail":travail_mail}
+                    email = dictA[IDindividu][categorie]
+            else :
+                email = ""
+
             # Création du user
-            m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, role="famille", IDfamille=IDfamille, actif=internet_actif, session_token=session_token)
+            m = models.User(IDuser=None, identifiant=internet_identifiant, cryptpassword=internet_mdp, nom=nomsTitulaires, email=email, role="famille", IDfamille=IDfamille, actif=internet_actif, session_token=session_token)
             session.add(m)
 
             if internet_actif == 1 :
@@ -509,6 +526,7 @@ class Synchro():
         SELECT factures.IDfacture, factures.IDprefixe, factures_prefixes.prefixe, factures.numero, factures.IDcompte_payeur,
         factures.date_edition, factures.date_echeance, factures.IDutilisateur,
         factures.date_debut, factures.date_fin, factures.total, factures.regle, factures.solde,
+        factures.IDregie,
         comptes_payeurs.IDfamille, factures.etat
         FROM factures
         LEFT JOIN comptes_payeurs ON comptes_payeurs.IDcompte_payeur = factures.IDcompte_payeur
@@ -536,7 +554,7 @@ class Synchro():
             if IDfacture != None :
                 dictVentilation[IDfacture] = montantVentilation
 
-        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDfamille, etat in listeFactures :
+        for IDfacture, IDprefixe, prefixe, numero, IDcompte_payeur, date_edition, date_echeance, IDutilisateur, date_debut, date_fin, total, regle, solde, IDregie, IDfamille, etat in listeFactures :
             if IDfamille in listeIDfamille :
                 if numero == None : numero = 0
                 if IDprefixe != None :
@@ -560,7 +578,7 @@ class Synchro():
                 solde_actuel = totalPrestations - totalVentilation
 
                 m = models.Facture(IDfacture=IDfacture, IDfamille=IDfamille, numero=numero, date_edition=date_edition, date_debut=date_debut,\
-                            date_fin=date_fin, montant=float(totalPrestations), montant_regle=float(totalVentilation), montant_solde=float(solde_actuel))
+                            date_fin=date_fin, montant=float(totalPrestations), montant_regle=float(totalVentilation), montant_solde=float(solde_actuel), IDregie=IDregie)
                 session.add(m)
 
 
@@ -837,6 +855,15 @@ class Synchro():
 
             m = models.Message(IDmessage=IDmessage, titre=titre, texte=texte, \
                                affichage_date_debut=affichage_date_debut, affichage_date_fin=affichage_date_fin)
+            session.add(m)
+
+        # Création des régies
+        req = """SELECT IDregie, nom, numclitipi, email_regisseur
+        FROM factures_regies;"""
+        DB.ExecuterReq(req)
+        listeRegies = DB.ResultatReq()
+        for IDregie, nom, numclitipi, email_regisseur in listeRegies :
+            m = models.Regie(IDregie=IDregie, nom=nom, numclitipi=numclitipi, email_regisseur=email_regisseur)
             session.add(m)
 
         # Fermeture de la base de données Noethys

@@ -19,6 +19,7 @@ import time
 import codecs
 import os.path
 import webbrowser
+import GestionDB
 
 from Dlg import DLG_Message_html
 
@@ -43,6 +44,16 @@ LISTE_DELAIS_SYNCHRO = [(30, u"Toutes les 30 minutes"), (60, u"Toutes les heures
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
+LISTE_MODES_REGLEMENT = [(0, u"Aucun")]
+db = GestionDB.DB()
+req = """SELECT IDmode, label
+FROM modes_reglements
+ORDER BY IDmode;"""
+db.ExecuterReq(req)
+listeDonnees = db.ResultatReq()
+db.Close()
+for IDmode, label in listeDonnees :
+    LISTE_MODES_REGLEMENT.append((IDmode, label))
 
 
 VALEURS_DEFAUT = {
@@ -87,6 +98,10 @@ VALEURS_DEFAUT = {
     "recevoir_document_site" : True,
     "recevoir_document_site_lieu" : _(u"à l'accueil de la structure"),
     "paiement_ligne_actif" : False,
+    "paiement_ligne_systeme" : 0,
+    "paiement_ligne_mode_reglement" : 0,
+    "paiement_ligne_tipi_saisie" : 0,
+    "paiement_ligne_multi_factures" : False,
     "accueil_bienvenue" : _(u"Bienvenue sur le portail Famille"),
     "accueil_messages_afficher" : True,
     "accueil_etat_dossier_afficher" : True,
@@ -327,7 +342,7 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         propriete.SetHelpString(_(u"Saisissez le mot de passe de l utilisateur SSH"))
         self.Append(propriete)
 
-        # R<E9>pertoire SSH
+        # Répertoire SSH
         nom = "ssh_repertoire"
         propriete = wxpg.StringProperty(label=_(u"Répertoire"), name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Saisissez le répertoire SSH (ex : /tmp/connecthys)"))
@@ -504,9 +519,34 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Activer le paiement en ligne
         nom = "paiement_ligne_actif"
-        propriete = wxpg.BoolProperty(label=_(u"Activer le paiement en ligne (Non fonctionnel)"), name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Cochez cette case pour activer la fonction de paiement en ligne"))
+        propriete = wxpg.BoolProperty(label=_(u"Activer le paiement en ligne"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour activer la fonction de paiement en ligne\n(ATTENTION: en test / développement)"))
         propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Choix du systeme de paiement en ligne
+        nom = "paiement_ligne_systeme"
+        propriete = wxpg.EnumProperty(label=_(u"Systeme / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI Régie"), _(u"TIPI Formulaire")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez le systeme / partenaire à utiliser pour le paiement en ligne"))
+        self.Append(propriete)
+
+        # Choix du mode de règlement pour les paiements en ligne
+        nom = "paiement_ligne_mode_reglement"
+        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), labels=[y for x, y in LISTE_MODES_REGLEMENT], values=[x for x, y in LISTE_MODES_REGLEMENT], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez le mode de règlement à associer aux paiements en ligne des factures"))
+        self.Append(propriete)
+
+        # Autoriser le paiement en ligne de plusieurs factures sur la meme transaction
+        nom = "paiement_ligne_multi_factures"
+        propriete = wxpg.BoolProperty(label=_(u"Autoriser le paiement en ligne multi factures"), name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Cochez cette case pour autoriser le paiement en ligne de plusieurs factures en une fois"))
+        propriete.SetAttribute("UseCheckbox", True)
+        self.Append(propriete)
+
+        # Type de saisie pour TIPI ( Test / Validation / Production )
+        nom = "paiement_ligne_tipi_saisie"
+        propriete = wxpg.EnumProperty(label=_(u"Mode de saisie TIPI"), labels=[_(u"Test"), _(u"Validation"), _(u"Production")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez le type de saisie TIPI.\nATTENTION !!!\n(A modifier uniquement si vous savez ce que vous faites.)"))
         self.Append(propriete)
 
         # Catégorie
@@ -1185,7 +1225,7 @@ class Dialog(wx.Dialog):
         # Ouvrir les stats de Connecthys Easy
         id = wx.NewId()
         item = wx.MenuItem(menu, id, _(u"Afficher les statistiques dans le navigateur"))
-        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/barres.png"), wx.BITMAP_TYPE_PNG))
+        item.SetBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Barres.png"), wx.BITMAP_TYPE_PNG))
         menu.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.OuvrirStats, id=id)
 

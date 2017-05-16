@@ -266,6 +266,7 @@ DB_DATA = {
                                     ("portail_reservations_limite", "VARCHAR(20)", u"Date limite de modification d'une réservation"),
                                     ("portail_reservations_absenti", "VARCHAR(20)", u"Application d'une absence injustifiée"),
                                     ("portail_unites_multiples", "INTEGER", u"Sélection multiple d'unités autorisée (0/1)"),
+                                    ("regie", "INTEGER", u"ID de la régie associée"),
                                     ], # Activités
 
     "agrements":[            ("IDagrement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID Agrément"),
@@ -776,6 +777,7 @@ DB_DATA = {
                                     ("prestations", "VARCHAR(500)", u"Liste des types de prestations intégrées"),
                                     ("etat", "VARCHAR(100)", u"Etat de la facture"),
                                     ("IDprefixe", "INTEGER", u"ID du préfixe"),
+                                    ("IDregie", "INTEGER", u"ID de la régie"),
                                     ], # Factures éditées
 
     "textes_rappels":[      ("IDtexte", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDtexte"),
@@ -1501,6 +1503,13 @@ DB_DATA = {
                                     ("nom", "VARCHAR(450)", u"Nom du préfixe"),
                                     ("prefixe", "VARCHAR(100)", u"Préfixe de facture"),
                                     ], # Préfixes de factures
+
+    "factures_regies":              [("IDregie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID régie de facturation"),
+                                    ("nom", "VARCHAR(450)", u"Nom de la régie"),
+                                    ("numclitipi", "VARCHAR(8)", u"Numéro de client TIPI"),
+                                    ("email_regisseur", "VARCHAR(100)", u"email du régisseur"),
+                                    ("IDcompte_bancaire", "INTEGER", u"ID du compte bancaire associé"),
+                                    ], # RÃ©gies de facturation
 
     "portail_periodes":             [("IDperiode", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID période"),
                                     ("IDactivite", "INTEGER", u"ID de l'activité"),

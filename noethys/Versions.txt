@@ -1,3 +1,7 @@
+Version 1.2.0.1 (16/05/2017) :
+
+- Ajout des régies de facturation
+
 Version 1.2.0.0 (14/05/2017) :
 
 - Ajout compatibilité avec wxPython Phoenix
@@ -5,6 +9,7 @@ Version 1.2.0.0 (14/05/2017) :
 - Correction bug grille des conso sur suppression de prestations avec id positif
 - Correction bug sur attestation de présence
 - Correction de divers petits bugs
+
 
 Version 1.1.9.9 (08/05/2017) :
 
