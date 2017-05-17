@@ -196,6 +196,18 @@ class DLG_Rapport(wx.Dialog):
         startTLS = dictExp["startTLS"]
         motdepasse = dictExp["motdepasse"]
 
+        if adresseExpediteur == None :
+            dlg = wx.MessageDialog(self, _(u"L'adresse d'expédition ne semble pas valide. Veuillez la vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        if auth == True and motdepasse == None :
+            dlg = wx.MessageDialog(self, _(u"Le mot de passe associé à l'adresse d'expédition ne semble pas valide. Veuillez le vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
         # Création du message
         msg = MIMEMultipart()
         msg['From'] = adresseExpediteur

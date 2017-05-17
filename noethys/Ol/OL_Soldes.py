@@ -81,7 +81,7 @@ def Importation(date=None, afficherDebit=True, afficherCredit=True, afficherNul=
     dictPrestations = {}
     for IDcompte_payeur, total_prestations in listePrestations :
         dictPrestations[IDcompte_payeur] = total_prestations
-    
+
     # Récupère les règlements
     req = """SELECT IDcompte_payeur, SUM(montant) AS total_reglements
     FROM reglements

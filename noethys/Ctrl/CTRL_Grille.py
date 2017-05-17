@@ -1091,7 +1091,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorie_tarif" : nomCategorie_tarif,
                     "date_desinscription" : date_desinscription,
                     }
-                dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
+                if dictIndividus.has_key(IDindividu):
+                    dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
         
         else:
             
