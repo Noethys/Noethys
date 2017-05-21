@@ -853,6 +853,7 @@ class Notebook(wx.aui.AuiNotebook):
             for IDindividu in listeIDindividus :
                 # Création de la page
                 page = CTRL_Saisie_Liens(self, IDindividu=IDindividu, IDfamille=self.IDfamille, donnees=self.donnees)
+                page.MAJ_ctrl()
                 self.dictPages[IDindividu] = indexPage
                 nomIndividu = self.donnees.dictInfosIndividus[IDindividu]["nom"] + " " + self.donnees.dictInfosIndividus[IDindividu]["prenom"]
                 self.AddPage(page, nomIndividu)
@@ -961,17 +962,22 @@ class Frame_individu_liens(wx.Frame):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    
-    # DLG tous les liens
-##    dialog_1 = Dialog_liens(None, IDindividu=None, IDfamille=4)
-##    Frame_individu_liens
-##    app.SetTopWindow(dialog_1)
-##    dialog_1.ShowModal()
-    
-    # Frame pour test DLG_individu onglet Liens
-    frame_1 = Frame_individu_liens(None, -1, "TEST", size=(800, 400))
-    app.SetTopWindow(frame_1)
-    frame_1.Show()
+    test = "tous"
+
+    if test == "tous" :
+
+        # DLG tous les liens
+        dialog_1 = Dialog_liens(None, IDindividu=None, IDfamille=4)
+        Frame_individu_liens
+        app.SetTopWindow(dialog_1)
+        dialog_1.ShowModal()
+
+    else :
+
+        # Frame pour test DLG_individu onglet Liens
+        frame_1 = Frame_individu_liens(None, -1, "TEST", size=(800, 400))
+        app.SetTopWindow(frame_1)
+        frame_1.Show()
 
     app.MainLoop()
     
