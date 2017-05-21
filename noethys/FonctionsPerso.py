@@ -1460,13 +1460,16 @@ def RechercheModules(nomFichier="Noethys.py") :
     return listeModules
 
 def GetIDfichier():
-    DB = GestionDB.DB()
-    req = """SELECT IDparametre, nom, parametre 
-    FROM parametres WHERE nom='IDfichier';"""
-    DB.ExecuterReq(req)
-    listeTemp = DB.ResultatReq()
-    DB.Close() 
-    IDfichier = listeTemp[0][2]
+    try :
+        DB = GestionDB.DB()
+        req = """SELECT IDparametre, nom, parametre 
+        FROM parametres WHERE nom='IDfichier';"""
+        DB.ExecuterReq(req)
+        listeTemp = DB.ResultatReq()
+        DB.Close()
+        IDfichier = listeTemp[0][2]
+    except :
+        IDfichier = ""
     return IDfichier
 
 def GenerationIDdoc():
@@ -1795,5 +1798,4 @@ if __name__ == "__main__":
     #VideRepertoireUpdates(forcer=True)
 
     #InsertCodeToolTip()
-
     pass

@@ -523,6 +523,12 @@ class Page_telechargement(wx.Panel):
         
         # Téléchargement terminé
         if succes == True :
+            # On attribue un ID unique qui permet de compter les téléchargements
+            IDfichier = FonctionsPerso.GetIDfichier()
+            if len(IDfichier) > 7 :
+                id = IDfichier[-7:]
+            else :
+                id = ""
             # On envoie le signal pour le compteur de téléchargement
             if "linux" in sys.platform :
                 typeFichier = "linux"
@@ -530,7 +536,7 @@ class Page_telechargement(wx.Panel):
                 typeFichier = "windows"
             try :
                 versionFichier = self.parent.versionFichier
-                fichier = "%s-%s" % (typeFichier, versionFichier)
+                fichier = "%s-%s-%s" % (typeFichier, versionFichier, id)
                 req = urllib2.Request("http://www.noethys.com/fichiers/telechargement.cgi?fichier=%s" % fichier)
                 handle = urllib2.urlopen(req)
             except :
