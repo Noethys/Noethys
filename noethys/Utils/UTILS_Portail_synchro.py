@@ -424,9 +424,12 @@ class Synchro():
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER", parametre=str(self.dict_parametres["recevoir_document_site"])))
         session.add(models.Parametre(nom="RECEVOIR_DOCUMENT_RETIRER_LIEU", parametre=self.dict_parametres["recevoir_document_site_lieu"]))
         session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_ACTIF", parametre=str(self.dict_parametres["paiement_ligne_actif"])))
-        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
-        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MULTI_FACTURES", parametre=str(self.dict_parametres["paiement_ligne_multi_factures"])))
-        session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
+
+        if self.dict_parametres["paiement_ligne_actif"] == 1 :
+            session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_SYSTEME", parametre=str(self.dict_parametres["paiement_ligne_systeme"])))
+            session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_MULTI_FACTURES", parametre=str(self.dict_parametres["paiement_ligne_multi_factures"])))
+            session.add(models.Parametre(nom="PAIEMENT_EN_LIGNE_TIPI_SAISIE", parametre=str(self.dict_parametres["paiement_ligne_tipi_saisie"])))
+
         session.add(models.Parametre(nom="ACCUEIL_BIENVENUE", parametre=self.dict_parametres["accueil_bienvenue"]))
         session.add(models.Parametre(nom="ACCUEIL_MESSAGES_AFFICHER", parametre=str(self.dict_parametres["accueil_messages_afficher"])))
         session.add(models.Parametre(nom="ACCUEIL_ETAT_DOSSIER_AFFICHER", parametre=str(self.dict_parametres["accueil_etat_dossier_afficher"])))
@@ -558,7 +561,11 @@ class Synchro():
             if IDfamille in listeIDfamille :
                 if numero == None : numero = 0
                 if IDprefixe != None :
-                    numero = u"%s-%06d" % (prefixe, numero)
+                    # On supprime le tiret séparateur du préfixe et du numéro de facture pour TIPI (le tiret est proscrit)
+                    if self.dict_parametres["paiement_ligne_systeme"] == 1 or self.dict_parametres["paiement_ligne_systeme"] == 2 :
+                        numero = u"%s%06d" % (prefixe, numero)
+                    else :
+                        numero = u"%s-%06d" % (prefixe, numero)
                 else :
                     numero = u"%06d" % numero
 

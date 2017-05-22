@@ -659,7 +659,7 @@ class MainFrame(wx.Frame):
                     {"code" : "synthese_vocale", "label" : _(u"Synthèse vocale"), "infobulle" : _(u"Paramétrage de la synthèse vocale"), "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
                     "-",
                     {"code" : "menu_parametrage_factures", "label" : _(u"Facturation"), "items" : [
-                            {"code" : "regies_factures", "label" : _(u"Régies"), "infobulle" : _(u"ParamÃ©trage des régies"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regies_factures},
+                            {"code" : "regies_factures", "label" : _(u"Régies"), "infobulle" : _(u"Paramétrage des régies"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regies_factures},
                             {"code" : "prefixes_factures", "label" : _(u"Préfixes de factures"), "infobulle" : _(u"Paramétrage des préfixes de factures"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_prefixes_factures},
                             {"code" : "lots_factures", "label" : _(u"Lots de factures"), "infobulle" : _(u"Paramétrage des lots de factures"), "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_factures},
                             {"code" : "lots_rappels", "label" : _(u"Lots de rappels"), "infobulle" : _(u"Paramétrage des lots de rappels"), "image" : "Images/16x16/Lot_factures.png", "action" : self.On_param_lots_rappels},

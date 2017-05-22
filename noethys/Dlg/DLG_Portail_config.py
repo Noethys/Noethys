@@ -45,15 +45,17 @@ LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"),
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_MODES_REGLEMENT = [(0, u"Aucun")]
-db = GestionDB.DB()
-req = """SELECT IDmode, label
-FROM modes_reglements
-ORDER BY IDmode;"""
-db.ExecuterReq(req)
-listeDonnees = db.ResultatReq()
-db.Close()
-for IDmode, label in listeDonnees :
-    LISTE_MODES_REGLEMENT.append((IDmode, label))
+
+if UTILS_Config.IsFichierExists() != False :
+    db = GestionDB.DB()
+    req = """SELECT IDmode, label
+    FROM modes_reglements
+    ORDER BY IDmode;"""
+    db.ExecuterReq(req)
+    listeDonnees = db.ResultatReq()
+    db.Close()
+    for IDmode, label in listeDonnees :
+        LISTE_MODES_REGLEMENT.append((IDmode, label))
 
 
 VALEURS_DEFAUT = {
@@ -197,6 +199,23 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                 2 : [
                     ]
                  },
+
+            "paiement_ligne_actif" : {
+                True : [
+                       {"propriete" : "paiement_ligne_systeme", "obligatoire" : True},
+                       {"propriete" : "paiement_ligne_mode_reglement", "obligatoire" : True},
+                       {"propriete" : "paiement_ligne_multi_factures", "obligatoire" : True},
+                       {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : True},
+                       ],
+                False : [
+                        {"propriete" : "paiement_ligne_systeme", "obligatoire" : False},
+                        {"propriete" : "paiement_ligne_mode_reglement", "obligatoire" : False},
+                        {"propriete" : "paiement_ligne_multi_factures", "obligatoire" : False},
+                        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : False},
+                        ]
+                 },
+            
+
 
             }
 
@@ -526,8 +545,8 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
 
         # Choix du systeme de paiement en ligne
         nom = "paiement_ligne_systeme"
-        propriete = wxpg.EnumProperty(label=_(u"Systeme / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI Régie"), _(u"TIPI Formulaire")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
-        propriete.SetHelpString(_(u"Choisissez le systeme / partenaire à utiliser pour le paiement en ligne"))
+        propriete = wxpg.EnumProperty(label=_(u"Système / Partenaire"), labels=[_(u"Aucun"), _(u"TIPI Régie"), _(u"TIPI Formulaire/(NON ACTIF)")], values=[0, 1, 2], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete.SetHelpString(_(u"Choisissez le système / partenaire à utiliser pour le paiement en ligne"))
         self.Append(propriete)
 
         # Choix du mode de règlement pour les paiements en ligne
@@ -1318,6 +1337,17 @@ class Dialog(wx.Dialog):
 
         if dict_parametres["url_connecthys"] == "" :
             dlg = wx.MessageDialog(self, _(u"Vous devez saisir l'url d'accès à Connecthys !"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        if dict_parametres["paiement_ligne_actif"] == True :
+            dlg = wx.MessageDialog(self, _(u"Paiement en ligne actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return True
+        else :
+            dlg = wx.MessageDialog(self, _(u"Paiement en ligne non actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
