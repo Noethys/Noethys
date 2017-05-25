@@ -67,6 +67,14 @@ for IDtype, nom, img in LISTE_TYPES :
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
+def FormateCondition(listeDonnees=[]):
+    if len(listeDonnees) == 0:
+        condition = "()"
+    elif len(listeDonnees) == 1:
+        condition = "(%d)" % listeDonnees[0]
+    else:
+        condition = str(tuple(listeDonnees))
+    return condition
 
 
 class CTRL_profil_perso(CTRL_Profil.CTRL):
@@ -336,6 +344,7 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         self.listeDates = []
         self.dictEcoles = {}
         self.dictClasses = {}
+        self.regroupement = None
         self.MAJenCours = False
         self.dictNiveaux = self.ImportationNiveaux() 
         
@@ -398,6 +407,10 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         self.listeDates = listeDates
         self.MAJ() 
 
+    def SetRegroupement(self, regroupement=None):
+        self.regroupement = regroupement
+        self.MAJ()
+
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.dictEcoles, self.dictClasses = self.Importation()
@@ -407,36 +420,33 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         self.Remplissage()
         self.MAJenCours = False
 
+
     def Importation(self):
+        # Récupère les dates sélectionnées
         dictEcoles = {}
         dictClasses = {}
-        if len(self.listeDates) == 0 :
+        if self.regroupement == None or self.listeDates == None or len(self.listeDates) == 0 :
             return dictEcoles, dictClasses
-        
-        if len(self.listeDates) == 0 : conditionDates = ""
-        elif len(self.listeDates) == 1 : conditionDates = "WHERE classes.date_debut<='%s' AND classes.date_fin>='%s' " % (self.listeDates[0], self.listeDates[0])
-        else : 
-            listeTmp = []
-            for dateTemp in self.listeDates :
-                listeTmp.append("(classes.date_debut<='%s' AND classes.date_fin>='%s')" % (dateTemp, dateTemp))
-            conditionDates = "WHERE %s" % " OR ".join(listeTmp)
-        
-        # Récupération des activités disponibles le jour sélectionné
+
+        self.listeDates.sort()
+        date_min = min(self.listeDates)
+        date_max = max(self.listeDates)
+
+        # Récupération des élèves
         DB = GestionDB.DB()
-        req = """SELECT 
-        ecoles.IDecole, ecoles.nom, 
+        req = """SELECT scolarite.IDindividu, ecoles.IDecole, ecoles.nom,
         classes.IDclasse, classes.nom, classes.date_debut, classes.date_fin, classes.niveaux
-        FROM ecoles
-        LEFT JOIN classes ON classes.IDecole = ecoles.IDecole
-        %s
-        GROUP BY classes.IDclasse
-        ORDER BY classes.IDclasse;""" % conditionDates
+        FROM scolarite 
+        LEFT JOIN ecoles ON ecoles.IDecole = scolarite.IDecole
+        LEFT JOIN classes ON classes.IDclasse = scolarite.IDclasse
+        WHERE scolarite.date_debut<='%s' AND scolarite.date_fin>='%s'
+        ;""" % (date_max, date_min)
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
-        DB.Close() 
-        for IDecole, nomEcole, IDclasse, nomClasse, date_debut, date_fin, niveaux in listeDonnees :
-            if date_debut != None : date_debut = UTILS_Dates.DateEngEnDateDD(date_debut)
-            if date_fin != None : date_fin = UTILS_Dates.DateEngEnDateDD(date_fin)
+        listeEtapes = DB.ResultatReq()
+        DB.Close()
+        for IDindividu, IDecole, ecole_nom, IDclasse, classe_nom, classe_debut, classe_fin, niveaux in listeEtapes :
+            if classe_debut != None : classe_debut = UTILS_Dates.DateEngEnDateDD(classe_debut)
+            if classe_fin != None : classe_fin = UTILS_Dates.DateEngEnDateDD(classe_fin)
 
             # Formatage des niveaux
             listeNiveaux = []
@@ -456,18 +466,22 @@ class CTRL_Ecoles(HTL.HyperTreeList):
                 txtNiveaux = ", ".join(txtTemp)
 
             # Mémorisation de l'école
-            if dictEcoles.has_key(IDecole) == False :
-                dictEcoles[IDecole] = { "nom":nomEcole, "classes":[]}
-            
-            # Mémorisation dans le dictClasses
-            if dictClasses.has_key(IDclasse) == False :
-                dictClasses[IDclasse] = { "nom" : nomClasse, "IDecole":IDecole, "date_debut": date_debut, "date_fin" : date_fin, "txtNiveaux" : txtNiveaux}
-            
-            # Mémorisation de la classe dans le dictEcoles
-            donnees = (listeOrdresNiveaux, nomClasse, txtNiveaux, IDclasse, date_debut, date_fin) 
-            dictEcoles[IDecole]["classes"].append(donnees)
-            
+            if dictEcoles.has_key(IDecole) == False:
+                dictEcoles[IDecole] = {"nom": ecole_nom, "classes": []}
+
+            if IDclasse != None and self.regroupement == "classe" :
+
+                # Mémorisation de la classe dans le dictEcoles
+                donnees = (listeOrdresNiveaux, classe_nom, txtNiveaux, IDclasse, classe_debut, classe_fin)
+                if donnees not in dictEcoles[IDecole]["classes"] :
+                    dictEcoles[IDecole]["classes"].append(donnees)
+
+                # Mémorisation dans le dictClasses
+                if dictClasses.has_key(IDclasse) == False:
+                    dictClasses[IDclasse] = {"nom": classe_nom, "IDecole": IDecole, "date_debut": classe_debut, "date_fin": classe_fin, "txtNiveaux": txtNiveaux}
+
         return dictEcoles, dictClasses
+
 
     def Remplissage(self):
         # Tri des écoles par nom
@@ -479,24 +493,27 @@ class CTRL_Ecoles(HTL.HyperTreeList):
         # Remplissage
         for nomEcole, IDecole in listeEcoles :
             dictEcole = self.dictEcoles[IDecole]
-            
-            # Niveau Ecole
-            niveauEcole = self.AppendItem(self.root, nomEcole, ct_type=1)
-            self.SetPyData(niveauEcole, {"type" : "ecole", "ID" : IDecole, "nom" : nomEcole})
-            self.SetItemBold(niveauEcole, True)                
-                
-            # Niveau Classes
-            listeClasses = dictEcole["classes"]
-            listeClasses.sort() 
-            for listeOrdresNiveaux, nomClasse, txtNiveaux, IDclasse, date_debut, date_fin in listeClasses :
-                nomSaison = _(u"Du %s au %s") % (UTILS_Dates.DateEngFr(str(date_debut)), UTILS_Dates.DateEngFr(str(date_fin)) )
-                labelClasse = u"%s (%s)" % (nomClasse, nomSaison)
-                niveauClasse = self.AppendItem(niveauEcole, labelClasse, ct_type=1)
-                self.SetPyData(niveauClasse, {"type" : "classe", "ID" : IDclasse, "nom" : nomClasse})
-            
-            # Coche toutes les branches enfants
-            self.CheckItem(niveauEcole)
-            self.CheckChilds(niveauEcole)
+
+            if self.regroupement == "ecole" or (self.regroupement == "classe" and len(dictEcole["classes"]) > 0) :
+
+                # Niveau Ecole
+                niveauEcole = self.AppendItem(self.root, nomEcole, ct_type=1)
+                self.SetPyData(niveauEcole, {"type" : "ecole", "ID" : IDecole, "nom" : nomEcole})
+                self.SetItemBold(niveauEcole, True)
+                self.CheckItem(niveauEcole)
+
+                # Niveau Classes
+                listeClasses = dictEcole["classes"]
+                if len(listeClasses) > 0 :
+                    listeClasses.sort()
+                    for listeOrdresNiveaux, nomClasse, txtNiveaux, IDclasse, date_debut, date_fin in listeClasses :
+                        nomSaison = _(u"Du %s au %s") % (UTILS_Dates.DateEngFr(str(date_debut)), UTILS_Dates.DateEngFr(str(date_fin)) )
+                        labelClasse = u"%s (%s)" % (nomClasse, nomSaison)
+                        niveauClasse = self.AppendItem(niveauEcole, labelClasse, ct_type=1)
+                        self.SetPyData(niveauClasse, {"type" : "classe", "ID" : IDclasse, "nom" : nomClasse})
+
+                    # Coche toutes les branches enfants
+                    self.CheckChilds(niveauEcole)
         
         self.ExpandAllChildren(self.root)
 
@@ -589,7 +606,10 @@ class Page_Scolarite(wx.Panel):
         wx.Panel.__init__(self, parent, id=-1, style=wx.TAB_TRAVERSAL)
         self.parent = parent
 
-        self.checkbox_ecoles = wx.CheckBox(self, -1, _(u"Regrouper par école et par classe"))
+        self.label_regroupement = wx.StaticText(self, -1, _(u"Regrouper par :"))
+        self.checkbox_ecoles = wx.CheckBox(self, -1, _(u"Ecole"))
+        self.checkbox_classes = wx.CheckBox(self, -1, _(u"Classe"))
+        self.checkbox_inconnus = wx.CheckBox(self, -1, _(u"Afficher scolarité inconnue"))
         self.ctrl_ecoles = CTRL_Ecoles(self)
         self.ctrl_ecoles.SetMinSize((380, 50))
 
@@ -600,17 +620,28 @@ class Page_Scolarite(wx.Panel):
 
         # Binds
         self.Bind(wx.EVT_CHECKBOX, self.OnCheckEcoles, self.checkbox_ecoles)
-        
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckClasses, self.checkbox_classes)
+
         # Propriétés
-        self.checkbox_ecoles.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour regrouper les individus par école et par classe")))
+        self.checkbox_ecoles.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour regrouper les individus par école ")))
+        self.checkbox_classes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour regrouper les individus par classe")))
+        self.checkbox_inconnus.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher les individus dont la scolarité est inconnue")))
         self.checkbox_saut_ecoles.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque école")))
         self.checkbox_saut_classes.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour insérer un saut de page après chaque classe")))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=10)
-        
-        grid_sizer_base.Add(self.checkbox_ecoles, 0, 0, 0)
+
+        grid_sizer_regroupement = wx.FlexGridSizer(rows=1, cols=5, vgap=0, hgap=5)
+        grid_sizer_regroupement.Add(self.label_regroupement, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_regroupement.Add(self.checkbox_ecoles, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_regroupement.Add(self.checkbox_classes, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_regroupement.Add((5, 5), 0, wx.EXPAND, 0)
+        grid_sizer_regroupement.Add(self.checkbox_inconnus, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_regroupement.AddGrowableCol(3)
+        grid_sizer_base.Add(grid_sizer_regroupement, 0, wx.EXPAND, 0)
+
         grid_sizer_base.Add(self.ctrl_ecoles, 1, wx.EXPAND, 0)
         
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=5, vgap=2, hgap=5)
@@ -629,35 +660,79 @@ class Page_Scolarite(wx.Panel):
         self.Layout()
         
         self.OnCheckEcoles(None)
-        
+
+    def GetRegroupement(self):
+        return self.ctrl_ecoles.regroupement
+
+    def GetAfficherInconnus(self):
+        return self.checkbox_inconnus.GetValue()
+
     def OnCheckEcoles(self, event=None):
-        if self.checkbox_ecoles.GetValue() == True :
-            etat = True
-        else:
-            etat = False
+        self.OnCheck(self.checkbox_ecoles.GetValue(), "ecole")
+
+    def OnCheckClasses(self, event=None):
+        self.OnCheck(self.checkbox_classes.GetValue(), "classe")
+
+    def OnCheck(self, etat=False, case=None):
+        if case == "ecole" :
+            self.checkbox_classes.SetValue(False)
+            self.checkbox_classes.Enable(not etat)
+            self.checkbox_saut_classes.Enable(False)
+        elif case == "classe" :
+            self.checkbox_ecoles.SetValue(False)
+            self.checkbox_ecoles.Enable(not etat)
+            self.checkbox_saut_classes.Enable(etat)
+        else :
+            self.checkbox_classes.Enable(not etat)
+            self.checkbox_ecoles.Enable(not etat)
+            self.checkbox_saut_classes.Enable(etat)
         self.ctrl_ecoles.Activation(etat)
         self.label_saut_ecoles.Enable(etat)
         self.checkbox_saut_ecoles.Enable(etat)
-        self.checkbox_saut_classes.Enable(etat)
         self.ctrl_cocher.Enable(etat)
+        if etat == True :
+            self.ctrl_ecoles.SetRegroupement(case)
+        else :
+            self.ctrl_ecoles.SetRegroupement(None)
 
     def GetParametres(self):
         dictParametres = {}
-        dictParametres["regroupement_ecoles"] = int(self.checkbox_ecoles.GetValue())
+        if self.checkbox_ecoles.GetValue() == True :
+            dictParametres["regroupement_ecoles"] = "ecole"
+        elif self.checkbox_classes.GetValue() == True :
+            dictParametres["regroupement_ecoles"] = "classe"
+        else :
+            dictParametres["regroupement_ecoles"] = None
+        dictParametres["scolarite_inconnue"] = int(self.checkbox_inconnus.GetValue())
         dictParametres["saut_ecoles"] = int(self.checkbox_saut_ecoles.GetValue())
         dictParametres["saut_classes"] = int(self.checkbox_saut_classes.GetValue())
         return dictParametres
 
     def SetParametres(self, dictParametres={}):
+        self.checkbox_ecoles.SetValue(False)
+        self.checkbox_classes.SetValue(False)
+        self.OnCheck(False)
+
         if dictParametres == None :
-            self.checkbox_ecoles.SetValue(False)
             self.checkbox_saut_ecoles.SetValue(True)
             self.checkbox_saut_classes.SetValue(True)
+            self.checkbox_inconnus.SetValue(False)
         else :
-            if dictParametres.has_key("regroupement_ecoles") : self.checkbox_ecoles.SetValue(dictParametres["regroupement_ecoles"])
+            if dictParametres.has_key("regroupement_ecoles") :
+                if dictParametres["regroupement_ecoles"] in (1, "classe") :
+                    self.checkbox_classes.SetValue(True)
+                    self.OnCheck(True, "classe")
+                if dictParametres["regroupement_ecoles"] == "ecole" :
+                    self.checkbox_ecoles.SetValue(True)
+                    self.OnCheck(True, "ecole")
+
+            if dictParametres.has_key("scolarite_inconnue") :
+                self.checkbox_inconnus.SetValue(dictParametres["scolarite_inconnue"])
+            else :
+                self.checkbox_inconnus.SetValue(False)
             if dictParametres.has_key("saut_ecoles") : self.checkbox_saut_ecoles.SetValue(dictParametres["saut_ecoles"])
             if dictParametres.has_key("saut_classes") : self.checkbox_saut_classes.SetValue(dictParametres["saut_classes"])
-        self.OnCheckEcoles()
+
 
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -1286,7 +1361,7 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        if self.GetPage("scolarite").checkbox_ecoles.GetValue() == True :
+        if self.GetPage("scolarite").GetRegroupement() in ("ecole", "classe") :
 
             listeEcoles = self.GetPage("scolarite").ctrl_ecoles.GetListeEcoles()
             if len(listeEcoles) == 0 :
@@ -1296,7 +1371,7 @@ class Dialog(wx.Dialog):
                 return False
 
             listeClasses = self.GetPage("scolarite").ctrl_ecoles.GetListeClasses()
-            if len(listeClasses) == 0 :
+            if len(listeClasses) == 0 and self.GetPage("scolarite").GetRegroupement() == "classe" :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement cocher au moins une classe !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
@@ -1358,14 +1433,20 @@ class Dialog(wx.Dialog):
                 listeTmp.append(str(dateTmp))
             conditionDates = str(tuple(listeTmp))
 
-        if self.GetPage("scolarite").checkbox_ecoles.GetValue() == True :
-            if len(listeClasses) == 0 : conditionTemp = "()"
-            elif len(listeClasses) == 1 : conditionTemp = "(%d)" % listeClasses[0]
-            else : conditionTemp = str(tuple(listeClasses))
-            conditionsClasses = "AND (scolarite.IDclasse IN %s OR scolarite.IDclasse IS NULL)" % conditionTemp
-        else:
-            conditionsClasses = ""
+        # if self.GetPage("scolarite").checkbox_ecoles.GetValue() == True :
+        #     if len(listeClasses) == 0 : conditionTemp = "()"
+        #     elif len(listeClasses) == 1 : conditionTemp = "(%d)" % listeClasses[0]
+        #     else : conditionTemp = str(tuple(listeClasses))
+        #     conditionsScolarite = "AND (scolarite.IDclasse IN %s OR scolarite.IDclasse IS NULL)" % conditionTemp
+        # else:
+        #     conditionsScolarite = ""
 
+        if self.GetPage("scolarite").GetRegroupement() == "ecole" :
+            conditionsScolarite = "AND (scolarite.IDecole IN %s OR scolarite.IDecole IS NULL)" % FormateCondition(listeEcoles)
+        elif self.GetPage("scolarite").GetRegroupement() == "classe" :
+            conditionsScolarite = "AND (scolarite.IDclasse IN %s OR scolarite.IDclasse IS NULL)" % FormateCondition(listeClasses)
+        else:
+            conditionsScolarite = ""
 
         # Récupération de la liste des unités ouvertes ce jour
         DB = GestionDB.DB()
@@ -1441,7 +1522,7 @@ class Dialog(wx.Dialog):
 
         # Récupération des consommations
         req = """SELECT IDconso, consommations.IDindividu, IDcivilite, consommations.IDactivite, IDunite, consommations.IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes,
-        IDcivilite, individus.nom, prenom, date_naiss, types_sieste.nom, inscriptions.IDfamille, consommations.date, scolarite.IDclasse
+        IDcivilite, individus.nom, prenom, date_naiss, types_sieste.nom, inscriptions.IDfamille, consommations.date, scolarite.IDecole, scolarite.IDclasse
         FROM consommations 
         LEFT JOIN individus ON individus.IDindividu = consommations.IDindividu
         LEFT JOIN types_sieste ON types_sieste.IDtype_sieste = individus.IDtype_sieste
@@ -1449,13 +1530,13 @@ class Dialog(wx.Dialog):
         LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu AND scolarite.date_debut <= consommations.date AND scolarite.date_fin >= consommations.date
         WHERE etat IN ("reservation", "present")
         AND consommations.IDactivite IN %s AND consommations.date IN %s %s
-        ; """ % (conditionActivites, conditionDates, conditionsClasses)
+        ;""" % (conditionActivites, conditionDates, conditionsScolarite)
         DB.ExecuterReq(req)
         listeConso = DB.ResultatReq()
         dictConso = {}
         dictIndividus = {}
         listeIDindividus = []
-        for IDconso, IDindividu, IDcivilite, IDactivite, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDcivilite, nom, prenom, date_naiss, nomSieste, IDfamille, date, IDclasse in listeConso :
+        for IDconso, IDindividu, IDcivilite, IDactivite, IDunite, IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes, IDcivilite, nom, prenom, date_naiss, nomSieste, IDfamille, date, IDecole, IDclasse in listeConso :
             date = UTILS_Dates.DateEngEnDateDD(date)
             etiquettes = UTILS_Texte.ConvertStrToListe(etiquettes)
 
@@ -1471,12 +1552,17 @@ class Dialog(wx.Dialog):
             if dictConso[IDactivite].has_key(IDgroupe) == False :
                 dictConso[IDactivite][IDgroupe] = {}
 
-            # Mémorisation de la classe
-            if self.GetPage("scolarite").checkbox_ecoles.GetValue() == False :
-                IDclasse = None
+            # Mémorisation du regroupement de scolarité
+            regroupement_scolarite = self.GetPage("scolarite").GetRegroupement()
+            if regroupement_scolarite == "ecole" :
+                scolarite = IDecole
+            elif regroupement_scolarite == "classe" :
+                scolarite = IDclasse
+            else :
+                scolarite = None
 
-            if dictConso[IDactivite][IDgroupe].has_key(IDclasse) == False :
-                dictConso[IDactivite][IDgroupe][IDclasse] = {}
+            if dictConso[IDactivite][IDgroupe].has_key(scolarite) == False :
+                dictConso[IDactivite][IDgroupe][scolarite] = {}
 
             # Mémorisation de l'étiquette
             if self.GetPage("etiquettes").checkbox_etiquettes.GetValue() == False :
@@ -1486,22 +1572,22 @@ class Dialog(wx.Dialog):
 
             for IDetiquette in listeEtiquettes :
 
-                if dictConso[IDactivite][IDgroupe][IDclasse].has_key(IDetiquette) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette] = {}
+                if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDetiquette) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette] = {}
 
                 # Mémorisation de l'individu
-                if dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette].has_key(IDindividu) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
+                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette].has_key(IDindividu) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
 
                 # Mémorisation de la date
-                if dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"].has_key(date) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date] = {}
+                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"].has_key(date) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date] = {}
 
                 # Mémorisation de la consommation
-                if dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date].has_key(IDunite) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date][IDunite] = []
+                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date].has_key(IDunite) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date][IDunite] = []
 
-                dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "etiquettes" : etiquettes } )
+                dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]["listeConso"][date][IDunite].append( { "heure_debut" : heure_debut, "heure_fin" : heure_fin, "etat" : etat, "quantite" : quantite, "IDfamille" : IDfamille, "etiquettes" : etiquettes } )
 
                 # Mémorisation du IDindividu
                 if IDindividu not in listeIDindividus :
@@ -1510,12 +1596,11 @@ class Dialog(wx.Dialog):
                 # Dict Individu
                 dictIndividus[IDindividu] = { "IDcivilite" : IDcivilite, "IDfamille" : IDfamille }
 
-
         # Intégration de tous les inscrits
         if dictParametres["afficher_inscrits"] == True :
 
             req = """SELECT individus.IDindividu, IDcivilite, individus.nom, prenom, date_naiss, types_sieste.nom, 
-            inscriptions.IDactivite, inscriptions.IDgroupe, inscriptions.IDfamille, scolarite.IDclasse
+            inscriptions.IDactivite, inscriptions.IDgroupe, inscriptions.IDfamille, scolarite.IDecole, scolarite.IDclasse
             FROM individus 
             LEFT JOIN types_sieste ON types_sieste.IDtype_sieste = individus.IDtype_sieste
             LEFT JOIN inscriptions ON inscriptions.IDindividu = individus.IDindividu
@@ -1524,7 +1609,7 @@ class Dialog(wx.Dialog):
             ; """ % (min(listeDates), max(listeDates), conditionActivites, max(listeDates))
             DB.ExecuterReq(req)
             listeTousInscrits = DB.ResultatReq()
-            for IDindividu, IDcivilite, nom, prenom, date_naiss, nomSieste, IDactivite, IDgroupe, IDfamille, IDclasse in listeTousInscrits :
+            for IDindividu, IDcivilite, nom, prenom, date_naiss, nomSieste, IDactivite, IDgroupe, IDfamille, IDecole, IDclasse in listeTousInscrits :
 
                 # Calcul de l'âge
                 if date_naiss != None : date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
@@ -1538,20 +1623,25 @@ class Dialog(wx.Dialog):
                 if dictConso[IDactivite].has_key(IDgroupe) == False :
                     dictConso[IDactivite][IDgroupe] = {}
 
-                # Mémorisation de la classe
-                if self.GetPage("scolarite").checkbox_ecoles.GetValue() == False :
-                    IDclasse = None
+                # Mémorisation du regroupement de scolarité
+                regroupement_scolarite = self.GetPage("scolarite").GetRegroupement()
+                if regroupement_scolarite == "ecole":
+                    scolarite = IDecole
+                elif regroupement_scolarite == "classe":
+                    scolarite = IDclasse
+                else:
+                    scolarite = None
 
-                if dictConso[IDactivite][IDgroupe].has_key(IDclasse) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse] = {}
+                if dictConso[IDactivite][IDgroupe].has_key(scolarite) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite] = {}
 
                 IDetiquette = None
-                if dictConso[IDactivite][IDgroupe][IDclasse].has_key(IDetiquette) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette] = {}
+                if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDetiquette) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette] = {}
 
                 # Mémorisation de l'individu
-                if dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette].has_key(IDindividu) == False :
-                    dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
+                if dictConso[IDactivite][IDgroupe][scolarite][IDetiquette].has_key(IDindividu) == False :
+                    dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu] = { "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, "date_naiss" : date_naiss, "age" : age, "nomSieste" : nomSieste, "listeConso" : {} }
 
                 # Mémorisation du IDindividu
                 if IDindividu not in listeIDindividus :
@@ -1707,10 +1797,16 @@ class Dialog(wx.Dialog):
             styleClasse = ParagraphStyle(name="classe", fontName="Helvetica-Bold", alignment=2, fontSize=14, leading=16, spaceBefore=0, spaceAfter=2, textColor=couleurTexte)
 
             ligne = [ (Paragraph(nomActivite, styleActivite), Paragraph(nomGroupe, styleGroupe)), None]
-            if self.GetPage("scolarite").checkbox_ecoles.GetValue() == True :
+
+            if self.GetPage("scolarite").GetRegroupement() == "ecole" :
+                if nomEcole == None : nomEcole = _(u"Ecole inconnue")
+                ligne[1] = (Paragraph(nomEcole, styleClasse))
+
+            if self.GetPage("scolarite").GetRegroupement() == "classe":
                 if nomEcole == None : nomEcole = _(u"Ecole inconnue")
                 if nomClasse == None : nomClasse = _(u"Classe inconnue")
                 ligne[1] = (Paragraph(nomEcole, styleEcole), Paragraph(nomClasse, styleClasse))
+
             dataTableau.append(ligne)
 
             if typeListe == "period" :
@@ -1769,39 +1865,49 @@ class Dialog(wx.Dialog):
                     nomGroupe = dictGroupes[IDgroupe]["nom"]
 
                     # Classes
-                    listeClasses = []
+                    listeScolarite = []
                     if dictConso.has_key(IDactivite) :
                         if dictConso[IDactivite].has_key(IDgroupe) :
-                            listeClasses = dictConso[IDactivite][IDgroupe].keys()
+                            listeScolarite = dictConso[IDactivite][IDgroupe].keys()
 
                     # tri des classes
-                    listeInfosClasses = self.TriClasses(listeClasses, dictEcoles)
+                    listeInfosScolarite = self.TriClasses(listeScolarite, dictEcoles)
 
                     # Si aucun enfant scolarisé
-                    if len(listeInfosClasses) == 0 or self.GetPage("scolarite").checkbox_ecoles.GetValue() == False :
-                        listeInfosClasses = [None,]
+                    if len(listeInfosScolarite) == 0 or self.GetPage("scolarite").GetRegroupement() == None :
+                        listeInfosScolarite = [None,]
 
-                    nbreClasses = len(listeInfosClasses)
+                    nbreClasses = len(listeInfosScolarite)
                     indexClasse = 1
-                    for dictClasse in listeInfosClasses :
+                    for dictClasse in listeInfosScolarite :
 
                         # Récupération des infos sur école et classe
                         if dictClasse != None :
-                            IDclasse = dictClasse["IDclasse"]
+                            IDecole = dictClasse["IDecole"]
                             nomEcole = dictClasse["nomEcole"]
+                            IDclasse = dictClasse["IDclasse"]
                             nomClasse = dictClasse["nomClasse"]
                         else :
-                            IDclasse = None
+                            IDecole = None
                             nomEcole = None
+                            IDclasse = None
                             nomClasse = None
 
+                        # Mémorisation du regroupement de scolarité
+                        regroupement_scolarite = self.GetPage("scolarite").GetRegroupement()
+                        if regroupement_scolarite == "ecole":
+                            scolarite = IDecole
+                        elif regroupement_scolarite == "classe":
+                            scolarite = IDclasse
+                        else:
+                            scolarite = None
 
                         # -------------------------------------------------------------------------------
                         listeIDetiquette = []
                         if dictConso.has_key(IDactivite) :
                             if dictConso[IDactivite].has_key(IDgroupe) :
-                                if dictConso[IDactivite][IDgroupe].has_key(IDclasse) :
-                                    for IDetiquette, temp in dictConso[IDactivite][IDgroupe][IDclasse].iteritems() :
+                                if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
+                                    for IDetiquette, temp in dictConso[IDactivite][IDgroupe][scolarite].iteritems() :
                                         listeIDetiquette.append(IDetiquette)
                         if len(listeIDetiquette) == 0 :
                             listeIDetiquette = [None,]
@@ -1940,9 +2046,9 @@ class Dialog(wx.Dialog):
                             listeIndividus = []
                             if dictConso.has_key(IDactivite) :
                                 if dictConso[IDactivite].has_key(IDgroupe) :
-                                    if dictConso[IDactivite][IDgroupe].has_key(IDclasse) :
-                                        if dictConso[IDactivite][IDgroupe][IDclasse].has_key(IDetiquette) :
-                                            for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette].iteritems() :
+                                    if dictConso[IDactivite][IDgroupe].has_key(scolarite) :
+                                        if dictConso[IDactivite][IDgroupe][scolarite].has_key(IDetiquette) :
+                                            for IDindividu, dictIndividu in dictConso[IDactivite][IDgroupe][scolarite][IDetiquette].iteritems() :
                                                 valeursTri = (IDindividu, dictIndividu["nom"], dictIndividu["prenom"], dictIndividu["age"])
                                                 listeIndividus.append(valeursTri)
 
@@ -1959,7 +2065,7 @@ class Dialog(wx.Dialog):
                             dictTotauxColonnes = {}
                             for IDindividu, nom, prenom, age in listeIndividus :
 
-                                dictIndividu = dictConso[IDactivite][IDgroupe][IDclasse][IDetiquette][IDindividu]
+                                dictIndividu = dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]
                                 ligne = []
                                 indexColonne = 0
 
@@ -2367,21 +2473,31 @@ class Dialog(wx.Dialog):
 
 
                         # Saut de page après une classe
-                        if self.GetPage("scolarite").checkbox_ecoles.GetValue() == True and self.GetPage("scolarite").checkbox_saut_classes.GetValue() == True and indexClasse <= nbreClasses :
+                        if self.GetPage("scolarite").GetRegroupement() == "classe" and self.GetPage("scolarite").checkbox_saut_classes.GetValue() == True and indexClasse <= nbreClasses :
                             CreationSautPage()
 
                         # Saut de page après une école
-                        if self.GetPage("scolarite").checkbox_ecoles.GetValue() == True and self.GetPage("scolarite").checkbox_saut_ecoles.GetValue() == True :
+                        if self.GetPage("scolarite").GetRegroupement() == "classe" and self.GetPage("scolarite").checkbox_saut_ecoles.GetValue() == True :
                             IDecoleActuelle = None
                             IDecoleSuivante = None
                             if dictClasses.has_key(IDclasse) :
                                 IDecoleActuelle = dictClasses[IDclasse]["IDecole"]
                                 if indexClasse < nbreClasses :
-                                    IDclasseSuivante = listeInfosClasses[indexClasse]["IDclasse"]
+                                    IDclasseSuivante = listeInfosScolarite[indexClasse]["IDclasse"]
                                     if dictClasses.has_key(IDclasseSuivante) :
                                         IDecoleSuivante = dictClasses[IDclasseSuivante]["IDecole"]
                             if IDecoleActuelle != IDecoleSuivante :
                                 CreationSautPage()
+
+                        # Saut de page après une école
+                        if self.GetPage("scolarite").GetRegroupement() == "ecole" and self.GetPage("scolarite").checkbox_saut_ecoles.GetValue() == True :
+                            IDecoleActuelle = scolarite
+                            IDecoleSuivante = None
+                            if indexClasse < nbreClasses :
+                                IDecoleSuivante = listeInfosScolarite[indexClasse]["IDecole"]
+                            if IDecoleActuelle != IDecoleSuivante :
+                                CreationSautPage()
+
 
                         indexClasse += 1
 
@@ -2419,24 +2535,36 @@ class Dialog(wx.Dialog):
         doc.build(story)
         FonctionsPerso.LanceFichierExterne(nomDoc)
 
-    def TriClasses(self, listeClasses=[], dictEcoles={}):
+    def TriClasses(self, listeScolarite=[], dictEcoles={}):
         """ Tri des classes par nom d'école, par nom de classe et par niveau """
         listeResultats = []
-        
+
+        # Insertion des écoles et classes inconnues
+        if self.GetPage("scolarite").GetAfficherInconnus() == True :
+            if self.GetPage("scolarite").GetRegroupement() == "ecole" and None in listeScolarite :
+                listeResultats.append({"IDecole": None, "nomEcole": _(u"Ecole inconnue"), "nomClasse": None, "IDclasse": None})
+            if self.GetPage("scolarite").GetRegroupement() == "classe" and None in listeScolarite :
+                listeResultats.append({"IDecole": None, "nomEcole": _(u"Ecole inconnue"), "nomClasse": _(u"Classe inconnue"), "IDclasse": None})
+
+        # Insertion des écoles
         listeEcoles = []
         for IDecole, dictEcole in dictEcoles.iteritems() :
             listeEcoles.append((dictEcole["nom"], IDecole))
-        listeEcoles.sort() 
-        
-        # Remplissage
+        listeEcoles.sort()
+
+        # Insertion des classes
         for nomEcole, IDecole in listeEcoles :
-            listeClassesTemp = dictEcoles[IDecole]["classes"]
-            listeClassesTemp.sort() 
-            
-            for listeOrdresNiveaux, nomClasse, txtNiveaux, IDclasse, date_debut, date_fin in listeClassesTemp :
-                if IDclasse in listeClasses :
-                    dictTemp = {"nomEcole":nomEcole, "nomClasse":nomClasse, "IDclasse":IDclasse, "date_debut":date_debut, "date_fin":date_fin}
-                    listeResultats.append(dictTemp)
+
+            if self.GetPage("scolarite").GetRegroupement() == "ecole" :
+                if IDecole in listeScolarite:
+                    listeResultats.append({"IDecole": IDecole, "nomEcole": nomEcole, "nomClasse":None, "IDclasse":None})
+
+            if self.GetPage("scolarite").GetRegroupement() == "classe":
+                listeClassesTemp = dictEcoles[IDecole]["classes"]
+                listeClassesTemp.sort()
+                for listeOrdresNiveaux, nomClasse, txtNiveaux, IDclasse, date_debut, date_fin in listeClassesTemp :
+                    if IDclasse in listeScolarite :
+                        listeResultats.append({"IDecole" : IDecole, "nomEcole":nomEcole, "nomClasse":nomClasse, "IDclasse":IDclasse, "date_debut":date_debut, "date_fin":date_fin})
         
         return listeResultats
 
