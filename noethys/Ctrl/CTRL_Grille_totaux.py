@@ -170,10 +170,11 @@ class CTRL(HTL.HyperTreeList):
             
             # Entete de colonnes : UNITES
             indexColonne = 1
-            for dictUnite in self.dictListeUnites[IDactivite] :
-                nomUnite = dictUnite["abrege"]
-                self.SetItemText(activite, nomUnite, indexColonne)
-                indexColonne += 1
+            if self.dictListeUnites.has_key(IDactivite):
+                for dictUnite in self.dictListeUnites[IDactivite] :
+                    nomUnite = dictUnite["abrege"]
+                    self.SetItemText(activite, nomUnite, indexColonne)
+                    indexColonne += 1
             
             # Entete de colones : UNITES DE REMPLISSAGE
             if self.dictUnitesRemplissageTemp.has_key(IDactivite) : 
@@ -222,20 +223,21 @@ class CTRL(HTL.HyperTreeList):
                 
                 # Nbre d'unités
                 indexColonne = 1
-                for dictUnite in self.dictListeUnites[IDactivite] :
-                    IDunite = dictUnite["IDunite"]
-                    try :
-                        nbre = self.dictConsoUnites[IDunite][IDgroupe]
-                        if dictTotaux.has_key(indexColonne) == False :
-                            dictTotaux[indexColonne] = 0
-                        dictTotaux[indexColonne] += nbre
-                    except :
-                        nbre = 0
-                    if nbre != 0 :
-                        self.SetItemText(groupe, str(nbre), indexColonne)
-                    else:
-                        self.SetItemText(groupe, "", indexColonne)
-                    indexColonne += 1
+                if self.dictListeUnites.has_key(IDactivite):
+                    for dictUnite in self.dictListeUnites[IDactivite] :
+                        IDunite = dictUnite["IDunite"]
+                        try :
+                            nbre = self.dictConsoUnites[IDunite][IDgroupe]
+                            if dictTotaux.has_key(indexColonne) == False :
+                                dictTotaux[indexColonne] = 0
+                            dictTotaux[indexColonne] += nbre
+                        except :
+                            nbre = 0
+                        if nbre != 0 :
+                            self.SetItemText(groupe, str(nbre), indexColonne)
+                        else:
+                            self.SetItemText(groupe, "", indexColonne)
+                        indexColonne += 1
                     
                 # Total par unité de remplissage
                 if self.dictUnitesRemplissageTemp.has_key(IDactivite) : 

@@ -52,7 +52,6 @@ class CTRL_compte_bancaire(wx.Choice):
             #if defaut == 1 :
             #    self.IDdefaut = IDcompte
             index += 1
-        print self.dictDonnees
         return listeItems
 
     def SetID(self, ID=0):
