@@ -274,6 +274,7 @@ class Panel(wx.Panel):
                     ("solde", float(solde)),
                     ("IDlot", self.parent.dictParametres["IDlot"]),
                     ("prestations", ";".join(self.parent.dictParametres["prestations"])),
+                    ("IDregie", self.parent.dictParametres["IDregie"]),
                     ]
                 IDfacture = DB.ReqInsert("factures", listeDonnees)
                                     

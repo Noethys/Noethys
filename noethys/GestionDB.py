@@ -2034,6 +2034,18 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 0, 1)
+        if versionFichier < versionFiltre:
+            try:
+                self.AjoutChamp("factures", "IDregie", "INTEGER")
+                self.AjoutChamp("activites", "regie", "INTEGER")
+                if self.IsTableExists("factures_regies") == False: self.CreationTable("factures_regies", Tables.DB_DATA)
+            except Exception, err:
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
+
 
 
 

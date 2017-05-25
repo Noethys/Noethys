@@ -109,6 +109,58 @@ class CTRL_Groupes_activite(wx.CheckListBox):
 
 # --------------------------------------------------------------------------------------------------------
 
+class CTRL_Regie_facturation(wx.Choice):
+    def __init__(self, parent):
+        wx.Choice.__init__(self, parent, -1)
+        self.parent = parent
+        self.MAJ()
+        self.Select(0)
+
+    def MAJ(self):
+        listeItems = self.GetListeDonnees()
+        if len(listeItems) == 0 :
+            self.Enable(False)
+        else :
+            self.Enable(True)
+        self.SetItems(listeItems)
+
+    def GetListeDonnees(self):
+        db = GestionDB.DB()
+        req = """SELECT IDregie, nom
+        FROM factures_regies
+        ORDER BY nom;"""
+        db.ExecuterReq(req)
+        listeDonnees = db.ResultatReq()
+        db.Close()
+        listeItems = [_(u"Aucune régie"),]
+        self.dictDonnees = {}
+        self.dictDonnees[0] = { "ID" : 0, "nom" : _(u"Inconnue")}
+        index = 1
+        for IDregie, nom in listeDonnees :
+            self.dictDonnees[index] = { "ID" : IDregie, "nom" : nom}
+            listeItems.append(nom)
+            index += 1
+        return listeItems
+
+    def SetID(self, ID=0):
+        if ID == None :
+            self.SetSelection(0)
+        for index, values in self.dictDonnees.iteritems():
+            if values["ID"] == ID :
+                 self.SetSelection(index)
+
+    def GetID(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0 : return None
+        return self.dictDonnees[index]["ID"]
+
+    def GetNom(self):
+        index = self.GetSelection()
+        if index == -1 or index == 0 : return None
+        return self.dictDonnees[index]["nom"]
+
+# --------------------------------------------------------------------------------------------------------
+
 
 class Panel(wx.Panel):
     def __init__(self, parent, IDactivite=None, nouvelleActivite=False):
@@ -157,6 +209,10 @@ class Panel(wx.Panel):
         # Code comptable
         self.staticbox_code_comptable_staticbox = wx.StaticBox(self, -1, _(u"Code comptable"))
         self.ctrl_code_comptable = wx.TextCtrl(self, -1, "")
+
+        # Régie de facturation
+        self.staticbox_regie_facturation_staticbox = wx.StaticBox(self, -1, _(u"Régie de facturation"))
+        self.ctrl_regie_facturation = CTRL_Regie_facturation(self)
 
         # Groupes d'activités
         self.staticbox_groupes_staticbox = wx.StaticBox(self, -1, _(u"Regroupement d'activités"))
@@ -252,10 +308,11 @@ class Panel(wx.Panel):
         self.check_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour définir un nombre maximal d'inscrits pour cette activité (Utile uniquement pour les activités à durée limitée)")))
         self.ctrl_limitation_inscrits.SetToolTip(wx.ToolTip(_(u"Saisissez le nombre maximal d'inscrits de cette activité (Utile uniquement pour les activités à durée limitée)")))
         self.ctrl_code_comptable.SetToolTip(wx.ToolTip(_(u"Saisissez un code comptable si vous souhaitez utiliser l'export des écritures comptables vers des logiciels de compta")))
+        self.ctrl_regie_facturation.SetToolTipString(_(u"Sélectionnez une régie de facturation"))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=10, hgap=10)
+        grid_sizer_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         grid_sizer_droit = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
         staticbox_groupes = wx.StaticBoxSizer(self.staticbox_groupes_staticbox, wx.VERTICAL)
         
@@ -325,6 +382,11 @@ class Panel(wx.Panel):
         staticbox_code_comptable = wx.StaticBoxSizer(self.staticbox_code_comptable_staticbox, wx.HORIZONTAL)
         staticbox_code_comptable.Add(self.ctrl_code_comptable, 1, wx.ALL|wx.EXPAND, 5)
         grid_sizer_gauche.Add(staticbox_code_comptable, 1, wx.EXPAND, 0)
+
+        # Régie de facturation
+        staticbox_regie_facturation = wx.StaticBoxSizer(self.staticbox_regie_facturation_staticbox, wx.HORIZONTAL)
+        staticbox_regie_facturation.Add(self.ctrl_regie_facturation, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_gauche.Add(staticbox_regie_facturation, 1, wx.EXPAND, 0)
 
         grid_sizer_gauche.Add(staticbox_responsables, 1, wx.EXPAND, 0)
         grid_sizer_gauche.AddGrowableRow(3)
@@ -452,7 +514,7 @@ class Panel(wx.Panel):
         """ Importation des données """
         db = GestionDB.DB()
         req = """SELECT nom, abrege, coords_org, rue, cp, ville, tel, fax, mail, site, 
-        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable
+        logo_org, logo, date_debut, date_fin, public, nbre_inscrits_max, code_comptable, regie
         FROM activites 
         WHERE IDactivite=%d;""" % self.IDactivite
         db.ExecuterReq(req)
@@ -531,6 +593,10 @@ class Panel(wx.Panel):
         if code_comptable != None :
             self.ctrl_code_comptable.SetValue(code_comptable)
             
+        # Régie de facturation
+        regie = activite[17]
+        if regie != None :
+            self.ctrl_regie_facturation.SetID(regie)
         
     def Validation(self):
         # Nom
@@ -659,6 +725,9 @@ class Panel(wx.Panel):
         # Code comptable
         code_comptable = self.ctrl_code_comptable.GetValue() 
         
+        # Régie de facturation
+        regie = self.ctrl_regie_facturation.GetID()
+        
         # Enregistrement
         listeDonnees = [    
                 ("nom", nom),
@@ -677,6 +746,7 @@ class Panel(wx.Panel):
                 ("public", public),
                 ("nbre_inscrits_max", nbre_inscrits_max),
                 ("code_comptable", code_comptable),
+                ("regie", regie),
             ]
         DB.ReqMAJ("activites", listeDonnees, "IDactivite", self.IDactivite)
         

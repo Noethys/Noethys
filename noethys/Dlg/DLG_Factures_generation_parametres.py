@@ -557,6 +557,28 @@ class Panel(wx.Panel):
                 dlg.Destroy()
                 return False
         
+        # Vérifie la compatibilité des régies des activités sélectionnées
+        if len(listeActivites) >= 1 :
+            listeAllRegies = []
+            for IDactivite in listeActivites :
+                DB=GestionDB.DB()
+                req = """SELECT regie
+                FROM activites
+                WHERE IDactivite = %d""" % IDactivite
+                DB.ExecuterReq(req)
+                listeresult = DB.ResultatReq()
+                result = listeresult[0]
+                listeAllRegies.append(result[0])
+                DB.Close()
+            listeRegies = list(set(listeAllRegies))
+            if len(listeRegies) > 1 :
+                dlg = wx.MessageDialog(self, _(u"Vous ne pouvez pas générer des factures pour l'ensemble des activités sélectionnées !\n Certaines activités sont liées à des régies diffÃ©rentes"), _(u"Régies diffÃ©rentes"), wx.OK | wx.ICON_EXCLAMATION)
+                dlg.ShowModal()
+                dlg.Destroy()
+                return False
+            else :
+                IDregie = listeRegies[0]
+
         # Envoi des données à DLG_Factures_generation
         self.parent.dictParametres = {
             "date_debut" : date_debut,
@@ -572,6 +594,7 @@ class Panel(wx.Panel):
             "IDprefixe" : IDprefixe,
             "prefixe" : prefixe,
             "date_anterieure" : date_anterieure,
+            "IDregie" : IDregie,
             }
 
         return True
