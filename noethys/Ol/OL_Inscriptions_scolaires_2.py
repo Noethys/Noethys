@@ -64,6 +64,7 @@ class ListView(FastObjectListView):
         self.IDclasse = None
         self.IDniveau = None
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
 
     def InitModel(self):

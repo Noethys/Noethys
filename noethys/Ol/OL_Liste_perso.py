@@ -37,6 +37,7 @@ class Track(object):
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)

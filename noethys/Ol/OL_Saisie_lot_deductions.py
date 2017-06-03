@@ -52,6 +52,7 @@ class ListView(FastObjectListView):
         self.date_fin = None
         self.selectionID = None
         self.selectionTrack = None
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # DictTitulaires
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 

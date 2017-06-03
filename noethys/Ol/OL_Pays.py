@@ -41,6 +41,7 @@ class ListView(FastObjectListView):
         self.popupIndex = -1
         self.listeFiltres = []
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
 ##        self.InitModel()
 ##        self.InitObjectListView()

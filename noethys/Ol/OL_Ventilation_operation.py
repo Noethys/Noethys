@@ -86,6 +86,7 @@ class ListView(FastObjectListView):
         self.listeFiltres = []
         self.listeTracks = []
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)

@@ -128,6 +128,7 @@ class ListView(FastObjectListView):
         self.filtres = None
         self.selectionID = None
         self.selectionTrack = None
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnActivated)

@@ -52,6 +52,7 @@ class ListView(FastObjectListView):
         self.dateNaiss = None
         self.listeActivites = []
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)

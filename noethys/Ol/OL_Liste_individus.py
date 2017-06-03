@@ -203,6 +203,7 @@ class ListView(FastObjectListView):
         self.concernes = False
         self.labelParametres = ""
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
@@ -298,7 +299,7 @@ class ListView(FastObjectListView):
         else:
             noSelection = False
             ID = self.Selection()[0].IDindividu
-            
+
         # Création du menu contextuel
         menuPop = wx.Menu()
                 
@@ -308,7 +309,7 @@ class ListView(FastObjectListView):
         item.SetBitmap(bmp)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Apercu, id=40)
-        
+
         # Item Imprimer
         item = wx.MenuItem(menuPop, 50, _(u"Imprimer"))
         bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)

@@ -369,6 +369,7 @@ class ListView(FastObjectListView):
         # Récupération des paramètres perso
         self.dictParametres = kwds.pop("dictParametres", {})
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         self.SetMinSize((20, 20))
         # Binds perso

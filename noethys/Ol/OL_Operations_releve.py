@@ -64,6 +64,7 @@ class ListView(FastObjectListView):
         self.IDreleve = kwds.pop("IDreleve", None)
         self.ctrl_soldes = None
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)

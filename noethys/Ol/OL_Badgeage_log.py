@@ -114,6 +114,7 @@ class ListView(FastObjectListView):
         # Initialisation du listCtrl
         kwds["sortable"] = False
         self.nbreActions = 0
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         self.InitObjectListView() 
 

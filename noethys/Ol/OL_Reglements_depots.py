@@ -69,6 +69,7 @@ class ListView(FastObjectListView):
         self.imageDefaut = Chemins.GetStaticPath("Images/Special/Image_non_disponible.png")
 
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
 
         # Binds perso

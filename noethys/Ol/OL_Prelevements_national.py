@@ -150,6 +150,7 @@ class ListView(FastObjectListView):
         self.reglement_auto = False
         # Initialisation du listCtrl
         self.InitBanques() 
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)

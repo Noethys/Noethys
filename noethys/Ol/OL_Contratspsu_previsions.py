@@ -93,6 +93,7 @@ class ListView(FastObjectListView):
         self.dictOuvertures = self.GetOuverturesUnites()
 
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
 
         # Binds perso

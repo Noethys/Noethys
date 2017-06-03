@@ -37,6 +37,7 @@ class Track(object):
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         self.listeDonnees = kwds.pop("listeDonnees", [])
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 

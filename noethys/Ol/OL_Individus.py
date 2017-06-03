@@ -137,6 +137,7 @@ class ListView(FastObjectListView):
         self.listeGroupesActivites = []
         self.forceActualisation = False
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         try :
             self.SetEmptyListMsgFont(wx.FFont(11, wx.DEFAULT, faceName="Tekton"))

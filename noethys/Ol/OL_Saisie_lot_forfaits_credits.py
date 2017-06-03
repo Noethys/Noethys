@@ -75,6 +75,7 @@ class ListView(FastObjectListView):
         self.date_debut = None
         self.date_fin = None
         self.categories_tarifs = []
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # DictTitulaires
         self.dictTitulaires = UTILS_Titulaires.GetTitulaires() 

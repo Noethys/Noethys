@@ -39,6 +39,7 @@ class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         self.liste_donnees = []
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.Modifier)

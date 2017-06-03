@@ -50,6 +50,7 @@ class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Initialisation du listCtrl
         self.IDactivite = None
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         # Binds perso
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)

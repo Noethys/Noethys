@@ -93,6 +93,7 @@ class ListView(FastObjectListView):
         self.IDfamille = kwds.pop("IDfamille", None)
         self.listePeriodes = []
         # Initialisation du listCtrl
+        self.nom_fichier_liste = __file__
         FastObjectListView.__init__(self, *args, **kwds)
         self.Bind(wx.EVT_LIST_ITEM_ACTIVATED, self.OnItemActivated)
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
