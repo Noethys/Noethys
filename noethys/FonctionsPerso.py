@@ -1639,8 +1639,8 @@ def InsertCode():
     import re
     x = re.compile(r'(wx.Bitmap\()(.*?)(,)')
 
-    #for repertoire in ("Ctrl", "Dlg", "Ol", "Utils") :
-    for repertoire in ("",) :
+    for repertoire in ("Ctrl", "Dlg", "Ol", "Utils") :
+    #for repertoire in ("",) :
         # Création du répertoire temporaire
         if not os.path.isdir("%s/New" % repertoire):
             os.mkdir("%s/New" % repertoire)
@@ -1660,39 +1660,39 @@ def InsertCode():
                 for ligne in fichier :
 
                     # Insertion de l'import Chemins
-                    if "UTILS_Traduction" in ligne :
-                        listeLignes.append("import Chemins\n")
+                    if "FastObjectListView.__init__(self, *args, **kwds)" in ligne :
+                        listeLignes.append("        self.nom_fichier_liste = __file__\n")
                         dirty = True
 
-                    # Modification de UTILS_Traduction
-                    if "UTILS_Traduction" in ligne and repertoire != "Utils" :
-                        ligne = ligne.replace("UTILS_Traduction", "Utils.UTILS_Traduction")
-                        dirty = True
-                        print "Traduction:", ligne
-
-                    # Modification from ... import
-                    for rep in ("CTRL", "DATA", "DLG", "OL", "UTILS") :
-                        chaine = "from %s_" % rep
-                        if chaine in ligne and rep.capitalize() != repertoire and "UTILS_Traduction" not in ligne :
-                            ligne = ligne.replace(chaine, "from %s.%s_" % (rep.capitalize(), rep))
-                            dirty = True
-                            print "from:", ligne
-
-                    # Modification import
-                    for rep in ("CTRL", "DATA", "DLG", "OL", "UTILS") :
-                        chaine = "import %s_" % rep
-                        if chaine in ligne and rep.capitalize() != repertoire and "from" not in ligne and "UTILS_Traduction" not in ligne :
-                            ligne = ligne.replace(chaine, "from %s import %s_" % (rep.capitalize(), rep))
-                            dirty = True
-                            print "Import:", ligne
+                    # # Modification de UTILS_Traduction
+                    # if "UTILS_Traduction" in ligne and repertoire != "Utils" :
+                    #     ligne = ligne.replace("UTILS_Traduction", "Utils.UTILS_Traduction")
+                    #     dirty = True
+                    #     print "Traduction:", ligne
+                    #
+                    # # Modification from ... import
+                    # for rep in ("CTRL", "DATA", "DLG", "OL", "UTILS") :
+                    #     chaine = "from %s_" % rep
+                    #     if chaine in ligne and rep.capitalize() != repertoire and "UTILS_Traduction" not in ligne :
+                    #         ligne = ligne.replace(chaine, "from %s.%s_" % (rep.capitalize(), rep))
+                    #         dirty = True
+                    #         print "from:", ligne
+                    #
+                    # # Modification import
+                    # for rep in ("CTRL", "DATA", "DLG", "OL", "UTILS") :
+                    #     chaine = "import %s_" % rep
+                    #     if chaine in ligne and rep.capitalize() != repertoire and "from" not in ligne and "UTILS_Traduction" not in ligne :
+                    #         ligne = ligne.replace(chaine, "from %s import %s_" % (rep.capitalize(), rep))
+                    #         dirty = True
+                    #         print "Import:", ligne
 
                     # Modification chemin Images
-                    m = x.search(ligne)
-                    if m:
-                        chaine = m.group(2)
-                        ligne = ligne.replace(chaine, 'Chemins.GetStaticPath(%s)' % chaine)
-                        dirty = True
-                        print "Images:", ligne
+                    # m = x.search(ligne)
+                    # if m:
+                    #     chaine = m.group(2)
+                    #     ligne = ligne.replace(chaine, 'Chemins.GetStaticPath(%s)' % chaine)
+                    #     dirty = True
+                    #     print "Images:", ligne
 
                     listeLignes.append(ligne)
 
@@ -1798,4 +1798,6 @@ if __name__ == "__main__":
     #VideRepertoireUpdates(forcer=True)
 
     #InsertCodeToolTip()
+    InsertCode()
+
     pass

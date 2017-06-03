@@ -145,6 +145,14 @@ class CTRL(wx.Panel):
         # Sauvegarde des paramètres du profil dans la base
         SetParametres(categorie="profil_%s" % self.categorie, dictParametres=dictParametres, IDprofil=IDprofil)
 
+    def ViderProfil(self):
+        """ Vider les paramètres du profil """
+        IDprofil = self.GetIDprofil()
+        if IDprofil != None :
+            DB = GestionDB.DB()
+            DB.ReqDEL("profils_parametres", "IDprofil", IDprofil)
+            DB.Close()
+
     def Proposer_creation_profil(self):
         """ On propose de créer un nouveau profil """
         dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun profil pour enregistrer votre configuration.\n\nSouhaitez-vous créer un nouveau profil maintenant ?"), _(u"Créer un profil de configuration"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)

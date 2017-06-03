@@ -100,6 +100,7 @@ import string
 import time
 import copy
 import sys
+import os
 
 import CellEditor
 import OLVEvent
@@ -2553,6 +2554,26 @@ class ObjectListView(wx.ListCtrl):
             self.Uncheck(track)
         self.Refresh()
         self.OnCheck(None)
+
+    def GetNomModule(self):
+        if hasattr(self, "nom_fichier_liste") :
+            nom_module = os.path.basename(self.nom_fichier_liste)
+            for extension in (".pyc", ".py"):
+                nom_module = nom_module.replace(extension, "")
+            return nom_module
+        return None
+
+
+
+
+
+
+
+
+
+
+
+
 
 ########################################################################
 
