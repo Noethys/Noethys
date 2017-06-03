@@ -134,9 +134,10 @@ class Dialog(wx.Dialog):
         self.ctrl_mode.SetMinSize((130, -1))
 
         self.label_tri = wx.StaticText(self, -1, _(u"Tri :"))
-        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Nom de payeur"), "Montant"))
-        self.ctrl_tri.Select(0) 
-        
+        self.ctrl_tri = wx.Choice(self, -1, choices = (_(u"Ordre de saisie"), _(u"Date"), _(u"Mode de règlement"), _(u"Emetteur"), _(u"Numéro de pièce"), _(u"Nom de payeur"), _(u"Montant"),
+                                                       _(u"Avis"), _(u"Compte"), _(u"Différé"), _(u"Attente"), _(u"Quittancier"), _(u"Observations")))
+        self.ctrl_tri.Select(0)
+
         self.label_ordre = wx.StaticText(self, -1, _(u"Ordre :"))
         self.ctrl_ordre = wx.Choice(self, -1, choices = (_(u"Ascendant"), _(u"Descendant")))
         self.ctrl_ordre.Select(0) 
@@ -287,6 +288,13 @@ class Dialog(wx.Dialog):
     def DeplacerTout(self, inclus=True):
         listeTracks = []
         for track in self.tracks :
+            # if inclus :
+            #     ctrl = self.ctrl_reglements_disponibles
+            # else :
+            #     ctrl = self.ctrl_reglements_depot
+            # if track.IDreglement in ctrl.GetListeIDreglement():
+            #     track.inclus = inclus
+
             track.inclus = inclus
             listeTracks.append(track)
         self.MAJListes(listeTracks)

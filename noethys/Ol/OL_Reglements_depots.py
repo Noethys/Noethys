@@ -27,9 +27,6 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils, PanelAvecFooter
 
-try: import psyco; psyco.full()
-except: pass
-
 
 
 
@@ -79,14 +76,15 @@ class ListView(FastObjectListView):
         self.Bind(wx.EVT_CONTEXT_MENU, self.OnContextMenu)
 
     def OnClickColonne(self, indexColonne=None, ascendant=True):
-        try :
-            self.GetGrandParent().ctrl_tri.Select(indexColonne)
-            if ascendant :
-                self.GetGrandParent().ctrl_ordre.Select(0)
-            else :
-                self.GetGrandParent().ctrl_ordre.Select(1)
-        except :
-            pass
+        if self.inclus == False :
+            try :
+                self.GetGrandParent().ctrl_tri.Select(indexColonne)
+                if ascendant :
+                    self.GetGrandParent().ctrl_ordre.Select(0)
+                else :
+                    self.GetGrandParent().ctrl_ordre.Select(1)
+            except :
+                pass
 
     def OnItemActivated(self,event):
         if self.selectionPossible == True :
@@ -194,27 +192,27 @@ class ListView(FastObjectListView):
         # Image list
         dictImages = {"standard":{}, "modes":{}, "emetteurs":{} }
         imageList = wx.ImageList(taille[0], taille[1])
-        
+
         # Images standard
-        dictImages["standard"]["vert"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_vert.png"), wx.BITMAP_TYPE_PNG), taille))    
-        dictImages["standard"]["orange"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_orange.png"), wx.BITMAP_TYPE_PNG), taille))   
-        dictImages["standard"]["rouge"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_rouge.png"), wx.BITMAP_TYPE_PNG), taille))    
-        dictImages["standard"]["ok"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG), taille))    
-        dictImages["standard"]["erreur"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG), taille))    
-        dictImages["standard"]["attente"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attente.png"), wx.BITMAP_TYPE_PNG), taille))    
-        dictImages["standard"]["avis_depot_oui"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG), taille))    
-        dictImages["standard"]["avis_depot_non"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp_gris.png"), wx.BITMAP_TYPE_PNG), taille))    
+        dictImages["standard"]["vert"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_vert.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["orange"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_orange.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["rouge"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ventilation_rouge.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["ok"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Ok.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["erreur"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["attente"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Attente.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["avis_depot_oui"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp.png"), wx.BITMAP_TYPE_PNG), taille))
+        dictImages["standard"]["avis_depot_non"] = imageList.Add(self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Emails_exp_gris.png"), wx.BITMAP_TYPE_PNG), taille))
 
         # Images Modes
         if self.afficheImages == True :
-            
+
             DB = GestionDB.DB()
             req = """SELECT modes_reglements.IDmode, modes_reglements.image FROM modes_reglements"""
             DB.ExecuterReq(req)
             listeModes = DB.ResultatReq()
             for IDmode, buffer in listeModes :
                 bmp = self.GetImagefromBuffer(buffer, taille)
-                dictImages["modes"][IDmode] = imageList.Add(bmp)            
+                dictImages["modes"][IDmode] = imageList.Add(bmp)
 
             # Images Emetteurs
             req = """SELECT emetteurs.IDemetteur, emetteurs.image FROM emetteurs"""
@@ -222,14 +220,18 @@ class ListView(FastObjectListView):
             listeEmetteurs = DB.ResultatReq()
             for IDemetteur, buffer in listeEmetteurs :
                 bmp = self.GetImagefromBuffer(buffer, taille)
-                dictImages["emetteurs"][IDemetteur] = imageList.Add(bmp)            
-            
-            self.SetImageLists(imageList, imageList)
+                dictImages["emetteurs"][IDemetteur] = imageList.Add(bmp)
+
             DB.Close()
-        
-        def GetImage(track):
-            return dictImages[track.IDmode]
-        
+
+        self.SetImageLists(imageList, imageList)
+
+        # Flèches tri
+        bmp_haut = self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_haut_2.png"), wx.BITMAP_TYPE_PNG), taille)
+        bmp_bas = self.ConvertTailleImage(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Fleche_bas_2.png"), wx.BITMAP_TYPE_PNG), taille)
+        self.RegisterSortIndicators(bmp_haut, bmp_bas)
+
+
         def GetImageMode(track):
             if dictImages["modes"].has_key(track.IDmode) :
                 return dictImages["modes"][track.IDmode]
@@ -506,8 +508,11 @@ class ListView(FastObjectListView):
             self.GetGrandParent().MAJListes(self.tracks)
         dlg.Destroy()
 
-
-
+    def GetListeIDreglement(self):
+        listeID = []
+        for track in self.GetFilteredObjects():
+            listeID.append(track.IDreglement)
+        return listeID
 
 
 
