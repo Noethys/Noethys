@@ -3681,7 +3681,7 @@ class MainFrame(wx.Frame):
         tb.SetPopupSize((largeur, hauteur))
         largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
         tb.SetPopupPosition((largeurEcran-largeur-10, hauteurEcran-hauteur-50))
-        tb.SetPopupPauseTime(2000)
+        tb.SetPopupPauseTime(3000)
         tb.SetPopupScrollSpeed(8)
         tb.SetPopupBackgroundColour(couleurFond)
         tb.SetPopupTextColour("#000000")
