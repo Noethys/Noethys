@@ -1,4 +1,4 @@
-Version 1.2.0.1 (25/05/2017) :
+Version 1.2.0.2 (25/05/2017) :
 
 - Ajout des régies de facturation
 - Ajout du paiement en ligne TIPI avec Connecthys
@@ -6,6 +6,8 @@ Version 1.2.0.1 (25/05/2017) :
 - Ajout de la prévisualisation par lot des factures à générer
 - Ajout de l'option Facturés dans la liste des soldes du menu Facturation
 - Ajout des questionnaires dans le récapitulatif PDF des factures
+- Ajout des rappels de messages dans la fiche famille
+- Ajout des profils de configuration pour les filtres de listes
 - Fix désinscription dans le badgeage
 - Fix affichage global des liens dans la fiche famille
 - Fix demande d'inscription avec Connecthys
