@@ -2045,6 +2045,15 @@ class DB:
             except Exception, err:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 0, 2)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("messages", "rappel_famille", "INTEGER")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
+
 
 
 

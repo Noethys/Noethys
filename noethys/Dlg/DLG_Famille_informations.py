@@ -212,6 +212,8 @@ class Panel(wx.Panel):
     def Sauvegarde(self):
         pass
 
+    def GetListeMessages(self):
+        return self.ctrl_infos.GetListeMessages()
 
 
 

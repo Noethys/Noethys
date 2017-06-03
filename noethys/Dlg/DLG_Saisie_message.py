@@ -49,9 +49,10 @@ class CTRL_Categorie(wx.Choice):
     def MAJ(self):
         listeDonnees = self.GetListeDonnees()
         self.SetItems(listeDonnees)
+        self.Select(0)
 
     def GetListeDonnees(self):
-        listeItems = []
+        listeItems = [_(u"Aucune"),]
         self.dictDonnees = {}
         DB = GestionDB.DB()
         req = """
@@ -119,14 +120,9 @@ class Dialog(wx.Dialog):
         self.ctrl_afficher_accueil = wx.CheckBox(self, -1, _(u"Afficher sur la page d'accueil"))
         self.ctrl_afficher_liste = wx.CheckBox(self, -1, _(u"Afficher sur la liste des consommations"))
         self.ctrl_afficher_factures = wx.CheckBox(self, -1, _(u"Afficher sur les factures"))
-        if self.mode != "famille" :
-            self.ctrl_afficher_factures.Enable(False)
-        if self.mode == "accueil" :
-            self.ctrl_afficher_accueil.SetValue(True)
-            self.ctrl_afficher_accueil.Enable(False)
-            self.ctrl_afficher_liste.Enable(False)
-        
-        self.ctrl_rappel = wx.CheckBox(self, -1, _(u"Rappel à l'ouverture du fichier"))
+
+        self.ctrl_rappel_famille = wx.CheckBox(self, -1, _(u"Rappel à l'ouverture de la fiche famille"))
+        self.ctrl_rappel_accueil = wx.CheckBox(self, -1, _(u"Rappel à l'ouverture du fichier"))
 
         self.label_parution = wx.StaticText(self, -1, _(u"Date de parution :"))
         self.ctrl_parution = CTRL_Saisie_date.Date(self)
@@ -154,6 +150,14 @@ class Dialog(wx.Dialog):
             self.Importation()
             self.SetTitle(_(u"Modification d'un message"))
 
+        if self.mode != "famille" :
+            self.ctrl_afficher_factures.Show(False)
+            self.ctrl_rappel_famille.Show(False)
+        if self.mode == "accueil" :
+            self.ctrl_afficher_accueil.SetValue(True)
+            self.ctrl_afficher_accueil.Show(False)
+            self.ctrl_afficher_liste.Show(False)
+
     def __set_properties(self):
         self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie")))
         self.bouton_categorie.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à la gestion des catégories de messages")))
@@ -162,7 +166,8 @@ class Dialog(wx.Dialog):
         self.ctrl_parution.SetToolTip(wx.ToolTip(_(u"Saisissez ici la date de parution du message")))
         self.ctrl_afficher_liste.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher ce message sur la liste des consommations")))
         self.ctrl_priorite.SetToolTip(wx.ToolTip(_(u"Sélectionnez ici la priorité du message")))
-        self.ctrl_rappel.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel")))
+        self.ctrl_rappel_accueil.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture du logiciel")))
+        self.ctrl_rappel_famille.SetToolTip(wx.ToolTip(_(u"Cochez cette case pour afficher un rappel du message à l'ouverture de la fiche famille")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -189,11 +194,12 @@ class Dialog(wx.Dialog):
         staticbox_options = wx.StaticBoxSizer(self.staticbox_options_staticbox, wx.VERTICAL)
         grid_sizer_options = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         
-        grid_sizer_options_gauche = wx.FlexGridSizer(rows=4, cols=1, vgap=5, hgap=5)
+        grid_sizer_options_gauche = wx.FlexGridSizer(rows=5, cols=1, vgap=5, hgap=5)
         grid_sizer_options_gauche.Add(self.ctrl_afficher_accueil, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options_gauche.Add(self.ctrl_afficher_liste, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options_gauche.Add(self.ctrl_afficher_factures, 0, wx.ALIGN_CENTER_VERTICAL, 0)
-        grid_sizer_options_gauche.Add(self.ctrl_rappel, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options_gauche.Add(self.ctrl_rappel_famille, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_options_gauche.Add(self.ctrl_rappel_accueil, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_options.Add(grid_sizer_options_gauche, 0, wx.EXPAND, 0)
         
         grid_sizer_options_droit = wx.FlexGridSizer(rows=3, cols=2, vgap=5, hgap=5)
@@ -240,12 +246,6 @@ class Dialog(wx.Dialog):
 
     def OnBoutonOk(self, event): 
         # Vérification des données
-        if self.ctrl_categorie.GetID() == None :
-            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner une catégorie !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return
-        
         if len(self.ctrl_texte.GetValue()) == 0 :
             dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement saisir un texte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
@@ -273,14 +273,14 @@ class Dialog(wx.Dialog):
         """ Importation des donnees de la base """
         DB = GestionDB.DB()
         req = """SELECT type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite,
-        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel, afficher_facture
+        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel, afficher_facture, rappel_famille
         FROM messages 
         WHERE IDmessage=%d;""" % self.IDmessage
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite, afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel, afficher_facture = listeDonnees[0]
+        type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite, afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel_accueil, afficher_facture, rappel_famille = listeDonnees[0]
         
         self.type = type
         self.date_saisie = DateEngEnDateDD(date_saisie)
@@ -296,7 +296,9 @@ class Dialog(wx.Dialog):
         self.ctrl_afficher_liste.SetValue(afficher_liste)
         if afficher_facture != None :
             self.ctrl_afficher_factures.SetValue(afficher_facture)
-        self.ctrl_rappel.SetValue(rappel)
+        self.ctrl_rappel_accueil.SetValue(rappel_accueil)
+        if rappel_famille != None :
+            self.ctrl_rappel_famille.SetValue(rappel_famille)
         self.ctrl_texte.SetValue(texte)
 
     def Sauvegarde(self):
@@ -311,7 +313,8 @@ class Dialog(wx.Dialog):
         afficher_accueil = int(self.ctrl_afficher_accueil.GetValue())
         afficher_liste = int(self.ctrl_afficher_liste.GetValue())
         afficher_factures = int(self.ctrl_afficher_factures.GetValue())
-        rappel = int(self.ctrl_rappel.GetValue())
+        rappel_accueil = int(self.ctrl_rappel_accueil.GetValue())
+        rappel_famille = int(self.ctrl_rappel_famille.GetValue())
         date_parution = self.ctrl_parution.GetDate() 
         
         if self.mode == "famille" and self.nom == None : self.nom = self.GetNomFamille() 
@@ -330,7 +333,8 @@ class Dialog(wx.Dialog):
                 ("priorite", priorite),
                 ("afficher_accueil", afficher_accueil),
                 ("afficher_liste", afficher_liste),
-                ("rappel", rappel),
+                ("rappel", rappel_accueil),
+                ("rappel_famille", rappel_famille),
                 ("IDfamille", self.IDfamille),
                 ("IDindividu", self.IDindividu),
                 ("nom", self.nom),

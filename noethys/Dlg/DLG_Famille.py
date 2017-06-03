@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
+import wx.lib.agw.toasterbox as Toaster
 
 from Utils import UTILS_Config
 from Utils import UTILS_Historique
@@ -202,7 +203,10 @@ class Dialog(wx.Dialog):
         self.notebook.GetPageAvecCode("informations").MAJ() 
         
         # MAJ CTRL composition
-        self.ctrl_composition.MAJ() 
+        self.ctrl_composition.MAJ()
+
+        # Affiche les messages à l'ouverture de la fiche famille
+        self.AfficheMessagesOuverture()
         
 
     def __set_properties(self):
@@ -757,9 +761,38 @@ class Dialog(wx.Dialog):
         # Depuis le client de messagerie par défaut
         if event.GetId() == 210 :
             FonctionsPerso.EnvoyerMail(adresses=listeAdresses, sujet="", message="")
-        
-        
-        
+
+
+    def AfficheMessagesOuverture(self):
+        """ Affiche les messages à l'ouverture de la fiche famille """
+        listeMessages = self.notebook.GetPageAvecCode("informations").GetListeMessages()
+        for track in listeMessages :
+            if track.rappel_famille == 1 :
+                texteToaster = track.texte
+                if track.priorite == "HAUTE" :
+                    couleurFond="#FFA5A5"
+                else:
+                    couleurFond="#FDF095"
+                self.AfficheToaster(titre=_(u"Message"), texte=texteToaster, couleurFond=couleurFond)
+
+    def AfficheToaster(self, titre=u"", texte=u"", taille=(200, 100), couleurFond="#F0FBED"):
+        """ Affiche une boîte de dialogue temporaire """
+        largeur, hauteur = taille
+        tb = Toaster.ToasterBox(self, Toaster.TB_SIMPLE, Toaster.TB_DEFAULT_STYLE, Toaster.TB_ONTIME)  # TB_CAPTION
+        tb.SetTitle(titre)
+        tb.SetPopupSize((largeur, hauteur))
+        largeurEcran, hauteurEcran = wx.ScreenDC().GetSizeTuple()
+        tb.SetPopupPosition((largeurEcran - largeur - 10, hauteurEcran - hauteur - 50))
+        tb.SetPopupPauseTime(3000)
+        tb.SetPopupScrollSpeed(8)
+        tb.SetPopupBackgroundColour(couleurFond)
+        tb.SetPopupTextColour("#000000")
+        tb.SetPopupText(texte)
+        tb.Play()
+
+
+
+
 
 if __name__ == "__main__":
     app = wx.App(0)

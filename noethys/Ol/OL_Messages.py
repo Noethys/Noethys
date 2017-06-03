@@ -57,8 +57,9 @@ class Track(object):
         self.IDindividu = donnees[10]
         self.texte = donnees[11]
         self.nom = donnees[12]
-        self.rappel = donnees[13]
-        
+        self.rappel_accueil = donnees[13]
+        self.rappel_famille = donnees[14]
+
         if MODE == "accueil" and self.IDfamille != None and self.nom != None :
             self.texte = _(u"Famille de %s : %s") % (self.nom, self.texte)
         
@@ -110,7 +111,7 @@ class ListView(FastObjectListView):
 
         DB = GestionDB.DB()
         req = """SELECT IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite,
-        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel
+        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, nom, rappel, rappel_famille
         FROM messages 
         %s;""" % condition
         DB.ExecuterReq(req)

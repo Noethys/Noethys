@@ -44,6 +44,25 @@ def DateEngFr(textDate):
 ##        HTL.HyperTreeList.__init__(self, parent, -1, size=size)
 
 
+
+class Track_message(object):
+    def __init__(self, donnees):
+        self.IDmessage = donnees[0]
+        self.type = donnees[1]
+        self.IDcategorie = donnees[2]
+        self.date_saisie = DateEngEnDateDD(donnees[3])
+        self.IDutilisateur = donnees[4]
+        self.date_parution = DateEngEnDateDD(donnees[5])
+        self.priorite = donnees[6]
+        self.afficher_accueil = donnees[7]
+        self.afficher_liste = donnees[8]
+        self.IDfamille = donnees[9]
+        self.IDindividu = donnees[10]
+        self.texte = donnees[11]
+        self.rappel_famille = donnees[12]
+
+
+
 class CTRL(wx.TreeCtrl):
     def __init__(self, parent, IDfamille=None, IDindividu=None, dictFamillesRattachees={}, size=(-1, -1) ): 
         wx.TreeCtrl.__init__(self, parent, -1, size=size, style=wx.TR_HIDE_ROOT | wx.TR_NO_BUTTONS)
@@ -51,6 +70,7 @@ class CTRL(wx.TreeCtrl):
         self.IDfamille = IDfamille
         self.IDindividu = IDindividu
         self.dictFamillesRattachees = dictFamillesRattachees
+        self.listeMessages = []
         
         # Adapte taille Police pour Linux
         from Utils import UTILS_Linux
@@ -175,8 +195,8 @@ class CTRL(wx.TreeCtrl):
 
     def Branches_messages(self, niveauParent=None):
         # Création des branches
-        listeMessages = self.GetMessages() 
-        nbreMessages = len(listeMessages)
+        self.listeMessages = self.GetMessages()
+        nbreMessages = len(self.listeMessages)
         if nbreMessages > 0 : 
             
             # Label de la catégorie d'info
@@ -190,10 +210,10 @@ class CTRL(wx.TreeCtrl):
             self.SetItemImage(niveauCategorie, self.img_messages, which=wx.TreeItemIcon_Normal)
             niveauParent = niveauCategorie
             
-            for IDmessage, date_parution, priorite, texte in listeMessages :
-                niveau1 = self.AppendItem(niveauParent, texte)
-                if priorite == "HAUTE" : self.SetItemImage(niveau1, self.img_attention, which=wx.TreeItemIcon_Normal)
-                self.SetPyData(niveau1, {"type":"message", "IDmessage":IDmessage} )
+            for track in self.listeMessages :
+                niveau1 = self.AppendItem(niveauParent, track.texte)
+                if track.priorite == "HAUTE" : self.SetItemImage(niveau1, self.img_attention, which=wx.TreeItemIcon_Normal)
+                self.SetPyData(niveau1, {"type":"message", "IDmessage":track.IDmessage} )
 
 
     def Branches_cotisations(self, niveauParent=None):
@@ -379,15 +399,15 @@ class CTRL(wx.TreeCtrl):
         # Récupération des pièces à fournir pour la famille ou l'individu
         req = """
         SELECT IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite,
-        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte
+        afficher_accueil, afficher_liste, IDfamille, IDindividu, texte, rappel_famille
         FROM messages
         %s
         """ % condition
         self.DB.ExecuterReq(req)
         listeDonnees = self.DB.ResultatReq()
         
-        for IDmessage, type, IDcategorie, date_saisie, IDutilisateur, date_parution, priorite, afficher_accueil, afficher_liste, IDfamille, IDindividu, texte in listeDonnees :
-            listeMessages.append((IDmessage, date_parution, priorite, texte))
+        for donnees in listeDonnees :
+            listeMessages.append(Track_message(donnees))
         
         return listeMessages
 
@@ -963,6 +983,8 @@ class CTRL(wx.TreeCtrl):
 
         return dictCotisations, nbreCotisations, nbreFamilles
 
+    def GetListeMessages(self):
+        return self.listeMessages
 
 # --------------------------------------------------------------------------------------------------------------------------
 

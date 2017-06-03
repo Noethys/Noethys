@@ -39,7 +39,7 @@ class Track(object):
         self.IDindividu = donnees[10]
         self.texte = donnees[11]
         self.nom = donnees[12]
-        self.rappel = donnees[13]
+        self.rappel_accueil = donnees[13]
         self.nomCategorie = donnees[14]
         
         if self.IDfamille != None and self.nom != None :

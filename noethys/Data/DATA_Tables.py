@@ -831,6 +831,7 @@ DB_DATA = {
                                     ("nom", "VARCHAR(255)", u"Nom de la famille ou de l'individu"),
                                     ("texte", "VARCHAR(500)", u"Texte du message"),
                                     ("afficher_facture", "INTEGER", u"Afficher sur les factures de la famille"),
+                                    ("rappel_famille", "INTEGER", u"Rappel à l'ouverture de la fiche famille"),
                                     ], # Messages
 
     "messages_categories":[("IDcategorie", "INTEGER PRIMARY KEY AUTOINCREMENT", u"IDcategorie"),
