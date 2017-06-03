@@ -28,7 +28,7 @@ def Activer_rapport_erreurs(version=""):
     def my_excepthook(exctype, value, tb):
         dateDuJour = datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         systeme = u"%s %s %s %s" % (sys.platform, platform.system(), platform.release(), platform.machine())
-        infos = u"## %s | %s | %s ##" % (dateDuJour, version, systeme)
+        infos = u"## %s | %s | wxPython %s | %s ##" % (dateDuJour, version, wx.version(), systeme)
         bug = ''.join(traceback.format_exception(exctype, value, tb))
         
         # Affichage dans le journal
