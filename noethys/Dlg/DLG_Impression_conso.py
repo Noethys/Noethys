@@ -1393,11 +1393,15 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
+        # On stocke dans un tableau les unités selectionnées par l'utilisateur pour etre affichées (Toujours afficher et afficher si ouverte)
+        unitesChoisies = {}
         for IDactivite in listeActivites :
             valide = False
             listeUnitesTemp = dictChoixUnites[IDactivite]
             for typeTemp, IDunite, affichage in listeUnitesTemp :
-                if affichage != "jamais" : valide = True
+                if affichage != "jamais" :
+                    valide = True
+                    unitesChoisies[IDunite] = 1
             if valide == False :
                 dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement avoir au moins une unité à afficher pour chaque activité !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
@@ -1520,6 +1524,11 @@ class Dialog(wx.Dialog):
         # Récupération des étiquettes
         dictEtiquettes = self.GetPage("etiquettes").ctrl_etiquettes.GetDictEtiquettes()
 
+        # Les unites selectiones sont ajoutées aux critères pour ne selectionner que les consommations sur ces activités
+        if len(unitesChoisies) == 0: conditionUnites = "()"
+        elif len(unitesChoisies) == 1: conditionUnites = "(%d)" % unitesChoisies[0]
+        else: conditionUnites = str(tuple(unitesChoisies))
+
         # Récupération des consommations
         req = """SELECT IDconso, consommations.IDindividu, IDcivilite, consommations.IDactivite, IDunite, consommations.IDgroupe, heure_debut, heure_fin, etat, quantite, etiquettes,
         IDcivilite, individus.nom, prenom, date_naiss, types_sieste.nom, inscriptions.IDfamille, consommations.date, scolarite.IDecole, scolarite.IDclasse
@@ -1529,8 +1538,8 @@ class Dialog(wx.Dialog):
         LEFT JOIN inscriptions ON inscriptions.IDinscription = consommations.IDinscription
         LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu AND scolarite.date_debut <= consommations.date AND scolarite.date_fin >= consommations.date
         WHERE etat IN ("reservation", "present")
-        AND consommations.IDactivite IN %s AND consommations.date IN %s %s
-        ;""" % (conditionActivites, conditionDates, conditionsScolarite)
+        AND consommations.IDactivite IN %s AND consommations.date IN %s %s AND IDunite IN %s
+        ;""" % (conditionActivites, conditionDates, conditionsScolarite, conditionUnites)
         DB.ExecuterReq(req)
         listeConso = DB.ResultatReq()
         dictConso = {}
