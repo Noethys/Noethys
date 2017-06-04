@@ -92,7 +92,7 @@ class Forfaits():
                     valide = True
         return valide
 
-    def GetForfaits(self):
+    def GetForfaits(self, masquer_forfaits_obsoletes=False):
         """ Permet d'obtenir la liste des forfaits disponibles """
         DB = GestionDB.DB()
         
@@ -101,6 +101,7 @@ class Forfaits():
         if len(self.listeActivites) == 0 : conditionActivites = "()"
         elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
         else : conditionActivites = str(tuple(self.listeActivites))
+
         req = """SELECT activites.IDactivite, activites.nom, abrege, date_debut, date_fin
         FROM activites
         WHERE activites.IDactivite IN %s
@@ -169,6 +170,9 @@ class Forfaits():
         
         # Recherche des tarifs pour chaque activité
         condition = "WHERE type='FORFAIT' AND forfait_saisie_manuelle=%s AND forfait_saisie_auto=%d" % (int(self.saisieManuelle), int(self.saisieAuto))
+        if masquer_forfaits_obsoletes == True :
+            condition += " AND (date_fin>='%s' OR date_fin IS NULL)" % datetime.date.today()
+
         req = """SELECT 
         IDtarif, tarifs.IDactivite, tarifs.IDnom_tarif, nom, date_debut, date_fin, 
         forfait_saisie_manuelle, forfait_saisie_auto, forfait_suppression_auto,
@@ -184,6 +188,7 @@ class Forfaits():
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             listeCategoriesTarifs = ConvertStrToListe(categories_tarifs)
             listeGroupes = ConvertStrToListe(groupes)
+            inclure = True
 
             dictTemp = {
                 "IDtarif" : IDtarif, "IDactivite" : IDactivite, 
@@ -192,6 +197,7 @@ class Forfaits():
                 "forfait_suppression_auto" : forfait_suppression_auto, "methode" : methode,
                 "categories_tarifs" : listeCategoriesTarifs, "groupes" : listeGroupes, "options" : options, "date_facturation" : date_facturation,
                 "combinaisons" : [], "lignes_calcul" : [], "IDtype_quotient" : IDtype_quotient,
+                "date_debut_forfait" : None, "date_fin_forfait" : None,
                 }
                 
             # Recherche si ce tarif a des combinaisons d'unités
@@ -204,13 +210,34 @@ class Forfaits():
                 dictTemp["forfait_saisie_manuelle"] = forfait_saisie_manuelle
                 dictTemp["forfait_saisie_auto"] = forfait_saisie_auto
                 dictTemp["forfait_suppression_auto"] = forfait_suppression_auto
-                
+
+                # Recherche les dates extrêmes du forfait (si unités de conso associées)
+                if len(listeCombinaisons) > 0:
+                    # Combinaisons perso
+                    date_debut_forfait, date_fin_forfait = listeCombinaisons[0][0][0], listeCombinaisons[-1][0][0]
+                elif options != None and "calendrier" in options:
+                    # Selon le calendrier des ouvertures
+                    date_debut_forfait, date_fin_forfait = None, None
+                    if dictActivites[IDactivite]["ouvertures"].has_key(IDgroupe):
+                        dates = dictActivites[IDactivite]["ouvertures"][IDgroupe].keys()
+                        dates.sort()
+                        if len(dates) > 0:
+                            date_debut_forfait, date_fin_forfait = dates[0], dates[-1]
+                else:
+                    date_debut_forfait, date_fin_forfait = None, None
+
+                dictTemp["date_debut_forfait"] = date_debut_forfait
+                dictTemp["date_fin_forfait"] = date_fin_forfait
+
+                if masquer_forfaits_obsoletes == True and date_fin_forfait != None and date_fin_forfait < datetime.date.today() :
+                    inclure = False
+
             # Recherche si ce tarif a des lignes de calcul
             if dictLignesCalcul.has_key(IDtarif):
                 dictTemp["lignes_calcul"] = dictLignesCalcul[IDtarif]
             
             # Mémorisation de ce tarif
-            if dictActivites.has_key(IDactivite) == True :
+            if dictActivites.has_key(IDactivite) == True and inclure == True :
                 dictActivites[IDactivite]["tarifs"].append(dictTemp)
 
         # Cloture de la base de données
@@ -733,6 +760,7 @@ class CTRL(HTL.HyperTreeList):
         self.listeIndividus = listeIndividus
         self.saisieManuelle = saisieManuelle
         self.saisieAuto = saisieAuto
+        self.masquerForfaitsObsoletes = True
         
         # ImageList
         il = wx.ImageList(16, 16)
@@ -790,21 +818,14 @@ class CTRL(HTL.HyperTreeList):
         """ Met à jour (redessine) tout le contrôle """
         self.DeleteAllItems()
         self.Remplissage()
-    
-##    def GetIDtarif(self):
-##        donnees = self.GetPyData(self.GetSelection())
-##        if donnees == None : return None
-##        if donnees["type"] != "tarif" : return None
-##        IDtarif = donnees["ID"]
-##        return IDtarif
-    
+
     def Remplissage(self):        
         # Création de la racine
         self.root = self.AddRoot(_(u"Racine"))
         
         # Récupération des forfaits
         f = Forfaits(self.IDfamille, self.listeActivites, self.listeIndividus, self.saisieManuelle, self.saisieAuto)
-        dictForfaits = f.GetForfaits()
+        dictForfaits = f.GetForfaits(masquer_forfaits_obsoletes=self.masquerForfaitsObsoletes)
             
         # Récupération des données
         dictIndividus = f.GetInscriptions()
@@ -833,8 +854,7 @@ class CTRL(HTL.HyperTreeList):
                 if dictForfaits.has_key(IDactivite) and len(dictForfaits[IDactivite]["tarifs"])> 0 :
                     
                     dictActivite = dictForfaits[IDactivite]
-                    nomActivite = dictActivite["nom"]
-                    niveau2 = self.AppendItem(niveau1, nomActivite, ct_type=1)
+                    niveau2 = self.AppendItem(niveau1, dictActivite["nom"], ct_type=1)
                     self.SetPyData(niveau2, {"type":"activite", "ID":IDactivite} )
                     
                     # Niveau 3 : Tarifs
@@ -849,9 +869,7 @@ class CTRL(HTL.HyperTreeList):
                             IDtarif = dictTarif["IDtarif"]
                             lignes_calcul = dictTarif["lignes_calcul"]
                             options = dictTarif["options"]
-                            
-                            niveau3 = self.AppendItem(niveau2, nomTarif, ct_type=1)
-                            
+
                             # Affiche les dates extrêmes du forfait
                             if len(combinaisons) > 0 :
                                 # Combinaisons perso
@@ -868,8 +886,9 @@ class CTRL(HTL.HyperTreeList):
                                 date_debut_forfait, date_fin_forfait = "?", "?"
                                 
                             labelDates = _(u"Du %s au %s") % (date_debut_forfait, date_fin_forfait)
+
+                            niveau3 = self.AppendItem(niveau2, nomTarif, ct_type=1)
                             self.SetItemText(niveau3, labelDates, 1)
-                            
                             self.SetPyData(niveau3, {"type":"tarif", "ID":IDtarif, "nom":nomTarif, "dates":labelDates, "item":niveau3} )
                             
         if 'phoenix' in wx.PlatformInfo:
@@ -904,7 +923,10 @@ class Dialog(wx.Dialog):
         self.staticbox_forfaits = wx.StaticBox(self, -1, _(u"Cochez un ou plusieurs forfaits"))
         self.ctrl_forfaits = CTRL(self, IDfamille, listeActivites, listeIndividus, saisieManuelle=True, saisieAuto=False)
         self.ctrl_forfaits.MAJ()
-        
+
+        self.check_masquer_obsoletes = wx.CheckBox(self, -1, _(u"Masquer les forfaits obsolètes"))
+        self.check_masquer_obsoletes.SetValue(True)
+
         self.bouton_aide = CTRL_Bouton_image.CTRL(self, texte=_(u"Aide"), cheminImage="Images/32x32/Aide.png")
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Appliquer"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, id=wx.ID_CANCEL, texte=_(u"Fermer"), cheminImage="Images/32x32/Annuler.png")
@@ -914,9 +936,11 @@ class Dialog(wx.Dialog):
 
         self.Bind(wx.EVT_BUTTON, self.OnBoutonAide, self.bouton_aide)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOk, self.bouton_ok)
+        self.Bind(wx.EVT_CHECKBOX, self.OnCheckObsoletes, self.check_masquer_obsoletes)
 
     def __set_properties(self):
         self.ctrl_forfaits.SetToolTip(wx.ToolTip(_(u"Double-cliquez sur un forfait pour l'appliquer")))
+        self.check_masquer_obsoletes.SetToolTip(wx.ToolTip(_(u"Masquer les forfaits dont la date de fin de validité est inférieure à la date du jour")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
@@ -928,6 +952,7 @@ class Dialog(wx.Dialog):
         
         staticbox_forfaits = wx.StaticBoxSizer(self.staticbox_forfaits, wx.VERTICAL)
         staticbox_forfaits.Add(self.ctrl_forfaits, 1, wx.ALL|wx.EXPAND, 5)
+        staticbox_forfaits.Add(self.check_masquer_obsoletes, 0, wx.BOTTOM|wx.ALIGN_RIGHT, 5)
         grid_sizer_base.Add(staticbox_forfaits, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
         
         grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
@@ -944,6 +969,10 @@ class Dialog(wx.Dialog):
         grid_sizer_base.AddGrowableCol(0)
         self.Layout()
         self.CenterOnScreen()
+
+    def OnCheckObsoletes(self, event=None):
+        self.ctrl_forfaits.masquerForfaitsObsoletes = self.check_masquer_obsoletes.GetValue()
+        self.ctrl_forfaits.MAJ()
 
     def OnBoutonAide(self, event): 
         from Utils import UTILS_Aide
@@ -978,7 +1007,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    dialog_1 = Dialog(None, IDfamille=3, listeActivites=[1,], listeIndividus=[2,])
+    dialog_1 = Dialog(None, IDfamille=14, listeActivites=[1,], listeIndividus=[46,])
     app.SetTopWindow(dialog_1)
     dialog_1.ShowModal()
     app.MainLoop()
