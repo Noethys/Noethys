@@ -37,7 +37,7 @@ class CTRL(HTL.HyperTreeList):
         self.MAJenCours = False
         
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
+        self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT | HTL.TR_AUTO_CHECK_CHILD | HTL.TR_AUTO_CHECK_PARENT)
         self.EnableSelectionVista(True)
         
         self.SetToolTip(wx.ToolTip(_(u"Cochez les dépôts à afficher")))
@@ -47,12 +47,13 @@ class CTRL(HTL.HyperTreeList):
         self.SetColumnWidth(0, 400)
 
         # Binds
-        self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem) 
+        #self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem)
 
     def OnCheckItem(self, event):
         if self.MAJenCours == False :
             item = event.GetItem()
             # Active ou non les branches enfants
+
             if self.GetPyData(item)["type"] == "annee" :
                 if self.IsItemChecked(item) :
                     self.EnableChildren(item, True)
@@ -60,28 +61,24 @@ class CTRL(HTL.HyperTreeList):
                 else:
                     self.CheckChilds(item, False)
                     self.EnableChildren(item, False)
-                    
-##            # Envoie les données aux contrôle parent
-##            self.parent.OnSelectDepots()
-        
+
     def GetCoches(self):
         dictCoches = {}
         parent = self.root
         for index in range(0, self.GetChildrenCount(self.root)):
             parent = self.GetNext(parent) 
             # Recherche des activités cochées
-            if self.IsItemChecked(parent) :
-                annee = self.GetPyData(parent)["ID"]
-                # Recherche des dépôts cochés
-                listeDepots = []
-                item, cookie = self.GetFirstChild(parent)
-                for index in range(0, self.GetChildrenCount(parent)):
-                    if self.IsItemChecked(item) : 
-                        IDdepot = self.GetPyData(item)["ID"]
-                        listeDepots.append(IDdepot)
-                    item = self.GetNext(item) 
-                if len(listeDepots) > 0 : 
-                    dictCoches[annee] = listeDepots
+            annee = self.GetPyData(parent)["ID"]
+            # Recherche des dépôts cochés
+            listeDepots = []
+            item, cookie = self.GetFirstChild(parent)
+            for index in range(0, self.GetChildrenCount(parent)):
+                if self.IsItemChecked(item) :
+                    IDdepot = self.GetPyData(item)["ID"]
+                    listeDepots.append(IDdepot)
+                item = self.GetNext(item)
+            if len(listeDepots) > 0 :
+                dictCoches[annee] = listeDepots
         return dictCoches
     
     def GetDepots(self) :
@@ -141,17 +138,11 @@ class CTRL(HTL.HyperTreeList):
                 self.SetPyData(niveauDepot, {"type" : "depot", "ID" : dictDepot["IDdepot"], "label" : label})
             
             # Coche toutes les branches enfants
-##            self.CheckItem(niveauAnnee)
-##            self.CheckChilds(niveauAnnee)
-            self.EnableChildren(niveauAnnee, False)
+            #self.EnableChildren(niveauAnnee, False)
             
             if annee == datetime.date.today().year :
                 self.Expand(niveauAnnee)
                 
-##        self.ExpandAllChildren(self.root)
-        
-##        # Pour éviter le bus de positionnement des contrôles
-##        self.GetMainWindow().CalculatePositions() 
 
     def Importation(self):
         listeDepots = []

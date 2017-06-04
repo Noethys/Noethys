@@ -20,39 +20,81 @@ import copy
 import sys
 import FonctionsPerso
 from Utils import UTILS_Organisateur
-
+from Utils import UTILS_Divers
+from Utils import UTILS_Dates
 from Utils import UTILS_Config
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 import GestionDB
 
-try: import psyco; psyco.full()
-except: pass
+from Dlg import DLG_Options_impression_pdf
+import wx.propgrid as wxpg
 
 
-
-def DateEngFr(textDate):
-    text = str(textDate[8:10]) + "/" + str(textDate[5:7]) + "/" + str(textDate[:4])
-    return text
-
-def DateComplete(dateDD):
-    """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
-    return dateComplete
-
-def DateEngEnDateDD(dateEng):
-    if dateEng == None : return dateEng
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
-        
 def PeriodeComplete(mois, annee):
     listeMois = (_(u"Jan"), _(u"Fév"), _(u"Mars"), _(u"Avr"), _(u"Mai"), _(u"Juin"), _(u"Juil"), _(u"Août"), _(u"Sept"), _(u"Oct"), _(u"Nov"), _(u"Déc"))
     periodeComplete = u"%s %d" % (listeMois[mois-1], annee)
     return periodeComplete
 
 
-            
+
+
+
+class CTRL_Parametres(DLG_Options_impression_pdf.CTRL_Parametres):
+    def __init__(self, parent):
+        DLG_Options_impression_pdf.CTRL_Parametres.__init__(self, parent)
+
+    def Remplissage(self):
+        # --------------------------- COULEURS DE FOND ------------------------------------------
+        self.Append( wxpg.PropertyCategory(_(u"Couleurs de fond")) )
+
+        # Couleur 3
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne entêtes"), name="couleur_fond_entetes", value=wx.Colour(204, 204, 255))
+        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Couleur 1
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne dépôt"), name="couleur_fond_depot", value=wx.Colour(230, 230, 255))
+        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # Couleur 2
+        propriete = wxpg.ColourProperty(label=_(u"Fond ligne total"), name="couleur_fond_total", value=wx.Colour(204, 204, 255))
+        propriete.SetHelpString(_(u"Sélectionnez une couleur"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+
+        # --------------------------- TEXTE ------------------------------------------
+        self.Append( wxpg.PropertyCategory(_(u"Texte")) )
+
+        # Taille police
+        propriete = wxpg.IntProperty(label=_(u"Taille de texte"), name="taille_texte", value=7)
+        propriete.SetHelpString(_(u"Saisissez une taille de texte (7 par défaut)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor("taille_texte", "SpinCtrl")
+
+        # --------------------------- COLONNES ------------------------------------------
+        self.Append( wxpg.PropertyCategory(_(u"Colonnes")) )
+
+        # Largeur colonne labels
+        propriete = wxpg.IntProperty(label=_(u"Largeur colonne label"), name="largeur_colonne_labels", value=170)
+        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne label (170 par défaut)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor("largeur_colonne_labels", "SpinCtrl")
+
+        # Largeur colonne valeurs
+        propriete = wxpg.IntProperty(label=_(u"Largeur colonne valeur"), name="largeur_colonne_valeurs", value=45)
+        propriete.SetHelpString(_(u"Saisissez la largeur pour la colonne valeur (45 par défaut)"))
+        propriete.SetAttribute("obligatoire", True)
+        self.Append(propriete)
+        self.SetPropertyEditor("largeur_colonne_valeurs", "SpinCtrl")
+
+
+
 class CTRL(HTL.HyperTreeList):
     def __init__(self, parent): 
         HTL.HyperTreeList.__init__(self, parent, -1)
@@ -98,6 +140,9 @@ class CTRL(HTL.HyperTreeList):
         self.date_fin = date_fin
         self.listeActivites = listeActivites
 
+    def SetTypeVide(self):
+        self.type = "vide"
+
     def Importation_depots(self):
         """ Importation des données """
         DB = GestionDB.DB()
@@ -118,7 +163,7 @@ class CTRL(HTL.HyperTreeList):
         listeDonnees = DB.ResultatReq()
         dictDepots = {}
         for IDdepot, date, nom, verrouillage, IDcompte, montantTotal in listeDonnees :
-            date = DateEngEnDateDD(date)
+            date = UTILS_Dates.DateEngEnDateDD(date)
             if montantTotal == None : montantTotal = 0.0
             dictDepots[IDdepot] = {"date":date, "nom":nom, "verrouillage":verrouillage, "IDcompte":IDcompte, "montantTotal":montantTotal}
         
@@ -159,10 +204,10 @@ class CTRL(HTL.HyperTreeList):
         listePeriodes = []
         dictIDreglements = {}
         for IDventilation, IDreglement, IDprestation, montantVentilation, dateReglement, dateSaisieReglement, IDdepot, dateDepotReglement, datePrestation, labelPrestation, IDactivite, nomActivite, abregeActivite in listeVentilation :
-            dateReglement = DateEngEnDateDD(dateReglement)
-            dateSaisieReglement = DateEngEnDateDD(dateSaisieReglement)
-            dateDepotReglement = DateEngEnDateDD(dateDepotReglement)
-            datePrestation = DateEngEnDateDD(datePrestation)
+            dateReglement = UTILS_Dates.DateEngEnDateDD(dateReglement)
+            dateSaisieReglement = UTILS_Dates.DateEngEnDateDD(dateSaisieReglement)
+            dateDepotReglement = UTILS_Dates.DateEngEnDateDD(dateDepotReglement)
+            datePrestation = UTILS_Dates.DateEngEnDateDD(datePrestation)
             
             # Compte le nombre de règlements dans chaque dépôt
             if dictIDreglements.has_key(IDdepot) == False :
@@ -237,6 +282,10 @@ class CTRL(HTL.HyperTreeList):
         
     def MAJ(self):        
         """ Remplissage du ctrl """
+        if self.type == "vide" :
+            self.RAZ()
+            return
+
         # Importation des données
         dictVentilation, listePeriodes, dictIDreglements = self.Importation_ventilation() 
         if self.type == "prestations" :
@@ -483,15 +532,19 @@ class CTRL(HTL.HyperTreeList):
             item = self.GetNext(item)
         
     def Imprimer(self):
+        dlg = DLG_Options_impression_pdf.Dialog(self, categorie="synthese_ventilation", ctrl=CTRL_Parametres)
+        if dlg.ShowModal() == wx.ID_OK:
+            dictOptions = dlg.GetOptions()
+            dlg.Destroy()
+        else :
+            dlg.Destroy()
+            return
+
         # Création du PDF
-        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
-        from reportlab.platypus.flowables import ParagraphAndImage, Image
-        from reportlab.rl_config import defaultPageSize
+        from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
         from reportlab.lib.pagesizes import A4
-        from reportlab.lib.units import inch, cm
-        from reportlab.lib.utils import ImageReader
         from reportlab.lib import colors
-        from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+        from reportlab.lib.styles import ParagraphStyle
         
         hauteur_page = A4[0]
         largeur_page = A4[1]
@@ -506,7 +559,7 @@ class CTRL(HTL.HyperTreeList):
         def Header():
             dataTableau = []
             largeursColonnes = ( (largeur_page-175, 100) )
-            dateDuJour = DateEngFr(str(datetime.date.today()))
+            dateDuJour = UTILS_Dates.DateEngFr(str(datetime.date.today()))
             dataTableau.append( (_(u"Analyse croisée ventilation/dépôts"), _(u"%s\nEdité le %s") % (UTILS_Organisateur.GetNom(), dateDuJour)) )
             style = TableStyle([
                     ('BOX', (0,0), (-1,-1), 0.25, colors.black), 
@@ -526,42 +579,56 @@ class CTRL(HTL.HyperTreeList):
         
         # Tableau
         dataTableau = []
-        largeursColonnes = [170,]
+        largeursColonnes = [dictOptions["largeur_colonne_labels"],]
         for x in range(0, len(self.dictImpression["entete"])-1):
-            largeursColonnes.append(45)
+            largeursColonnes.append(dictOptions["largeur_colonne_valeurs"])
         
         # Entetes labels
         dataTableau.append(self.dictImpression["entete"])
-        
+
+        paraNormal = ParagraphStyle(name="normal", fontName="Helvetica", fontSize=dictOptions["taille_texte"], spaceAfter=0, leading=dictOptions["taille_texte"]+1, spaceBefore=0)
+        paraTitre = ParagraphStyle(name="titre", fontName="Helvetica-Bold", fontSize=dictOptions["taille_texte"], spaceAfter=0, leading=dictOptions["taille_texte"]+1, spaceBefore=0)
+
         # Contenu du tableau
         listeRubriques = ("contenu", "total")
         for rubrique in listeRubriques :
             listeLignes = self.dictImpression[rubrique]
-            
+
+            indexLigne = 0
             for ligne in listeLignes :
-                dataTableau.append(ligne)
+                ligneTemp = []
+                indexColonne = 0
+                for texte in ligne :
+
+                    # Aligne à droite les montants
+                    if indexColonne > 0 :
+                        texte = _(u"<para align='right'>%s</para>") % texte
+
+                    case = Paragraph(texte, paraNormal)
+
+                    # Ligne de titre
+                    if rubrique == "contenu" and indexLigne in self.dictImpression["coloration"] :
+                        case = Paragraph(texte, paraTitre)
+
+                    ligneTemp.append(case)
+                    indexColonne += 1
+
+                dataTableau.append(ligneTemp)
+                indexLigne += 1
         
         positionLigneTotal = len(self.dictImpression["contenu"]) + 1
         listeStyles = [
             ('VALIGN', (0,0), (-1,-1), 'MIDDLE'), # Centre verticalement toutes les cases
-            
-            ('FONT',(0,0),(-1,-1), "Helvetica", 7), # Donne la police de caract. + taille de police 
+            ('FONT',(0,0),(-1,-1), "Helvetica", dictOptions["taille_texte"]), # Donne la police de caract. + taille de police
             ('GRID', (0,0), (-1,-1), 0.25, colors.black), # Crée la bordure noire pour tout le tableau
             ('ALIGN', (0,0), (-1,-1), 'CENTRE'), # Centre les cases
-                    
-##            ('ALIGN', (0,1), (-1,1), 'CENTRE'), # Ligne de labels colonne alignée au centre
-##            ('FONT',(0,1),(-1,1), "Helvetica", 6), # Donne la police de caract. + taille de police des labels
-##            
-##            ('SPAN',(0,0),(-1,0)), # Fusionne les lignes du haut pour faire le titre du groupe
-##            ('FONT',(0,0),(0,0), "Helvetica-Bold", 10), # Donne la police de caract. + taille de police du titre de groupe
-            ('BACKGROUND', (0,0), (-1,0), (0.6, 0.6, 0.6) ), # Donne la couleur de fond du label
-            ('BACKGROUND', (0, positionLigneTotal), (-1, positionLigneTotal), (0.6, 0.6, 0.6) ), # Donne la couleur de fond du label
+            ('BACKGROUND', (0,0), (-1,0), UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_entetes"]) ), # Donne la couleur de fond du label
+            ('BACKGROUND', (0, positionLigneTotal), (-1, positionLigneTotal), UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_total"]) ), # Donne la couleur de fond du label
             ]
-            
+
         # Formatage des lignes "Activités"
         for indexColoration in self.dictImpression["coloration"] :
-            listeStyles.append( ('FONT', (0, indexColoration+1), (-1, indexColoration+1), "Helvetica-Bold", 7) )
-            listeStyles.append( ('BACKGROUND', (0, indexColoration+1), (-1, indexColoration+1), (0.8, 0.8, 0.8)) ) 
+            listeStyles.append( ('BACKGROUND', (0, indexColoration+1), (-1, indexColoration+1), UTILS_Divers.ConvertCouleurWXpourPDF(dictOptions["couleur_fond_depot"])))
                 
         # Création du tableau
         tableau = Table(dataTableau, largeursColonnes)
