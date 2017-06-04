@@ -314,9 +314,7 @@ class CTRL_Forfait(HTL.HyperTreeList):
 ##        dlg.ctrl_forfaits.Activation(False)
 
         if dlg.ShowModal() == wx.ID_OK:
-            IDfamille = dlg.GetFamille() 
-            IDcompte_payeur = dlg.GetComptePayeur()
-            date_debut = dlg.GetDateDebut() 
+            date_debut = dlg.GetDateDebut()
             date_fin = dlg.GetDateFin()
             dictTarif = dlg.GetForfait()
             label = dlg.GetLabel()
@@ -339,8 +337,8 @@ class CTRL_Forfait(HTL.HyperTreeList):
                 IDindividu = 0
             try :
                 self.grille.GetGrandParent().panel_facturation.ModifiePrestation(datePrestation, IDindividu, IDprestation, 
-                                                                                                                self.grille.dictPrestations[IDprestation]["montantVentilation"], nouveauMontant=montant,
-                                                                                                                nouveauLabel=label)
+                                                                                self.grille.dictPrestations[IDprestation]["montantVentilation"], nouveauMontant=montant,
+                                                                                nouveauLabel=label)
             except :
                 pass
                 
@@ -434,7 +432,30 @@ class CTRL_Forfait(HTL.HyperTreeList):
         del self.grille.dictForfaits[IDprestation]
         self.MAJ(self.grille.dictForfaits, self.grille.listeSelectionIndividus)
         
-        self.grille.RecalculerToutesPrestations() 
+        self.grille.RecalculerToutesPrestations()
+
+
+
+    def Modifier_forfait(self, IDprestation=None, montant_initial=0.0, montant=0.0):
+        """ Tentative de MAJ de la prestation pour l'intégration des aides journalières dans les forfaits-crédits """
+        self.grille.dictPrestations[IDprestation]["montant_initial"] = montant
+        self.grille.dictPrestations[IDprestation]["montant"] = montant
+        self.grille.listePrestationsModifiees.append(IDprestation)
+
+        IDindividu = self.grille.dictPrestations[IDprestation]["IDindividu"]
+        datePrestation = self.grille.dictPrestations[IDprestation]["date"]
+        IDindividu = self.grille.dictPrestations[IDprestation]["IDindividu"]
+        label = self.grille.dictPrestations[IDprestation]["label"]
+
+        # Affichage de la prestation
+        if IDindividu == None:
+            IDindividu = 0
+        try:
+            self.grille.GetGrandParent().panel_facturation.ModifiePrestation(datePrestation, IDindividu, IDprestation,
+                                                                             self.grille.dictPrestations[IDprestation]["montantVentilation"], nouveauMontant=montant,
+                                                                             nouveauLabel=label)
+        except:
+            pass
 
 
 

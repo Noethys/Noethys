@@ -2682,12 +2682,19 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 IDprestation = self.MemorisePrestation(IDcompte_payeur, date, IDactivite, IDtarif, nom_tarif, montant_initial, montant_final, IDfamille, IDindividu, listeDeductions=listeAidesRetenues, temps_facture=temps_facture, IDcategorie_tarif=IDcategorie_tarif, code_compta=code_compta, tva=tva)
                 if IDprestation < 0 :
                     listeNouvellesPrestations.append(IDprestation)
-##                else :
-##                    return
-                
+
             else :
                 IDprestation = forfait_credit
-                
+
+                # Création de la déduction : Test qui ne fonctionne pas !
+                # self.CreationDeductions(listeDeductions=listeAidesRetenues, IDprestation=IDprestation, IDcompte_payeur=self.dictComptesPayeurs[IDfamille], date=date)
+                # montant_initial = montant_tarif
+                # montant_final = montant_initial
+                # for aide in self.dictDeductions[IDprestation] :
+                #     montant_final = montant_final - aide["montant"]
+                # self.GetGrandParent().panel_forfaits.ctrl_forfaits.Modifier_forfait(IDprestation=IDprestation, montant_initial=montant_initial, montant=montant_final)
+
+
             # Attribue à chaque unité un IDprestation
             for IDunite in combinaisons_unites :
                 dictUnitesPrestations[IDunite] = IDprestation
@@ -3127,6 +3134,13 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         self.dictPrestations[IDprestation] = dictPrestation
         
         # Création des déductions pour les aides journalières
+        self.CreationDeductions(listeDeductions=listeDeductions, IDprestation=IDprestation, IDcompte_payeur=IDcompte_payeur, date=date)
+
+        return IDprestation
+
+
+    def CreationDeductions(self, listeDeductions=[], IDprestation=None, IDcompte_payeur=None, date=None):
+        # Création des déductions pour les aides journalières
         for deduction in listeDeductions :
             IDdeduction = self.prochainIDdeduction
             self.prochainIDdeduction -= 1
@@ -3137,10 +3151,21 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 }
             if self.dictDeductions.has_key(IDprestation) == False :
                 self.dictDeductions[IDprestation] = []
-            self.dictDeductions[IDprestation].append(dictTemp)
 
-        return IDprestation
-    
+            # Recherche si cette aide existe déjà
+            index_exist = None
+            index = 0
+            for deduction_temp in self.dictDeductions[IDprestation]:
+                if deduction_temp["IDaide"] == IDaide and deduction_temp["IDprestation"] == IDprestation and deduction_temp["date"] == date :
+                    index_exist = index
+                index += 1
+
+            if index_exist == None :
+                self.dictDeductions[IDprestation].append(dictTemp)
+            else :
+                self.dictDeductions[IDprestation][index_exist] = dictTemp
+
+
     def RechercheForfaitCredit(self, IDtarif=None, date=None, IDfamille=None, IDindividu=None):
         """ Recherche un forfait dans la liste des forfaits disponibles pour une consommation donnée """
         for IDprestation, dictTarif in self.dictForfaits.iteritems() :
@@ -5886,7 +5911,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=36, selectionIndividus=[76])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
