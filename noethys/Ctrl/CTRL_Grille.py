@@ -1165,6 +1165,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
         return listeTouchesRaccourcis
         
     def GetListeUnites(self, listeUnitesUtilisees=None):
+        dates_extremes = self.GetDatesExtremes(self.listePeriodes)
         dictListeUnites = {}
         dictUnites = {}
         # Récupère la liste des unités
@@ -1177,12 +1178,15 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             dictTemp = { "unites_incompatibles" : [], "IDunite" : IDunite, "IDactivite" : IDactivite, "nom" : nom, "abrege" : abrege, "type" : type, "heure_debut" : heure_debut, "heure_debut_fixe" : heure_debut_fixe, 
             "heure_fin" : heure_fin, "heure_fin_fixe" : heure_fin_fixe, "date_debut" : date_debut, "date_fin" : date_fin, "ordre" : ordre, "touche_raccourci" : touche_raccourci, "largeur" : largeur,
             "autogen_active" : autogen_active, "autogen_conditions" : autogen_conditions, "autogen_parametres" : autogen_parametres}
-            if dictListeUnites.has_key(IDactivite) :
-                dictListeUnites[IDactivite].append(dictTemp)
-            else:
-                dictListeUnites[IDactivite] = [dictTemp,]
+
+            # Mémorisation des unités
             dictUnites[IDunite] = dictTemp
-            
+
+            if date_fin == None or date_fin >= str(dates_extremes[1]):
+                if dictListeUnites.has_key(IDactivite) == False :
+                    dictListeUnites[IDactivite] = []
+                dictListeUnites[IDactivite].append(dictTemp)
+
             # Mémorisation des largeurs
             if self.dictParametres["largeurs"]["unites"].has_key(IDunite) == False :
                 if largeur == None :
