@@ -439,7 +439,7 @@ class Ligne():
                         
             # Création des colonnes totaux
             if dictListeRemplissage.has_key(IDactivite) and dictGroupeTemp.has_key(IDactivite) :
-                if len(dictListeRemplissage[IDactivite]) > 1 and len(dictGroupeTemp[IDactivite]) > 1 :
+                if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                         if self.dictTotaux.has_key(IDunite_remplissage) :
                             total = self.dictTotaux[IDunite_remplissage]
@@ -824,7 +824,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                     if dictListeRemplissage.has_key(IDactivite) :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             nbreColonnes += 1
-                if dictListeRemplissage.has_key(IDactivite) and len(dictListeRemplissage[IDactivite]) > 1 and len(dictGroupeTemp[IDactivite]) > 1 :
+                if dictListeRemplissage.has_key(IDactivite) and len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                     nbreColonnes += len(dictListeRemplissage[IDactivite])
         self.AppendCols(nbreColonnes)
         
@@ -861,7 +861,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                             self.SetColLabelValue(numColonne, labelColonne)
                             numColonne += 1
                     # Création des colonnes totaux
-                    if len(dictListeRemplissage[IDactivite]) > 1 and len(dictGroupeTemp[IDactivite]) > 1 :
+                    if len(dictListeRemplissage[IDactivite]) > 0 and len(dictGroupeTemp[IDactivite]) > 0 :
                         for ordre, IDunite_remplissage in dictListeRemplissage[IDactivite] :
                             renderer = MyColLabelRenderer("unite", None)
                             self.SetColLabelRenderer(numColonne, renderer)
