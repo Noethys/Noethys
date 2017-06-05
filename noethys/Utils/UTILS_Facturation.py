@@ -498,6 +498,8 @@ class Facturation():
                     "messages_familiaux" : [],
                     "{NOM_LOT}" : "",
                     "reglements" : dictReglementsCompte,
+                    "texte_introduction" : "",
+                    "texte_conclusion" : "",
                     
                     "date_edition" : date_edition,
                     "{DATE_EDITION_LONG}" : UTILS_Dates.DateComplete(date_edition),
