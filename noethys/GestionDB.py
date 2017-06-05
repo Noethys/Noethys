@@ -2054,6 +2054,16 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
+
+        versionFiltre = (1, 2, 0, 3)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("adresses_mail", "utilisateur", "VARCHAR(200)")
+                self.ExecuterReq('UPDATE adresses_mail SET utilisateur = adresse WHERE connexionAuthentifiee = 1;')
+                self.Commit()
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 

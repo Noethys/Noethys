@@ -882,6 +882,7 @@ DB_DATA = {
                                     ("defaut", "INTEGER", u"Adresse utilisée par défaut (1/0)"),
                                     ("connexionAuthentifiee", "INTEGER", u"Authentification activée (1/0)"),
                                     ("startTLS", "INTEGER", u"startTLS activé (1/0)"),
+                                    ("utilisateur", "VARCHAR(200)", u"Nom d'utilisateur"),
                                     ], # Adresses d'expéditeur de mail
 
     "listes_diffusion":  [    ("IDliste", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID"),

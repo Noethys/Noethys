@@ -98,14 +98,14 @@ def GetAdresseExpDefaut():
     dictAdresse = {}
     # Récupération des données
     DB = GestionDB.DB()        
-    req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
+    req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
     FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
     DB.ExecuterReq(req)
     listeDonnees = DB.ResultatReq()
     DB.Close()
     if len(listeDonnees) == 0 : return None
-    IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS = listeDonnees[0]
-    dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth" : auth, "startTLS":startTLS}
+    IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
+    dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth" : auth, "startTLS":startTLS, "utilisateur" : utilisateur}
     return dictAdresse
 
 def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulaires=None):
@@ -175,7 +175,7 @@ def GetAdresseFamille(IDfamille=None, choixMultiple=True, muet=False, nomTitulai
         return listeMails[0]
 
 
-def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False):
+def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCCI=[], sujetMail="", texteMail="", listeFichiersJoints=[], serveur="localhost", port=None, avecAuthentification=False, avecStartTLS=False, listeImages=[], motdepasse=None, accuseReception=False, utilisateur=""):
     """ Envoi d'un mail avec pièce jointe """
     import smtplib
     import poplib
@@ -260,13 +260,6 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         msgImage.add_header('Content-Disposition', 'inline', filename=img)
         msg.attach(msgImage)
         index += 1
-    
-##    pop = poplib.POP3(serveur)
-##    print pop.getwelcome()
-##    pop.user(adresseExpediteur)
-##    pop.pass_(motdepasse)
-##    print pop.stat()
-##    print pop.list()
 
 ## Certains SMTP (exemple Orange Pro) demandent une authentifcation (en général user : boite mail et pwd : mot de passe associÃ© au smtp sÃ©curisÃ© )
 ## mais ne supportent pas le mode starttls
@@ -280,6 +273,8 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
 
     if motdepasse == None :
         motdepasse = ""
+    if utilisateur == None :
+        utilisateur = ""
 
     if avecAuthentification in (0, False, None) :
         # Envoi standard
@@ -291,7 +286,7 @@ def Envoi_mail(adresseExpediteur="", listeDestinataires=[], listeDestinatairesCC
         if avecStartTLS == True :
             smtp.starttls()
             smtp.ehlo()
-        smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
+        smtp.login(utilisateur.encode('utf-8'), motdepasse.encode('utf-8'))
     
     smtp.sendmail(adresseExpediteur, listeDestinataires + listeDestinatairesCCI, msg.as_string())
     smtp.close()
@@ -315,5 +310,6 @@ if __name__ == u"__main__":
         avecStartTLS=False,
         listeImages=[],
         motdepasse="XXX",
+        utilisateur="XXX",
         accuseReception = False,
         )

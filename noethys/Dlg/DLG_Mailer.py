@@ -396,6 +396,7 @@ class Dialog(wx.Dialog):
         connexionAuthentifiee = dictExp["auth"]
         connexionStartTLS = dictExp["startTLS"]
         motdepasse = dictExp["motdepasse"]
+        utilisateur = dictExp["utilisateur"]
         
         # Accusé de réception
         accuseReception = self.check_accuseReception.GetValue()
@@ -509,7 +510,8 @@ class Dialog(wx.Dialog):
                     avecStartTLS=connexionStartTLS,
                     listeImages=listeImages,
                     motdepasse=motdepasse,
-                    accuseReception = accuseReception,
+                    accuseReception=accuseReception,
+                    utilisateur=utilisateur,
                     )
                 self.listeSucces.append(track)
                 

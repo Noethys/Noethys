@@ -251,14 +251,14 @@ class DLG_Envoi(wx.Dialog):
         dictAdresse = {}
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return None
-        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS = listeDonnees[0]
-        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":auth, "startTLS":startTLS}
+        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
+        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":auth, "startTLS":startTLS, "utilisateur" : utilisateur}
         return dictAdresse
 
     def OnBoutonEnvoyer(self, event):  
@@ -323,6 +323,7 @@ class DLG_Envoi(wx.Dialog):
         port = dictExp["port"]
         ssl = dictExp["ssl"]
         motdepasse = dictExp["motdepasse"]
+        utilisateur = dictExp["utilisateur"]
 
         # Création du message
         msg = MIMEMultipart()
@@ -380,7 +381,7 @@ class DLG_Envoi(wx.Dialog):
             smtp.ehlo()
             smtp.starttls()
             smtp.ehlo()
-            smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
+            smtp.login(utilisateur.encode('utf-8'), motdepasse.encode('utf-8'))
         
         try :
             smtp.sendmail(adresseExpediteur, listeDestinataires, msg.as_string())

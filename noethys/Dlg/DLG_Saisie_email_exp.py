@@ -45,8 +45,10 @@ class Dialog(wx.Dialog):
         self.ctrl_authentification  = wx.CheckBox(self, -1, "")
         self.label_startTLS  = wx.StaticText(self, -1, _(u"startTLS :"))
         self.ctrl_startTLS   = wx.CheckBox(self, -1, "")
-        self.label_adresse = wx.StaticText(self, -1, _(u"Adresse :"))
+        self.label_adresse = wx.StaticText(self, -1, _(u"Adresse d'envoi :"))
         self.ctrl_adresse = wx.TextCtrl(self, -1, "")
+        self.label_utilisateur = wx.StaticText(self, -1, _(u"Nom d'utilisateur :"))
+        self.ctrl_utilisateur = wx.TextCtrl(self, -1, "")
         self.label_mdp = wx.StaticText(self, -1, _(u"Mot de passe :"))
         self.ctrl_mdp = wx.TextCtrl(self, -1, "", style=wx.TE_PASSWORD)
         self.ctrl_mdp.Enable(False)
@@ -79,7 +81,8 @@ class Dialog(wx.Dialog):
         self.ctrl_port.SetMinSize((60, -1))
         self.ctrl_port.SetToolTip(wx.ToolTip(_(u"Saisissez ici le numero de port (laissez la case vide pour utiliser le numéro de port par défaut)")))
         self.ctrl_authentification.SetToolTip(wx.ToolTip(_(u"Cliquez ici sur le serveur de messagerie nécessite une authentification")))
-        self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail")))
+        self.ctrl_adresse.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre adresse mail d'envoi")))
+        self.ctrl_utilisateur.SetToolTip(wx.ToolTip(_(u"Saisissez ici votre nom d'utilisateur (il s'agit parfois de l'adresse d'envoi)")))
         self.ctrl_mdp.SetToolTip(wx.ToolTip(_(u"Saisissez ici le mot de passe s'il s'agit d'une connexion SSL")))
         self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder à l'aide")))
         self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
@@ -87,22 +90,25 @@ class Dialog(wx.Dialog):
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
-        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
-        static_sizer_adresse = wx.StaticBoxSizer(self.static_sizer_adresse_staticbox, wx.VERTICAL)
-        grid_sizer_adresse = wx.FlexGridSizer(rows=2, cols=2, vgap=10, hgap=10)
+        grid_sizer_base.Add(self.label_intro, 0, wx.ALL, 10)
+
         static_sizer_serveur = wx.StaticBoxSizer(self.static_sizer_serveur_staticbox, wx.VERTICAL)
         grid_sizer_serveur = wx.FlexGridSizer(rows=6, cols=2, vgap=15, hgap=0)
-        grid_sizer_personnalise = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
-        grid_sizer_predefini = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
-        grid_sizer_base.Add(self.label_intro, 0, wx.ALL, 10)
         grid_sizer_serveur.Add(self.radio_predefini, 0, wx.ALIGN_CENTER_VERTICAL, 0)
+
+        # Serveur prédéfini
+        grid_sizer_predefini = wx.FlexGridSizer(rows=1, cols=2, vgap=10, hgap=10)
         grid_sizer_predefini.Add(self.label_predefini, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_predefini.Add(self.ctrl_predefinis, 0, wx.EXPAND, 0)
         grid_sizer_predefini.AddGrowableCol(1)
         grid_sizer_serveur.Add(grid_sizer_predefini, 1, wx.EXPAND, 0)
+
         grid_sizer_serveur.Add(self.radio_personnalise, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_serveur.Add(self.label_personnalise, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_serveur.Add((20, 20), 0, wx.EXPAND, 0)
+
+        # Personnalisé
+        grid_sizer_personnalise = wx.FlexGridSizer(rows=4, cols=2, vgap=10, hgap=10)
         grid_sizer_personnalise.Add(self.label_smtp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_personnalise.Add(self.ctrl_smtp, 0, wx.EXPAND, 0)
         grid_sizer_personnalise.Add(self.label_port, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
@@ -116,13 +122,23 @@ class Dialog(wx.Dialog):
         grid_sizer_serveur.AddGrowableCol(1)
         static_sizer_serveur.Add(grid_sizer_serveur, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(static_sizer_serveur, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Saisie adresse
+        grid_sizer_adresse = wx.FlexGridSizer(rows=3, cols=2, vgap=10, hgap=10)
         grid_sizer_adresse.Add(self.label_adresse, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_adresse, 0, wx.EXPAND, 0)
+        grid_sizer_adresse.Add(self.label_utilisateur, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
+        grid_sizer_adresse.Add(self.ctrl_utilisateur, 0, wx.EXPAND, 0)
         grid_sizer_adresse.Add(self.label_mdp, 0, wx.ALIGN_RIGHT|wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_adresse.Add(self.ctrl_mdp, 0, wx.EXPAND, 0)
         grid_sizer_adresse.AddGrowableCol(1)
+
+        static_sizer_adresse = wx.StaticBoxSizer(self.static_sizer_adresse_staticbox, wx.VERTICAL)
         static_sizer_adresse.Add(grid_sizer_adresse, 1, wx.ALL|wx.EXPAND, 10)
         grid_sizer_base.Add(static_sizer_adresse, 1, wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
+
+        # Boutons
+        grid_sizer_boutons = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer_boutons.Add(self.bouton_aide, 0, 0, 0)
         grid_sizer_boutons.Add((20, 20), 0, wx.EXPAND, 0)
         grid_sizer_boutons.Add(self.bouton_ok, 0, 0, 0)
@@ -175,24 +191,28 @@ class Dialog(wx.Dialog):
         else:
             # Si serveur personnalisé
             etatAuth = self.ctrl_authentification.GetValue()
+        self.ctrl_utilisateur.Enable(etatAuth)
         self.ctrl_mdp.Enable(etatAuth)
 
     def Importation(self):
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail WHERE IDadresse=%d; """ % self.IDadresse
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return
-        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS = listeDonnees[0]
+        IDadresse, adresse, motdepasse, smtp, port, defaut, auth, startTLS, utilisateur = listeDonnees[0]
         
         self.defaut = bool(defaut)
         
         self.ctrl_adresse.SetValue(adresse)
         if motdepasse != None :
             self.ctrl_mdp.SetValue(motdepasse)
-        
+
+        if utilisateur != None :
+            self.ctrl_utilisateur.SetValue(utilisateur)
+
         # Recherche si les paramètres correspondent à un serveur prédéfini
         index = 0
         indexPredefini = None
@@ -224,7 +244,7 @@ class Dialog(wx.Dialog):
     def GetNbreAdresses(self):
         """ Récupère le nbre d'adresses déjà saisies """
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
@@ -260,7 +280,13 @@ class Dialog(wx.Dialog):
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
-        
+
+                if self.ctrl_utilisateur.GetValue() == "" :
+                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+
         else:
             
             if self.ctrl_smtp.GetValue() == "" :
@@ -285,7 +311,13 @@ class Dialog(wx.Dialog):
                     dlg.ShowModal()
                     dlg.Destroy()
                     return
-        
+
+                if self.ctrl_utilisateur.GetValue() == "" :
+                    dlg = wx.MessageDialog(self, _(u"Vous n'avez omis de saisir le nom d'utilisateur de votre messagerie"), _(u"Erreur de saisie"), wx.OK | wx.ICON_ERROR)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+
         # Sauvegarde
         self.Sauvegarde()
                 
@@ -305,16 +337,20 @@ class Dialog(wx.Dialog):
             startTLS = self.listeServeurs[selection][4]
             if auth == True :
                 motdepasse = self.ctrl_mdp.GetValue()
+                utilisateur = self.ctrl_utilisateur.GetValue()
             else:
                 motdepasse = None
+                utilisateur = None
         
         else:
             
             adresse = self.ctrl_adresse.GetValue()
             if self.ctrl_mdp.GetValue() == "" :
                 motdepasse = None
+                utilisateur = None
             else:
                 motdepasse = self.ctrl_mdp.GetValue()
+                utilisateur = self.ctrl_utilisateur.GetValue()
             if self.ctrl_smtp.GetValue() == "" :
                 smtp = None
             else:
@@ -347,7 +383,8 @@ class Dialog(wx.Dialog):
                                     ("port",    port), 
                                     ("connexionAuthentifiee", auth),
                                     ("startTLS", startTLS),
-                                    ("defaut",    defaut), 
+                                    ("defaut",    defaut),
+                                    ("utilisateur", utilisateur),
                                     ]
         if self.IDadresse == None :
             # Enregistrement

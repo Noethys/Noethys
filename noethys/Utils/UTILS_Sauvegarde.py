@@ -215,7 +215,8 @@ def Sauvegarde(listeFichiersLocaux=[], listeFichiersReseau=[], nom="", repertoir
                 port=dictAdresse["port"], 
                 avecAuthentification=dictAdresse["auth"],
                 avecStartTLS=dictAdresse["startTLS"],
-                motdepasse=dictAdresse["motdepasse"], 
+                motdepasse=dictAdresse["motdepasse"],
+                utilisateur=dictAdresse["utilisateur"],
                 #listeImages=listeImages,
                 )
         except Exception, err:

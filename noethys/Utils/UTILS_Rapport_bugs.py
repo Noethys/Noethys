@@ -149,14 +149,14 @@ class DLG_Rapport(wx.Dialog):
         dictAdresse = {}
         # Récupération des données
         DB = GestionDB.DB()        
-        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS
+        req = """SELECT IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur
         FROM adresses_mail WHERE defaut=1 ORDER BY adresse; """
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         if len(listeDonnees) == 0 : return None
-        IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS = listeDonnees[0]
-        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":connexionAuthentifiee, "startTLS":startTLS}
+        IDadresse, adresse, motdepasse, smtp, port, defaut, connexionAuthentifiee, startTLS, utilisateur = listeDonnees[0]
+        dictAdresse = {"adresse":adresse, "motdepasse":motdepasse, "smtp":smtp, "port":port, "auth":connexionAuthentifiee, "startTLS":startTLS, "utilisateur" : utilisateur}
         return dictAdresse
 
     def Envoi_mail(self, commentaires=""):
@@ -195,6 +195,7 @@ class DLG_Rapport(wx.Dialog):
         auth = dictExp["auth"]
         startTLS = dictExp["startTLS"]
         motdepasse = dictExp["motdepasse"]
+        utilisateur = dictExp["utilisateur"]
 
         if adresseExpediteur == None :
             dlg = wx.MessageDialog(self, _(u"L'adresse d'expédition ne semble pas valide. Veuillez la vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
@@ -204,6 +205,12 @@ class DLG_Rapport(wx.Dialog):
 
         if auth == True and motdepasse == None :
             dlg = wx.MessageDialog(self, _(u"Le mot de passe associé à l'adresse d'expédition ne semble pas valide. Veuillez le vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return False
+
+        if auth == True and utilisateur == None :
+            dlg = wx.MessageDialog(self, _(u"Le nom d'utilisateur associé à l'adresse d'expédition ne semble pas valide. Veuillez le vérifier."), _(u"Envoi impossible"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
@@ -227,7 +234,7 @@ class DLG_Rapport(wx.Dialog):
             if startTLS == True :
                 smtp.starttls()
                 smtp.ehlo()
-            smtp.login(adresseExpediteur.encode('utf-8'), motdepasse.encode('utf-8'))
+            smtp.login(utilisateur.encode('utf-8'), motdepasse.encode('utf-8'))
         
         try :
             smtp.sendmail(adresseExpediteur, listeDestinataires, msg.as_string())
