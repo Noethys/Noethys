@@ -2021,14 +2021,17 @@ class Dialog(wx.Dialog):
                                     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
                                     listeJoursAbrege = (_(u"Lun."), _(u"Mar."), _(u"Mer."), _(u"Jeu."), _(u"Ven."), _(u"Sam."), _(u"Dim."))
                                     listeMoisAbrege = (_(u"janv."), _(u"fév."), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juil."), _(u"août"), _(u"sept."), _(u"oct"), _(u"nov."), _(u"déc."))
-                                    if (positionD-positionG) < 1 :
-                                        jourStr = listeJoursAbrege[date.weekday()]
-                                        ligne[positionG] = u"%s\n%d\n%s\n%d" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
-                                    else:
-                                        jourStr = listeJours[date.weekday()]
-                                        dateStr = u"<para align='center'>%s %d %s %d</para>" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
-                                        ligne[positionG] = Paragraph(dateStr, styleDate)
-                                    ligneTempExport[positionG] = UTILS_Dates.DateEngFr(str(date))
+                                    try :
+                                        if (positionD-positionG) < 1 :
+                                            jourStr = listeJoursAbrege[date.weekday()]
+                                            ligne[positionG] = u"%s\n%d\n%s\n%d" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
+                                        else:
+                                            jourStr = listeJours[date.weekday()]
+                                            dateStr = u"<para align='center'>%s %d %s %d</para>" % (jourStr, date.day, listeMoisAbrege[date.month-1], date.year)
+                                            ligne[positionG] = Paragraph(dateStr, styleDate)
+                                        ligneTempExport[positionG] = UTILS_Dates.DateEngFr(str(date))
+                                    except:
+                                        pass
                                     index += 1
                                 dataTableau.append(ligne)
                                 listeLignesExport.append(ligneTempExport)
