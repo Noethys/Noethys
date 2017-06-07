@@ -2066,11 +2066,13 @@ class Dialog(wx.Dialog):
 
                             # Récupération des lignes individus
                             dictTotauxColonnes = {}
+                            indexLigne = 0
                             for IDindividu, nom, prenom, age in listeIndividus :
 
                                 dictIndividu = dictConso[IDactivite][IDgroupe][scolarite][IDetiquette][IDindividu]
                                 ligne = []
                                 indexColonne = 0
+                                ligneVide = True
 
                                 # Photo
                                 if dictParametres["afficher_photos"] != "non" and IDindividu in dictPhotos :
@@ -2200,6 +2202,7 @@ class Dialog(wx.Dialog):
                                                     quantite = 1
 
                                                 if len(listeLabels) > 0 :
+                                                    ligneVide = False
                                                     if dictTotauxColonnes.has_key(indexColonne) == True :
                                                         dictTotauxColonnes[indexColonne] += quantite
                                                     else:
@@ -2343,11 +2346,12 @@ class Dialog(wx.Dialog):
                                     else:
                                         ligne.append(u"")
 
-                                # Ajout de la ligne individuelle dans le tableau
-                                dataTableau.append(ligne)
-
-                                # Mémorise les lignes pour export Excel
-                                listeLignesExport.append(ligne)
+                                if not ligneVide:
+                                    # Ajout de la ligne individuelle dans le tableau
+                                    dataTableau.append(ligne)
+                                    # Mémorise les lignes pour export Excel
+                                    listeLignesExport.append(ligne)
+                                    indexLigne += 1
 
                             # Création des lignes vierges
                             for x in range(0, dictParametres["nbre_lignes_vierges"]):
@@ -2437,10 +2441,10 @@ class Dialog(wx.Dialog):
                                 else:
                                     valeur = ""
                                 if indexCol == colNomsIndividus :
-                                    if len(listeIndividus) == 1 :
+                                    if indexLigne == 1 :
                                         valeur = _(u"1 individu")
                                     else:
-                                        valeur = _(u"%d individus") % len(listeIndividus)
+                                        valeur = _(u"%d individus") % indexLigne
                                 ligne.append(valeur)
                             listeLignesExport.append(ligne)
 
