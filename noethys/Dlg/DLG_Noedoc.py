@@ -1005,7 +1005,7 @@ def AjouterPolygone( points=[], nom=_(u"Polygone"), champ=None,
 
 def AjouterImage(bmp, xy, hauteur=None, nom=_(u"Image"), champ=None, typeImage="fichier", IDobjet=None, InForeground=True):
     """ Création d'une image """
-    objet = MovingScaledBitmap(bmp, xy.astype(float), Height=hauteur, Position="bl", InForeground=InForeground)
+    objet = MovingScaledBitmap(bmp, xy, Height=hauteur, Position="bl", InForeground=InForeground)
     objet.nom = nom
     objet.champ = champ
     objet.categorie = "image"
