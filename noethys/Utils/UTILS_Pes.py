@@ -79,7 +79,7 @@ def GetXML(dictDonnees={}):
     Enveloppe.appendChild(Emetteur)
 
     Sigle = doc.createElement("Sigle")
-    Sigle.setAttribute("V", "NOETHYS")
+    Sigle.setAttribute("V", "Ivan LUCAS")
     Emetteur.appendChild(Sigle)
     
     versionLogiciel = FonctionsPerso.GetVersionLogiciel()
