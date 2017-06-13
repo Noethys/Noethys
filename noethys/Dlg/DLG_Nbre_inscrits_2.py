@@ -268,7 +268,8 @@ class CTRL(HTL.HyperTreeList):
             liste_groupes_activites = []
             for IDtype_groupe_activite, nom in dictGroupesActivites.iteritems() :
                 if listeFiltreGroupesActivites == None or IDtype_groupe_activite in listeFiltreGroupesActivites :
-                    liste_groupes_activites.append((nom.upper(), IDtype_groupe_activite))
+                    if nom != None :
+                        liste_groupes_activites.append((nom.upper(), IDtype_groupe_activite))
             liste_groupes_activites.sort()
 
         else :
