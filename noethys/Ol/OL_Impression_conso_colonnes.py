@@ -304,6 +304,7 @@ class DLG_Saisie_colonne(wx.Dialog):
             ("tel_domicile", _(u"Tél. domicile")),
             ("mail", _(u"Email")),
             ("ville_residence", _(u"Ville de résidence")),
+            ("adresse_residence", _(u"Adresse complète de résidence")),
             ("secteur", _(u"Secteur géographique")),
             ("nom_ecole", _(u"Ecole")),
             ("nom_classe", _(u"Classe")),

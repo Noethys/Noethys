@@ -2234,6 +2234,15 @@ class Dialog(wx.Dialog):
                                             if dictColonnePerso["donnee_code"] == "tel_domicile": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_TEL_DOMICILE"]
                                             if dictColonnePerso["donnee_code"] == "mail": donnee = dictInfosIndividus[IDindividu]["INDIVIDU_MAIL"]
 
+                                            if dictColonnePerso["donnee_code"] == "adresse_residence":
+                                                rue = dictInfosIndividus[IDindividu]["INDIVIDU_RUE"]
+                                                if rue == None : rue = ""
+                                                cp = dictInfosIndividus[IDindividu]["INDIVIDU_CP"]
+                                                if cp == None : cp = ""
+                                                ville = dictInfosIndividus[IDindividu]["INDIVIDU_VILLE"]
+                                                if ville == None : ville = ""
+                                                donnee = u"%s %s %s" % (rue, cp, ville)
+
                                             # Questionnaires
                                             if dictColonnePerso["donnee_code"].startswith("question_") and "famille" in \
                                                     dictColonnePerso["donnee_code"]:
