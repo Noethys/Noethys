@@ -19,6 +19,7 @@ import GestionDB
 import wx.lib.agw.hypertreelist as HTL
 from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 
+
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
     listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
@@ -26,9 +27,9 @@ def DateComplete(dateDD):
     dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
     return dateComplete
 
+
 def DateEngEnDateDD(dateEng):
     return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
-
 
 
 class CTRL_archive(wx.CheckListBox):
@@ -42,21 +43,21 @@ class CTRL_archive(wx.CheckListBox):
         self.dictActivites = {}
         # Binds
         self.Bind(wx.EVT_CHECKLISTBOX, self.OnCheck)
-        
+
     def SetDate(self, date=None):
         self.date = date
-        self.MAJ() 
+        self.MAJ()
         self.CocheTout()
 
     def MAJ(self):
         self.listeActivites, self.dictActivites = self.Importation()
         self.SetListeChoix()
-    
+
     def Importation(self):
         listeActivites = []
         dictActivites = {}
         if self.date == None :
-            return listeActivites, dictActivites 
+            return listeActivites, dictActivites
         # Récupération des activités disponibles le jour sélectionné
         DB = GestionDB.DB()
         req = """SELECT activites.IDactivite, nom, abrege, date_debut, date_fin
@@ -66,8 +67,8 @@ class CTRL_archive(wx.CheckListBox):
         GROUP BY activites.IDactivite
         ORDER BY nom;""" % str(self.date)
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
-        DB.Close() 
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
         for IDactivite, nom, abrege, date_debut, date_fin in listeDonnees :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
@@ -79,12 +80,11 @@ class CTRL_archive(wx.CheckListBox):
 
     def SetListeChoix(self):
         self.Clear()
-        listeItems = []
         index = 0
-        for nom, IDactivite in self.listeActivites :
+        for nom, IDactivite in self.listeActivites:
             self.Append(nom)
             index += 1
-                            
+
     def GetIDcoches(self):
         listeIDcoches = []
         NbreItems = len(self.listeActivites)
@@ -92,7 +92,7 @@ class CTRL_archive(wx.CheckListBox):
             if self.IsChecked(index):
                 listeIDcoches.append(self.listeActivites[index][1])
         return listeIDcoches
-    
+
     def CocheTout(self):
         index = 0
         for index in range(0, len(self.listeActivites)):
@@ -103,153 +103,149 @@ class CTRL_archive(wx.CheckListBox):
         index = 0
         for index in range(0, len(self.listeActivites)):
             ID = self.listeActivites[index][1]
-            if ID in listeIDcoches :
+            if ID in listeIDcoches:
                 self.Check(index)
             index += 1
 
     def OnCheck(self, event):
         """ Quand une sélection d'activités est effectuée... """
         listeSelections = self.GetIDcoches()
-        try :
+        try:
             self.parent.SetActivites(listeSelections)
-        except :
-            print listeSelections
-    
+        except:
+            print(listeSelections)
+
     def GetListeActivites(self):
-        return self.GetIDcoches() 
-        
+        return self.GetIDcoches()
+
 
 # --------------------------------------------------------------------------------------------------------------------
 
-
-
 class CTRL(HTL.HyperTreeList):
-    def __init__(self, parent): 
+    def __init__(self, parent):
         HTL.HyperTreeList.__init__(self, parent, -1)
         self.parent = parent
-        self.date = datetime.date(2014, 01, 10) #None
+        self.date = datetime.date(2014, 1, 10)  # None
         self.liste_activites = []
         self.MAJenCours = False
         self.cocherParDefaut = True
-        
+
         self.SetBackgroundColour(wx.WHITE)
         self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
         self.EnableSelectionVista(True)
-        
+
         self.SetToolTip(wx.ToolTip(_(u"Cochez les activités et groupes à afficher")))
-        
+
         # Création des colonnes
         self.AddColumn(_(u"Activité/groupe"))
         self.SetColumnWidth(0, 185)
 
         # Binds
-##        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContextMenu) 
-        self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem) 
-        
-        
+#        self.Bind(wx.EVT_TREE_ITEM_RIGHT_CLICK, self.OnContextMenu)
+        self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem)
+
     def SetDate(self, date=None):
         self.date = date
-        self.MAJ() 
+        self.MAJ()
 
     def OnCheckItem(self, event):
         if self.MAJenCours == False :
             item = event.GetItem()
             # Active ou non les branches enfants
-            if self.GetPyData(item)["type"] == "activite" :
-                if self.IsItemChecked(item) :
+            if self.GetPyData(item)["type"] == "activite":
+                if self.IsItemChecked(item):
                     self.EnableChildren(item, True)
                 else:
                     self.EnableChildren(item, False)
             # Envoie les données aux contrôle parent
-##            try :
+#            try :
             self.parent.MAJactivites()
-##            except :
-##                print "Erreur dans envoi des donnees sur activites et groupes :", dictCoches
-        
-        
+#            except :
+#                print "Erreur dans envoi des donnees sur activites et groupes :", dictCoches
+
     def GetCoches(self):
         dictCoches = {}
         parent = self.root
         for index in range(0, self.GetChildrenCount(self.root)):
-            parent = self.GetNext(parent) 
+            parent = self.GetNext(parent)
             # Recherche des activités cochées
-            if self.IsItemChecked(parent) :
+            if self.IsItemChecked(parent):
                 IDactivite = self.GetPyData(parent)["ID"]
                 # Recherche des groupes cochés
                 listeGroupes = []
                 item, cookie = self.GetFirstChild(parent)
                 for index in range(0, self.GetChildrenCount(parent)):
-                    if self.IsItemChecked(item) : 
+                    if self.IsItemChecked(item):
                         IDgroupe = self.GetPyData(item)["ID"]
                         listeGroupes.append(IDgroupe)
-                    item = self.GetNext(item) 
-                if len(listeGroupes) > 0 : 
+                    item = self.GetNext(item)
+                if len(listeGroupes) > 0:
                     dictCoches[IDactivite] = listeGroupes
         return dictCoches
-    
-    def GetActivitesEtGroupes(self) :
-        dictCoches = self.GetCoches() 
+
+    def GetActivitesEtGroupes(self):
+        dictCoches = self.GetCoches()
         listeActivites = []
         listeGroupes = []
-        for IDactivite, listeGroupesTemp in dictCoches.iteritems() :
+        for IDactivite, listeGroupesTemp in dictCoches.iteritems():
             listeActivites.append(IDactivite)
-            for IDgroupe in listeGroupesTemp :
+            for IDgroupe in listeGroupesTemp:
                 listeGroupes.append(IDgroupe)
         return listeActivites, listeGroupes
-    
+
     def SetCocherParDefaut(self, etat=True):
         self.cocherParDefaut = etat
-        
+
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
         self.dictActivites = self.Importation()
-##        self.Freeze()
+#        self.Freeze()
         self.MAJenCours = True
         self.DeleteAllItems()
         # Création de la racine
         self.root = self.AddRoot(_(u"Racine"))
         self.Remplissage()
         self.MAJenCours = False
-##        self.Thaw() 
+#        self.Thaw()
 
     def Remplissage(self):
         # Tri des activités par nom
         listeActivites = []
-        for IDactivite, dictActivite in self.dictActivites.iteritems() :
+        for IDactivite, dictActivite in self.dictActivites.iteritems():
             listeActivites.append((dictActivite["nom"], IDactivite))
-        listeActivites.sort() 
-        
+        listeActivites.sort()
+
         # Remplissage
-        for nomActivite, IDactivite in listeActivites :
+        for nomActivite, IDactivite in listeActivites:
             dictActivite = self.dictActivites[IDactivite]
-            
+
             # Niveau Activité
             niveauActivite = self.AppendItem(self.root, nomActivite, ct_type=1)
             self.SetPyData(niveauActivite, {"type" : "activite", "ID" : IDactivite, "nom" : nomActivite})
             self.SetItemBold(niveauActivite, True)
-            
+
             # Niveau Groupes
-            for dictGroupe in dictActivite["groupes"] :
+            for dictGroupe in dictActivite["groupes"]:
                 niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"], ct_type=1)
                 self.SetPyData(niveauGroupe, {"type" : "groupe", "ID" : dictGroupe["IDgroupe"], "nom" : dictGroupe["nom"]})
-            
+
             # Coche toutes les branches enfants
             if self.cocherParDefaut == True :
                 self.CheckItem(niveauActivite)
                 self.CheckChilds(niveauActivite)
-        
+
         self.ExpandAllChildren(self.root)
-        
-##        # Pour éviter le bus de positionnement des contrôles
-##        self.GetMainWindow().CalculatePositions() 
+
+#        # Pour éviter le bus de positionnement des contrôles
+#        self.GetMainWindow().CalculatePositions()
 
     def Importation(self):
         dictActivites = {}
         if self.date == None :
-            return dictActivites 
+            return dictActivites
         # Récupération des activités disponibles le jour sélectionné
         DB = GestionDB.DB()
-        req = """SELECT 
+        req = """SELECT
         activites.IDactivite, activites.nom, activites.abrege, date_debut, date_fin,
         groupes.IDgroupe, groupes.nom
         FROM activites
@@ -259,19 +255,18 @@ class CTRL(HTL.HyperTreeList):
         GROUP BY groupes.IDgroupe
         ORDER BY groupes.ordre;""" % str(self.date)
         DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()      
-        DB.Close() 
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
         for IDactivite, nom, abrege, date_debut, date_fin, IDgroupe, nomGroupe in listeDonnees :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
-            
+
             # Mémorisation de l'activité
             if dictActivites.has_key(IDactivite) == False :
                 dictActivites[IDactivite] = { "nom":nom, "abrege":abrege, "date_debut":date_debut, "date_fin":date_fin, "groupes":[]}
             # Mémorisation du groupe
             dictActivites[IDactivite]["groupes"].append({"IDgroupe":IDgroupe, "nom":nomGroupe})
         return dictActivites
-    
 
 
 class MyFrame(wx.Frame):
@@ -282,7 +277,7 @@ class MyFrame(wx.Frame):
         sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel)
-        self.ctrl.MAJ() 
+        self.ctrl.MAJ()
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
         sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
@@ -291,10 +286,8 @@ class MyFrame(wx.Frame):
 
 if __name__ == '__main__':
     app = wx.App(0)
-    #wx.InitAllImageHandlers()
+    # wx.InitAllImageHandlers()
     frame_1 = MyFrame(None, -1, _(u"TEST"), size=(800, 400))
     app.SetTopWindow(frame_1)
     frame_1.Show()
     app.MainLoop()
-
-
