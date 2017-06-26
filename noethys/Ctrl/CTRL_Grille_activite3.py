@@ -147,6 +147,8 @@ class CTRL(HTL.HyperTreeList):
         self.liste_activites = []
         self.MAJenCours = False
         self.cocherParDefaut = True
+        self.cochesActives = {}
+        self.cochesActivitesActives = set()
 
         self.SetBackgroundColour(wx.WHITE)
         self.SetAGWWindowStyleFlag(
@@ -174,17 +176,23 @@ class CTRL(HTL.HyperTreeList):
     def OnCheckItem(self, event):
         if self.MAJenCours is False:
             item = event.GetItem()
+            data = self.GetPyData(item)
             # Active ou non les branches enfants
-            if self.GetPyData(item)["type"] == "activite":
+            if data["type"] == "activite":
                 if self.IsItemChecked(item):
                     self.EnableChildren(item, True)
+                    self.cochesActivitesActives.add(data["ID"])
                 else:
                     self.EnableChildren(item, False)
+                    self.cochesActivitesActives.discard(data["ID"])
+            else:
+                cochesGroupes = self.cochesActives[data["IDactivite"]]
+                if self.IsItemChecked(item):
+                    cochesGroupes.add(data["ID"])
+                else:
+                    cochesGroupes.discard(data["ID"])
             # Envoie les données aux contrôle parent
-#            try :
             self.parent.MAJactivites()
-#            except :
-#                print "Erreur dans envoi des donnees sur activites et groupes :", dictCoches
 
     def GetCoches(self):
         dictCoches = {}
@@ -242,6 +250,16 @@ class CTRL(HTL.HyperTreeList):
         for nomActivite, IDactivite in listeActivites:
             dictActivite = self.dictActivites[IDactivite]
 
+            # Initialise l'état des coches pour l'activité
+            if IDactivite not in self.cochesActives:
+                if self.cocherParDefaut is True:
+                    self.cochesActivitesActives.add(IDactivite)
+                    self.cochesActives[IDactivite] = set([
+                        d["IDgroupe"] for d in dictActivite["groupes"]
+                    ])
+                else:
+                    self.cochesActives[IDactivite] = set()
+
             # Niveau Activité
             niveauActivite = self.AppendItem(self.root, nomActivite, ct_type=1)
             self.SetPyData(niveauActivite, {
@@ -253,17 +271,24 @@ class CTRL(HTL.HyperTreeList):
 
             # Niveau Groupes
             for dictGroupe in dictActivite["groupes"]:
+                IDgroupe = dictGroupe["IDgroupe"]
                 niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"], ct_type=1)
                 self.SetPyData(niveauGroupe, {
                     "type": "groupe",
-                    "ID": dictGroupe["IDgroupe"],
+                    "ID": IDgroupe,
                     "nom": dictGroupe["nom"],
+                    "IDactivite": IDactivite,
                 })
 
-            # Coche toutes les branches enfants
-            if self.cocherParDefaut is True:
+                if IDgroupe in self.cochesActives[IDactivite]:
+                    self.CheckItem(niveauGroupe)
+
+            # Coche l'activité et active ses groupes
+            if IDactivite in self.cochesActivitesActives:
                 self.CheckItem(niveauActivite)
-                self.CheckChilds(niveauActivite)
+                self.EnableChildren(niveauActivite, True)
+            else:
+                self.EnableChildren(niveauActivite, False)
 
         self.ExpandAllChildren(self.root)
 
