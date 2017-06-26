@@ -25,6 +25,7 @@ from Utils import UTILS_Dialogs
 from Dlg import DLG_Badgeage_grille
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 from Utils import UTILS_Config
+from Utils import UTILS_Parametres
 SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 if 'phoenix' in wx.PlatformInfo:
@@ -532,7 +533,11 @@ class Dialog(wx.Dialog):
         self.label_modele.Enable(self.radio_validation.GetValue())
         self.ctrl_modele_email.Enable(self.radio_validation.GetValue())
         self.bouton_gestion_modeles.Enable(self.radio_validation.GetValue())
-        self.bouton_automatique.Enable(not self.radio_validation.GetValue())
+        if self.track.action != "paiement_en_ligne" :
+            self.bouton_automatique.Enable(not self.radio_validation.GetValue())
+        else :
+            self.bouton_automatique.Enable(False)
+        ##self.bouton_automatique.Enable(not self.radio_validation.GetValue())
         self.bouton_manuel.Enable(not self.radio_validation.GetValue())
 
         if self.radio_validation.GetValue() == True :
@@ -885,8 +890,12 @@ class Traitement():
         resultat = False
 
         # Traitement des reçus de règlements
-        if self.track.categorie == "reglements" :
+        if self.track.categorie == "reglements" and self.track.action == "recevoir":
             resultat = self.Traitement_recus()
+
+        # Traitement des paiements en ligne
+        if self.track.categorie == "reglements" and self.track.action == "paiement_en_ligne":
+            resultat = self.Traitement_paiement_en_ligne()
 
         # Traitement des factures
         if self.track.categorie == "factures" :
@@ -974,6 +983,65 @@ class Traitement():
 
             return {"etat" : True, "reponse" : reponse}
 
+
+    def Traitement_paiement_en_ligne(self):
+        # Récupération des paramètres
+        IDmodepaiement = int(UTILS_Parametres.Parametres(mode="get", categorie="portail", nom="paiement_ligne_mode_reglement", valeur=None))
+        IDpaiement = int(self.dict_parametres["IDpaiement"])
+        IDfacture = int(self.dict_parametres["factures_ID"])
+        IDfamille = self.track.IDfamille
+        montant = self.dict_parametres["montant"]
+        # IDcompte_payeur = ????
+        # on recupère l' ID du compte payeur de la famille liée a la facture
+        # lequel ?
+        # le dernier ?
+        # le plus fréquement utilisé ?
+        # un  choix ?
+        # le plus simple: IDcompte_payeur dans la table famille
+        # lequel est-ce ?
+        DB = GestionDB.DB()
+        req = """SELECT IDcompte_payeur
+        FROM familles
+        WHERE IDfamille=%d;""" % IDfamille
+        DB.ExecuterReq(req)
+        IDcompte_payeur = DB.ResultatReq()[0][0]
+        # on récupère l ID du compte bancaire de la régie si la facture est liée a une régie
+        req = """SELECT factures_regies.IDcompte_bancaire
+        FROM factures
+        LEFT JOIN factures_regies ON factures_regies.IDregie = factures.IDregie
+        WHERE IDfacture=%d;""" % IDfacture
+        DB.ExecuterReq(req)
+        DB.Close()
+        IDcompte_bancaire = DB.ResultatReq()[0][0]
+        numauto = self.dict_parametres["numauto"]
+        numpiece = "auth_num-" + numauto
+
+
+        # Traitement manuel
+        if self.mode == "manuel" :
+            from Dlg import DLG_Saisie_reglement
+            dlg = DLG_Saisie_reglement.Dialog(None, IDcompte_payeur=IDcompte_payeur, IDreglement=None)
+            dlg.SelectionneFacture(IDfacture=IDfacture)
+            dlg.ctrl_montant.SetValue(montant)
+            dlg.ctrl_numero.SetValue(numpiece)
+            dlg.ctrl_mode.SetID(IDmodepaiement)
+            dlg.ctrl_emetteur.MAJ(IDmodepaiement)
+            dlg.ctrl_emetteur.Enable(False)
+            dlg.bouton_emetteur.Enable(False)
+            if IDcompte_bancaire != 0:
+                dlg.ctrl_compte.SetID(IDcompte_bancaire)
+            dlg.ShowModal()
+            dlg.Destroy()
+
+            reponse = ""
+
+            return {"etat" : True, "reponse" : reponse}
+
+        # Traitement automatique (desactivé par choix dans Dialog.OnRadioEtat)
+        if self.mode == "automatique" :
+            reponse = ""
+
+            return {"etat" : False, "reponse" : reponse}
 
 
     def Traitement_factures(self):

@@ -214,7 +214,18 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                         {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : False},
                         ]
                  },
-            
+
+            #"paiement_ligne_systeme" : {
+            #    0 : [
+            #        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : False},
+            #        ],
+            #    1 : [
+            #        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : True},
+            #        ],
+            #    2 : [
+            #        {"propriete" : "paiement_ligne_tipi_saisie", "obligatoire" : True},
+            #        ]
+            #    },
 
 
             }
@@ -1341,16 +1352,16 @@ class Dialog(wx.Dialog):
             dlg.Destroy()
             return False
 
-        if dict_parametres["paiement_ligne_actif"] == True :
-            dlg = wx.MessageDialog(self, _(u"Paiement en ligne actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return True
-        else :
-            dlg = wx.MessageDialog(self, _(u"Paiement en ligne non actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        #if dict_parametres["paiement_ligne_actif"] == True :
+        #    dlg = wx.MessageDialog(self, _(u"Paiement en ligne actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        #    dlg.ShowModal()
+        #    dlg.Destroy()
+        #    return True
+        #else :
+        #    dlg = wx.MessageDialog(self, _(u"Paiement en ligne non actif"), "Erreur", wx.OK | wx.ICON_EXCLAMATION)
+        #    dlg.ShowModal()
+        #    dlg.Destroy()
+        #    return False
 
         # Procédure d'installation
         from Utils import UTILS_Portail_installation
