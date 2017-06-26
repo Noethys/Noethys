@@ -22,14 +22,26 @@ from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
+    listeJours = (
+        _(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"),
+        _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"),
+    )
+    listeMois = (
+        _(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"),
+        _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"),
+        _(u"octobre"), _(u"novembre"), _(u"décembre"),
+    )
+    dateComplete = "{0} {1} {2} {3}".format(
+        listeJours[dateDD.weekday()], str(dateDD.day),
+        listeMois[dateDD.month-1], str(dateDD.year),
+    )
     return dateComplete
 
 
 def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
+    return datetime.date(
+        int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]),
+    )
 
 
 class CTRL_archive(wx.CheckListBox):
@@ -74,7 +86,11 @@ class CTRL_archive(wx.CheckListBox):
                 date_debut = DateEngEnDateDD(date_debut)
             if date_fin is not None:
                 date_fin = DateEngEnDateDD(date_fin)
-            dictTemp = { "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "tarifs" : {} }
+            dictTemp = {
+                "nom": nom, "abrege": abrege,
+                "date_debut": date_debut, "date_fin": date_fin,
+                "tarifs": {},
+            }
             dictActivites[IDactivite] = dictTemp
             listeActivites.append((nom, IDactivite))
         listeActivites.sort()
@@ -133,10 +149,15 @@ class CTRL(HTL.HyperTreeList):
         self.cocherParDefaut = True
 
         self.SetBackgroundColour(wx.WHITE)
-        self.SetAGWWindowStyleFlag( HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS | wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT )
+        self.SetAGWWindowStyleFlag(
+            HTL.TR_NO_HEADER | wx.TR_HIDE_ROOT | wx.TR_HAS_BUTTONS |
+            wx.TR_HAS_VARIABLE_ROW_HEIGHT | wx.TR_FULL_ROW_HIGHLIGHT
+        )
         self.EnableSelectionVista(True)
 
-        self.SetToolTip(wx.ToolTip(_(u"Cochez les activités et groupes à afficher")))
+        self.SetToolTip(wx.ToolTip(
+            _(u"Cochez les activités et groupes à afficher"))
+        )
 
         # Création des colonnes
         self.AddColumn(_(u"Activité/groupe"))
@@ -223,13 +244,21 @@ class CTRL(HTL.HyperTreeList):
 
             # Niveau Activité
             niveauActivite = self.AppendItem(self.root, nomActivite, ct_type=1)
-            self.SetPyData(niveauActivite, {"type" : "activite", "ID" : IDactivite, "nom" : nomActivite})
+            self.SetPyData(niveauActivite, {
+                "type": "activite",
+                "ID": IDactivite,
+                "nom": nomActivite,
+            })
             self.SetItemBold(niveauActivite, True)
 
             # Niveau Groupes
             for dictGroupe in dictActivite["groupes"]:
                 niveauGroupe = self.AppendItem(niveauActivite, dictGroupe["nom"], ct_type=1)
-                self.SetPyData(niveauGroupe, {"type" : "groupe", "ID" : dictGroupe["IDgroupe"], "nom" : dictGroupe["nom"]})
+                self.SetPyData(niveauGroupe, {
+                    "type": "groupe",
+                    "ID": dictGroupe["IDgroupe"],
+                    "nom": dictGroupe["nom"],
+                })
 
             # Coche toutes les branches enfants
             if self.cocherParDefaut is True:
@@ -248,7 +277,8 @@ class CTRL(HTL.HyperTreeList):
         # Récupération des activités disponibles le jour sélectionné
         DB = GestionDB.DB()
         req = """SELECT
-        activites.IDactivite, activites.nom, activites.abrege, date_debut, date_fin,
+        activites.IDactivite, activites.nom, activites.abrege,
+        date_debut, date_fin,
         groupes.IDgroupe, groupes.nom
         FROM activites
         LEFT JOIN ouvertures ON ouvertures.IDactivite = activites.IDactivite
@@ -267,9 +297,15 @@ class CTRL(HTL.HyperTreeList):
 
             # Mémorisation de l'activité
             if IDactivite not in dictActivites:
-                dictActivites[IDactivite] = { "nom":nom, "abrege":abrege, "date_debut":date_debut, "date_fin":date_fin, "groupes":[]}
+                dictActivites[IDactivite] = {
+                    "nom": nom, "abrege": abrege,
+                    "date_debut": date_debut, "date_fin": date_fin,
+                    "groupes": [],
+                }
             # Mémorisation du groupe
-            dictActivites[IDactivite]["groupes"].append({"IDgroupe":IDgroupe, "nom":nomGroupe})
+            dictActivites[IDactivite]["groupes"].append({
+                "IDgroupe": IDgroupe, "nom": nomGroupe,
+            })
         return dictActivites
 
 
@@ -278,12 +314,12 @@ class MyFrame(wx.Frame):
         wx.Frame.__init__(self, *args, **kwds)
         panel = wx.Panel(self, -1)
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
-        sizer_1.Add(panel, 1, wx.ALL|wx.EXPAND)
+        sizer_1.Add(panel, 1, wx.ALL | wx.EXPAND)
         self.SetSizer(sizer_1)
         self.ctrl = CTRL(panel)
         self.ctrl.MAJ()
         sizer_2 = wx.BoxSizer(wx.VERTICAL)
-        sizer_2.Add(self.ctrl, 1, wx.ALL|wx.EXPAND, 4)
+        sizer_2.Add(self.ctrl, 1, wx.ALL | wx.EXPAND, 4)
         panel.SetSizer(sizer_2)
         self.Layout()
         self.CentreOnScreen()
