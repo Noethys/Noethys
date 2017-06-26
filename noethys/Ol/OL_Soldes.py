@@ -306,8 +306,7 @@ class ListView(FastObjectListView):
         IDfamille = self.Selection()[0].IDfamille
         from Dlg import DLG_Famille
         dlg = DLG_Famille.Dialog(self, IDfamille)
-        if dlg.ShowModal() == wx.ID_OK:
-            self.MAJ()
+        dlg.ShowModal()
         dlg.Destroy()
 
     def ExportTexte(self, event):

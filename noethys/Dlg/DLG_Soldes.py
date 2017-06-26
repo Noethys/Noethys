@@ -172,6 +172,7 @@ class Dialog(wx.Dialog):
         
     def OuvrirFiche(self, event):
         self.ctrl_soldes.OuvrirFicheFamille(None)
+        self.Actualiser()
 
     def Apercu(self, event):
         self.ctrl_soldes.Apercu(None)
