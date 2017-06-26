@@ -56,7 +56,10 @@ class NumSecu(wx.Panel):
     def SetValue(self, numSecu=""):
         if numSecu == None : return
         self.remplissageEnCours = True
-        self.ctrl_numsecu.SetValue(numSecu)
+        try :
+            self.ctrl_numsecu.SetValue(numSecu)
+        except :
+            pass
         self.TestValidite(avecMessagesErreur=False)
         self.remplissageEnCours = False
     
