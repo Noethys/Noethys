@@ -56,7 +56,7 @@ class CTRL_archive(wx.CheckListBox):
     def Importation(self):
         listeActivites = []
         dictActivites = {}
-        if self.date == None :
+        if self.date is None:
             return listeActivites, dictActivites
         # Récupération des activités disponibles le jour sélectionné
         DB = GestionDB.DB()
@@ -69,9 +69,11 @@ class CTRL_archive(wx.CheckListBox):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        for IDactivite, nom, abrege, date_debut, date_fin in listeDonnees :
-            if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
-            if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
+        for IDactivite, nom, abrege, date_debut, date_fin in listeDonnees:
+            if date_debut is not None:
+                date_debut = DateEngEnDateDD(date_debut)
+            if date_fin is not None:
+                date_fin = DateEngEnDateDD(date_fin)
             dictTemp = { "nom" : nom, "abrege" : abrege, "date_debut" : date_debut, "date_fin" : date_fin, "tarifs" : {} }
             dictActivites[IDactivite] = dictTemp
             listeActivites.append((nom, IDactivite))
@@ -149,7 +151,7 @@ class CTRL(HTL.HyperTreeList):
         self.MAJ()
 
     def OnCheckItem(self, event):
-        if self.MAJenCours == False :
+        if self.MAJenCours is False:
             item = event.GetItem()
             # Active ou non les branches enfants
             if self.GetPyData(item)["type"] == "activite":
@@ -230,7 +232,7 @@ class CTRL(HTL.HyperTreeList):
                 self.SetPyData(niveauGroupe, {"type" : "groupe", "ID" : dictGroupe["IDgroupe"], "nom" : dictGroupe["nom"]})
 
             # Coche toutes les branches enfants
-            if self.cocherParDefaut == True :
+            if self.cocherParDefaut is True:
                 self.CheckItem(niveauActivite)
                 self.CheckChilds(niveauActivite)
 
@@ -241,7 +243,7 @@ class CTRL(HTL.HyperTreeList):
 
     def Importation(self):
         dictActivites = {}
-        if self.date == None :
+        if self.date is None:
             return dictActivites
         # Récupération des activités disponibles le jour sélectionné
         DB = GestionDB.DB()
@@ -257,12 +259,14 @@ class CTRL(HTL.HyperTreeList):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        for IDactivite, nom, abrege, date_debut, date_fin, IDgroupe, nomGroupe in listeDonnees :
-            if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
-            if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
+        for IDactivite, nom, abrege, date_debut, date_fin, IDgroupe, nomGroupe in listeDonnees:
+            if date_debut is not None:
+                date_debut = DateEngEnDateDD(date_debut)
+            if date_fin is not None:
+                date_fin = DateEngEnDateDD(date_fin)
 
             # Mémorisation de l'activité
-            if dictActivites.has_key(IDactivite) == False :
+            if IDactivite not in dictActivites:
                 dictActivites[IDactivite] = { "nom":nom, "abrege":abrege, "date_debut":date_debut, "date_fin":date_fin, "groupes":[]}
             # Mémorisation du groupe
             dictActivites[IDactivite]["groupes"].append({"IDgroupe":IDgroupe, "nom":nomGroupe})
