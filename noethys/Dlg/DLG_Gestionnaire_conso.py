@@ -344,29 +344,38 @@ class PanelGrille(wx.Panel):
     def SetGroupes(self, listeGroupes=[]):
         self.listeGroupes = listeGroupes
 
+    def GetListeConditions(self):
+        conditions = []
+
+        # Condition Activités
+        conditionActivites = ""
+        if len(self.listeActivites) > 0:
+            conditionActivites = ", ".join(map(str, self.listeActivites))
+        conditions.append("IDactivite IN ({0})".format(conditionActivites))
+
+        # Condition Groupes
+        if len(self.listeGroupes) > 0:
+            if len(self.listeGroupes) == 1:
+                conditions.append("IDgroupe={0}".format(self.listeGroupes[0]))
+            else:
+                conditions.append("IDgroupe IN ({0})".format(
+                    ", ".join(map(str, self.listeGroupes))
+                ))
+
+        return conditions
+
     def GetListeIndividus(self):
         listeSelectionIndividus = []
-        # Conditions Activités
-        if len(self.listeActivites) == 0:
-            conditionActivites = "()"
-        elif len(self.listeActivites) == 1:
-            conditionActivites = "(%d)" % self.listeActivites[0]
-        else:
-            conditionActivites = str(tuple(self.listeActivites))
-        # Condition Groupes
-        if len(self.listeGroupes) == 0:
-            conditionGroupes = ""
-        elif len(self.listeGroupes) == 1:
-            conditionGroupes = " AND IDgroupe=%d" % self.listeGroupes[0]
-        else:
-            conditionGroupes = " AND IDgroupe IN %s" % str(tuple(self.listeGroupes))
+
+        conditions = self.GetListeConditions()
+        conditions.append("date='{0}'".format(self.date))
 
         DB = GestionDB.DB()
         req = """SELECT IDindividu, COUNT(IDconso)
         FROM consommations
-        WHERE date='%s' AND IDactivite IN %s %s
+        WHERE {0}
         GROUP BY IDindividu
-        ORDER BY IDindividu;""" % (str(self.date), conditionActivites, conditionGroupes)
+        ORDER BY IDindividu;""".format(" AND ".join(conditions))
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
@@ -414,27 +423,16 @@ class PanelGrille(wx.Panel):
 
     def AfficherTousInscrits(self, event=None):
         """ Affiche tous les inscrits à l'activité """
-        # Conditions Activités
-        if len(self.listeActivites) == 0:
-            conditionActivites = "()"
-        elif len(self.listeActivites) == 1:
-            conditionActivites = "(%d)" % self.listeActivites[0]
-        else:
-            conditionActivites = str(tuple(self.listeActivites))
-        # Condition Groupes
-        if len(self.listeGroupes) == 0:
-            conditionGroupes = ""
-        elif len(self.listeGroupes) == 1:
-            conditionGroupes = " AND IDgroupe=%d" % self.listeGroupes[0]
-        else:
-            conditionGroupes = " AND IDgroupe IN %s" % str(tuple(self.listeGroupes))
+        conditions = self.GetListeConditions()
+        conditions.append("(date_desinscription IS NULL OR"
+                          " date_desinscription>='{0}')".format(self.date))
 
         DB = GestionDB.DB()
         req = """SELECT IDinscription, IDindividu
         FROM inscriptions
-        WHERE IDactivite IN %s %s and (date_desinscription IS NULL OR date_desinscription>='%s')
+        WHERE {0}
         GROUP BY IDindividu
-        ORDER BY IDindividu;""" % (conditionActivites, conditionGroupes, self.date)
+        ORDER BY IDindividu;""".format(" AND ".join(conditions))
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
