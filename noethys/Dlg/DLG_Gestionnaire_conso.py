@@ -153,7 +153,7 @@ class Commandes(wx.Panel):
 
     def OnBoutonAnnuler(self, event):
         etat = self.parent.Annuler()
-        if etat == False:
+        if etat is False:
             return
         self.parent.EndModal(wx.ID_CANCEL)
 
@@ -308,7 +308,7 @@ class PanelGrille(wx.Panel):
 
     def SetDate(self, date=None):
         self.date = date
-        if self.date == None:
+        if self.date is None:
             dateStr = u""
         else:
             dateStr = DateComplete(self.date)
@@ -350,17 +350,17 @@ class PanelGrille(wx.Panel):
             listeSelectionIndividus.append(IDindividu)
 
         # On ajoute les individus ajoutés manuellement :
-        if self.dictIndividusAjoutes.has_key(self.date):
+        if self.date in self.dictIndividusAjoutes:
             for IDindividu in self.dictIndividusAjoutes[self.date]:
                 valide = False
-                if self.grille.dictConsoIndividus.has_key(IDindividu):
-                    if self.grille.dictConsoIndividus[IDindividu].has_key(self.date):
+                if IDindividu in self.grille.dictConsoIndividus:
+                    if self.date in self.grille.dictConsoIndividus[IDindividu]:
                         # Vérifie que l'individu a des conso pour la ou les groupes sélectionnés
                         for IDunite, listeConso in self.grille.dictConsoIndividus[IDindividu][self.date].iteritems():
                             for conso in listeConso:
                                 if conso.IDgroupe in self.listeGroupes:
                                     valide = True
-                if valide == True and IDindividu not in listeSelectionIndividus:
+                if valide is True and IDindividu not in listeSelectionIndividus:
                     listeSelectionIndividus.append(IDindividu)
 
         return listeSelectionIndividus
@@ -378,12 +378,12 @@ class PanelGrille(wx.Panel):
                 dlg.Destroy()
                 return
         dlg.Destroy()
-        if IDindividu == None:
+        if IDindividu is None:
             return
         self.listeSelectionIndividus.append(IDindividu)
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
         # Ajout de l'individu dans une liste pour le garder afficher lors d'une MAJ de l'affichage
-        if self.dictIndividusAjoutes.has_key(self.date) == False:
+        if self.date not in self.dictIndividusAjoutes:
             self.dictIndividusAjoutes[self.date] = []
         if IDindividu not in self.dictIndividusAjoutes[self.date]:
             self.dictIndividusAjoutes[self.date].append(IDindividu)
@@ -419,7 +419,7 @@ class PanelGrille(wx.Panel):
             if IDindividu not in self.listeSelectionIndividus:
                 self.listeSelectionIndividus.append(IDindividu)
                 # Ajout de l'individu dans une liste pour le garder afficher lors d'une MAJ de l'affichage
-                if self.dictIndividusAjoutes.has_key(self.date) == False:
+                if self.date not in self.dictIndividusAjoutes:
                     self.dictIndividusAjoutes[self.date] = []
                 if IDindividu not in self.dictIndividusAjoutes[self.date]:
                     self.dictIndividusAjoutes[self.date].append(IDindividu)
@@ -446,7 +446,7 @@ class Dialog(wx.Dialog):
         # Détermine la taille de la fenêtre
         self.SetMinSize((700, 600))
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_tableau_presences")
-        if taille_fenetre == None:
+        if taille_fenetre is None:
             self.SetSize((900, 600))
         if taille_fenetre == (0, 0):
             self.Maximize(True)
@@ -457,11 +457,11 @@ class Dialog(wx.Dialog):
         # Récupère les perspectives
         cfg = UTILS_Config.FichierConfig()
         self.userConfig = cfg.GetDictConfig()
-        if self.userConfig.has_key("gestionnaire_perspectives") == True:
+        if "gestionnaire_perspectives" in self.userConfig:
             self.perspectives = self.userConfig["gestionnaire_perspectives"]
         else:
             self.perspectives = []
-        if self.userConfig.has_key("gestionnaire_perspective_active") == True:
+        if "gestionnaire_perspective_active" in self.userConfig:
             self.perspective_active = self.userConfig["gestionnaire_perspective_active"]
         else:
             self.perspective_active = None
@@ -530,19 +530,19 @@ class Dialog(wx.Dialog):
         self.perspective_defaut = self._mgr.SavePerspective()
 
         # Récupération de la perspective chargée
-        if self.perspective_active != None:
+        if self.perspective_active is not None:
             self._mgr.LoadPerspective(self.perspectives[self.perspective_active]["perspective"])
         else:
             self._mgr.LoadPerspective(self.perspective_defaut)
 
         # Affichage du panneau du panneau Forfait Credits
-        if self.panel_grille.grille.tarifsForfaitsCreditsPresents == True:
+        if self.panel_grille.grille.tarifsForfaitsCreditsPresents is True:
             self._mgr.GetPane("forfaits").Show()
         else:
             self._mgr.GetPane("forfaits").Hide()
 
         # Affichage du panneau du panneau Etiquettes
-        if self.panel_grille.grille.afficherListeEtiquettes == True:
+        if self.panel_grille.grille.afficherListeEtiquettes is True:
             self._mgr.GetPane("etiquettes").Show()
         else:
             self._mgr.GetPane("etiquettes").Hide()
@@ -615,7 +615,7 @@ class Dialog(wx.Dialog):
     def OnClose(self, event):
         self.MemoriseParametres()
         etat = self.Annuler()
-        if etat == False:
+        if etat is False:
             return
         event.Skip()
 
@@ -735,7 +735,7 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
     def On_outils_recalculer(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False:
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") is False:
             return
         dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichées ?"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
@@ -751,7 +751,7 @@ class Dialog(wx.Dialog):
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_perspective_defaut, id=ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
-        if self.perspective_active == None:
+        if self.perspective_active is None:
             item.Check(True)
 
         index = 0
