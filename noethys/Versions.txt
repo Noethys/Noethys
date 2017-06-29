@@ -1,8 +1,9 @@
-Version 1.2.0.3 (05/06/2017) :
+Version 1.2.0.4 (29/06/2017) :
 
 - Ajout des régies de facturation
 - Ajout du paiement en ligne TIPI avec Connecthys
 - Ajout du regroupement par école dans la liste des conso
+- Ajout autre adresse de facturation dans onglet divers de la fiche famille
 - Ajout de la prévisualisation par lot des factures à générer
 - Ajout du nom d'utilisateur dans les adresses d'expédition d'emails
 - Ajout de l'option Facturés dans la liste des soldes du menu Facturation
@@ -10,6 +11,7 @@ Version 1.2.0.3 (05/06/2017) :
 - Ajout des rappels de messages dans la fiche famille
 - Ajout des profils de configuration pour les filtres de listes
 - Ajout masquer les forfaits datés obsolètes dans choix forfaits
+- Ajout mémorisation activités cochées dans gestionnaire des conso [jeromelebleu]
 - Amélioration de l'analyse croisée ventilation dépôts
 - Fix désinscription dans le badgeage
 - Fix affichage global des liens dans la fiche famille
