@@ -68,14 +68,26 @@ ID_OUTILS_TOUT_DESELECTIONNER = wx.NewId()
 
 def DateComplete(dateDD):
     """ Transforme une date DD en date complète : Ex : lundi 15 janvier 2008 """
-    listeJours = (_(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"), _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"))
-    listeMois = (_(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"), _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"), _(u"octobre"), _(u"novembre"), _(u"décembre"))
-    dateComplete = listeJours[dateDD.weekday()] + " " + str(dateDD.day) + " " + listeMois[dateDD.month-1] + " " + str(dateDD.year)
+    listeJours = (
+        _(u"Lundi"), _(u"Mardi"), _(u"Mercredi"), _(u"Jeudi"),
+        _(u"Vendredi"), _(u"Samedi"), _(u"Dimanche"),
+    )
+    listeMois = (
+        _(u"janvier"), _(u"février"), _(u"mars"), _(u"avril"), _(u"mai"),
+        _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"),
+        _(u"octobre"), _(u"novembre"), _(u"décembre"),
+    )
+    dateComplete = "{0} {1} {2} {3}".format(
+        listeJours[dateDD.weekday()], str(dateDD.day),
+        listeMois[dateDD.month-1], str(dateDD.year),
+    )
     return dateComplete
 
 
 def DateEngEnDateDD(dateEng):
-    return datetime.date(int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]))
+    return datetime.date(
+        int(dateEng[:4]), int(dateEng[5:7]), int(dateEng[8:10]),
+    )
 
 
 def CalculeAge(dateReference, date_naiss):
@@ -86,7 +98,11 @@ def CalculeAge(dateReference, date_naiss):
 
 class CTRL_Titre(html.HtmlWindow):
     def __init__(self, parent, texte="", hauteur=30,  couleurFond=(255, 255, 255)):
-        html.HtmlWindow.__init__(self, parent, -1, style=wx.html.HW_NO_SELECTION | wx.html.HW_SCROLLBAR_NEVER | wx.NO_FULL_REPAINT_ON_RESIZE)
+        html.HtmlWindow.__init__(self, parent, -1, style=(
+            wx.html.HW_NO_SELECTION |
+            wx.html.HW_SCROLLBAR_NEVER |
+            wx.NO_FULL_REPAINT_ON_RESIZE
+        ))
         if "gtk2" in wx.PlatformInfo:
             self.SetStandardFonts()
         self.SetBorders(4)
@@ -110,10 +126,18 @@ class Commandes(wx.Panel):
         self.bouton_ok = CTRL_Bouton_image.CTRL(self, texte=_(u"Ok"), cheminImage="Images/32x32/Valider.png")
         self.bouton_annuler = CTRL_Bouton_image.CTRL(self, texte=_(u"Annuler"), cheminImage="Images/32x32/Annuler.png")
         # Propriétés
-        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
-        self.bouton_options.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour définir les paramètres d'affichage de la fenêtre")))
-        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour accéder aux outils")))
-        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour fermer")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(
+            _(u"Cliquez ici pour obtenir de l'aide")
+        ))
+        self.bouton_options.SetToolTip(wx.ToolTip(
+            _(u"Cliquez ici pour définir les paramètres d'affichage de la fenêtre")
+        ))
+        self.bouton_outils.SetToolTip(wx.ToolTip(
+            _(u"Cliquez ici pour accéder aux outils")
+        ))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(
+            _(u"Cliquez ici pour fermer")
+        ))
 
         # Layout
         sizer_base = wx.BoxSizer(wx.VERTICAL)
@@ -475,50 +499,95 @@ class Dialog(wx.Dialog):
 
         # Création des panels amovibles
         self.panel_commandes = Commandes(self)
-        self._mgr.AddPane(self.panel_commandes, aui.AuiPaneInfo().
-                          Name("commandes").Caption(_(u"Commandes")).
-                          Bottom().Layer(0).Position(1).CaptionVisible(False).CloseButton(False).MaximizeButton(False).MinSize((-1, 50)))
+        self._mgr.AddPane(self.panel_commandes, (
+            aui.AuiPaneInfo()
+               .Name("commandes").Caption(_(u"Commandes"))
+               .Bottom().Layer(0).Position(1)
+               .CaptionVisible(False).CloseButton(False).MaximizeButton(False)
+               .MinSize((-1, 50))
+        ))
 
-        self.panel_totaux = CTRL_Grille_totaux.CTRL(self, grille=self.panel_grille.grille)
-        self._mgr.AddPane(self.panel_totaux, aui.AuiPaneInfo().
-                          Name("totaux").Caption(_(u"Totaux")).
-                          Bottom().Layer(0).Position(0).Row(1).CloseButton(False).MaximizeButton(False).MinSize((160, 100)))
+        self.panel_totaux = CTRL_Grille_totaux.CTRL(
+            self, grille=self.panel_grille.grille,
+        )
+        self._mgr.AddPane(self.panel_totaux, (
+            aui.AuiPaneInfo()
+               .Name("totaux").Caption(_(u"Totaux"))
+               .Bottom().Layer(0).Position(0).Row(1)
+               .CloseButton(False).MaximizeButton(False)
+               .MinSize((160, 100))
+        ))
 
         self.panel_calendrier = CTRL_Grille_calendrier.CTRL(self)
-        self._mgr.AddPane(self.panel_calendrier, aui.AuiPaneInfo().
-                          Name("calendrier").Caption(_(u"Sélection de la date")).
-                          Left().Layer(1).BestSize(wx.Size(195, 180)).Position(1).CloseButton(False).Fixed().MaximizeButton(False))
+        self._mgr.AddPane(self.panel_calendrier, (
+            aui.AuiPaneInfo()
+               .Name("calendrier").Caption(_(u"Sélection de la date"))
+               .Left().Layer(1).Position(0)
+               .CloseButton(False).MaximizeButton(False)
+               .BestSize(wx.Size(195, 180)).Fixed()
+        ))
 
         self.panel_activites = CTRL_Grille_activite3.CTRL(self)
-        self._mgr.AddPane(self.panel_activites, aui.AuiPaneInfo().
-                          Name("activites").Caption(_(u"Sélection des activités")).
-                          Left().Layer(1).Position(1).CloseButton(False).MaximizeButton(False).BestSize(wx.Size(-1,50)))
-        pi = self._mgr.GetPane("activites")
-        pi.dock_proportion = 100000 # Proportion
+        self._mgr.AddPane(self.panel_activites, (
+            aui.AuiPaneInfo()
+               .Name("activites").Caption(_(u"Sélection des activités"))
+               .Left().Layer(1).Position(1)
+               .CloseButton(False).MaximizeButton(False)
+               .BestSize(wx.Size(-1, 50))
+        ))
+        self._mgr.GetPane("activites").dock_proportion = 100000
 
-        self.panel_legende = OL_Legende_grille.ListView(self, id=-1, name="OL_legende", style=wx.LC_REPORT|wx.LC_NO_HEADER | wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.panel_legende = OL_Legende_grille.ListView(
+            self, id=-1, name="OL_legende", style=(
+                wx.LC_REPORT | wx.LC_NO_HEADER |
+                wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL
+            ),
+        )
         self.panel_legende.SetSize((50, 50))
-        self._mgr.AddPane(self.panel_legende, aui.AuiPaneInfo().
-                          Name("legende").Caption(_(u"Légende")).
-                          Left().Layer(1).Position(2).CloseButton(False).MaximizeButton(False).MinSize((160, 100)).MaxSize((-1, 120)) )
+        self._mgr.AddPane(self.panel_legende, (
+            aui.AuiPaneInfo()
+               .Name("legende").Caption(_(u"Légende"))
+               .Left().Layer(1).Position(2)
+               .CloseButton(False).MaximizeButton(False)
+               .MinSize((160, 100)).MaxSize((-1, 120))
+        ))
 
-        self.panel_raccourcis = OL_Raccourcis_grille.ListView(self, id=-1, name="OL_raccourcis", style=wx.LC_REPORT|wx.LC_NO_HEADER | wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL)
+        self.panel_raccourcis = OL_Raccourcis_grille.ListView(
+            self, id=-1, name="OL_raccourcis", style=(
+                wx.LC_REPORT | wx.LC_NO_HEADER |
+                wx.SUNKEN_BORDER | wx.LC_SINGLE_SEL
+            ),
+        )
         self.panel_raccourcis.SetSize((50, 50))
-        self._mgr.AddPane(self.panel_raccourcis, aui.AuiPaneInfo().
-                          Name("raccourcis").Caption(_(u"Touches raccourcis")).
-                          Left().Layer(1).Position(3).CloseButton(False).MaximizeButton(False).MinSize((160, 100)).MaxSize((-1, 120)) )
+        self._mgr.AddPane(self.panel_raccourcis, (
+            aui.AuiPaneInfo()
+               .Name("raccourcis").Caption(_(u"Touches raccourcis"))
+               .Left().Layer(1).Position(3)
+               .CloseButton(False).MaximizeButton(False)
+               .MinSize((160, 100)).MaxSize((-1, 120))
+        ))
         self._mgr.GetPane("raccourcis").dock_proportion = 60000
 
         self.panel_etiquettes = CTRL_Etiquettes.CTRL(self, activeMenu=False)
-        self._mgr.AddPane(self.panel_etiquettes, aui.AuiPaneInfo().
-                          Name("etiquettes").Caption(_(u"Etiquettes")).
-                          Right().Layer(0).Position(0).CloseButton(False).BestSize(wx.Size(275, 100)).MaximizeButton(False).MinSize((275, 100)))
+        self._mgr.AddPane(self.panel_etiquettes, (
+            aui.AuiPaneInfo()
+               .Name("etiquettes").Caption(_(u"Etiquettes"))
+               .Right().Layer(0).Position(0)
+               .CloseButton(False).MaximizeButton(False)
+               .BestSize(wx.Size(275, 100)).MinSize((275, 100))
+        ))
         self._mgr.GetPane("etiquettes").Hide()
 
-        self.panel_forfaits = CTRL_Grille_forfaits.CTRL(self, grille=self.panel_grille.grille)
-        self._mgr.AddPane(self.panel_forfaits, aui.AuiPaneInfo().
-                          Name("forfaits").Caption(_(u"Forfaits crédits")).
-                          Right().Layer(0).Position(1).BestSize(wx.Size(275,140)).Position(4).CloseButton(False).MaximizeButton(False).MinSize((275, 100)))
+        self.panel_forfaits = CTRL_Grille_forfaits.CTRL(
+            self, grille=self.panel_grille.grille
+        )
+        self._mgr.AddPane(self.panel_forfaits, (
+            aui.AuiPaneInfo()
+               .Name("forfaits").Caption(_(u"Forfaits crédits"))
+               .Right().Layer(0).Position(1)
+               .CloseButton(False).MaximizeButton(False)
+               .BestSize(wx.Size(275, 140)).MinSize((275, 100))
+        ))
         self._mgr.GetPane("forfaits").Hide()
 
         # Création du panel central
@@ -558,7 +627,10 @@ class Dialog(wx.Dialog):
 #        self.SetDate(date)
 
         # Init
-        self.panel_activites.SetCocherParDefaut(UTILS_Config.GetParametre("gestionnaire_conso_cocher_activites", defaut=True))
+        self.panel_activites.SetCocherParDefaut(
+            UTILS_Config.GetParametre("gestionnaire_conso_cocher_activites",
+                                      defaut=True)
+        )
 
         # Affichage du panneau du panneau Forfait Credits
 #        if self.panel_grille.grille.tarifsForfaitsCreditsPresents == True :
@@ -779,12 +851,17 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
 
         self.listePanneaux = [
-            { "label": _(u"Sélection de la date"), "code": "calendrier", "IDmenu": None },
-            { "label": _(u"Sélection des activités"), "code": "activites", "IDmenu": None },
-            { "label": _(u"Légende"), "code": "legende", "IDmenu": None },
-            { "label": _(u"Touches raccourcis"), "code": "raccourcis", "IDmenu": None },
-            { "label": _(u"Totaux"), "code": "totaux", "IDmenu": None },
-            ]
+            {"label": _(u"Sélection de la date"),
+             "code": "calendrier", "IDmenu": None},
+            {"label": _(u"Sélection des activités"),
+             "code": "activites", "IDmenu": None},
+            {"label": _(u"Légende"),
+             "code": "legende", "IDmenu": None},
+            {"label": _(u"Touches raccourcis"),
+             "code": "raccourcis", "IDmenu": None},
+            {"label": _(u"Totaux"),
+             "code": "totaux", "IDmenu": None},
+        ]
         ID = ID_AFFICHAGE_PANNEAUX
         for dictPanneau in self.listePanneaux:
             dictPanneau["IDmenu"] = ID
