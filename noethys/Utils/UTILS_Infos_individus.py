@@ -220,6 +220,7 @@ class Informations() :
             piecesManquantes = True,
             questionnaires = True,   
             scolarite = True,
+            mode_adresse_facturation = False,
             ) :
         self.date_reference = date_reference
         self.qf = qf
@@ -232,7 +233,7 @@ class Informations() :
         self.scolarite = scolarite
         
         # Lancement du calcul
-        self.dictTitulaires = UTILS_Titulaires.GetTitulaires()
+        self.dictTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=mode_adresse_facturation)
         self.Run() 
         
     def Run(self):

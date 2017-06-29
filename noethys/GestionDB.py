@@ -2065,7 +2065,14 @@ class DB:
             except Exception, err :
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
+        # =============================================================
 
+        versionFiltre = (1, 2, 0, 4)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("familles", "autre_adresse_facturation", "VARCHAR(450)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 

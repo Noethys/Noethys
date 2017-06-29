@@ -610,47 +610,13 @@ class CTRL_Donnees(gridlib.Grid):
             if code_ape != None : self.SetValeur("ape", code_ape)
             if ville != None : self.SetValeur("lieu", ville.capitalize() )
         
-        # Récupération des données sur le destinataire
-        req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, IDcategorie, titulaire, nom, prenom, IDcompte_payeur, adresse_auto, rue_resid, cp_resid, ville_resid
-        FROM rattachements 
-        LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-        LEFT JOIN comptes_payeurs ON comptes_payeurs.IDfamille = rattachements.IDfamille
-        WHERE rattachements.IDfamille=%d and titulaire=1 and IDcategorie=1
-        ORDER BY IDrattachement;""" % self.parent.IDfamille
-        DB.ExecuterReq(req)
-        listeDonnees = DB.ResultatReq()
         DB.Close()
-        listeTitulaires = []
-        rue = u""
-        ville = u""
-        for IDrattachement, IDindividu, IDfamille, IDcategorie, titulaire, nom, prenom, IDcompte_payeur, adresse_auto, rue_resid, cp_resid, ville_resid in listeDonnees :
-            if rue_resid == None : rue_resid = u""
-            if cp_resid == None : cp_resid = u""
-            if ville_resid == None : ville_resid = u""
-            if adresse_auto == None :
-                rue = rue_resid
-                ville = u"%s %s" % (cp_resid, ville_resid)
-##            nomIndividu = u"%s %s" % (nom, prenom)
-##            listeTitulaires.append(nomIndividu)
-##        nbreTitulaires = len(listeTitulaires)
-##        if nbreTitulaires == 0 : 
-##            nomTitulaires = _(u"Pas de titulaires !")
-##            IDcompte_payeur = None
-##        if nbreTitulaires == 1 : 
-##            nomTitulaires = listeTitulaires[0]
-##        if nbreTitulaires == 2 : 
-##            nomTitulaires = _(u"%s et %s") % (listeTitulaires[0], listeTitulaires[1])
-##        if nbreTitulaires > 2 :
-##            nomTitulaires = ""
-##            for nomTitulaire in listeTitulaires[:-2] :
-##                nomTitulaires += u"%s, " % nomTitulaire
-##            nomTitulaires += _(u" et %s") % listeTitulaires[-1]
-        
-        nomTitulaires = UTILS_Titulaires.GetTitulaires([self.parent.IDfamille,]) 
-        
-        self.SetValeur("nom", nomTitulaires[self.parent.IDfamille]["titulairesAvecCivilite"])
-        self.SetValeur("rue", rue)
-        self.SetValeur("ville", ville)
+
+        dictInfosTitulaires = UTILS_Titulaires.GetTitulaires([self.parent.IDfamille,], mode_adresse_facturation=True)
+
+        self.SetValeur("nom", dictInfosTitulaires[self.parent.IDfamille]["titulairesAvecCivilite"])
+        self.SetValeur("rue", dictInfosTitulaires[self.parent.IDfamille]["adresse"]["rue"])
+        self.SetValeur("ville", u"%s %s" % (dictInfosTitulaires[self.parent.IDfamille]["adresse"]["cp"], dictInfosTitulaires[self.parent.IDfamille]["adresse"]["ville"]))
         
 
 
@@ -1101,13 +1067,13 @@ class Dialog(wx.Dialog):
         DB.Close() 
 
         # Get noms Titulaires
-        dictNomsTitulaires = UTILS_Titulaires.GetTitulaires() 
+        dictNomsTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=True)
 
         # Récupération des questionnaires
         Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
 
         # Récupération des infos de base individus et familles
-        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        self.infosIndividus = UTILS_Infos_individus.Informations(mode_adresse_facturation=True)
 
         # ----------------------------------------------------------------------------------------------------
         # Analyse et regroupement des données

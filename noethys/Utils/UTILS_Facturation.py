@@ -103,7 +103,7 @@ class Facturation():
             self.dictOrganisme["code_ape"] = code_ape
         
         # Get noms Titulaires
-        self.dictNomsTitulaires = UTILS_Titulaires.GetTitulaires() 
+        self.dictNomsTitulaires = UTILS_Titulaires.GetTitulaires(mode_adresse_facturation=True)
 
         # Recherche des numéros d'agréments
         req = """SELECT IDactivite, agrement, date_debut, date_fin
@@ -118,7 +118,7 @@ class Facturation():
         self.Questionnaires = UTILS_Questionnaires.ChampsEtReponses(type="famille")
         
         # Récupération des infos de base familles
-        self.infosIndividus = UTILS_Infos_individus.Informations() 
+        self.infosIndividus = UTILS_Infos_individus.Informations(mode_adresse_facturation=True)
         
 
     def RechercheAgrement(self, IDactivite, date):
@@ -452,7 +452,7 @@ class Facturation():
                 rue_resid = dictInfosTitulaires["adresse"]["rue"]
                 cp_resid = dictInfosTitulaires["adresse"]["cp"]
                 ville_resid = dictInfosTitulaires["adresse"]["ville"]
-                            
+
                 # Recherche des règlements
                 if dictReglements.has_key(IDcompte_payeur) :
                     dictReglementsCompte = dictReglements[IDcompte_payeur]

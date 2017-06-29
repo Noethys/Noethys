@@ -116,6 +116,7 @@ DB_DATA = {
                                     ("cattiers_helios", "INTEGER", u"Catégorie de tiers pour Hélios"),
                                     ("natjur_helios", "INTEGER", u"Nature juridique du tiers pour Hélios"),
                                     ("autorisation_cafpro", "INTEGER", u"Autorisation de consultation CAFPRO (0/1)"),
+                                    ("autre_adresse_facturation", "VARCHAR(450)", u"Autre adresse de facturation"),
                                     ], # Les familles
     
     "rattachements":[       ("IDrattachement", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID rattachement"),

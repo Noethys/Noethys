@@ -17,7 +17,7 @@ from Data import DATA_Civilites as Civilites
 DICT_CIVILITES = Civilites.GetDictCivilites()
 
 
-def GetTitulaires(listeIDfamille=[]):
+def GetTitulaires(listeIDfamille=[], mode_adresse_facturation=False):
     """ si listeIDfamille == [] alors renvoie toutes les familles """
     dictFamilles = {}
     
@@ -30,13 +30,13 @@ def GetTitulaires(listeIDfamille=[]):
 
     # Récupération de toutes les familles de la base
     req = """
-    SELECT IDfamille, IDcompte_payeur
+    SELECT IDfamille, IDcompte_payeur, autre_adresse_facturation
     FROM familles
     %s;""" % conditionFamilles
     DB.ExecuterReq(req)
     listeFamilles = DB.ResultatReq()  
-    for IDfamille, IDcompte_payeur in listeFamilles :
-        dictFamilles[IDfamille] = {"IDcompte_payeur":IDcompte_payeur,}
+    for IDfamille, IDcompte_payeur, autre_adresse_facturation in listeFamilles :
+        dictFamilles[IDfamille] = {"IDcompte_payeur":IDcompte_payeur, "autre_adresse_facturation":autre_adresse_facturation}
     
     # Récupération de tous les individus de la base
     req = """
@@ -141,10 +141,22 @@ def GetTitulaires(listeIDfamille=[]):
             for dictTemp in listeTitulaires :
                 if dictTemp["mail"] not in (None, ""):
                     listeMails.append(dictTemp["mail"])
-            
+
+            # Noms des titulaires
+            titulairesAvecCivilite = nomsTitulaires["avecCivilite"]
+            titulairesSansCivilite = nomsTitulaires["sansCivilite"]
+
+            # Autre adresse de facturation
+            autre_adresse_facturation = dictFamille["autre_adresse_facturation"]
+            if mode_adresse_facturation == True and autre_adresse_facturation not in (None, ""):
+                valeurs_autre_adresse = autre_adresse_facturation.split("##")
+                titulairesAvecCivilite = valeurs_autre_adresse[0]
+                titulairesSansCivilite = valeurs_autre_adresse[0]
+                dictAdresse = {"rue": valeurs_autre_adresse[1], "cp": valeurs_autre_adresse[2], "ville": valeurs_autre_adresse[3], "IDsecteur": None, "nomSecteur": "", "secteur": ""}
+
             # Définit les noms des titulaires
-            dictFamilles[IDfamille]["titulairesAvecCivilite"] = nomsTitulaires["avecCivilite"]
-            dictFamilles[IDfamille]["titulairesSansCivilite"] = nomsTitulaires["sansCivilite"]
+            dictFamilles[IDfamille]["titulairesAvecCivilite"] = titulairesAvecCivilite
+            dictFamilles[IDfamille]["titulairesSansCivilite"] = titulairesSansCivilite
             dictFamilles[IDfamille]["listeTitulaires"] = listeTitulaires
             dictFamilles[IDfamille]["adresse"] = dictAdresse
             dictFamilles[IDfamille]["listeMails"] = listeMails
