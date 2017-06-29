@@ -31,7 +31,7 @@ def DateComplete(dateDD):
         _(u"juin"), _(u"juillet"), _(u"août"), _(u"septembre"),
         _(u"octobre"), _(u"novembre"), _(u"décembre"),
     )
-    dateComplete = "{0} {1} {2} {3}".format(
+    dateComplete = u"{0} {1} {2} {3}".format(
         listeJours[dateDD.weekday()], str(dateDD.day),
         listeMois[dateDD.month-1], str(dateDD.year),
     )
