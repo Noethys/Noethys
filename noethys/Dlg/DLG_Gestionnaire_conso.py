@@ -125,7 +125,7 @@ class Commandes(wx.Panel):
         grid_sizer_base.Add(self.bouton_ok, 0, 0, 0)
         grid_sizer_base.Add(self.bouton_annuler, 0, 0, 0)
         grid_sizer_base.AddGrowableCol(3)
-        sizer_base.Add(grid_sizer_base, 0, wx.ALL|wx.EXPAND, 10)
+        sizer_base.Add(grid_sizer_base, 0, wx.ALL | wx.EXPAND, 10)
         self.SetSizer(sizer_base)
         self.SetMinSize((-1, 50))
         self.Layout()
@@ -153,7 +153,7 @@ class Commandes(wx.Panel):
 
     def OnBoutonAnnuler(self, event):
         etat = self.parent.Annuler()
-        if etat == False :
+        if etat == False:
             return
         self.parent.EndModal(wx.ID_CANCEL)
 
@@ -262,22 +262,22 @@ class PanelGrille(wx.Panel):
         self.grille = CTRL_Grille.CTRL(self, "date")
 
         # Barre d'outils
-        self.barreOutils = wx.ToolBar(self, -1, style =
-            wx.TB_HORIZONTAL
-            | wx.NO_BORDER
-            | wx.TB_FLAT
-            | wx.TB_TEXT
-            | wx.TB_HORZ_LAYOUT
-            | wx.TB_NODIVIDER
-            )
+        self.barreOutils = wx.ToolBar(self, -1, style=(
+            wx.TB_HORIZONTAL |
+            wx.NO_BORDER |
+            wx.TB_FLAT |
+            wx.TB_TEXT |
+            wx.TB_HORZ_LAYOUT |
+            wx.TB_NODIVIDER
+        ))
         self.ctrl_recherche = CTRL_Grille.BarreRecherche(self.barreOutils, ctrl_grille=self.grille)
         self.barreOutils.AddControl(self.ctrl_recherche)
 
         self.barreOutils.AddLabelTool(ID_AJOUTER_INDIVIDU, label=_(u"Ajouter un individu"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Femme.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter un individu"), longHelp=_(u"Ajouter un individu"))
         self.barreOutils.AddLabelTool(ID_AFFICHER_TOUS_INSCRITS, label=_(u"Afficher tous les inscrits"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Afficher tous les inscrits"), longHelp=_(u"Afficher tous les inscrits"))
-        try :
+        try:
             self.barreOutils.AddStretchableSpace()
-        except :
+        except:
             self.barreOutils.AddSeparator()
         self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=_(u"Réservation"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=_(u"Mode de saisie 'Réservation'"), longHelp=_(u"Mode de saisie 'Réservation'"))
         self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=_(u"Attente"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=_(u"Mode de saisie 'Attente'"), longHelp=_(u"Mode de saisie 'Attente'"))
@@ -291,7 +291,7 @@ class PanelGrille(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
         grid_sizer_base.Add(self.ctrl_titre, 0, wx.EXPAND,  0)
         grid_sizer_base.Add(self.grille, 0, wx.EXPAND,  0)
-        grid_sizer_base.Add(self.barreOutils, 0, wx.EXPAND|wx.ALL,  5)
+        grid_sizer_base.Add(self.barreOutils, 0, wx.EXPAND | wx.ALL,  5)
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(1)
         self.SetSizer(grid_sizer_base)
@@ -308,7 +308,7 @@ class PanelGrille(wx.Panel):
 
     def SetDate(self, date=None):
         self.date = date
-        if self.date == None :
+        if self.date == None:
             dateStr = u""
         else:
             dateStr = DateComplete(self.date)
@@ -322,14 +322,20 @@ class PanelGrille(wx.Panel):
 
     def GetListeIndividus(self):
         listeSelectionIndividus = []
-        # Conditions Activités :
-        if len(self.listeActivites) == 0 : conditionActivites = "()"
-        elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
-        else : conditionActivites = str(tuple(self.listeActivites))
+        # Conditions Activités
+        if len(self.listeActivites) == 0:
+            conditionActivites = "()"
+        elif len(self.listeActivites) == 1:
+            conditionActivites = "(%d)" % self.listeActivites[0]
+        else:
+            conditionActivites = str(tuple(self.listeActivites))
         # Condition Groupes
-        if len(self.listeGroupes) == 0 : conditionGroupes = ""
-        elif len(self.listeGroupes) == 1 : conditionGroupes = " AND IDgroupe=%d" % self.listeGroupes[0]
-        else : conditionGroupes = " AND IDgroupe IN %s" % str(tuple(self.listeGroupes))
+        if len(self.listeGroupes) == 0:
+            conditionGroupes = ""
+        elif len(self.listeGroupes) == 1:
+            conditionGroupes = " AND IDgroupe=%d" % self.listeGroupes[0]
+        else:
+            conditionGroupes = " AND IDgroupe IN %s" % str(tuple(self.listeGroupes))
 
         DB = GestionDB.DB()
         req = """SELECT IDindividu, COUNT(IDconso)
@@ -340,21 +346,21 @@ class PanelGrille(wx.Panel):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        for IDindividu, nbreConsommations in listeDonnees :
+        for IDindividu, nbreConsommations in listeDonnees:
             listeSelectionIndividus.append(IDindividu)
 
         # On ajoute les individus ajoutés manuellement :
-        if self.dictIndividusAjoutes.has_key(self.date) :
-            for IDindividu in self.dictIndividusAjoutes[self.date] :
+        if self.dictIndividusAjoutes.has_key(self.date):
+            for IDindividu in self.dictIndividusAjoutes[self.date]:
                 valide = False
-                if self.grille.dictConsoIndividus.has_key(IDindividu) :
-                    if self.grille.dictConsoIndividus[IDindividu].has_key(self.date) :
+                if self.grille.dictConsoIndividus.has_key(IDindividu):
+                    if self.grille.dictConsoIndividus[IDindividu].has_key(self.date):
                         # Vérifie que l'individu a des conso pour la ou les groupes sélectionnés
-                        for IDunite, listeConso in self.grille.dictConsoIndividus[IDindividu][self.date].iteritems() :
-                            for conso in listeConso :
-                                if conso.IDgroupe in self.listeGroupes :
+                        for IDunite, listeConso in self.grille.dictConsoIndividus[IDindividu][self.date].iteritems():
+                            for conso in listeConso:
+                                if conso.IDgroupe in self.listeGroupes:
                                     valide = True
-                if valide == True and IDindividu not in listeSelectionIndividus :
+                if valide == True and IDindividu not in listeSelectionIndividus:
                     listeSelectionIndividus.append(IDindividu)
 
         return listeSelectionIndividus
@@ -366,31 +372,38 @@ class PanelGrille(wx.Panel):
         if dlg.ShowModal() == wx.ID_OK:
             IDindividu = dlg.GetIDindividu()
             # Recherche si l'individu est déjà dans la grille
-            if IDindividu in self.grille.listeSelectionIndividus :
+            if IDindividu in self.grille.listeSelectionIndividus:
                 dlg = wx.MessageDialog(self, _(u"L'individu que vous avez sélectionné est déjà dans la grille des présences !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
         dlg.Destroy()
-        if IDindividu == None : return
+        if IDindividu == None:
+            return
         self.listeSelectionIndividus.append(IDindividu)
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
         # Ajout de l'individu dans une liste pour le garder afficher lors d'une MAJ de l'affichage
-        if self.dictIndividusAjoutes.has_key(self.date) == False :
+        if self.dictIndividusAjoutes.has_key(self.date) == False:
             self.dictIndividusAjoutes[self.date] = []
-        if IDindividu not in self.dictIndividusAjoutes[self.date] :
+        if IDindividu not in self.dictIndividusAjoutes[self.date]:
             self.dictIndividusAjoutes[self.date].append(IDindividu)
 
     def AfficherTousInscrits(self, event=None):
         """ Affiche tous les inscrits à l'activité """
-        # Conditions Activités :
-        if len(self.listeActivites) == 0 : conditionActivites = "()"
-        elif len(self.listeActivites) == 1 : conditionActivites = "(%d)" % self.listeActivites[0]
-        else : conditionActivites = str(tuple(self.listeActivites))
+        # Conditions Activités
+        if len(self.listeActivites) == 0:
+            conditionActivites = "()"
+        elif len(self.listeActivites) == 1:
+            conditionActivites = "(%d)" % self.listeActivites[0]
+        else:
+            conditionActivites = str(tuple(self.listeActivites))
         # Condition Groupes
-        if len(self.listeGroupes) == 0 : conditionGroupes = ""
-        elif len(self.listeGroupes) == 1 : conditionGroupes = " AND IDgroupe=%d" % self.listeGroupes[0]
-        else : conditionGroupes = " AND IDgroupe IN %s" % str(tuple(self.listeGroupes))
+        if len(self.listeGroupes) == 0:
+            conditionGroupes = ""
+        elif len(self.listeGroupes) == 1:
+            conditionGroupes = " AND IDgroupe=%d" % self.listeGroupes[0]
+        else:
+            conditionGroupes = " AND IDgroupe IN %s" % str(tuple(self.listeGroupes))
 
         DB = GestionDB.DB()
         req = """SELECT IDinscription, IDindividu
@@ -402,21 +415,24 @@ class PanelGrille(wx.Panel):
         listeDonnees = DB.ResultatReq()
         DB.Close()
 
-        for IDinscription, IDindividu in listeDonnees :
-            if IDindividu not in self.listeSelectionIndividus :
+        for IDinscription, IDindividu in listeDonnees:
+            if IDindividu not in self.listeSelectionIndividus:
                 self.listeSelectionIndividus.append(IDindividu)
                 # Ajout de l'individu dans une liste pour le garder afficher lors d'une MAJ de l'affichage
-                if self.dictIndividusAjoutes.has_key(self.date) == False :
+                if self.dictIndividusAjoutes.has_key(self.date) == False:
                     self.dictIndividusAjoutes[self.date] = []
-                if IDindividu not in self.dictIndividusAjoutes[self.date] :
+                if IDindividu not in self.dictIndividusAjoutes[self.date]:
                     self.dictIndividusAjoutes[self.date].append(IDindividu)
         # MAJ de l'affichage
         self.grille.SetModeDate(self.listeActivites, self.listeSelectionIndividus, self.date)
 
     def GetMode(self):
-        if self.barreOutils.GetToolState(ID_MODE_RESERVATION) == True : return "reservation"
-        if self.barreOutils.GetToolState(ID_MODE_ATTENTE) == True : return "attente"
-        if self.barreOutils.GetToolState(ID_MODE_REFUS) == True : return "refus"
+        if self.barreOutils.GetToolState(ID_MODE_RESERVATION) == True:
+            return "reservation"
+        if self.barreOutils.GetToolState(ID_MODE_ATTENTE) == True:
+            return "attente"
+        if self.barreOutils.GetToolState(ID_MODE_REFUS) == True:
+            return "refus"
 
 
 class Dialog(wx.Dialog):
@@ -430,9 +446,9 @@ class Dialog(wx.Dialog):
         # Détermine la taille de la fenêtre
         self.SetMinSize((700, 600))
         taille_fenetre = UTILS_Config.GetParametre("taille_fenetre_tableau_presences")
-        if taille_fenetre == None :
+        if taille_fenetre == None:
             self.SetSize((900, 600))
-        if taille_fenetre == (0, 0) :
+        if taille_fenetre == (0, 0):
             self.Maximize(True)
         else:
             self.SetSize(taille_fenetre)
@@ -441,11 +457,11 @@ class Dialog(wx.Dialog):
         # Récupère les perspectives
         cfg = UTILS_Config.FichierConfig()
         self.userConfig = cfg.GetDictConfig()
-        if self.userConfig.has_key("gestionnaire_perspectives") == True :
+        if self.userConfig.has_key("gestionnaire_perspectives") == True:
             self.perspectives = self.userConfig["gestionnaire_perspectives"]
         else:
             self.perspectives = []
-        if self.userConfig.has_key("gestionnaire_perspective_active") == True :
+        if self.userConfig.has_key("gestionnaire_perspective_active") == True:
             self.perspective_active = self.userConfig["gestionnaire_perspective_active"]
         else:
             self.perspective_active = None
@@ -514,19 +530,19 @@ class Dialog(wx.Dialog):
         self.perspective_defaut = self._mgr.SavePerspective()
 
         # Récupération de la perspective chargée
-        if self.perspective_active != None :
+        if self.perspective_active != None:
             self._mgr.LoadPerspective(self.perspectives[self.perspective_active]["perspective"])
         else:
             self._mgr.LoadPerspective(self.perspective_defaut)
 
         # Affichage du panneau du panneau Forfait Credits
-        if self.panel_grille.grille.tarifsForfaitsCreditsPresents == True :
+        if self.panel_grille.grille.tarifsForfaitsCreditsPresents == True:
             self._mgr.GetPane("forfaits").Show()
         else:
             self._mgr.GetPane("forfaits").Hide()
 
         # Affichage du panneau du panneau Etiquettes
-        if self.panel_grille.grille.afficherListeEtiquettes == True :
+        if self.panel_grille.grille.afficherListeEtiquettes == True:
             self._mgr.GetPane("etiquettes").Show()
         else:
             self._mgr.GetPane("etiquettes").Hide()
@@ -599,13 +615,13 @@ class Dialog(wx.Dialog):
     def OnClose(self, event):
         self.MemoriseParametres()
         etat = self.Annuler()
-        if etat == False :
+        if etat == False:
             return
         event.Skip()
 
     def MemoriseParametres(self):
         # Mémorisation du paramètre de la taille d'écran
-        if self.IsMaximized() == True :
+        if self.IsMaximized() == True:
             taille_fenetre = (0, 0)
         else:
             taille_fenetre = tuple(self.GetSize())
@@ -617,14 +633,14 @@ class Dialog(wx.Dialog):
         self.panel_grille.grille.MemoriseParametres()
 
     def Annuler(self):
-        if len(self.panel_grille.grille.listeHistorique) > 0 :
+        if len(self.panel_grille.grille.listeHistorique) > 0:
 #            texteHistorique = self.panel_grille.grille.GetTexteHistorique()
             dlg = wx.MessageDialog(self, _(u"Des modifications ont été effectuées dans la grille.\n\nSouhaitez-vous enregistrer ces modifications avant de fermer cette fenêtre ?"), _(u"Sauvegarde des modifications"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
-            if reponse == wx.ID_CANCEL :
+            if reponse == wx.ID_CANCEL:
                 return False
-            if reponse == wx.ID_YES :
+            if reponse == wx.ID_YES:
                 # Sauvegarde des données
                 self.panel_grille.grille.Sauvegarde()
             return True
@@ -698,12 +714,12 @@ class Dialog(wx.Dialog):
 
 
     def On_outils_imprimer(self, event):
-        if len(self.panel_grille.grille.listeHistorique) > 0 :
+        if len(self.panel_grille.grille.listeHistorique) > 0:
 ##            texteHistorique = self.panel_grille.grille.GetTexteHistorique()
             dlg = wx.MessageDialog(self, _(u"Des modifications ont été effectuées dans la grille.\n\nSouhaitez-vous les enregistrer maintenant afin qu'elles apparaissent dans le document ?"), _(u"Sauvegarde des modifications"), wx.YES_NO|wx.YES_DEFAULT|wx.CANCEL|wx.ICON_EXCLAMATION)
             reponse = dlg.ShowModal()
             dlg.Destroy()
-            if reponse != wx.ID_YES :
+            if reponse != wx.ID_YES:
                 return
 
             # Sauvegarde des données
@@ -719,11 +735,12 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
     def On_outils_recalculer(self, event):
-        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False : return
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("consommations_conso", "modifier") == False:
+            return
         dlg = wx.MessageDialog(self, _(u"Confirmez-vous le recalcul des prestations de toutes les consommations affichées ?"), _(u"Recalcul des prestations"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_QUESTION)
         reponse = dlg.ShowModal()
         dlg.Destroy()
-        if reponse != wx.ID_YES :
+        if reponse != wx.ID_YES:
             return
         self.panel_grille.grille.RecalculerToutesPrestations()
 
@@ -734,14 +751,16 @@ class Dialog(wx.Dialog):
         item = wx.MenuItem(menuPop, ID_AFFICHAGE_PERSPECTIVE_DEFAUT, _(u"Disposition par défaut"), _(u"Afficher la disposition par défaut"), wx.ITEM_CHECK)
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.On_affichage_perspective_defaut, id=ID_AFFICHAGE_PERSPECTIVE_DEFAUT)
-        if self.perspective_active == None : item.Check(True)
+        if self.perspective_active == None:
+            item.Check(True)
 
         index = 0
         for dictPerspective in self.perspectives:
             label = dictPerspective["label"]
             item = wx.MenuItem(menuPop, ID_PREMIERE_PERSPECTIVE + index, label, _(u"Afficher la disposition '%s'") % label, wx.ITEM_CHECK)
             menuPop.AppendItem(item)
-            if self.perspective_active == index : item.Check(True)
+            if self.perspective_active == index:
+                item.Check(True)
             index += 1
         self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_perspective_perso, id=ID_PREMIERE_PERSPECTIVE, id2=ID_PREMIERE_PERSPECTIVE+99 )
 
@@ -760,23 +779,23 @@ class Dialog(wx.Dialog):
         menuPop.AppendSeparator()
 
         self.listePanneaux = [
-            { "label" : _(u"Sélection de la date"), "code" : "calendrier", "IDmenu" : None },
-            { "label" : _(u"Sélection des activités"), "code" : "activites", "IDmenu" : None },
-            { "label" : _(u"Légende"), "code" : "legende", "IDmenu" : None },
-            { "label" : _(u"Touches raccourcis"), "code" : "raccourcis", "IDmenu" : None },
-            { "label" : _(u"Totaux"), "code" : "totaux", "IDmenu" : None },
+            { "label": _(u"Sélection de la date"), "code": "calendrier", "IDmenu": None },
+            { "label": _(u"Sélection des activités"), "code": "activites", "IDmenu": None },
+            { "label": _(u"Légende"), "code": "legende", "IDmenu": None },
+            { "label": _(u"Touches raccourcis"), "code": "raccourcis", "IDmenu": None },
+            { "label": _(u"Totaux"), "code": "totaux", "IDmenu": None },
             ]
         ID = ID_AFFICHAGE_PANNEAUX
-        for dictPanneau in self.listePanneaux :
+        for dictPanneau in self.listePanneaux:
             dictPanneau["IDmenu"] = ID
             label = dictPanneau["label"]
             item = wx.MenuItem(menuPop, dictPanneau["IDmenu"], label, _(u"Afficher le panneau '%s'") % label, wx.ITEM_CHECK)
             menuPop.AppendItem(item)
             panneau = self._mgr.GetPane(dictPanneau["code"])
-            if panneau.IsShown() == True :
+            if panneau.IsShown() == True:
                 item.Check(True)
             ID += 1
-        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_panneau_afficher, id=ID_AFFICHAGE_PANNEAUX, id2=ID_AFFICHAGE_PANNEAUX+len(self.listePanneaux) )
+        self.Bind(wx.EVT_MENU_RANGE, self.On_affichage_panneau_afficher, id=ID_AFFICHAGE_PANNEAUX, id2=ID_AFFICHAGE_PANNEAUX+len(self.listePanneaux))
 
         menuPop.AppendSeparator()
 
@@ -863,20 +882,20 @@ class Dialog(wx.Dialog):
         dlg.Destroy()
 
         # Sauvegarde de la perspective
-        self.perspectives.append( {"label" : label, "perspective" : self._mgr.SavePerspective() } )
+        self.perspectives.append({"label": label, "perspective": self._mgr.SavePerspective()})
         self.perspective_active = newIDperspective
 
     def On_affichage_perspective_suppr(self, event):
         listeLabels = []
-        for dictPerspective in self.perspectives :
+        for dictPerspective in self.perspectives:
             listeLabels.append(dictPerspective["label"])
         dlg = wx.MultiChoiceDialog( self, _(u"Cochez les dispositions que vous souhaitez supprimer :"), _(u"Supprimer des dispositions"), listeLabels)
-        if dlg.ShowModal() == wx.ID_OK :
+        if dlg.ShowModal() == wx.ID_OK:
             selections = dlg.GetSelections()
             selections.sort(reverse=True)
-            for index in selections :
+            for index in selections:
                 self.perspectives.pop(index)
-            if self.perspective_active in selections :
+            if self.perspective_active in selections:
                 self._mgr.LoadPerspective(self.perspective_defaut)
             self.perspective_active = None
         dlg.Destroy()
@@ -884,7 +903,7 @@ class Dialog(wx.Dialog):
     def On_affichage_panneau_afficher(self, event):
         index = event.GetId() - ID_AFFICHAGE_PANNEAUX
         panneau = self._mgr.GetPane(self.listePanneaux[index]["code"])
-        if panneau.IsShown() :
+        if panneau.IsShown():
             panneau.Hide()
         else:
             panneau.Show()
@@ -898,15 +917,15 @@ class Dialog(wx.Dialog):
         reponse = dlg.ShowModal()
         if reponse == wx.ID_OK:
             newLargeur = dlg.GetValue()
-            try :
+            try:
                 newLargeur = int(newLargeur)
-            except :
+            except:
                 dlg2 = wx.MessageDialog(self, _(u"La valeur saisie semble incorrecte !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_INFORMATION)
                 dlg2.ShowModal()
                 dlg2.Destroy()
                 dlg.Destroy()
                 return
-            if newLargeur < 30 or newLargeur > 300 :
+            if newLargeur < 30 or newLargeur > 300:
                 dlg2 = wx.MessageDialog(self, _(u"La valeur doit être comprise entre 30 et 300 !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_INFORMATION)
                 dlg2.ShowModal()
                 dlg2.Destroy()
@@ -939,10 +958,14 @@ class Dialog(wx.Dialog):
         self.panel_grille.grille.MAJ_affichage()
 
     def On_format_label_ligne(self, event):
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_1 : self.panel_grille.grille.SetFormatLabelLigne("nom_prenom")
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_2 : self.panel_grille.grille.SetFormatLabelLigne("prenom_nom")
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_3 : self.panel_grille.grille.SetFormatLabelLigne("nom_prenom_id")
-        if event.GetId() == ID_FORMAT_LABEL_LIGNE_4 : self.panel_grille.grille.SetFormatLabelLigne("prenom_nom_id")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_1:
+            self.panel_grille.grille.SetFormatLabelLigne("nom_prenom")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_2:
+            self.panel_grille.grille.SetFormatLabelLigne("prenom_nom")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_3:
+            self.panel_grille.grille.SetFormatLabelLigne("nom_prenom_id")
+        if event.GetId() == ID_FORMAT_LABEL_LIGNE_4:
+            self.panel_grille.grille.SetFormatLabelLigne("prenom_nom_id")
 
 
 if __name__ == "__main__":
