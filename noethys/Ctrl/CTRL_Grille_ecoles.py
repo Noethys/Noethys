@@ -13,12 +13,17 @@ import datetime
 
 import wx
 import wx.lib.agw.hypertreelist as HTL
-from wx.lib.agw.customtreectrl import EVT_TREE_ITEM_CHECKED
+from wx.lib.agw.customtreectrl import (
+    EVT_TREE_ITEM_CHECKED, EVT_TREE_ITEM_RIGHT_CLICK
+)
 
 import Chemins # noqa
 import GestionDB
 from Utils import UTILS_Dates
 from Utils.UTILS_Traduction import _
+
+ID_COCHER_TOUTES = wx.NewId()
+ID_COCHER_AUCUNE = wx.NewId()
 
 
 class CTRL(HTL.HyperTreeList):
@@ -48,6 +53,7 @@ class CTRL(HTL.HyperTreeList):
 
         # Binds
         self.Bind(EVT_TREE_ITEM_CHECKED, self.OnCheckItem)
+        self.Bind(EVT_TREE_ITEM_RIGHT_CLICK, self.OnContextMenu)
 
     def SetDate(self, date=None):
         self.date = date
@@ -80,19 +86,80 @@ class CTRL(HTL.HyperTreeList):
             if hasattr(self.parent, "MAJecoles"):
                 self.parent.MAJecoles()
 
+    def OnContextMenu(self, event):
+        menu = wx.Menu()
+
+        # Ajouter les éléments au menu
+        item = wx.MenuItem(
+            menu, ID_COCHER_TOUTES, u"Tout cocher",
+            u"Cocher toutes les écoles et classes",
+        )
+        item.SetBitmap(wx.Bitmap(
+            Chemins.GetStaticPath("Images/16x16/Cocher.png"),
+            wx.BITMAP_TYPE_ANY,
+        ))
+        menu.AppendItem(item)
+        item = wx.MenuItem(
+            menu, ID_COCHER_AUCUNE, u"Tout décocher",
+            u"Décocher toutes les écoles et classes",
+        )
+        item.SetBitmap(wx.Bitmap(
+            Chemins.GetStaticPath("Images/16x16/Decocher.png"),
+            wx.BITMAP_TYPE_ANY,
+        ))
+        menu.AppendItem(item)
+
+        # Attache les événements
+        wx.EVT_MENU(menu, ID_COCHER_TOUTES, self.OnCocher)
+        wx.EVT_MENU(menu, ID_COCHER_AUCUNE, self.OnCocher)
+
+        # Affiche le menu
+        self.PopupMenu(menu, event.GetPoint())
+        menu.Destroy()
+
+    def OnCocher(self, event):
+        ID = event.GetId()
+        if ID == ID_COCHER_TOUTES:
+            self.CocheListeTout()
+        elif ID == ID_COCHER_AUCUNE:
+            self.CocheListeRien()
+        else:
+            return
+
+        if hasattr(self.parent, "MAJecoles"):
+            self.parent.MAJecoles()
+
     def Cocher(self, etat=True):
         self.MAJenCours = True
         item = self.root
         for index in range(0, self.GetChildrenCount(self.root)):
             item = self.GetNext(item)
             self.CheckItem(item, etat)
+        if etat:
+            self.EnableChildren(self.root, True)
         self.MAJenCours = False
 
     def CocheListeTout(self):
         self.Cocher(True)
 
+        # Mets à jour l'état des coches
+        self.cocheInconnue = True
+        self.cochesEcolesActives = set(self.dictEcoles.keys())
+        self.cochesActives = {
+            ID: set([
+                d["IDclasse"] for d in self.dictEcoles[ID]["classes"]
+            ]) for ID in self.cochesEcolesActives
+        }
+
     def CocheListeRien(self):
         self.Cocher(False)
+
+        # Mets à jour l'état des coches
+        self.cocheInconnue = False
+        self.cochesEcolesActives.clear()
+        self.cochesActives = {
+            ID: set() for ID in self.dictEcoles.keys()
+        }
 
     def MAJ(self):
         """ Met à jour (redessine) tout le contrôle """
