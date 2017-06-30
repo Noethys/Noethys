@@ -312,6 +312,7 @@ class DLG_Saisie_colonne(wx.Dialog):
             ("famille", _(u"Famille")),
             ("regime", _(u"Régime social")),
             ("caisse", _(u"Caisse d'allocations")),
+            ("codebarres_individu", _(u"Code-barres de l'individu")),
             ]
 
         # Intégration des questionnaires

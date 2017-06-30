@@ -56,6 +56,7 @@ from reportlab.lib.units import inch, cm
 from reportlab.lib.utils import ImageReader
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.graphics.barcode import code39
 
 
 COULEUR_FOND_TITRE = (204, 204, 255) # version PDF : (0.8, 0.8, 1) # Vert -> (0.5, 1, 0.2)
@@ -1982,6 +1983,8 @@ class Dialog(wx.Dialog):
                                 labelsColonnes.append(Paragraph(dictColonnePerso["nom"], styleEntetes))
                                 if dictColonnePerso["largeur"] == "automatique" :
                                     largeurColonnePerso = int(dictParametres["largeur_colonne_perso"])
+                                    if dictColonnePerso["donnee_code"].startswith("codebarres"):
+                                        largeurColonnePerso = 85
                                 else :
                                     largeurColonnePerso = int(dictColonnePerso["largeur"])
                                 largeursColonnes.append(largeurColonnePerso)
@@ -2213,6 +2216,7 @@ class Dialog(wx.Dialog):
                                 # Colonnes personnalisées
                                 for dictColonnePerso in dictParametres["colonnes"]:
                                     IDfamille = dictIndividus[IDindividu]["IDfamille"]
+                                    type_donnee = "unicode"
                                     if dictColonnePerso["donnee_code"] == None :
                                         donnee = ""
                                     else :
@@ -2252,10 +2256,20 @@ class Dialog(wx.Dialog):
                                                     dictColonnePerso["donnee_code"]:
                                                 donnee = dictInfosIndividus[IDindividu][
                                                     "QUESTION_%s" % dictColonnePerso["donnee_code"][18:]]
+
+                                            # Code-barre individu
+                                            if dictColonnePerso["donnee_code"] == "codebarres_individu":
+                                                type_donnee = "code-barres"
+                                                donnee = code39.Extended39("I%06d" % IDindividu, humanReadable=False)
+
                                         except :
                                             donnee = ""
 
-                                    ligne.append(Paragraph(unicode(donnee), styleNormal))
+                                    if type_donnee == "unicode" :
+                                        ligne.append(Paragraph(unicode(donnee), styleNormal))
+                                    else :
+                                        ligne.append(donnee)
+
 
                                 # Infos médicales
                                 texteInfos = u""
