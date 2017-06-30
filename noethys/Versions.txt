@@ -1,7 +1,7 @@
-Version 1.2.0.4 (29/06/2017) :
+Version 1.2.0.5 (30/06/2017) :
 
 - Ajout des régies de facturation
-- Ajout du paiement en ligne TIPI avec Connecthys
+- Ajout du paiement en ligne TIPI avec Connecthys [Mairie de Billy-Berclau]
 - Ajout du regroupement par école dans la liste des conso
 - Ajout autre adresse de facturation dans onglet divers de la fiche famille
 - Ajout de la prévisualisation par lot des factures à générer
