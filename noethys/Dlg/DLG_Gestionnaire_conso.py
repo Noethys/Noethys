@@ -26,6 +26,7 @@ import GestionDB
 from Ctrl import CTRL_Grille
 from Ctrl import CTRL_Grille_calendrier
 from Ctrl import CTRL_Grille_activite3 #CTRL_Grille_activite
+from Ctrl import CTRL_Grille_ecoles
 from Ctrl import CTRL_Grille_totaux
 from Ctrl import CTRL_Grille_forfaits2 as CTRL_Grille_forfaits
 from Ctrl import CTRL_Etiquettes
@@ -275,6 +276,9 @@ class PanelGrille(wx.Panel):
         self.date = None
         self.listeActivites = []
         self.listeGroupes = []
+        self.listeClasses = []
+        self.filtrerClasses = False
+        self.avecScolariteInconnue = True
         self.dictIndividusAjoutes = {}
 
         # Paramètres de sélection
@@ -344,7 +348,15 @@ class PanelGrille(wx.Panel):
     def SetGroupes(self, listeGroupes=[]):
         self.listeGroupes = listeGroupes
 
-    def GetListeConditions(self):
+    def SetFiltrerClasses(self, etat):
+        self.filtrerClasses = etat
+
+    def SetClasses(self, listeClasses=[], scolariteInconnue=None):
+        self.listeClasses = listeClasses
+        if scolariteInconnue is not None:
+            self.avecScolariteInconnue = scolariteInconnue
+
+    def GetListeConditions(self, tableScolarite="scolarite"):
         conditions = []
 
         # Condition Activités
@@ -362,6 +374,23 @@ class PanelGrille(wx.Panel):
                     ", ".join(map(str, self.listeGroupes))
                 ))
 
+        # Condition Classes
+        if self.filtrerClasses:
+            conditionsClasses = []
+            if self.avecScolariteInconnue:
+                conditionsClasses.append("{0}.IDclasse IS NULL".format(
+                    tableScolarite
+                ))
+            if len(self.listeClasses) == 1:
+                conditionsClasses.append("{0}.IDclasse={1}".format(
+                    tableScolarite, self.listeClasses[0],
+                ))
+            else:
+                conditionsClasses.append("{0}.IDclasse IN ({1})".format(
+                    tableScolarite, ", ".join(map(str, self.listeClasses)),
+                ))
+            conditions.append("({0})".format(" OR ".join(conditionsClasses)))
+
         return conditions
 
     def GetListeIndividus(self):
@@ -371,8 +400,14 @@ class PanelGrille(wx.Panel):
         conditions.append("date='{0}'".format(self.date))
 
         DB = GestionDB.DB()
-        req = """SELECT IDindividu, COUNT(IDconso)
-        FROM consommations
+        req = """SELECT consommations.IDindividu, COUNT(IDconso)
+        FROM consommations"""
+        if self.filtrerClasses:
+            req += """
+        LEFT JOIN scolarite ON scolarite.IDindividu = consommations.IDindividu
+                           AND scolarite.date_debut <= consommations.date
+                           AND scolarite.date_fin >= consommations.date"""
+        req += """
         WHERE {0}
         GROUP BY IDindividu
         ORDER BY IDindividu;""".format(" AND ".join(conditions))
@@ -428,8 +463,14 @@ class PanelGrille(wx.Panel):
                           " date_desinscription>='{0}')".format(self.date))
 
         DB = GestionDB.DB()
-        req = """SELECT IDinscription, IDindividu
-        FROM inscriptions
+        req = """SELECT IDinscription, inscriptions.IDindividu
+        FROM inscriptions"""
+        if self.filtrerClasses:
+            req += """
+        LEFT JOIN scolarite ON scolarite.IDindividu = inscriptions.IDindividu
+                           AND scolarite.date_debut <= '{0}'
+                           AND scolarite.date_fin >= '{0}'""".format(self.date)
+        req += """
         WHERE {0}
         GROUP BY IDindividu
         ORDER BY IDindividu;""".format(" AND ".join(conditions))
@@ -566,11 +607,21 @@ class Dialog(wx.Dialog):
         ))
         self._mgr.GetPane("raccourcis").dock_proportion = 60000
 
+        self.panel_ecoles = CTRL_Grille_ecoles.CTRL(self)
+        self._mgr.AddPane(self.panel_ecoles, (
+            aui.AuiPaneInfo()
+               .Name("ecoles").Caption(_(u"Écoles/classes"))
+               .Right().Layer(0).Position(0)
+               .CloseButton(False).MaximizeButton(False)
+               .BestSize(wx.Size(275, -1))
+        ))
+        self._mgr.GetPane("etiquettes").Hide()
+
         self.panel_etiquettes = CTRL_Etiquettes.CTRL(self, activeMenu=False)
         self._mgr.AddPane(self.panel_etiquettes, (
             aui.AuiPaneInfo()
                .Name("etiquettes").Caption(_(u"Etiquettes"))
-               .Right().Layer(0).Position(0)
+               .Right().Layer(0).Position(1)
                .CloseButton(False).MaximizeButton(False)
                .BestSize(wx.Size(275, 100)).MinSize((275, 100))
         ))
@@ -582,7 +633,7 @@ class Dialog(wx.Dialog):
         self._mgr.AddPane(self.panel_forfaits, (
             aui.AuiPaneInfo()
                .Name("forfaits").Caption(_(u"Forfaits crédits"))
-               .Right().Layer(0).Position(1)
+               .Right().Layer(0).Position(2)
                .CloseButton(False).MaximizeButton(False)
                .BestSize(wx.Size(275, 140)).MinSize((275, 100))
         ))
@@ -601,6 +652,11 @@ class Dialog(wx.Dialog):
             self._mgr.LoadPerspective(self.perspectives[self.perspective_active]["perspective"])
         else:
             self._mgr.LoadPerspective(self.perspective_defaut)
+
+        # Adapte la grille suivant l'état du panneau Ecoles
+        self.panel_grille.SetFiltrerClasses(
+            self._mgr.GetPane("ecoles").IsShown()
+        )
 
         # Affichage du panneau du panneau Forfait Credits
         if self.panel_grille.grille.tarifsForfaitsCreditsPresents is True:
@@ -654,8 +710,13 @@ class Dialog(wx.Dialog):
 #        heure_debut = time.time()
         self.panel_activites.SetDate(date)
         self.panel_grille.SetDate(date)
+        self.panel_ecoles.SetDate(date)
         listeActivites, listeGroupes = self.panel_activites.GetActivitesEtGroupes()
         self.panel_grille.SetActivites(listeActivites)
+        self.panel_grille.SetClasses(
+            self.panel_ecoles.GetListeClasses(),
+            self.panel_ecoles.GetScolariteInconnue(),
+        )
         self.panel_etiquettes.SetActivites(listeActivites)
         self.panel_grille.SetGroupes(listeGroupes)
         self.panel_grille.MAJ_grille()
@@ -677,6 +738,13 @@ class Dialog(wx.Dialog):
         self.panel_grille.SetGroupes(listeGroupes)
         self.panel_grille.MAJ_grille()
         self.panel_totaux.MAJ()
+
+    def MAJecoles(self):
+        self.panel_grille.SetClasses(
+            self.panel_ecoles.GetListeClasses(),
+            self.panel_ecoles.GetScolariteInconnue(),
+        )
+        self.MAJ_grille()
 
     def MAJ_grille(self):
         self.panel_grille.MAJ_grille()
@@ -859,6 +927,8 @@ class Dialog(wx.Dialog):
              "code": "raccourcis", "IDmenu": None},
             {"label": _(u"Totaux"),
              "code": "totaux", "IDmenu": None},
+            {"label": _(u"Écoles"),
+             "code": "ecoles", "IDmenu": None},
         ]
         ID = ID_AFFICHAGE_PANNEAUX
         for dictPanneau in self.listePanneaux:
@@ -977,11 +1047,15 @@ class Dialog(wx.Dialog):
 
     def On_affichage_panneau_afficher(self, event):
         index = event.GetId() - ID_AFFICHAGE_PANNEAUX
-        panneau = self._mgr.GetPane(self.listePanneaux[index]["code"])
+        code = self.listePanneaux[index]["code"]
+        panneau = self._mgr.GetPane(code)
         if panneau.IsShown():
             panneau.Hide()
         else:
             panneau.Show()
+        if code == "ecoles":
+            self.panel_grille.SetFiltrerClasses(panneau.IsShown())
+            self.MAJecoles()
         self._mgr.Update()
 
     def On_affichage_largeur_unite(self, event):
