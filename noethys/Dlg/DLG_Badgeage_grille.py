@@ -159,10 +159,10 @@ class CTRL(wx.Panel):
         """ Récupère une case d'après un IDunite """
         for numLigne, ligne in self.grille.dictLignes.iteritems() :
             for numColonne, case in ligne.dictCases.iteritems() :
-                if case.typeCase == "consommation" :
+                if case.typeCase == "consommation" and memo == False :
                     if case.IDunite == IDunite and (case.date == date or date == None) :
                         return case
-                if case.typeCase == "memo" :
+                if case.typeCase == "memo" and memo == True :
                     if case.date == date or date == None :
                         return case
         return None
