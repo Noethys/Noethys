@@ -1182,7 +1182,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             # Mémorisation des unités
             dictUnites[IDunite] = dictTemp
 
-            if date_fin == None or date_fin >= str(dates_extremes[1]):
+            if date_fin == None or (date_debut <= str(dates_extremes[1]) and date_fin >= str(dates_extremes[0])):
                 if dictListeUnites.has_key(IDactivite) == False :
                     dictListeUnites[IDactivite] = []
                 dictListeUnites[IDactivite].append(dictTemp)
@@ -5915,7 +5915,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=700, selectionIndividus=[1949])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=63, selectionIndividus=[240])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
