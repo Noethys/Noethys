@@ -62,7 +62,7 @@ class CTRL_Categorie(wx.Choice):
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
-        index = 0
+        index = 1
         for IDcategorie, nom, priorite, afficher_accueil, afficher_liste in listeDonnees :
             self.dictDonnees[index] = { 
                 "ID" : IDcategorie, 
