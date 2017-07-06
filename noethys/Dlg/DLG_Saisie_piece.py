@@ -544,95 +544,99 @@ class Dialog(wx.Dialog):
             self.ctrl_date_fin.Enable(True)
             self.ctrl_date_fin.SetDate(date_fin)
 
-        
-                
-    def OnBoutonOk(self, event):
-        """ Bouton Ok """
+    def Sauvegarde(self):
         # Vérification des données saisies
-        selection = self.GetSelectionPiece() 
-        if selection == None :
+        selection = self.GetSelectionPiece()
+        if selection == None:
             dlg = wx.MessageDialog(self, _(u"Vous n'avez sélectionné aucun type de pièce !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             return False
-            
+
         # Validation de la date de début
-        if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None :
+        if self.ctrl_date_debut.FonctionValiderDate() == False or self.ctrl_date_debut.GetDate() == None:
             dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de début valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
             dlg.ShowModal()
             dlg.Destroy()
             self.ctrl_date_debut.SetFocus()
             return False
-        
-        if self.radio_date_fin_1.GetValue() == True :
-            if self.ctrl_date_fin.FonctionValiderDate() == False or self.ctrl_date_fin.GetDate() == None :
+
+        if self.radio_date_fin_1.GetValue() == True:
+            if self.ctrl_date_fin.FonctionValiderDate() == False or self.ctrl_date_fin.GetDate() == None:
                 dlg = wx.MessageDialog(self, _(u"Vous devez saisir une date de fin valide !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
-        
+
         # Vérifie que la date de fin est supérieure à la date de début
-        if self.radio_date_fin_1.GetValue() == True :
-            if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate() :
+        if self.radio_date_fin_1.GetValue() == True:
+            if self.ctrl_date_debut.GetDate() > self.ctrl_date_fin.GetDate():
                 dlg = wx.MessageDialog(self, _(u"Attention, la date de début est supérieure à la date de fin !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
                 dlg.ShowModal()
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
-
+        
         # Sauvegarde
         IDtype_piece = selection["IDtype_piece"]
         IDindividu = selection["IDindividu"]
         IDfamille = selection["IDfamille"]
         date_debut = str(self.ctrl_date_debut.GetDate())
-        if self.radio_date_fin_1.GetValue() == True :
+        if self.radio_date_fin_1.GetValue() == True:
             date_fin = str(self.ctrl_date_fin.GetDate())
         else:
             date_fin = "2999-01-01"
 
         DB = GestionDB.DB()
-        listeDonnees = [    
-                ("IDtype_piece", IDtype_piece),
-                ("IDindividu", IDindividu),
-                ("IDfamille", IDfamille),
-                ("date_debut", date_debut),
-                ("date_fin", date_fin),
-            ]
-        if self.IDpiece == None :
+        listeDonnees = [
+            ("IDtype_piece", IDtype_piece),
+            ("IDindividu", IDindividu),
+            ("IDfamille", IDfamille),
+            ("date_debut", date_debut),
+            ("date_fin", date_fin),
+        ]
+        if self.IDpiece == None:
             nouvellePiece = True
             self.IDpiece = DB.ReqInsert("pieces", listeDonnees)
         else:
             nouvellePiece = False
             DB.ReqMAJ("pieces", listeDonnees, "IDpiece", self.IDpiece)
         DB.Close()
-        
+
         # Mémorise l'action dans l'historique
-        if nouvellePiece == True :
+        if nouvellePiece == True:
             type = _(u"Saisie")
-            IDcategorie = 15 
+            IDcategorie = 15
         else:
             type = _(u"Modification")
             IDcategorie = 16
-        if IDindividu != None and IDfamille !=None :
+        if IDindividu != None and IDfamille != None:
             texteDetail = _(u"pour l'individu ID%d et la famille ID%d") % (IDindividu, IDfamille)
-        elif IDindividu == None and IDfamille !=None :
+        elif IDindividu == None and IDfamille != None:
             texteDetail = _(u"pour la famille ID%d") % IDfamille
-        elif IDindividu != None and IDfamille == None :
-            texteDetail = _(u"pour l'individu ID%d") % IDindividu 
+        elif IDindividu != None and IDfamille == None:
+            texteDetail = _(u"pour l'individu ID%d") % IDindividu
         else:
             texteDetail = u""
         nomPiece = selection["nomPiece"]
         UTILS_Historique.InsertActions([{
-                "IDindividu" : IDindividu,
-                "IDfamille" : self.IDfamille,
-                "IDcategorie" : IDcategorie, 
-                "action" : _(u"%s de la pièce ID%d '%s' %s") % (type, self.IDpiece, nomPiece, texteDetail),
-                },])
-        
+            "IDindividu": IDindividu,
+            "IDfamille": self.IDfamille,
+            "IDcategorie": IDcategorie,
+            "action": _(u"%s de la pièce ID%d '%s' %s") % (type, self.IDpiece, nomPiece, texteDetail),
+        }, ])
+
         # Sauvegarde des pages scannées
-        self.ctrl_pages.Sauvegarde(self.IDpiece) 
-        
+        self.ctrl_pages.Sauvegarde(self.IDpiece)
+
+        return True
+
+    def OnBoutonOk(self, event):
+        """ Bouton Ok """
+        if self.Sauvegarde() == False :
+            return
+
         # Fermeture
         self.EndModal(wx.ID_OK)
 

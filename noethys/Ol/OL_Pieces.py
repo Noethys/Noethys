@@ -408,10 +408,15 @@ class ListView(FastObjectListView):
         from Dlg import DLG_Saisie_piece
         dlg = DLG_Saisie_piece.Dialog(self, IDpiece=None, IDfamille=self.IDfamille, IDindividu=self.IDindividu, dictFamillesRattachees=self.dictFamillesRattachees)
         dlg.SelectPiece(IDfamille, IDtype_piece, IDindividu)
-        if dlg.ShowModal() == wx.ID_OK:
+        if dlg.Sauvegarde() == True :
             IDpiece = dlg.GetIDpiece() 
             self.MAJ(IDpiece)
             self.MAJctrlPiecesObligatoires() 
+        else :
+            if dlg.ShowModal() == wx.ID_OK:
+                IDpiece = dlg.GetIDpiece()
+                self.MAJ(IDpiece)
+                self.MAJctrlPiecesObligatoires()
         dlg.Destroy()
 
 
