@@ -3685,7 +3685,8 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
             
             if dateFound == False : 
                 montant_tarif = 0.0
-        
+
+
         # Recherche du montant du tarif : VARIABLE (MONTANT ET LABEL SAISIS PAR L'UTILISATEUR)
         if methode_calcul == "variable" :
             if case.IDunite in combinaisons_unites and modeSilencieux == False :
@@ -3993,7 +3994,7 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 
         # Recherche du montant du tarif : TAUX D'EFFORT
-        if methode_calcul in ("taux_montant_unique", "taux_qf") :
+        if methode_calcul in ("taux_montant_unique", "taux_qf", "taux_date") :
             montant_tarif = 0.0
             lignes_calcul = dictTarif["lignes_calcul"]
             
@@ -4009,15 +4010,20 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
                 ajustement = ligneCalcul["ajustement"]
                 
                 # Vérifie si QF ok pour le calcul basé également sur paliers de QF
-                conditionQF = True
+                conditions = True
                 if methode_calcul == "taux_qf" :
                     if QFfamille != None :
                         if QFfamille >= qf_min and QFfamille <= qf_max :
-                            conditionQF = True
+                            conditions = True
                         else:
-                            conditionQF = False
+                            conditions = False
 
-                if conditionQF == True :
+                if methode_calcul == "taux_date":
+                    dateLigne = DateEngEnDateDD(ligneCalcul["date"])
+                    if dateLigne != date :
+                        conditions = False
+
+                if conditions == True :
                 
                     # Calcul du tarif
                     if QFfamille != None :
