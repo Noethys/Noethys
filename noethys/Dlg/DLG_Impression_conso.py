@@ -2369,7 +2369,7 @@ class Dialog(wx.Dialog):
                                     else:
                                         ligne.append(u"")
 
-                                if not ligneVide:
+                                if not ligneVide or dictParametres["afficher_inscrits"] == True :
                                     # Ajout de la ligne individuelle dans le tableau
                                     dataTableau.append(ligne)
                                     # Mémorise les lignes pour export Excel
