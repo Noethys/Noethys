@@ -577,7 +577,7 @@ class Dialog(wx.Dialog):
                 dlg.Destroy()
                 self.ctrl_date_fin.SetFocus()
                 return False
-        
+
         # Sauvegarde
         IDtype_piece = selection["IDtype_piece"]
         IDindividu = selection["IDindividu"]

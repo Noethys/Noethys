@@ -1,3 +1,14 @@
+Version 1.2.0.6 (07/07/2017) :
+
+- Ajout de la période de validité date à date dans les cotisations
+- Ajout du filtre classe et école dans le gestionnaire des conso [jeromelebleu]
+- Ajout de la colonne code-barres individu dans la liste des conso
+- Ajout de la méthode de calcul de tarif selon taux d'effort et par date
+- Amélioration de la saisie express d'une pièce
+- Correction bug saisie d'un message
+- Correction bug affichage colonne des unités dans grille des conso
+- Correction bug afficher tous les inscrits dans liste des conso
+
 Version 1.2.0.5 (30/06/2017) :
 
 - Ajout des régies de facturation
