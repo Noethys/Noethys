@@ -706,6 +706,7 @@ DB_DATA = {
                                     ("montant", "FLOAT", u"Montant"),
                                     ("label_prestation", "VARCHAR(200)", u"Label de la prestation"),
                                     ("defaut", "INTEGER", u"(0/1) Unité sélectionnée par défaut"),
+                                    ("duree", "VARCHAR(100)", u"Durée de validité"),
                                     ], # Unités de cotisation
 
     "cotisations":[            ("IDcotisation", "INTEGER PRIMARY KEY AUTOINCREMENT", u"ID cotisation"),

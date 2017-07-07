@@ -21,12 +21,10 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 
 from Dlg import DLG_Saisie_unite_cotisation
 
-
+from Utils import UTILS_Dates
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
 
-try: import psyco; psyco.full()
-except: pass
 
 
 def DateEngFr(textDate):
@@ -54,18 +52,35 @@ class Track(object):
         self.nom = donnees["nom"]
         self.montant = donnees["montant"]
         self.label_prestation = donnees["label_prestation"]
-        
-        date_jour = datetime.date.today()
-        if self.date_fin > date_jour :
+        self.duree = donnees["duree"]
+
+        # Période
+        if self.date_debut != None and self.date_fin != None :
+
+            date_jour = datetime.date.today()
+            if self.date_fin > date_jour :
+                self.valide = True
+            else:
+                self.valide = False
+
+            self.estActuel = False
+            if date_jour >= self.date_debut and date_jour <= self.date_fin :
+                self.estActuel = True
+
+            self.validite = ("periode", self.date_fin, self.date_fin)
+
+        # Durée
+        if self.duree != None :
+            posM = self.duree.find("m")
+            posA = self.duree.find("a")
+            jours = int(self.duree[1:posM-1])
+            mois = int(self.duree[posM+1:posA-1])
+            annees = int(self.duree[posA+1:])
+
+            self.validite = ("duree", annees, mois, jours)
             self.valide = True
-        else:
-            self.valide = False
 
-        self.estActuel = False
-        if date_jour >= self.date_debut and date_jour <= self.date_fin :
-            self.estActuel = True
 
-            
     
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
@@ -147,12 +162,16 @@ class ListView(FastObjectListView):
             if montant == None : return u""
             return u"%.2f %s" % (montant, SYMBOLE)
 
+        def FormateValidite(validite):
+            if validite[0] == "periode" :
+                return _(u"Du %s au %s") % (UTILS_Dates.DateDDEnFr(validite[1]), UTILS_Dates.DateDDEnFr(validite[2]))
+
+            if validite[0] == "duree" :
+                return _(u"%d jours / %d mois / %s années") % (validite[3], validite[2], validite[1])
 
         liste_Colonnes = [
             ColumnDefn(u"", "left", 22, "IDunite_cotisation", typeDonnee="entier", imageGetter=GetImageDefaut),
-            ColumnDefn(u"Du", 'left', 70, "date_debut", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Au"), 'left', 70, "date_fin", typeDonnee="date", stringConverter=FormateDate),
-            ColumnDefn(_(u"Nom"), 'left', 150, "nom", typeDonnee="texte"),
+            ColumnDefn(_(u"Validité"), 'left', 290, "validite", typeDonnee="texte", stringConverter=FormateValidite),
             ColumnDefn(_(u"Montant"), 'right', 70, "montant", typeDonnee="montant", stringConverter=FormateMontant),
             ]
         

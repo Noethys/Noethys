@@ -18,9 +18,6 @@ import GestionDB
 
 from Ol import OL_Unites_cotisations
 
-try: import psyco; psyco.full()
-except: pass
-
 
 
 def DateComplete(dateDD):
@@ -183,14 +180,14 @@ class Dialog(wx.Dialog):
         
         # Importation des unités de pièces
         req = """SELECT IDunite_cotisation, date_debut, date_fin, 
-        defaut, nom, montant, label_prestation
+        defaut, nom, montant, label_prestation, duree
         FROM unites_cotisations 
         WHERE IDtype_cotisation=%d;""" % self.IDtype_cotisation
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq()
         DB.Close()
         self.listeUnites = []
-        for IDunite_cotisation, date_debut, date_fin, defaut, nom, montant, label_prestation in listeDonnees :
+        for IDunite_cotisation, date_debut, date_fin, defaut, nom, montant, label_prestation, duree in listeDonnees :
             if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
             if date_fin != None : date_fin = DateEngEnDateDD(date_fin)
             dictTemp = {
@@ -202,6 +199,7 @@ class Dialog(wx.Dialog):
                 "montant" : montant,
                 "label_prestation" : label_prestation,
                 "etat" : None,
+                "duree" : duree,
                 }
             self.listeUnites.append(dictTemp)
         self.ctrl_unites.SetListeDonnees(self.listeUnites)
@@ -280,6 +278,7 @@ class Dialog(wx.Dialog):
             montant = dictUnite["montant"]
             label_prestation = dictUnite["label_prestation"]
             etat = dictUnite["etat"]
+            duree = dictUnite["duree"]
             
             listeDonnees = [    
                 ("IDtype_cotisation", self.IDtype_cotisation),
@@ -289,6 +288,7 @@ class Dialog(wx.Dialog):
                 ("nom", nom),
                 ("montant", montant),
                 ("label_prestation", label_prestation),
+                ("duree", duree),
             ]
             
             # Ajout

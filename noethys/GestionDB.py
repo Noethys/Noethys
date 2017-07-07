@@ -2075,7 +2075,14 @@ class DB:
                 return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
+        # =============================================================
 
+        versionFiltre = (1, 2, 0, 6)
+        if versionFichier < versionFiltre :
+            try :
+                self.AjoutChamp("unites_cotisations", "duree", "VARCHAR(100)")
+            except Exception, err :
+                return " filtre de conversion %s | " % ".".join([str(x) for x in versionFiltre]) + str(err)
 
 
 

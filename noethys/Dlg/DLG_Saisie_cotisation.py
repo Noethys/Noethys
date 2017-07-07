@@ -14,6 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 from Ctrl import CTRL_Bouton_image
 import datetime
+from dateutil import relativedelta
 
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
@@ -126,7 +127,7 @@ class Choix_unite(wx.Choice):
             return []
         DB = GestionDB.DB()
         req = """
-        SELECT IDunite_cotisation, nom, date_debut, date_fin, montant, label_prestation, defaut
+        SELECT IDunite_cotisation, nom, date_debut, date_fin, montant, label_prestation, defaut, duree
         FROM unites_cotisations
         WHERE IDtype_cotisation=%d
         ORDER BY nom;""" % self.IDtype_cotisation
@@ -134,9 +135,9 @@ class Choix_unite(wx.Choice):
         listeDonnees = DB.ResultatReq()
         DB.Close()
         index = 0
-        for IDunite_cotisation, nom, date_debut, date_fin, montant, label_prestation, defaut in listeDonnees :
-            date_debut = DateEngEnDateDD(date_debut)
-            date_fin = DateEngEnDateDD(date_fin)
+        for IDunite_cotisation, nom, date_debut, date_fin, montant, label_prestation, defaut, duree in listeDonnees :
+            if date_debut != None : date_debut = DateEngEnDateDD(date_debut)
+            if date_fin != None: date_fin = DateEngEnDateDD(date_fin)
             self.dictDonnees[index] = { 
                 "ID" : IDunite_cotisation, 
                 "nom" : nom, 
@@ -144,7 +145,8 @@ class Choix_unite(wx.Choice):
                 "date_fin" : date_fin, 
                 "montant" : montant, 
                 "label_prestation" : label_prestation, 
-                "defaut" : defaut, 
+                "defaut" : defaut,
+                "duree" : duree,
                 }
             listeItems.append(nom)
             if defaut == 1 :
@@ -714,9 +716,27 @@ class Dialog(wx.Dialog):
             date_fin = dictDonneesUnite["date_fin"]
             montant = dictDonneesUnite["montant"]
             label_prestation = dictDonneesUnite["label_prestation"]
-            # Insertion des valeurs
-            self.ctrl_date_debut.SetDate(date_debut)
-            self.ctrl_date_fin.SetDate(date_fin)
+            duree = dictDonneesUnite["duree"]
+
+            # Validité
+            if date_debut != None and date_fin != None :
+                self.ctrl_date_debut.SetDate(date_debut)
+                self.ctrl_date_fin.SetDate(date_fin)
+            if duree != None :
+                posM = duree.find("m")
+                posA = duree.find("a")
+                jours = int(duree[1:posM - 1])
+                mois = int(duree[posM + 1:posA - 1])
+                annees = int(duree[posA + 1:])
+
+                date_debut = datetime.date.today()
+                self.ctrl_date_debut.SetDate(date_debut)
+                if jours != 0 : date_debut = date_debut + relativedelta.relativedelta(days=+jours)
+                if mois != 0 : date_debut = date_debut + relativedelta.relativedelta(months=+mois)
+                if annees != 0 : date_debut = date_debut + relativedelta.relativedelta(years=+annees)
+                self.ctrl_date_fin.SetDate(date_debut)
+
+            # Montant
             self.ctrl_montant.SetMontant(montant)
             if label_prestation != None :
                 # Label personnalisé
