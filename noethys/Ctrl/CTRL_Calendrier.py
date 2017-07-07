@@ -1044,7 +1044,7 @@ class CTRL(wx.Panel):
         self.calendrier.multiSelections = etat
         listeSelections = self.GetSelections()
         if len(listeSelections) > 1 :
-            self.SelectJours((min(listeSelections),))
+            self.SelectJours([min(listeSelections),])
         
     def GetSelections(self):
         listeSelections = self.calendrier.GetSelections()
