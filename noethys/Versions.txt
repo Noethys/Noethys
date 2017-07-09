@@ -1,4 +1,4 @@
-Version 1.2.0.6 (07/07/2017) :
+Version 1.2.0.7 (09/07/2017) :
 
 - Ajout de la période de validité date à date dans les cotisations
 - Ajout du filtre classe et école dans le gestionnaire des conso [jeromelebleu]
