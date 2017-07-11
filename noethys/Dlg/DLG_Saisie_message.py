@@ -53,7 +53,7 @@ class CTRL_Categorie(wx.Choice):
 
     def GetListeDonnees(self):
         listeItems = [_(u"Aucune"),]
-        self.dictDonnees = {}
+        self.dictDonnees = {0 : {"ID" : None}}
         DB = GestionDB.DB()
         req = """
         SELECT IDcategorie, nom, priorite, afficher_accueil, afficher_liste
@@ -87,7 +87,7 @@ class CTRL_Categorie(wx.Choice):
 
     def GetID(self):
         index = self.GetSelection()
-        if index == -1 : return None
+        if index in (-1, 0) : return None
         return self.dictDonnees[index]["ID"]
             
 
@@ -157,6 +157,8 @@ class Dialog(wx.Dialog):
             self.ctrl_afficher_accueil.SetValue(True)
             self.ctrl_afficher_accueil.Show(False)
             self.ctrl_afficher_liste.Show(False)
+
+        wx.CallLater(0, self.ctrl_texte.SetFocus)
 
     def __set_properties(self):
         self.ctrl_categorie.SetToolTip(wx.ToolTip(_(u"Sélectionnez une catégorie")))
