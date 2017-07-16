@@ -136,15 +136,21 @@ class Panel(wx.Panel):
         self.gauge = wx.Gauge(self, -1, range=100, size=(-1, 8))
 
         self.bouton_traiter = wx.Button(self, -1, _(u"Traiter les\ndemandes"))
+        self.bouton_traiter.SetToolTip(wx.ToolTip(_(u"traiter les demandes")))
         self.couleur_defaut = self.bouton_traiter.GetBackgroundColour()
 
-        self.bouton_outils = wx.Button(self, -1, _(u"Outils"))
+        self.bouton_synchroniser = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Actualiser2.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_synchroniser.SetToolTip(wx.ToolTip(_(u"Synchroniser maintenant les données entre Noethys et Connecthys")))
+
+        self.bouton_outils = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Outils.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_outils.SetToolTip(wx.ToolTip(_(u"Outils")))
 
         self.__do_layout()
         self.MAJ_bouton()
 
         # Binds
         self.Bind(wx.EVT_BUTTON, self.OnBoutonTraiter, self.bouton_traiter)
+        self.Bind(wx.EVT_BUTTON, self.OnBoutonSynchroniser, self.bouton_synchroniser)
         self.Bind(wx.EVT_BUTTON, self.OnBoutonOutils, self.bouton_outils)
         self.Bind(wx.EVT_CLOSE, self.OnClose)
         self.Bind(wx.EVT_WINDOW_DESTROY, self.OnDestroy)
@@ -155,7 +161,7 @@ class Panel(wx.Panel):
 
     def __do_layout(self):
         sizer_base = wx.BoxSizer(wx.HORIZONTAL)
-        grid_sizer = wx.FlexGridSizer(rows=1, cols=3, vgap=10, hgap=10)
+        grid_sizer = wx.FlexGridSizer(rows=1, cols=4, vgap=10, hgap=10)
         grid_sizer.Add(self.ctrl_image, 0, wx.ALL, 0)
 
         if CUSTOMIZE.GetValeur("connecthys_log", "type", "panel") == "panel" :
@@ -164,9 +170,16 @@ class Panel(wx.Panel):
             sizer_log.Add(self.gauge, 0, wx.EXPAND|wx.ALL, 0)
             grid_sizer.Add(sizer_log, 1, wx.EXPAND, 0)
 
-        grid_sizer_commandes = wx.FlexGridSizer(rows=2, cols=1, vgap=5, hgap=5)
+        grid_sizer_commandes = wx.FlexGridSizer(rows=2, cols=1, vgap=2, hgap=2)
         grid_sizer_commandes.Add(self.bouton_traiter, 1, wx.EXPAND, 0)
-        grid_sizer_commandes.Add(self.bouton_outils, 0, wx.EXPAND, 0)
+
+        grid_sizer_commandes2 = wx.FlexGridSizer(rows=1, cols=2, vgap=2, hgap=2)
+        grid_sizer_commandes2.Add(self.bouton_synchroniser, 1, wx.EXPAND, 0)
+        grid_sizer_commandes2.Add(self.bouton_outils, 0, wx.EXPAND, 0)
+        grid_sizer_commandes2.AddGrowableCol(0)
+
+        grid_sizer_commandes.Add(grid_sizer_commandes2, 0, wx.EXPAND, 0)
+
         grid_sizer_commandes.AddGrowableRow(0)
         grid_sizer_commandes.AddGrowableCol(0)
         grid_sizer.Add(grid_sizer_commandes, 0, wx.EXPAND|wx.ALL, 0)
@@ -284,6 +297,9 @@ class Panel(wx.Panel):
             self.parent.ctrl_remplissage.MAJ()
         except :
             pass
+
+    def OnBoutonSynchroniser(self, event=None):
+        self.serveur.Start_synchro()
 
     def OnBoutonOutils(self, event=None):
         """ Création du menu Outils """
