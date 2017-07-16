@@ -562,7 +562,7 @@ class Synchro():
                 if numero == None : numero = 0
                 if IDprefixe != None :
                     # On supprime le tiret séparateur du préfixe et du numéro de facture pour TIPI (le tiret est proscrit)
-                    if self.dict_parametres["paiement_ligne_systeme"] == 1 or self.dict_parametres["paiement_ligne_systeme"] == 2 :
+                    if paiement_ligne_systeme.has_key("paiement_ligne_systeme") and (self.dict_parametres["paiement_ligne_systeme"] == 1 or self.dict_parametres["paiement_ligne_systeme"] == 2) :
                         numero = u"%s%06d" % (prefixe, numero)
                     else :
                         numero = u"%s-%06d" % (prefixe, numero)
