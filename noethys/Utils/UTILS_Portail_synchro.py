@@ -820,6 +820,14 @@ class Synchro():
                 m = models.Ouverture(date=date, IDunite=IDunite, IDgroupe=IDgroupe)
                 session.add(m)
 
+            req = """SELECT type, nom, jour, mois, annee
+            FROM jours_feries ;"""
+            DB.ExecuterReq(req)
+            listeFeries = DB.ResultatReq()
+            for typeFerie, nom, jour, mois, annee in listeFeries:
+                m = models.Ferie(type=typeFerie, nom=nom, jour=jour, mois=mois, annee=annee)
+                session.add(m)
+
         # Création des consommations
         self.Pulse_gauge()
 

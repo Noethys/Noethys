@@ -148,6 +148,8 @@ class Page_options(wx.Panel):
         self.check_date_limite = wx.CheckBox(self, -1, _(u"Une réservation peut être ajoutée, modifiée ou supprimée jusqu'à"))
         self.ctrl_date_limite = wx.Choice(self, -1, choices=liste_jours)
         self.ctrl_heure_limite = CTRL_Saisie_heure.Heure(self)
+        self.check_limite_weekends = wx.CheckBox(self, -1, _(u"Exclure les week-ends"))
+        self.check_limite_feries = wx.CheckBox(self, -1, _(u"Exclure les jours fériés"))
 
         # Absence injustifiée
         self.staticbox_absenti = wx.StaticBox(self, -1, _(u"Absence injustifiée"))
@@ -165,11 +167,22 @@ class Page_options(wx.Panel):
         grid_sizer_base = wx.FlexGridSizer(rows=5, cols=1, vgap=10, hgap=10)
 
         staticbox_date_limite = wx.StaticBoxSizer(self.staticbox_date_limite, wx.VERTICAL)
+
+        grid_sizer_limite = wx.FlexGridSizer(rows=3, cols=1, vgap=5, hgap=5)
+
         grid_sizer_date_limite = wx.FlexGridSizer(rows=1, cols=3, vgap=5, hgap=5)
         grid_sizer_date_limite.Add(self.check_date_limite, 0, wx.ALIGN_CENTER_VERTICAL, 0)
         grid_sizer_date_limite.Add(self.ctrl_date_limite, 0, 0, 0)
         grid_sizer_date_limite.Add(self.ctrl_heure_limite, 0, 0, 0)
-        staticbox_date_limite.Add(grid_sizer_date_limite, 1, wx.ALL|wx.EXPAND, 5)
+        grid_sizer_limite.Add(grid_sizer_date_limite, 1, wx.EXPAND, 0)
+
+        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
+        grid_sizer_options.Add(self.check_limite_weekends, 1, wx.LEFT, 0)
+        grid_sizer_options.Add(self.check_limite_feries, 1, wx.LEFT, 0)
+        grid_sizer_limite.Add(grid_sizer_options, 1, wx.LEFT, 23)
+
+        staticbox_date_limite.Add(grid_sizer_limite, 1, wx.ALL | wx.EXPAND, 5)
+
         grid_sizer_base.Add(staticbox_date_limite, 1, wx.TOP|wx.LEFT|wx.RIGHT|wx.EXPAND, 10)
 
         staticbox_absenti = wx.StaticBoxSizer(self.staticbox_absenti, wx.VERTICAL)
@@ -196,19 +209,38 @@ class Page_options(wx.Panel):
     def OnCheckDateLimite(self, event=None):
         self.ctrl_date_limite.Enable(self.check_date_limite.GetValue())
         self.ctrl_heure_limite.Enable(self.check_date_limite.GetValue())
+        self.check_limite_feries.Enable(self.check_date_limite.GetValue())
+        self.check_limite_weekends.Enable(self.check_date_limite.GetValue())
 
     def SetDateLimite(self, valeur=""):
         if valeur in (None, ""):
             return
-        date, heure = valeur.split("#")
+        limite = valeur.split("#")
+        date = limite[0]
+        heure = limite[1]
+        if len(limite) > 2 :
+            options = limite[2]
+        else :
+            options = ""
         self.ctrl_date_limite.SetSelection(int(date))
         self.ctrl_heure_limite.SetHeure(heure)
         self.check_date_limite.SetValue(True)
+        if "weekends" in options :
+            self.check_limite_weekends.SetValue(True)
+        if "feries" in options :
+            self.check_limite_feries.SetValue(True)
         self.OnCheckDateLimite()
 
     def GetDateLimite(self):
         if self.check_date_limite.GetValue() == True :
-            return "%d#%s" % (self.ctrl_date_limite.GetSelection(), self.ctrl_heure_limite.GetHeure())
+
+            liste_options = []
+            if self.check_limite_weekends.GetValue() == True :
+                liste_options.append("weekends")
+            if self.check_limite_feries.GetValue() == True :
+                liste_options.append("feries")
+
+            return "%d#%s#%s" % (self.ctrl_date_limite.GetSelection(), self.ctrl_heure_limite.GetHeure(), ",".join(liste_options))
         else :
             return None
 
