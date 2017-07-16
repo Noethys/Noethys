@@ -733,14 +733,14 @@ class Synchro():
         # Création des individus
         self.Pulse_gauge()
 
-        req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille,
+        req = """SELECT IDrattachement, rattachements.IDindividu, rattachements.IDfamille, titulaire,
         IDcivilite, nom, prenom, date_naiss
         FROM rattachements
         LEFT JOIN individus ON individus.IDindividu = rattachements.IDindividu
-        WHERE IDcategorie IN (1, 2);"""
+        WHERE IDcategorie=2 OR (IDcategorie=1 AND titulaire=1);"""
         DB.ExecuterReq(req)
         listeRattachements = DB.ResultatReq()
-        for IDrattachement, IDindividu, IDfamille, IDcivilite, nom, prenom, date_naiss in listeRattachements :
+        for IDrattachement, IDindividu, IDfamille, titulaire, IDcivilite, nom, prenom, date_naiss in listeRattachements :
             if IDfamille in listeIDfamille :
                 date_naiss = UTILS_Dates.DateEngEnDateDD(date_naiss)
                 m = models.Individu(IDindividu=IDindividu, IDfamille=IDfamille, prenom=prenom, date_naiss=date_naiss, IDcivilite=IDcivilite)
