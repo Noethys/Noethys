@@ -2543,16 +2543,22 @@ class Dialog(wx.Dialog):
             indexActivite += 1
 
         # Suppression de la dernière page si elle est vide
-        element = str(story[-3])
-        if element == "PageBreak()" :
-            story.pop(-1)
-            story.pop(-1)
-            story.pop(-1)
+        try :
+            element = str(story[-3])
+            if element == "PageBreak()" :
+                story.pop(-1)
+                story.pop(-1)
+                story.pop(-1)
+        except :
+            pass
 
         # Suppression du dernier spacer s'il y en a un
-        element = str(story[-1])
-        if element == "Spacer(0, 20)" :
-            story.pop(-1)
+        try :
+            element = str(story[-1])
+            if element == "Spacer(0, 20)" :
+                story.pop(-1)
+        except :
+            pass
 
         # Destruction de la DlgAttente
         del DlgAttente
