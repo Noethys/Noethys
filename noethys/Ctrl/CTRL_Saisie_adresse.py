@@ -63,10 +63,13 @@ def Importation_donnees():
         
         # Mémorisation
         if valide == True :
-            cp = int(cp)
-            listeVilles.append((nom, "%05d" % cp))
-            listeNomsVilles.append(nom)
-        
+            try :
+                cp = int(cp)
+                listeVilles.append((nom, "%05d" % cp))
+                listeNomsVilles.append(nom)
+            except :
+                pass
+
     dictRegions = {}
     for num_region, region in listeRegions :
         dictRegions[num_region] = region
