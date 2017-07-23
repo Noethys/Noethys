@@ -187,7 +187,7 @@ class MainFrame(wx.Frame):
         
         # Affiche le titre du fichier en haut de la frame
         self.SetTitleFrame(nomFichier="")
-        
+
         # Création du AUI de la fenêtre 
         self._mgr = aui.AuiManager()
         if "linux" not in sys.platform :
@@ -1082,7 +1082,11 @@ class MainFrame(wx.Frame):
         menu_fichier = self.dictInfosMenu["menu_fichier"]["ctrl"]
 
         # Intégration des derniers fichiers ouverts :
-        listeDerniersFichiersTmp = self.userConfig["derniersFichiers"]
+        if self.userConfig.has_key("derniersFichiers"):
+            listeDerniersFichiersTmp = self.userConfig["derniersFichiers"]
+        else :
+            listeDerniersFichiersTmp = []
+
         if len(listeDerniersFichiersTmp) > 0 :
             menu_fichier.AppendSeparator()
             
