@@ -207,9 +207,9 @@ class CTRL_Bouton_toggle(wx.Panel):
         largeurTexte = 520#tailleDC[0] - self.marge - tailleImage[0] - self.marge - self.marge
         self.texte = wordwrap(self.texte, largeurTexte, dc, breakLongWords=True)
         if 'phoenix' in wx.PlatformInfo:
-            largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(self.texte)
-        else :
             largeur, hauteur, hauteurLigne = dc.GetFullMultiLineTextExtent(self.texte)
+        else :
+            largeur, hauteur, hauteurLigne = dc.GetMultiLineTextExtent(self.texte)
         # Cadre pour les tests de taille
 ##        dc.SetBrush(wx.Brush((255, 0, 0)))
 ##        dc.DrawRoundedRectangle(x+tailleImage[0]+self.marge, self.marge, largeurTexte, hauteur, 1)
