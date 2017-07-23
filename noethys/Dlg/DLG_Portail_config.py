@@ -44,18 +44,6 @@ LISTE_DELAIS_SYNCHRO = [(30, u"Toutes les 30 minutes"), (60, u"Toutes les heures
 LISTE_AFFICHAGE_HISTORIQUE = [(30, u"1 mois"), (60, u"2 mois"), (90, u"3 mois"), (120, u"4 mois"), (150, u"5 mois"), (180, u"6 mois")]
 LISTE_SELECTION_FACTURES = [(0, u"Toutes les factures"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
 LISTE_SELECTION_REGLEMENTS = [(0, u"Tous les règlements"), (3, u"Datant de moins de 3 mois"), (6, u"Datant de moins de 6 mois"), (12, u"Datant de moins de 1 an"), (24, u"Datant de moins de 2 ans"), (36, u"Datant de moins de 3 ans"), (60, u"Datant de moins de 5 ans")]
-LISTE_MODES_REGLEMENT = [(0, u"Aucun")]
-
-if UTILS_Config.IsFichierExists() != False :
-    db = GestionDB.DB()
-    req = """SELECT IDmode, label
-    FROM modes_reglements
-    ORDER BY IDmode;"""
-    db.ExecuterReq(req)
-    listeDonnees = db.ResultatReq()
-    db.Close()
-    for IDmode, label in listeDonnees :
-        LISTE_MODES_REGLEMENT.append((IDmode, label))
 
 
 VALEURS_DEFAUT = {
@@ -561,8 +549,19 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
         self.Append(propriete)
 
         # Choix du mode de règlement pour les paiements en ligne
+        DB = GestionDB.DB()
+        req = """SELECT IDmode, label
+        FROM modes_reglements
+        ORDER BY IDmode;"""
+        DB.ExecuterReq(req)
+        listeDonnees = DB.ResultatReq()
+        DB.Close()
+        liste_reglements = [(0, u"Aucun")]
+        for IDmode, label in listeDonnees:
+            liste_reglements.append((IDmode, label))
+
         nom = "paiement_ligne_mode_reglement"
-        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), labels=[y for x, y in LISTE_MODES_REGLEMENT], values=[x for x, y in LISTE_MODES_REGLEMENT], name=nom, value=VALEURS_DEFAUT[nom])
+        propriete = wxpg.EnumProperty(label=_(u"Mode de règlement"), labels=[y for x, y in liste_reglements], values=[x for x, y in liste_reglements], name=nom, value=VALEURS_DEFAUT[nom])
         propriete.SetHelpString(_(u"Choisissez le mode de règlement à associer aux paiements en ligne des factures"))
         self.Append(propriete)
 
