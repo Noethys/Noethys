@@ -177,7 +177,12 @@ class Donnees():
     
     def GetVentes(self):
         listeLignes = []
-        
+
+        if self.dictParametres["option_type_periode"] == 0 :
+            condition = "prestations.date_valeur>='%s' AND prestations.date_valeur<='%s'" % (self.date_debut, self.date_fin)
+        else :
+            condition = "prestations.date>='%s' AND prestations.date<='%s'" % (self.date_debut, self.date_fin)
+
         # Récupération des prestations 
         DB = GestionDB.DB() 
         req = """
@@ -196,10 +201,10 @@ class Donnees():
         LEFT JOIN categories_tarifs ON prestations.IDcategorie_tarif = categories_tarifs.IDcategorie_tarif
         LEFT JOIN cotisations ON cotisations.IDprestation = prestations.IDprestation
         LEFT JOIN types_cotisations ON types_cotisations.IDtype_cotisation = cotisations.IDtype_cotisation
-        WHERE prestations.date_valeur>='%s' AND prestations.date_valeur<='%s'
+        WHERE %s
         GROUP BY prestations.IDprestation
         ORDER BY prestations.date
-        ;""" % (self.date_debut, self.date_fin)
+        ;""" % condition
         DB.ExecuterReq(req)
         listeDonnees = DB.ResultatReq() 
         DB.Close()
@@ -1366,6 +1371,7 @@ class CTRL_Parametres_defaut(CTRL_Parametres) :
     def __init__(self, parent):
         self.listeDonnees = [
             _(u"Options générales"),
+            {"type":"choix", "label":_(u"Type de période"), "description": _(u"Type de période"), "code": "option_type_periode", "tip": _(u"Sélectionnez le type de période à sélectionner"), "choix": [_(u"Selon la date de saisie de la prestation"), _(u"Selon la date de la prestation")], "defaut": 0, "obligatoire": True},
             {"type":"choix", "label":_(u"Regroupement des prestations"), "description":_(u"Mode de regroupement des prestations"), "code":"option_regroupement_prestations", "tip":_(u"Sélectionnez le mode de regroupement des prestations"), "choix":[_(u"Par nom de prestation"), _(u"Par nom d'activité")], "defaut":0, "obligatoire":True},
             {"type":"choix", "label":_(u"Regroupement des règlements"), "description":_(u"Mode de regroupement des règlements"), "code":"option_regroupement_reglements", "tip":_(u"Sélectionnez le mode de regroupement des règlements"), "choix":[_(u"Par mode de règlement"), _(u"Par dépôt de règlement")], "defaut":0, "obligatoire":True},
             {"type":"choix", "label":_(u"Sélection des règlements"), "description":_(u"Sélection des règlements"), "code":"option_selection_reglements", "tip":_(u"Sélectionnez le mode de sélection des règlements"), "choix":[_(u"Règlements déposés sur la période"), _(u"Règlements saisis sur la période")], "defaut":0, "obligatoire":True},
