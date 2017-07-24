@@ -199,7 +199,7 @@ class CTRL(HTL.HyperTreeList):
             niveauDate = self.AppendItem(self.root, DateComplete(date))
             self.SetPyData(niveauDate, {"type" : "date", "valeur" : date})
             self.SetItemBold(niveauDate, True)
-            self.SetItemBackgroundColour(niveauDate, COULEUR_FOND_REGROUPEMENT)
+            self.SetItemBackgroundColour(niveauDate, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
             # Branches Activités
             listeActivites = dictConso[date].keys()

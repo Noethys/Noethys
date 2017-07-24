@@ -19,7 +19,7 @@ from Data import DATA_Tables as Tables
 from Ctrl import CTRL_Bandeau
 
 import FonctionsPerso
-import wx.lib.hyperlink as hl
+import wx.lib.agw.hyperlink as hl
 from Crypto.Hash import SHA256
 
 

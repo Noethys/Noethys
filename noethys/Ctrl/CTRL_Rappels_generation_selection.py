@@ -291,7 +291,7 @@ class CTRL(HTL.HyperTreeList):
         return ctrl_document.GetDictDocument()
 
     def SetCouleurLigne(self, branche, couleur):
-        self.SetItemBackgroundColour(branche, couleur)
+        self.SetItemBackgroundColour(branche, wx.Colour(couleur))
     
     def OnCompareItems(self, item1, item2):
         if self.GetPyData(item1) > self.GetPyData(item2) :

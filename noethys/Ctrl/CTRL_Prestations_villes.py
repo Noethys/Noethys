@@ -223,7 +223,7 @@ class CTRL(HTL.HyperTreeList):
             niveauFamille = self.AppendItem(self.root, nomTitulaires)
             self.SetPyData(niveauFamille, {"type" : "famille", "valeur" : IDfamille})
             self.SetItemBold(niveauFamille, True)
-            self.SetItemBackgroundColour(niveauFamille, COULEUR_FOND_REGROUPEMENT)
+            self.SetItemBackgroundColour(niveauFamille, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             adresse = u"%s %s %s" % (dictResultats[IDfamille]["rue"], dictResultats[IDfamille]["cp"], dictResultats[IDfamille]["ville"])
             montantStr = u"%.2f %s" % (dictResultats[IDfamille]["montant"], SYMBOLE)
             self.SetItemText(niveauFamille, adresse, 1)
@@ -285,7 +285,7 @@ class CTRL(HTL.HyperTreeList):
         niveauStats = self.AppendItem(self.root, _(u"TOTAL"))
         self.SetPyData(niveauStats, {"type" : "stats", "valeur" : None})
         self.SetItemBold(niveauStats, True)
-        self.SetItemBackgroundColour(niveauStats, COULEUR_FOND_REGROUPEMENT)
+        self.SetItemBackgroundColour(niveauStats, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
         
         detail = _(u"%d familles et %s individus") % (dictStats["familles"], dictStats["individus"])
         montantStr = u"%.2f %s" % (dictStats["montant"], SYMBOLE)

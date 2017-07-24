@@ -20,6 +20,13 @@ import datetime
 import decimal
 import sys
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.grid import GridCellRenderer
+    from wx.grid import GridCellEditor
+else :
+    from wx.grid import PyGridCellRenderer as GridCellRenderer
+    from wx.grid import PyGridCellEditor as GridCellEditor
+
 from Utils.UTILS_Decimal import FloatToDecimal as FloatToDecimal
 
 from Utils import UTILS_Config
@@ -374,9 +381,9 @@ class Ligne_prestation(object):
 
 
 
-class RendererCaseMontant(gridlib.PyGridCellRenderer):
+class RendererCaseMontant(GridCellRenderer):
     def __init__(self):
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
         self.grid = None
 
     def Draw(self, grid, attr, dc, rect, row, col, isSelected):
@@ -387,7 +394,10 @@ class RendererCaseMontant(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(couleurFond, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
                 
         # Ecrit les restrictions
         texte = self.grid.GetCellValue(row, col)
@@ -417,10 +427,10 @@ class RendererCaseMontant(gridlib.PyGridCellRenderer):
     
 # -------------------------------------------------------------------------------------------------------------------------------------
 
-class EditeurMontant(gridlib.PyGridCellEditor):
+class EditeurMontant(GridCellEditor):
     def __init__(self, ligne=None):
         self.ligne = ligne
-        gridlib.PyGridCellEditor.__init__(self)
+        GridCellEditor.__init__(self)
 
     def Create(self, parent, id, evtHandler):
         self._tc = CTRL_Saisie_euros.CTRL(parent, style=wx.TE_RIGHT|wx.TE_PROCESS_ENTER)

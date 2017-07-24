@@ -166,7 +166,7 @@ class CTRL(HTL.HyperTreeList):
             self.dictBranches["activites"][IDactivite] = activite
             self.SetPyData(activite, IDactivite)
             self.SetItemBold(activite, True)
-            self.SetItemBackgroundColour(activite, (200, 200, 200))
+            self.SetItemBackgroundColour(activite, wx.Colour(200, 200, 200))
             
             # Entete de colonnes : UNITES
             indexColonne = 1

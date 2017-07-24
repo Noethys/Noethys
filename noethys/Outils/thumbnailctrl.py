@@ -1843,7 +1843,10 @@ class ScrolledThumbnail(wx.ScrolledWindow):
             rect.x = rect.x + col*(self._tWidth + self._tBorder)
             rect.y = rect.y + (self._rows - 1)*(self._tHeight + self._tBorder) + \
                      self.GetCaptionHeight(0, self._rows - 1)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else:
+                dc.DrawRectangleRect(rect)
 
 
     def OnResize(self, event):

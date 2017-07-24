@@ -25,10 +25,10 @@ from Utils import UTILS_Dates
 import wx.lib.agw.hypertreelist as HTL
 
 
-COULEUR_DISPONIBLE = "#E3FEDB"
-COULEUR_ALERTE = "#FEFCDB"
-COULEUR_COMPLET = "#F7ACB2"
-COULEUR_GAUGE_FOND = "WHITE"
+COULEUR_DISPONIBLE = (227, 254, 219)
+COULEUR_ALERTE = (254, 252, 219)
+COULEUR_COMPLET = (247, 172, 178)
+COULEUR_GAUGE_FOND = (255, 255, 255)
 
 
 
@@ -290,7 +290,7 @@ class CTRL(HTL.HyperTreeList):
                 niveau_parent = self.root
             else :
                 niveau_regroup = self.AppendItem(self.root, nom)
-                self.SetItemBackgroundColour(niveau_regroup, "#DDDDDD")
+                self.SetItemBackgroundColour(niveau_regroup, wx.Colour(221, 221, 221))
                 self.dictImpression["contenu"].append([nom,])
                 self.dictImpression["coloration"].append((len(self.dictImpression["contenu"])-1, "regroup"))
                 niveau_parent = niveau_regroup
@@ -390,11 +390,11 @@ class CTRL(HTL.HyperTreeList):
         if nbre_places_libres == None :
             return None
         elif nbre_places_libres <= 0 :
-            return COULEUR_COMPLET
+            return wx.Colour(*COULEUR_COMPLET)
         elif nbre_places_libres > 0 and nbre_places_libres <= self.seuil_alerte :
-            return COULEUR_ALERTE
+            return wx.Colour(*COULEUR_ALERTE)
         else :
-            return COULEUR_DISPONIBLE
+            return wx.Colour(*COULEUR_DISPONIBLE)
 
     def SetFiltre(self, filtre=""):
         self.filtre = filtre

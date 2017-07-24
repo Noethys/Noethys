@@ -212,8 +212,8 @@ class CTRL_Infos(HTL.HyperTreeList):
             # Création de la catégorie
             brancheCategorie = self.AppendItem(self.root, categorie)
             self.SetItemBold(brancheCategorie, True)
-            self.SetItemBackgroundColour(brancheCategorie, (200, 200, 200) )
-            self.SetItemTextColour(brancheCategorie, (100, 100, 100) )
+            self.SetItemBackgroundColour(brancheCategorie, wx.Colour(200, 200, 200) )
+            self.SetItemTextColour(brancheCategorie, wx.Colour(100, 100, 100) )
             self.SetItemImage(brancheCategorie, self.listeImages[numCategorie], which=wx.TreeItemIcon_Normal)
             
             for label, valeur in listeItems :

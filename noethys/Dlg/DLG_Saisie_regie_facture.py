@@ -101,13 +101,13 @@ class Dialog(wx.Dialog):
             self.SetTitle(_(u"Saisie d'une régie de facturation"))
 
     def __set_properties(self):
-        self.ctrl_nom.SetToolTipString(_(u"Saisissez le nom de la régie"))
-        self.ctrl_numclitipi.SetToolTipString(_(u"Saisissez le numéro de client TIPI"))
-        self.ctrl_emailregisseur.SetToolTipString(_(u"Saisissez l addresse mail du régisseur"))
-        self.ctrl_compte_bancaire.SetToolTipString(_(u"Sélectionnez le compte bancaire associé a cette régie"))
-        self.bouton_aide.SetToolTipString(_(u"Cliquez ici pour obtenir de l'aide"))
-        self.bouton_ok.SetToolTipString(_(u"Cliquez ici pour valider"))
-        self.bouton_annuler.SetToolTipString(_(u"Cliquez ici pour annuler"))
+        self.ctrl_nom.SetToolTip(wx.ToolTip(_(u"Saisissez le nom de la régie")))
+        self.ctrl_numclitipi.SetToolTip(wx.ToolTip(_(u"Saisissez le numéro de client TIPI")))
+        self.ctrl_emailregisseur.SetToolTip(wx.ToolTip(_(u"Saisissez l addresse mail du régisseur")))
+        self.ctrl_compte_bancaire.SetToolTip(wx.ToolTip(_(u"Sélectionnez le compte bancaire associé a cette régie")))
+        self.bouton_aide.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour obtenir de l'aide")))
+        self.bouton_ok.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour valider")))
+        self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour annuler")))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(2, 1, 10, 10)

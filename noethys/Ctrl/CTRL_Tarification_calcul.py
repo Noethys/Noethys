@@ -23,6 +23,13 @@ import GestionDB
 from Utils import UTILS_Questionnaires
 import wx.lib.wordwrap as wordwrap
 
+if 'phoenix' in wx.PlatformInfo:
+    from wx.grid import GridCellRenderer
+    from wx.grid import GridCellEditor
+else :
+    from wx.grid import PyGridCellRenderer as GridCellRenderer
+    from wx.grid import PyGridCellEditor as GridCellEditor
+
 
 LISTE_METHODES = [
     { "code" : "montant_unique", "label" : _(u"Montant unique"), "type" : "unitaire", "nbre_lignes_max" : 1, "entete" : None, "champs" : ("montant_unique", "montant_questionnaire"), "champs_obligatoires" : ("montant_unique",), "tarifs_compatibles" : ("JOURN", "FORFAIT", "CREDIT") },
@@ -121,9 +128,9 @@ def DateEngFr(textDate):
     return text
 
 
-class EditeurHeure(gridlib.PyGridCellEditor):
+class EditeurHeure(GridCellEditor):
     def __init__(self):
-        gridlib.PyGridCellEditor.__init__(self)
+        GridCellEditor.__init__(self)
 
     def Create(self, parent, id, evtHandler):
         self._tc = CTRL_Saisie_heure.Heure(parent)
@@ -184,9 +191,9 @@ class EditeurHeure(gridlib.PyGridCellEditor):
 
 # -------------------------------------------------------------------------------------------------------------------------------------
 
-class EditeurDate(gridlib.PyGridCellEditor):
+class EditeurDate(GridCellEditor):
     def __init__(self):
-        gridlib.PyGridCellEditor.__init__(self)
+        GridCellEditor.__init__(self)
 
     def Create(self, parent, id, evtHandler):
         self._tc = CTRL_Saisie_date.Date(parent)
@@ -243,7 +250,7 @@ class EditeurDate(gridlib.PyGridCellEditor):
 
 # -------------------------------------------------------------------------------------------------------------------------------------
 
-class EditeurChoix(gridlib.PyGridCellEditor):
+class EditeurChoix(GridCellEditor):
     def __init__(self, listeValeurs=[]):
         """ listeValeurs = [(ID, label), (ID, label), ...] """
         self.listeID = []
@@ -251,7 +258,7 @@ class EditeurChoix(gridlib.PyGridCellEditor):
         for ID, label in listeValeurs :
             self.listeID.append(ID)
             self.listeLabels.append(label)
-        gridlib.PyGridCellEditor.__init__(self)
+        GridCellEditor.__init__(self)
 
     def Create(self, parent, id, evtHandler):
         self._tc = wx.Choice(parent, -1, choices=self.listeLabels)
@@ -293,10 +300,10 @@ class EditeurChoix(gridlib.PyGridCellEditor):
         return EditeurChoix()
 
 
-class RendererChoix(gridlib.PyGridCellRenderer):
+class RendererChoix(GridCellRenderer):
     def __init__(self, listeValeurs=[]):
         self.listeValeurs = listeValeurs
-        gridlib.PyGridCellRenderer.__init__(self)
+        GridCellRenderer.__init__(self)
     
     def GetTexte(self, grid, row, col):
         texte = ""
@@ -318,7 +325,10 @@ class RendererChoix(gridlib.PyGridCellRenderer):
         dc.SetBackgroundMode(wx.SOLID)
         dc.SetBrush(wx.Brush(COULEUR_FOND_CASE, wx.SOLID))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         dc.SetBackgroundMode(wx.TRANSPARENT)
         dc.SetFont(attr.GetFont())
         

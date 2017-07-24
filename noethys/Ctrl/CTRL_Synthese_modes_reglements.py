@@ -410,7 +410,7 @@ class CTRL(HTL.HyperTreeList):
                 
         # ------------ Ligne Total --------------
         niveauTotal = self.AppendItem(self.root, _(u"Total"))
-        self.SetItemBackgroundColour(niveauTotal, (150, 150, 150) )
+        self.SetItemBackgroundColour(niveauTotal, wx.Colour(150, 150, 150) )
         self.SetItemTextColour(niveauTotal, wx.Colour(255, 255, 255) )
         impressionLigne = [_(u"Total"),]
         

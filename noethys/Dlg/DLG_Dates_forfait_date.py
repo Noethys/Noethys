@@ -67,7 +67,10 @@ class MyRowLabelRenderer(glr.GridLabelRenderer):
     def Draw(self, grid, dc, rect, row):
         dc.SetBrush(wx.Brush(self._bgcolor))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetRowLabelAlignment()
         text = grid.GetRowLabelValue(row)
         self.DrawBorder(grid, dc, rect)
@@ -80,7 +83,10 @@ class MyColLabelRenderer(glr.GridLabelRenderer):
     def Draw(self, grid, dc, rect, col):
         dc.SetBrush(wx.Brush(self._bgcolor))
         dc.SetPen(wx.TRANSPARENT_PEN)
-        dc.DrawRectangleRect(rect)
+        if 'phoenix' in wx.PlatformInfo:
+            dc.DrawRectangle(rect)
+        else :
+            dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetColLabelAlignment()
         text = grid.GetColLabelValue(col)
         self.DrawBorder(grid, dc, rect)

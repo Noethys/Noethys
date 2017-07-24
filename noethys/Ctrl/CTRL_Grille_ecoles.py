@@ -45,7 +45,7 @@ class CTRL(HTL.HyperTreeList):
         )
         self.EnableSelectionVista(True)
 
-        self.SetToolTipString(_(u"Cochez les écoles et classes à afficher"))
+        self.SetToolTip(wx.ToolTip(_(u"Cochez les écoles et classes à afficher")))
 
         # Création des colonnes
         self.AddColumn(_(u"Ecole/classe"))

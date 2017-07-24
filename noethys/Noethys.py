@@ -1130,7 +1130,10 @@ class MainFrame(wx.Frame):
         for dictPerspective in self.perspectives:
             label = dictPerspective["label"]
             item = wx.MenuItem(menu_affichage, ID_PREMIERE_PERSPECTIVE + index, label, _(u"Afficher la disposition '%s'") % label, wx.ITEM_CHECK)
-            menu_affichage.InsertItem(position, item)
+            if 'phoenix' in wx.PlatformInfo:
+                menu_affichage.Insert(position, item)
+            else :
+                menu_affichage.InsertItem(position, item)
             if self.perspective_active == index : item.Check(True)
             position += 1
             index += 1

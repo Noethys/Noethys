@@ -113,7 +113,7 @@ class Calendrier(HTL.HyperTreeList):
             dictMois = self.dictDonnees[annee]
             branche1 = self.AppendItem(self.root, label)
             self.SetItemBold(branche1, True)
-            self.SetItemBackgroundColour(branche1, (220, 220, 220))
+            self.SetItemBackgroundColour(branche1, wx.Colour(220, 220, 220))
             listeMois = dictMois.keys()
             listeMois.sort()
             for mois in listeMois :

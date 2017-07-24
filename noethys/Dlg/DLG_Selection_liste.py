@@ -15,7 +15,7 @@ import wx
 from Ctrl import CTRL_Bouton_image
 import FonctionsPerso
 import os
-import wx.lib.hyperlink as hl
+import wx.lib.agw.hyperlink as hl
 import GestionDB
 from wx.lib.mixins.listctrl import CheckListCtrlMixin
 import sys

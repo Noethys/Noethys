@@ -1067,7 +1067,7 @@ class CTRL(HTL.HyperTreeList):
                 brancheCategorie = self.AppendItem(self.root, label)
                 self.SetPyData(brancheCategorie, IDcategorie)
                 self.SetItemBold(brancheCategorie, True)
-                self.SetItemBackgroundColour(brancheCategorie, couleur)
+                self.SetItemBackgroundColour(brancheCategorie, wx.Colour(*couleur))
                 self.dictBranches[brancheCategorie] = {"type":"categorie", "ID":IDcategorie, "index":indexCategorie} 
                 
                 if categorieVisible == 0 :

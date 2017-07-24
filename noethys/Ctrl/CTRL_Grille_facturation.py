@@ -139,8 +139,8 @@ class CTRL(HTL.HyperTreeList):
                 if brancheCategorie == None :
                     brancheCategorie = self.AppendItem(self.root, labelCategorie)
                     self.SetPyData(brancheCategorie, labelCategorie)
-                    self.SetItemBackgroundColour(brancheCategorie, (200, 200, 200) )
-                    self.SetItemTextColour(brancheCategorie, (120, 120, 120) )
+                    self.SetItemBackgroundColour(brancheCategorie, wx.Colour(200, 200, 200) )
+                    self.SetItemTextColour(brancheCategorie, wx.Colour(120, 120, 120) )
                     self.dictBranches[categorie] = {"branche" : brancheCategorie, "donnee" : labelCategorie}
                 
                     self.SortChildren(self.root)

@@ -20,7 +20,7 @@ from threading import Thread
 import urllib
 import urllib2
 import os
-import wx.lib.hyperlink as hl
+import wx.lib.agw.hyperlink as hl
 import zipfile
 import glob
 

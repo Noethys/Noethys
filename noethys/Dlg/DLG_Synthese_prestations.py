@@ -16,7 +16,7 @@ from Ctrl import CTRL_Bouton_image
 import datetime
 import time
 import sys
-import wx.lib.hyperlink as hl
+import wx.lib.agw.hyperlink as hl
 
 import GestionDB
 from Ctrl import CTRL_Bandeau

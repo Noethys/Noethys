@@ -91,7 +91,10 @@ class MyRowLabelRenderer(glr.GridLabelRenderer):
         if self._bgcolor != None :
             dc.SetBrush(wx.Brush(self._bgcolor))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else:
+                dc.DrawRectangleRect(rect)
         else:
             pass
         hAlign, vAlign = grid.GetRowLabelAlignment()
@@ -112,7 +115,10 @@ class MyColLabelRenderer(glr.GridLabelRenderer):
         if self._bgcolor != None :
             dc.SetBrush(wx.Brush(self._bgcolor))
             dc.SetPen(wx.TRANSPARENT_PEN)
-            dc.DrawRectangleRect(rect)
+            if 'phoenix' in wx.PlatformInfo:
+                dc.DrawRectangle(rect)
+            else:
+                dc.DrawRectangleRect(rect)
         hAlign, vAlign = grid.GetColLabelAlignment()
         text = grid.GetColLabelValue(col)
         if self.typeColonne == "unite" :

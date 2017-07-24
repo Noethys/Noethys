@@ -465,38 +465,45 @@ class Panel_Expediteur(wx.Panel):
 
 # --------------------------------------------------------------------------------------------------------------------------------------------------------
 
+def AddTool(barre=None, ID=None, chemin_image=None, kind=wx.ITEM_NORMAL, label="", handler=None, updateUI=None):
+    if 'phoenix' in wx.PlatformInfo:
+        item = barre.AddTool(toolId=ID, label=label, bitmap=wx.Bitmap(Chemins.GetStaticPath(chemin_image), wx.BITMAP_TYPE_ANY), shortHelp=label, kind=kind)
+    else :
+        if kind == wx.ITEM_CHECK :
+            isToggle = True
+        else :
+            isToggle = False
+        item = barre.AddTool(id=ID, bitmap=wx.Bitmap(Chemins.GetStaticPath(chemin_image), wx.BITMAP_TYPE_ANY), shortHelpString=label, isToggle=isToggle)
+    barre.Bind(wx.EVT_TOOL, handler, item)
+    if updateUI is not None:
+        barre.Bind(wx.EVT_UPDATE_UI, updateUI, item)
 
 
 class BarreOutils1(wx.ToolBar):
     def __init__(self, parent):
         wx.ToolBar.__init__(self, parent, style=wx.TB_FLAT | wx.TB_NODIVIDER)
         self.parent = parent
-        
-        def doBind(item, handler, updateUI=None):
-            self.Bind(wx.EVT_TOOL, handler, item)
-            if updateUI is not None:
-                self.Bind(wx.EVT_UPDATE_UI, updateUI, item)
-        
-        doBind( self.AddTool(ID_SAUVEGARDER, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/sauvegarder.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Sauvegarder le texte")), self.parent.OnFileSave)
-        doBind( self.AddTool(ID_OUVRIR, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/ouvrir.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Ouvrir un texte sauvegardé")), self.parent.OnFileOpen)
+
+        AddTool(self, ID_SAUVEGARDER, "Images/Teamword/sauvegarder.png", label=_(u"Sauvegarder le texte"), handler=self.parent.OnFileSave)
+        AddTool(self, ID_OUVRIR, "Images/Teamword/ouvrir.png", label=_(u"Ouvrir un texte sauvegardé"), handler=self.parent.OnFileOpen)
         self.AddSeparator()
-        doBind( self.AddTool(ID_IMPRIMER, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/imprimer.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Imprimer ce texte")), self.parent.OnPrint)
-        doBind( self.AddTool(ID_APERCU, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/Apercu.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Aperçu avant impression de ce texte")), self.parent.OnPreview)
+        AddTool(self, ID_IMPRIMER, "Images/Teamword/imprimer.png", label=_(u"Imprimer ce texte"), handler=self.parent.OnPrint)
+        AddTool(self, ID_APERCU, "Images/Teamword/Apercu.png", label=_(u"Aperçu avant impression de ce texte"), handler=self.parent.OnPreview)
         self.AddSeparator()
-        doBind( self.AddTool(ID_ALIGNER_GAUCHE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/aligner_gauche.png"), wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Aligner à gauche")), self.parent.OnAlignLeft, self.parent.OnUpdateAlignLeft)
-        doBind( self.AddTool(ID_ALIGNER_CENTRE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/aligner_centre.png"), wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Centrer")), self.parent.OnAlignCenter, self.parent.OnUpdateAlignCenter)
-        doBind( self.AddTool(ID_ALIGNER_DROIT, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/aligner_droit.png"), wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Aligner à droite")), self.parent.OnAlignRight, self.parent.OnUpdateAlignRight)
+        AddTool(self, ID_ALIGNER_GAUCHE, "Images/Teamword/aligner_gauche.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à gauche"), handler=self.parent.OnAlignLeft, updateUI=self.parent.OnUpdateAlignLeft)
+        AddTool(self, ID_ALIGNER_CENTRE, "Images/Teamword/aligner_centre.png", kind=wx.ITEM_CHECK, label=_(u"Centrer"), handler=self.parent.OnAlignCenter, updateUI=self.parent.OnUpdateAlignCenter)
+        AddTool(self, ID_ALIGNER_DROIT, "Images/Teamword/aligner_droit.png", kind=wx.ITEM_CHECK, label=_(u"Aligner à droite"), handler=self.parent.OnAlignRight, updateUI=self.parent.OnUpdateAlignRight)
         self.AddSeparator()
-        doBind( self.AddTool(ID_GRAS, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/gras.png"), wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Gras")), self.parent.OnBold, self.parent.OnUpdateBold)
-        doBind( self.AddTool(ID_ITALIQUE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/italique.png"), wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Italique")), self.parent.OnItalic, self.parent.OnUpdateItalic)
-        doBind( self.AddTool(ID_SOULIGNE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/souligne.png"), wx.BITMAP_TYPE_ANY), isToggle=True, shortHelpString=_(u"Souligné")), self.parent.OnUnderline, self.parent.OnUpdateUnderline)
+        AddTool(self, ID_GRAS, "Images/Teamword/gras.png", kind=wx.ITEM_CHECK, label=_(u"Gras"), handler=self.parent.OnBold, updateUI=self.parent.OnUpdateBold)
+        AddTool(self, ID_ITALIQUE, "Images/Teamword/italique.png", kind=wx.ITEM_CHECK, label=_(u"Italique"), handler=self.parent.OnItalic, updateUI=self.parent.OnUpdateItalic)
+        AddTool(self, ID_SOULIGNE, "Images/Teamword/souligne.png", kind=wx.ITEM_CHECK, label=_(u"Souligné"), handler=self.parent.OnUnderline, updateUI=self.parent.OnUpdateUnderline)
         self.AddSeparator()
-        doBind( self.AddTool(ID_COULEUR_POLICE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/police_couleur.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Couleur de la police")), self.parent.OnColour)
+        AddTool(self, ID_COULEUR_POLICE, "Images/Teamword/police_couleur.png", label=_(u"Couleur de la police"), handler=self.parent.OnColour)
         self.AddSeparator()
-        doBind( self.AddTool(wx.ID_UNDO, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/annuler.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Annuler")), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_REDO, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/repeter.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Répéter")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        AddTool(self, wx.ID_UNDO, "Images/Teamword/annuler.png", label=_(u"Annuler"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
+        AddTool(self, wx.ID_REDO, "Images/Teamword/repeter.png", label=_(u"Répéter"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         self.AddSeparator()
-        doBind( self.AddTool(ID_GOMME, wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Gomme.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Effacer tout le texte")), self.parent.OnGomme)
+        AddTool(self, ID_GOMME, "Images/16x16/Gomme.png", label=_(u"Effacer tout le texte"), handler=self.parent.OnGomme)
 
         self.SetToolBitmapSize((16, 16))
         self.Realize()
@@ -507,28 +514,23 @@ class BarreOutils2(wx.ToolBar):
         wx.ToolBar.__init__(self, parent, style=wx.TB_FLAT | wx.TB_NODIVIDER)
         self.parent = parent
         
-        def doBind(item, handler, updateUI=None):
-            self.Bind(wx.EVT_TOOL, handler, item)
-            if updateUI is not None:
-                self.Bind(wx.EVT_UPDATE_UI, updateUI, item)
-        
-        doBind( self.AddTool(wx.ID_CUT, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/couper.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Couper")), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_COPY, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/copier.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Copier")), self.parent.ForwardEvent, self.parent.ForwardEvent)
-        doBind( self.AddTool(wx.ID_PASTE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/coller.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Coller")), self.parent.ForwardEvent, self.parent.ForwardEvent)
+        AddTool(self, wx.ID_CUT, "Images/Teamword/couper.png", label=_(u"Couper"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
+        AddTool(self, wx.ID_COPY, "Images/Teamword/copier.png", label=_(u"Copier"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
+        AddTool(self, wx.ID_PASTE, "Images/Teamword/coller.png", label=_(u"Coller"), handler=self.parent.ForwardEvent, updateUI=self.parent.ForwardEvent)
         self.AddSeparator()
-        doBind( self.AddTool(ID_RETRAIT_GAUCHE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/retrait_gauche.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Diminuer le retrait")), self.parent.OnIndentLess)
-        doBind( self.AddTool(ID_RETRAIT_DROIT, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/retrait_droit.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Augmenter le retrait")), self.parent.OnIndentMore)
+        AddTool(self, ID_RETRAIT_GAUCHE, "Images/Teamword/retrait_gauche.png", label=_(u"Diminuer le retrait"), handler=self.parent.OnIndentLess)
+        AddTool(self, ID_RETRAIT_DROIT, "Images/Teamword/retrait_droit.png", label=_(u"Augmenter le retrait"), handler=self.parent.OnIndentMore)
         self.AddSeparator()
-        doBind( self.AddTool(ID_PARA_MOINS, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/espaceParagrapheMoins.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Diminuer l'espacement des paragraphes")), self.parent.OnParagraphSpacingLess)
-        doBind( self.AddTool(ID_PARA_PLUS, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/espaceParagraphePlus.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Augmenter l'espacement des paragraphes")), self.parent.OnParagraphSpacingMore)
+        AddTool(self, ID_PARA_MOINS, "Images/Teamword/espaceParagrapheMoins.png", label=_(u"Diminuer l'espacement des paragraphes"), handler=self.parent.OnParagraphSpacingLess)
+        AddTool(self, ID_PARA_PLUS, "Images/Teamword/espaceParagraphePlus.png", label=_(u"Augmenter l'espacement des paragraphes"), handler=self.parent.OnParagraphSpacingMore)
         self.AddSeparator()
-        doBind( self.AddTool(ID_INTER_SIMPLE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/interligne_simple.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Interligne simple")), self.parent.OnLineSpacingSingle)
-        doBind( self.AddTool(ID_INTER_DEMI, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/interligne_demi.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Interligne 1.5")), self.parent.OnLineSpacingHalf)
-        doBind( self.AddTool(ID_INTER_DOUBLE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/interligne_double.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Interligne double")), self.parent.OnLineSpacingDouble)
+        AddTool(self, ID_INTER_SIMPLE, "Images/Teamword/interligne_simple.png", label=_(u"Interligne simple"), handler=self.parent.OnLineSpacingSingle)
+        AddTool(self, ID_INTER_DEMI, "Images/Teamword/interligne_demi.png", label=_(u"Interligne 1.5"), handler=self.parent.OnLineSpacingHalf)
+        AddTool(self, ID_INTER_DOUBLE, "Images/Teamword/interligne_double.png", label=_(u"Interligne double"), handler=self.parent.OnLineSpacingDouble)
         
         self.AddSeparator()
-        doBind( self.AddTool(ID_URL, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/url.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Insérer une url")), self.parent.OnInsererURL)
-        doBind( self.AddTool(ID_IMAGE, wx.Bitmap(Chemins.GetStaticPath("Images/Teamword/importer_image.png"), wx.BITMAP_TYPE_ANY), shortHelpString=_(u"Insérer une image")), self.parent.OnImporterImage)
+        AddTool(self, ID_URL, "Images/Teamword/url.png", label=_(u"Insérer une url"), handler=self.parent.OnInsererURL)
+        AddTool(self, ID_IMAGE, "Images/Teamword/importer_image.png", label=_(u"Insérer une image"), handler=self.parent.OnImporterImage)
 
         self.SetToolBitmapSize((16, 16))
         self.Realize()
@@ -544,7 +546,10 @@ class Editeur(rt.RichTextCtrl):
         out = cStringIO.StringIO()
         handler = wx.richtext.RichTextXMLHandler()
         buffer = self.GetBuffer()
-        handler.SaveStream(buffer, out)
+        if 'phoenix' in wx.PlatformInfo:
+            handler.SaveFile(buffer, out)
+        else :
+            handler.SaveStream(buffer, out)
         out.seek(0)
         content = out.read()
         return content
@@ -556,7 +561,10 @@ class Editeur(rt.RichTextCtrl):
         buffer.AddHandler(handler)
         out.write(texteXml.encode("utf8"))
         out.seek(0)
-        handler.LoadStream(buffer, out)
+        if 'phoenix' in wx.PlatformInfo:
+            handler.LoadFile(buffer, out)
+        else :
+            handler.LoadStream(buffer, out)
         self.Refresh()
 
 

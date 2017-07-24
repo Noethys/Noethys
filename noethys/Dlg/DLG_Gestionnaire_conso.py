@@ -268,6 +268,17 @@ class Commandes(wx.Panel):
 ##        if self.radio_refus.GetValue() == True : return "refus"
 
 
+
+def AddTool(barre=None, ID=None, bitmap=None, kind=wx.ITEM_NORMAL, label=""):
+    if 'phoenix' in wx.PlatformInfo:
+        item = barre.AddTool(toolId=ID, label=label, bitmap=bitmap, shortHelp=label, kind=kind)
+    else :
+        if kind == wx.ITEM_CHECK :
+            item = barre.AddRadioLabelTool(id=ID, bitmap=bitmap, shortHelp=label, longHelp=label)
+        else :
+            item = barre.AddLabelTool(id=ID, label=label, bitmap=bitmap, shortHelp=label, longHelp=label)
+    return item
+
 class PanelGrille(wx.Panel):
     def __init__(self, parent):
         """ Panel central """
@@ -301,15 +312,17 @@ class PanelGrille(wx.Panel):
         self.ctrl_recherche = CTRL_Grille.BarreRecherche(self.barreOutils, ctrl_grille=self.grille)
         self.barreOutils.AddControl(self.ctrl_recherche)
 
-        self.barreOutils.AddLabelTool(ID_AJOUTER_INDIVIDU, label=_(u"Ajouter un individu"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Femme.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Ajouter un individu"), longHelp=_(u"Ajouter un individu"))
-        self.barreOutils.AddLabelTool(ID_AFFICHER_TOUS_INSCRITS, label=_(u"Afficher tous les inscrits"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_PNG), shortHelp=_(u"Afficher tous les inscrits"), longHelp=_(u"Afficher tous les inscrits"))
+        AddTool(self.barreOutils, ID_AJOUTER_INDIVIDU, label=_(u"Ajouter un individu"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Femme.png"), wx.BITMAP_TYPE_PNG))
+        AddTool(self.barreOutils, ID_AFFICHER_TOUS_INSCRITS, label=_(u"Afficher tous les inscrits"), bitmap=wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Famille.png"), wx.BITMAP_TYPE_PNG))
+
         try:
             self.barreOutils.AddStretchableSpace()
         except:
             self.barreOutils.AddSeparator()
-        self.barreOutils.AddRadioLabelTool(ID_MODE_RESERVATION, label=_(u"Réservation"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), shortHelp=_(u"Mode de saisie 'Réservation'"), longHelp=_(u"Mode de saisie 'Réservation'"))
-        self.barreOutils.AddRadioLabelTool(ID_MODE_ATTENTE, label=_(u"Attente"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), shortHelp=_(u"Mode de saisie 'Attente'"), longHelp=_(u"Mode de saisie 'Attente'"))
-        self.barreOutils.AddRadioLabelTool(ID_MODE_REFUS, label=_(u"Refus"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), shortHelp=_(u"Mode de saisie 'Refus'"), longHelp=_(u"Mode de saisie 'Refus'"))
+
+        AddTool(self.barreOutils, ID_MODE_RESERVATION, label=_(u"Réservation"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_RESERVATION), kind=wx.ITEM_RADIO)
+        AddTool(self.barreOutils, ID_MODE_ATTENTE, label=_(u"Attente"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_ATTENTE), kind=wx.ITEM_RADIO)
+        AddTool(self.barreOutils, ID_MODE_REFUS, label=_(u"Refus"), bitmap=CTRL_Grille.CreationImage(10, 20, CTRL_Grille.COULEUR_REFUS), kind=wx.ITEM_RADIO)
 
         self.Bind(wx.EVT_TOOL, self.AjouterIndividu, id=ID_AJOUTER_INDIVIDU)
         self.Bind(wx.EVT_TOOL, self.AfficherTousInscrits, id=ID_AFFICHER_TOUS_INSCRITS)

@@ -14,7 +14,7 @@ from Utils.UTILS_Traduction import _
 import wx
 import CTRL_Bouton_image
 import datetime
-import wx.calendar   
+#import wx.calendar
 import CTRL_Calendrier     
 
 class CTRL(wx.Panel):

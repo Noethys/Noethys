@@ -231,7 +231,10 @@ class CTRL_Parametres(CTRL_Propertygrid.CTRL) :
                         propriete.Hide(True)
                         propriete.SetAttribute("obligatoire", False)
 
-        self.RefreshGrid()
+        if 'phoenix' in wx.PlatformInfo:
+            self.Refresh()
+        else :
+            self.RefreshGrid()
 
     def Remplissage(self):
 
