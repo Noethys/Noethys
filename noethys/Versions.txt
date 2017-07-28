@@ -1,3 +1,15 @@
+Version 1.2.0.8 (28/07/2017) :
+
+- Ajout bouton Synchroniser dans cadre Connecthys sur page d'accueil
+- Ajout de la prise en compte des week-ends et jours fériés dans la date limite des réservations sur Connecthys
+- Correction bug sur saisie message sans catégorie associée
+- Correction bug nbre lignes max sur tarif selon taux et date
+- Correction bug sur config portail sans config valide
+- Correction bug sur interface badgeage
+- Correction bug sur l'impression des conso
+- Correction de divers petits bugs
+- Adaptations pour wxPython Phoenix
+
 Version 1.2.0.7 (09/07/2017) :
 
 - Ajout de la période de validité date à date dans les cotisations
