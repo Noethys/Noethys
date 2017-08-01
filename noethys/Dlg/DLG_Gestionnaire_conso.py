@@ -273,8 +273,8 @@ def AddTool(barre=None, ID=None, bitmap=None, kind=wx.ITEM_NORMAL, label=""):
     if 'phoenix' in wx.PlatformInfo:
         item = barre.AddTool(toolId=ID, label=label, bitmap=bitmap, shortHelp=label, kind=kind)
     else :
-        if kind == wx.ITEM_CHECK :
-            item = barre.AddRadioLabelTool(id=ID, bitmap=bitmap, shortHelp=label, longHelp=label)
+        if kind == wx.ITEM_RADIO :
+            item = barre.AddRadioLabelTool(id=ID, label=label, bitmap=bitmap, shortHelp=label, longHelp=label)
         else :
             item = barre.AddLabelTool(id=ID, label=label, bitmap=bitmap, shortHelp=label, longHelp=label)
     return item
