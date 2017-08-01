@@ -384,7 +384,7 @@ class CTRL(HTL.HyperTreeList):
             brancheActivite = self.AppendItem(self.root, nomActivite)
             self.SetPyData(brancheActivite, IDactivite)
             self.SetItemBold(brancheActivite, True)
-            self.SetItemBackgroundColour(brancheActivite, wx.Colour(COULEUR_FOND_REGROUPEMENT))
+            self.SetItemBackgroundColour(brancheActivite, wx.Colour(*COULEUR_FOND_REGROUPEMENT))
             
             # Niveau Unités de consommation
             for track in listeTracks :
