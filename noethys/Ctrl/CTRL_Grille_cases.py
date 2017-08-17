@@ -857,13 +857,19 @@ class Case():
 
     def MAJremplissage(self):
         # Recalcule tout le remplissage de la grille
-        self.grid.CalcRemplissage() 
+        self.grid.CalcRemplissage()
         # Modifie la couleur des autres cases de la ligne ou de toute la grille en fonction du remplissage + MAJ Totaux Gestionnaire de conso
         if self.grid.mode == "date" :
             self.grid.MAJcouleurCases(saufLigne=None)
             self.grid.GetGrandParent().MAJ_totaux_contenu()
         else:
-            self.ligne.MAJcouleurCases(saufCase=self) 
+            #self.ligne.MAJcouleurCases(saufCase=self) # Cette ligne ne mettait pas à jour si fraterie affichée
+
+            # Met à jour l'affichage de toutes les lignes de la même date (pour prendre en charge les frateries)
+            for numLigne, ligne in self.grid.dictLignes.iteritems() :
+                if ligne.estSeparation == False and ligne.date == self.date :
+                    ligne.MAJcouleurCases()
+
 
     def VerifieCompatibilitesUnites(self):
         listeIncompatibilites = self.grid.dictUnites[self.IDunite]["unites_incompatibles"]

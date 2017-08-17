@@ -230,13 +230,14 @@ class Dialog(wx.Dialog):
 
     def OnChoixModele(self, event=None):
         dictModele = self.ctrl_modele.GetDictValeurs()
-        if dictModele != None :
 
-            # Active le ctrl_individu
-            if dictModele["public"] == "individu" :
-                self.ctrl_individu.Enable(True)
-            else :
-                self.ctrl_individu.Enable(False)
+        # Active le ctrl_individu
+        if dictModele == None or dictModele["public"] == "famille":
+            self.ctrl_individu.Enable(False)
+        else:
+            self.ctrl_individu.Enable(True)
+
+        if dictModele != None :
 
             # recherche le montant à appliquer
             montant = 0.0
@@ -317,6 +318,12 @@ class Dialog(wx.Dialog):
     def OnBoutonOk(self, event):
         # Récupération et vérification des données saisies
         dictModele = self.ctrl_modele.GetDictValeurs()
+
+        if dictModele == None:
+            dlg = wx.MessageDialog(self, _(u"Vous devez obligatoirement sélectionner un modèle dans la liste !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return
 
         categorie = dictModele["categorie"]
         label = dictModele["label"]

@@ -468,9 +468,8 @@ class Ligne():
         # MAJ toute la ligne
         for numColonne, case in self.dictCases.iteritems() :
             if case != saufCase and case.typeCase == "consommation" :
-##                case.MAJinfosPlaces()
                 case.Refresh()
-        
+
     def EstEnVacances(self, dateDD):
         date = str(dateDD)
         for valeurs in self.grid.listeVacances :
@@ -2459,16 +2458,17 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
 ####FACTURATION
 
-    def GetEvenementsUnites(self, liste_unites=[], date=None, dictTarif=None):
+    def GetEvenementsUnites(self, liste_unites=[], date=None, dictTarif=None, IDindividu=None):
         liste_evenements = []
         for numLigne, ligne in self.dictLignes.iteritems() :
-            for numColonne, case in ligne.dictCases.iteritems() :
-                if hasattr(case, "CategorieCase") and case.CategorieCase == "evenement" and case.IDunite in liste_unites and case.date == date :
-                    # return case.liste_evenements
-                    for evenement in case.liste_evenements :
-                        if dictTarif["type"] == "JOURN":
-                            if evenement.conso != None and evenement.conso.etat in dictTarif["etats"] :
-                                liste_evenements.append(evenement)
+            if ligne.IDindividu == IDindividu :
+                for numColonne, case in ligne.dictCases.iteritems() :
+                    if hasattr(case, "CategorieCase") and case.CategorieCase == "evenement" and case.IDunite in liste_unites and case.date == date :
+                        # return case.liste_evenements
+                        for evenement in case.liste_evenements :
+                            if dictTarif["type"] == "JOURN":
+                                if evenement.conso != None and evenement.conso.etat in dictTarif["etats"] :
+                                    liste_evenements.append(evenement)
         return liste_evenements
 
     def GetIDfacture(self, conso=None):
@@ -2629,10 +2629,9 @@ class CTRL(gridlib.Grid, glr.GridWithLabelRenderersMixin):
 
                 # Recherche les évènements pour lesquels une conso est saisie
                 liste_evenements = []
-                for evenement in self.GetEvenementsUnites(combinaisons_unites, date, dictTarif):
+                for evenement in self.GetEvenementsUnites(combinaisons_unites, date, dictTarif, IDindividu):
                     if evenement.conso != None :
                         liste_evenements.append(evenement)
-
 
             for evenement in liste_evenements :
 
@@ -6038,7 +6037,7 @@ if __name__ == '__main__':
     app = wx.App(0)
     heure_debut = time.time()
     from Dlg import DLG_Grille
-    frame_1 = DLG_Grille.Dialog(None, IDfamille=209, selectionIndividus=[564])
+    frame_1 = DLG_Grille.Dialog(None, IDfamille=209, selectionIndividus=[564, 1593])
     app.SetTopWindow(frame_1)
     print "Temps de chargement CTRL_Grille =", time.time() - heure_debut
     frame_1.ShowModal()
