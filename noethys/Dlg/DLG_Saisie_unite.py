@@ -596,27 +596,59 @@ class Dialog(wx.Dialog):
         # Vérifie que la conversion de type est possible
         if self.IDunite != None :
             DB = GestionDB.DB()
-            req = """SELECT IDindividu, date, COUNT(IDconso)
+
+            req = """SELECT IDindividu, date
             FROM consommations 
             WHERE IDunite=%d
-            GROUP BY IDindividu, date
             ;""" % self.IDunite
             DB.ExecuterReq(req)
             listeConsommations = DB.ResultatReq()
+            listeDatesConso = []
+            for IDindividu, date in listeConsommations :
+                date = UTILS_Dates.DateEngEnDateDD(date)
+                if date not in listeDatesConso :
+                    listeDatesConso.append(date)
+            listeDatesConso.sort()
+
+            req = """SELECT IDevenement, date
+            FROM evenements 
+            WHERE IDunite=%d
+            ;""" % self.IDunite
+            DB.ExecuterReq(req)
+            listeEvenements = DB.ResultatReq()
+            listeDatesEvenements = []
+            for IDevenement, date in listeEvenements :
+                date = UTILS_Dates.DateEngEnDateDD(date)
+                if date not in listeDatesEvenements:
+                    listeDatesEvenements.append(date)
+            listeDatesEvenements.sort()
+
             DB.Close()
-            listeDates = []
-            for IDindividu, date, nbreConso in listeConsommations :
-                if nbreConso > 1 :
-                    dateDD = UTILS_Dates.DateEngEnDateDD(date)
-                    listeDates.append(dateDD)
-            listeDates.sort() 
-            
-            if len(listeDates) > 0 and self.typeUnite == "Multihoraires" and self.ctrl_type.GetType() != "Multihoraires" :
-                periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDates[0]), UTILS_Dates.DateDDEnFr(listeDates[-1]))
-                dlg = wx.MessageDialog(self, _(u"Des consommations multiples ont déjà été saisies sur %d dates (%s) !\n\nIl est donc impossible de convertir cette unité multihoraire en un autre type d'unité.") % (len(listeDates), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+
+            # Multihoraires
+            if len(listeDatesConso) > 0 and self.typeUnite == "Multihoraires" and self.ctrl_type.GetType() != "Multihoraires" :
+                periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDatesConso[0]), UTILS_Dates.DateDDEnFr(listeDatesConso[-1]))
+                dlg = wx.MessageDialog(self, _(u"Des consommations multiples ont déjà été saisies sur %d dates (%s) !\n\nIl est donc impossible de convertir cette unité multihoraire en un autre type d'unité.") % (len(listeDatesConso), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
                 dlg.ShowModal()
                 dlg.Destroy()
                 return
+
+            # Evènements
+            if (self.ctrl_type.GetType() == "Evenement" and self.typeUnite != "Evenement") or (self.ctrl_type.GetType() != "Evenement" and self.typeUnite == "Evenement") :
+                if len(listeDatesConso) > 0 :
+                    periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDatesConso[0]), UTILS_Dates.DateDDEnFr(listeDatesConso[-1]))
+                    dlg = wx.MessageDialog(self, _(u"Il est impossible de convertir le type de cette unité car des consommations ont déjà été saisies sur %d dates (%s)") % (len(listeDatesConso), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+
+                if len(listeDatesEvenements) > 0 :
+                    periode = _(u"entre le %s et le %s") % (UTILS_Dates.DateDDEnFr(listeDatesEvenements[0]), UTILS_Dates.DateDDEnFr(listeDatesEvenements[-1]))
+                    dlg = wx.MessageDialog(self, _(u"Il est impossible de convertir le type de cette unité car des évènements ont déjà été saisis sur %d dates (%s)") % (len(listeDatesEvenements), periode), _(u"Erreur"), wx.OK | wx.ICON_ERROR)
+                    dlg.ShowModal()
+                    dlg.Destroy()
+                    return
+
         
         # Sauvegarde
         etat = self.Sauvegarde() 
