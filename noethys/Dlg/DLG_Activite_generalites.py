@@ -621,11 +621,11 @@ class Panel(wx.Panel):
             return False
         # Public
         public = self.ctrl_public.GetIDcoches()
-        if len(public) == 0 :
-            dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un type de public !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
-            dlg.ShowModal()
-            dlg.Destroy()
-            return False
+        # if len(public) == 0 :
+        #     dlg = wx.MessageDialog(self, _(u"Vous devez cocher au moins un type de public !"), _(u"Erreur de saisie"), wx.OK | wx.ICON_EXCLAMATION)
+        #     dlg.ShowModal()
+        #     dlg.Destroy()
+        #     return False
         # Dates de validité
         if self.radio_limitee.GetValue() == True :
             if self.ctrl_validite_du.Validation() == False :

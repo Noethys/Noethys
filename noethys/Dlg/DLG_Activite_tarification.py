@@ -134,6 +134,15 @@ class Panel(wx.Panel):
         self.ctrl_tarification.MAJ() 
 
     def Validation(self):
+        # Vérifie qu'au moins une catégorie de tarif a été saisie
+        liste_categories_tarifs = self.ctrl_categories.GetTracks()
+        if len(liste_categories_tarifs) == 0 :
+            dlg = wx.MessageDialog(self, _(u"Vous n'avez saisi aucune catégorie de tarif. Aucun individu ne pourra donc être inscrit à cette activité.\n\nSouhaitez-vous quand même continuer ?"), _(u"Avertissement"), wx.YES_NO | wx.NO_DEFAULT | wx.CANCEL | wx.ICON_EXCLAMATION)
+            resultat = dlg.ShowModal()
+            dlg.Destroy()
+            if resultat != wx.ID_YES:
+                return False
+
         return True
 
     def Sauvegarde(self):

@@ -13,24 +13,14 @@ import Chemins
 from Utils.UTILS_Traduction import _
 import wx
 import GestionDB
-from Dlg import DLG_Saisie_exercice
-from Utils import UTILS_Dates
 from Utils import UTILS_Interface
 from ObjectListView import FastObjectListView, ColumnDefn, Filter, CTRL_Outils
-from CTRL_Tarification_calcul import LISTE_METHODES
+from Ctrl.CTRL_Tarification_calcul import LISTE_METHODES
 from Utils import UTILS_Texte
-
 from Dlg.DLG_Ouvertures import Track_tarif
 
 
 
-# class Track(object):
-#     def __init__(self, donnees):
-#         self.IDtarif = donnees[0]
-#         self.methode = donnees[1]
-#         self.categories_tarifs = donnees[2]
-#         self.description = donnees[3]
-    
 class ListView(FastObjectListView):
     def __init__(self, *args, **kwds):
         # Récupération des paramètres perso

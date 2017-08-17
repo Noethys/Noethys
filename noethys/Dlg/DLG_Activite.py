@@ -344,7 +344,7 @@ class Assistant(wx.Dialog, ClsCommune):
         self.bouton_retour.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour revenir à la page précédente")))
         self.bouton_suite.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour passer à l'étape suivante")))
         self.bouton_annuler.SetToolTip(wx.ToolTip(_(u"Cliquez pour annuler")))
-        self.SetMinSize((800, 740))
+        self.SetMinSize((890, 740))
 
     def __do_layout(self):
         grid_sizer_base = wx.FlexGridSizer(rows=4, cols=1, vgap=0, hgap=0)
@@ -408,7 +408,7 @@ class Assistant(wx.Dialog, ClsCommune):
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Fleche_droite.png"))
             self.bouton_suite.SetTexte(_(u"Suite"))
         # Si on revient à la première page, on désactive le bouton Retour
-        if self.pageVisible == 1 :
+        if self.pageVisible == 0 :
             self.bouton_retour.Enable(False)
         # On active le bouton annuler
         self.bouton_annuler.Enable(True)
@@ -430,7 +430,7 @@ class Assistant(wx.Dialog, ClsCommune):
         pageCible.Show(True)
         self.sizer_pages.Layout()
         # Si on arrive à la dernière page, on désactive le bouton Suivant
-        if self.pageVisible == self.nbrePages :
+        if self.pageVisible == self.nbrePages-1 :
             self.bouton_suite.SetImage(Chemins.GetStaticPath("Images/32x32/Valider.png"))
             self.bouton_suite.SetTexte(_(u"Valider"))
             self.bouton_annuler.Enable(False)
@@ -645,7 +645,7 @@ class Dialog(wx.Dialog):
 if __name__ == "__main__":
     app = wx.App(0)
     #wx.InitAllImageHandlers()
-    IDactivite = 1#43 # <<<<<<<<<<<<<<<< pour les tests
+    IDactivite = None #1  <<<<<<<<<<<<<<<< pour les tests
     if IDactivite == None :
         frame_1 = Assistant(None, IDactivite=None)
     else:

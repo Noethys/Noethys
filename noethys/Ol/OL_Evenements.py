@@ -224,7 +224,6 @@ class ListView(FastObjectListView):
         dlg = wx.MessageDialog(self, _(u"Souhaitez-vous vraiment supprimer cet évènement ?"), _(u"Suppression"), wx.YES_NO|wx.NO_DEFAULT|wx.CANCEL|wx.ICON_INFORMATION)
         if dlg.ShowModal() == wx.ID_YES :
             self.donnees.remove(track_evenement)
-            self.liste_evenements_supprimes.append(track_evenement)
             self.MAJ()
         dlg.Destroy()
 

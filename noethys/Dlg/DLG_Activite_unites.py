@@ -33,6 +33,7 @@ class Panel(wx.Panel):
         # Unités
         self.staticbox_unites_staticbox = wx.StaticBox(self, -1, _(u"Unités de consommation"))
         self.ctrl_unites = OL_Unites.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_unites", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
+        self.ctrl_unites.SetMinSize((100, 100))
         self.ctrl_unites.MAJ()
         self.bouton_unites_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_unites_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
@@ -43,7 +44,8 @@ class Panel(wx.Panel):
         # Remplissage
         self.staticbox_remplissage_staticbox = wx.StaticBox(self, -1, _(u"Unités de remplissage"))        
         self.ctrl_remplissage = OL_Unites_remplissage.ListView(self, IDactivite=self.IDactivite, id=-1, name="OL_unites", style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_SINGLE_SEL|wx.LC_HRULES|wx.LC_VRULES)
-        self.ctrl_remplissage.MAJ() 
+        self.ctrl_remplissage.SetMinSize((100, 100))
+        self.ctrl_remplissage.MAJ()
         self.bouton_remplissage_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_remplissage_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_remplissage_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
