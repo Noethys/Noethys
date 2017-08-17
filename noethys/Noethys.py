@@ -644,19 +644,23 @@ class MainFrame(wx.Frame):
                     {"code" : "acces_reseau", "label" : _(u"Accès réseau"), "infobulle" : _(u"Paramétrage des accès réseau"), "image" : "Images/16x16/Utilisateur_reseau.png", "action" : self.On_param_utilisateurs_reseau},
                     "-",
                     {"code" : "organisateur", "label" : _(u"Organisateur"), "infobulle" : _(u"Paramétrage des données sur l'organisateur"), "image" : "Images/16x16/Organisateur.png", "action" : self.On_param_organisateur},
+                    {"code": "types_cotisations", "label": _(u"Cotisations"), "infobulle": _(u"Paramétrage des types de cotisations"), "image": "Images/16x16/Identite.png", "action": self.On_param_types_cotisations},
                     {"code" : "groupes_activites", "label" : _(u"Groupes d'activités"), "infobulle" : _(u"Paramétrage des groupes d'activités"), "image" : "Images/16x16/Groupe_activite.png", "action" : self.On_param_groupes_activites},
                     {"code" : "activites", "label" : _(u"Activités"), "infobulle" : _(u"Paramétrage des activités"), "image" : "Images/16x16/Activite.png", "action" : self.On_param_activites},
-                    {"code" : "types_cotisations", "label" : _(u"Cotisations"), "infobulle" : _(u"Paramétrage des types de cotisations"), "image" : "Images/16x16/Identite.png", "action" : self.On_param_types_cotisations},
                     "-",
-                    {"code" : "modeles_documents", "label" : _(u"Modèles de documents"), "infobulle" : _(u"Paramétrage des modèles de documents"), "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
-                    {"code" : "modeles_emails", "label" : _(u"Modèles d'Emails"), "infobulle" : _(u"Paramétrage des modèles d'Emails"), "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
-                    {"code" : "modeles_tickets", "label" : _(u"Modèles de tickets"), "infobulle" : _(u"Paramétrage des modèles de tickets"), "image" : "Images/16x16/Ticket.png", "action" : self.On_param_modeles_tickets},
-                    {"code" : "modeles_contrats", "label" : _(u"Modèles de contrats"), "infobulle" : _(u"Paramétrage des modèles de contrats"), "image" : "Images/16x16/Contrat.png", "action" : self.On_param_modeles_contrats},
-                    {"code" : "modeles_plannings", "label" : _(u"Modèles de plannings"), "infobulle" : _(u"Paramétrage des modèles de plannings"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_modeles_plannings},
-                    {"code" : "modeles_aides", "label" : _(u"Modèles d'aides journalières"), "infobulle" : _(u"Paramétrage des modèles d'aides journalières"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
+                    {"code": "procedures_badgeage", "label": _(u"Procédures de badgeage"), "infobulle": _(u"Paramétrage des procédures de badgeage"), "image": "Images/16x16/Badgeage.png", "action": self.On_param_badgeage},
+                    {"code": "synthese_vocale", "label": _(u"Synthèse vocale"), "infobulle": _(u"Paramétrage de la synthèse vocale"), "image": "Images/16x16/Vocal.png", "action": self.On_param_vocal},
                     "-",
-                    {"code" : "procedures_badgeage", "label" : _(u"Procédures de badgeage"), "infobulle" : _(u"Paramétrage des procédures de badgeage"), "image" : "Images/16x16/Badgeage.png", "action" : self.On_param_badgeage},
-                    {"code" : "synthese_vocale", "label" : _(u"Synthèse vocale"), "infobulle" : _(u"Paramétrage de la synthèse vocale"), "image" : "Images/16x16/Vocal.png", "action" : self.On_param_vocal},
+                    {"code": "menu_parametrage_modeles", "label": _(u"Modèles"), "items": [
+                        {"code" : "modeles_documents", "label" : _(u"Modèles de documents"), "infobulle" : _(u"Paramétrage des modèles de documents"), "image" : "Images/16x16/Document.png", "action" : self.On_param_documents},
+                        {"code" : "modeles_emails", "label" : _(u"Modèles d'Emails"), "infobulle" : _(u"Paramétrage des modèles d'Emails"), "image" : "Images/16x16/Emails_modele.png", "action" : self.On_param_modeles_emails},
+                        {"code" : "modeles_tickets", "label" : _(u"Modèles de tickets"), "infobulle" : _(u"Paramétrage des modèles de tickets"), "image" : "Images/16x16/Ticket.png", "action" : self.On_param_modeles_tickets},
+                        {"code" : "modeles_contrats", "label" : _(u"Modèles de contrats"), "infobulle" : _(u"Paramétrage des modèles de contrats"), "image" : "Images/16x16/Contrat.png", "action" : self.On_param_modeles_contrats},
+                        {"code" : "modeles_plannings", "label" : _(u"Modèles de plannings"), "infobulle" : _(u"Paramétrage des modèles de plannings"), "image" : "Images/16x16/Calendrier.png", "action" : self.On_param_modeles_plannings},
+                        {"code" : "modeles_aides", "label" : _(u"Modèles d'aides journalières"), "infobulle" : _(u"Paramétrage des modèles d'aides journalières"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_modeles_aides},
+                        {"code" : "modeles_prestations", "label": _(u"Modèles de prestations"), "infobulle": _(u"Paramétrage des modèles de prestations"), "image": "Images/16x16/Euro.png", "action": self.On_param_modeles_prestations},
+                        ],
+                     },
                     "-",
                     {"code" : "menu_parametrage_factures", "label" : _(u"Facturation"), "items" : [
                             {"code" : "regies_factures", "label" : _(u"Régies"), "infobulle" : _(u"Paramétrage des régies"), "image" : "Images/16x16/Mecanisme.png", "action" : self.On_param_regies_factures},
@@ -1982,6 +1986,13 @@ class MainFrame(wx.Frame):
         from Dlg import DLG_Modeles_aides
         dlg = DLG_Modeles_aides.Dialog(self)
         dlg.ShowModal() 
+        dlg.Destroy()
+
+    def On_param_modeles_prestations(self, event):
+        if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("parametrage_modeles_prestations", "consulter") == False : return
+        from Dlg import DLG_Modeles_prestations
+        dlg = DLG_Modeles_prestations.Dialog(self)
+        dlg.ShowModal()
         dlg.Destroy()
 
     def On_param_types_cotisations(self, event):

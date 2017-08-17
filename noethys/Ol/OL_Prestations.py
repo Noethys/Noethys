@@ -429,7 +429,17 @@ class ListView(GroupListView):
         menuPop.AppendItem(item)
         self.Bind(wx.EVT_MENU, self.Supprimer, id=30)
         if len(self.Selection()) == 0 : item.Enable(False)
-        
+
+
+        # Item Appliquer modèle de prestation
+        if self.IDfamille != None :
+            menuPop.AppendSeparator()
+            item = wx.MenuItem(menuPop, 11, _(u"Ajouter une prestation selon un modèle"))
+            bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Magique.png"), wx.BITMAP_TYPE_PNG)
+            item.SetBitmap(bmp)
+            menuPop.AppendItem(item)
+            self.Bind(wx.EVT_MENU, self.Appliquer_modele, id=11)
+
         menuPop.AppendSeparator()
 
         # Item Tout cocher
@@ -739,46 +749,19 @@ class ListView(GroupListView):
             self.MAJ(track.IDfacture)
         dlg.Destroy()
 
-# -------------------------------------------------------------------------------------------------------------------------------------------
+    def Appliquer_modele(self, event=None):
+        from Dlg import DLG_Appliquer_modele_prestation
+        dlg = DLG_Appliquer_modele_prestation.Dialog(self, IDfamille=self.IDfamille)
+        if dlg.ShowModal() == wx.ID_OK:
+            IDprestation = dlg.GetIDprestation()
+            self.MAJ(IDprestation)
+        dlg.Destroy()
 
 
-class BarreRecherche(wx.SearchCtrl):
-    def __init__(self, parent):
-        wx.SearchCtrl.__init__(self, parent, size=(-1, -1), style=wx.TE_PROCESS_ENTER)
-        self.parent = parent
-        self.rechercheEnCours = False
-        
-        self.SetDescriptiveText(_(u"Rechercher..."))
-        self.ShowSearchButton(True)
-        
-        self.listView = self.parent.ctrl_listview
-        nbreColonnes = self.listView.GetColumnCount()
-        self.listView.SetFilter(Filter.TextSearch(self.listView, self.listView.columns[0:nbreColonnes]))
-        
-        self.SetCancelBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Interdit.png"), wx.BITMAP_TYPE_PNG))
-        self.SetSearchBitmap(wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Loupe.png"), wx.BITMAP_TYPE_PNG))
-        
-        self.Bind(wx.EVT_SEARCHCTRL_SEARCH_BTN, self.OnSearch)
-        self.Bind(wx.EVT_SEARCHCTRL_CANCEL_BTN, self.OnCancel)
-        self.Bind(wx.EVT_TEXT_ENTER, self.OnDoSearch)
-        self.Bind(wx.EVT_TEXT, self.OnDoSearch)
 
-    def OnSearch(self, evt):
-        self.Recherche()
-            
-    def OnCancel(self, evt):
-        self.SetValue("")
-        self.Recherche()
 
-    def OnDoSearch(self, evt):
-        self.Recherche()
-        
-    def Recherche(self):
-        txtSearch = self.GetValue()
-        self.ShowCancelButton(len(txtSearch))
-        self.listView.GetFilter().SetText(txtSearch)
-        self.listView.RepopulateList()
-        self.Refresh() 
+
+
 
 
 # -------------------------------------------------------------------------------------------------------------------------------------------

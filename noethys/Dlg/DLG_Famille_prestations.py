@@ -3,8 +3,8 @@
 #------------------------------------------------------------------------
 # Application :    Noethys, gestion multi-activités
 # Site internet :  www.noethys.com
-# Auteur:           Ivan LUCAS
-# Copyright:       (c) 2010-11 Ivan LUCAS
+# Auteur:          Ivan LUCAS
+# Copyright:       (c) 2010-17 Ivan LUCAS
 # Licence:         Licence GNU GPL
 #------------------------------------------------------------------------
 
@@ -178,41 +178,23 @@ class Panel(wx.Panel):
         self.ctrl_recherche = OL_Prestations.CTRL_Outils(self, listview=self.ctrl_prestations, afficherCocher=True)
         self.ctrl_recherche.SetBackgroundColour((255, 255, 255))
 
-        # Options d'affichage hyperliens
-##        self.ctrl_regroupement = wx.CheckBox(self, -1, _(u"Regrouper par "))
-##        self.ctrl_regroupement.SetValue(False)
-##        self.hyper_regroupement = Hyperlien_regroupement(self, label=_(u"Date"), infobulle=_(u"Cliquez ici pour choisir une catégorie de regroupement"), URL="regroupement", listeChoix=[], indexChoixDefaut=None)
-##        self.hyper_regroupement.Enable(False)
-##        
-##        self.label_filtres_1 = wx.StaticText(self, -1, _(u"Afficher "))
-##        self.hyper_periodes = Hyperlien_periodes(self, label=_(u"Toutes les périodes"), infobulle=_(u"Cliquez ici pour filtrer les périodes"), URL="periodes")
-##        self.label_filtres_2 = wx.StaticText(self, -1, u" | ")
-##        self.hyper_individus = Hyperlien(self, label=_(u"Tous les individus"), infobulle=_(u"Cliquez ici pour filtrer les individus"), URL="individus", listeChoix=[], indexChoixDefaut=None, labelDefaut=_(u"Tous les individus"), champFiltre="prestations.IDindividu")
-##        self.label_filtres_3 = wx.StaticText(self, -1, u" | ")
-##        self.hyper_activites = Hyperlien(self, label=_(u"Toutes les activités"), infobulle=_(u"Cliquez ici pour fitrer les activités"), URL="activites", listeChoix=[], indexChoixDefaut=None, labelDefaut=_(u"Toutes les activités"), champFiltre="prestations.IDactivite")
-##        self.label_filtres_4 = wx.StaticText(self, -1, u" | ")
-##        self.hyper_factures = Hyperlien(self, label=_(u"Toutes les factures"), infobulle=_(u"Cliquez ici pour filtrer les factures"), URL="factures", listeChoix=[], indexChoixDefaut=None, labelDefaut=_(u"Toutes les factures"), champFiltre="prestations.IDfacture")
-##        
-##        self.ctrl_total = wx.StaticText(self, -1, _(u"Total = 0.00 %s") % SYMBOLE)
-##        self.ctrl_total.Show(False)
-        
         # Commandes boutons
         self.bouton_ajouter = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Ajouter.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_modifier = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Modifier.png"), wx.BITMAP_TYPE_ANY))
         self.bouton_supprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Supprimer.png"), wx.BITMAP_TYPE_ANY))
-        self.bouton_imprimer = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_ANY))
+        self.bouton_modele = wx.BitmapButton(self, -1, wx.Bitmap(Chemins.GetStaticPath(u"Images/16x16/Magique.png"), wx.BITMAP_TYPE_ANY))
 
         # Binds
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonAjouter, self.bouton_ajouter)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonModifier, self.bouton_modifier)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonSupprimer, self.bouton_supprimer)
-        self.Bind(wx.EVT_BUTTON, self.OnBoutonImprimer, self.bouton_imprimer)
-##        self.Bind(wx.EVT_CHECKBOX, self.OnCheckRegroupement, self.ctrl_regroupement)
-        
+        self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Ajouter, self.bouton_ajouter)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Modifier, self.bouton_modifier)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Supprimer, self.bouton_supprimer)
+        self.Bind(wx.EVT_BUTTON, self.ctrl_prestations.Appliquer_modele, self.bouton_modele)
+
         # Propriétés
         self.bouton_ajouter.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une prestation")))
         self.bouton_modifier.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour modifier la prestation sélectionnée")))
         self.bouton_supprimer.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour supprimer la prestation sélectionnée")))
+        self.bouton_modele.SetToolTip(wx.ToolTip(_(u"Cliquez ici pour saisir une prestation à partir d'un modèle de prestation")))
 
         # Layout
         grid_sizer_base = wx.FlexGridSizer(rows=1, cols=2, vgap=5, hgap=5)
@@ -226,29 +208,11 @@ class Panel(wx.Panel):
         grid_sizer_boutons.Add(self.bouton_modifier, 0, wx.ALL, 0)
         grid_sizer_boutons.Add(self.bouton_supprimer, 0, wx.ALL, 0)
         grid_sizer_boutons.Add( (10, 10), 0, wx.ALL, 0)
-        grid_sizer_boutons.Add(self.bouton_imprimer, 0, wx.ALL, 0)
+        grid_sizer_boutons.Add(self.bouton_modele, 0, wx.ALL, 0)
         grid_sizer_prestations.Add(grid_sizer_boutons, 1, wx.ALL, 0)
         
         grid_sizer_prestations.Add(self.ctrl_recherche, 0, wx.EXPAND|wx.ALL, 0)
-        
-##        grid_sizer_options = wx.FlexGridSizer(rows=1, cols=13, vgap=0, hgap=0)
-##        grid_sizer_options.Add(self.ctrl_regroupement, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.hyper_regroupement, 0, wx.ALL, 0)
-##        grid_sizer_options.Add( (30, 5), 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.label_filtres_1, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.hyper_periodes, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.label_filtres_2, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.hyper_individus, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.label_filtres_3, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.hyper_activites, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.label_filtres_4, 0, wx.ALL, 0)
-##        grid_sizer_options.Add(self.hyper_factures, 0, wx.ALL, 0)
-##        grid_sizer_options.Add( (20, 5), 0, wx.EXPAND|wx.ALL, 0)
-##        grid_sizer_options.Add(self.ctrl_total, 0, wx.ALL, 0)
-##        grid_sizer_options.AddGrowableCol(11)
-##        self.grid_sizer_options = grid_sizer_options
-##        grid_sizer_prestations.Add(grid_sizer_options, 1, wx.EXPAND|wx.ALL, 0)
-        
+
         grid_sizer_prestations.AddGrowableCol(0)
         grid_sizer_prestations.AddGrowableRow(0)
         staticbox_prestations.Add(grid_sizer_prestations, 1, wx.EXPAND|wx.ALL, 5)
@@ -259,59 +223,6 @@ class Panel(wx.Panel):
         grid_sizer_base.Fit(self)
         grid_sizer_base.AddGrowableCol(0)
         grid_sizer_base.AddGrowableRow(0)
-    
-    def OnBoutonAjouter(self, event):
-        self.ctrl_prestations.Ajouter(None)
-
-    def OnBoutonModifier(self, event):
-        self.ctrl_prestations.Modifier(None)
-
-    def OnBoutonSupprimer(self, event):
-        self.ctrl_prestations.Supprimer(None)
-
-    def OnBoutonImprimer(self, event):
-        self.ctrl_prestations.Imprimer(None)
-
-    def OnBoutonImprimer(self, event):
-        if len(self.ctrl_prestations.Selection()) == 0:
-            noSelection = True
-        else:
-            noSelection = False
-            ID = self.ctrl_prestations.Selection()[0].IDprestation
-                
-        # Création du menu contextuel
-        menuPop = wx.Menu()
-        
-        # Item Apercu avant impression
-        item = wx.MenuItem(menuPop, 20, _(u"Aperçu avant impression"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Apercu.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Apercu, id=20)
-        
-        # Item Imprimer
-        item = wx.MenuItem(menuPop, 30, _(u"Imprimer"))
-        bmp = wx.Bitmap(Chemins.GetStaticPath("Images/16x16/Imprimante.png"), wx.BITMAP_TYPE_PNG)
-        item.SetBitmap(bmp)
-        menuPop.AppendItem(item)
-        self.Bind(wx.EVT_MENU, self.Imprimer, id=30)
-        
-        self.PopupMenu(menuPop)
-        menuPop.Destroy()
-
-    def Apercu(self, event):
-        self.ctrl_prestations.Apercu(None)
-
-    def Imprimer(self, event):
-        self.ctrl_prestations.Imprimer(None)
-
-    def OnCheckRegroupement(self, event):
-        if self.ctrl_regroupement.GetValue() == True :
-            self.hyper_regroupement.Enable(True)
-            self.ctrl_prestations.SetShowGroups(True)
-        else:
-            self.hyper_regroupement.Enable(False)
-            self.ctrl_prestations.SetShowGroups(False)
 
     def IsLectureAutorisee(self):
         if UTILS_Utilisateurs.VerificationDroitsUtilisateurActuel("familles_prestations", "consulter", afficheMessage=False) == False : 
@@ -321,12 +232,7 @@ class Panel(wx.Panel):
     def MAJ(self):
         """ MAJ integrale du controle avec MAJ des donnees """
         self.ctrl_prestations.MAJ() 
-##        self.hyper_regroupement.SetListeChoix(self.ctrl_prestations.GetTitresColonnes())
-##        self.hyper_individus.SetListeChoix(self.ctrl_prestations.GetListeIndividus())
-##        self.hyper_activites.SetListeChoix(self.ctrl_prestations.GetListeActivites())
-##        self.hyper_factures.SetListeChoix(self.ctrl_prestations.GetListeFactures())
-##        self.MAJtotal() 
-        self.Refresh() 
+        self.Refresh()
         
     def MAJtotal(self):
         self.ctrl_total.SetLabel(_(u"Total : %.2f %s") % (self.ctrl_prestations.GetTotal(), SYMBOLE))

@@ -23,7 +23,6 @@ SYMBOLE = UTILS_Config.GetParametre("monnaie_symbole", u"¤")
 from Ctrl import CTRL_Bandeau
 from Ctrl import CTRL_Saisie_date
 from Ctrl import CTRL_Saisie_euros
-from Ctrl import CTRL_Saisie_heure
 from Ol import OL_Consommations
 from Ol import OL_Deductions
 from Ctrl import CTRL_Saisie_duree
@@ -89,7 +88,47 @@ class Choix_individu(wx.Choice):
         self.IDfamille = IDfamille
         self.listeIndividus = []
         self.listeNoms = []
-    
+        self.dictIndividus = self.Importation_individus()
+        self.SetListeDonnees(self.dictIndividus)
+
+    def Importation_individus(self):
+        DB = GestionDB.DB()
+        # Recherche les individus de la famille
+        dictIndividus = {}
+        req = """SELECT individus.IDindividu, IDcivilite, nom, prenom, date_naiss, IDcategorie, titulaire
+        FROM individus
+        LEFT JOIN rattachements ON individus.IDindividu = rattachements.IDindividu
+        WHERE rattachements.IDfamille = %d AND IDcategorie IN (1, 2)
+        ORDER BY nom, prenom;""" % self.IDfamille
+        DB.ExecuterReq(req)
+        listeIndividus = DB.ResultatReq()
+        for IDindividu, IDcivilite, nom, prenom, date_naiss, IDcategorie, titulaire in listeIndividus:
+            dictTemp = {
+                "IDcivilite": IDcivilite, "nom": nom, "prenom": prenom,
+                "IDcategorie": IDcategorie, "titulaire": titulaire,
+                "inscriptions": [],
+            }
+            dictIndividus[IDindividu] = dictTemp
+
+            # Recherche des inscriptions pour chaque membre de la famille
+        req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom
+        FROM inscriptions 
+        LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
+        WHERE IDfamille = %d ;""" % self.IDfamille
+        DB.ExecuterReq(req)
+        listeInscriptions = DB.ResultatReq()
+        for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions:
+            dictTemp = {
+                "IDinscription": IDinscription, "IDactivite": IDactivite, "IDgroupe": IDgroupe,
+                "IDcategorie_tarif": IDcategorie_tarif, "nomCategorie_tarif": nomCategorie_tarif,
+            }
+            dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
+
+        # Cloture de la base de données
+        DB.Close()
+
+        return dictIndividus
+
     def SetListeDonnees(self, dictIndividus):
         self.listeIndividus = []
         self.listeNoms = []
@@ -333,10 +372,7 @@ class Dialog(wx.Dialog):
         self.ctrl_tarif.Enable(False)
         
         # Remplissage des contrôles
-        self.dictIndividus = self.Importation_individus()
-        self.ctrl_individu.SetListeDonnees(self.dictIndividus)
-        
-        self.listeActivites = self.Importation_activites() 
+        self.listeActivites = self.Importation_activites()
         self.ctrl_activite.SetListeDonnees(self.listeActivites)
         
         self.listeCategoriesTarifs = self.Importation_categories_tarifs(IDactivite=0) 
@@ -622,44 +658,6 @@ class Dialog(wx.Dialog):
         if temps_facture != None :
             self.ctrl_temps.SetDuree(temps_facture)
                 
-    
-    def Importation_individus(self):
-        DB = GestionDB.DB()
-        # Recherche les individus de la famille
-        dictIndividus = {}
-        req = """SELECT individus.IDindividu, IDcivilite, nom, prenom, date_naiss, IDcategorie, titulaire
-        FROM individus
-        LEFT JOIN rattachements ON individus.IDindividu = rattachements.IDindividu
-        WHERE rattachements.IDfamille = %d AND IDcategorie IN (1, 2)
-        ORDER BY nom, prenom;""" % self.IDfamille
-        DB.ExecuterReq(req)
-        listeIndividus = DB.ResultatReq()
-        for IDindividu, IDcivilite, nom, prenom, date_naiss, IDcategorie, titulaire in listeIndividus :
-            dictTemp = { 
-                "IDcivilite" : IDcivilite, "nom" : nom, "prenom" : prenom, 
-                "IDcategorie" : IDcategorie, "titulaire" : titulaire,
-                "inscriptions" : [],
-            }
-            dictIndividus[IDindividu] = dictTemp 
-        
-        # Recherche des inscriptions pour chaque membre de la famille
-        req = """SELECT inscriptions.IDinscription, IDindividu, inscriptions.IDactivite, IDgroupe, inscriptions.IDcategorie_tarif, categories_tarifs.nom
-        FROM inscriptions 
-        LEFT JOIN categories_tarifs ON categories_tarifs.IDcategorie_tarif = inscriptions.IDcategorie_tarif
-        WHERE IDfamille = %d ;""" % self.IDfamille
-        DB.ExecuterReq(req)
-        listeInscriptions = DB.ResultatReq()
-        for IDinscription, IDindividu, IDactivite, IDgroupe, IDcategorie_tarif, nomCategorie_tarif in listeInscriptions :
-            dictTemp = { 
-                "IDinscription" : IDinscription, "IDactivite" : IDactivite, "IDgroupe" : IDgroupe, 
-                "IDcategorie_tarif" : IDcategorie_tarif, "nomCategorie_tarif" : nomCategorie_tarif,
-                }
-            dictIndividus[IDindividu]["inscriptions"].append(dictTemp)
-        
-        # Cloture de la base de données
-        DB.Close()
-        
-        return dictIndividus
 
     def Importation_activites(self):
         DB = GestionDB.DB()
